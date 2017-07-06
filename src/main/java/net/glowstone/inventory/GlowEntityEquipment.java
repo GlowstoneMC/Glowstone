@@ -1,5 +1,7 @@
 package net.glowstone.inventory;
 
+import lombok.AllArgsConstructor;
+import net.glowstone.constants.ItemIds;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.EntityEquipment;
@@ -8,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowEntityEquipment implements EntityEquipment {
 
-    private ItemStack[] slots = new ItemStack[6];
+    private Entry[] slots = new Entry[6];
     private Entity holder;
 
     public GlowEntityEquipment(Entity holder) {
@@ -18,10 +20,21 @@ public class GlowEntityEquipment implements EntityEquipment {
     /**
      * Returns the ItemStack found in the slot at the given EquipmentSlot
      * @param slot The EquipmentSlot of the Slot's ItemStack to return
-     * @return The ItemStack in the slot, or null, if no item is in this slot.
+     * @return The ItemStack in the slot
      */
     public ItemStack getItem(EquipmentSlot slot) {
+        Entry slotEntry = getSlotEntry(slot);
+        ItemStack stack = slotEntry != null ? slotEntry.item : null;
+        return InventoryUtil.itemOrEmpty(stack);
+    }
+
+    private Entry getSlotEntry(EquipmentSlot slot) {
         return slots[slot.ordinal()];
+    }
+
+    private float getDropChance(EquipmentSlot slot) {
+        Entry slotEntry = getSlotEntry(slot);
+        return slotEntry == null ? 1F : slotEntry.dropChance;
     }
 
     /**
@@ -30,7 +43,17 @@ public class GlowEntityEquipment implements EntityEquipment {
      * @param item The ItemStack to set
      */
     public void setItem(EquipmentSlot slot, ItemStack item) {
-        slots[slot.ordinal()] = item;
+        Entry entry = new Entry(ItemIds.sanitize(item), 1f);
+        slots[slot.ordinal()] = entry;
+    }
+
+    private void setDropChance(EquipmentSlot slot, float chance) {
+        Entry slotEntry = getSlotEntry(slot);
+        if (slotEntry == null) {
+            return;
+        }
+
+        slotEntry.dropChance = chance;
     }
 
     @Override
@@ -132,76 +155,82 @@ public class GlowEntityEquipment implements EntityEquipment {
 
     @Override
     public float getItemInHandDropChance() {
-        return 1;
+        return getDropChance(EquipmentSlot.HAND);
     }
 
     @Override
     public void setItemInHandDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setDropChance(EquipmentSlot.HAND, chance);
     }
 
     @Override
     public float getItemInMainHandDropChance() {
-        return 1;
+        return getItemInHandDropChance();
     }
 
     @Override
     public void setItemInMainHandDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setItemInHandDropChance(chance);
     }
 
     @Override
     public float getItemInOffHandDropChance() {
-        return 1;
+        return getDropChance(EquipmentSlot.OFF_HAND);
     }
 
     @Override
     public void setItemInOffHandDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setDropChance(EquipmentSlot.OFF_HAND, chance);
     }
 
     @Override
     public float getHelmetDropChance() {
-        return 1;
+        return getDropChance(EquipmentSlot.HEAD);
     }
 
     @Override
     public void setHelmetDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setDropChance(EquipmentSlot.HEAD, chance);
     }
 
     @Override
     public float getChestplateDropChance() {
-        return 1;
+        return getDropChance(EquipmentSlot.CHEST);
     }
 
     @Override
     public void setChestplateDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setDropChance(EquipmentSlot.CHEST, chance);
     }
 
     @Override
     public float getLeggingsDropChance() {
-        return 1;
+        return getDropChance(EquipmentSlot.LEGS);
     }
 
     @Override
     public void setLeggingsDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setDropChance(EquipmentSlot.LEGS, chance);
     }
 
     @Override
     public float getBootsDropChance() {
-        return 1;
+        return getDropChance(EquipmentSlot.FEET);
     }
 
     @Override
     public void setBootsDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setDropChance(EquipmentSlot.FEET, chance);
     }
 
     @Override
     public Entity getHolder() {
         return this.holder;
+    }
+
+    @AllArgsConstructor
+    private class Entry {
+        private ItemStack item;
+        private float dropChance;
     }
 }
