@@ -8,6 +8,7 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -95,26 +96,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
 
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {
-            if (compound.isList("Equipment", TagType.COMPOUND)) {
-                List<CompoundTag> list = compound.getCompoundList("Equipment");
-                if (list.size() == 5) {
-                    equip.setItemInHand(NbtSerialization.readItem(list.get(0)));
-                    equip.setBoots(NbtSerialization.readItem(list.get(1)));
-                    equip.setLeggings(NbtSerialization.readItem(list.get(2)));
-                    equip.setChestplate(NbtSerialization.readItem(list.get(3)));
-                    equip.setHelmet(NbtSerialization.readItem(list.get(4)));
-                }
-            }
-            if (compound.isList("DropChances", TagType.FLOAT)) {
-                List<Float> list = compound.getList("DropChances", TagType.FLOAT);
-                if (list.size() == 5) {
-                    equip.setItemInHandDropChance(list.get(0));
-                    equip.setBootsDropChance(list.get(1));
-                    equip.setLeggingsDropChance(list.get(2));
-                    equip.setChestplateDropChance(list.get(3));
-                    equip.setHelmetDropChance(list.get(4));
-                }
-            }
+            loadEquipment(entity, equip, compound);
         }
         if (compound.isByte("CanPickUpLoot")) {
             entity.setCanPickupItems(compound.getBool("CanPickUpLoot"));
@@ -143,6 +125,68 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                     }
 
                     am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+                }
+            }
+        }
+    }
+
+    private void loadEquipment(T entity, EntityEquipment equip, CompoundTag compound) {
+        // Deprecated since 15w31a, left here for compatibilty for now
+        if (compound.isList("Equipment", TagType.COMPOUND)) {
+            List<CompoundTag> list = compound.getCompoundList("Equipment");
+            if (list.size() == 5) {
+                equip.setItemInHand(NbtSerialization.readItem(list.get(0)));
+                equip.setBoots(NbtSerialization.readItem(list.get(1)));
+                equip.setLeggings(NbtSerialization.readItem(list.get(2)));
+                equip.setChestplate(NbtSerialization.readItem(list.get(3)));
+                equip.setHelmet(NbtSerialization.readItem(list.get(4)));
+            }
+        }
+        // Deprecated since 15w31a, left here for compatibilty for now
+        if (compound.isList("DropChances", TagType.FLOAT)) {
+            List<Float> list = compound.getList("DropChances", TagType.FLOAT);
+            if (list.size() == 5) {
+                equip.setItemInHandDropChance(list.get(0));
+                equip.setBootsDropChance(list.get(1));
+                equip.setLeggingsDropChance(list.get(2));
+                equip.setChestplateDropChance(list.get(3));
+                equip.setHelmetDropChance(list.get(4));
+            }
+        }
+
+        if (compound.isList("HandItems", TagType.COMPOUND)) {
+            List<CompoundTag> list = compound.getCompoundList("HandItems");
+            if (list.size() == 2) {
+                equip.setItemInMainHand(NbtSerialization.readItem(list.get(0)));
+                equip.setItemInOffHand(NbtSerialization.readItem(list.get(1)));
+            }
+        }
+        if (compound.isList("ArmorItems", TagType.COMPOUND)) {
+            List<CompoundTag> list = compound.getCompoundList("ArmorItems");
+            if (list.size() == 4) {
+                equip.setBoots(NbtSerialization.readItem(list.get(0)));
+                equip.setLeggings(NbtSerialization.readItem(list.get(1)));
+                equip.setChestplate(NbtSerialization.readItem(list.get(2)));
+                equip.setHelmet(NbtSerialization.readItem(list.get(3)));
+            }
+        }
+
+        // set of dropchances on a player throws an UnsupportedOperationException
+        if (!(entity instanceof Player)) {
+            if (compound.isList("HandDropChances", TagType.FLOAT)) {
+                List<Float> list = compound.getList("HandDropChances", TagType.FLOAT);
+                if (list.size() == 2) {
+                    equip.setItemInHandDropChance(list.get(0));
+                    equip.setItemInOffHandDropChance(list.get(1));
+                }
+            }
+            if (compound.isList("ArmorDropChances", TagType.FLOAT)) {
+                List<Float> list = compound.getList("ArmorDropChances", TagType.FLOAT);
+                if (list.size() == 4) {
+                    equip.setBootsDropChance(list.get(0));
+                    equip.setLeggingsDropChance(list.get(1));
+                    equip.setChestplateDropChance(list.get(2));
+                    equip.setHelmetDropChance(list.get(3));
                 }
             }
         }
@@ -208,19 +252,26 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
 
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {
-            tag.putCompoundList("Equipment", Arrays.asList(
-                    NbtSerialization.writeItem(equip.getItemInHand(), -1),
-                    NbtSerialization.writeItem(equip.getBoots(), -1),
-                    NbtSerialization.writeItem(equip.getLeggings(), -1),
-                    NbtSerialization.writeItem(equip.getChestplate(), -1),
-                    NbtSerialization.writeItem(equip.getHelmet(), -1)
+            tag.putCompoundList("HandItems", Arrays.asList(
+                NbtSerialization.writeItem(equip.getItemInMainHand(), -1),
+                NbtSerialization.writeItem(equip.getItemInOffHand(), -1)
             ));
-            tag.putList("DropChances", TagType.FLOAT, Arrays.asList(
-                    equip.getItemInHandDropChance(),
-                    equip.getBootsDropChance(),
-                    equip.getLeggingsDropChance(),
-                    equip.getChestplateDropChance(),
-                    equip.getHelmetDropChance()
+            tag.putCompoundList("ArmorItems", Arrays.asList(
+                NbtSerialization.writeItem(equip.getBoots(), -1),
+                NbtSerialization.writeItem(equip.getLeggings(), -1),
+                NbtSerialization.writeItem(equip.getChestplate(), -1),
+                NbtSerialization.writeItem(equip.getHelmet(), -1)
+            ));
+
+            tag.putList("HandDropChances", TagType.FLOAT, Arrays.asList(
+                equip.getItemInMainHandDropChance(),
+                equip.getItemInOffHandDropChance()
+            ));
+            tag.putList("ArmorDropChances", TagType.FLOAT, Arrays.asList(
+                equip.getBootsDropChance(),
+                equip.getLeggingsDropChance(),
+                equip.getChestplateDropChance(),
+                equip.getHelmetDropChance()
             ));
         }
         tag.putBool("CanPickUpLoot", entity.getCanPickupItems());
