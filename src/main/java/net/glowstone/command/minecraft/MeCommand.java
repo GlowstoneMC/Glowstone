@@ -17,8 +17,6 @@ public class MeCommand extends VanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) return false;
-
         if (args.length == 0)  {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
