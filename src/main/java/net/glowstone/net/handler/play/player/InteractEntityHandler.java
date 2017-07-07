@@ -1,22 +1,26 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.network.*;
-import net.glowstone.*;
-import net.glowstone.constants.*;
-import net.glowstone.entity.*;
-import net.glowstone.net.*;
-import net.glowstone.net.message.play.player.*;
-import net.glowstone.net.message.play.player.InteractEntityMessage.*;
-import net.glowstone.util.*;
-import org.bukkit.*;
-import org.bukkit.enchantments.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent.*;
-import org.bukkit.event.player.*;
-import org.bukkit.inventory.*;
-import org.bukkit.util.*;
-
-//import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import com.flowpowered.network.MessageHandler;
+import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
+import net.glowstone.constants.AttackDamage;
+import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowLivingEntity;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.util.InventoryUtil;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Statistic;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public final class InteractEntityHandler implements MessageHandler<GlowSession, InteractEntityMessage> {
 

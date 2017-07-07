@@ -1,6 +1,5 @@
 package net.glowstone.entity.objects;
 
-
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +87,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void reset() {
         super.reset();
-        this.getEquipmentMonitor().resetChanges();
         if (needsKill) needsKill = false;
     }
 
