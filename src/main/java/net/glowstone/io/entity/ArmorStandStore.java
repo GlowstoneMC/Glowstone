@@ -1,7 +1,6 @@
 package net.glowstone.io.entity;
 
 import net.glowstone.entity.objects.GlowArmorStand;
-import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
@@ -25,14 +24,6 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void load(GlowArmorStand entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isList("Equipment", TagType.COMPOUND)) {
-            List<CompoundTag> equip = tag.getCompoundList("Equipment");
-            entity.setItemInHand(NbtSerialization.readItem(equip.get(0)));
-            entity.setBoots(NbtSerialization.readItem(equip.get(1)));
-            entity.setLeggings(NbtSerialization.readItem(equip.get(2)));
-            entity.setChestplate(NbtSerialization.readItem(equip.get(3)));
-            entity.setHelmet(NbtSerialization.readItem(equip.get(4)));
-        }
         if (tag.containsKey("Marker")) {
             entity.setMarker(tag.getBool("Marker"));
         }
@@ -64,13 +55,6 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void save(GlowArmorStand entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putCompoundList("Equipment", Arrays.asList(
-                NbtSerialization.writeItem(entity.getItemInHand(), -1),
-                NbtSerialization.writeItem(entity.getBoots(), -1),
-                NbtSerialization.writeItem(entity.getLeggings(), -1),
-                NbtSerialization.writeItem(entity.getChestplate(), -1),
-                NbtSerialization.writeItem(entity.getHelmet(), -1)
-        ));
         tag.putBool("Marker", entity.isMarker());
         tag.putBool("Invisible", !entity.isVisible());
         tag.putBool("NoBasePlate", !entity.hasBasePlate());
