@@ -68,8 +68,10 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         // humans don't have these properties
         tag.remove("CustomName");
         tag.remove("CustomNameVisible");
-        tag.remove("Equipment");
-        tag.remove("DropChances");
+        tag.remove("HandItems");
+        tag.remove("ArmorItems");
+        tag.remove("HandDropChances");
+        tag.remove("ArmorDropChances");
         tag.remove("CanPickUpLoot");
         tag.remove("PersistenceRequired");
         tag.remove("Leashed");
