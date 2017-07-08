@@ -24,7 +24,7 @@ public class XpCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Missing arguments. Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         } else {
             final String stringAmount = args[0], playerPattern = (args.length > 1) ? args[1] : null;
@@ -42,19 +42,19 @@ public class XpCommand extends VanillaCommand {
                 try {
                     amount = Integer.parseInt(stringAmount.substring(0, stringAmount.length() - 1));
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + "Cannot give levels: invalid number format.");
+                    sender.sendMessage(ChatColor.RED + "'" + stringAmount + "' is not a valid number");
                     return false;
                 }
             } else {
                 try {
                     amount = Integer.parseInt(stringAmount);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + "Cannot give experience: invalid number format.");
+                    sender.sendMessage(ChatColor.RED + "'" + stringAmount + "' is not a valid number");
                     return false;
                 }
 
                 if (amount < 0) {
-                    sender.sendMessage(ChatColor.RED + "Cannot give negative experience.");
+                    sender.sendMessage(ChatColor.RED + "Cannot give player negative experience points.");
                     return false;
                 }
             }
@@ -80,7 +80,7 @@ public class XpCommand extends VanillaCommand {
                 }
 
                 if (player == null) {
-                    sender.sendMessage(ChatColor.RED + "Unknown or offline player.");
+                    sender.sendMessage(ChatColor.RED + "Player " + playerPattern + " cannot be found");
                     return false;
                 } else {
                     targets = Collections.singletonList(player);
