@@ -849,6 +849,10 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new SaveToggleCommand(false));
         commandMap.register("minecraft", new ClearCommand());
         commandMap.register("minecraft", new TpCommand());
+        commandMap.register("minecraft", new MeCommand());
+        commandMap.register("minecraft", new SeedCommand());
+        commandMap.register("minecraft", new XpCommand());
+        commandMap.register("minecraft", new DefaultGameModeCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -1847,6 +1851,8 @@ public final class GlowServer implements Server {
     @Override
     public void setDefaultGameMode(GameMode mode) {
         defaultGameMode = mode;
+        config.set(Key.GAMEMODE, mode.name());
+        config.save();
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GameModeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -13,13 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class GameModeCommand extends VanillaCommand {
-
-    private static final List<String> GAMEMODES = Arrays.asList("survival", "creative", "adventure", "spectator");
 
     public GameModeCommand() {
         super("gamemode", "Change the game mode of a player.", "/gamemode <mode> [player]", Collections.emptyList());
@@ -34,29 +32,7 @@ public class GameModeCommand extends VanillaCommand {
             return false;
         }
         String gm = args[0];
-        GameMode gamemode = null;
-        switch (gm.toLowerCase()) {
-            case "c":
-            case "1":
-            case "creative":
-                gamemode = GameMode.CREATIVE;
-                break;
-            case "s":
-            case "0":
-            case "survival":
-                gamemode = GameMode.SURVIVAL;
-                break;
-            case "a":
-            case "2":
-            case "adventure":
-                gamemode = GameMode.ADVENTURE;
-                break;
-            case "sp":
-            case "3":
-            case "spectator":
-                gamemode = GameMode.SPECTATOR;
-                break;
-        }
+        GameMode gamemode = GameModeUtils.build(gm);
         if (gamemode == null) {
             sender.sendMessage(ChatColor.RED + "'" + gm + "' is not a valid number");
             return false;
@@ -90,21 +66,7 @@ public class GameModeCommand extends VanillaCommand {
     }
 
     private void updateGameMode(CommandSender sender, Player who, GameMode gameMode) {
-        String gameModeName = "Unknown";
-        switch (gameMode) {
-            case CREATIVE:
-                gameModeName = "Creative";
-                break;
-            case SURVIVAL:
-                gameModeName = "Survival";
-                break;
-            case ADVENTURE:
-                gameModeName = "Adventure";
-                break;
-            case SPECTATOR:
-                gameModeName = "Spectator";
-                break;
-        }
+        String gameModeName = GameModeUtils.prettyPrint(gameMode);
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
             sender.sendMessage(who.getDisplayName() + "'s game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
@@ -115,7 +77,7 @@ public class GameModeCommand extends VanillaCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], GAMEMODES, new ArrayList(GAMEMODES.size()));
+            return (List) StringUtil.copyPartialMatches(args[0], GameModeUtils.GAMEMODE_NAMES, new ArrayList(GameModeUtils.GAMEMODE_NAMES.size()));
         }
         return super.tabComplete(sender, alias, args);
     }
