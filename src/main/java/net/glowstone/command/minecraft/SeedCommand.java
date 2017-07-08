@@ -21,7 +21,6 @@ public class SeedCommand extends VanillaCommand {
         final World world = CommandUtils.getWorld(sender);
 
         if (world == null) {
-            sender.sendMessage(ChatColor.RED + "Can not get the world");
             return false;
         } else {
             sender.sendMessage("Seed: " + world.getSeed());
