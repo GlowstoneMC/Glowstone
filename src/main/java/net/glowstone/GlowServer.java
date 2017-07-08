@@ -853,6 +853,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new SeedCommand());
         commandMap.register("minecraft", new XpCommand());
         commandMap.register("minecraft", new DefaultGameModeCommand());
+        commandMap.register("minecraft", new SetIdleTimeoutCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -1883,6 +1884,8 @@ public final class GlowServer implements Server {
     @Override
     public void setIdleTimeout(int timeout) {
         idleTimeout = timeout;
+        config.set(Key.PLAYER_IDLE_TIMEOUT, timeout);
+        config.save();
     }
 
     @Override
