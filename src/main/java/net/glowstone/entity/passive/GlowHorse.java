@@ -8,6 +8,7 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.inventory.HorseInventory;
@@ -48,6 +49,7 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     @Override
     public void setColor(Color color) {
         horseColor = color;
+        metadata.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
     }
 
     @Override
@@ -58,6 +60,7 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     @Override
     public void setStyle(Style style) {
         horseStyle = style;
+        metadata.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
     }
 
     @Override
@@ -144,5 +147,13 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_HORSE_AMBIENT;
+    }
+
+    @Override
+    public Ageable createBaby() {
+        GlowHorse baby = (GlowHorse) super.createBaby();
+        baby.setColor(getColor());
+        baby.setStyle(getStyle());
+        return baby;
     }
 }
