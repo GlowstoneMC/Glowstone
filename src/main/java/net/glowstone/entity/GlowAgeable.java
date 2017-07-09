@@ -6,6 +6,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowMetaSpawn;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -151,23 +152,25 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
-        ItemStack item = player.getItemInHand();
+        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            ItemStack item = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
-        // Spawn eggs are used to spawn babies
-        if (item != null && item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
-            GlowMetaSpawn meta = (GlowMetaSpawn) item.getItemMeta();
-            if (meta.hasSpawnedType() && meta.getSpawnedType() == this.getType()) {
-                this.createBaby();
+            // Spawn eggs are used to spawn babies
+            if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
+                GlowMetaSpawn meta = (GlowMetaSpawn) item.getItemMeta();
+                if (meta.hasSpawnedType() && meta.getSpawnedType() == this.getType()) {
+                    this.createBaby();
 
-                if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-                    // Consume the egg
-                    if (item.getAmount() > 1) {
-                        item.setAmount(item.getAmount() - 1);
-                    } else {
-                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
+                    if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                        // Consume the egg
+                        if (item.getAmount() > 1) {
+                            item.setAmount(item.getAmount() - 1);
+                        } else {
+                            player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                        }
                     }
+                    return true;
                 }
-                return true;
             }
         }
         return false;

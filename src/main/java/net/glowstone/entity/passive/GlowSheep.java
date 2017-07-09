@@ -4,6 +4,7 @@ import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
@@ -69,60 +70,62 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
+        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
 
-        if (!isAdult()) return false;
+            if (!isAdult()) return false;
+            ItemStack hand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
-        if (player.getGameMode().equals(GameMode.SPECTATOR)) return false;
-        if (player.getItemInHand() == null) return false;
-        switch (player.getItemInHand().getType()) {
-            case SHEARS:
-                if (isSheared()) return false;
+            if (player.getGameMode().equals(GameMode.SPECTATOR)) return false;
+            if (InventoryUtil.isEmpty(hand)) return false;
+            switch (hand.getType()) {
+                case SHEARS:
+                    if (isSheared()) return false;
 
-                if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-                    ItemStack shears = player.getItemInHand();
-
-                    if (shears.getDurability() < 238) {
-                        shears.setDurability((short) (shears.getDurability() + 1));
-                    } else {
-                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
+                    if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                        if (hand.getDurability() < 238) {
+                            hand.setDurability((short) (hand.getDurability() + 1));
+                        } else {
+                            player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                        }
                     }
+
+                    getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
+
+                    Random r = new Random();
+
+                    getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.WOOL, r.nextInt(3) + 1, getColor().getWoolData()));
+
+                    setSheared(true);
+                    return true;
+                case INK_SACK: {
+                    Dye dye = (Dye) hand.getData();
+                    DyeColor color = dye.getColor();
+
+                    SheepDyeWoolEvent event = new SheepDyeWoolEvent(this, color);
+                    if (event.isCancelled()) return false;
+
+                    color = event.getColor();
+
+                    if (color.equals(getColor())) {
+                        return false;
+                    }
+
+                    if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                        if (hand.getAmount() > 1) {
+                            hand.setAmount(hand.getAmount() - 1);
+                        } else {
+                            player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                        }
+                    }
+
+                    setColor(color);
+                    return true;
                 }
-
-                getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
-
-                Random r = new Random();
-
-                getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.WOOL, r.nextInt(3) + 1, getColor().getWoolData()));
-
-                setSheared(true);
-                return true;
-            case INK_SACK: {
-                Dye dye = (Dye) player.getItemInHand().getData();
-                DyeColor color = dye.getColor();
-
-                SheepDyeWoolEvent event = new SheepDyeWoolEvent(this, color);
-                if (event.isCancelled()) return false;
-
-                color = event.getColor();
-
-                if (color.equals(getColor())) {
+                default:
                     return false;
-                }
-
-                if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-                    if (player.getItemInHand().getAmount() > 1) {
-                        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
-                    } else {
-                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
-                    }
-                }
-
-                setColor(color);
-                return true;
             }
-            default:
-                return false;
         }
+        return false;
     }
 
     @Override

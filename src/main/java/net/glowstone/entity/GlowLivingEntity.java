@@ -685,6 +685,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 for (ItemStack item : items) {
                     world.dropItemNaturally(getLocation(), item);
                 }
+                player.setShoulderEntityRight(null);
+                player.setShoulderEntityLeft(null);
                 player.incrementStatistic(Statistic.DEATHS);
             } else {
                 EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());

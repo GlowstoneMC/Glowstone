@@ -19,6 +19,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -38,6 +39,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
         GlowLivingEntity target = possibleTarget instanceof GlowLivingEntity ? (GlowLivingEntity) possibleTarget : null;
 
 
+        EquipmentSlot hand = message.getHandSlot();
         if (message.getAction() == Action.ATTACK.ordinal()) {
             if (target == null) {
                 if (possibleTarget != null) {
@@ -47,15 +49,15 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 }
             } else if (!target.isDead() && target.canTakeDamage(DamageCause.ENTITY_ATTACK)) {
                 // Calculate damage amount
-                ItemStack hand = player.getItemInHand();
-                Material type = hand == null ? Material.AIR : hand.getType();
+                ItemStack itemInHand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(hand));
+                Material type = itemInHand.getType();
 
                 // todo: Actual critical hit check
                 float damage = AttackDamage.getMeleeDamage(type, false);
 
                 // Set entity on fire if the item has Fire Aspect
-                if (hand.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)) {
-                    target.setFireTicks(target.getFireTicks() + hand.getEnchantments().get(Enchantment.FIRE_ASPECT) * 80);
+                if (itemInHand.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)) {
+                    target.setFireTicks(target.getFireTicks() + itemInHand.getEnchantments().get(Enchantment.FIRE_ASPECT) * 80);
                 }
 
                 // Apply damage. Calls the EntityDamageByEntityEvent
@@ -68,14 +70,14 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
 
                 // Apply durability loss (if applicable)
                 short durabilityLoss = AttackDamage.getMeleeDurabilityLoss(type);
-                if (durabilityLoss > 0 && !InventoryUtil.isEmpty(hand) && player.getGameMode() != GameMode.CREATIVE) {
+                if (durabilityLoss > 0 && !InventoryUtil.isEmpty(itemInHand) && player.getGameMode() != GameMode.CREATIVE) {
                     // Yes, this actually subtracts
-                    hand.setDurability((short) (hand.getDurability() + durabilityLoss));
+                    itemInHand.setDurability((short) (itemInHand.getDurability() + durabilityLoss));
                 }
             }
         } else if (message.getAction() == Action.INTERACT_AT.ordinal()) {
             // used for adjusting specific portions of armor stands
-            PlayerInteractAtEntityEvent event = new PlayerInteractAtEntityEvent(player, possibleTarget, new Vector(message.getTargetX(), message.getTargetY(), message.getTargetZ()));
+            PlayerInteractAtEntityEvent event = new PlayerInteractAtEntityEvent(player, possibleTarget, new Vector(message.getTargetX(), message.getTargetY(), message.getTargetZ()), hand);
             EventFactory.callEvent(event);
 
             if (!event.isCancelled()) {
@@ -83,7 +85,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
             }
         } else if (message.getAction() == Action.INTERACT.ordinal()) {
             //Todo: Handle hand variable
-            PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget);
+            PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget, hand);
             EventFactory.callEvent(event);
 
             if (!event.isCancelled()) {

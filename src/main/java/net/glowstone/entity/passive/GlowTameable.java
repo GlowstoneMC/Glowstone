@@ -79,7 +79,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
             ownerUUId = null;
             return;
         }
-        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUId);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUID);
         if (player != null && player.hasPlayedBefore()) {
             ownerUUId = ownerUUID;
         }

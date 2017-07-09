@@ -1392,10 +1392,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (entity == null) {
             tag = getLeftShoulderTag();
             if (!tag.isEmpty()) {
-                EntityStorage.loadEntity(world, tag);
+                GlowEntity shoulderEntity = EntityStorage.loadEntity(world, tag);
+                shoulderEntity.setRawLocation(getLocation());
+                shoulderEntity.createSpawnMessage();
             }
+            setLeftShoulderTag(null);
         } else {
             tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
             setLeftShoulderTag(tag);
         }
     }
@@ -1416,8 +1420,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (entity == null) {
             tag = getRightShoulderTag();
             if (!tag.isEmpty()) {
-                EntityStorage.loadEntity(world, tag);
+                GlowEntity shoulderEntity = EntityStorage.loadEntity(world, tag);
+                shoulderEntity.setRawLocation(getLocation());
             }
+            setRightShoulderTag(null);
         } else {
             tag = new CompoundTag();
             EntityStorage.save((GlowEntity) entity, tag);

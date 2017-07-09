@@ -11,6 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -80,39 +81,43 @@ public class GlowParrot extends GlowTameable implements Parrot {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if (endOfLife != 0) {
-            return false;
-        }
-        boolean result = super.entityInteract(player, message);
-        if (result) {
-            return false;
-        }
-        if (player.getItemInHand().getType() == Material.COOKIE) {
-            damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
-            world.spawnParticle(Particle.SPELL, location, 1);
-        } else if (!isTamed() && player.getItemInHand().getType() == Material.SEEDS) {
-            if (ThreadLocalRandom.current().nextInt(3) == 0) {
-                setTamed(true);
-                setOwner(player);
+        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            if (endOfLife != 0) {
+                return false;
             }
-            world.playSound(getLocation(), Sound.ENTITY_PARROT_EAT, 1.0F, SoundUtil.randomReal(0.2F) + 1F);
-            player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
-            if (player.getItemInHand().getAmount() == 0) {
-                player.setItemInHand(InventoryUtil.createEmptyStack());
+            boolean result = super.entityInteract(player, message);
+            if (result) {
+                return false;
             }
-            return true;
-        }
-        // TODO: sitting only happens on crouch
-        if (isTamed() && getOwnerUUID() != null && getOwnerUUID().equals(player.getUniqueId())) {
-            if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag().isEmpty()) {
-                return super.entityInteract(player, message);
+            ItemStack hand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+            if (hand.getType() == Material.COOKIE) {
+                damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                world.spawnParticle(Particle.SPELL, location, 1);
+            } else if (!isTamed() && hand.getType() == Material.SEEDS) {
+                if (ThreadLocalRandom.current().nextInt(3) == 0) {
+                    setTamed(true);
+                    setOwner(player);
+                    world.spawnParticle(Particle.HEART, location, 1);
+                }
+                world.playSound(getLocation(), Sound.ENTITY_PARROT_EAT, 1.0F, SoundUtil.randomReal(0.2F) + 1F);
+                hand.setAmount(hand.getAmount() - 1);
+                if (hand.getAmount() == 0) {
+                    player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                }
+                return true;
             }
-            if (player.getLeftShoulderTag().isEmpty()) {
-                setSittingOn(player, LEFT);
-            } else {
-                setSittingOn(player, RIGHT);
+            // TODO: sitting only happens on crouch
+            if (isTamed() && getOwnerUUID() != null && getOwnerUUID().equals(player.getUniqueId())) {
+                if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag().isEmpty()) {
+                    return super.entityInteract(player, message);
+                }
+                if (player.getLeftShoulderTag().isEmpty()) {
+                    setSittingOn(player, LEFT);
+                } else {
+                    setSittingOn(player, RIGHT);
+                }
+                return true;
             }
-            return true;
         }
         return true;
     }
