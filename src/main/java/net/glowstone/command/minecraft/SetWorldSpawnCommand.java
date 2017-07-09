@@ -61,7 +61,7 @@ public class SetWorldSpawnCommand extends VanillaCommand {
         if (spawnLocation.getBlockY() < 0) {
             sender.sendMessage(ChatColor.RED + "The y coordinate (" + spawnLocation.getBlockY() + ") is too small, it must be at least 0.");
             return false;
-        } else if (!(spawnLocation.getBlockY() <= world.getMaxHeight())) {
+        } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
             sender.sendMessage(ChatColor.RED + "'" + spawnLocation.getBlockY() + "' is too high for the current world. Max value is '" + world.getMaxHeight() + "'.");
             return false;
         }
