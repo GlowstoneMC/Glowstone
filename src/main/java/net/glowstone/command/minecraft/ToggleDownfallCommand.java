@@ -23,13 +23,8 @@ public class ToggleDownfallCommand extends VanillaCommand {
         if (world == null) {
             return false;
         } else {
-            if (world.hasStorm()) {
-                world.setThundering(false);
-                world.setStorm(false);
-            } else {
-                world.setThundering(true);
-                world.setStorm(true);
-            }
+            world.setThundering(!world.hasStorm());
+            world.setStorm(!world.hasStorm());
         }
 
         return true;
