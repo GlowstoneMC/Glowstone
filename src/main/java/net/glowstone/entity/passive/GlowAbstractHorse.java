@@ -22,6 +22,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
 
     public GlowAbstractHorse(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
+        setSize(1.3964f, 1.6f);
     }
 
     @Override

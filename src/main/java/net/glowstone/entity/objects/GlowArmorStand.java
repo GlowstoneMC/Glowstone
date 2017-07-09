@@ -82,6 +82,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
         System.arraycopy(defaultPose, 0, pose, 0, 6);
         this.getEquipmentMonitor().resetChanges();
+        setSize(false);
     }
 
     @Override
@@ -530,6 +531,15 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public void setSmall(boolean small) {
         isSmall = small;
         metadata.setBit(MetadataIndex.ARMORSTAND_FLAGS, ArmorStandFlags.IS_SMALL, small);
+        setSize(small);
+    }
+
+    private void setSize(boolean small) {
+        if (small) {
+            setSize(0.25f, 0.9875f);
+        } else {
+            setSize(0.5f, 1.975f);
+        }
     }
 
     @Override

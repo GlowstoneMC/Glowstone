@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -134,7 +135,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Passenger
      */
-    private GlowEntity passenger;
+    private List<Entity> passengers = new ArrayList<>();
     protected boolean passengerChanged;
     /**
      * Whether gravity applies to the entity.
@@ -465,7 +466,6 @@ public abstract class GlowEntity implements Entity {
         metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
-        passengerChanged = false;
     }
 
     /**
@@ -581,6 +581,7 @@ public abstract class GlowEntity implements Entity {
         if (passengerChanged) {
             //this method will not call for this player, we don't need check SELF_ID
             result.add(new SetPassengerMessage(getEntityId(), getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
+            passengerChanged = false;
         }
 
         return result;
@@ -898,6 +899,9 @@ public abstract class GlowEntity implements Entity {
             setRawLocation(location.clone().add(velocity));
         }
 
+        // apply location changes to all passengers
+
+
         // apply friction and gravity
         if (location.getBlock().getType() == Material.WATER) {
             velocity.multiply(liquidDrag);
@@ -1040,7 +1044,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean leaveVehicle() {
-        return isInsideVehicle() && vehicle.setPassenger(null); // TODO: multiple passengers
+        return isInsideVehicle() && vehicle.removePassenger(this);
     }
 
     @Override
@@ -1105,73 +1109,92 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public Entity getPassenger() {
-        return passenger;
+        if (passengers.size() > 0) {
+            return passengers.get(0);
+        }
+        return null;
     }
 
     @Override
     public List<Entity> getPassengers() {
-        return Arrays.asList(new Entity[]{passenger}); // TODO: multiple passengers
+        return Collections.unmodifiableList(passengers);
     }
 
     @Override
     public boolean removePassenger(Entity passenger) {
-        return passenger.leaveVehicle();
+        Preconditions.checkArgument(passenger != this, "Entity cannot ride itself.");
+
+        if (passenger == null || !passengers.contains(passenger)) return false; // nothing changed
+
+        if (EventFactory.callEvent(new EntityDismountEvent(passenger, this)).isCancelled()) {
+            return false;
+        }
+
+        if (!(passenger instanceof GlowEntity)) {
+            return false;
+        }
+
+        GlowEntity glowPassenger = (GlowEntity) passenger;
+
+        passengerChanged = true;
+        glowPassenger.vehicle = null;
+
+        return passengers.remove(passenger);
     }
 
     @Override
     public boolean addPassenger(Entity passenger) {
-        return setPassenger(passenger); // TODO: multiple passengers
+        Preconditions.checkArgument(passenger != this, "Entity cannot ride itself.");
+
+        if (passenger == null || passengers.contains(passenger)) return false; // nothing changed
+
+        if (!(passenger instanceof GlowEntity)) {
+            return false;
+        }
+
+        GlowEntity glowPassenger = (GlowEntity) passenger;
+
+        if (glowPassenger.vehicle != null) {
+            glowPassenger.vehicle.removePassenger(passenger);
+        }
+
+        EntityMountEvent event = new EntityMountEvent(passenger, this);
+        EventFactory.callEvent(event);
+        if (event.isCancelled()) {
+            return false;
+        }
+
+        this.passengers.add(passenger);
+        glowPassenger.vehicle = this;
+        this.passengerChanged = true;
+
+        Location onTopOfVehicle = this.location.clone().add(0, this.getHeight(), 0);
+        glowPassenger.setRawLocation(onTopOfVehicle, false);
+
+        return true;
     }
 
     @Override
     public boolean setPassenger(Entity bPassenger) {
         Preconditions.checkArgument(bPassenger != this, "Entity cannot ride itself.");
 
-        if (passenger == bPassenger) return false; // nothing changed
-
-        if (bPassenger == null) {
-
-            EventFactory.callEvent(new EntityDismountEvent(passenger, this));
-
-            passengerChanged = true;
-            passenger.vehicle = null;
-            passenger = null;
-        } else {
-
-            if (!(bPassenger instanceof GlowEntity)) {
-                return false;
+        boolean result = false;
+        for (Entity passenger : Lists.newArrayList(passengers)) {
+            if (passenger != bPassenger) {
+                result = !removePassenger(passenger);
             }
-
-            GlowEntity passenger = (GlowEntity) bPassenger;
-
-            if (passenger.vehicle != null) {
-                EventFactory.callEvent(new EntityDismountEvent(passenger, passenger.vehicle));
-                passenger.vehicle.passenger = null;
-                passenger.vehicle = null;
-            }
-
-            EntityMountEvent event = new EntityMountEvent(passenger, this);
-            EventFactory.callEvent(event);
-            if (event.isCancelled()) {
-                return false;
-            }
-
-            if (this.passenger != null) {
-                EventFactory.callEvent(new EntityDismountEvent(this.passenger, this));
-                this.passengerChanged = true;
-                this.passenger.vehicle = null;
-            }
-
-            this.passenger = passenger;
-            this.passenger.vehicle = this;
-            this.passengerChanged = true;
         }
-        return true;
+
+        if (bPassenger != null && passengers.size() == 0) {
+            result = !addPassenger(bPassenger);
+        }
+
+        return !result;
     }
 
     @Override
     public boolean isEmpty() {
-        return getPassenger() == null;
+        return getPassengers().isEmpty();
     }
 
     @Override

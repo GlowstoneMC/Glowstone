@@ -1,10 +1,15 @@
 package net.glowstone.io.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import java.util.UUID;
@@ -52,7 +57,6 @@ public abstract class EntityStore<T extends GlowEntity> {
     // todo: the following tags
     // - bool "Invulnerable"
     // - int "PortalCooldown"
-    // - compound "Riding"
 
     /**
      * Load data into an existing entity of the appropriate type from the
@@ -98,6 +102,27 @@ public abstract class EntityStore<T extends GlowEntity> {
             UUID uuid = UUID.fromString(tag.getString("UUID"));
             entity.setUniqueId(uuid);
         }
+
+        if (tag.isList("Passengers", TagType.COMPOUND)) {
+            for (CompoundTag entityTag : tag.getCompoundList("Passengers")) {
+                entity.addPassenger(loadPassenger(entity, entityTag));
+            }
+        }
+    }
+
+    private Entity loadPassenger(T vehicle, CompoundTag compoundTag) {
+        Location location = NbtSerialization.listTagsToLocation(vehicle.getWorld(), compoundTag);
+        if (location != null) {
+            return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
+        }
+
+        // We need a location to spawn the entity.
+        // since there is no position in the entities nbt,
+        // just spawn the passenger at the vehicle.
+        // Later on, Entity.addPassenger will make sure of the teleportation
+        // to the right coordinates.
+        NbtSerialization.locationToListTags(vehicle.getLocation(), compoundTag);
+        return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
     }
 
     /**
@@ -129,5 +154,30 @@ public abstract class EntityStore<T extends GlowEntity> {
 
         // in case Vanilla or CraftBukkit expects non-living entities to have this tag
         tag.putInt("Air", 300);
+        savePassengers(entity, tag);
+    }
+
+    private void savePassengers(GlowEntity vehicle, CompoundTag tag) {
+        List<CompoundTag> passengers = new ArrayList<>();
+        for (Entity passenger : vehicle.getPassengers()) {
+            if (!(passenger instanceof GlowEntity)) {
+                continue;
+            }
+            GlowEntity glowEntity = (GlowEntity) passenger;
+            if (!glowEntity.shouldSave()) {
+                continue;
+            }
+            try {
+                CompoundTag compound = new CompoundTag();
+                EntityStorage.save(glowEntity, compound);
+                passengers.add(compound);
+                savePassengers(glowEntity, compound);
+            } catch (Exception e) {
+                GlowServer.logger.log(Level.WARNING, "Error saving " + passenger + " from vehicle " + vehicle, e);
+            }
+        }
+        if (!passengers.isEmpty()) {
+            tag.putCompoundList("Passengers", passengers);
+        }
     }
 }
