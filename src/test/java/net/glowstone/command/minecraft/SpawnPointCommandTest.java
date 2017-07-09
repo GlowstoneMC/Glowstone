@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -161,6 +163,16 @@ public class SpawnPointCommandTest {
         assertThat(commandResult, is(false));
         Mockito.verify(opSender).sendMessage(captor.capture());
         assertThat(captor.getValue(), is(ChatColor.RED + "'10000.5' is too high for the current world. Max value is '50'."));
+    }
+
+    @Test
+    public void testExecuteFailsWithYCoordinatesTooSmall() {
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        final boolean commandResult = command.execute(opSender, "label", new String[]{"player1", "2", "-10000", "4"});
+
+        assertThat(commandResult, is(false));
+        Mockito.verify(opSender).sendMessage(captor.capture());
+        assertThat(captor.getValue(), is(ChatColor.RED + "The y coordinate (-10000.5) is too small, it must be at least 0."));
     }
 
     @Test

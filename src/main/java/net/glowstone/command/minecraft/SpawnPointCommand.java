@@ -90,7 +90,10 @@ public class SpawnPointCommand extends VanillaCommand {
 
             spawnLocation = CommandUtils.getLocation(currentLocation, args[1], args[2], args[3]);
 
-            if (!(spawnLocation.getY() >= 0 && spawnLocation.getY() <= world.getMaxHeight())) {
+            if (spawnLocation.getY() < 0) {
+                sender.sendMessage(ChatColor.RED + "The y coordinate (" + spawnLocation.getY() + ") is too small, it must be at least 0.");
+                return false;
+            } else if (!(spawnLocation.getY() <= world.getMaxHeight())) {
                 sender.sendMessage(ChatColor.RED + "'" + spawnLocation.getY() + "' is too high for the current world. Max value is '" + world.getMaxHeight() + "'.");
                 return false;
             }
