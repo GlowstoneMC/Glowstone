@@ -35,14 +35,14 @@ public class SpawnPointCommand extends VanillaCommand {
 
         final String playerPattern = args.length >= 1 ? args[0] : null;
         List<Player> targets;
-        Location spawnLocation = null;
+        Location spawnLocation;
 
         // Manage player(s)
         if (playerPattern == null) { // Default player, set to current one (if a player)
             if (sender instanceof Player) {
                 targets = ImmutableList.of((Player) sender);
             } else {
-                sender.sendMessage(ChatColor.RED + "Current sender is not a player.");
+                sender.sendMessage(ChatColor.RED + "You must specify which player you wish to perform this action on.");
                 return false;
             }
         } else if (playerPattern.startsWith("@") && playerPattern.length() > 1 && CommandUtils.isPhysical(sender)) { // Manage selectors

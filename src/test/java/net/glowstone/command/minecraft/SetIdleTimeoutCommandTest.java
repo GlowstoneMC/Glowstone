@@ -76,7 +76,7 @@ public class SetIdleTimeoutCommandTest {
 
         assertThat(commandResult, is(false));
         Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Timeout has to be positive"));
+        assertThat(captor.getValue(), is(ChatColor.RED + "The number you have entered (-42) is too small, it must be at least 1"));
     }
 
     @Test
@@ -86,19 +86,18 @@ public class SetIdleTimeoutCommandTest {
 
         assertThat(commandResult, is(false));
         Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Timeout has to be positive"));
+        assertThat(captor.getValue(), is(ChatColor.RED + "The number you have entered (0) is too small, it must be at least 1"));
     }
 
     @Test
     public void testExecuteSucceeds() {
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         final boolean commandResult = command.execute(opSender, "label", new String[]{"50"});
-        PowerMockito.verifyStatic();
-        Bukkit.broadcastMessage(captor.capture());
 
         assertThat(commandResult, is(true));
+        Mockito.verify(opSender).sendMessage(captor.capture());
         Mockito.verify(Bukkit.getServer()).setIdleTimeout(50);
-        assertThat(captor.getValue(), is("The idle timeout has been set to '50' minutes."));
+        assertThat(captor.getValue(), is("Successfully set the idle timeout to 50 minutes."));
     }
 
     @Test

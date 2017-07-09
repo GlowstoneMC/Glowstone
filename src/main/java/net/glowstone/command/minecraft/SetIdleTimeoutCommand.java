@@ -35,12 +35,12 @@ public class SetIdleTimeoutCommand extends VanillaCommand {
         }
 
         if (timeout <= 0) {
-            sender.sendMessage(ChatColor.RED + "Timeout has to be positive");
+            sender.sendMessage(ChatColor.RED + "The number you have entered (" + timeout + ") is too small, it must be at least 1");
             return false;
         }
 
         Bukkit.getServer().setIdleTimeout(timeout);
-        Bukkit.broadcastMessage("The idle timeout has been set to '" + timeout + "' minutes.");
+        sender.sendMessage("Successfully set the idle timeout to " + timeout + " minutes.");
 
         return true;
     }

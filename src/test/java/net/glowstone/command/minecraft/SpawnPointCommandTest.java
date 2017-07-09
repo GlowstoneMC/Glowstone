@@ -120,7 +120,7 @@ public class SpawnPointCommandTest {
 
         assertThat(commandResult, is(false));
         Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Current sender is not a player."));
+        assertThat(captor.getValue(), is(ChatColor.RED + "You must specify which player you wish to perform this action on."));
     }
 
     @Test
