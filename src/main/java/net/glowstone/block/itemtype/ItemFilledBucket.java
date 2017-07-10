@@ -9,6 +9,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -26,7 +27,7 @@ public class ItemFilledBucket extends ItemType {
     }
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock target = against.getRelative(face);
         BlockType againstBlockType = ItemTable.instance().getBlock(against.getType());
 

@@ -84,6 +84,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                         if (hand.getDurability() < 238) {
                             hand.setDurability((short) (hand.getDurability() + 1));
+                            player.getInventory().setItem(message.getHandSlot(), hand);
                         } else {
                             player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
                         }
@@ -113,6 +114,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                         if (hand.getAmount() > 1) {
                             hand.setAmount(hand.getAmount() - 1);
+                            player.getInventory().setItem(message.getHandSlot(), hand);
                         } else {
                             player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
                         }

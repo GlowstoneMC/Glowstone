@@ -47,7 +47,6 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
-        //TODO: Hand handling instead of .getHeldItem()
         GlowPlayer player = session.getPlayer();
         if (player == null)
             return;
@@ -100,7 +99,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // Get values from the message
         Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(), message.getCursorZ());
         BlockFace face = convertFace(message.getDirection());
-        ItemStack holding = player.getItemInHand();
+        ItemStack holding = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
         boolean rightClickedAir = false;
         // check that a block-click wasn't against air
@@ -138,7 +137,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
             if (!rightClickedAir && holding.getType() != Material.AIR && !type.canOnlyUseSelf()) {
-                type.rightClickBlock(player, clicked, face, holding, clickedLoc);
+                type.rightClickBlock(player, clicked, face, holding, clickedLoc, message.getHandSlot());
             }
         }
 
@@ -156,9 +155,9 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
                 holding.setDurability((short) 0);
             }
             if (holding.getAmount() <= 0) {
-                holding = null;
+                holding = InventoryUtil.createEmptyStack();
             }
         }
-        player.setItemInHand(holding);
+        player.getInventory().setItem(message.getHandSlot(), holding);
     }
 }

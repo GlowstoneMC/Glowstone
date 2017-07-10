@@ -6,6 +6,7 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -148,9 +149,9 @@ public class ItemType {
      * @param holding    The ItemStack the player was holding
      * @param clickedLoc The coordinates at which the click occurred
      */
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (placeAs != null) {
-            placeAs.rightClickBlock(player, target, face, holding, clickedLoc);
+            placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
         }
     }
 

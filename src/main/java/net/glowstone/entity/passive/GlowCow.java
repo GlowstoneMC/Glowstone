@@ -33,7 +33,8 @@ public class GlowCow extends GlowAnimal implements Cow {
             if (!hand.getType().equals(Material.BUCKET)) return false;
 
             if (hand.getAmount() > 1) {
-                hand.setAmount(player.getItemInHand().getAmount() - 1);
+                hand.setAmount(hand.getAmount() - 1);
+                player.getInventory().setItem(message.getHandSlot(), hand);
             } else {
                 player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
             }

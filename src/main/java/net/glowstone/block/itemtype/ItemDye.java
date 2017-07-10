@@ -10,6 +10,7 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
 import org.bukkit.material.MaterialData;
@@ -18,7 +19,7 @@ import org.bukkit.util.Vector;
 public class ItemDye extends ItemType {
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         MaterialData data = holding.getData();
         if (data instanceof Dye) {
             Dye dye = (Dye) data;
@@ -42,7 +43,7 @@ public class ItemDye extends ItemType {
                     }
                 }
             } else if (dye.getColor() == DyeColor.BROWN && target.getType() == Material.LOG) {
-                ItemTable.instance().getBlock(Material.COCOA).rightClickBlock(player, target, face, holding, clickedLoc);
+                ItemTable.instance().getBlock(Material.COCOA).rightClickBlock(player, target, face, holding, clickedLoc, hand);
             }
         }
     }

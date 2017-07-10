@@ -8,6 +8,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Rails;
 import org.bukkit.util.Vector;
@@ -21,7 +22,7 @@ public class ItemMinecart extends ItemType {
     }
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target == null || target.getType() != Material.RAILS) {
             return;
         }
@@ -36,7 +37,7 @@ public class ItemMinecart extends ItemType {
         if (player.getGameMode() != GameMode.CREATIVE) {
             player.getInventory().remove(holding);
         }
-        super.rightClickBlock(player, target, face, holding, clickedLoc);
+        super.rightClickBlock(player, target, face, holding, clickedLoc, hand);
     }
 
     private float getYaw(BlockFace face) {

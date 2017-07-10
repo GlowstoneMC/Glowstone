@@ -25,6 +25,7 @@ public class ToggleDownfallCommand extends VanillaCommand {
         } else {
             world.setThundering(!world.hasStorm());
             world.setStorm(!world.hasStorm());
+            sender.sendMessage("Toggled downfall");
         }
 
         return true;

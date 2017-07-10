@@ -9,13 +9,14 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class ItemFlintAndSteel extends ItemTool {
 
     @Override
-    public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target.getType() == Material.OBSIDIAN) {
             fireNetherPortal(target, face);
             return true;
@@ -25,7 +26,7 @@ public class ItemFlintAndSteel extends ItemTool {
             return true;
         }
         if (target.isFlammable() || target.getType().isOccluding()) {
-            setBlockOnFire(player, target, face, holding, clickedLoc);
+            setBlockOnFire(player, target, face, holding, clickedLoc, hand);
             return true;
         }
         return false;
@@ -47,7 +48,7 @@ public class ItemFlintAndSteel extends ItemTool {
         BlockTNT.igniteBlock(tnt, false);
     }
 
-    private boolean setBlockOnFire(GlowPlayer player, GlowBlock clicked, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    private boolean setBlockOnFire(GlowPlayer player, GlowBlock clicked, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock fireBlock = clicked.getRelative(face);
         if (fireBlock.getType() != Material.AIR) {
             return true;
@@ -64,7 +65,7 @@ public class ItemFlintAndSteel extends ItemTool {
         }
 
         // clone holding to avoid decreasing of the item's amount
-        ItemTable.instance().getBlock(Material.FIRE).rightClickBlock(player, clicked, face, holding.clone(), clickedLoc);
+        ItemTable.instance().getBlock(Material.FIRE).rightClickBlock(player, clicked, face, holding.clone(), clickedLoc, hand);
 
         return true;
     }

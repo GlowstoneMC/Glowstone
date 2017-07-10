@@ -42,6 +42,7 @@ public class GlowPig extends GlowAnimal implements Pig {
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         if (hand.getAmount() > 1) {
                             hand.setAmount(hand.getAmount() - 1);
+                            player.getInventory().setItem(message.getHandSlot(), hand);
                         } else {
                             player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
                         }
