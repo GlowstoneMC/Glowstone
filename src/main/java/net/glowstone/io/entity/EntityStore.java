@@ -105,24 +105,34 @@ public abstract class EntityStore<T extends GlowEntity> {
 
         if (tag.isList("Passengers", TagType.COMPOUND)) {
             for (CompoundTag entityTag : tag.getCompoundList("Passengers")) {
-                entity.addPassenger(loadPassenger(entity, entityTag));
+                Entity passenger = loadPassenger(entity, entityTag);
+                if (passenger != null) {
+                    entity.addPassenger(passenger);
+                }
             }
         }
     }
 
     private Entity loadPassenger(T vehicle, CompoundTag compoundTag) {
         Location location = NbtSerialization.listTagsToLocation(vehicle.getWorld(), compoundTag);
-        if (location != null) {
-            return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
+
+        if (location == null) {
+            // We need a location to spawn the entity.
+            // since there is no position in the entities nbt,
+            // just spawn the passenger at the vehicle.
+            // Later on, Entity.addPassenger will make sure of the teleportation
+            // to the right coordinates.
+            NbtSerialization.locationToListTags(vehicle.getLocation(), compoundTag);
         }
 
-        // We need a location to spawn the entity.
-        // since there is no position in the entities nbt,
-        // just spawn the passenger at the vehicle.
-        // Later on, Entity.addPassenger will make sure of the teleportation
-        // to the right coordinates.
-        NbtSerialization.locationToListTags(vehicle.getLocation(), compoundTag);
-        return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
+        try {
+            // note that creating the entity is sufficient to add it to the world
+            return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
+        } catch (Exception e) {
+            String id = compoundTag.isString("id") ? compoundTag.getString("id") : "<missing>";
+            GlowServer.logger.warning("Skipping Entity with id " + id);
+        }
+        return null;
     }
 
     /**
