@@ -18,6 +18,7 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class, GlowWorld.class})
@@ -42,37 +43,25 @@ public class ToggleDownfallCommandTest {
 
     @Test
     public void testExecuteFailsWithoutPermission() {
-        final boolean commandResult = command.execute(sender, "label", new String[0]);
-
-        assertThat(commandResult, is(false));
+        assertThat(command.execute(sender, "label", new String[0]), is(false));
     }
 
     @Test
     public void testExecuteSetRain() {
         PowerMockito.when(world.hasStorm()).thenReturn(true);
-        final ArgumentCaptor<Boolean> stormCaptor = ArgumentCaptor.forClass(Boolean.class);
-        final ArgumentCaptor<Boolean> thunderingCaptor = ArgumentCaptor.forClass(Boolean.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[0]);
 
-        assertThat(commandResult, is(true));
-        Mockito.verify(world).setStorm(stormCaptor.capture());
-        Mockito.verify(world).setThundering(thunderingCaptor.capture());
-        assertThat(stormCaptor.getValue(), is(false));
-        assertThat(thunderingCaptor.getValue(), is(false));
+        assertThat(command.execute(opSender, "label", new String[0]), is(true));
+        Mockito.verify(world).setStorm(eq(false));
+        Mockito.verify(world).setThundering(eq(false));
     }
 
     @Test
     public void testExecuteClearWeather() {
         PowerMockito.when(world.hasStorm()).thenReturn(false);
-        final ArgumentCaptor<Boolean> stormCaptor = ArgumentCaptor.forClass(Boolean.class);
-        final ArgumentCaptor<Boolean> thunderingCaptor = ArgumentCaptor.forClass(Boolean.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[0]);
 
-        assertThat(commandResult, is(true));
-        Mockito.verify(world).setStorm(stormCaptor.capture());
-        Mockito.verify(world).setThundering(thunderingCaptor.capture());
-        assertThat(stormCaptor.getValue(), is(true));
-        assertThat(thunderingCaptor.getValue(), is(true));
+        assertThat(command.execute(opSender, "label", new String[0]), is(true));
+        Mockito.verify(world).setStorm(eq(true));
+        Mockito.verify(world).setThundering(eq(true));
     }
 
     @Test
