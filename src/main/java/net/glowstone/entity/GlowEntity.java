@@ -1169,7 +1169,7 @@ public abstract class GlowEntity implements Entity {
         this.passengerChanged = true;
 
         Location onTopOfVehicle = this.location.clone().add(0, this.getHeight(), 0);
-        glowPassenger.setRawLocation(onTopOfVehicle, false);
+        glowPassenger.teleport(onTopOfVehicle);
 
         return true;
     }
