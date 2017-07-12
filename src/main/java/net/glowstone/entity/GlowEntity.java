@@ -999,6 +999,7 @@ public abstract class GlowEntity implements Entity {
         boundingBox = null;
         world.getEntityManager().unregister(this);
         server.getEntityIdManager().deallocate(this);
+        this.setPassenger(null);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1122,7 +1123,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean removePassenger(Entity passenger) {
-        Preconditions.checkArgument(passenger != this, "Entity cannot ride itself.");
+        Preconditions.checkArgument(!this.equals(passenger), "Entity cannot ride itself.");
 
         if (passenger == null || !passengers.contains(passenger)) return false; // nothing changed
 
@@ -1139,12 +1140,14 @@ public abstract class GlowEntity implements Entity {
         passengerChanged = true;
         glowPassenger.vehicle = null;
 
+        glowPassenger.teleport(getDismountLocation());
+
         return passengers.remove(passenger);
     }
 
     @Override
     public boolean addPassenger(Entity passenger) {
-        Preconditions.checkArgument(passenger != this, "Entity cannot ride itself.");
+        Preconditions.checkArgument(!this.equals(passenger), "Entity cannot ride itself.");
 
         if (passenger == null || passengers.contains(passenger)) return false; // nothing changed
 
@@ -1164,14 +1167,12 @@ public abstract class GlowEntity implements Entity {
             return false;
         }
 
-        this.passengers.add(passenger);
+        passengerChanged = true;
         glowPassenger.vehicle = this;
-        this.passengerChanged = true;
 
-        Location onTopOfVehicle = this.location.clone().add(0, this.getHeight(), 0);
-        glowPassenger.teleport(onTopOfVehicle);
+        glowPassenger.teleport(getMountLocation());
 
-        return true;
+        return this.passengers.add(passenger);
     }
 
     @Override
@@ -1190,6 +1191,14 @@ public abstract class GlowEntity implements Entity {
         }
 
         return !result;
+    }
+
+    protected Location getMountLocation() {
+        return this.location.clone().add(0, this.getHeight(), 0);
+    }
+
+    protected Location getDismountLocation() {
+        return this.location;
     }
 
     @Override
