@@ -899,9 +899,6 @@ public abstract class GlowEntity implements Entity {
             setRawLocation(location.clone().add(velocity));
         }
 
-        // apply location changes to all passengers
-
-
         // apply friction and gravity
         if (location.getBlock().getType() == Material.WATER) {
             velocity.multiply(liquidDrag);
@@ -1177,11 +1174,11 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean setPassenger(Entity bPassenger) {
-        Preconditions.checkArgument(bPassenger != this, "Entity cannot ride itself.");
+        Preconditions.checkArgument(!this.equals(bPassenger), "Entity cannot ride itself.");
 
         boolean result = false;
         for (Entity passenger : Lists.newArrayList(passengers)) {
-            if (passenger != bPassenger) {
+            if (!Objects.equals(passenger, bPassenger)) {
                 result = !removePassenger(passenger);
             }
         }

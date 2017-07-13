@@ -130,7 +130,11 @@ public abstract class EntityStore<T extends GlowEntity> {
             return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
         } catch (Exception e) {
             String id = compoundTag.isString("id") ? compoundTag.getString("id") : "<missing>";
-            GlowServer.logger.warning("Skipping Entity with id " + id);
+            if (e.getMessage() != null && e.getMessage().startsWith("Unknown entity type to load:")) {
+                GlowServer.logger.warning("Skipping Entity with id " + id);
+            } else {
+                GlowServer.logger.log(Level.WARNING, "Error loading entity "+id, e);
+            }
         }
         return null;
     }
