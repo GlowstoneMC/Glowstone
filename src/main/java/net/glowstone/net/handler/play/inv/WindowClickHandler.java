@@ -397,7 +397,15 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
         }
 
         if (handled && top == inv && top instanceof GlowCraftingInventory && top.getSlotType(invSlot) == SlotType.RESULT) {
-            ((GlowCraftingInventory) top).craft();
+            final GlowCraftingInventory glowCraftingInventory = (GlowCraftingInventory) top;
+            glowCraftingInventory.craft();
+            // Refresh the result slot with the next item (if any)
+            Recipe nextItem = glowCraftingInventory.getRecipe();
+
+            if (nextItem != null) {
+                glowCraftingInventory.setResult(nextItem.getResult());
+                player.sendItemChange(viewSlot, nextItem.getResult());
+            }
         }
 
         if (!handled) {
