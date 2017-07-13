@@ -67,16 +67,15 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             // Place the items in the player's inventory (right to left)
             player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
 
-            // Craft the items, removing the ingredients from the crafting matrix
-            for (int i = 0; i < recipeAmount; i++) {
-                craft();
-            }
+            // Avoid calling craft because we already know the player can craft 'recipeAmount' of this item
+            CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+            // Removing all the items at once will avoid multiple useless calls to craft (and all of its sub methods like getRecipe)
+            cm.removeItems(getMatrix(), this, recipeAmount);
         } else {
             // Clicked in the crafting grid, no special handling required (just place them left to right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
             view.setItem(clickedSlot, clickedItem);
         }
-
     }
 
     @Override

@@ -93,11 +93,24 @@ public final class CraftingManager implements Iterable<Recipe> {
      * @param inv   The inventory to remove the items from.
      */
     public void removeItems(ItemStack[] items, GlowCraftingInventory inv) {
+        this.removeItems(items, inv, 1);
+    }
+
+    /**
+     * Remove a specific amount of layers from the crafting matrix and recipe result.
+     *
+     * @param items The items to remove the ingredients from.
+     * @param inv   The inventory to remove the items from.
+     * @param amount The amount of items you want to remove.
+     */
+    public void removeItems(final ItemStack[] items, final GlowCraftingInventory inv, final int amount) {
+        if (amount < 0) throw new IllegalArgumentException("Can not remove negative amount of layers.");
+
         for (int i = 0; i < items.length; i++) {
             if (!InventoryUtil.isEmpty(items[i])) {
-                int amount = items[i].getAmount();
-                if (amount > 1) {
-                    items[i].setAmount(amount - 1);
+                int itemAmount = items[i].getAmount();
+                if (itemAmount > amount) {
+                    items[i].setAmount(itemAmount - amount);
                 } else {
                     inv.setItem(i + 1, InventoryUtil.createEmptyStack());
                 }
@@ -115,7 +128,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     public static int getLayers(ItemStack... items) {
         int layers = 0;
         for (ItemStack item : items) {
-            if (item != null && (item.getAmount() < layers || layers == 0)) {
+            if (item != null && item.getAmount() != 0 && (item.getAmount() < layers || layers == 0)) {
                 layers = item.getAmount();
             }
         }
