@@ -135,7 +135,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Passenger
      */
-    private List<Entity> passengers = new ArrayList<>();
+    private final List<Entity> passengers = new ArrayList<>();
     protected boolean passengerChanged;
     /**
      * Whether gravity applies to the entity.
