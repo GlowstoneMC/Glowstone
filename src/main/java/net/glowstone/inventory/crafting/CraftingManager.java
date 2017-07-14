@@ -111,6 +111,7 @@ public final class CraftingManager implements Iterable<Recipe> {
                 int itemAmount = items[i].getAmount();
                 if (itemAmount > amount) {
                     items[i].setAmount(itemAmount - amount);
+                    inv.updateResultSlot();
                 } else {
                     inv.setItem(i + 1, InventoryUtil.createEmptyStack());
                 }

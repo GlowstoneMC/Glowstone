@@ -402,13 +402,8 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             // If we are crafting (but not using shift click because no more items can be crafted for the given pattern. If a new item can be crafted with another pattern, a new click is required).
             final GlowCraftingInventory glowCraftingInventory = (GlowCraftingInventory) top;
             glowCraftingInventory.craft();
-            // Refresh the result slot with the next item (if any)
-            Recipe nextItem = glowCraftingInventory.getRecipe();
-
-            if (nextItem != null) {
-                glowCraftingInventory.setResult(nextItem.getResult());
-                player.sendItemChange(viewSlot, nextItem.getResult());
-            }
+            // Notify the player the result slot changed
+            player.sendItemChange(viewSlot, glowCraftingInventory.getResult());
         }
 
         if (!handled) {
