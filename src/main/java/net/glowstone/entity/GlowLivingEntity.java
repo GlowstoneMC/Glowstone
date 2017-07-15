@@ -12,6 +12,7 @@ import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.EquipmentMonitor;
+import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -359,8 +360,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public List<Message> createUpdateMessage() {
-        List<Message> messages = super.createUpdateMessage();
+    public List<Message> createUpdateMessage(GlowSession session) {
+        List<Message> messages = super.createUpdateMessage(session);
 
         messages.addAll(equipmentMonitor.getChanges().stream().map(change -> new EntityEquipmentMessage(id, change.slot, change.item)).collect(Collectors.toList()));
         if (headRotated) {

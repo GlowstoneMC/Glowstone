@@ -663,7 +663,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 destroyIds.add(entity.getEntityId());
                 it.remove();
             } else {
-                entity.createUpdateMessage().forEach(session::send);
+                entity.createUpdateMessage(session).forEach(session::send);
             }
         }
         if (!destroyIds.isEmpty()) {
