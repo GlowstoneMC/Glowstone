@@ -29,7 +29,7 @@ public class GlowBoat extends GlowEntity implements Boat {
 
     public GlowBoat(Location location) {
         super(location);
-        setSize(1.375f, 0.6f);
+        setSize(1.375f, 0.5625f);
         setWoodType(TreeSpecies.GENERIC);
     }
 
