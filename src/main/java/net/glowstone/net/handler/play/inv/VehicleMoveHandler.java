@@ -1,7 +1,6 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.network.MessageHandler;
-import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
@@ -16,7 +15,6 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
@@ -65,25 +63,12 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
 
         // call move event if movement actually occurred and there are handlers registered
         if (!oldLocation.equals(newLocation) && VehicleMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            VehicleMoveEvent event = EventFactory.callEvent(new VehicleMoveEvent((Vehicle) vehicle, oldLocation, newLocation));
-
-            if (!event.getTo().equals(newLocation)) {
-                vehicle.teleport(event.getTo(), TeleportCause.PLUGIN);
-                player.teleport(vehicle.getMountLocation());
-                return;
-            }
-
-            if (!Objects.equals(vehicle.getLocation(), oldLocation)) {
-                // plugin changed location on move event
-                return;
-            }
+            EventFactory.callEvent(new VehicleMoveEvent((Vehicle) vehicle, oldLocation, newLocation.clone()));
         }
 
-        // move event was not fired or did nothing, simply update location
+        // simply update location
         vehicle.setRawLocation(newLocation);
         player.setRawLocation(vehicle.getMountLocation());
-
-        // do stuff with onGround if we need to
 
         // track movement stats
         Vector delta = newLocation.clone().subtract(oldLocation).toVector();
