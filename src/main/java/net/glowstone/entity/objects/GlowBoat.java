@@ -14,6 +14,7 @@ import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.TreeSpecies;
@@ -21,6 +22,7 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class GlowBoat extends GlowEntity implements Boat {
 
@@ -95,12 +97,40 @@ public class GlowBoat extends GlowEntity implements Boat {
         setDamage(getDamage() + (float) damageEvent.getDamage());
         setHitTime(9);
 
-        if (getDamage() > 40.0 || player.getGameMode() == GameMode.CREATIVE) {
+        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
+        if (getDamage() > 40.0 || isCreative) {
             if (EventFactory.callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
                 return;
             }
             remove();
+            if (!isCreative) {
+                world.dropItem(location, getItem());
+            }
         }
+    }
+
+    private ItemStack getItem() {
+        Material type = Material.BOAT;
+        switch (woodType) {
+            case REDWOOD:
+                type = Material.BOAT_SPRUCE;
+                break;
+            case BIRCH:
+                type = Material.BOAT_BIRCH;
+                break;
+            case JUNGLE:
+                type = Material.BOAT_JUNGLE;
+                break;
+            case ACACIA:
+                type = Material.BOAT_ACACIA;
+                break;
+            case DARK_OAK:
+                type = Material.BOAT_DARK_OAK;
+                break;
+            default:
+                type = Material.BOAT;
+        }
+        return new ItemStack(type);
     }
 
     private void setDamage(float damage) {
