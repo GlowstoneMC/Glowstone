@@ -1,5 +1,10 @@
 package net.glowstone.generator;
 
+import com.jogamp.opencl.CLBuffer;
+import com.jogamp.opencl.CLKernel;
+import com.jogamp.opencl.CLMemory;
+import com.jogamp.opencl.CLProgram;
+import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.ground.*;
@@ -7,14 +12,17 @@ import net.glowstone.generator.ground.MesaGroundGenerator.MesaType;
 import net.glowstone.generator.populators.OverworldPopulator;
 import net.glowstone.generator.populators.StructurePopulator;
 import net.glowstone.generator.populators.overworld.SnowPopulator;
+import net.glowstone.util.OpenCL;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.OctaveGenerator;
 
+import java.nio.DoubleBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -138,7 +146,29 @@ public class OverworldGenerator extends GlowChunkGenerator {
         int cx = chunkX << 4;
         int cz = chunkZ << 4;
 
-        double[] surfaceNoise = ((SimplexOctaveGenerator) getWorldOctaves(world).get("surface")).fBm(cx, cz, 0.5D, 0.5D);
+        double[] surfaceNoise;
+        CLBuffer<DoubleBuffer> rands = null;
+        if (((GlowServer) Bukkit.getServer()).doesUseGPGPU()) {
+            CLProgram program = OpenCL.getProgram("net/glowstone/Rands.cl");
+            rands = OpenCL.getContext().createDoubleBuffer(256, CLMemory.Mem.WRITE_ONLY);
+
+            CLKernel genRands = OpenCL.getKernel(program, "Rands");
+            genRands.putArg(random.nextDouble())
+                    .putArg(random.nextDouble())
+                    .putArg(rands)
+                    .putArg(256);
+
+            OpenCL.getQueue().put1DRangeKernel(genRands, 0, OpenCL.getGlobalSize(256), OpenCL.getLocalSize())
+                             .putReadBuffer(rands, true);
+            surfaceNoise = new double[256];
+            int i = 256;
+            while (i-- > 0) {
+                surfaceNoise[i] = rands.getBuffer().get();
+            }
+            genRands.rewind();
+        } else {
+            surfaceNoise = ((SimplexOctaveGenerator) getWorldOctaves(world).get("surface")).fBm(cx, cz, 0.5D, 0.5D);
+        }
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 if (GROUND_MAP.containsKey(biomes.getBiome(x, z))) {
@@ -147,6 +177,9 @@ public class OverworldGenerator extends GlowChunkGenerator {
                     groundGen.generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | z << 4]);
                 }
             }
+        }
+        if (rands != null) {
+            rands.release();
         }
         return chunkData;
     }
