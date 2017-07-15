@@ -581,11 +581,13 @@ public abstract class GlowEntity implements Entity {
         }
 
         if (passengerChanged) {
-            //this method will not call for this player, we don't need check SELF_ID
+            // A player can be a passenger of any arbitrary entity, e.g. a boat
+            // In case the current session belongs to this player passenger
+            // We need to send the self_id
             List<Integer> passengerIds = new ArrayList<>();
             getPassengers().forEach(e -> {
-                if (e == session.getPlayer()) {
-                    passengerIds.add(0); //TODO: Replace with SELF_ID constant
+                if (session.getPlayer().equals(e)) {
+                    passengerIds.add(GlowPlayer.SELF_ID);
                 } else {
                     passengerIds.add(e.getEntityId());
                 }

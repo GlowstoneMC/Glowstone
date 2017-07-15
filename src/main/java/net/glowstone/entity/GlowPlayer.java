@@ -106,7 +106,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * A static entity id to use when telling the client about itself.
      */
-    private static final int SELF_ID = 0;
+    public static final int SELF_ID = 0;
 
     /**
      * This player's session.
