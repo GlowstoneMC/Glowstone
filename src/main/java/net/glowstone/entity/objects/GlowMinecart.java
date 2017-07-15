@@ -28,6 +28,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     public GlowMinecart(Location location, MinecartType type) {
         super(location);
+        setSize(0.98f, 0.7f);
         this.type = type;
     }
 

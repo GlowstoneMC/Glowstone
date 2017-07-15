@@ -218,6 +218,10 @@ public final class AnvilChunkIoService implements ChunkIoService {
             if (!entity.shouldSave()) {
                 continue;
             }
+            // passengers will be saved as part of the vehicle
+            if (entity.isInsideVehicle()) {
+                continue;
+            }
             try {
                 CompoundTag tag = new CompoundTag();
                 EntityStorage.save(entity, tag);
