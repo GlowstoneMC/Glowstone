@@ -22,10 +22,11 @@ import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.OctaveGenerator;
 
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.glowstone.GlowServer.getWorldConfig;
 import static net.glowstone.util.config.WorldConfig.Key.*;
@@ -147,27 +148,42 @@ public class OverworldGenerator extends GlowChunkGenerator {
         int cz = chunkZ << 4;
 
         double[] surfaceNoise;
-        CLBuffer<DoubleBuffer> rands = null;
+        SimplexOctaveGenerator octaveGenerator = ((SimplexOctaveGenerator) getWorldOctaves(world).get("surface"));
         if (((GlowServer) Bukkit.getServer()).doesUseGPGPU()) {
-            CLProgram program = OpenCL.getProgram("net/glowstone/Rands.cl");
-            rands = OpenCL.getContext().createDoubleBuffer(256, CLMemory.Mem.WRITE_ONLY);
+            CLKernel noiseGen = null;
+            CLBuffer<FloatBuffer> noise = null;
+            try {
+                // Initialize OpenCL stuff and put args
+                CLProgram program = OpenCL.getProgram("net/glowstone/CLRandom.cl");
+                int workSize = octaveGenerator.getXSize() * octaveGenerator.getYSize() * octaveGenerator.getZSize();
+                noise = OpenCL.getContext().createFloatBuffer(workSize, CLMemory.Mem.WRITE_ONLY);
+                noiseGen = OpenCL.getKernel(program, "GenerateNoise");
+                noiseGen.putArg(ThreadLocalRandom.current().nextFloat())
+                        .putArg(ThreadLocalRandom.current().nextFloat())
+                        .putArg(noise)
+                        .putArg(workSize);
 
-            CLKernel genRands = OpenCL.getKernel(program, "Rands");
-            genRands.putArg(random.nextDouble())
-                    .putArg(random.nextDouble())
-                    .putArg(rands)
-                    .putArg(256);
+                // Calculate noise on GPU
+                OpenCL.getQueue().put1DRangeKernel(noiseGen, 0, OpenCL.getGlobalSize(workSize), OpenCL.getLocalSize())
+                                 .putReadBuffer(noise, true);
 
-            OpenCL.getQueue().put1DRangeKernel(genRands, 0, OpenCL.getGlobalSize(256), OpenCL.getLocalSize())
-                             .putReadBuffer(rands, true);
-            surfaceNoise = new double[256];
-            int i = 256;
-            while (i-- > 0) {
-                surfaceNoise[i] = rands.getBuffer().get();
+                // Sync GPU calculated noise with our array
+                surfaceNoise = new double[workSize];
+                int i = workSize;
+                while (i-- > 0) {
+                    surfaceNoise[i] = noise.getBuffer().get();
+                }
+            } finally {
+                // Clean up
+                if (noise != null) {
+                    Bukkit.getServer().getScheduler().runTaskAsynchronously(null, noise::release);
+                }
+                if (noiseGen != null) {
+                    noiseGen.rewind();
+                }
             }
-            genRands.rewind();
         } else {
-            surfaceNoise = ((SimplexOctaveGenerator) getWorldOctaves(world).get("surface")).fBm(cx, cz, 0.5D, 0.5D);
+            surfaceNoise = octaveGenerator.fBm(cx, cz, 0.5D, 0.5D);
         }
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -177,9 +193,6 @@ public class OverworldGenerator extends GlowChunkGenerator {
                     groundGen.generateTerrainColumn(chunkData, world, random, cx + x, cz + z, biomes.getBiome(x, z), surfaceNoise[x | z << 4]);
                 }
             }
-        }
-        if (rands != null) {
-            rands.release();
         }
         return chunkData;
     }

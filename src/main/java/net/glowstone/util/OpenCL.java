@@ -48,9 +48,13 @@ public class OpenCL {
     }
 
     public static CLKernel getKernel(CLProgram program, String name) {
+        return getKernel(program, name, false);
+    }
+
+    public static CLKernel getKernel(CLProgram program, String name, boolean threaded) {
         if (kernels.containsKey(program)) {
             HashMap<String, CLKernel> kernel = kernels.get(program);
-            if (kernel.containsKey(name)) {
+            if (kernel.containsKey(name) && !threaded) {
                 return kernel.get(name);
             } else {
                 CLKernel clKernel = program.createCLKernel(name);

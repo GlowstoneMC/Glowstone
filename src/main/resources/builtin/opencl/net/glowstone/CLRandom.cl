@@ -1,8 +1,6 @@
-#pragma OPENCL EXTENSION cl_khr_fp64 : enable
-
-kernel void Rands(double base,
-             double fine,
-             global double* rands,
+kernel void GenerateNoise(float base,
+             float fine,
+             global float* rands,
              int length)
 {
     int gid = get_global_id(0);
