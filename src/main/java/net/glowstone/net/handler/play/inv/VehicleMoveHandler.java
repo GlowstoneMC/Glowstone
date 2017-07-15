@@ -10,8 +10,10 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.VehicleMoveMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -56,6 +58,10 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
             }
         }
 
+        if (!isValidMovement(vehicle, oldLocation, newLocation)) {
+            vehicle.teleport(oldLocation);
+            return;
+        }
 
         // call move event if movement actually occurred and there are handlers registered
         if (!oldLocation.equals(newLocation) && VehicleMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
@@ -91,5 +97,23 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
         } else if (vehicle instanceof Minecart) {
             player.incrementStatistic(Statistic.MINECART_ONE_CM, flatDistance);
         }
+    }
+
+    private boolean isValidMovement(Entity vehicle, Location oldLocation, Location newLocation) {
+        if (!(vehicle instanceof Boat)) {
+            return true;
+        }
+
+        boolean workOnLand = ((Boat) vehicle).getWorkOnLand();
+        if (workOnLand) {
+            return true;
+        }
+
+        Material type = oldLocation.getBlock().getType();
+        if (type != Material.WATER && type != Material.STATIONARY_WATER) {
+            return true;
+        }
+
+        return !newLocation.getBlock().getType().isSolid();
     }
 }
