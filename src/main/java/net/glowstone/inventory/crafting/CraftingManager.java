@@ -285,7 +285,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     private boolean matchesWildcard(ItemStack expected, ItemStack actual) {
-        return expected.getType() == actual.getType() && (isWildcard(expected.getDurability()) || expected.getDurability() == actual.getDurability());
+        return actual != null && expected.getType() == actual.getType() && (isWildcard(expected.getDurability()) || expected.getDurability() == actual.getDurability());
     }
 
     /**
