@@ -58,13 +58,12 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
     @Override
     public void pulse() {
         super.pulse();
+
+        // "While in the End, [..] will continually generate fire, [..] replacing any other block"
         if (world.getEnvironment() == Environment.THE_END) {
             Block block = location.getBlock();
             if (block.getType() != Material.FIRE) {
-                Block under = block.getRelative(BlockFace.DOWN);
-                if (under.getType() == Material.OBSIDIAN || under.getType() == Material.BEDROCK) {
-                    block.setType(Material.FIRE);
-                }
+                block.setType(Material.FIRE);
             }
         }
     }
