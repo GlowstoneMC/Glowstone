@@ -236,8 +236,8 @@ public final class Explosion {
         float power = this.power;
         this.power *= 2;
 
-        LivingEntity[] entities = getNearbyEntities();
-        for (LivingEntity entity : entities) {
+        GlowEntity[] entities = getNearbyEntities();
+        for (GlowEntity entity : entities) {
             // refine area to sphere, instead of box
             if (distanceToSquared(entity) > power * power) {
                 continue;
@@ -266,12 +266,15 @@ public final class Explosion {
                 continue;
             }
 
-            Vector rayLength = RayUtil.getVelocityRay(distanceToHead(entity));
-            rayLength.multiply(exposure);
+            if (entity instanceof LivingEntity) {
+                LivingEntity livingEntity = (LivingEntity) entity;
+                Vector rayLength = RayUtil.getVelocityRay(distanceToHead(livingEntity));
+                rayLength.multiply(exposure);
 
-            Vector currentVelocity = entity.getVelocity();
-            currentVelocity.add(rayLength);
-            entity.setVelocity(currentVelocity);
+                Vector currentVelocity = entity.getVelocity();
+                currentVelocity.add(rayLength);
+                entity.setVelocity(currentVelocity);
+            }
         }
     }
 
@@ -284,10 +287,15 @@ public final class Explosion {
         return reduction;
     }
 
-    private int getProtectionFactor(LivingEntity entity) {
+    private int getProtectionFactor(Entity entity) {
+        if (!(entity instanceof LivingEntity)) {
+            return 0;
+        }
+
+        LivingEntity livingEntity = (LivingEntity) entity;
         int level = 0;
-        if (entity.getEquipment() != null) {
-            for (ItemStack stack : entity.getEquipment().getArmorContents()) {
+        if (livingEntity.getEquipment() != null) {
+            for (ItemStack stack : livingEntity.getEquipment().getArmorContents()) {
                 if (stack != null) {
                     int stackLevel = stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
                     if (stackLevel > level)
@@ -299,16 +307,16 @@ public final class Explosion {
         return level << 1;
     }
 
-    private LivingEntity[] getNearbyEntities() {
+    private GlowEntity[] getNearbyEntities() {
         Collection<Entity> entities = location.getWorld().getNearbyEntities(location, power, power, power);
-        return entities.stream().filter(entity -> entity instanceof LivingEntity).toArray(LivingEntity[]::new);
+        return entities.stream().filter(entity -> entity instanceof GlowEntity).toArray(GlowEntity[]::new);
     }
 
-    private double distanceTo(LivingEntity entity) {
+    private double distanceTo(Entity entity) {
         return RayUtil.getRayBetween(location, entity.getLocation()).length();
     }
 
-    private double distanceToSquared(LivingEntity entity) {
+    private double distanceToSquared(Entity entity) {
         return RayUtil.getRayBetween(location, entity.getLocation()).lengthSquared();
     }
 

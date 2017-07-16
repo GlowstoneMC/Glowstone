@@ -29,6 +29,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityPortalExitEvent;
@@ -1260,6 +1261,21 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         bukkitMetadata.setMetadata(this, metadataKey, newMetadataValue);
+    }
+
+    public void damage(double amount) {
+        damage(amount, null, DamageCause.CUSTOM);
+    }
+
+    public void damage(double amount, Entity source) {
+        damage(amount, source, DamageCause.CUSTOM);
+    }
+
+    public void damage(double amount, DamageCause cause) {
+        damage(amount, null, cause);
+    }
+
+    public void damage(double amount, Entity source, DamageCause cause) {
     }
 
     ////////////////////////////////////////////////////////////////////////////

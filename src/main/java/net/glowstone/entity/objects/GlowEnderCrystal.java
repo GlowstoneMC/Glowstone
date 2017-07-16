@@ -19,7 +19,10 @@ import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.BlockVector;
 
@@ -72,13 +75,18 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
             return false;
         }
 
-        kill(true);
+        damage(0, this, null);
 
         return true;
     }
 
-    private void kill(boolean causeExplosion) {
-        if (causeExplosion) {
+    @Override
+    public void damage(double amount, Entity source, DamageCause cause) {
+        if (source instanceof EnderDragon) {
+            return;
+        }
+
+        if (cause != DamageCause.ENTITY_EXPLOSION) {
             ExplosionPrimeEvent event = EventFactory.callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
 
             if (!event.isCancelled()) {
