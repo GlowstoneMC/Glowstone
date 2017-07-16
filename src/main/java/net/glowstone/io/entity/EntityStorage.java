@@ -96,6 +96,7 @@ public final class EntityStorage {
                 bind(new MinecartStore(type));
             }
         }
+        bind(new BoatStore());
     }
 
     private EntityStorage() {

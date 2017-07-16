@@ -10,6 +10,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public final class SpawnObjectMessage implements Message {
 
+    public static final int BOAT = 1;
     public static final int ITEM = 2;
 
     private final int id;

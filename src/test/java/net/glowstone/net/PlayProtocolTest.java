@@ -130,6 +130,8 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new VehicleMoveMessage(1.0,2.0,3.0,4f,5f),
             new TeleportConfirmMessage(1),
             new AdvancementTabMessage(0, "minecraft:test"),
+            new SteerBoatMessage(true, true),
+            new SteerBoatMessage(false, false),
     };
 
     public PlayProtocolTest() {

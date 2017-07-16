@@ -35,6 +35,8 @@ public enum MetadataIndex {
     BOAT_DIRECTION(7, INT, Boat.class),
     BOAT_DAMAGE_TAKEN(8, FLOAT, Boat.class),
     BOAT_TYPE(9, INT, Boat.class),
+    BOAT_RIGHT_PADDLE_TURNING(10, BOOLEAN, Boat.class),
+    BOAT_LEFT_PADDLE_TURNING(11, BOOLEAN, Boat.class),
 
     ENDERCRYSTAL_BEAM_TARGET(6, OPTPOSITION, EnderCrystal.class),
     ENDERCRYSTAL_SHOW_BOTTOM(7, BOOLEAN, EnderCrystal.class),
