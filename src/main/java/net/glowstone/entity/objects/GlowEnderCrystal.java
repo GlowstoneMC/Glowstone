@@ -4,9 +4,12 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.entity.EnderCrystal;
@@ -40,6 +43,16 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
             new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, x, y, z, pitch, yaw),
             new EntityMetadataMessage(id, metadata.getEntryList())
         );
+    }
+
+    @Override
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        if (message.getAction() != Action.INTERACT.ordinal()) {
+            return false;
+        }
+
+
+        return true;
     }
 
     @Override
