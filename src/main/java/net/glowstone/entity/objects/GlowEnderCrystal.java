@@ -3,6 +3,8 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+import net.glowstone.EventFactory;
+import net.glowstone.Explosion;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -12,8 +14,13 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.BlockVector;
 
 public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
@@ -46,13 +53,41 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
     }
 
     @Override
+    public void pulse() {
+        super.pulse();
+        if (world.getEnvironment() == Environment.THE_END) {
+            Block block = location.getBlock();
+            if (block.getType() != Material.FIRE) {
+                Block under = block.getRelative(BlockFace.DOWN);
+                if (under.getType() == Material.OBSIDIAN || under.getType() == Material.BEDROCK) {
+                    block.setType(Material.FIRE);
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if (message.getAction() != Action.INTERACT.ordinal()) {
+        if (message.getAction() != Action.ATTACK.ordinal()) {
             return false;
         }
 
+        kill(true);
 
         return true;
+    }
+
+    private void kill(boolean causeExplosion) {
+        if (causeExplosion) {
+            ExplosionPrimeEvent event = EventFactory.callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
+
+            if (!event.isCancelled()) {
+                Location location = getLocation();
+                double x = location.getX(), y = location.getY(), z = location.getZ();
+                world.createExplosion(this, x, y, z, event.getRadius(), event.getFire(), true);
+            }
+        }
+        remove();
     }
 
     @Override
