@@ -113,9 +113,9 @@ public class MetadataMap {
     }
 
     /**
-     * Get an optional position
-     * @param index of the optposition
-     * @return either an instanc of a BlockVector, or null if not present
+     * Gets the optional position value for the given MetadataIndex
+     * @param index the MetadataIndex of the optional position
+     * @return the position value as a BlockVector, null if the value is not present
      */
     public BlockVector getOptPosition(MetadataIndex index) {
         return get(index, MetadataType.OPTPOSITION, null);

@@ -22,5 +22,4 @@ public class PositionTest {
 
         assertThat(Position.getPosition(position), is(blockVector));
     }
-
 }
