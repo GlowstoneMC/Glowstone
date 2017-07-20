@@ -16,9 +16,7 @@ class ItemFrameStore extends HangingStore<GlowItemFrame> {
 
     public GlowItemFrame createEntity(Location location, CompoundTag compound) {
         // item frame will be set by loading code below
-        GlowItemFrame itemFrame = new GlowItemFrame(null, location, null);
-
-        return itemFrame;
+        return new GlowItemFrame(null, location, null);
     }
 
     @Override

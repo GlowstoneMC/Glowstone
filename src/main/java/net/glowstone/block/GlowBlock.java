@@ -143,7 +143,7 @@ public final class GlowBlock implements Block {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // getFace & getRelative
+    // getBlockFace & getRelative
     @Override
     public BlockFace getFace(Block block) {
         for (BlockFace face : BlockFace.values()) {
