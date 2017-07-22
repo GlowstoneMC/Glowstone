@@ -3857,3 +3857,13 @@ shaped:
   - aaa
   - aca
   - aba
+    type: PAINTING
+  ingredients:
+    a:
+      type: STICK
+    b:
+      type: WOOL
+  shape:
+  - aaa
+  - aba
+  - aaa
