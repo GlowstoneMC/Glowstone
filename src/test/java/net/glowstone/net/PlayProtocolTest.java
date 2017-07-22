@@ -72,7 +72,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new SpawnObjectMessage(1, UUID.randomUUID(),2, 3, 4, 5, 6, 7),
             new SpawnObjectMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
             new SpawnMobMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ProtocolTestUtils.getMetadataEntry()),
-            new SpawnPaintingMessage(1, "painting", 2, 3, 4, 5),
+            new SpawnPaintingMessage(1, UUID.randomUUID(), "painting", 2, 3, 4, 5),
             new SpawnXpOrbMessage(1, 2, 3, 4, (short) 5),
             new EntityVelocityMessage(1, new Vector(1, 2, 3)),
             new EntityVelocityMessage(1, 2, 3, 4),
