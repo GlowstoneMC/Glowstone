@@ -21,7 +21,7 @@ public class EntityRegistry {
                     //TODO: Arrow
                     .put(Bat.class, GlowBat.class)
                     .put(Blaze.class, GlowBlaze.class)
-                    //TODO: Boat
+                    .put(Boat.class, GlowBoat.class)
                     .put(CaveSpider.class, GlowCaveSpider.class)
                     .put(ChestedHorse.class, GlowChestedHorse.class)
                     .put(Chicken.class, GlowChicken.class)

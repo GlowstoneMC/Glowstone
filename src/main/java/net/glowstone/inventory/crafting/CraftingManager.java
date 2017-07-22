@@ -285,7 +285,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     private boolean matchesWildcard(ItemStack expected, ItemStack actual) {
-        return expected.getType() == actual.getType() && (isWildcard(expected.getDurability()) || expected.getDurability() == actual.getDurability());
+        return actual != null && expected.getType() == actual.getType() && (isWildcard(expected.getDurability()) || expected.getDurability() == actual.getDurability());
     }
 
     /**
@@ -384,6 +384,12 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.WOOD_SPADE, 200);
         furnaceFuels.put(Material.WOOD_SWORD, 200);
         furnaceFuels.put(Material.WOOD_STEP, 150);
+        furnaceFuels.put(Material.BOAT, 400);
+        furnaceFuels.put(Material.BOAT_ACACIA, 400);
+        furnaceFuels.put(Material.BOAT_BIRCH, 400);
+        furnaceFuels.put(Material.BOAT_DARK_OAK, 400);
+        furnaceFuels.put(Material.BOAT_JUNGLE, 400);
+        furnaceFuels.put(Material.BOAT_SPRUCE, 400);
     }
 
     /**

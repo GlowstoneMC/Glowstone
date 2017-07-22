@@ -1,13 +1,17 @@
 package net.glowstone.util.noise;
 
+import lombok.Getter;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
 
 import java.util.Random;
 
 public class PerlinOctaveGenerator extends OctaveGenerator {
+    @Getter
     protected final int xSize;
+    @Getter
     protected final int ySize;
+    @Getter
     protected final int zSize;
     protected double[] noise;
 
