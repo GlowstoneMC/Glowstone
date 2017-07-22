@@ -151,6 +151,12 @@ public class PlaySoundCommandTest {
     }
 
     @Test
+    public void testExecuteSucceedsWithoutMinecraftPrefix() {
+        assertThat(command.execute(opSender, "label", new String[]{"entity.parrot.imitate.wither", "master", "player1"}), is(true));
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.5, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
+    }
+
+    @Test
     public void testExecuteSucceedsOnAnotherPlayerWithCurrentLocation() {
         assertThat(command.execute(opSender, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1"}), is(true));
         Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.5, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
@@ -208,6 +214,10 @@ public class PlaySoundCommandTest {
         assertThat(command.tabComplete(opSender, "alias", new String[0]), is(Collections.emptyList()));
 
         assertThat(command.tabComplete(opSender, "alias", new String[]{"minecraft:entity.parrot.imitate.wither"}),
+                is(ImmutableList.of("minecraft:entity.parrot.imitate.wither", "minecraft:entity.parrot.imitate.wither.skeleton")));
+        assertThat(command.tabComplete(opSender, "alias", new String[]{"entity.parrot.imitate.wither"}),
+                is(ImmutableList.of("minecraft:entity.parrot.imitate.wither", "minecraft:entity.parrot.imitate.wither.skeleton")));
+        assertThat(command.tabComplete(opSender, "alias", new String[]{"chuckNorris:entity.parrot.imitate.wither"}),
                 is(ImmutableList.of("minecraft:entity.parrot.imitate.wither", "minecraft:entity.parrot.imitate.wither.skeleton")));
 
         assertThat(command.tabComplete(opSender, "alias", new String[]{"sound", "hosti"}), is(ImmutableList.of("hostile")));

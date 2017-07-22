@@ -41,7 +41,7 @@ public class PlaySoundCommand extends VanillaCommand {
         }
 
         String stringSound = args[0], stringCategory = args[1], playerPattern = args[2];
-        final Sound sound = GlowSound.getVanillaSound(stringSound);
+        final Sound sound = GlowSound.getVanillaSound(stringSound.startsWith("minecraft:") ? stringSound : "minecraft:" + stringSound);
         final SoundCategory soundCategory = SoundUtil.buildSoundCategory(stringCategory);
         List<GlowPlayer> targets;
         boolean relativeLocation = false;
@@ -162,7 +162,14 @@ public class PlaySoundCommand extends VanillaCommand {
         if (args == null) {
             return Collections.emptyList();
         } else if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], SOUNDS, new ArrayList(SOUNDS.size()));
+            String sound = args[0];
+
+            if (!sound.startsWith("minecraft:")) {
+                final int colonIndex = sound.indexOf(':');
+                sound = "minecraft:" + sound.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
+            }
+
+            return StringUtil.copyPartialMatches(sound, SOUNDS, new ArrayList(SOUNDS.size()));
         } else if (args.length == 2) {
             return StringUtil.copyPartialMatches(args[1], SOURCES, new ArrayList(SOURCES.size()));
         } else if (args.length == 3) {
