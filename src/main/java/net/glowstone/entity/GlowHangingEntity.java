@@ -35,8 +35,7 @@ public abstract class GlowHangingEntity extends GlowEntity implements Hanging {
         EAST(BlockFace.EAST);
 
         private BlockFace blockFace;
-
-        private static Map<BlockFace, HangingFace> byBlockFace = new HashMap<>();
+        private static final Map<BlockFace, HangingFace> byBlockFace = new HashMap<>();
 
         static {
             for (HangingFace hangingFace : values()) {
