@@ -7,9 +7,11 @@ import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import org.bukkit.Art;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Painting;
+import org.bukkit.inventory.ItemStack;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
     private Art art;
@@ -65,5 +67,23 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     public void setFacingDirection(BlockFace blockFace) {
         facing = HangingFace.getByBlockFace(blockFace);
 
+    }
+
+    @Override
+    public void pulse() {
+        super.pulse();
+
+        if (ticksLived % 11 == 0) {
+
+            if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
+                world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
+                remove();
+            }
+        }
+    }
+
+    @Override
+    protected void pulsePhysics() {
+        // item frames aren't affected by physics
     }
 }
