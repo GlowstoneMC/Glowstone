@@ -321,6 +321,7 @@ public final class ItemTable {
         reg(Material.HOPPER_MINECART, new ItemMinecart(GlowMinecart.MinecartType.HOPPER));
         reg(Material.POWERED_MINECART, new ItemMinecart(GlowMinecart.MinecartType.FURNACE));
         reg(Material.STORAGE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.CHEST));
+        reg(Material.END_CRYSTAL, new ItemEndCrystal());
         reg(Material.BOAT, new ItemBoat(TreeSpecies.GENERIC));
         reg(Material.BOAT_SPRUCE, new ItemBoat(TreeSpecies.REDWOOD));
         reg(Material.BOAT_BIRCH, new ItemBoat(TreeSpecies.BIRCH));

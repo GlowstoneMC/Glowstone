@@ -91,12 +91,13 @@ public final class EntityStorage {
         bind(new ItemFrameStore());
         bind(new ItemStore());
         bind(new TNTPrimedStorage());
+        bind(new EnderCrystalStore());
+        bind(new BoatStore());
         for (GlowMinecart.MinecartType type : GlowMinecart.MinecartType.values()) {
             if (type != null) {
                 bind(new MinecartStore(type));
             }
         }
-        bind(new BoatStore());
     }
 
     private EntityStorage() {

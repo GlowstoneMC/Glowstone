@@ -30,7 +30,7 @@ public class EntityRegistry {
                     .put(Donkey.class, GlowDonkey.class)
                     //TODO: Egg
                     .put(ElderGuardian.class, GlowElderGuardian.class)
-                    //TODO: Ender Crystal
+                    .put(EnderCrystal.class, GlowEnderCrystal.class)
                     .put(EnderDragon.class, GlowEnderDragon.class)
                     //TODO: Ender Pearl
                     //TODO: Ender Signal

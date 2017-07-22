@@ -138,7 +138,7 @@ public final class Position {
      * @return the serialized position value
      */
     public static long getPosition(BlockVector vector) {
-        return ((vector.getBlockX() & 0x3FFFFFF) << 38) | ((vector.getBlockY() & 0xFFF) << 26) | (vector.getBlockZ() & 0x3FFFFFF);
+        return (((long) vector.getBlockX() & 0x3FFFFFF) << 38) | (((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ() & 0x3FFFFFF);
     }
 
     /**
