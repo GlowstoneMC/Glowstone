@@ -129,7 +129,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     public static int getLayers(ItemStack... items) {
         int layers = 0;
         for (ItemStack item : items) {
-            if (item != null && item.getAmount() != 0 && (item.getAmount() < layers || layers == 0)) {
+            if (!InventoryUtil.isEmpty(item) && (item.getAmount() < layers || layers == 0)) {
                 layers = item.getAmount();
             }
         }
