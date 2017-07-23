@@ -80,6 +80,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
                 }
                 remove();
             } else {
+                world.dropItemNaturally(location, getItem().clone());
                 setItem(new ItemStack(Material.AIR));
                 setRotation(Rotation.NONE);
             }
@@ -94,6 +95,9 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         if (ticksLived % 11 == 0) {
 
             if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
+                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
+                    return;
+                }
                 world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
                 if (!isEmpty()) {
                     world.dropItemNaturally(location, getItem().clone());
@@ -196,10 +200,10 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
     @Override
     public void setItem(ItemStack is) {
-        if (is == null) {
-            is = new ItemStack(Material.AIR, 1);
-        }
+        is = InventoryUtil.itemOrEmpty(is);
+        is = is.clone();
         is.setAmount(1);
+
         metadata.set(MetadataIndex.ITEM_FRAME_ITEM, is);
         setRotation(Rotation.NONE);
     }
