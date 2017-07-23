@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import static org.bukkit.event.inventory.InventoryAction.MOVE_TO_OTHER_INVENTORY;
+
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
     @Override
     public void handle(GlowSession session, WindowClickMessage message) {
@@ -396,8 +398,12 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 break;
         }
 
-        if (handled && top == inv && top instanceof GlowCraftingInventory && top.getSlotType(invSlot) == SlotType.RESULT) {
-            ((GlowCraftingInventory) top).craft();
+        if (handled && top == inv && top instanceof GlowCraftingInventory && top.getSlotType(invSlot) == SlotType.RESULT && action != MOVE_TO_OTHER_INVENTORY) {
+            // If we are crafting (but not using shift click because no more items can be crafted for the given pattern. If a new item can be crafted with another pattern, a new click is required).
+            final GlowCraftingInventory glowCraftingInventory = (GlowCraftingInventory) top;
+            glowCraftingInventory.craft();
+            // Notify the player the result slot changed
+            player.sendItemChange(viewSlot, glowCraftingInventory.getResult());
         }
 
         if (!handled) {
