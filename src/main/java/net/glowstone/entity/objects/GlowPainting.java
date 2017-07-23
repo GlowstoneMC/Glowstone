@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Painting;
 import org.bukkit.event.hanging.HangingBreakEvent;
@@ -58,8 +59,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     public GlowPainting(Location location, BlockFace clickedface) {
         super(location, clickedface);
-        this.art = Art.KEBAB;
-        setSize(art.getBlockWidth(), art.getBlockHeight());
+        setArtInternal(Art.KEBAB);
     }
 
     @Override
@@ -99,13 +99,19 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             return false;
         }
 
-        setSize(art.getBlockWidth(), art.getBlockHeight());
+        setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
         this.remove();
         return false;
     }
 
+    @Override
+    protected void updateBoundingBox() {
+        super.updateBoundingBox();
+    }
+
     public void setArtInternal(Art art) {
         this.art = art;
+        setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
     }
 
     @Override
@@ -125,11 +131,6 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public void setFacingDirection(BlockFace blockFace) {
         setFacingDirection(blockFace, false);
-    }
-
-    @Override
-    protected void updateBoundingBox() {
-        super.updateBoundingBox();
     }
 
     @Override
@@ -174,12 +175,17 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
                 }
                 current = current.getBlock().getRelative(right).getLocation();
             }
+
             current = current.getBlock().getRelative(BlockFace.DOWN).getLocation();
             current.setX(topLeftCorner.getX());
             current.setZ(topLeftCorner.getZ());
         }
 
-        return !this.world.getEntityManager().getEntitiesInside(this.boundingBox, this).isEmpty();
+        List<Entity> entitiesInside = this.world.getEntityManager().getEntitiesInside(this.boundingBox, this);
+        for (Entity entity : entitiesInside) {
+            System.out.println("Art|entitiesInside:" + art.getBlockWidth() + "|" + art.getBlockHeight() + "|" + entity.getLocation());
+        }
+        return !entitiesInside.isEmpty();
     }
 
     private boolean canHoldPainting(Location where) {
