@@ -17,7 +17,6 @@ public class PaintingStore extends HangingStore<GlowPainting> {
     @Override
     public GlowPainting createEntity(Location location, CompoundTag compound) {
         GlowPainting painting = new GlowPainting(location, BlockFace.SOUTH);
-        painting.setArt(Art.KEBAB);
         return painting;
     }
 
@@ -26,7 +25,7 @@ public class PaintingStore extends HangingStore<GlowPainting> {
         super.load(entity, tag);
 
         if (tag.isString("Motive")) {
-            entity.setArt(Art.getByName(tag.getString("Motive")));
+            entity.setArtInternal(Art.getByName(tag.getString("Motive")));
         }
     }
 

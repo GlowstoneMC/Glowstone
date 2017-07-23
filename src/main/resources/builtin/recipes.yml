@@ -3857,6 +3857,7 @@ shaped:
   - aaa
   - aca
   - aba
+- result:
     type: PAINTING
   ingredients:
     a:

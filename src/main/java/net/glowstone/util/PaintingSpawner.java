@@ -22,15 +22,14 @@ public class PaintingSpawner {
 
     static {
         for (Art art : Art.values()) {
-            int offsetLeft = Math.max(0, art.getBlockWidth() / 2 - 1);
-            int offsetTop = art.getBlockHeight() / 2;
-            artBySpawnOffset.put(new Key(offsetLeft, offsetTop), art);
+            Key offset = getTopLeftOffset(art);
+            artBySpawnOffset.put(offset, art);
 
-            if (MAX_OFFSET_TOP < offsetTop) {
-                MAX_OFFSET_TOP = offsetTop;
+            if (MAX_OFFSET_TOP < offset.getZ()) {
+                MAX_OFFSET_TOP = offset.getZ();
             }
-            if (MAX_OFFSET_LEFT < offsetLeft) {
-                MAX_OFFSET_LEFT = offsetLeft;
+            if (MAX_OFFSET_LEFT < offset.getX()) {
+                MAX_OFFSET_LEFT = offset.getX();
             }
 
             if (MAX_WIDTH < art.getBlockWidth()) {
@@ -43,31 +42,56 @@ public class PaintingSpawner {
         }
     }
 
-    public boolean spawnAt(Location where, BlockFace facing) {
-        Art art = getArt(where, HangingFace.values()[(HangingFace.getByBlockFace(facing).ordinal() + 1) % 4]);
+    private static Key getTopLeftOffset(Art art) {
+        int offsetLeft = Math.max(0, art.getBlockWidth() / 2 - 1);
+        int offsetTop = art.getBlockHeight() / 2;
+        return new Key(offsetLeft, offsetTop);
+    }
 
-        new GlowPainting(where.getBlock().getRelative(facing).getLocation(), facing).setArt(art);
+    public boolean spawnAt(Location center, BlockFace facing) {
+        HangingFace widthFacing = HangingFace.values()[(HangingFace.getByBlockFace(facing).ordinal() + 1) % 4];
+        Art art = getArt(center, widthFacing);
+
+        new GlowPainting(center.getBlock().getRelative(facing).getLocation(), facing).setArtInternal(art);
 
 
         return true;
     }
 
-    private Art getArt(Location where, HangingFace hangingFace) {
+    public boolean spawn(Location center, Art art, BlockFace facing, boolean force) {
+        if (!force) {
+            HangingFace widthFacing = HangingFace.values()[(HangingFace.getByBlockFace(facing).ordinal() + 1) % 4];
+            Key topLeftOffset = getTopLeftOffset(art);
+            Key maxSize = getMaxSize(center, widthFacing.getBlockFace(), topLeftOffset);
+            if (maxSize.getX() >= art.getBlockWidth() && maxSize.getZ() >= art.getBlockHeight()) {
+                new GlowPainting(center.getBlock().getRelative(facing).getLocation(), facing).setArtInternal(art);
+                return true;
+            }
+            return false;
+        }
+        new GlowPainting(center.getBlock().getRelative(facing).getLocation(), facing).setArtInternal(art);
+        return true;
+    }
+
+    private Art getArt(Location center, HangingFace hangingFace) {
         BlockFace widthFacing = hangingFace.getBlockFace();
-        Key topLeftOffset = getOffset(where.clone(), widthFacing, BlockFace.UP, MAX_OFFSET_LEFT, MAX_OFFSET_TOP);
+        Key topLeftOffset = getOffset(center.clone(), widthFacing, BlockFace.UP, MAX_OFFSET_LEFT, MAX_OFFSET_TOP);
 
-        Location topLeftCorner = where.clone();
-        topLeftCorner.add(widthFacing.getModX() * topLeftOffset.getX(), topLeftOffset.getZ(), widthFacing.getModZ() * topLeftOffset.getX());
-        Key maxSize = getOffset(topLeftCorner, widthFacing.getOppositeFace(), BlockFace.DOWN, MAX_WIDTH, MAX_HEIGHT);
-
+        Key maxSize = getMaxSize(center, widthFacing, topLeftOffset);
         Collection<Art> matchingArt = getMatchingArt(topLeftOffset, maxSize);
         return matchingArt.iterator().next();
     }
 
-    private Key getOffset(Location where, BlockFace leftRightFacing, BlockFace upDownFacing, int maxX, int maxY) {
+    private Key getMaxSize(Location center, BlockFace widthFacing, Key topLeftOffset) {
+        Location topLeftCorner = center.clone();
+        topLeftCorner.add(widthFacing.getModX() * topLeftOffset.getX(), topLeftOffset.getZ(), widthFacing.getModZ() * topLeftOffset.getX());
+        return getOffset(topLeftCorner, widthFacing.getOppositeFace(), BlockFace.DOWN, MAX_WIDTH, MAX_HEIGHT);
+    }
+
+    private Key getOffset(Location center, BlockFace leftRightFacing, BlockFace upDownFacing, int maxX, int maxY) {
         int offsetTop = maxY;
         int offsetLeft = maxX;
-        Location current = where.clone();
+        Location current = center.clone();
         for (int y = 0; y < offsetTop; y++) {
             current = current.getBlock().getRelative(upDownFacing).getLocation();
             for (int left = 0; left < offsetLeft; left++) {
@@ -83,8 +107,8 @@ public class PaintingSpawner {
                     }
                 }
             }
-            current.setX(where.getX());
-            current.setZ(where.getZ());
+            current.setX(center.getX());
+            current.setZ(center.getZ());
         }
         return new Key(offsetLeft, offsetTop);
     }
