@@ -200,8 +200,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
     @Override
     public void setItem(ItemStack is) {
-        is = InventoryUtil.itemOrEmpty(is);
-        is = is.clone();
+        is = InventoryUtil.itemOrEmpty(is).clone();
         is.setAmount(1);
 
         metadata.set(MetadataIndex.ITEM_FRAME_ITEM, is);
