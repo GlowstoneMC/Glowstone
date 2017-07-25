@@ -1,12 +1,15 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import com.google.common.collect.Lists;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
+import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import org.bukkit.Art;
 import org.bukkit.Location;
@@ -51,6 +54,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         ART_TITLE.put(Art.BURNINGSKULL, "BurningSkull");
         ART_TITLE.put(Art.SKELETON, "Skeleton");
         ART_TITLE.put(Art.DONKEYKONG, "DonkeyKong");
+        ART_TITLE.put(Art.PIGSCENE, "PigScene");
     }
 
     public GlowPainting(Location location) {
@@ -93,15 +97,33 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     public boolean setArt(Art art, boolean force) {
         Art oldArt = this.art;
         this.art = art;
+        setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
 
-        if (isObstructed()) {
+        if (!force && isObstructed()) {
             this.art = oldArt;
+            setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
             return false;
         }
 
-        setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
-        this.remove();
+        respawn();
+
         return false;
+    }
+
+
+    protected void respawn() {
+        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
+        List<Message> spawnMessage = this.createSpawnMessage();
+        Collection<Message> messages = Lists.newArrayList();
+        messages.add(destroyMessage);
+        messages.addAll(spawnMessage);
+
+        getWorld()
+            .getRawPlayers()
+            .stream()
+            .filter(p -> p.canSeeEntity(this))
+            .forEach(p -> p.getSession().sendAll(messages.toArray(new Message[messages.size()])));
+
     }
 
     @Override
@@ -119,12 +141,13 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         HangingFace oldFace = facing;
         this.facing = HangingFace.getByBlockFace(blockFace);
 
-        if (isObstructed()) {
+        if (!force && isObstructed()) {
             this.facing = oldFace;
             return false;
         }
 
-        this.remove();
+        respawn();
+
         return true;
     }
 
@@ -140,6 +163,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         if (ticksLived % 11 == 0) {
 
             if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
+                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
+                    return;
+                }
                 world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
                 remove();
             }
