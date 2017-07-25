@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.bukkit.util.BlockVector;
 
 /**
  * A map for entity metadata.
@@ -109,6 +110,15 @@ public class MetadataMap {
 
     public ItemStack getItem(MetadataIndex index) {
         return get(index, MetadataType.ITEM, null);
+    }
+
+    /**
+     * Gets the optional position value for the given MetadataIndex
+     * @param index the MetadataIndex of the optional position
+     * @return the position value as a BlockVector, null if the value is not present
+     */
+    public BlockVector getOptPosition(MetadataIndex index) {
+        return get(index, MetadataType.OPTPOSITION, null);
     }
 
     @SuppressWarnings("unchecked")

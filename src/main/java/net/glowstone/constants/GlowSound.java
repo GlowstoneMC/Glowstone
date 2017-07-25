@@ -1,5 +1,6 @@
 package net.glowstone.constants;
 
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 
@@ -8,7 +9,7 @@ import java.util.Map;
 
 public class GlowSound {
 
-    private static Map<String, SoundCategory> sounds = new HashMap<>();
+    private static final Map<String, SoundCategory> SOUNDS = new HashMap<>();
 
     static {
         // register vanilla sounds
@@ -20,11 +21,11 @@ public class GlowSound {
     }
 
     public static void reg(String id, SoundCategory category) {
-        sounds.put(id, category);
+        SOUNDS.put(id, category);
     }
 
     public static SoundCategory getSoundCategory(String id) {
-        return sounds.get(id);
+        return SOUNDS.get(id);
     }
 
     public static String getVanillaId(Sound sound) {
@@ -44,5 +45,9 @@ public class GlowSound {
 
     public static SoundCategory getCategory(int category) {
         return SoundCategory.values()[category];
+    }
+
+    public static Map<String, SoundCategory> getSounds() {
+        return (Map) ImmutableMap.builder().putAll(SOUNDS).build();
     }
 }

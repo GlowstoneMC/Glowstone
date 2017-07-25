@@ -25,6 +25,7 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class, GlowServer.class, GlowWorld.class})
@@ -54,12 +55,13 @@ public class SpawnPointCommandTest {
         world = PowerMockito.mock(GlowWorld.class);
         command = new SpawnPointCommand();
 
+        final Location location = new Location(world, 10.5, 20.5, 30.5);
         Mockito.when(fakePlayer1.getName()).thenReturn("player1");
         Mockito.when(fakePlayer2.getName()).thenReturn("player2");
         Mockito.when(fakePlayer3.getName()).thenReturn("thePlayer3");
-        Mockito.when(fakePlayer1.getLocation()).thenReturn(new Location(world, 10.5, 20.5, 30.5));
-        Mockito.when(fakePlayer2.getLocation()).thenReturn(new Location(world, 10.5, 20.5, 30.5));
-        Mockito.when(fakePlayer3.getLocation()).thenReturn(new Location(world, 10.5, 20.5, 30.5));
+        Mockito.when(fakePlayer1.getLocation()).thenReturn(location);
+        Mockito.when(fakePlayer2.getLocation()).thenReturn(location);
+        Mockito.when(fakePlayer3.getLocation()).thenReturn(location);
         Mockito.when(fakePlayer1.getType()).thenReturn(EntityType.PLAYER);
         Mockito.when(fakePlayer2.getType()).thenReturn(EntityType.PLAYER);
         Mockito.when(fakePlayer3.getType()).thenReturn(EntityType.PLAYER);
@@ -69,7 +71,7 @@ public class SpawnPointCommandTest {
 
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opPlayer.getName()).thenReturn("ChuckNorris");
-        Mockito.when(((Entity)opPlayer).getLocation()).thenReturn(new Location(world, 10.5, 20.5, 30.5));
+        Mockito.when(((Entity)opPlayer).getLocation()).thenReturn(location);
 
         Mockito.doReturn(ImmutableList.of(fakePlayer1, fakePlayer2, fakePlayer3))
                 .when(server).getOnlinePlayers();
@@ -87,123 +89,79 @@ public class SpawnPointCommandTest {
 
     @Test
     public void testExecuteFailsWithoutPermission() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(sender, "label", new String[0]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(sender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
+        assertThat(command.execute(sender, "label", new String[0]), is(false));
+        Mockito.verify(sender).sendMessage(eq(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test
     public void testExecuteFailsWithTwoParameters() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[2]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Usage: /spawnpoint OR /spawnpoint <player> OR /spawnpoint <player> <x> <y> <z>"));
+        assertThat(command.execute(opSender, "label", new String[2]), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Usage: /spawnpoint OR /spawnpoint <player> OR /spawnpoint <player> <x> <y> <z>"));
     }
 
     @Test
     public void testExecuteFailsWithThreeParameters() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[3]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Usage: /spawnpoint OR /spawnpoint <player> OR /spawnpoint <player> <x> <y> <z>"));
+        assertThat(command.execute(opSender, "label", new String[3]), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Usage: /spawnpoint OR /spawnpoint <player> OR /spawnpoint <player> <x> <y> <z>"));
     }
 
     @Test
     public void testExecuteFailsWithSenderNotPlayer() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[0]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "You must specify which player you wish to perform this action on."));
+        assertThat(command.execute(opSender, "label", new String[0]), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "You must specify which player you wish to perform this action on."));
     }
 
     @Test
     public void testExecuteFailsUnknownTarget() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"player"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Player 'player' cannot be found"));
+        assertThat(command.execute(opSender, "label", new String[]{"player"}), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Player 'player' cannot be found"));
     }
 
     @Test
     public void testExecuteFailsWithDefaultLocation() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"player1"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Default coordinates can not be used without a physical user."));
+        assertThat(command.execute(opSender, "label", new String[]{"player1"}), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Default coordinates can not be used without a physical user."));
     }
 
     @Test
     public void testExecuteFailsWithRelativeLocation() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"player1", "~2", "3", "4"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Relative coordinates can not be used without a physical user."));
+        assertThat(command.execute(opSender, "label", new String[]{"player1", "~2", "3", "4"}), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Relative coordinates can not be used without a physical user."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooHigh() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"player1", "2", "10000", "4"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "'10000.5' is too high for the current world. Max value is '50'."));
+        assertThat(command.execute(opSender, "label", new String[]{"player1", "2", "10000", "4"}), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'10000.5' is too high for the current world. Max value is '50'."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooSmall() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"player1", "2", "-10000", "4"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "The y coordinate (-10000.5) is too small, it must be at least 0."));
+        assertThat(command.execute(opSender, "label", new String[]{"player1", "2", "-10000", "4"}), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The y coordinate (-10000.5) is too small, it must be at least 0."));
     }
 
     @Test
     public void testExecuteSucceedsWithCurrentLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[0]);
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[0]), is(true));
         Mockito.verify((Player) opPlayer).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithCurrentLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[]{"player1"});
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[]{"player1"}), is(true));
         Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithSpecificLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[]{"player1", "30", "20", "10"});
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[]{"player1", "30", "20", "10"}), is(true));
         Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
     }
 
     @Test
     public void testExecuteSucceedsAllPlayersWithCurrentLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[]{"@a"});
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[]{"@a"}), is(true));
         Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
         Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
         Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
@@ -211,9 +169,7 @@ public class SpawnPointCommandTest {
 
     @Test
     public void testExecuteSucceedsAllPlayersWithSpecificLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[]{"@a", "30", "20", "10"});
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[]{"@a", "30", "20", "10"}), is(true));
         Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
         Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
         Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
@@ -221,9 +177,7 @@ public class SpawnPointCommandTest {
 
     @Test
     public void testExecuteSucceedsAllPlayersWithRelativeLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[]{"@a", "30", "~20", "10"});
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[]{"@a", "30", "~20", "10"}), is(true));
         Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 41, 10.5), true);
         Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 30.5, 41, 10.5), true);
         Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 30.5, 41, 10.5), true);

@@ -15,6 +15,7 @@ import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
+import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
@@ -29,6 +30,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityPortalExitEvent;
@@ -533,9 +535,10 @@ public abstract class GlowEntity implements Entity {
      * Creates a {@link Message} which can be sent to a client to update this
      * entity.
      *
+     * @param session Session to update this entity for
      * @return A message which can update this entity.
      */
-    public List<Message> createUpdateMessage() {
+    public List<Message> createUpdateMessage(GlowSession session) {
         boolean moved = hasMoved();
         boolean rotated = hasRotated();
 
@@ -579,8 +582,18 @@ public abstract class GlowEntity implements Entity {
         }
 
         if (passengerChanged) {
-            //this method will not call for this player, we don't need check SELF_ID
-            result.add(new SetPassengerMessage(getEntityId(), getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
+            // A player can be a passenger of any arbitrary entity, e.g. a boat
+            // In case the current session belongs to this player passenger
+            // We need to send the self_id
+            List<Integer> passengerIds = new ArrayList<>();
+            getPassengers().forEach(e -> {
+                if (session.getPlayer().equals(e)) {
+                    passengerIds.add(GlowPlayer.SELF_ID);
+                } else {
+                    passengerIds.add(e.getEntityId());
+                }
+            });
+            result.add(new SetPassengerMessage(getEntityId(), passengerIds.stream().mapToInt(Integer::intValue).toArray()));
             passengerChanged = false;
         }
 
@@ -1190,11 +1203,11 @@ public abstract class GlowEntity implements Entity {
         return !result;
     }
 
-    protected Location getMountLocation() {
+    public Location getMountLocation() {
         return this.location.clone().add(0, this.getHeight(), 0);
     }
 
-    protected Location getDismountLocation() {
+    public Location getDismountLocation() {
         return this.location;
     }
 
@@ -1260,6 +1273,21 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         bukkitMetadata.setMetadata(this, metadataKey, newMetadataValue);
+    }
+
+    public void damage(double amount) {
+        damage(amount, null, DamageCause.CUSTOM);
+    }
+
+    public void damage(double amount, Entity source) {
+        damage(amount, source, DamageCause.CUSTOM);
+    }
+
+    public void damage(double amount, DamageCause cause) {
+        damage(amount, null, cause);
+    }
+
+    public void damage(double amount, Entity source, DamageCause cause) {
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class, GlowServer.class, GlowWorld.class})
@@ -54,104 +55,69 @@ public class SetWorldSpawnCommandTest {
 
     @Test
     public void testExecuteFailsWithoutPermission() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(sender, "label", new String[0]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(sender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
+        assertThat(command.execute(sender, "label", new String[0]), is(false));
+        Mockito.verify(sender).sendMessage(eq(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test
     public void testExecuteFailsWithoutWorld() {
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class)).toReturn(null);
-        final boolean commandResult = command.execute(sender, "label", new String[0]);
 
-        assertThat(commandResult, is(false));
+        assertThat(command.execute(sender, "label", new String[0]), is(false));
     }
 
     @Test
     public void testExecuteFailsWithOneParameter() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[1]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
+        assertThat(command.execute(opSender, "label", new String[1]), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
     }
 
     @Test
     public void testExecuteFailsWithTwoParameters() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[2]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
+        assertThat(command.execute(opSender, "label", new String[2]), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
     }
 
     @Test
     public void testExecuteFailsWithDefaultLocation() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[0]);
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Default coordinates can not be used without a physical user."));
+        assertThat(command.execute(opSender, "label", new String[0]), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Default coordinates can not be used without a physical user."));;
     }
 
     @Test
     public void testExecuteFailsWithRelativeLocation() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"~2", "3", "4"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Relative coordinates can not be used without a physical user."));
+        assertThat(command.execute(opSender, "label", new String[]{"~2", "3", "4"}), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Relative coordinates can not be used without a physical user."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooHigh() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"2", "10000", "4"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "'10000' is too high for the current world. Max value is '50'."));
+        assertThat(command.execute(opSender, "label", new String[]{"2", "10000", "4"}), is(false));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'10000' is too high for the current world. Max value is '50'."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooSmall() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        final boolean commandResult = command.execute(opSender, "label", new String[]{"2", "-10000", "4"});
-
-        assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
+        assertThat(command.execute(opSender, "label", new String[]{"2", "-10000", "4"}), is(false));
         // -10001 because of the floor, it's not supposed to be negative
-        assertThat(captor.getValue(), is(ChatColor.RED + "The y coordinate (-10001) is too small, it must be at least 0."));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The y coordinate (-10001) is too small, it must be at least 0."));
     }
 
     @Test
     public void testExecuteSucceedsWithCurrentLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[0]);
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[0]), is(true));
         Mockito.verify(world).setSpawnLocation(10, 20, 30);
     }
 
     @Test
     public void testExecuteSucceedsWithSpecificLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[]{"30", "20", "10"});
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[]{"30", "20", "10"}), is(true));
         Mockito.verify(world).setSpawnLocation(30, 20, 10);
     }
 
     @Test
     public void testExecuteSucceedsWithRelativeLocation() {
-        final boolean commandResult = command.execute(opPlayer, "label", new String[]{"30", "~20", "10"});
-
-        assertThat(commandResult, is(true));
+        assertThat(command.execute(opPlayer, "label", new String[]{"30", "~20", "10"}), is(true));
         Mockito.verify(world).setSpawnLocation(30, 41, 10);
     }
 

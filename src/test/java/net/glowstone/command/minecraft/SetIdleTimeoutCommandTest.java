@@ -18,6 +18,7 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Bukkit.class)
@@ -41,63 +42,51 @@ public class SetIdleTimeoutCommandTest {
 
     @Test
     public void testExecuteFailsWithoutPermission() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         final boolean commandResult = command.execute(sender, "label", new String[0]);
 
         assertThat(commandResult, is(false));
-        Mockito.verify(sender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
+        Mockito.verify(sender).sendMessage(eq(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test
     public void testExecuteFailsWithoutParameters() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         final boolean commandResult = command.execute(opSender, "label", new String[0]);
 
         assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "Usage: /setidletimeout <Minutes until kick>"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Usage: /setidletimeout <Minutes until kick>"));
     }
 
     @Test
     public void testExecuteFailsWithIncorrectNumber() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         final boolean commandResult = command.execute(opSender, "label", new String[]{"invalidNumber"});
 
         assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "'invalidNumber' is not a valid number"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'invalidNumber' is not a valid number"));
     }
 
     @Test
     public void testExecuteFailsWithNegativeTimeout() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         final boolean commandResult = command.execute(opSender, "label", new String[]{"-42"});
 
         assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "The number you have entered (-42) is too small, it must be at least 1"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The number you have entered (-42) is too small, it must be at least 1"));
     }
 
     @Test
     public void testExecuteFailsWithNullTimeout() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         final boolean commandResult = command.execute(opSender, "label", new String[]{"0"});
 
         assertThat(commandResult, is(false));
-        Mockito.verify(opSender).sendMessage(captor.capture());
-        assertThat(captor.getValue(), is(ChatColor.RED + "The number you have entered (0) is too small, it must be at least 1"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The number you have entered (0) is too small, it must be at least 1"));
     }
 
     @Test
     public void testExecuteSucceeds() {
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         final boolean commandResult = command.execute(opSender, "label", new String[]{"50"});
 
         assertThat(commandResult, is(true));
-        Mockito.verify(opSender).sendMessage(captor.capture());
+        Mockito.verify(opSender).sendMessage(eq("Successfully set the idle timeout to 50 minutes."));
         Mockito.verify(Bukkit.getServer()).setIdleTimeout(50);
-        assertThat(captor.getValue(), is("Successfully set the idle timeout to 50 minutes."));
     }
 
     @Test

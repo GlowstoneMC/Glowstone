@@ -36,12 +36,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
         super.setItem(index, item);
 
         if (index != RESULT_SLOT) {
-            Recipe recipe = getRecipe();
-            if (recipe == null) {
-                super.setItem(RESULT_SLOT, InventoryUtil.createEmptyStack());
-            } else {
-                super.setItem(RESULT_SLOT, recipe.getResult());
-            }
+            this.updateResultSlot();
         }
     }
 
@@ -60,23 +55,24 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
                 return; // No complete recipe in crafting grid
             }
 
+            final ItemStack[] matrix = getMatrix();
+
             // Set to correct amount (tricking the client and click handler)
-            int recipeAmount = CraftingManager.getLayers(getMatrix());
+            int recipeAmount = CraftingManager.getLayers(matrix);
             clickedItem.setAmount(clickedItem.getAmount() * recipeAmount);
 
             // Place the items in the player's inventory (right to left)
             player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
 
-            // Craft the items, removing the ingredients from the crafting matrix
-            for (int i = 0; i < recipeAmount; i++) {
-                craft();
-            }
+            // Avoid calling craft because we already know the player can craft 'recipeAmount' of this item
+            CraftingManager cm = player.getServer().getCraftingManager();
+            // Removing all the items at once will avoid multiple useless calls to craft (and all of its sub methods like getRecipe)
+            cm.removeItems(matrix, this, recipeAmount);
         } else {
             // Clicked in the crafting grid, no special handling required (just place them left to right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
             view.setItem(clickedSlot, clickedItem);
         }
-
     }
 
     @Override
@@ -121,18 +117,25 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             // Call super method, so we only calculate the result once
             super.setItem(MATRIX_START + i, contents[i]);
         }
-        // Update result
+
+        this.updateResultSlot();
+    }
+
+    @Override
+    public Recipe getRecipe() {
+        return ((GlowServer) Bukkit.getServer()).getCraftingManager().getCraftingRecipe(getMatrix());
+    }
+
+    /**
+     * Update the result slot with the current matrix.
+     */
+    public void updateResultSlot() {
         Recipe recipe = getRecipe();
         if (recipe == null) {
             super.setItem(RESULT_SLOT, InventoryUtil.createEmptyStack());
         } else {
             super.setItem(RESULT_SLOT, recipe.getResult());
         }
-    }
-
-    @Override
-    public Recipe getRecipe() {
-        return ((GlowServer) Bukkit.getServer()).getCraftingManager().getCraftingRecipe(getMatrix());
     }
 
 }

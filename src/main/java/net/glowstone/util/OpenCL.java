@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class OpenCL {
     private static File openCLDir;
@@ -29,8 +30,16 @@ public class OpenCL {
                         CLProgram program = context.createProgram(input).build();
                         programs.put(name, program);
                         return program;
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ex) {
+                        GlowServer.logger.log(Level.WARNING, "Could not load custom OpenCL program. Trying builtins.", ex);
+                    }
+                } else {
+                    try (InputStream input = OpenCL.class.getClassLoader().getResourceAsStream("builtin/opencl/" + name)) {
+                        CLProgram program = context.createProgram(input).build();
+                        programs.put(name, program);
+                        return program;
+                    } catch (IOException ex) {
+                        GlowServer.logger.log(Level.WARNING, "Could not load builtin OpenCL program.", ex);
                     }
                 }
             }
@@ -39,9 +48,13 @@ public class OpenCL {
     }
 
     public static CLKernel getKernel(CLProgram program, String name) {
+        return getKernel(program, name, false);
+    }
+
+    public static CLKernel getKernel(CLProgram program, String name, boolean threaded) {
         if (kernels.containsKey(program)) {
             HashMap<String, CLKernel> kernel = kernels.get(program);
-            if (kernel.containsKey(name)) {
+            if (kernel.containsKey(name) && !threaded) {
                 return kernel.get(name);
             } else {
                 CLKernel clKernel = program.createCLKernel(name);

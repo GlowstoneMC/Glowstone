@@ -3844,3 +3844,16 @@ shaped:
   - aba
   - bcb
   - aba
+- result:
+    type: END_CRYSTAL
+  ingredients:
+    a:
+      type: GLASS
+    b:
+      type: GHAST_TEAR
+    c:
+      type: EYE_OF_ENDER
+  shape:
+  - aaa
+  - aca
+  - aba
