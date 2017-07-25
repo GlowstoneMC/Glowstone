@@ -21,6 +21,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         }
 
         setRotation(Rotation.NONE);
-        setItem(new ItemStack(Material.AIR));
+        setItem(InventoryUtil.createEmptyStack());
     }
 
     // //////////////////////////////////////////////////////////////////////////
@@ -53,7 +54,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if (message.getAction() == Action.INTERACT.ordinal()) {
+        if (message.getAction() == Action.INTERACT.ordinal() && message.getHandSlot() == EquipmentSlot.HAND) {
             if (InventoryUtil.isEmpty(getItem())) {
                 ItemStack isInHand = player.getItemInHand();
                 if (isInHand != null) {
@@ -81,7 +82,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
                 remove();
             } else {
                 world.dropItemNaturally(location, getItem().clone());
-                setItem(new ItemStack(Material.AIR));
+                setItem(InventoryUtil.createEmptyStack());
                 setRotation(Rotation.NONE);
             }
         }
