@@ -2600,7 +2600,52 @@ shaped:
   ingredients:
     e:
       type: WOOD
-      damage: 32767
+      damage: 0
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_SPRUCE
+  ingredients:
+    e:
+      type: WOOD
+      damage: 1
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_BIRCH
+  ingredients:
+    e:
+      type: WOOD
+      damage: 2
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_JUNGLE
+  ingredients:
+    e:
+      type: WOOD
+      damage: 3
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_ACACIA
+  ingredients:
+    e:
+      type: WOOD
+      damage: 4
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_DARK_OAK
+  ingredients:
+    e:
+      type: WOOD
+      damage: 5
   shape:
   - e e
   - eee
