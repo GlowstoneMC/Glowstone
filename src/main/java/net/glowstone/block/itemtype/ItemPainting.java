@@ -3,10 +3,13 @@ package net.glowstone.block.itemtype;
 import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparingInt;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowPainting;
 import org.bukkit.Art;
@@ -17,28 +20,35 @@ import org.bukkit.util.Vector;
 
 public class ItemPainting extends ItemType {
 
-    // Art, sorted by size descending
-    private static final List<Art> SORTED_ART;
+    /**
+     * Contains all Arts
+     * Key is the size of the art in descending order
+     */
+    private static final ListMultimap<Key, Art> ART_BY_SIZE;
 
     static {
-        SORTED_ART = Arrays.stream(Art.values())
-            .sorted(
-                reverseOrder(
-                    comparingInt(Art::getBlockHeight)
-                    .thenComparingInt(Art::getBlockWidth)
-                )
+        ART_BY_SIZE = MultimapBuilder.treeKeys(
+            reverseOrder(
+                comparingInt(Key::getX)
+                .thenComparingInt(Key::getZ)
             )
-            .collect(Collectors.toList());
+        ).arrayListValues().build();
+
+        Arrays.stream(Art.values()).forEach(art -> ART_BY_SIZE.put(new Key(art.getBlockHeight(), art.getBlockWidth()), art));
     }
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowPainting painting = new GlowPainting(target.getRelative(face).getLocation(), face);
 
-        for (Art art : SORTED_ART) {
-            painting.setArtInternal(art);
+        for (Key key : ART_BY_SIZE.keySet()) {
+            List<Art> arts = ART_BY_SIZE.get(key);
+            painting.setArtInternal(arts.get(0));
+
             if (!painting.isObstructed()) {
-                break;
+                int i = ThreadLocalRandom.current().nextInt(0, arts.size());
+                painting.setArtInternal(arts.get(i));
+                return;
             }
         }
     }
