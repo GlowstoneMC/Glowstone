@@ -17,6 +17,7 @@ import org.bukkit.util.Vector;
 
 public class ItemPainting extends ItemType {
 
+    // Art, sorted by size descending
     private static final List<Art> SORTED_ART;
 
     static {

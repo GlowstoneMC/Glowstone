@@ -16,8 +16,7 @@ public class PaintingStore extends HangingStore<GlowPainting> {
 
     @Override
     public GlowPainting createEntity(Location location, CompoundTag compound) {
-        GlowPainting painting = new GlowPainting(location, BlockFace.SOUTH);
-        return painting;
+        return new GlowPainting(location, BlockFace.SOUTH);
     }
 
     @Override

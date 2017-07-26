@@ -1,6 +1,7 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,37 +27,6 @@ import org.bukkit.inventory.ItemStack;
 public class GlowPainting extends GlowHangingEntity implements Painting {
     private Art art;
 
-    private static final Map<Art, String> ART_TITLE = new HashMap<>();
-
-    static {
-        ART_TITLE.put(Art.KEBAB, "Kebab");
-        ART_TITLE.put(Art.AZTEC, "Aztec");
-        ART_TITLE.put(Art.ALBAN, "Alban");
-        ART_TITLE.put(Art.AZTEC2, "Aztec2");
-        ART_TITLE.put(Art.BOMB, "Bomb");
-        ART_TITLE.put(Art.PLANT, "Plant");
-        ART_TITLE.put(Art.WASTELAND, "Wasteland");
-        ART_TITLE.put(Art.POOL, "Pool");
-        ART_TITLE.put(Art.COURBET, "Courbet");
-        ART_TITLE.put(Art.SEA, "Sea");
-        ART_TITLE.put(Art.SUNSET, "Sunset");
-        ART_TITLE.put(Art.CREEBET, "Creebet");
-        ART_TITLE.put(Art.WANDERER, "Wanderer");
-        ART_TITLE.put(Art.GRAHAM, "Graham");
-        ART_TITLE.put(Art.MATCH, "Match");
-        ART_TITLE.put(Art.BUST, "Bust");
-        ART_TITLE.put(Art.STAGE, "Stage");
-        ART_TITLE.put(Art.VOID, "Void");
-        ART_TITLE.put(Art.SKULL_AND_ROSES, "SkullAndRoses");
-        ART_TITLE.put(Art.WITHER, "Wither");
-        ART_TITLE.put(Art.FIGHTERS, "Fighters");
-        ART_TITLE.put(Art.POINTER, "Pointer");
-        ART_TITLE.put(Art.BURNINGSKULL, "BurningSkull");
-        ART_TITLE.put(Art.SKELETON, "Skeleton");
-        ART_TITLE.put(Art.DONKEYKONG, "DonkeyKong");
-        ART_TITLE.put(Art.PIGSCENE, "PigScene");
-    }
-
     public GlowPainting(Location location) {
         this(location, BlockFace.SOUTH);
     }
@@ -64,6 +34,17 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     public GlowPainting(Location location, BlockFace clickedface) {
         super(location, clickedface);
         setArtInternal(Art.KEBAB);
+    }
+
+    public String getArtTitle() {
+        switch (art) {
+            case DONKEYKONG:
+                return "DonkeyKong";
+            case BURNINGSKULL:
+                return "BurningSkull";
+            default:
+                return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, art.name());
+        }
     }
 
     @Override
@@ -76,7 +57,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
-        String title = ART_TITLE.get(art);
+        String title = getArtTitle();
 
         return Collections.singletonList(
             new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z, facing.ordinal())
@@ -114,7 +95,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     protected void respawn() {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessage = this.createSpawnMessage();
-        Collection<Message> messages = Lists.newArrayList();
+        Collection<Message> messages = Lists.newArrayList(destroyMessage);
         messages.add(destroyMessage);
         messages.addAll(spawnMessage);
 
@@ -207,11 +188,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             current.setZ(topLeftCorner.getZ());
         }
 
-        List<Entity> entitiesInside = this.world.getEntityManager().getEntitiesInside(this.boundingBox, this);
-        for (Entity entity : entitiesInside) {
-            System.out.println("Art|entitiesInside:" + art.getBlockWidth() + "|" + art.getBlockHeight() + "|" + entity.getLocation());
-        }
-        return !entitiesInside.isEmpty();
+        return !this.world.getEntityManager().getEntitiesInside(this.boundingBox, this).isEmpty();
     }
 
     private boolean canHoldPainting(Location where) {
