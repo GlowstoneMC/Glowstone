@@ -1,9 +1,7 @@
 package net.glowstone.io.entity;
 
-import java.util.Locale;
 import net.glowstone.entity.objects.GlowPainting;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Art;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
@@ -24,7 +22,7 @@ public class PaintingStore extends HangingStore<GlowPainting> {
         super.load(entity, tag);
 
         if (tag.isString("Motive")) {
-            entity.setArtInternal(Art.getByName(tag.getString("Motive")));
+            entity.setArtInternal(GlowPainting.getArtFromTitle(tag.getString("Motive")));
         }
     }
 
@@ -32,6 +30,6 @@ public class PaintingStore extends HangingStore<GlowPainting> {
     public void save(GlowPainting entity, CompoundTag tag) {
         super.save(entity, tag);
 
-        tag.putString("Motive", entity.getArt().name().toLowerCase(Locale.ENGLISH).replaceAll("_", ""));
+        tag.putString("Motive", entity.getArtTitle());
     }
 }

@@ -1,7 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Painting;
 import org.bukkit.event.hanging.HangingBreakEvent;
@@ -26,6 +24,40 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
     private Art art;
+
+    private static final Map<Art, String> TITLE_BY_ART = new HashMap<>();
+    private static final Map<String, Art> ART_BY_TITLE = new HashMap<>();
+
+    static {
+        TITLE_BY_ART.put(Art.KEBAB, "Kebab");
+        TITLE_BY_ART.put(Art.AZTEC, "Aztec");
+        TITLE_BY_ART.put(Art.ALBAN, "Alban");
+        TITLE_BY_ART.put(Art.AZTEC2, "Aztec2");
+        TITLE_BY_ART.put(Art.BOMB, "Bomb");
+        TITLE_BY_ART.put(Art.PLANT, "Plant");
+        TITLE_BY_ART.put(Art.WASTELAND, "Wasteland");
+        TITLE_BY_ART.put(Art.POOL, "Pool");
+        TITLE_BY_ART.put(Art.COURBET, "Courbet");
+        TITLE_BY_ART.put(Art.SEA, "Sea");
+        TITLE_BY_ART.put(Art.SUNSET, "Sunset");
+        TITLE_BY_ART.put(Art.CREEBET, "Creebet");
+        TITLE_BY_ART.put(Art.WANDERER, "Wanderer");
+        TITLE_BY_ART.put(Art.GRAHAM, "Graham");
+        TITLE_BY_ART.put(Art.MATCH, "Match");
+        TITLE_BY_ART.put(Art.BUST, "Bust");
+        TITLE_BY_ART.put(Art.STAGE, "Stage");
+        TITLE_BY_ART.put(Art.VOID, "Void");
+        TITLE_BY_ART.put(Art.SKULL_AND_ROSES, "SkullAndRoses");
+        TITLE_BY_ART.put(Art.WITHER, "Wither");
+        TITLE_BY_ART.put(Art.FIGHTERS, "Fighters");
+        TITLE_BY_ART.put(Art.POINTER, "Pointer");
+        TITLE_BY_ART.put(Art.BURNINGSKULL, "BurningSkull");
+        TITLE_BY_ART.put(Art.SKELETON, "Skeleton");
+        TITLE_BY_ART.put(Art.DONKEYKONG, "DonkeyKong");
+        TITLE_BY_ART.put(Art.PIGSCENE, "PigScene");
+
+        TITLE_BY_ART.forEach((art, title) -> ART_BY_TITLE.put(title, art));
+    }
 
     public GlowPainting(Location location) {
         this(location, BlockFace.SOUTH);
@@ -37,14 +69,11 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     public String getArtTitle() {
-        switch (art) {
-            case DONKEYKONG:
-                return "DonkeyKong";
-            case BURNINGSKULL:
-                return "BurningSkull";
-            default:
-                return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, art.name());
-        }
+        return TITLE_BY_ART.get(art);
+    }
+
+    public static Art getArtFromTitle(String title) {
+        return ART_BY_TITLE.get(title);
     }
 
     @Override
