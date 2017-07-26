@@ -1,16 +1,19 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
+import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.AdvancementTabMessage;
+
+import java.util.logging.Level;
 
 public class AdvancementTabHandler implements MessageHandler<GlowSession, AdvancementTabMessage> {
     @Override
     public void handle(GlowSession session, AdvancementTabMessage message) {
         if (message.getAction() == AdvancementTabMessage.ACTION_CLOSE) {
-            System.out.println("Received AdvancementTabHandler (close)");
+            GlowServer.logger.log(Level.FINE, "Received AdvancementTabHandler (close)");
         } else {
-            System.out.println("Received AdvancementTabHandler (open:" + message.getTabId() + ")");
+            GlowServer.logger.log(Level.FINE, "Received AdvancementTabHandler (open:" + message.getTabId() + ")");
         }
     }
 }

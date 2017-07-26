@@ -48,13 +48,6 @@ public final class AnvilChunkIoService implements ChunkIoService {
         cache = new RegionFileCache(dir, ".mca");
     }
 
-    /**
-     * Reads a chunk from its region file.
-     *
-     * @param chunk The GlowChunk to read into.
-     * @return Whether the
-     * @throws IOException if an I/O error occurs.
-     */
     @Override
     public boolean read(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
@@ -171,12 +164,6 @@ public final class AnvilChunkIoService implements ChunkIoService {
         return true;
     }
 
-    /**
-     * Writes a chunk to its region file.
-     *
-     * @param chunk The {@link GlowChunk} to write from.
-     * @throws IOException if an I/O error occurs.
-     */
     @Override
     public void write(GlowChunk chunk) throws IOException {
         int x = chunk.getX(), z = chunk.getZ();
