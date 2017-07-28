@@ -9,9 +9,13 @@ import java.util.List;
 import java.util.Map;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import org.bukkit.Art;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -82,6 +86,21 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     @Override
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        if (message.getAction() == Action.ATTACK.ordinal()) {
+            // TODO: use correct RemoveCause
+            if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.DEFAULT)).isCancelled()) {
+                return false;
+            }
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
+            }
+            remove();
+        }
+        return true;
+    }
+
+    @Override
     public List<Message> createSpawnMessage() {
         int x = location.getBlockX();
         int y = location.getBlockY();
@@ -121,7 +140,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
 
-    protected void respawn() {
+    private void respawn() {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessage = this.createSpawnMessage();
         Collection<Message> messages = Lists.newArrayList(destroyMessage);
@@ -181,22 +200,20 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             }
         }
 
-        if (ticksLived % (20 * 5) == 0) {
-            if (isObstructed()) {
-                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
-                    return;
-                }
-                if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
-                    world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
-                    remove();
-                }
+        if (ticksLived % (20 * 5) == 0 && isObstructed()) {
+            if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
+                return;
+            }
+            if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
+                world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
+                remove();
             }
         }
     }
 
     @Override
     protected void pulsePhysics() {
-        // item frames aren't affected by physics
+        // not affected by physics
     }
 
     public boolean isObstructed() {
