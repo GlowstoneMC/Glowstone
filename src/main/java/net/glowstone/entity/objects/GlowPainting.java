@@ -334,17 +334,26 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         return art.getBlockHeight() / 2;
     }
 
+    public Location getArtCenter() {
+        return this.center;
+    }
+
     protected void updateBoundingBox() {
         BlockFace rightFace = getRightFace();
-        double modX = Math.abs(rightFace.getModX() * art.getBlockWidth()) - 0.00001;
-        double modY = art.getBlockHeight() - 0.00001;
-        double modZ = Math.abs(rightFace.getModZ() * art.getBlockWidth()) - 0.00001;
+        double modX = Math.abs(rightFace.getModX() * art.getBlockWidth());
+        double modY = art.getBlockHeight();
+        double modZ = Math.abs(rightFace.getModZ() * art.getBlockWidth());
 
         if (modX == 0.0) {
             modX = PAINTING_DEPTH;
         } else if (modZ == 0.0) {
             modZ = PAINTING_DEPTH;
         }
+
+        // restrict the bounding box to not reach exactly onto the next blocks
+        modX -= 0.00001;
+        modY -= 0.00001;
+        modZ -= 0.00001;
 
         boundingBox = new EntityBoundingBox(modX, modY, modZ);
         super.updateBoundingBox();

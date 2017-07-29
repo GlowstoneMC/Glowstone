@@ -1,6 +1,7 @@
 package net.glowstone.io.entity;
 
 import net.glowstone.entity.objects.GlowPainting;
+import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -30,5 +31,6 @@ public class PaintingStore extends HangingStore<GlowPainting> {
         super.save(entity, tag);
 
         tag.putString("Motive", entity.getArtTitle());
+        NbtSerialization.locationToListTags(entity.getArtCenter(), tag);
     }
 }
