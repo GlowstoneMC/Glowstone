@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
     private Art art;
+    private Location center;
 
     private static final Map<Art, String> TITLE_BY_ART = new HashMap<>();
     private static final Map<String, Art> ART_BY_TITLE = new HashMap<>();
@@ -69,6 +70,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     public GlowPainting(Location location, BlockFace clickedface) {
         super(location, clickedface);
+        center = location.clone();
         setArtInternal(Art.KEBAB);
     }
 
@@ -102,9 +104,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
+        int x = center.getBlockX();
+        int y = center.getBlockY();
+        int z = center.getBlockZ();
         String title = getArtTitle();
 
         return Collections.singletonList(
@@ -125,11 +127,11 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public boolean setArt(Art art, boolean force) {
         Art oldArt = this.art;
-        this.art = art;
+        setArtInternal(art);
         setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
 
         if (!force && isObstructed()) {
-            this.art = oldArt;
+            setArtInternal(oldArt);
             setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
             return false;
         }
@@ -138,7 +140,6 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
         return false;
     }
-
 
     private void respawn() {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
@@ -162,6 +163,28 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     public void setArtInternal(Art art) {
         this.art = art;
+
+        BlockFace rightFace = getRightFace();
+
+        // recalculate the location based upon the center
+        double modX = rightFace.getModX() * art.getBlockWidth() / 2.0;
+        double modY = art.getBlockHeight() / 2.0;
+        double modZ = rightFace.getModZ() * art.getBlockWidth() / 2.0;
+
+        BlockFace facing = getFacing();
+        if (modX == 0.0) {
+            modX = 0.5 - facing.getModX() * 0.46875;
+        } else if (modZ == 0.0) {
+            modZ = 0.5 - facing.getModZ() * 0.46875;
+        }
+
+        Location add = getTopLeftCorner().add(modX, -modY, modZ);
+        location.setX(add.getX());
+        location.setY(add.getY());
+        location.setZ(add.getZ());
+        location.setPitch(0);
+        location.setYaw(getYaw());
+
         setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
     }
 
@@ -218,7 +241,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     public boolean isObstructed() {
         Location topLeftCorner = getTopLeftCorner().getBlock().getRelative(facing.getBlockFace().getOppositeFace()).getLocation();
-        BlockFace right = getLeftFace().getBlockFace().getOppositeFace();
+        BlockFace right = getRightFace();
 
         Location current = topLeftCorner.clone();
         for (int y = 0; y < art.getBlockHeight(); y++) {
@@ -243,24 +266,25 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         }
 
         Block inFront = where.clone().getBlock().getRelative(facing.getBlockFace());
-        if (inFront.getType().isSolid()) {
-            return false;
-        }
-        return true;
+        return !inFront.getType().isSolid();
     }
 
     private Location getTopLeftCorner() {
-        BlockFace left = getLeftFace().getBlockFace();
-        Location topLeft = location.clone();
+        BlockFace left = getLeftFace();
+        Location topLeft = center.clone();
         int topMod = art.getBlockHeight() / 2;
-        int widthMod = Math.max(0, art.getBlockHeight() / 2 - 1);
+        int widthMod = Math.max(0, art.getBlockWidth() / 2 - 1);
 
         topLeft.add(left.getModX() * widthMod, topMod, left.getModZ() * widthMod);
         return topLeft;
     }
 
-    private HangingFace getLeftFace() {
-        return HangingFace.values()[(facing.ordinal() + 1) % 4];
+    private BlockFace getLeftFace() {
+        return HangingFace.values()[(facing.ordinal() + 1) % 4].getBlockFace();
+    }
+
+    private BlockFace getRightFace() {
+        return getLeftFace().getOppositeFace();
     }
 
     @Override

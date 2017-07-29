@@ -115,7 +115,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int yaw = getYaw(getFacing());
+        int yaw = getYaw();
 
         return Arrays.asList(
             new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM_FRAME, location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw, HangingFace.getByBlockFace(getFacing()).ordinal()),
@@ -131,7 +131,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
     private void createTeleportMessage(BlockFace face) {
         int xoffset = 0;
         int zoffset = 0;
-        int yaw = getYaw(face);
+        int yaw = getYaw();
         switch (face) {
             case WEST:
                 xoffset = -32;
@@ -155,19 +155,6 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
                 double z = location.getZ();
                 player.getSession().send(new EntityTeleportMessage(id, x + xoffset, y, z + zoffset, yaw, 0));
             }
-        }
-    }
-
-    private int getYaw(BlockFace face) {
-        switch (getFacing()) {
-            case WEST:
-                return 64;
-            case NORTH:
-                return -128;
-            case EAST:
-                return -64;
-            default:
-                return 0;
         }
     }
 

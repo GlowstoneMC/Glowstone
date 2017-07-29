@@ -13,6 +13,7 @@ import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowPainting;
 import org.bukkit.Art;
+import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +40,8 @@ public class ItemPainting extends ItemType {
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        GlowPainting painting = new GlowPainting(target.getRelative(face).getLocation(), face);
+        Location center = target.getRelative(face).getLocation();
+        GlowPainting painting = new GlowPainting(center, face);
 
         for (Key key : ART_BY_SIZE.keySet()) {
             List<Art> arts = ART_BY_SIZE.get(key);

@@ -26,6 +26,19 @@ public abstract class GlowHangingEntity extends GlowEntity implements Hanging {
         return facing.getBlockFace();
     }
 
+    protected int getYaw() {
+        switch (getFacing()) {
+            case WEST:
+                return 64;
+            case NORTH:
+                return -128;
+            case EAST:
+                return -64;
+            default:
+                return 0;
+        }
+    }
+
     @Getter
     @AllArgsConstructor
     public enum HangingFace {
