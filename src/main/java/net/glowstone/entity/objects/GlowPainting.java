@@ -128,22 +128,28 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     @Override
     public boolean setArt(Art art, boolean force) {
-        Art oldArt = this.art;
-        setArtInternal(art);
-        updateBoundingBox();
-
-        if (!force && isObstructed()) {
-            setArtInternal(oldArt);
-            updateBoundingBox();
+        if (art == null) {
             return false;
         }
 
-        respawn();
+        Art oldArt = this.art;
+        setArtInternal(art);
+
+        if (!force && isObstructed()) {
+            setArtInternal(oldArt);
+            return false;
+        }
+
+        refresh();
 
         return true;
     }
 
-    private void respawn() {
+    /**
+     * Refreshes the painting on the client side.
+     * This will first destroy, and then spawn the painting again using it current art and facing value.
+     */
+    public void refresh() {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessages = this.createSpawnMessage();
         Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
@@ -155,7 +161,17 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             .forEach(p -> p.getSession().sendAll(messages));
     }
 
+    /**
+     * Sets the art of this painting, regardless of available space <br>
+     * This matches the behaviour of {@link #setArt(Art, boolean) setArt(art, true)}, but the painting does not get refreshed. <br>
+     * Null values are ignored.
+     *
+     * @param art the Art of the painting
+     */
     public void setArtInternal(Art art) {
+        if (art == null) {
+            return;
+        }
         this.art = art;
 
         recalculateLocation();
@@ -185,7 +201,16 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     @Override
+    public void setFacingDirection(BlockFace blockFace) {
+        setFacingDirection(blockFace, false);
+    }
+
+    @Override
     public boolean setFacingDirection(BlockFace blockFace, boolean force) {
+        if (blockFace == null) {
+            return false;
+        }
+
         HangingFace oldFace = facing;
         this.facing = HangingFace.getByBlockFace(blockFace);
 
@@ -194,14 +219,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             return false;
         }
 
-        respawn();
+        refresh();
 
         return true;
-    }
-
-    @Override
-    public void setFacingDirection(BlockFace blockFace) {
-        setFacingDirection(blockFace, false);
     }
 
     @Override
@@ -209,7 +229,6 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         super.pulse();
 
         if (ticksLived % 11 == 0) {
-
             if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
                 if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
                     return;
@@ -235,6 +254,17 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         // not affected by physics
     }
 
+    /**
+     * Check if the painting can survive at the current location.<br>
+     * Survivability is defined as:
+     * <ul>
+     * <li>The wall behind the painting is completely solid</li>
+     * <li>The painting is not inside a block</li>
+     * <li>The painting is not inside another entity</li>
+     * </ul>
+     *
+     * @return true, if the painting can survive, otherwise false
+     */
     public boolean isObstructed() {
         Location current = getTopLeftCorner();
         BlockFace right = getRightFace();
@@ -286,11 +316,13 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     @Override
     public double getWidth() {
+        // Paper always returns 0.5 as width regardless of art size
         return 0.5;
     }
 
     @Override
     public double getHeight() {
+        // Paper always returns 0.5 as height regardless of art size
         return 0.5;
     }
 

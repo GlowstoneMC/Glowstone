@@ -24,7 +24,7 @@ public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
     @Override
     public ByteBuf encode(ByteBuf buf, SpawnPaintingMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
-        GlowBufUtils.writeUuid(buf, message.getUuid());
+        GlowBufUtils.writeUuid(buf, message.getUniqueId());
         ByteBufUtils.writeUTF8(buf, message.getTitle());
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
         buf.writeByte(message.getFacing());

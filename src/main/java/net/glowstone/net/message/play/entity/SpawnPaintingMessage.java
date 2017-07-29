@@ -8,7 +8,7 @@ import lombok.Data;
 public final class SpawnPaintingMessage implements Message {
 
     private final int id;
-    private final UUID uuid;
+    private final UUID uniqueId;
     private final String title;
     private final int x, y, z, facing;
 
