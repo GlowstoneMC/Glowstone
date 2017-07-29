@@ -1,8 +1,6 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import com.google.common.collect.Lists;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +8,7 @@ import java.util.Map;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnPaintingMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
@@ -27,9 +26,11 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
+
     private Art art;
     private Location center;
 
+    public static final Art DEFAULT_ART = Art.KEBAB;
     private static final Map<Art, String> TITLE_BY_ART = new HashMap<>();
     private static final Map<String, Art> ART_BY_TITLE = new HashMap<>();
 
@@ -64,14 +65,14 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         TITLE_BY_ART.forEach((art, title) -> ART_BY_TITLE.put(title, art));
     }
 
-    public GlowPainting(Location location) {
-        this(location, BlockFace.SOUTH);
+    public GlowPainting(Location center) {
+        this(center, BlockFace.SOUTH);
     }
 
-    public GlowPainting(Location location, BlockFace clickedface) {
-        super(location, clickedface);
-        center = location.clone();
-        setArtInternal(Art.KEBAB);
+    public GlowPainting(Location center, BlockFace facing) {
+        super(center, facing);
+        this.center = center;
+        setArtInternal(DEFAULT_ART);
     }
 
     public String getArtTitle() {
@@ -128,45 +129,41 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     public boolean setArt(Art art, boolean force) {
         Art oldArt = this.art;
         setArtInternal(art);
-        setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
+        updateBoundingBox();
 
         if (!force && isObstructed()) {
             setArtInternal(oldArt);
-            setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
+            updateBoundingBox();
             return false;
         }
 
         respawn();
 
-        return false;
+        return true;
     }
 
     private void respawn() {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
-        List<Message> spawnMessage = this.createSpawnMessage();
-        Collection<Message> messages = Lists.newArrayList(destroyMessage);
-        messages.add(destroyMessage);
-        messages.addAll(spawnMessage);
+        List<Message> spawnMessages = this.createSpawnMessage();
+        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
 
         getWorld()
             .getRawPlayers()
             .stream()
             .filter(p -> p.canSeeEntity(this))
-            .forEach(p -> p.getSession().sendAll(messages.toArray(new Message[messages.size()])));
-
-    }
-
-    @Override
-    protected void updateBoundingBox() {
-        super.updateBoundingBox();
+            .forEach(p -> p.getSession().sendAll(messages));
     }
 
     public void setArtInternal(Art art) {
         this.art = art;
 
-        BlockFace rightFace = getRightFace();
+        recalculateLocation();
 
-        // recalculate the location based upon the center
+        updateBoundingBox();
+    }
+
+    private void recalculateLocation() {
+        BlockFace rightFace = getRightFace();
         double modX = rightFace.getModX() * art.getBlockWidth() / 2.0;
         double modY = art.getBlockHeight() / 2.0;
         double modZ = rightFace.getModZ() * art.getBlockWidth() / 2.0;
@@ -184,8 +181,6 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         location.setZ(add.getZ());
         location.setPitch(0);
         location.setYaw(getYaw());
-
-        setBoundingBox(art.getBlockWidth() - 0.00001, art.getBlockHeight() - 0.00001);
     }
 
     @Override
@@ -240,10 +235,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     public boolean isObstructed() {
-        Location topLeftCorner = getTopLeftCorner().getBlock().getRelative(facing.getBlockFace().getOppositeFace()).getLocation();
+        Location current = getTopLeftCorner();
         BlockFace right = getRightFace();
 
-        Location current = topLeftCorner.clone();
         for (int y = 0; y < art.getBlockHeight(); y++) {
             for (int x = 0; x < art.getBlockWidth(); x++) {
                 if (!canHoldPainting(current)) {
@@ -253,20 +247,22 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             }
 
             current = current.getBlock().getRelative(BlockFace.DOWN).getLocation();
-            current.setX(topLeftCorner.getX());
-            current.setZ(topLeftCorner.getZ());
+
+            // reset x and z
+            current.subtract(right.getModX() * art.getBlockWidth(), 0, right.getModZ() * art.getBlockWidth());
         }
 
         return !this.world.getEntityManager().getEntitiesInside(this.boundingBox, this).isEmpty();
     }
 
     private boolean canHoldPainting(Location where) {
-        if (!where.getBlock().getType().isSolid()) {
+        Block block = where.getBlock();
+        if (block.getType().isSolid()) {
             return false;
         }
 
-        Block inFront = where.clone().getBlock().getRelative(facing.getBlockFace());
-        return !inFront.getType().isSolid();
+        Block behind = block.getRelative(getAttachedFace());
+        return behind.getType().isSolid();
     }
 
     private Location getTopLeftCorner() {
@@ -295,5 +291,24 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public double getHeight() {
         return 0.5;
+    }
+
+    protected void updateBoundingBox() {
+        BlockFace rightFace = getRightFace();
+        double modX = rightFace.getModX() * art.getBlockWidth();
+        double modY = art.getBlockHeight();
+        double modZ = rightFace.getModZ() * art.getBlockWidth();
+
+        if (modX == 0.0) {
+            modX = 0.0625;
+        } else if (modZ == 0.0) {
+            modZ = 0.0625;
+        }
+
+        boundingBox = new EntityBoundingBox(Math.abs(modX) - 0.000001, modY - 0.000001, Math.abs(modZ) - 0.00001);
+        super.updateBoundingBox();
+
+        boundingBox.minCorner.setY(location.getY() - (modY - 0.000001) / 2);
+        boundingBox.maxCorner.setY(location.getY() + (modY - 0.000001) / 2);
     }
 }

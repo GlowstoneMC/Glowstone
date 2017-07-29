@@ -13,6 +13,7 @@ import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.objects.GlowItemFrame;
+import net.glowstone.entity.objects.GlowPainting;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.GlowSession;
@@ -423,9 +424,9 @@ public abstract class GlowEntity implements Entity {
         }
         metadata.setBit(MetadataIndex.STATUS, StatusFlags.ON_FIRE, fireTicks > 0);
 
-        // resend position if it's been a while, causes ItemFrames to disappear.
+        // resend position if it's been a while, causes ItemFrames to disappear and GlowPaintings to dislocate.
         if (ticksLived % (30 * 20) == 0) {
-            if (!(this instanceof GlowItemFrame)) {
+            if (!(this instanceof GlowItemFrame || this instanceof GlowPainting)) {
                 teleported = true;
             }
         }

@@ -3,7 +3,6 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.objects.GlowPainting;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 
 public class PaintingStore extends HangingStore<GlowPainting> {
@@ -14,7 +13,7 @@ public class PaintingStore extends HangingStore<GlowPainting> {
 
     @Override
     public GlowPainting createEntity(Location location, CompoundTag compound) {
-        return new GlowPainting(location, BlockFace.SOUTH);
+        return new GlowPainting(location);
     }
 
     @Override
