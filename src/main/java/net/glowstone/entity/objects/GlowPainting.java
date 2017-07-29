@@ -27,10 +27,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
 
+    private static final double PAINTING_DEPTH = 0.0625;
     private Art art;
     private Location center;
 
-    public static final Art DEFAULT_ART = Art.KEBAB;
+    private static final Art DEFAULT_ART = Art.KEBAB;
     private static final Map<Art, String> TITLE_BY_ART = new HashMap<>();
     private static final Map<String, Art> ART_BY_TITLE = new HashMap<>();
 
@@ -170,9 +171,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
         BlockFace facing = getFacing();
         if (modX == 0.0) {
-            modX = 0.5 - facing.getModX() * 0.46875;
+            modX = 0.5 - facing.getModX() * 0.5 - PAINTING_DEPTH / 2;
         } else if (modZ == 0.0) {
-            modZ = 0.5 - facing.getModZ() * 0.46875;
+            modZ = 0.5 - facing.getModZ() * 0.5 - PAINTING_DEPTH / 2;
         }
 
         Location add = getTopLeftCorner().add(modX, -modY, modZ);
@@ -268,8 +269,8 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     private Location getTopLeftCorner() {
         BlockFace left = getLeftFace();
         Location topLeft = center.clone();
-        int topMod = art.getBlockHeight() / 2;
-        int widthMod = Math.max(0, art.getBlockWidth() / 2 - 1);
+        int topMod = (int) getArtHeight();
+        int widthMod = (int) getArtWidth();
 
         topLeft.add(left.getModX() * widthMod, topMod, left.getModZ() * widthMod);
         return topLeft;
@@ -293,22 +294,41 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         return 0.5;
     }
 
+    private double getArtWidth() {
+        return Math.max(0, art.getBlockWidth() / 2 - 1);
+    }
+
+    private double getArtHeight() {
+        return art.getBlockHeight() / 2;
+    }
+
     protected void updateBoundingBox() {
         BlockFace rightFace = getRightFace();
-        double modX = rightFace.getModX() * art.getBlockWidth();
-        double modY = art.getBlockHeight();
-        double modZ = rightFace.getModZ() * art.getBlockWidth();
+        double modX = Math.abs(rightFace.getModX() * art.getBlockWidth()) - 0.00001;
+        double modY = art.getBlockHeight() - 0.00001;
+        double modZ = Math.abs(rightFace.getModZ() * art.getBlockWidth()) - 0.00001;
 
         if (modX == 0.0) {
-            modX = 0.0625;
+            modX = PAINTING_DEPTH;
         } else if (modZ == 0.0) {
-            modZ = 0.0625;
+            modZ = PAINTING_DEPTH;
         }
 
-        boundingBox = new EntityBoundingBox(Math.abs(modX) - 0.000001, modY - 0.000001, Math.abs(modZ) - 0.00001);
+        boundingBox = new EntityBoundingBox(modX, modY, modZ);
         super.updateBoundingBox();
 
-        boundingBox.minCorner.setY(location.getY() - (modY - 0.000001) / 2);
-        boundingBox.maxCorner.setY(location.getY() + (modY - 0.000001) / 2);
+        // y of the painting is in the center, but for most other it is at the foot
+        // therefore center it here
+        boundingBox.minCorner.setY(location.getY() - modY / 2);
+        boundingBox.maxCorner.setY(location.getY() + modY / 2);
+    }
+
+    @Override
+    public void setRawLocation(Location location, boolean fall) {
+        // Also try to move the center of the painting along
+        Location difference = location.subtract(center);
+        super.setRawLocation(location, fall);
+
+        center = location.clone().subtract(difference);
     }
 }

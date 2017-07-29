@@ -14,6 +14,8 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowPainting;
 import org.bukkit.Art;
 import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -53,5 +55,7 @@ public class ItemPainting extends ItemType {
                 return;
             }
         }
+
+        player.playSound(center, Sound.ENTITY_PAINTING_PLACE, SoundCategory.NEUTRAL, 1.0f, 1.0f);
     }
 }
