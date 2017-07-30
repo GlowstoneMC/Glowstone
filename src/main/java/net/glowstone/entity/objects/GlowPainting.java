@@ -19,7 +19,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Painting;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
@@ -273,7 +275,8 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             current.subtract(right.getModX() * art.getBlockWidth(), 0, right.getModZ() * art.getBlockWidth());
         }
 
-        return !this.world.getEntityManager().getEntitiesInside(this.boundingBox, this).isEmpty();
+        List<Entity> entitiesInside = this.world.getEntityManager().getEntitiesInside(this.boundingBox, this);
+        return entitiesInside.stream().anyMatch(e -> e instanceof Hanging);
     }
 
     private boolean canHoldPainting(Location where) {
