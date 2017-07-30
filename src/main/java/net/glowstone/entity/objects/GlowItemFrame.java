@@ -93,7 +93,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
     public void pulse() {
         super.pulse();
 
-        if (ticksLived % 11 == 0) {
+        if (ticksLived % (20 * 5) == 0) {
 
             if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
                 if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
@@ -115,7 +115,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int yaw = getYaw(getFacing());
+        int yaw = getYaw();
 
         return Arrays.asList(
             new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM_FRAME, location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw, HangingFace.getByBlockFace(getFacing()).ordinal()),
@@ -131,7 +131,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
     private void createTeleportMessage(BlockFace face) {
         int xoffset = 0;
         int zoffset = 0;
-        int yaw = getYaw(face);
+        int yaw = getYaw();
         switch (face) {
             case WEST:
                 xoffset = -32;
@@ -158,18 +158,6 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         }
     }
 
-    private int getYaw(BlockFace face) {
-        switch (getFacing()) {
-            case WEST:
-                return 64;
-            case NORTH:
-                return -128;
-            case EAST:
-                return -64;
-            default:
-                return 0;
-        }
-    }
 
     @Override
     public EntityType getType() {
