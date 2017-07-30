@@ -93,7 +93,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
     public void pulse() {
         super.pulse();
 
-        if (ticksLived % 11 == 0) {
+        if (ticksLived % (20 * 5) == 0) {
 
             if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
                 if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
@@ -157,6 +157,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
             }
         }
     }
+
 
     @Override
     public EntityType getType() {

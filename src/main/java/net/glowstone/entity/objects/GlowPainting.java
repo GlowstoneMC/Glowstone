@@ -228,16 +228,6 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     public void pulse() {
         super.pulse();
 
-        if (ticksLived % 11 == 0) {
-            if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
-                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
-                    return;
-                }
-                world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
-                remove();
-            }
-        }
-
         if (ticksLived % (20 * 5) == 0 && isObstructed()) {
             if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
                 return;
