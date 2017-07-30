@@ -148,8 +148,8 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     /**
-     * Refreshes the painting on the client side.
-     * This will first destroy, and then spawn the painting again using it current art and facing value.
+     * Refreshes the painting for nearby clients.
+     * This will first destroy, and then spawn the painting again using its current art and facing value.
      */
     public void refresh() {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
@@ -255,7 +255,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
      * <li>The painting is not inside another entity</li>
      * </ul>
      *
-     * @return true, if the painting can survive, otherwise false
+     * @return true if the painting can survive, false otherwise
      */
     public boolean isObstructed() {
         Location current = getTopLeftCorner();
@@ -309,13 +309,13 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     @Override
     public double getWidth() {
-        // Paper always returns 0.5 as width regardless of art size
+        // Paper always returns 0.5 regardless of actual art size
         return 0.5;
     }
 
     @Override
     public double getHeight() {
-        // Paper always returns 0.5 as height regardless of art size
+        // Paper always returns 0.5 regardless of actual art size
         return 0.5;
     }
 
