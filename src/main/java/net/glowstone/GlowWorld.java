@@ -766,7 +766,20 @@ public final class GlowWorld implements World {
             // find a spawn if needed
             Location spawn = generator.getFixedSpawnLocation(this, random);
             // we're already going to anchor if told to, so don't request another anchor
-            setSpawnLocation(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ(), false);
+            if (spawn == null) {
+                // determine a location randomly
+                int spawnX = random.nextInt(256) - 128, spawnZ = random.nextInt(256) - 128;
+                getChunkAt(spawnX >> 4, spawnZ >> 4).load(true);  // I'm not sure there's a sane way around this
+
+                for (int tries = 0; tries < 1000 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
+                    spawnX += random.nextInt(256) - 128;
+                    spawnZ += random.nextInt(256) - 128;
+                }
+                setSpawnLocation(spawnX, getHighestBlockYAt(spawnX, spawnZ), spawnZ);
+                needSpawn = false;
+            } else {
+                setSpawnLocation(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ(), false);
+            }
         }
 
         if (spawnChunkLock == null) {
