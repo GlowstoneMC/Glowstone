@@ -529,7 +529,11 @@ public class GlowSession extends BasicSession {
 
         // send login response
         send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
-        setProtocol(ProtocolType.PLAY);
+        if (version == GlowServer.PROTOCOL_VERSION_17W31A) {
+            setProtocol(ProtocolType.PLAY_17W31A);
+        } else {
+            setProtocol(ProtocolType.PLAY);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
