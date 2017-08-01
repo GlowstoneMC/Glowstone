@@ -1,21 +1,27 @@
 package net.glowstone.command.glowstone;
 
 import com.google.common.base.Preconditions;
+import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandUtils;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GlowstoneCommand extends BukkitCommand {
 
-    private static final List<String> SUBCOMMANDS = Arrays.asList("about", "eval", "help", "property", "vm");
+    private static final List<String> SUBCOMMANDS = Arrays.asList("about", "eval", "help", "property", "vm", "world");
 
     public GlowstoneCommand() {
         super("glowstone", "A handful of Glowstone commands for debugging purposes", "/glowstone help", Arrays.asList("gs"));
@@ -83,7 +89,28 @@ public class GlowstoneCommand extends BukkitCommand {
 
             return false;
         }
-        if (args[0].equals("eval")) {
+        if (args[0].equalsIgnoreCase("world") || args[0].equalsIgnoreCase("worlds")) {
+            if (args.length == 1) {
+                // list worlds
+                sender.sendMessage("Worlds: " + CommandUtils.prettyPrint(getWorldNames().toArray(new String[0])));
+                return true;
+            }
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "Only players can switch worlds.");
+                return false;
+            }
+            GlowPlayer player = (GlowPlayer) sender;
+            String worldName = args[1];
+            GlowWorld world = player.getServer().getWorld(worldName);
+            if (world == null) {
+                sender.sendMessage(ChatColor.RED + "World '" + worldName + "' is not loaded, or does not exist.");
+                return false;
+            }
+            player.teleport(world.getSpawnLocation());
+            player.sendMessage("Teleported to world '" + world.getName() + "'.");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("eval")) {
             if (args.length == 1) {
                 // no args, send usage
                 sender.sendMessage(ChatColor.RED + "Usage: /" + label + " eval <eval>");
@@ -114,6 +141,14 @@ public class GlowstoneCommand extends BukkitCommand {
         if (args.length == 2 && args[0].equalsIgnoreCase("property")) {
             return (List) StringUtil.copyPartialMatches(args[1], System.getProperties().stringPropertyNames(), new ArrayList(System.getProperties().stringPropertyNames().size()));
         }
+        if (args.length == 2 && (args[0].equalsIgnoreCase("world") || args[0].equalsIgnoreCase("worlds")) && sender instanceof Player) {
+            Collection<String> worlds = getWorldNames();
+            return (List) StringUtil.copyPartialMatches(args[1], worlds, new ArrayList(worlds.size()));
+        }
         return Collections.emptyList();
+    }
+
+    private Collection<String> getWorldNames() {
+        return Bukkit.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList());
     }
 }

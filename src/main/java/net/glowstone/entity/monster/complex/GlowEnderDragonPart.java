@@ -7,6 +7,7 @@ import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.Collections;
 import java.util.List;
 
 public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
@@ -25,7 +26,7 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
