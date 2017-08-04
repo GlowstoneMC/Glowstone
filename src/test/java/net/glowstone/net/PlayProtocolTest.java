@@ -132,6 +132,10 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new AdvancementTabMessage(0, "minecraft:test"),
             new SteerBoatMessage(true, true),
             new SteerBoatMessage(false, false),
+            new CraftRecipeRequestMessage(0, 1, true),
+            new CraftRecipeResponseMessage(0, 1),
+            new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_DISPLAYED_RECIPE, 0),
+            new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_STATUS, true, false)
     };
 
     public PlayProtocolTest() {

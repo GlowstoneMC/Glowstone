@@ -44,12 +44,12 @@ public class PlayProtocol extends GlowProtocol {
         inbound(0x0F, PlayerLookMessage.class, PlayerLookCodec.class, PlayerUpdateHandler.class);
         inbound(0x10, VehicleMoveMessage.class, VehicleMoveCodec.class, VehicleMoveHandler.class);
         inbound(0x11, SteerBoatMessage.class, SteerBoatCodec.class, SteerBoatHandler.class);
-        // TODO 0x12 : Craft Recipe Request
+        inbound(0x12, CraftRecipeRequestMessage.class, CraftRecipeRequestCodec.class, CraftRecipeRequestHandler.class);
         inbound(0x13, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class, PlayerAbilitiesHandler.class);
         inbound(0x14, DiggingMessage.class, DiggingCodec.class, DiggingHandler.class);
         inbound(0x15, PlayerActionMessage.class, PlayerActionCodec.class, PlayerActionHandler.class);
         inbound(0x16, SteerVehicleMessage.class, SteerVehicleCodec.class, SteerVehicleHandler.class);
-        // TODO 0x17 : Crafting Book Data
+        inbound(0x17, CraftingBookDataMessage.class, CraftingBookDataCodec.class, CraftingBookDataHandler.class);
         inbound(0x18, ResourcePackStatusMessage.class, ResourcePackStatusCodec.class, ResourcePackStatusHandler.class);
         inbound(0x19, AdvancementTabMessage.class, AdvancementTabCodec.class, AdvancementTabHandler.class);
         inbound(0x1A, HeldItemMessage.class, HeldItemCodec.class, HeldItemHandler.class);
@@ -103,7 +103,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x28, EntityRotationMessage.class, EntityRotationCodec.class);
         outbound(0x29, VehicleMoveMessage.class, VehicleMoveCodec.class);
         outbound(0x2A, SignEditorMessage.class, SignEditorCodec.class);
-        // TODO 0x2B : Craft Recipe Response
+        outbound(0x2B, CraftRecipeResponseMessage.class, CraftRecipeResponseCodec.class);
         outbound(0x2C, PlayerAbilitiesMessage.class, PlayerAbilitiesCodec.class);
         outbound(0x2D, CombatEventMessage.class, CombatEventCodec.class);
         outbound(0x2E, UserListItemMessage.class, UserListItemCodec.class);
