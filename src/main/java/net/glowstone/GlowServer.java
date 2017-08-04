@@ -104,16 +104,11 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.12";
+    public static final String GAME_VERSION = "1.12.1";
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 335;
-    public static final String GAME_VERSION_17W31A = "17w31a";
-    /**
-     * The protocol version of snapshot 17w31a, which is supported by the server.
-     */
-    public static final int PROTOCOL_VERSION_17W31A = 336;
+    public static final int PROTOCOL_VERSION = 338;
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -1384,6 +1379,12 @@ public final class GlowServer implements Server {
     public boolean reloadCommandAliases() {
         commandMap.registerServerAliases();
         return true; // TODO: better error detection?
+    }
+
+    @Override
+    public boolean suggestPlayerNamesWhenNullTabCompletions() {
+        // TODO: Implementation (1.12.1)
+        return false;
     }
 
     ////////////////////////////////////////////////////////////////////////////

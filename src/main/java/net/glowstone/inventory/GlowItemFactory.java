@@ -75,6 +75,18 @@ public final class GlowItemFactory implements ItemFactory {
         return LEATHER_COLOR;
     }
 
+    @Override
+    public ItemStack ensureServerConversions(ItemStack itemStack) {
+        // TODO: Implementation (1.12.1)
+        return itemStack.clone();
+    }
+
+    @Override
+    public String getI18NDisplayName(ItemStack itemStack) {
+        // TODO: Implementation (1.12.1)
+        return null;
+    }
+
     public CompoundTag writeNbt(ItemMeta meta) {
         CompoundTag result = new CompoundTag();
         toGlowMeta(meta).writeNbt(result);

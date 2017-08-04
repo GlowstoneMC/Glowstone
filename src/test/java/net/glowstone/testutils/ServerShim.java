@@ -575,6 +575,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public boolean suggestPlayerNamesWhenNullTabCompletions() {
+        return false;
+    }
+
+    @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
 
     }

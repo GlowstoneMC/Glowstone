@@ -30,7 +30,6 @@ import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
-import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.game.*;
@@ -1374,79 +1373,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public int getExpToLevel() {
         return getExpToLevel(level);
-    }
-
-    @Override
-    public Entity getShoulderEntityLeft() {
-        CompoundTag tag = getLeftShoulderTag();
-        if (tag.isEmpty()) {
-            return null;
-        }
-        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
-        return server.getEntity(uuid);
-    }
-
-    @Override
-    public void setShoulderEntityLeft(Entity entity) {
-        CompoundTag tag;
-        if (entity == null) {
-            tag = getLeftShoulderTag();
-            if (!tag.isEmpty()) {
-                GlowEntity shoulderEntity = EntityStorage.loadEntity(world, tag);
-                shoulderEntity.setRawLocation(getLocation());
-                shoulderEntity.createSpawnMessage();
-            }
-            setLeftShoulderTag(null);
-        } else {
-            tag = new CompoundTag();
-            EntityStorage.save((GlowEntity) entity, tag);
-            setLeftShoulderTag(tag);
-        }
-    }
-
-    @Override
-    public Entity getShoulderEntityRight() {
-        CompoundTag tag = getRightShoulderTag();
-        if (tag.isEmpty()) {
-            return null;
-        }
-        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
-        return server.getEntity(uuid);
-    }
-
-    @Override
-    public void setShoulderEntityRight(Entity entity) {
-        CompoundTag tag;
-        if (entity == null) {
-            tag = getRightShoulderTag();
-            if (!tag.isEmpty()) {
-                GlowEntity shoulderEntity = EntityStorage.loadEntity(world, tag);
-                shoulderEntity.setRawLocation(getLocation());
-            }
-            setRightShoulderTag(null);
-        } else {
-            tag = new CompoundTag();
-            EntityStorage.save((GlowEntity) entity, tag);
-            setRightShoulderTag(tag);
-        }
-    }
-
-    public CompoundTag getLeftShoulderTag() {
-        Object tag = metadata.get(MetadataIndex.PLAYER_LEFT_SHOULDER);
-        return tag == null ? new CompoundTag() : (CompoundTag) tag;
-    }
-
-    public CompoundTag getRightShoulderTag() {
-        Object tag = metadata.get(MetadataIndex.PLAYER_RIGHT_SHOULDER);
-        return tag == null ? new CompoundTag() : (CompoundTag) tag;
-    }
-
-    public void setLeftShoulderTag(CompoundTag tag) {
-        metadata.set(MetadataIndex.PLAYER_LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
-    }
-
-    public void setRightShoulderTag(CompoundTag tag) {
-        metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
     }
 
     /**

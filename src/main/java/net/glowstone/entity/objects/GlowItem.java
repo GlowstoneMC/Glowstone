@@ -178,6 +178,17 @@ public class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
+    public boolean canMobPickup() {
+        // TODO: Implementation (1.12.1)
+        return true;
+    }
+
+    @Override
+    public void setCanMobPickup(boolean pickup) {
+        // TODO: Implementation (1.12.1)
+    }
+
+    @Override
     public ItemStack getItemStack() {
         return metadata.getItem(MetadataIndex.ITEM_ITEM);
     }

@@ -7,8 +7,7 @@ public enum ProtocolType {
     HANDSHAKE(new HandshakeProtocol()),
     STATUS(new StatusProtocol()),
     LOGIN(new LoginProtocol()),
-    PLAY(new PlayProtocol()),
-    PLAY_17W31A(new Play336Protocol());
+    PLAY(new PlayProtocol());
 
     private final GlowProtocol protocol;
 

@@ -589,7 +589,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Deprecated
-    @Override
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 0).get(0);
     }
@@ -600,7 +599,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Deprecated
-    @Override
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 2);
     }

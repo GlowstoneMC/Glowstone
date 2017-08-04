@@ -2,17 +2,21 @@ package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.*;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
+import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -529,5 +533,89 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         vel.setY(0.006F);
         dropItem.setVelocity(vel);
         return dropItem;
+    }
+
+    @Override
+    public Entity getShoulderEntityLeft() {
+        CompoundTag tag = getLeftShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
+    }
+
+    @Override
+    public void setShoulderEntityLeft(Entity entity) {
+        if (entity == null) {
+            releaseLeftShoulderEntity();
+        } else {
+            CompoundTag tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
+            setLeftShoulderTag(tag);
+        }
+    }
+
+    @Override
+    public Entity getShoulderEntityRight() {
+        CompoundTag tag = getRightShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
+    }
+
+    @Override
+    public void setShoulderEntityRight(Entity entity) {
+        if (entity == null) {
+            releaseRightShoulderEntity();
+        } else {
+            CompoundTag tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
+            setRightShoulderTag(tag);
+        }
+    }
+
+    @Override
+    public Entity releaseLeftShoulderEntity() {
+        CompoundTag tag = getLeftShoulderTag();
+        GlowEntity shoulderEntity = null;
+        if (!tag.isEmpty()) {
+            shoulderEntity = EntityStorage.loadEntity(world, tag);
+            shoulderEntity.setRawLocation(getLocation());
+        }
+        setLeftShoulderTag(null);
+        return shoulderEntity;
+    }
+
+    @Override
+    public Entity releaseRightShoulderEntity() {
+        CompoundTag tag = getRightShoulderTag();
+        GlowEntity shoulderEntity = null;
+        if (!tag.isEmpty()) {
+            shoulderEntity = EntityStorage.loadEntity(world, tag);
+            shoulderEntity.setRawLocation(getLocation());
+        }
+        setRightShoulderTag(null);
+        return shoulderEntity;
+    }
+
+    public CompoundTag getLeftShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_LEFT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public CompoundTag getRightShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_RIGHT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public void setLeftShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    public void setRightShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
     }
 }

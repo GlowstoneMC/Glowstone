@@ -27,6 +27,7 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -1259,6 +1260,18 @@ public abstract class GlowEntity implements Entity {
     public boolean removeScoreboardTag(String tag) {
         // todo: 1.11
         return false;
+    }
+
+    @Override
+    public boolean fromMobSpawner() {
+        // TODO: Implementation (1.12.1)
+        return false;
+    }
+
+    @Override
+    public PistonMoveReaction getPistonMoveReaction() {
+        // TODO: Implementation (1.12.1)
+        return null;
     }
 
     @Override
