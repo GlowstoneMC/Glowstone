@@ -1,7 +1,11 @@
 package net.glowstone.generator.decorators;
 
 import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.generator.BlockPopulator;
 
@@ -48,7 +52,6 @@ public class EntityDecorator extends BlockPopulator {
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
-        /*
         if (entityTypes.length == 0) {
             return;
         }
@@ -82,6 +85,6 @@ public class EntityDecorator extends BlockPopulator {
                 location.subtract(0, 1, 0);
             }
             world.spawnEntity(location, type);
-        }*/
+        }
     }
 }
