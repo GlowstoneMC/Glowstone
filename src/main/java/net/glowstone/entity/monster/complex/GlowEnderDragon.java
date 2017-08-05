@@ -3,6 +3,7 @@ package net.glowstone.entity.monster.complex;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.monster.GlowMonster;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
@@ -46,5 +47,15 @@ public class GlowEnderDragon extends GlowMonster implements EnderDragon {
     @Override
     public Set<ComplexEntityPart> getParts() {
         return new HashSet<>(parts.values());
+    }
+
+    @Override
+    protected Sound getDeathSound() {
+        return Sound.ENTITY_ENDERDRAGON_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_ENDERDRAGON_AMBIENT;
     }
 }
