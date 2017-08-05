@@ -109,7 +109,7 @@ public class PlayProtocol extends GlowProtocol {
         outbound(0x2E, UserListItemMessage.class, UserListItemCodec.class);
         outbound(0x2F, PositionRotationMessage.class, PositionRotationCodec.class);
         outbound(0x30, UseBedMessage.class, UseBedCodec.class);
-        // TODO 0x31 : Unlock Recipes
+        outbound(0x31, UnlockRecipesMessage.class, UnlockRecipesCodec.class);
         outbound(0x32, DestroyEntitiesMessage.class, DestroyEntitiesCodec.class);
         outbound(0x33, EntityRemoveEffectMessage.class, EntityRemoveEffectCodec.class);
         outbound(0x34, ResourcePackSendMessage.class, ResourcePackSendCodec.class);

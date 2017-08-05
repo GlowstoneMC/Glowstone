@@ -3649,6 +3649,7 @@ shaped:
       type: LOG_2
   shape:
   - a
+  key: acacia_planks
 - result:
     type: WOOD
     damage: 5

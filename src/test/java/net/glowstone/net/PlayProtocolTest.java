@@ -135,7 +135,9 @@ public class PlayProtocolTest extends BaseProtocolTest {
             new CraftRecipeRequestMessage(0, 1, true),
             new CraftRecipeResponseMessage(0, 1),
             new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_DISPLAYED_RECIPE, 0),
-            new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_STATUS, true, false)
+            new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_STATUS, true, false),
+            new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_ADD, true, false, new int[] {1, 2, 3}),
+            new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_INIT, true, false, new int[] {1, 2}, new int[] {1, 2, 3})
     };
 
     public PlayProtocolTest() {

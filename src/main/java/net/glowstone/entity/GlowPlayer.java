@@ -29,6 +29,7 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
+import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.*;
@@ -308,6 +309,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Getter
     @Setter
     private long usageTime;
+    @Getter
+    private final PlayerRecipeMonitor recipeMonitor;
 
     /**
      * Creates a new player and adds it to the world.
@@ -337,6 +340,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         //creates InventoryMonitor to avoid NullPointerException
         invMonitor = new InventoryMonitor(getOpenInventory());
         server.getPlayerStatisticIoService().readStats(this);
+        recipeMonitor = new PlayerRecipeMonitor(this);
     }
 
     /**
@@ -437,6 +441,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         invMonitor = new InventoryMonitor(getOpenInventory());
         updateInventory(); // send inventory contents
+        session.send(recipeMonitor.createInitMessage());
 
         if (!server.getResourcePackURL().isEmpty()) {
             setResourcePack(server.getResourcePackURL(), server.getResourcePackHash());

@@ -101,6 +101,9 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             entity.setSeenCredits(tag.getBool("seenCredits"));
         }
 
+        // recipe book
+        entity.getRecipeMonitor().read(tag);
+
         // bukkit
         // cannot read firstPlayed, lastPlayed, or lastKnownName
     }
@@ -152,6 +155,9 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         }
 
         tag.putBool("seenCredits", entity.isSeenCredits());
+
+        // recipe book
+        entity.getRecipeMonitor().write(tag);
 
         // bukkit
         CompoundTag bukkit = new CompoundTag();

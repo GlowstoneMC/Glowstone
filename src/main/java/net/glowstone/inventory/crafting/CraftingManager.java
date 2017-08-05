@@ -2,6 +2,7 @@ package net.glowstone.inventory.crafting;
 
 import com.google.common.collect.Iterators;
 import net.glowstone.GlowServer;
+import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
@@ -99,8 +100,8 @@ public final class CraftingManager implements Iterable<Recipe> {
     /**
      * Remove a specific amount of layers from the crafting matrix and recipe result.
      *
-     * @param items The items to remove the ingredients from.
-     * @param inv   The inventory to remove the items from.
+     * @param items  The items to remove the ingredients from.
+     * @param inv    The inventory to remove the items from.
      * @param amount The amount of items you want to remove.
      */
     public void removeItems(final ItemStack[] items, final GlowCraftingInventory inv, final int amount) {
@@ -423,7 +424,8 @@ public final class CraftingManager implements Iterable<Recipe> {
         // shaped
         for (Map<?, ?> data : config.getMapList("shaped")) {
             ItemStack resultStack = ItemStack.deserialize((Map<String, Object>) data.get("result"));
-            ShapedRecipe recipe = new ShapedRecipe(resultStack);
+            NamespacedKey key = readKey(data, resultStack);
+            ShapedRecipe recipe = new ShapedRecipe(key, resultStack);
             List<String> shape = (List<String>) data.get("shape");
             recipe.shape(shape.toArray(new String[shape.size()]));
 
@@ -439,7 +441,8 @@ public final class CraftingManager implements Iterable<Recipe> {
         // shapeless
         for (Map<?, ?> data : config.getMapList("shapeless")) {
             ItemStack resultStack = ItemStack.deserialize((Map<String, Object>) data.get("result"));
-            ShapelessRecipe recipe = new ShapelessRecipe(resultStack);
+            NamespacedKey key = readKey(data, resultStack);
+            ShapelessRecipe recipe = new ShapelessRecipe(key, resultStack);
 
             List<Map<String, Object>> ingreds = (List<Map<String, Object>>) data.get("ingredients");
             for (Map<String, Object> entry : ingreds) {
@@ -458,4 +461,19 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
     }
 
+    private NamespacedKey readKey(Map<?, ?> data, ItemStack result) {
+        NamespacedKey key;
+        if (data.containsKey("key")) {
+            String keyRaw = (String) data.get("key");
+            if (keyRaw.indexOf(':') == -1) {
+                key = new NamespacedKey(NamespacedKey.MINECRAFT, keyRaw);
+            } else {
+                key = new NamespacedKey(keyRaw.substring(0, keyRaw.indexOf(':')), keyRaw.substring(keyRaw.indexOf(':') + 1, keyRaw.length()));
+            }
+        } else {
+            // todo: remove ambiguity of items with 'data/damage' values inside recipes.yml (will take a long time...)
+            key = NamespacedKey.minecraft(ItemIds.getName(result.getType()));
+        }
+        return key;
+    }
 }
