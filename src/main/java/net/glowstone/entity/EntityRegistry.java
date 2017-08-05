@@ -36,7 +36,7 @@ public class EntityRegistry {
                     //TODO: Ender Signal
                     .put(Enderman.class, GlowEnderman.class)
                     .put(Endermite.class, GlowEndermite.class)
-                    //TODO: Experience orb
+                    .put(ExperienceOrb.class, GlowExperienceOrb.class)
                     .put(Evoker.class, GlowEvoker.class)
                     .put(EvokerFangs.class, GlowEvokerFangs.class)
                     .put(FallingBlock.class, GlowFallingBlock.class)

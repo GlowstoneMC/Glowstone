@@ -99,6 +99,7 @@ public final class EntityStorage {
             }
         }
         bind(new PaintingStore());
+        bind(new ExperienceOrbStore());
     }
 
     private EntityStorage() {

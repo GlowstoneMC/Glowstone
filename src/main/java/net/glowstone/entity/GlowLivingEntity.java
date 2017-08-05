@@ -11,16 +11,14 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
-import net.glowstone.util.InventoryUtil;
-import net.glowstone.util.Position;
-import net.glowstone.util.RayUtil;
-import net.glowstone.util.SoundUtil;
+import net.glowstone.util.*;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
 import org.bukkit.*;
@@ -692,7 +690,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 if (world.getGameRuleMap().getBoolean("doMobLoot")) {
                     LootData data = LootingManager.generate(this);
                     Collections.addAll(deathEvent.getDrops(), data.getItems());
-                    // todo: drop experience
+                    if (data.getExperience() > 0) {
+                        // split experience
+                        Integer[] values = ExperienceSplitter.cut(data.getExperience());
+                        Random random = new Random();
+                        for (Integer exp : values) {
+                            double xMod = random.nextDouble() - 0.5, zMod = random.nextDouble() - 0.5;
+                            Location xpLocation = new Location(world, location.getBlockX() + 0.5 + xMod, location.getY(), location.getBlockZ() + 0.5 + zMod);
+                            GlowExperienceOrb orb = (GlowExperienceOrb) world.spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
+                            orb.setExperience(exp);
+                        }
+                    }
                 }
                 deathEvent = EventFactory.callEvent(deathEvent);
                 for (ItemStack item : deathEvent.getDrops()) {
