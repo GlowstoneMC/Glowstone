@@ -144,7 +144,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             if (leash.isLong("UUIDMost") && leash.isLong("UUIDLeast")) {
                 UUID uuid = new UUID(leash.getLong("UUIDMost"), leash.getLong("UUIDLeast"));
                 entity.setLeashHolderUniqueID(uuid);
-            } else if (leash.isInt("X") || leash.isInt("Y") || leash.isInt("Z")) {
+            } else if (leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
                 int y = leash.getInt("Y");
                 int z = leash.getInt("Z");

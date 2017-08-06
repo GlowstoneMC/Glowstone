@@ -46,7 +46,6 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
     @Override
     public List<Message> createSpawnMessage() {
-
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
@@ -79,8 +78,8 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
     @Override
     public boolean shouldSave() {
-        // The Glowhitch on its own should never be saved
-        // It is saved in the leashed entity
+        // The GlowLeashHitch on its own should never be saved
+        // It is saved as part of the leashed living entity
         return false;
     }
 

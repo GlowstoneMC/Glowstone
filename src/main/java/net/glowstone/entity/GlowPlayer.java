@@ -558,7 +558,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             scoreboard.unsubscribe(this);
             scoreboard = null;
         }
-
         super.remove();
     }
 

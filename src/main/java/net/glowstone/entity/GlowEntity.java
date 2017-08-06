@@ -611,7 +611,7 @@ public abstract class GlowEntity implements Entity {
     public abstract List<Message> createSpawnMessage();
 
     /**
-     * Creates a {@link Message} which can be sent to a client directly after the entity is spawned.
+     * Creates a List of {@link Message} which can be sent to a client directly after the entity is spawned.
      *
      * @param session Session to update this entity for
      * @return A message which can spawn this entity.
@@ -699,7 +699,7 @@ public abstract class GlowEntity implements Entity {
             int attached = isLeashed() && session.getPlayer().getEntityId() == leashHolder.getEntityId() ? 0 : this.getEntityId();
             int holder = !isLeashed() ? -1 : leashHolder.getEntityId();
 
-            // When the leashHolder is not see able, the AttachEntityMessage will be created in createAfterSpawnMessage()
+            // When the leashHolder is not visible, the AttachEntityMessage will be created in createAfterSpawnMessage()
             if (!isLeashed() || session.getPlayer().canSeeEntity(leashHolder)) {
                 result.add(new AttachEntityMessage(attached, holder));
             }
@@ -1568,7 +1568,8 @@ public abstract class GlowEntity implements Entity {
 
     public boolean setLeashHolder(Entity holder) {
         // "This method has no effect on EnderDragons, Withers, Players, or Bats"
-        if (this instanceof EnderDragon || this instanceof Wither || this instanceof Player || this instanceof Bat) {
+        EntityType type = getType();
+        if (EntityType.ENDER_DRAGON.equals(type) || EntityType.WITHER.equals(type) || EntityType.PLAYER.equals(type) || EntityType.BAT.equals(type)) {
             return false;
         }
 

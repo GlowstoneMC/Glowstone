@@ -995,19 +995,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
+
         if (message.getHandSlot() == EquipmentSlot.HAND) {
             if (!InventoryUtil.isEmpty(player.getItemInHand()) && player.getItemInHand().getType() == Material.LEASH) {
-                if (this.isLeashed()) {
-                    return false;
-                }
-
-                if (EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player)).isCancelled()) {
+                if (this.isLeashed() || EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player)).isCancelled()) {
                     return false;
                 }
 
                 setLeashHolder(player);
             } else if (player.equals(this.getLeashHolder())) {
-
                 if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
                     return false;
                 }
