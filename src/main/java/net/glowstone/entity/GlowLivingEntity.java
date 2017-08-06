@@ -18,6 +18,7 @@ import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.*;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
@@ -29,7 +30,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -355,6 +358,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public void reset() {
         super.reset();
         equipmentMonitor.resetChanges();
+        headRotated = false;
     }
 
     @Override
@@ -364,7 +368,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         messages.addAll(equipmentMonitor.getChanges().stream().map(change -> new EntityEquipmentMessage(id, change.slot, change.item)).collect(Collectors.toList()));
         if (headRotated) {
             messages.add(new EntityHeadRotationMessage(id, Position.getIntHeadYaw(headYaw)));
-            headRotated = false;
         }
         attributeManager.applyMessages(messages);
 
@@ -917,21 +920,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Leashes
 
     @Override
-    public boolean isLeashed() {
-        return false;
-    }
-
-    @Override
-    public Entity getLeashHolder() throws IllegalStateException {
-        return null;
-    }
-
-    @Override
-    public boolean setLeashHolder(Entity holder) {
-        return false;
-    }
-
-    @Override
     public boolean isGliding() {
         return metadata.getBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING);
     }
@@ -1002,6 +990,37 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     public TaskManager getTaskManager() {
         return taskManager;
+    }
+
+    @Override
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        super.entityInteract(player, message);
+        if (message.getHandSlot() == EquipmentSlot.HAND) {
+            if (!InventoryUtil.isEmpty(player.getItemInHand()) && player.getItemInHand().getType() == Material.LEASH) {
+                if (this.isLeashed()) {
+                    return false;
+                }
+
+                if (EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player)).isCancelled()) {
+                    return false;
+                }
+
+                setLeashHolder(player);
+            } else if (player.equals(this.getLeashHolder())) {
+
+                if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
+                    return false;
+                }
+
+                setLeashHolder(null);
+                if (player.getGameMode() != GameMode.CREATIVE) {
+                    world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 }
 
