@@ -623,7 +623,6 @@ public abstract class GlowEntity implements Entity {
             int attached = session.getPlayer().getEntityId() == this.getEntityId() ? 0 : leashedEntity.getEntityId();
             int holder = this.getEntityId();
 
-            // When the leashHolder is not seeable, the AttachEntityMessage will be created in createSpawnMessage()
             result.add(new AttachEntityMessage(attached, holder));
         }
 
@@ -700,7 +699,7 @@ public abstract class GlowEntity implements Entity {
             int attached = isLeashed() && session.getPlayer().getEntityId() == leashHolder.getEntityId() ? 0 : this.getEntityId();
             int holder = !isLeashed() ? -1 : leashHolder.getEntityId();
 
-            // When the leashHolder is not see able, the AttachEntityMessage will be created in createSpawnMessage()
+            // When the leashHolder is not see able, the AttachEntityMessage will be created in createAfterSpawnMessage()
             if (!isLeashed() || session.getPlayer().canSeeEntity(leashHolder)) {
                 result.add(new AttachEntityMessage(attached, holder));
             }
