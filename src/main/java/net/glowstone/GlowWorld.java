@@ -263,11 +263,7 @@ public final class GlowWorld implements World {
     /**
      * The functions for this world.
      */
-    private final List<CommandFunction> functions;
-    /**
-     * The names of the functions for this world;
-     */
-    private final List<String> functionNames = new ArrayList<>();
+    private final Map<String, CommandFunction> functions;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -321,8 +317,8 @@ public final class GlowWorld implements World {
 
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         structures = storageProvider.getStructureDataService().readStructuresData();
-        functions = storageProvider.getFunctionIoService().readFunctions();
-        functions.forEach(f -> functionNames.add(f.getFullName()));
+        functions = storageProvider.getFunctionIoService().readFunctions().stream()
+                .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
         EventFactory.callEvent(new WorldInitEvent(this));
@@ -1815,12 +1811,8 @@ public final class GlowWorld implements World {
         return worldBorder;
     }
 
-    public List<CommandFunction> getFunctions() {
+    public Map<String, CommandFunction> getFunctions() {
         return functions;
-    }
-
-    public List<String> getFunctionNames() {
-        return functionNames;
     }
 
     @Override

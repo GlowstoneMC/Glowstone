@@ -263,7 +263,7 @@ public final class GlowServer implements Server {
      * The {@link BossBarManager} of this server.
      */
     private BossBarManager bossBarManager;
-    /*
+    /**
      * Default root permissions
      */
     public Permission permissionRoot, permissionCommand;
@@ -284,7 +284,8 @@ public final class GlowServer implements Server {
         // test advancement
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
         advancement.addCriterion("minecraft:test/criterion");
-        advancement.setDisplay(new GlowAdvancementDisplay(new TextMessage("Advancements in Glowstone"), new TextMessage("=)"), new ItemStack(Material.GLOWSTONE), GlowAdvancementDisplay.FrameType.GOAL, -10F, 0));
+        advancement.setDisplay(new GlowAdvancementDisplay(new TextMessage("Advancements in Glowstone"),
+                new TextMessage("=)"), new ItemStack(Material.GLOWSTONE), GlowAdvancementDisplay.FrameType.GOAL, -10F, 0));
         addAdvancement(advancement);
 
         this.config = config;
