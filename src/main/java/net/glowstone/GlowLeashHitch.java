@@ -64,6 +64,9 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
     @Override
     public boolean setFacingDirection(BlockFace blockFace, boolean force) {
+        if (blockFace == null) {
+            return false;
+        }
         // facing most likely just does nothing for the leash hitch
         this.facing = HangingFace.getByBlockFace(blockFace);
         return true;
