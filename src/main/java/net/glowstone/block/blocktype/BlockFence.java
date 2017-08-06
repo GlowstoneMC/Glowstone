@@ -33,7 +33,6 @@ public class BlockFence extends BlockDirectDrops {
             ImmutableList.copyOf(player.getLeashedEntities()).stream()
                 .filter(e -> !EventFactory.callEvent(new PlayerLeashEntityEvent(e, leashHitch, player)).isCancelled())
                 .forEach(e -> e.setLeashHolder(leashHitch));
-            player.getLeashedEntities().clear();
             return true;
         }
         return false;
