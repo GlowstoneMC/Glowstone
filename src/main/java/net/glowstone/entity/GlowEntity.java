@@ -29,13 +29,9 @@ import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.entity.Bat;
-import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
@@ -498,13 +494,13 @@ public abstract class GlowEntity implements Entity {
             if (!any.isPresent()) {
                 world.dropItemNaturally(location, new ItemStack(Material.LEASH));
             }
-            setLeashHolder(any.orElseGet(null));
+            setLeashHolder(any.orElse(null));
             leashHolderUniqueID = null;
         }
     }
 
     private void followLead() {
-        if (!isLeashed() || !leashHolder.hasMoved()) {
+        if (!isLeashed()) {
             return;
         }
 
@@ -520,16 +516,24 @@ public abstract class GlowEntity implements Entity {
 
         // Leashes break when the distance between leashholder and leashedentity is greater than 10 blocks
         if (distanceSquared > 10 * 10) {
-            // break leash
-            unleash(this, UnleashReason.DISTANCE);
-            if (leashHolder instanceof LeashHitch && leashHolder.leashedEntities.isEmpty()) {
+            // break leashitch, if the entity is the only one left attached
+            // will also destroy all remaining leashes
+            if (EntityType.LEASH_HITCH.equals(leashHolder.getType()) && leashHolder.leashedEntities.size() == 1) {
                 leashHolder.remove();
+            } else {
+                // break leash
+                unleash(this, UnleashReason.DISTANCE);
             }
             return;
         }
 
+        if (!leashHolder.hasMoved()) {
+            this.setVelocity(new Vector(0, 0, 0));
+            return;
+        }
+
         // Don't move when already close enough
-        double speed = distanceSquared / (10.0 * 10.0);
+        double speed = distanceSquared / (10.0 * 10.0 * 2);
 
         Vector direction = leashHolder.getLocation().toVector().subtract(location.toVector());
         direction.normalize();
@@ -1600,7 +1604,7 @@ public abstract class GlowEntity implements Entity {
      * @param uniqueID
      */
     public void setLeashHolderUniqueID(UUID uniqueID) {
-        if (ticksLived > 1 || getLeashHolder() != null) {
+        if (ticksLived > 1 || isLeashed()) {
             return;
         }
         this.leashHolderUniqueID = uniqueID;
