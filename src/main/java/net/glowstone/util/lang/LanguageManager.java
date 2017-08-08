@@ -2,6 +2,7 @@ package net.glowstone.util.lang;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.MissingResourceException;
 
 import com.google.common.base.Preconditions;
 
@@ -31,14 +32,28 @@ public final class LanguageManager {
 
         @Override
         public String getString(String key, GlowPlayer p, Object ... args) {
-            String locale = this.getEffectiveLocale(p);
-            ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag(locale));
-            return new MessageFormat(rb.getString(key)).format(args);
+            try {
+                String locale = this.getEffectiveLocale(p);
+                ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag(locale));
+                return new MessageFormat(rb.getString(key)).format(args);
+            } catch (MissingResourceException ex) {
+                // Fallback to English so we don't have to wait for
+                // complete translations implementing a new feature.
+                ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag("en-US"));
+                return new MessageFormat(rb.getString(key)).format(args);
+            }
         }
 
         @Override
         public String getString(String key, Object ... args) {
-            return new MessageFormat(defaultBundle.getString(key)).format(args);
+            try {
+                return new MessageFormat(defaultBundle.getString(key)).format(args);
+            } catch (MissingResourceException ex) {
+                // Fallback to English so we don't have to wait for
+                // complete translations implementing a new feature.
+                ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag("en-US"));
+                return new MessageFormat(rb.getString(key)).format(args);
+            }
         }
     }
 
