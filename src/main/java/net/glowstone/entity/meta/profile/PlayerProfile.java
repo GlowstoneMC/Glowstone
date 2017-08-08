@@ -78,7 +78,7 @@ public class PlayerProfile {
         if (uuid != null) {
             return ProfileCache.getProfile(uuid);
         }
-        GlowServer.logger.warning("Unable to get UUID for username: " + name);
+        GlowServer.logger.warning(GlowServer.lang.getString("warning.entity.profile.uuid", name));
         return null;
     }
 
@@ -114,7 +114,7 @@ public class PlayerProfile {
         try {
             uuid = UuidUtils.fromFlatString(id);
         } catch (IllegalArgumentException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Returned authentication UUID invalid: " + id);
+            GlowServer.logger.log(Level.SEVERE, GlowServer.lang.getString("error.entity.profile.invalid", id));
             return null;
         }
 
