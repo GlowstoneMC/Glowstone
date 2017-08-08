@@ -41,7 +41,7 @@ class PlayerDataFetcher {
             //potentially blocking
             is = conn.getInputStream();
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
+            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.lookup.profile"));
             return null;
         }
 
@@ -53,10 +53,10 @@ class PlayerDataFetcher {
                 return new PlayerProfile(null, uuid);
             }
         } catch (ParseException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to parse profile response", e);
+            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.parse"), e);
             return null;
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
+            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.lookup.profile"), e);
             return null;
         }
         return PlayerProfile.fromJson(json);
@@ -77,7 +77,7 @@ class PlayerDataFetcher {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up UUID", e);
+            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.lookup.uuid"), e);
             return null;
         }
 
@@ -93,7 +93,7 @@ class PlayerDataFetcher {
 
             json = (JSONArray) JSONValue.parse(new InputStreamReader(conn.getInputStream()));
         } catch (IOException e) {
-            GlowServer.logger.warning("Couldn't get UUID due to IO error: " + e);
+            GlowServer.logger.warning(GlowServer.lang.getString("warning.entity.profile.io", e));
             return null;
         }
 
