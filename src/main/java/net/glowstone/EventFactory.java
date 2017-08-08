@@ -52,10 +52,10 @@ public final class EventFactory {
             try {
                 return task.get();
             } catch (InterruptedException e) {
-                GlowServer.logger.log(Level.WARNING, "Interrupted while handling " + event.getClass().getSimpleName());
+                GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.event.interrupted", event.getClass().getSimpleName()));
                 return event;
             } catch (CancellationException e) {
-                GlowServer.logger.log(Level.WARNING, "Not handling event " + event.getClass().getSimpleName() + " due to shutdown");
+                GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.event.shutdown", event.getClass().getSimpleName()));
                 return event;
             } catch (ExecutionException e) {
                 throw new RuntimeException(e); // No checked exceptions declared for callEvent
@@ -99,16 +99,16 @@ public final class EventFactory {
 
         if (nameBans.isBanned(player.getName())) {
             event.disallow(Result.KICK_BANNED,
-                    "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
+                    GlowServer.lang.getString("event.banned", nameBans.getBanEntry(player.getName()).getReason()));
         } else if (ipBans.isBanned(addressString)) {
             event.disallow(Result.KICK_BANNED,
-                    "Banned: " + ipBans.getBanEntry(addressString).getReason());
+                    GlowServer.lang.getString("event.banned", ipBans.getBanEntry(addressString).getReason()));
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
             event.disallow(Result.KICK_WHITELIST,
-                    "You are not whitelisted on this server.");
+                    GlowServer.lang.getString("event.whitelist.missing"));
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
             event.disallow(Result.KICK_FULL,
-                    "The server is full (" + player.getServer().getMaxPlayers() + " players).");
+                    GlowServer.lang.getString("status.server.full", player.getServer().getMaxPlayers()));
         }
 
         return callEvent(event);
@@ -138,7 +138,7 @@ public final class EventFactory {
     }
 
     public static PlayerJoinEvent onPlayerJoin(Player player) {
-        return callEvent(new PlayerJoinEvent(player, ChatColor.YELLOW + player.getName() + " joined the game"));
+        return callEvent(new PlayerJoinEvent(player, ChatColor.YELLOW + GlowServer.lang.getString("event.player.joined", player.getName())));
     }
 
     public static PlayerKickEvent onPlayerKick(Player player, String reason) {
@@ -146,7 +146,7 @@ public final class EventFactory {
     }
 
     public static PlayerQuitEvent onPlayerQuit(Player player) {
-        return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game"));
+        return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + GlowServer.lang.getString("event.player.left", player.getName())));
     }
 
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {
