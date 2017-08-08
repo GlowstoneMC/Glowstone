@@ -48,9 +48,9 @@ public class ProfileCache {
         try {
             uuid = uuidFuture.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException e) {
-            GlowServer.logger.log(Level.SEVERE, "UUID Cache interrupted: ", e);
+            GlowServer.logger.log(Level.SEVERE, GlowServer.lang.getString("error.entity.profile.cache.interrupted"), e);
         } catch (TimeoutException e) {
-            GlowServer.logger.log(Level.SEVERE, "UUID Cache lookup timed out: ", e);
+            GlowServer.logger.log(Level.SEVERE, GlowServer.lang.getString("error.entity.profile.cache.timeout"), e);
         }
         return uuid;
     }
