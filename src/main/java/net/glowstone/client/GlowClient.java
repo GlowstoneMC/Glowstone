@@ -38,7 +38,7 @@ public class GlowClient {
     }
 
     public void run() {
-        GlowServer.logger.info("[CLIENT] GlowClient " + VERSION + " loaded!");
+        GlowServer.logger.info(GlowServer.lang.getString("status.client.loaded", VERSION));
 
         start();
         pulse();
