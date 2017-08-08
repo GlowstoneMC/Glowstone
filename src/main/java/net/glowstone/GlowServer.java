@@ -971,7 +971,7 @@ public final class GlowServer implements Server {
                     try {
                         pluginManager.addPermission(perm);
                     } catch (IllegalArgumentException ex) {
-                        getLogger().log(Level.WARNING, lang.getString("warning.plugin.permission.taken", plugin.getDescription().getFullName(), perm.getName()), ex);
+                        getLogger().log(Level.WARNING, lang.getString("warning.permission.plugin.taken", plugin.getDescription().getFullName(), perm.getName()), ex);
                     }
                 }
 
@@ -988,9 +988,9 @@ public final class GlowServer implements Server {
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
             // Default permissions
-            this.permissionRoot = DefaultPermissions.registerPermission("minecraft", "Gives the user the ability to use all Minecraft utilities and commands");
-            this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", "Gives the user the ability to use all Minecraft commands", permissionRoot);
-            DefaultPermissions.registerPermission("minecraft.command.tell", "Allows the user to send a private message", PermissionDefault.TRUE, permissionCommand);
+            this.permissionRoot = DefaultPermissions.registerPermission("minecraft", lang.getString("permission.default.minecraft"));
+            this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", lang.getString("permission.default.minecraft.command"), permissionRoot);
+            DefaultPermissions.registerPermission("minecraft.command.tell", lang.getString("permission.default.minecraft.command.tell"), PermissionDefault.TRUE, permissionCommand);
             permissionCommand.recalculatePermissibles();
             permissionRoot.recalculatePermissibles();
             helpMap.initializeCommands();
@@ -1003,13 +1003,13 @@ public final class GlowServer implements Server {
 
             permConfig.getValues(false).forEach((key, value) -> data.put(key, ((MemorySection) value).getValues(false)));
 
-            List<Permission> perms = Permission.loadPermissions(data, "Permission node '%s' in permissions config is invalid", PermissionDefault.OP);
+            List<Permission> perms = Permission.loadPermissions(data, lang.getString("error.permission.invalid"), PermissionDefault.OP);
 
             for (Permission perm : perms) {
                 try {
                     pluginManager.addPermission(perm);
                 } catch (IllegalArgumentException ex) {
-                    getLogger().log(Level.WARNING, "Permission config tried to register '" + perm.getName() + "' but it's already registered", ex);
+                    getLogger().log(Level.WARNING, lang.getString("warning.permission.config.taken", perm.getName()), ex);
                 }
             }
         }
@@ -1036,7 +1036,7 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Uncaught error while reloading", ex);
+            logger.log(Level.SEVERE, lang.getString("error.server.reload"), ex);
         }
     }
 
@@ -1463,7 +1463,7 @@ public final class GlowServer implements Server {
             firstword = firstword.substring(0, firstword.indexOf(' '));
         }
 
-        sender.sendMessage(ChatColor.GRAY + "Unknown command \"" + firstword + "\", try \"help\"");
+        sender.sendMessage(ChatColor.GRAY + lang.getString("warning.command.unknown", firstword));
         return false;
     }
 
@@ -1724,7 +1724,7 @@ public final class GlowServer implements Server {
             return world;
         }
         if (isGenerationDisabled()) {
-            logger.warning("World generation is disabled! World '" + creator.name() + "' will be empty.");
+            logger.warning(lang.getString("world.generate.disabled"));
         }
 
         if (creator.generator() == null) {
