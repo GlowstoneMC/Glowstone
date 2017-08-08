@@ -12,7 +12,7 @@ import java.util.Collections;
 public class ColorCommand extends BukkitCommand {
 
     public ColorCommand() {
-        super("colors", "Display all colors.", "/colors", Collections.emptyList());
+        super("colors", GlowServer.lang.getString("command.color.description"), "/colors", Collections.emptyList());
     }
 
     @Override
