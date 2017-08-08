@@ -1,5 +1,7 @@
 package net.glowstone.command.glowstone;
 
+import net.glowstone.GlowServer;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
