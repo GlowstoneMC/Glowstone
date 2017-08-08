@@ -333,6 +333,8 @@ public final class ServerConfig {
         MOTD("server.motd", "A Glowstone server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT, "settings.shutdown-message"),
         ALLOW_CLIENT_MODS("server.allow-client-mods", true),
+        DEFAULT_LOCALE("server.default-locale", "en-US"),
+        LOCK_LOCALE("server.lock-locale", false),
 
         // console
         USE_JLINE("console.use-jline", true),

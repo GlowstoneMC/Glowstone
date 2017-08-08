@@ -45,6 +45,7 @@ import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
+import net.glowstone.util.lang.LanguageManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
@@ -203,7 +204,19 @@ public final class GlowServer implements Server {
      */
     private final Set<GlowPlayer> onlineView = Collections.unmodifiableSet(onlinePlayers);
     /**
-     * The plugin type detector of thi server.
+    * The default locale to be used in the console and with the locked locale; read from the config.
+    */
+    public static String defaultLocale;
+    /**
+     * Boolean if the default locale in the config should always be used.
+     */
+    public static boolean lockLocale;
+    /**
+     * The LanguageManager for the server. Used for internationalization.
+     */
+    public static LanguageManager lang;
+    /**
+     * The plugin type detector of this server.
      */
     private GlowPluginTypeDetector pluginTypeDetector;
     /**
@@ -294,6 +307,9 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, Type.NAME);
         ipBans = new GlowBanList(this, Type.IP);
+        defaultLocale = this.config.getString(Key.DEFAULT_LOCALE);
+        lockLocale = this.config.getBoolean(Key.LOCK_LOCALE);
+        lang = new LanguageManager();
 
         Bukkit.setServer(this);
         loadConfig();
