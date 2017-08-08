@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowLeashHitch;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
@@ -1573,7 +1574,7 @@ public abstract class GlowEntity implements Entity {
     public boolean setLeashHolder(Entity holder) {
         // "This method has no effect on EnderDragons, Withers, Players, or Bats"
         EntityType type = getType();
-        if (EntityType.ENDER_DRAGON.equals(type) || EntityType.WITHER.equals(type) || EntityType.PLAYER.equals(type) || EntityType.BAT.equals(type)) {
+        if (!GlowLeashHitch.isAllowedLeashHolder(this.getType())) {
             return false;
         }
 

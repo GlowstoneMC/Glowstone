@@ -133,13 +133,23 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         return first.orElse(block.getWorld().spawn(block.getLocation(), LeashHitch.class));
     }
 
+    /**
+     * Checks if an Entity of the specified type is allowed to be a leash holder
+     *
+     * @param type type of the entity which wishes to become a leash holder
+     * @return if the type is allowed as a leash holder true, otherwise false
+     */
+    public static boolean isAllowedLeashHolder(EntityType type) {
+        return !(EntityType.ENDER_DRAGON.equals(type) || EntityType.WITHER.equals(type) || EntityType.PLAYER.equals(type) || EntityType.BAT.equals(type));
+    }
+
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if ((message.getAction() == Action.ATTACK.ordinal()) && message.getHandSlot() == EquipmentSlot.HAND) {
             remove();
         }
 
-        if ((message.getAction() == Action.INTERACT_AT.ordinal()) && message.getHandSlot() == EquipmentSlot.HAND) {
+        if ((message.getAction() == Action.INTERACT.ordinal()) && message.getHandSlot() == EquipmentSlot.HAND) {
             if (player.getLeashedEntities().isEmpty()) {
                 List<GlowEntity> entities = ImmutableList.copyOf(getLeashedEntities());
                 for (GlowEntity leashedEntity : entities) {

@@ -3,6 +3,7 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowLeashHitch;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -996,32 +997,31 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
 
-        if (message.getHandSlot() == EquipmentSlot.HAND) {
-            ItemStack handUten = player.getItemInHand();
-            if (!InventoryUtil.isEmpty(handUten) && handUten.getType() == Material.LEASH) {
-                if (this.isLeashed() || EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player)).isCancelled()) {
-                    return false;
-                }
+        ItemStack handItem = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+        if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEASH) {
+            if (!GlowLeashHitch.isAllowedLeashHolder(this.getType()) || this.isLeashed() || EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player)).isCancelled()) {
+                return false;
+            }
 
-                if (handUten.getType() == Material.SADDLE && player.getGameMode() != GameMode.CREATIVE) {
-                    if (handUten.getAmount() > 1) {
-                        handUten.setAmount(handUten.getAmount() - 1);
-                        player.setItemInHand(handUten);
-                    } else {
-                        player.setItemInHand(InventoryUtil.createEmptyStack());
-                    }
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                if (handItem.getAmount() > 1) {
+                    handItem.setAmount(handItem.getAmount() - 1);
+                } else {
+                    handItem = InventoryUtil.createEmptyStack();
                 }
+                player.getInventory().setItem(message.getHandSlot(), handItem);
+            }
 
-                setLeashHolder(player);
-            } else if (isLeashed() && player.equals(this.getLeashHolder())) {
-                if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
-                    return false;
-                }
+            setLeashHolder(player);
+            return true;
+        } else if (isLeashed() && player.equals(this.getLeashHolder()) && message.getHandSlot() == EquipmentSlot.HAND) {
+            if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
+                return false;
+            }
 
-                setLeashHolder(null);
-                if (player.getGameMode() != GameMode.CREATIVE) {
-                    world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
-                }
+            setLeashHolder(null);
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
             }
             return true;
         }
