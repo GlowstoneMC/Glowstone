@@ -30,14 +30,14 @@ public final class LanguageManager {
         }
 
         @Override
-        public String getString(String key, GlowPlayer p, String ... args) {
+        public String getString(String key, GlowPlayer p, Object ... args) {
             String locale = this.getEffectiveLocale(p);
             ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag(locale));
             return new MessageFormat(rb.getString(key)).format(args);
         }
 
         @Override
-        public String getString(String key, String ... args) {
+        public String getString(String key, Object ... args) {
             return new MessageFormat(defaultBundle.getString(key)).format(args);
         }
     }
@@ -59,11 +59,11 @@ public final class LanguageManager {
         return provider.getEffectiveLocale(p);
     }
 
-    public String getString(String key, GlowPlayer p, String ... args) {
+    public String getString(String key, GlowPlayer p, Object ... args) {
         return provider.getString(key, p, args);
     }
 
-    public String getString(String key, String ... args) {
+    public String getString(String key, Object ... args) {
         return provider.getString(key, args);
     }
 }

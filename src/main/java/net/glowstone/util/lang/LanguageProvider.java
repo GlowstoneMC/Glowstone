@@ -12,10 +12,10 @@ public interface LanguageProvider {
     /**
      * Returns the internationalized message according to the effective locale of the player.
      */
-    String getString(String key, GlowPlayer p, String ... args);
+    String getString(String key, GlowPlayer p, Object ... args);
 
     /**
     * Returns the internationalized message according to the default locale of the server. Used when a GlowPlayer object is unavailable.
     */
-    String getString(String key, String ... args);
+    String getString(String key, Object ... args);
 }

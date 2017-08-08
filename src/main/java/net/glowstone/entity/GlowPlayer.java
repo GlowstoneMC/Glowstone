@@ -343,10 +343,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         recipeMonitor = new PlayerRecipeMonitor(this);
     }
 
-    public String getLocale() {
-        return this.spigot.getLocale();
-    }
-
     /**
      * Read the location from a PlayerReader for entity initialization. Will
      * fall back to a reasonable default rather than returning null.
@@ -1845,7 +1841,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getLocale() {
-        return null;
+        return this.spigot.getLocale();
     }
 
     public boolean affectsSpawning = true;
