@@ -624,9 +624,20 @@ public abstract class GlowEntity implements Entity {
     public List<Message> createAfterSpawnMessage(GlowSession session) {
         List<Message> result = Lists.newArrayList();
 
+        GlowPlayer player = session.getPlayer();
+        boolean visible = player.canSeeEntity(this);
         for (GlowEntity leashedEntity : leashedEntities) {
-            int attached = session.getPlayer().getEntityId() == this.getEntityId() ? 0 : leashedEntity.getEntityId();
-            int holder = this.getEntityId();
+            if (visible && player.canSeeEntity(leashedEntity)) {
+                int attached = player.getEntityId() == this.getEntityId() ? 0 : leashedEntity.getEntityId();
+                int holder = this.getEntityId();
+
+                result.add(new AttachEntityMessage(attached, holder));
+            }
+        }
+
+        if (isLeashed() && visible && player.canSeeEntity(leashHolder)) {
+            int attached = player.getEntityId() == this.getEntityId() ? 0 : this.getEntityId();
+            int holder = leashHolder.getEntityId();
 
             result.add(new AttachEntityMessage(attached, holder));
         }
@@ -1573,7 +1584,6 @@ public abstract class GlowEntity implements Entity {
 
     public boolean setLeashHolder(Entity holder) {
         // "This method has no effect on EnderDragons, Withers, Players, or Bats"
-        EntityType type = getType();
         if (!GlowLeashHitch.isAllowedLeashHolder(this.getType())) {
             return false;
         }

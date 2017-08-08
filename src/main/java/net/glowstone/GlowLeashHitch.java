@@ -130,7 +130,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         );
 
         Optional<LeashHitch> first = sorted.findFirst();
-        return first.orElse(block.getWorld().spawn(block.getLocation(), LeashHitch.class));
+        return first.orElseGet(() -> first.orElse(block.getWorld().spawn(block.getLocation(), LeashHitch.class)));
     }
 
     /**
