@@ -31,7 +31,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // don't let players reach an illegal position
         if (Math.abs(newLocation.getBlockX()) > 32000000 || Math.abs(newLocation.getBlockZ()) > 32000000) {
-            session.getPlayer().kickPlayer("Illegal position");
+            session.getPlayer().kickPlayer(GlowServer.lang.getString("event.player.move.illegal"));
             return;
         }
 
@@ -52,10 +52,10 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             } else {
                 double distance = newLocation.distanceSquared(oldLocation);
                 if (distance > 100 * 100) {
-                    session.getPlayer().kickPlayer("You moved too quickly :( (Hacking?)");
+                    session.getPlayer().kickPlayer(GlowServer.lang.getString("event.player.move.quickly.kick"));
                     return;
                 } else if (distance > 100) {
-                    GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly!");
+                    GlowServer.logger.warning(GlowServer.lang.getString("event.player.move.quickly.console", session.getPlayer().getName()));
                 }
             }
         }
