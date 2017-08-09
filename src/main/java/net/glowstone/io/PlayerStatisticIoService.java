@@ -32,7 +32,7 @@ public class PlayerStatisticIoService {
      */
     private File getPlayerFile(UUID uuid) {
         if (!statsDir.isDirectory() && !statsDir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + statsDir);
+            server.getLogger().warning(GlowServer.lang.getString("error.world.statistic.mkdir", statsDir));
         }
         return new File(statsDir, uuid + ".json");
     }
@@ -60,7 +60,7 @@ public class PlayerStatisticIoService {
                             longValue = (Long) object.get("value");
                         }
                     } else {
-                        GlowServer.logger.warning("Unknown statistic type for '" + entry.getKey() + "': " + entry.getValue() + " (" + entry.getValue().getClass().getSimpleName() + ")");
+                        GlowServer.logger.warning(GlowServer.lang.getString("error.world.statistic.mkdir", entry.getKey(), entry.getValue(), entry.getValue().getClass().getSimpleName()));
                     }
                     if (longValue != null) {
                         player.getStatisticMap().getValues().put(entry.getKey(), longValue.intValue());
