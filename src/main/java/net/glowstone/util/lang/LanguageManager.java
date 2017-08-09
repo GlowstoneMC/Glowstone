@@ -47,6 +47,15 @@ public final class LanguageManager {
         }
 
         @Override
+        public String getString(CommandSender sender, String key, Object ... args) {
+            if (sender instanceof GlowPlayer) {
+                return getString((GlowPlayer) sender, key, args);
+            } else {
+                return getString(key, args);
+            }
+        }
+
+        @Override
         public String getString(String key, Object ... args) {
             try {
                 return new MessageFormat(defaultBundle.getString(key)).format(args);
@@ -81,11 +90,7 @@ public final class LanguageManager {
     }
 
     public String getString(CommandSender sender, String key, Object ... args) {
-        if (sender instanceof GlowPlayer) {
-            return provider.getString((GlowPlayer) sender, key, args);
-        } else {
-            return provider.getString(key, args);
-        }
+        return provider.getString(sender, key, args);
     }
 
     public String getString(String key, Object ... args) {
