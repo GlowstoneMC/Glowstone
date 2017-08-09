@@ -16,7 +16,7 @@ import java.util.List;
 public class DefaultGameModeCommand extends VanillaCommand {
 
     public DefaultGameModeCommand() {
-        super("defaultgamemode", GlowServer.lang.getString("command.minecraft.defaultgamemode.description"), "/defaultgamemode <" + GlowServer.lang.getString("command.minecraft.defaultgamemode.args.mode") + ">", Collections.emptyList());
+        super("defaultgamemode", GlowServer.lang.getString("command.minecraft.defaultgamemode.description"), GlowServer.lang.getString("command.minecraft.defaultgamemode.usage"), Collections.emptyList());
         setPermission("minecraft.command.defaultgamemode");
     }
 
@@ -25,7 +25,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/defaultgamemode <" + GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.args.mode") + ">"));
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.usage")));
             return false;
         }
 

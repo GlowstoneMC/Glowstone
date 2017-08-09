@@ -14,7 +14,7 @@ import java.util.List;
 
 public class BanIpCommand extends VanillaCommand {
     public BanIpCommand() {
-        super("ban-ip", GlowServer.lang.getString("command.minecraft.banip.description"), "/ban-ip " + GlowServer.lang.getString("command.minecraft.banip.args.target") + " " + GlowServer.lang.getString("command.minecraft.banip.args.reason"), Collections.emptyList());
+        super("ban-ip", GlowServer.lang.getString("command.minecraft.banip.description"), GlowServer.lang.getString("command.minecraft.banip.usage"), Collections.emptyList());
         setPermission("minecraft.command.ban-ip");
     }
 
@@ -47,7 +47,7 @@ public class BanIpCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.banip.invalid"));
             return false;
         }
-        sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/ban-ip " + GlowServer.lang.getString(sender, "command.minecraft.banip.args.target") + " " + GlowServer.lang.getString(sender, "command.minecraft.banip.args.reason")));
+        sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.banip.usage")));
         return false;
     }
 

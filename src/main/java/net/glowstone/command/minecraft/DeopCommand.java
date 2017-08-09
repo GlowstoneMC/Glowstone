@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DeopCommand extends VanillaCommand {
     public DeopCommand() {
-        super("deop", GlowServer.lang.getString("command.minecraft.deop.description"), "/deop <" + GlowServer.lang.getString("command.minecraft.deop.args.player") + ">", Collections.emptyList());
+        super("deop", GlowServer.lang.getString("command.minecraft.deop.description"), GlowServer.lang.getString("command.minecraft.deop.usage"), Collections.emptyList());
         setPermission("minecraft.command.deop");
     }
 
@@ -23,7 +23,7 @@ public class DeopCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/deop <" + GlowServer.lang.getString(sender, "command.minecraft.deop.args.player") + ">"));
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.deop.usage")));
             return false;
         }
         String name = args[0];

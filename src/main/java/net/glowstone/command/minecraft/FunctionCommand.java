@@ -20,7 +20,7 @@ import java.util.Map;
 public class FunctionCommand extends VanillaCommand {
 
     public FunctionCommand() {
-        super("function", GlowServer.lang.getString("command.minecraft.function.description"), "/function <" + GlowServer.lang.getString("command.minecraft.function.args.name") + "> [" + GlowServer.lang.getString("command.minecraft.function.args.if") + " <" + GlowServer.lang.getString("command.minecraft.function.args.selector") + ">|" + GlowServer.lang.getString("command.minecraft.function.args.unless") + " <" + GlowServer.lang.getString("command.minecraft.function.args.selector") + ">]", Collections.emptyList());
+        super("function", GlowServer.lang.getString("command.minecraft.function.description"), GlowServer.lang.getString("command.minecraft.function.usage"), Collections.emptyList());
         setPermission("minecraft.command.function");
     }
 
@@ -30,7 +30,7 @@ public class FunctionCommand extends VanillaCommand {
             return false;
         }
         if (args.length == 0 || args.length == 2) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.description"), "/function <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.name") + "> [" + GlowServer.lang.getString(sender, "command.minecraft.function.args.if") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">|" + GlowServer.lang.getString(sender, "command.minecraft.function.args.unless") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">]"));
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -60,7 +60,7 @@ public class FunctionCommand extends VanillaCommand {
                     return false;
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.description"), "/function <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.name") + "> [" + GlowServer.lang.getString(sender, "command.minecraft.function.args.if") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">|" + GlowServer.lang.getString(sender, "command.minecraft.function.args.unless") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">]"));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.usage")));
                 return false;
             }
         }

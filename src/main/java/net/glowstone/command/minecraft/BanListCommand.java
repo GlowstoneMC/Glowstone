@@ -18,7 +18,7 @@ public class BanListCommand extends VanillaCommand {
     private static final List<String> BAN_TYPES = Arrays.asList("ips", "players");
 
     public BanListCommand() {
-        super("banlist", GlowServer.lang.getString("command.minecraft.banlist.description"), "/banlist " + GlowServer.lang.getString("command.minecraft.banlist.args.target"), Collections.emptyList());
+        super("banlist", GlowServer.lang.getString("command.minecraft.banlist.description"), GlowServer.lang.getString("command.minecraft.banlist.usage"), Collections.emptyList());
         setPermission("minecraft.command.ban.list");
     }
 
@@ -34,7 +34,7 @@ public class BanListCommand extends VanillaCommand {
             } else if ("players".equalsIgnoreCase(args[0])) {
                 banType = BanList.Type.NAME;
             } else {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.banlist.invalid", args[0]) + " " + GlowServer.lang.getString(sender, "command.generic.usage", "/banlist " + GlowServer.lang.getString(sender, "command.minecraft.banlist.args.target")));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.banlist.invalid", args[0]) + " " + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.banlist.usage")));
                 return false;
             }
         } else {

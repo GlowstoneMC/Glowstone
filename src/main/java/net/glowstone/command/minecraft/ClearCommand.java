@@ -25,7 +25,7 @@ import java.util.List;
 
 public class ClearCommand extends VanillaCommand {
     public ClearCommand() {
-        super("clear", GlowServer.lang.getString("command.minecraft.clear.description"), "/clear [" + GlowServer.lang.getString("command.minecraft.clear.args.player") + "] [" + GlowServer.lang.getString("command.minecraft.clear.args.item") + "] [" + GlowServer.lang.getString("command.minecraft.clear.args.data") + "] [" + GlowServer.lang.getString("command.minecraft.clear.args.max") + "]", Collections.emptyList());
+        super("clear", GlowServer.lang.getString("command.minecraft.clear.description"), GlowServer.lang.getString("command.minecraft.clear.usage.1"), Collections.emptyList());
         setPermission("minecraft.command.clear");
     }
 
@@ -39,7 +39,7 @@ public class ClearCommand extends VanillaCommand {
                 Player player = (Player) sender;
                 return clearAll(sender, player, null, -1, -1);
             } else {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/clear <" + GlowServer.lang.getString(sender, "command.minecraft.clear.args.player") + "> [" + GlowServer.lang.getString(sender, "command.minecraft.clear.args.item") + "] [" + GlowServer.lang.getString(sender, "command.minecraft.clear.args.data") + "] [" + GlowServer.lang.getString(sender, "command.minecraft.clear.args.max") + "]"));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.clear.usage.2")));
                 return false;
             }
         }

@@ -18,7 +18,7 @@ public class DifficultyCommand extends VanillaCommand {
     private static final List<String> DIFFICULTIES = Arrays.asList("peaceful", "easy", "normal", "hard");
 
     public DifficultyCommand() {
-        super("difficulty", GlowServer.lang.getString("command.minecraft.difficulty.args.description"), "/difficulty <" + GlowServer.lang.getString("command.minecraft.difficulty.args.difficulty") + ">", Collections.emptyList());
+        super("difficulty", GlowServer.lang.getString("command.minecraft.difficulty.args.description"), GlowServer.lang.getString("command.minecraft.difficulty.usage"), Collections.emptyList());
         setPermission("minecraft.command.difficulty");
     }
 
@@ -28,7 +28,7 @@ public class DifficultyCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/difficulty <" + GlowServer.lang.getString(sender, "command.minecraft.difficulty.args.difficulty") + ">"));
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.difficulty.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
