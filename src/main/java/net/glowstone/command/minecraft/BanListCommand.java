@@ -18,7 +18,7 @@ public class BanListCommand extends VanillaCommand {
     private static final List<String> BAN_TYPES = Arrays.asList("ips", "players");
 
     public BanListCommand() {
-        super("banlist", GlowServer.lang.getString("command.minecraft.banlist.description"), "/banlist " + GlowServer.lang.getString("command.minecraft.banlist.args.target")), Collections.emptyList();
+        super("banlist", GlowServer.lang.getString("command.minecraft.banlist.description"), "/banlist " + GlowServer.lang.getString("command.minecraft.banlist.args.target"), Collections.emptyList());
         setPermission("minecraft.command.ban.list");
     }
 
