@@ -376,4 +376,4 @@ public class EnchantmentManager {
 
         return false;
     }
-
+}
