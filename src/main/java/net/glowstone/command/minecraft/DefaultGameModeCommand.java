@@ -15,7 +15,7 @@ import java.util.List;
 public class DefaultGameModeCommand extends VanillaCommand {
 
     public DefaultGameModeCommand() {
-        super("defaultgamemode", "Sets the default game mode (creative, survival, etc.) for new players entering a multiplayer server.", "/defaultgamemode <mode>", Collections.emptyList());
+        super("defaultgamemode", GlowServer.lang.getString("command.minecraft.defaultgamemode.description"), "/defaultgamemode <" + GlowServer.lang.getString("command.minecraft.defaultgamemode.args.mode") + ">", Collections.emptyList());
         setPermission("minecraft.command.defaultgamemode");
     }
 
@@ -24,7 +24,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/defaultgamemode <" + GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.args.mode") + ">"));
             return false;
         }
 
@@ -32,12 +32,12 @@ public class DefaultGameModeCommand extends VanillaCommand {
         final GameMode gamemode = GameModeUtils.build(inputMode);
 
         if (gamemode == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown mode '" + inputMode + "'.");
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.unknown", inputMode));
             return false;
         }
 
         Bukkit.getServer().setDefaultGameMode(gamemode);
-        sender.sendMessage("The world's default game mode is now " + ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode) + " Mode");
+        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.unknown", ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode)));
 
         return true;
     }
