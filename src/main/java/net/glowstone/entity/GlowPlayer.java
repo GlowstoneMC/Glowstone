@@ -878,7 +878,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             spawnAtBed = false;
             if (bedSpawn != null) {
                 setBedSpawnLocation(null);
-                sendMessage("Your home bed was missing or obstructed");
+                sendMessage(GlowServer.lang.getString(this, "event.player.respawn.missing"));
             }
         }
 
@@ -1896,15 +1896,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void chat(String text, boolean async) {
         if (text.charAt(0) == '/') {
             Runnable task = () -> {
-                server.getLogger().info(getName() + " issued command: " + text);
+                server.getLogger().info(GlowServer.lang.getString("event.command.issued", getName(), text));
                 try {
                     PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(this, text);
                     if (!EventFactory.callEvent(event).isCancelled()) {
                         server.dispatchCommand(this, event.getMessage().substring(1));
                     }
                 } catch (Exception ex) {
-                    sendMessage(ChatColor.RED + "An internal error occurred while executing your command.");
-                    server.getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
+                    sendMessage(ChatColor.RED + GlowServer.lang.getString(GlowPlayer.this, "event.command.error"));
+                    server.getLogger().log(Level.SEVERE, GlowServer.lang.getString("event.command.exception", text), ex);
                 }
             };
 
