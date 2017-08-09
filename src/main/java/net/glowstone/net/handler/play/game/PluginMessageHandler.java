@@ -28,12 +28,12 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
 
         if (channel.equals("REGISTER")) {
             for (String regChannel : string(message.getData()).split("\0")) {
-                GlowServer.logger.info(session + " registered channel: " + regChannel);
+                GlowServer.logger.info(GlowServer.lang.getString("server.channel.register", session, regChannel));
                 session.getPlayer().addChannel(regChannel);
             }
         } else if (channel.equals("UNREGISTER")) {
             for (String regChannel : string(message.getData()).split("\0")) {
-                GlowServer.logger.info(session + " unregistered channel: " + regChannel);
+                GlowServer.logger.info(GlowServer.lang.getString("server.channel.unregister", session, regChannel));
                 session.getPlayer().removeChannel(regChannel);
             }
         } else if (channel.startsWith("MC|")) {
