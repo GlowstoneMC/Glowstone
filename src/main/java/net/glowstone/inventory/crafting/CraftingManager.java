@@ -34,7 +34,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         GlowServer.logger.info(GlowServer.lang.getString("status.recipe.stats",
                 shapedRecipes.size(), shapelessRecipes.size(),
                 furnaceRecipes.size(), dynamicRecipes.size(),
-                furnaceFuels.size(),));
+                furnaceFuels.size()));
     }
 
     /**
