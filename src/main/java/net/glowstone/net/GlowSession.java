@@ -250,7 +250,7 @@ public class GlowSession extends BasicSession {
             }
             send(new PingMessage(pingMessageId));
         } else {
-            disconnect("Timed out");
+            disconnect(GlowServer.lang.getString(player, "event.player.timeout"));
         }
     }
 
@@ -344,7 +344,7 @@ public class GlowSession extends BasicSession {
         // Kick other players with the same UUID
         for (GlowPlayer other : getServer().getRawOnlinePlayers()) {
             if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
-                other.getSession().disconnect("You logged in from another location.", true);
+                other.getSession().disconnect(GlowServer.lang.getString(other, "event.player.doublelogin"), true);
                 break;
             }
         }
@@ -363,7 +363,7 @@ public class GlowSession extends BasicSession {
 
         online = true;
 
-        GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: " + player.getUniqueId());
+        GlowServer.logger.info(GlowServer.lang.getString("event.player.connected", player.getName(), address, player.getUniqueId()));
 
         // message and user list
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
@@ -434,11 +434,8 @@ public class GlowSession extends BasicSession {
         }
 
         // log that the player was kicked
-        if (player != null) {
-            GlowServer.logger.info(player.getName() + " kicked: " + reason);
-        } else {
-            GlowServer.logger.info("[" + address + "] kicked: " + reason);
-        }
+        GlowServer.logger.info(GlowServer.lang.getString("event.player.kicked",
+            (player != null ? player.getName() : "[" + address + "]"), reason));
 
         if (quitReason == null) {
             quitReason = "kicked";
@@ -492,7 +489,7 @@ public class GlowSession extends BasicSession {
                 }
             }
 
-            GlowServer.logger.info(player.getName() + " [" + address + "] lost connection");
+            GlowServer.logger.info(GlowServer.lang.getString("event.player.lost", player.getName(), address));
 
             if (player.isSleeping()) {
                 player.leaveBed(false);
