@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
@@ -17,7 +18,7 @@ public class BanListCommand extends VanillaCommand {
     private static final List<String> BAN_TYPES = Arrays.asList("ips", "players");
 
     public BanListCommand() {
-        super("banlist", "Displays the server's blacklist.", "/banlist [ips|players]", Collections.emptyList());
+        super("banlist", GlowServer.lang.getString("command.minecraft.banlist.description"), GlowServer.lang.getString("command.generic.usage", "/banlist " + GlowServer.lang.getString("command.minecraft.banlist.args.target")), Collections.emptyList());
         setPermission("minecraft.command.ban.list");
     }
 
@@ -33,7 +34,7 @@ public class BanListCommand extends VanillaCommand {
             } else if ("players".equalsIgnoreCase(args[0])) {
                 banType = BanList.Type.NAME;
             } else {
-                sender.sendMessage(ChatColor.RED + "Invalid parameter '" + args[0] + "'. Usage: " + usageMessage);
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.banlist.invalid", args[0]) + " " + GlowServer.lang.getString(sender, "command.generic.usage", "/banlist " + GlowServer.lang.getString(sender, "command.minecraft.banlist.args.target")));
                 return false;
             }
         } else {
@@ -43,10 +44,10 @@ public class BanListCommand extends VanillaCommand {
         final Set<BanEntry> banEntries = Bukkit.getBanList(banType).getBanEntries();
 
         if (banEntries.isEmpty()) {
-            sender.sendMessage("There are no banned players");
+            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.banlist.empty"));
         } else {
             final List<String> targets = banEntries.stream().map(BanEntry::getTarget).collect(Collectors.toList());
-            sender.sendMessage("There are " + banEntries.size() + " banned players: ");
+            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.banlist.count", banEntries.size()));
             sender.sendMessage(CommandUtils.prettyPrint(targets.toArray(new String[targets.size()])));
         }
 
