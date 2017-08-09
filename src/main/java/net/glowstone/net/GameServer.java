@@ -19,7 +19,7 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
     }
 
     public ChannelFuture bind(InetSocketAddress address) {
-        GlowServer.logger.info("Binding server to " + address + "...");
+        GlowServer.logger.info(GlowServer.lang.getString("server.bind.address", address));
         return super.bind(address);
     }
 
@@ -27,21 +27,21 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
     public void onBindSuccess(InetSocketAddress address) {
         getServer().setPort(address.getPort());
         getServer().setIp(address.getHostString());
-        GlowServer.logger.info("Successfully bound server to " + address + '.');
+        GlowServer.logger.info(GlowServer.lang.getString("server.bind.success", address));
         super.onBindSuccess(address);
     }
 
     @Override
     public void onBindFailure(InetSocketAddress address, Throwable t) {
-        GlowServer.logger.severe("Failed to bind server to " + address + '.');
+        GlowServer.logger.severe(GlowServer.lang.getString("server.bind.failed", address));
         if (t.getMessage().contains("Cannot assign requested address")) {
-            GlowServer.logger.severe("The 'server.ip' in your configuration may not be valid.");
-            GlowServer.logger.severe("Unless you are sure you need it, try removing it.");
+            GlowServer.logger.severe(GlowServer.lang.getString("server.bind.invalid.1"));
+            GlowServer.logger.severe(GlowServer.lang.getString("server.bind.invalid.2"));
             GlowServer.logger.severe(t.getLocalizedMessage());
         } else if (t.getMessage().contains("Address already in use")) {
-            GlowServer.logger.severe("The address was already in use. Check that no server is");
-            GlowServer.logger.severe("already running on that port. If needed, try killing all");
-            GlowServer.logger.severe("Java processes using Task Manager or similar.");
+            GlowServer.logger.severe(GlowServer.lang.getString("server.bind.taken.1"));
+            GlowServer.logger.severe(GlowServer.lang.getString("server.bind.taken.2"));
+            GlowServer.logger.severe(GlowServer.lang.getString("server.bind.taken.3"));
             GlowServer.logger.severe(t.getLocalizedMessage());
         } else {
             GlowServer.logger.log(Level.SEVERE, "An unknown bind error has occurred.", t);
