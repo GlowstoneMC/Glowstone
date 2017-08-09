@@ -312,7 +312,6 @@ public final class GlowServer implements Server {
      */
     public static void main(String... args) {
         try {
-            Thread.currentThread().setContextClassLoader(LibraryManager.getLibraryClassLoader());
             GlowServer server = createFromArguments(args);
 
             // we don't want to run a server when called with --version
