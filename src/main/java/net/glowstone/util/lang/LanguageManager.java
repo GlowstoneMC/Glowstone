@@ -41,7 +41,7 @@ public final class LanguageManager {
             } catch (MissingResourceException ex) {
                 // Fallback to English so we don't have to wait for
                 // complete translations implementing a new feature.
-                ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag("en-US"));
+                ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag("en_US"));
                 return new MessageFormat(rb.getString(key)).format(args);
             }
         }
@@ -53,7 +53,7 @@ public final class LanguageManager {
             } catch (MissingResourceException ex) {
                 // Fallback to English so we don't have to wait for
                 // complete translations implementing a new feature.
-                ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag("en-US"));
+                ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag("en_US"));
                 return new MessageFormat(rb.getString(key)).format(args);
             }
         }
