@@ -1,6 +1,7 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
