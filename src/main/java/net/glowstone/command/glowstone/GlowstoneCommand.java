@@ -36,20 +36,20 @@ public class GlowstoneCommand extends BukkitCommand {
         }
         if (args.length == 0 || (args.length > 0 && args[0].equalsIgnoreCase("about"))) {
             // some info about this Glowstone server
-            sender.sendMessage(GlowServer.lang.getString("command.glowstone.about.title"));
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.brand",
+            sender.sendMessage(GlowServer.lang.getString(sender, "command.glowstone.about.title"));
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.brand",
                 ChatColor.AQUA + Bukkit.getName() + ChatColor.RESET));
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.name",
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.name",
                 ChatColor.AQUA + Bukkit.getServerName() + ChatColor.RESET));
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.version.glowstone",
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.version.glowstone",
                 ChatColor.AQUA + Bukkit.getVersion() + ChatColor.RESET));
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.version.api",
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.version.api",
                 ChatColor.AQUA + Bukkit.getBukkitVersion() + ChatColor.RESET));
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.players",
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.players",
                 ChatColor.AQUA + "" + Bukkit.getOnlinePlayers().size() + ChatColor.RESET));
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.worlds",
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.worlds",
                 ChatColor.AQUA + "" + Bukkit.getWorlds().size() + ChatColor.RESET));
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.plugins",
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.plugins",
                 ChatColor.AQUA + "" + Bukkit.getPluginManager().getPlugins().length + ChatColor.RESET));
 
             // thread count
@@ -60,7 +60,7 @@ public class GlowstoneCommand extends BukkitCommand {
                     threadCount++;
                 }
             }
-            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.about.threads", ChatColor.AQUA + "" + threadCount + ChatColor.RESET));
+            sender.sendMessage(" - " + ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.about.threads", ChatColor.AQUA + "" + threadCount + ChatColor.RESET));
             return false;
         }
         if (args[0].equalsIgnoreCase("help")) {
@@ -70,15 +70,15 @@ public class GlowstoneCommand extends BukkitCommand {
         if (args[0].equalsIgnoreCase("property")) {
             if (args.length == 1) {
                 // list all
-                System.getProperties().forEach((key, value) -> sender.sendMessage(GlowServer.lang.getString("command.glowstone.property.result", ChatColor.AQUA + "" + key + ChatColor.RESET, ChatColor.GOLD + "" + value + ChatColor.RESET)));
+                System.getProperties().forEach((key, value) -> sender.sendMessage(GlowServer.lang.getString(sender, "command.glowstone.property.result", ChatColor.AQUA + "" + key + ChatColor.RESET, ChatColor.GOLD + "" + value + ChatColor.RESET)));
             } else {
                 // get a property
                 String key = args[1].toLowerCase();
                 String value = System.getProperty(key);
                 if (value == null) {
-                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString("command.glowstone.property.unknown", key));
+                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.glowstone.property.unknown", key));
                 } else {
-                    sender.sendMessage(GlowServer.lang.getString("command.glowstone.property.result", ChatColor.AQUA + key + ChatColor.RESET, ChatColor.GOLD + value + ChatColor.RESET));
+                    sender.sendMessage(GlowServer.lang.getString(sender, "command.glowstone.property.result", ChatColor.AQUA + key + ChatColor.RESET, ChatColor.GOLD + value + ChatColor.RESET));
                 }
             }
             return false;
@@ -87,9 +87,9 @@ public class GlowstoneCommand extends BukkitCommand {
             RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
             List<String> arguments = runtimeMxBean.getInputArguments();
             if (arguments.size() == 0) {
-                sender.sendMessage(GlowServer.lang.getString("command.glowstone.vm.noargs"));
+                sender.sendMessage(GlowServer.lang.getString(sender, "command.glowstone.vm.noargs"));
             } else {
-                sender.sendMessage(GlowServer.lang.getString("command.glowstone.vm.args", arguments.size()));
+                sender.sendMessage(GlowServer.lang.getString(sender, "command.glowstone.vm.args", arguments.size()));
                 for (String argument : arguments) {
                     sender.sendMessage(" - '" + ChatColor.AQUA + argument + ChatColor.RESET + "'.");
                 }
@@ -100,28 +100,28 @@ public class GlowstoneCommand extends BukkitCommand {
         if (args[0].equalsIgnoreCase("world") || args[0].equalsIgnoreCase("worlds")) {
             if (args.length == 1) {
                 // list worlds
-                sender.sendMessage(GlowServer.lang.getString("command.glowstone.world.list", CommandUtils.prettyPrint(getWorldNames().toArray(new String[0]))));
+                sender.sendMessage(GlowServer.lang.getString(sender, "command.glowstone.world.list", CommandUtils.prettyPrint(getWorldNames().toArray(new String[0]))));
                 return true;
             }
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString("command.glowstone.world.players"));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.glowstone.world.players"));
                 return false;
             }
             GlowPlayer player = (GlowPlayer) sender;
             String worldName = args[1];
             GlowWorld world = player.getServer().getWorld(worldName);
             if (world == null) {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString("command.glowstone.world.missing", worldName));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.glowstone.world.missing", worldName));
                 return false;
             }
             player.teleport(world.getSpawnLocation());
-            player.sendMessage(GlowServer.lang.getString("command.glowstone.world.teleported", world.getName()));
+            player.sendMessage(GlowServer.lang.getString(sender, "command.glowstone.world.teleported", world.getName()));
             return true;
         }
         if (args[0].equalsIgnoreCase("eval")) {
             if (args.length == 1) {
                 // no args, send usage
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString("command.generic.usage", label + " eval " + GlowServer.lang.getString("command.glowstone.eval.args.eval"));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/" + label + " eval " + GlowServer.lang.getString(sender, "command.glowstone.eval.args.eval")));
                 return false;
             }
             StringBuilder builder = new StringBuilder();
@@ -130,7 +130,7 @@ public class GlowstoneCommand extends BukkitCommand {
             }
             ReflectionProcessor processor = new ReflectionProcessor(builder.toString(), sender instanceof Entity ? sender : Bukkit.getServer());
             Object result = processor.process();
-            sender.sendMessage(ChatColor.GOLD + GlowServer.lang.getString("command.glowstone.eval.return", (result == null ? ChatColor.RED + GlowServer.lang.getString("command.glowstone.eval.missing") : ChatColor.AQUA + result.toString())));
+            sender.sendMessage(ChatColor.GOLD + GlowServer.lang.getString(sender, "command.glowstone.eval.return", (result == null ? ChatColor.RED + GlowServer.lang.getString(sender, "command.glowstone.eval.missing") : ChatColor.AQUA + result.toString())));
         }
         return false;
     }

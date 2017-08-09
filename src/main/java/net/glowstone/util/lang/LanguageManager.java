@@ -11,6 +11,8 @@ import java.text.MessageFormat;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 
+import org.bukkit.command.CommandSender;
+
 public final class LanguageManager {
     private static final DefaultLanguageProvider DEFAULT_LANGUAGE_PROVIDER = new DefaultLanguageProvider();
     private LanguageProvider provider = DEFAULT_LANGUAGE_PROVIDER;
@@ -31,7 +33,7 @@ public final class LanguageManager {
         }
 
         @Override
-        public String getString(String key, GlowPlayer p, Object ... args) {
+        public String getString(GlowPlayer p, String key, Object ... args) {
             try {
                 String locale = this.getEffectiveLocale(p);
                 ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag(locale));
@@ -74,8 +76,16 @@ public final class LanguageManager {
         return provider.getEffectiveLocale(p);
     }
 
-    public String getString(String key, GlowPlayer p, Object ... args) {
+    public String getString(GlowPlayer p, String key, Object ... args) {
         return provider.getString(key, p, args);
+    }
+
+    public String getString(CommandSender sender, String key, Object ... args) {
+        if(sender instanceof GlowPlayer) {
+            return provider.getString(key, (GlowPlayer) sender, args);
+        } else {
+            return provider.getString(key, p, args);
+        }
     }
 
     public String getString(String key, Object ... args) {

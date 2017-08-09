@@ -1,6 +1,7 @@
 package net.glowstone.util.lang;
 
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.command.CommandSender;
 
 public interface LanguageProvider {
 
@@ -12,7 +13,7 @@ public interface LanguageProvider {
     /**
      * Returns the internationalized message according to the effective locale of the player.
      */
-    String getString(String key, GlowPlayer p, Object ... args);
+    String getString(GlowPlayer p, String key, Object ... args);
 
     /**
     * Returns the internationalized message according to the default locale of the server. Used when a GlowPlayer object is unavailable.
