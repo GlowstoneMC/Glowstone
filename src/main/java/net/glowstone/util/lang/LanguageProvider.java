@@ -1,7 +1,6 @@
 package net.glowstone.util.lang;
 
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.command.CommandSender;
 
 public interface LanguageProvider {
 

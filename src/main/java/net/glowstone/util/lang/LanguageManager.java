@@ -81,7 +81,7 @@ public final class LanguageManager {
     }
 
     public String getString(CommandSender sender, String key, Object ... args) {
-        if(sender instanceof GlowPlayer) {
+        if (sender instanceof GlowPlayer) {
             return provider.getString(key, (GlowPlayer) sender, args);
         } else {
             return provider.getString(key, args);
