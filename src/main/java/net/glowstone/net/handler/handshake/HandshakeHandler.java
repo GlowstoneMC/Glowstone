@@ -19,7 +19,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
         } else if (message.getState() == 2) {
             protocol = ProtocolType.LOGIN;
         } else {
-            session.disconnect("Invalid state");
+            session.disconnect(GlowServer.lang.getString("server.invalid.state"));
             return;
         }
 
@@ -32,15 +32,15 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             try {
                 session.setProxyData(new ProxyData(session, message.getAddress()));
             } catch (IllegalArgumentException ex) {
-                session.disconnect("Invalid proxy data provided.");
+                session.disconnect(GlowServer.lang.getString("server.invalid.proxy.data"));
                 // protocol is still set here and below to prevent errors
                 // trying to decode packets after this one under the wrong
                 // protocol, even though client is kicked
                 session.setProtocol(protocol);
                 return;
             } catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error parsing proxy data for " + session, ex);
-                session.disconnect("Failed to parse proxy data.");
+                GlowServer.logger.log(Level.SEVERE, GlowServer.lang.getString("server.state.proxy.parsing", session), ex);
+                session.disconnect(GlowServer.lang.getString("server.state.proxy.failed"));
                 session.setProtocol(protocol);
                 return;
             }
@@ -50,9 +50,9 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         if (protocol == ProtocolType.LOGIN) {
             if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
-                session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
+                session.disconnect(GlowServer.lang.getString("server.outdated.client", GlowServer.GAME_VERSION));
             } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {
-                session.disconnect("Outdated server! I'm running " + GlowServer.GAME_VERSION);
+                session.disconnect(GlowServer.lang.getString("server.outdated.server", GlowServer.GAME_VERSION));
             }
         }
     }
