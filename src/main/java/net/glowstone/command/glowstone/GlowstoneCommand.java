@@ -121,7 +121,7 @@ public class GlowstoneCommand extends BukkitCommand {
         if (args[0].equalsIgnoreCase("eval")) {
             if (args.length == 1) {
                 // no args, send usage
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString("command.generic.usage", label + " eval <eval>"));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString("command.generic.usage", label + " eval " + GlowServer.lang.getString("command.glowstone.eval.args.eval"));
                 return false;
             }
             StringBuilder builder = new StringBuilder();
