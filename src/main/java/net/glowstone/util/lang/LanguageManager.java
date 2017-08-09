@@ -84,7 +84,7 @@ public final class LanguageManager {
         if(sender instanceof GlowPlayer) {
             return provider.getString(key, (GlowPlayer) sender, args);
         } else {
-            return provider.getString(key, p, args);
+            return provider.getString(key, args);
         }
     }
 
