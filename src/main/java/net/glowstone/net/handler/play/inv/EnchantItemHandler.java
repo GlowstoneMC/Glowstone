@@ -14,7 +14,7 @@ public final class EnchantItemHandler implements MessageHandler<GlowSession, Enc
         if (view instanceof GlowEnchantingInventory) {
             ((GlowEnchantingInventory) view).onPlayerEnchant(message.getEnchantment());
         } else {
-            GlowServer.logger.info("Player " + session.getPlayer().getName() + " tried to enchant item while no enchanting inventory was open!");
+            GlowServer.logger.info(GlowServer.lang.getString("event.enchant.illegal", session.getPlayer().getName()));
         }
     }
 }
