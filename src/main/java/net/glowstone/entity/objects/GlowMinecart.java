@@ -206,7 +206,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Storage(Location location) {
             super(location, MinecartType.CHEST);
-            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), "Minecart with Chest");
+            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), GlowServer.lang.getString("entity.inventory.minecart.chest"));
         }
 
         @Override
@@ -247,7 +247,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
-            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
+            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), GlowServer.lang.getString("entity.inventory.minecart.hopper"));
         }
 
         @Override
