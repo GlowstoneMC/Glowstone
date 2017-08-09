@@ -25,17 +25,17 @@ public final class LanguageManager {
         }
 
         @Override
-        public String getEffectiveLocale(GlowPlayer p) {
+        public String getEffectiveLocale(GlowPlayer player) {
             if (GlowServer.lockLocale) { //If the locale is locked, return the default locale, otherwise return the player's locale
                 return GlowServer.defaultLocale;
             }
-            return p.getLocale();
+            return player.getLocale();
         }
 
         @Override
-        public String getString(GlowPlayer p, String key, Object ... args) {
+        public String getString(GlowPlayer player, String key, Object ... args) {
             try {
-                String locale = this.getEffectiveLocale(p);
+                String locale = this.getEffectiveLocale(player);
                 ResourceBundle rb = ResourceBundle.getBundle(baseName, Locale.forLanguageTag(locale));
                 return new MessageFormat(rb.getString(key)).format(args);
             } catch (MissingResourceException ex) {
@@ -72,17 +72,17 @@ public final class LanguageManager {
         return DEFAULT_LANGUAGE_PROVIDER;
     }
 
-    public String getEffectiveLocale(GlowPlayer p) {
-        return provider.getEffectiveLocale(p);
+    public String getEffectiveLocale(GlowPlayer player) {
+        return provider.getEffectiveLocale(player);
     }
 
-    public String getString(GlowPlayer p, String key, Object ... args) {
-        return provider.getString(key, p, args);
+    public String getString(GlowPlayer player, String key, Object ... args) {
+        return provider.getString(player, key, args);
     }
 
     public String getString(CommandSender sender, String key, Object ... args) {
         if (sender instanceof GlowPlayer) {
-            return provider.getString(key, (GlowPlayer) sender, args);
+            return provider.getString((GlowPlayer) sender, key, args);
         } else {
             return provider.getString(key, args);
         }
