@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
 import com.google.common.net.InetAddresses;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class BanIpCommand extends VanillaCommand {
     public BanIpCommand() {
-        super("ban-ip", "Bans an IP address from the server.", "/ban-ip <address|player> [reason]", Collections.emptyList());
+        super("ban-ip", GlowServer.lang.getString("command.minecraft.banip.description"), "/ban-ip " + GlowServer.lang.getString("command.minecraft.banip.args.target") + " " + GlowServer.lang.getString("command.minecraft.banip.args.reason"), Collections.emptyList());
         setPermission("minecraft.command.ban-ip");
     }
 
@@ -40,13 +41,13 @@ public class BanIpCommand extends VanillaCommand {
                     }
                     Bukkit.getBanList(BanList.Type.IP).addBan(target, reason.toString(), null, null);
                 }
-                sender.sendMessage("Banned IP address " + target);
+                sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.banip.banned", target));
                 return true;
             }
-            sender.sendMessage(ChatColor.RED + "You have entered an invalid IP address or a player that is not online");
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.banip.invalid"));
             return false;
         }
-        sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+        sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/ban-ip " + GlowServer.lang.getString(sender, "command.minecraft.banip.args.target") + " " + GlowServer.lang.getString(sender, "command.minecraft.banip.args.reason")));
         return false;
     }
 
