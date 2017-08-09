@@ -19,7 +19,7 @@ import java.util.Map;
 public class FunctionCommand extends VanillaCommand {
 
     public FunctionCommand() {
-        super("function", "Execute a function", "/function <name> [if <selector>|unless <selector>]", Collections.emptyList());
+        super("function", GlowServer.lang.getString("command.minecraft.function.description"), "/function <" + GlowServer.lang.getString("command.minecraft.function.args.name") + "> [" + GlowServer.lang.getString("command.minecraft.function.args.if") + " <" + GlowServer.lang.getString("command.minecraft.function.args.selector") + ">|" + GlowServer.lang.getString("command.minecraft.function.args.unless") + " <" + GlowServer.lang.getString("command.minecraft.function.args.selector") + ">]", Collections.emptyList());
         setPermission("minecraft.command.function");
     }
 
@@ -29,7 +29,7 @@ public class FunctionCommand extends VanillaCommand {
             return false;
         }
         if (args.length == 0 || args.length == 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.description"), "/function <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.name") + "> [" + GlowServer.lang.getString(sender, "command.minecraft.function.args.if") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">|" + GlowServer.lang.getString(sender, "command.minecraft.function.args.unless") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">]"));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -40,7 +40,7 @@ public class FunctionCommand extends VanillaCommand {
         String functionName = args[0];
         Map<String, CommandFunction> functions = world.getFunctions();
         if (!functions.containsKey(functionName)) {
-            sender.sendMessage(ChatColor.RED + "Unknown function '" + functionName + "'");
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.function.unknown", functionName));
             return false;
         }
         CommandFunction function = functions.get(functionName);
@@ -50,16 +50,16 @@ public class FunctionCommand extends VanillaCommand {
             Entity[] matched = target.getMatched(location);
             if (condition.equals("if")) {
                 if (matched.length == 0) {
-                    sender.sendMessage("Skipped execution of function '" + function.getFullName() + "'");
+                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.function.skipped", function.getFullName()));
                     return false;
                 }
             } else if (condition.equals("unless")) {
                 if (matched.length > 0) {
-                    sender.sendMessage("Skipped execution of function '" + function.getFullName() + "'");
+                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.function.skipped", function.getFullName()));
                     return false;
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.description"), "/function <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.name") + "> [" + GlowServer.lang.getString(sender, "command.minecraft.function.args.if") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">|" + GlowServer.lang.getString(sender, "command.minecraft.function.args.unless") + " <" + GlowServer.lang.getString(sender, "command.minecraft.function.args.selector") + ">]"));
                 return false;
             }
         }
