@@ -32,13 +32,13 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
 
         // only if creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {
-            player.kickPlayer("Illegal creative mode item selection");
+            player.kickPlayer(GlowServer.lang.getString("world.creative.illegal"));
             return;
         }
 
         // only if default (player) inventory
         if (!GlowInventoryView.isDefault(player.getOpenInventory())) {
-            player.kickPlayer("Illegal creative mode item selection");
+            player.kickPlayer(GlowServer.lang.getString("world.creative.illegal"));
             return;
         }
 

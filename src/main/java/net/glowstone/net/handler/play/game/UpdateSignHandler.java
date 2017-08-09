@@ -18,7 +18,7 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
         Location location = new Location(player.getWorld(), message.getX(), message.getY(), message.getZ());
 
         if (!player.checkSignLocation(location)) {
-            GlowServer.logger.warning(session + " tried to edit sign at " + location);
+            GlowServer.logger.warning(GlowServer.lang.getString("event.sign.tried", session, location));
             return;
         }
         // filter out json messages that aren't plaintext
