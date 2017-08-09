@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;

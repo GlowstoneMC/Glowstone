@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
 import net.glowstone.command.GameModeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
