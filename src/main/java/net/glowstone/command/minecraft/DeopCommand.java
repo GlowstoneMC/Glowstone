@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DeopCommand extends VanillaCommand {
     public DeopCommand() {
-        super("deop", "Removes server operator status from a player.", "/deop <player>", Collections.emptyList());
+        super("deop", GlowServer.lang.getString("command.minecraft.deop.description"), "/deop <" + GlowServer.lang.getString("command.minecraft.deop.args.player") + ">", Collections.emptyList());
         setPermission("minecraft.command.deop");
     }
 
@@ -21,13 +21,13 @@ public class DeopCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", "/deop <" + GlowServer.lang.getString(sender, "command.minecraft.deop.args.player") + ">"));
             return false;
         }
         String name = args[0];
         OfflinePlayer player = Bukkit.getOfflinePlayer(name);
         player.setOp(false);
-        sender.sendMessage("Deopped " + player.getName());
+        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.deop.deopped", player.getName()));
         return true;
     }
 
