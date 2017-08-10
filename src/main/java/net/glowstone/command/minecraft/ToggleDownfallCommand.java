@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ToggleDownfallCommand extends VanillaCommand {
     public ToggleDownfallCommand() {
-        super("toggledownfall", "Toggles the weather.", "/toggledownfall", Collections.emptyList());
+        super("toggledownfall", I.tr("command.minecraft.toggledownfall.description"), "/toggledownfall", Collections.emptyList());
         setPermission("minecraft.command.toggledownfall");
     }
 
@@ -26,7 +26,7 @@ public class ToggleDownfallCommand extends VanillaCommand {
         } else {
             world.setThundering(!world.hasStorm());
             world.setStorm(!world.hasStorm());
-            sender.sendMessage("Toggled downfall");
+            sender.sendMessage(I.tr(sender, "command.minecraft.toggledownfall.toggled"));
         }
 
         return true;
