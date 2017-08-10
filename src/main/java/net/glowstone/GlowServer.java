@@ -488,7 +488,7 @@ public final class GlowServer implements Server {
                 logger.info(I.tr("status.proxy.enabled"));
             }
         } else if (!getOnlineMode()) {
-            logger.warning(I.tr("warning.server.offline"));
+            logger.warning(I.tr("server.offline"));
         }
 
         int openCLMajor = 1;
@@ -904,11 +904,11 @@ public final class GlowServer implements Server {
             }
 
             if (!hasSponge && spongeOnlyPlugins) {
-                logger.log(Level.WARNING, I.tr("warning.sponge.found"));
+                logger.log(Level.WARNING, I.tr("sponge.found"));
                 for (File file : getSpongePlugins()) {
-                    logger.log(Level.WARNING, I.tr("warning.sponge.ignored", file.getPath()));
+                    logger.log(Level.WARNING, I.tr("sponge.ignored", file.getPath()));
                 }
-                logger.log(Level.WARNING, I.tr("warning.sponge.suggestion"));
+                logger.log(Level.WARNING, I.tr("sponge.suggestion"));
             }
         }
 
@@ -1450,7 +1450,7 @@ public final class GlowServer implements Server {
             firstword = firstword.substring(0, firstword.indexOf(' '));
         }
 
-        sender.sendMessage(ChatColor.GRAY + I.tr("warning.command.unknown", firstword));
+        sender.sendMessage(ChatColor.GRAY + I.tr("command.unknown", firstword));
         return false;
     }
 

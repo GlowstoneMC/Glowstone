@@ -14,7 +14,7 @@ import java.util.List;
 
 public class BanIpCommand extends VanillaCommand {
     public BanIpCommand() {
-        super("ban-ip", I.tr("command.minecraft.banip.description"), I.tr("command.minecraft.banip.usage"), Collections.emptyList());
+        super("ban-ip", I.tr("command.minecraft.ban-ip.description"), I.tr("command.minecraft.ban-ip.usage"), Collections.emptyList());
         setPermission("minecraft.command.ban-ip");
     }
 
@@ -41,13 +41,13 @@ public class BanIpCommand extends VanillaCommand {
                     }
                     Bukkit.getBanList(BanList.Type.IP).addBan(target, reason.toString(), null, null);
                 }
-                sender.sendMessage(I.tr(sender, "command.minecraft.banip.banned", target));
+                sender.sendMessage(I.tr(sender, "command.minecraft.ban-ip.banned", target));
                 return true;
             }
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.banip.invalid"));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.ban-ip.invalid"));
             return false;
         }
-        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.banip.usage")));
+        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.ban-ip.usage")));
         return false;
     }
 

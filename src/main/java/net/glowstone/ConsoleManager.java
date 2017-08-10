@@ -120,7 +120,7 @@ public final class ConsoleManager {
     public void startFile(String logfile) {
         File parent = new File(logfile).getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
-            logger.warning(I.tr("warning.command.log.mkdir", parent));
+            logger.warning(I.tr("command.log.mkdir.failed", parent));
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
@@ -242,7 +242,7 @@ public final class ConsoleManager {
                 // location to position the cursor at (before autofilling takes place)
                 return buffer.lastIndexOf(' ') + 1;
             } catch (Throwable t) {
-                logger.log(Level.WARNING, I.tr("warning.command.tab"), t);
+                logger.log(Level.WARNING, I.tr("command.tab.error"), t);
                 return cursor;
             }
         }
@@ -265,7 +265,7 @@ public final class ConsoleManager {
 
                     server.getScheduler().runTask(null, new CommandTask(command.trim()));
                 } catch (CommandException ex) {
-                    logger.log(Level.WARNING, I.tr("warning.command.execute", command), ex);
+                    logger.log(Level.WARNING, I.tr("command.execute.exception", command), ex);
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, I.tr("error.command.console.read"), ex);
                 }

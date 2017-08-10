@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SaveAllCommand extends VanillaCommand {
     public SaveAllCommand() {
-        super("save-all", I.tr("command.minecraft.saveall.description"), "/save-all", Collections.emptyList());
+        super("save-all", I.tr("command.minecraft.save-all.description"), "/save-all", Collections.emptyList());
         setPermission("minecraft.command.save-all");
     }
 
@@ -19,12 +19,12 @@ public class SaveAllCommand extends VanillaCommand {
         if (!testPermission(sender)) {
             return false;
         }
-        sender.sendMessage(I.tr(sender, "command.minecraft.saveall.saving"));
+        sender.sendMessage(I.tr(sender, "command.minecraft.save-all.saving"));
         for (World world : sender.getServer().getWorlds()) {
             world.save();
-            sender.sendMessage(I.tr(sender, "command.minecraft.saveall.saved", world.getName()));
+            sender.sendMessage(I.tr(sender, "command.minecraft.save-all.saved", world.getName()));
         }
-        sender.sendMessage(I.tr(sender, "command.minecraft.saveall.done"));
+        sender.sendMessage(I.tr(sender, "command.minecraft.save-all.done"));
         return true;
     }
 
