@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
@@ -14,7 +15,7 @@ import java.util.Collections;
 public class SayCommand extends VanillaCommand {
 
     public SayCommand() {
-        super("say", "Say a message.", "/say <message ...>", Collections.emptyList());
+        super("say", GlowServer.lang.getString("command.minecraft.say.description"), GlowServer.lang.getString("command.minecraft.say.usage"), Collections.emptyList());
         setPermission("minecraft.command.say");
     }
 
@@ -22,10 +23,10 @@ public class SayCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.say.usage")));
             return false;
         }
-        StringBuilder message = new StringBuilder("[").append(sender.getName() == null ? "Server" : sender.getName()).append("] ");
+        StringBuilder message = new StringBuilder("[").append(sender.getName() == null ? GlowServer.lang.getString("command.minecraft.say.server") : sender.getName()).append("] ");
         for (String arg : args) {
             if (arg.startsWith("@") && arg.length() >= 2 && CommandUtils.isPhysical(sender)) {
                 // command targets
@@ -33,7 +34,7 @@ public class SayCommand extends VanillaCommand {
                 CommandTarget target = new CommandTarget(sender, arg);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    sender.sendMessage(ChatColor.RED + "Selector '" + arg + "' found nothing");
+                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.selector", arg));
                     return false;
                 }
                 message.append(CommandUtils.prettyPrint(matched)).append(" ");

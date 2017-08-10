@@ -53,7 +53,7 @@ public class KillCommand extends VanillaCommand {
                 CommandTarget target = new CommandTarget(sender, name);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.kill.selector", name));
+                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.selector", name));
                     return false;
                 }
                 for (Entity entity : matched) {
