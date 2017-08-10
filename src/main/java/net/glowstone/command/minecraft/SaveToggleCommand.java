@@ -1,5 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
+
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -11,7 +13,7 @@ public class SaveToggleCommand extends VanillaCommand {
     private final boolean on;
 
     public SaveToggleCommand(boolean on) {
-        super(on ? "save-on" : "save-off", on ? "Enables automatic server saves." : "Disables automatic sever saves.", on ? "/save-on" : "/save-off", Collections.emptyList());
+        super(on ? "save-on" : "save-off", GlowServer.lang.getString("command.minecraft." + (on ? "saveon" : "saveoff") + ".description"), GlowServer.lang.getString("command.minecraft." + (on ? "saveon" : "saveoff") + ".usage"), Collections.emptyList());
         this.on = on;
         setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off");
     }
@@ -24,7 +26,7 @@ public class SaveToggleCommand extends VanillaCommand {
         for (World world : sender.getServer().getWorlds()) {
             world.setAutoSave(on);
         }
-        sender.sendMessage("Turned " + (on ? "on" : "off") + " world auto-saving");
+        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft." + (on ? "saveon" : "saveoff") + ".toggle"));
         return true;
     }
 
