@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SaveAllCommand extends VanillaCommand {
     public SaveAllCommand() {
-        super("save-all", "Saves the server to disk.", "/save-all", Collections.emptyList());
+        super("save-all", GlowServer.lang.getString("command.minecraft.saveall.description"), GlowServer.lang.getString("command.minecraft.saveall.usage"), Collections.emptyList());
         setPermission("minecraft.command.save-all");
     }
 
@@ -18,12 +18,12 @@ public class SaveAllCommand extends VanillaCommand {
         if (!testPermission(sender)) {
             return false;
         }
-        sender.sendMessage("Saving...");
+        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.saveall.saving"));
         for (World world : sender.getServer().getWorlds()) {
             world.save();
-            sender.sendMessage("Saved world '" + world.getName() + "'");
+            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.saveall.saved", world.getName()));
         }
-        sender.sendMessage("Saved the worlds");
+        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.saveall.done"));
         return true;
     }
 
