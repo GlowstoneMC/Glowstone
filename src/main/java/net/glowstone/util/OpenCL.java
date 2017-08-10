@@ -2,6 +2,7 @@ package net.glowstone.util;
 
 import com.jogamp.opencl.*;
 import net.glowstone.GlowServer;
+import net.glowstone.util.lang.I;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,7 +85,7 @@ public class OpenCL {
         device = context.getMaxFlopsDevice();
         queue = device.createCommandQueue();
 
-        GlowServer.logger.info("OpenCL: Using " + platform + " on device " + device + ".");
+        GlowServer.logger.info(I.tr("opencl.using", platform, device));
     }
 
     public static CLPlatform getPlatform() {
