@@ -73,7 +73,7 @@ public class GiveCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.offline", name));
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.player.offline", name));
                 return false;
             } else {
                 giveItem(sender, player, stack);
