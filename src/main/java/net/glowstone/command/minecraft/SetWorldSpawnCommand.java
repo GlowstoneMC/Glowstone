@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SetWorldSpawnCommand extends VanillaCommand {
     public SetWorldSpawnCommand() {
-        super("setworldspawn", "Sets the world spawn.", "/setworldspawn OR /setworldspawn <x> <y> <z>", Collections.emptyList());
+        super("setworldspawn", I.tr("command.minecraft.setworldspawn.description"), I.tr("command.minecraft.setworldspawn.usage"), Collections.emptyList());
         setPermission("minecraft.command.setworldspawn");
     }
 
@@ -35,7 +35,7 @@ public class SetWorldSpawnCommand extends VanillaCommand {
             if (CommandUtils.isPhysical(sender)) {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
-                sender.sendMessage(ChatColor.RED + "Default coordinates can not be used without a physical user.");
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.default"));
                 return false;
             }
         } else if (args.length >= 3) { // manage arguments
@@ -44,7 +44,7 @@ public class SetWorldSpawnCommand extends VanillaCommand {
             // Get the sender coordinates if relative is used
             if (args[0].startsWith("~") || args[1].startsWith("~") || args[2].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
-                    sender.sendMessage(ChatColor.RED + "Relative coordinates can not be used without a physical user.");
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.relative"));
                     return false;
                 } else {
                     senderLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
@@ -55,20 +55,20 @@ public class SetWorldSpawnCommand extends VanillaCommand {
 
             spawnLocation = CommandUtils.getLocation(senderLocation, args[0], args[1], args[2]);
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.setworldspawn.usage")));
             return false;
         }
 
         if (spawnLocation.getBlockY() < 0) {
-            sender.sendMessage(ChatColor.RED + "The y coordinate (" + spawnLocation.getBlockY() + ") is too small, it must be at least 0.");
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.ymin", spawnLocation.getBlockY()));
             return false;
         } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
-            sender.sendMessage(ChatColor.RED + "'" + spawnLocation.getBlockY() + "' is too high for the current world. Max value is '" + world.getMaxHeight() + "'.");
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.ymax", spawnLocation.getBlockY(), world.getMaxHeight()));
             return false;
         }
 
         world.setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ());
-        sender.sendMessage("Set world spawn point to " + spawnLocation.getBlockX() + ", " + spawnLocation.getBlockY() + ", " + spawnLocation.getBlockZ() + ".");
+        sender.sendMessage(I.tr(sender, "command.minecraft.setworldspawn.set", spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ()));
 
         return true;
     }
