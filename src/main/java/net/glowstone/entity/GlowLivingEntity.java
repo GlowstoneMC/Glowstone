@@ -20,6 +20,7 @@ import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.*;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
@@ -997,8 +998,22 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
 
+        if (message.getAction() != Action.INTERACT.ordinal()) {
+            return false;
+        }
+
         ItemStack handItem = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
-        if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEASH) {
+        if (isLeashed() && player.equals(this.getLeashHolder()) && message.getHandSlot() == EquipmentSlot.HAND) {
+            if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
+                return false;
+            }
+
+            setLeashHolder(null);
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
+            }
+            return true;
+        } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEASH) {
             if (!GlowLeashHitch.isAllowedLeashHolder(this.getType()) || this.isLeashed() || EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player)).isCancelled()) {
                 return false;
             }
@@ -1013,16 +1028,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
 
             setLeashHolder(player);
-            return true;
-        } else if (isLeashed() && player.equals(this.getLeashHolder()) && message.getHandSlot() == EquipmentSlot.HAND) {
-            if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
-                return false;
-            }
-
-            setLeashHolder(null);
-            if (player.getGameMode() != GameMode.CREATIVE) {
-                world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
-            }
             return true;
         }
 
