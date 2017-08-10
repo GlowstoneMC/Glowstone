@@ -16,7 +16,7 @@ import java.util.*;
 
 public class XpCommand extends VanillaCommand {
     public XpCommand() {
-        super("xp", "Adds experience to a player.", "/xp <amount> [player] OR /xp <amount>L [player] OR /xp <amount>l [player]", Collections.emptyList());
+        super("xp", I.tr("command.minecraft.xp.description"), I.tr("command.minecraft.xp.usage"), Collections.emptyList());
         setPermission("minecraft.command.xp");
     }
 
@@ -25,7 +25,7 @@ public class XpCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.xp.usage")));
             return false;
         } else {
             final String stringAmount = args[0], playerPattern = (args.length > 1) ? args[1] : null;
@@ -36,26 +36,26 @@ public class XpCommand extends VanillaCommand {
             // Handle the amount
             if (addLevels) {
                 if (stringAmount.length() == 1) {
-                    sender.sendMessage(ChatColor.RED + "Please specify an amount. Usage: " + usageMessage);
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.xp.amount") + " " + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.xp.usage")));
                     return false;
                 }
 
                 try {
                     amount = Integer.parseInt(stringAmount.substring(0, stringAmount.length() - 1));
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + "'" + stringAmount + "' is not a valid number");
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", stringAmount));
                     return false;
                 }
             } else {
                 try {
                     amount = Integer.parseInt(stringAmount);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + "'" + stringAmount + "' is not a valid number");
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", stringAmount));
                     return false;
                 }
 
                 if (amount < 0) {
-                    sender.sendMessage(ChatColor.RED + "Cannot give player negative experience points.");
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.xp.negative"));
                     return false;
                 }
             }
@@ -81,7 +81,7 @@ public class XpCommand extends VanillaCommand {
                 }
 
                 if (player == null) {
-                    sender.sendMessage(ChatColor.RED + "Player " + playerPattern + " cannot be found");
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", playerPattern));
                     return false;
                 } else {
                     targets = Collections.singletonList(player);
@@ -89,7 +89,7 @@ public class XpCommand extends VanillaCommand {
             }
 
             if (targets.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "No players found.");
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.none"));
                 return false;
             }
 
@@ -99,13 +99,13 @@ public class XpCommand extends VanillaCommand {
                     player.giveExpLevels(amount);
 
                     if (amount < 0) {
-                        sender.sendMessage("Taken " + (-amount) + " levels to " + player.getName());
+                        sender.sendMessage(I.tr(sender, "command.minecraft.xp.taken", (-amount), player.getName()));
                     } else {
-                        sender.sendMessage("Given " + amount + " levels to " + player.getName());
+                        sender.sendMessage(I.tr(sender, "command.minecraft.xp.given.lvl", amount, player.getName()));
                     }
                 } else {
                     player.giveExp(amount);
-                    sender.sendMessage("Given " + amount + " experience to " + player.getName());
+                    sender.sendMessage(I.tr(sender, "command.minecraft.xp.given.xp", amount, player.getName()));
                 }
             }
         }
