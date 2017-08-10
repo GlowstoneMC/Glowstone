@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class KillCommand extends VanillaCommand {
     public KillCommand() {
-        super("kill", "Destroy entities.", "/kill [target]", Collections.emptyList());
+        super("kill", GlowServer.lang.getString("command.minecraft.kill.description"), GlowServer.lang.getString("command.minecraft.kill.usage"), Collections.emptyList());
         setPermission("minecraft.command.kill");
     }
 
@@ -30,18 +31,18 @@ public class KillCommand extends VanillaCommand {
             if (sender instanceof Entity) {
                 Entity entity = (Entity) sender;
                 if (entity.isDead()) {
-                    entity.sendMessage("You are already dead");
+                    entity.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.kill.already"));
                 } else if (entity instanceof LivingEntity) {
                     LivingEntity living = (LivingEntity) entity;
                     living.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.SUICIDE);
-                    sender.sendMessage("Killed " + CommandUtils.getName(entity));
+                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.kill.killed", CommandUtils.getName(entity)));
                 } else {
                     entity.remove();
-                    sender.sendMessage("Killed " + CommandUtils.getName(entity));
+                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.kill.killed", CommandUtils.getName(entity)));
                 }
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "Only entities can be killed. Use /kill <target> instead.");
+                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.kill.entities"));
                 return false;
             }
         }
@@ -52,7 +53,7 @@ public class KillCommand extends VanillaCommand {
                 CommandTarget target = new CommandTarget(sender, name);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    sender.sendMessage(ChatColor.RED + "Selector '" + name + "' found nothing");
+                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.kill.selector", name));
                     return false;
                 }
                 for (Entity entity : matched) {
@@ -62,22 +63,22 @@ public class KillCommand extends VanillaCommand {
                     } else {
                         entity.remove();
                     }
-                    sender.sendMessage("Killed " + CommandUtils.getName(entity));
+                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.kill.killed", CommandUtils.getName(entity)));
                 }
                 return true;
             } else {
                 Player player = Bukkit.getPlayerExact(name);
                 if (player == null) {
-                    sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
+                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.player.offline", name));
                     return false;
                 } else {
                     player.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.VOID);
-                    sender.sendMessage("Killed " + player.getName());
+                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.kill.killed", player.getName()));
                     return true;
                 }
             }
         }
-        sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+        sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.kill.usage")));
         return false;
     }
 
