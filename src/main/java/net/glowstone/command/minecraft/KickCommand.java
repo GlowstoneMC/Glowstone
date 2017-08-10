@@ -1,5 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.GlowServer;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class KickCommand extends VanillaCommand {
     public KickCommand() {
-        super("kick", "Removes a player from the server.", "/kick <player> [reason]", Collections.emptyList());
+        super("kick", GlowServer.lang.getString("command.minecraft.kick.description"), GlowServer.lang.getString("command.minecraft.kick.usage"), Collections.emptyList());
         setPermission("minecraft.command.kick");
     }
 
@@ -20,23 +22,23 @@ public class KickCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.kick.usage")));
             return false;
         }
         String playerName = args[0];
         Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) {
-            sender.sendMessage(ChatColor.RED + "Player '" + playerName + "' is not online");
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.offline", playerName));
             return false;
         }
         if (args.length == 1) {
             player.kickPlayer(null);
-            sender.sendMessage("Kicked " + player.getName());
+            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.kick.kicked", player.getName()));
             return true;
         }
         String reason = StringUtils.join(args, ' ', 1, args.length);
         player.kickPlayer(reason);
-        sender.sendMessage("Kicked " + player.getName() + " for reason '" + reason + "'");
+        sender.sendMessage(GlowServer.lang.getString("command.minecraft.kick.reason", player.getName(), reason));
         return true;
     }
 
