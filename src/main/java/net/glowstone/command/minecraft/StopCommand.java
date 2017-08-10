@@ -9,7 +9,7 @@ import java.util.Collections;
 
 public class StopCommand extends VanillaCommand {
     public StopCommand() {
-        super("stop", "Gracefully stops the server.", "/stop", Collections.emptyList());
+        super("stop", I.tr("command.minecraft.stop.description"), "/stop", Collections.emptyList());
         setPermission("minecraft.command.stop");
     }
 
