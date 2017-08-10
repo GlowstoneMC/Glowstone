@@ -19,8 +19,7 @@ public class TeleportCommand extends VanillaCommand {
 
     public TeleportCommand() {
         super("teleport",
-                "Teleports entities to coordinates relative to the sender",
-                "/teleport <target> <x> <y> <z> [<y-rot> <x-rot>]",
+                I.tr("command.minecraft.teleport.description"), I.tr("command.minecraft.teleport.usage"),
                 Collections.emptyList());
         setPermission("minecraft.command.teleport");
     }
@@ -29,12 +28,12 @@ public class TeleportCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
         if (args.length < 4 || args.length == 5) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.teleport.usage")));
             return false;
         }
 
         if (!CommandUtils.isPhysical(sender)) {
-            sender.sendMessage("This command can only be executed by physical objects.");
+            sender.sendMessage(I.tr(sender, "command.minecraft.teleport.physcial"));
             return false;
         }
 
@@ -51,7 +50,7 @@ public class TeleportCommand extends VanillaCommand {
         }
 
         if (targets.length == 0) {
-            sender.sendMessage(ChatColor.RED + "There's no entity matching the target.");
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.teleport.nomatch"));
         } else {
             for (Entity target : targets) {
                 String x = args[1], y = args[2], z = args[3];
@@ -64,7 +63,7 @@ public class TeleportCommand extends VanillaCommand {
                     targetLocation.setPitch(target.getLocation().getPitch());
                 }
                 target.teleport(targetLocation);
-                sender.sendMessage("Teleported " + target.getName() + " to " + targetLocation.getX() + " " + targetLocation.getY() + " " + targetLocation.getZ());
+                sender.sendMessage(I.tr(sender, "command.minecraft.teleport.teleported", target.getName(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ()));
             }
         }
 
