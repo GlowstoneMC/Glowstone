@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class MeCommand extends VanillaCommand {
     public MeCommand() {
-        super("me", "Displays a message about yourself.", "/me <action ...>", Collections.emptyList());
+        super("me", GlowServer.lang.getString("command.minecraft.me.description"), GlowServer.lang.getString("command.minecraft.me.usage"), Collections.emptyList());
         setPermission("minecraft.command.me");
     }
 
@@ -20,7 +20,7 @@ public class MeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0)  {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.me.usage")));
             return false;
         }
 
