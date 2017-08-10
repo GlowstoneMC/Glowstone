@@ -1,7 +1,7 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -12,7 +12,7 @@ import java.util.Collections;
 
 public class MeCommand extends VanillaCommand {
     public MeCommand() {
-        super("me", GlowServer.lang.getString("command.minecraft.me.description"), GlowServer.lang.getString("command.minecraft.me.usage"), Collections.emptyList());
+        super("me", I.tr("command.minecraft.me.description"), I.tr("command.minecraft.me.usage"), Collections.emptyList());
         setPermission("minecraft.command.me");
     }
 
@@ -21,7 +21,7 @@ public class MeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0)  {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.me.usage")));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.me.usage")));
             return false;
         }
 

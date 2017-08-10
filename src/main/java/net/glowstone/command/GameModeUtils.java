@@ -1,6 +1,6 @@
 package net.glowstone.command;
 
-import net.glowstone.GlowServer;
+import net.glowstone.util.lang.I;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.GameMode;
 
@@ -58,15 +58,15 @@ public class GameModeUtils {
         } else {
             switch (gameMode) {
                 case CREATIVE:
-                    return GlowServer.lang.getString("command.gamemode.creative");
+                    return I.tr("command.gamemode.creative");
                 case SURVIVAL:
-                    return GlowServer.lang.getString("command.gamemode.survival");
+                    return I.tr("command.gamemode.survival");
                 case ADVENTURE:
-                    return GlowServer.lang.getString("command.gamemode.adventure");
+                    return I.tr("command.gamemode.adventure");
                 case SPECTATOR:
-                    return GlowServer.lang.getString("command.gamemode.spectator");
+                    return I.tr("command.gamemode.spectator");
                 default:
-                    return GlowServer.lang.getString("command.gamemode.unknown");
+                    return I.tr("command.gamemode.unknown");
             }
         }
     }

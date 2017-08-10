@@ -1,8 +1,8 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.command.CommandSender;
@@ -18,7 +18,7 @@ public class DifficultyCommand extends VanillaCommand {
     private static final List<String> DIFFICULTIES = Arrays.asList("peaceful", "easy", "normal", "hard");
 
     public DifficultyCommand() {
-        super("difficulty", GlowServer.lang.getString("command.minecraft.difficulty.args.description"), GlowServer.lang.getString("command.minecraft.difficulty.usage"), Collections.emptyList());
+        super("difficulty", I.tr("command.minecraft.difficulty.args.description"), I.tr("command.minecraft.difficulty.usage"), Collections.emptyList());
         setPermission("minecraft.command.difficulty");
     }
 
@@ -28,7 +28,7 @@ public class DifficultyCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.difficulty.usage")));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.difficulty.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -60,11 +60,11 @@ public class DifficultyCommand extends VanillaCommand {
                 break;
         }
         if (difficulty == null) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.difficulty.unknown", difficultyId));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.difficulty.unknown", difficultyId));
             return false;
         }
         world.setDifficulty(difficulty);
-        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.difficulty.set", world.getName(), DIFFICULTIES.get(difficulty.ordinal())));
+        sender.sendMessage(I.tr(sender, "command.minecraft.difficulty.set", world.getName(), DIFFICULTIES.get(difficulty.ordinal())));
         return true;
     }
 

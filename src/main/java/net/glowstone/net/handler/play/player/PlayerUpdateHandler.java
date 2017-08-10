@@ -7,6 +7,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
+import net.glowstone.util.lang.I;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -31,7 +32,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // don't let players reach an illegal position
         if (Math.abs(newLocation.getBlockX()) > 32000000 || Math.abs(newLocation.getBlockZ()) > 32000000) {
-            session.getPlayer().kickPlayer(GlowServer.lang.getString("event.player.move.illegal"));
+            session.getPlayer().kickPlayer(I.tr("event.player.move.illegal"));
             return;
         }
 
@@ -52,10 +53,10 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             } else {
                 double distance = newLocation.distanceSquared(oldLocation);
                 if (distance > 100 * 100) {
-                    session.getPlayer().kickPlayer(GlowServer.lang.getString("event.player.move.quickly.kick"));
+                    session.getPlayer().kickPlayer(I.tr("event.player.move.quickly.kick"));
                     return;
                 } else if (distance > 100) {
-                    GlowServer.logger.warning(GlowServer.lang.getString("event.player.move.quickly.console", session.getPlayer().getName()));
+                    GlowServer.logger.warning(I.tr("event.player.move.quickly.console", session.getPlayer().getName()));
                 }
             }
         }

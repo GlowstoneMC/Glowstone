@@ -2,6 +2,7 @@ package net.glowstone.entity.meta.profile;
 
 import net.glowstone.GlowServer;
 import net.glowstone.util.UuidUtils;
+import net.glowstone.util.lang.I;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -41,7 +42,7 @@ class PlayerDataFetcher {
             //potentially blocking
             is = conn.getInputStream();
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.lookup.profile"));
+            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.lookup.profile"));
             return null;
         }
 
@@ -53,10 +54,10 @@ class PlayerDataFetcher {
                 return new PlayerProfile(null, uuid);
             }
         } catch (ParseException e) {
-            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.parse"), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.parse"), e);
             return null;
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.lookup.profile"), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.lookup.profile"), e);
             return null;
         }
         return PlayerProfile.fromJson(json);
@@ -77,7 +78,7 @@ class PlayerDataFetcher {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.entity.profile.lookup.uuid"), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.lookup.uuid"), e);
             return null;
         }
 
@@ -93,7 +94,7 @@ class PlayerDataFetcher {
 
             json = (JSONArray) JSONValue.parse(new InputStreamReader(conn.getInputStream()));
         } catch (IOException e) {
-            GlowServer.logger.warning(GlowServer.lang.getString("warning.entity.profile.io", e));
+            GlowServer.logger.warning(I.tr("warning.entity.profile.io", e));
             return null;
         }
 

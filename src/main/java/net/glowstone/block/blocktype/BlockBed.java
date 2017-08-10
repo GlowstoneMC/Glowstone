@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -9,6 +8,7 @@ import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.state.GlowBed;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.lang.I;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -238,12 +238,12 @@ public class BlockBed extends BlockType {
         // Sleeping is only possible during the night or a thunderstorm
         // Tick values for day/night time taken from the minecraft wiki
         if (world.getTime() < 12541 || world.getTime() > 23458 || world.isThundering()) {
-            player.sendMessage(GlowServer.lang.getString(player, "event.sleep.day"));
+            player.sendMessage(I.tr(player, "event.sleep.day"));
             return true;
         }
 
         if (isOccupied(block)) {
-            player.sendMessage(GlowServer.lang.getString(player, "event.sleep.occupied"));
+            player.sendMessage(I.tr(player, "event.sleep.occupied"));
             return true;
         }
 
@@ -254,7 +254,7 @@ public class BlockBed extends BlockType {
         for (LivingEntity e : world.getLivingEntities()) {
             // Check for hostile mobs relative to the block below the head of the bed
             if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e).isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
-                player.sendMessage(GlowServer.lang.getString(player, "event.sleep.monsters"));
+                player.sendMessage(I.tr(player, "event.sleep.monsters"));
                 return true;
             }
         }

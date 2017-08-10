@@ -1,9 +1,9 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.command.GameModeUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -21,7 +21,7 @@ import java.util.List;
 public class GameModeCommand extends VanillaCommand {
 
     public GameModeCommand() {
-        super("gamemode", GlowServer.lang.getString("command.minecraft.gamemode.description"), GlowServer.lang.getString("command.minecraft.gamemode.usage"), Collections.emptyList());
+        super("gamemode", I.tr("command.minecraft.gamemode.description"), I.tr("command.minecraft.gamemode.usage"), Collections.emptyList());
         setPermission("minecraft.command.gamemode");
     }
 
@@ -29,13 +29,13 @@ public class GameModeCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length == 0 || args.length == 1 && !(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.gamemode.usage")));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.gamemode.usage")));
             return false;
         }
         String gm = args[0];
         GameMode gamemode = GameModeUtils.build(gm);
         if (gamemode == null) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.nan", gm));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", gm));
             return false;
         }
         if (args.length == 1) {
@@ -58,7 +58,7 @@ public class GameModeCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.player.offline", name));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", name));
             } else {
                 updateGameMode(sender, player, gamemode);
             }
@@ -70,9 +70,9 @@ public class GameModeCommand extends VanillaCommand {
         String gameModeName = GameModeUtils.prettyPrint(gameMode);
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
-            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.gamemode.updated.1", who.getDisplayName(), ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName +  ChatColor.RESET));
+            sender.sendMessage(I.tr(sender, "command.minecraft.gamemode.updated.1", who.getDisplayName(), ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName +  ChatColor.RESET));
         }
-        who.sendMessage(GlowServer.lang.getString(who, "command.minecraft.gamemode.updated.2", ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + ChatColor.RESET));
+        who.sendMessage(I.tr(who, "command.minecraft.gamemode.updated.2", ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + ChatColor.RESET));
     }
 
     @Override

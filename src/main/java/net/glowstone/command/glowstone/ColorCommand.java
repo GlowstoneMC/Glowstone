@@ -1,7 +1,6 @@
 package net.glowstone.command.glowstone;
 
-import net.glowstone.GlowServer;
-
+import net.glowstone.util.lang.I;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -14,7 +13,7 @@ import java.util.Collections;
 public class ColorCommand extends BukkitCommand {
 
     public ColorCommand() {
-        super("colors", GlowServer.lang.getString("command.color.description"), "/colors", Collections.emptyList());
+        super("colors", I.tr("command.color.description"), "/colors", Collections.emptyList());
     }
 
     @Override

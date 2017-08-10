@@ -1,7 +1,6 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
-
+import net.glowstone.util.lang.I;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class SaveAllCommand extends VanillaCommand {
     public SaveAllCommand() {
-        super("save-all", GlowServer.lang.getString("command.minecraft.saveall.description"), GlowServer.lang.getString("command.minecraft.saveall.usage"), Collections.emptyList());
+        super("save-all", I.tr("command.minecraft.saveall.description"), I.tr("command.minecraft.saveall.usage"), Collections.emptyList());
         setPermission("minecraft.command.save-all");
     }
 
@@ -20,12 +19,12 @@ public class SaveAllCommand extends VanillaCommand {
         if (!testPermission(sender)) {
             return false;
         }
-        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.saveall.saving"));
+        sender.sendMessage(I.tr(sender, "command.minecraft.saveall.saving"));
         for (World world : sender.getServer().getWorlds()) {
             world.save();
-            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.saveall.saved", world.getName()));
+            sender.sendMessage(I.tr(sender, "command.minecraft.saveall.saved", world.getName()));
         }
-        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.saveall.done"));
+        sender.sendMessage(I.tr(sender, "command.minecraft.saveall.done"));
         return true;
     }
 

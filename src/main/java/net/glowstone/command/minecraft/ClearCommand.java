@@ -1,10 +1,10 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class ClearCommand extends VanillaCommand {
     public ClearCommand() {
-        super("clear", GlowServer.lang.getString("command.minecraft.clear.description"), GlowServer.lang.getString("command.minecraft.clear.usage.1"), Collections.emptyList());
+        super("clear", I.tr("command.minecraft.clear.description"), I.tr("command.minecraft.clear.usage.1"), Collections.emptyList());
         setPermission("minecraft.command.clear");
     }
 
@@ -39,7 +39,7 @@ public class ClearCommand extends VanillaCommand {
                 Player player = (Player) sender;
                 return clearAll(sender, player, null, -1, -1);
             } else {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.clear.usage.2")));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.clear.usage.2")));
                 return false;
             }
         }
@@ -57,14 +57,14 @@ public class ClearCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.player.missing", name));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", name));
                 return false;
             } else {
                 players.add(player);
             }
         }
         if (players.size() == 0) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.player.missing", name));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", name));
             return false;
         }
         if (args.length >= 2) {
@@ -74,7 +74,7 @@ public class ClearCommand extends VanillaCommand {
             }
             Material type = ItemIds.getItem(itemName);
             if (type == null) {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.clear.item.missing", itemName));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.clear.item.missing", itemName));
                 return false;
             }
             if (args.length >= 3) {
@@ -83,11 +83,11 @@ public class ClearCommand extends VanillaCommand {
                 try {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.nan", dataString));
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", dataString));
                     return false;
                 }
                 if (data < -1) {
-                    sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.clear.item.toosmall", data));
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.clear.item.toosmall", data));
                     return false;
                 }
                 if (args.length >= 4) {
@@ -96,11 +96,11 @@ public class ClearCommand extends VanillaCommand {
                     try {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.nan", amountString));
+                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", amountString));
                         return false;
                     }
                     if (amount < -1) {
-                        sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.command.clear.item.toosmall", amount));
+                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.command.clear.item.toosmall", amount));
                         return false;
                     }
                     if (args.length >= 5) {
@@ -170,7 +170,7 @@ public class ClearCommand extends VanillaCommand {
     private boolean clearAll(CommandSender sender, Player player, Material material, int data, int maxCount) {
         int count = countAllItems(player.getInventory(), material, data, maxCount);
         if (count == 0 && maxCount != 0) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.clear.failed", player.getName()));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.clear.failed", player.getName()));
             return false;
         } else {
             if (material == null) {
@@ -183,7 +183,7 @@ public class ClearCommand extends VanillaCommand {
                         if (maxCount == -1) {
                             player.getInventory().remove(stack);
                         } else if (maxCount == 0) {
-                            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.clear.match", player.getName(), count));
+                            sender.sendMessage(I.tr(sender, "command.minecraft.clear.match", player.getName(), count));
                             return true;
                         } else {
                             for (int i = 0; i < stack.getAmount(); i++) {
@@ -196,7 +196,7 @@ public class ClearCommand extends VanillaCommand {
                     }
                 }
             }
-            sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.clear.done", player.getName(), count));
+            sender.sendMessage(I.tr(sender, "command.minecraft.clear.done", player.getName(), count));
             return true;
         }
     }

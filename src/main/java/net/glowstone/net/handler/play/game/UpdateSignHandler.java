@@ -6,6 +6,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.UpdateSignMessage;
+import net.glowstone.util.lang.I;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -18,7 +19,7 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
         Location location = new Location(player.getWorld(), message.getX(), message.getY(), message.getZ());
 
         if (!player.checkSignLocation(location)) {
-            GlowServer.logger.warning(GlowServer.lang.getString("event.sign.tried", session, location));
+            GlowServer.logger.warning(I.tr("event.sign.tried", session, location));
             return;
         }
         // filter out json messages that aren't plaintext

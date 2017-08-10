@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import net.glowstone.util.lang.I;
+
 import com.google.common.io.PatternFilenameFilter;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
@@ -33,7 +35,7 @@ public class GlowPluginTypeDetector {
     }
 
     public void scan() {
-        GlowServer.logger.info(GlowServer.lang.getString("status.plugin.scanning"));
+        GlowServer.logger.info(I.tr("status.plugin.scanning"));
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;
@@ -43,14 +45,14 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        GlowServer.logger.info(GlowServer.lang.getString("status.plugin.found",
+        GlowServer.logger.info(I.tr("status.plugin.found",
                 bukkitPlugins.size(), spongePlugins.size(),
                 (forgefPlugins.size() + forgenPlugins.size()),
                 canaryPlugins.size(), unrecognizedPlugins.size(), files.length));
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
-                GlowServer.logger.warning(GlowServer.lang.getString("warning.plugin.unrecognized", file.getPath()));
+                GlowServer.logger.warning(I.tr("warning.plugin.unrecognized", file.getPath()));
             }
         }
     }
@@ -66,7 +68,7 @@ public class GlowPluginTypeDetector {
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
-            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.plugin.url.malformed", file), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("warning.plugin.url.malformed", file), e);
             return;
         }
 
@@ -104,7 +106,7 @@ public class GlowPluginTypeDetector {
                 }
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.WARNING, GlowServer.lang.getString("warning.plugin.url.reading", url), ex);
+            GlowServer.logger.log(Level.WARNING, I.tr("warning.plugin.url.reading", url), ex);
         }
 
         if (isBukkit) bukkitPlugins.add(file);

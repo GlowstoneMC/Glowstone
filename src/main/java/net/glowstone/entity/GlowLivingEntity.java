@@ -3,7 +3,6 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 import lombok.Getter;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -20,6 +19,7 @@ import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.util.*;
+import net.glowstone.util.lang.I;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
 import org.bukkit.*;
@@ -677,7 +677,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     items = Arrays.stream(player.getInventory().getContents()).filter(stack -> !InventoryUtil.isEmpty(stack)).collect(Collectors.toList());
                     player.getInventory().clear();
                 }
-                PlayerDeathEvent event = new PlayerDeathEvent(player, items, 0, GlowServer.lang.getString("event.player.died", player.getDisplayName()));
+                PlayerDeathEvent event = new PlayerDeathEvent(player, items, 0, I.tr("event.player.died", player.getDisplayName()));
                 EventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
                 for (ItemStack item : items) {

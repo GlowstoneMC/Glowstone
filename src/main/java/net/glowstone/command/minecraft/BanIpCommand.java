@@ -1,6 +1,6 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
+import net.glowstone.util.lang.I;
 import com.google.common.net.InetAddresses;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class BanIpCommand extends VanillaCommand {
     public BanIpCommand() {
-        super("ban-ip", GlowServer.lang.getString("command.minecraft.banip.description"), GlowServer.lang.getString("command.minecraft.banip.usage"), Collections.emptyList());
+        super("ban-ip", I.tr("command.minecraft.banip.description"), I.tr("command.minecraft.banip.usage"), Collections.emptyList());
         setPermission("minecraft.command.ban-ip");
     }
 
@@ -41,13 +41,13 @@ public class BanIpCommand extends VanillaCommand {
                     }
                     Bukkit.getBanList(BanList.Type.IP).addBan(target, reason.toString(), null, null);
                 }
-                sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.banip.banned", target));
+                sender.sendMessage(I.tr(sender, "command.minecraft.banip.banned", target));
                 return true;
             }
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.banip.invalid"));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.banip.invalid"));
             return false;
         }
-        sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.banip.usage")));
+        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.banip.usage")));
         return false;
     }
 

@@ -45,7 +45,7 @@ import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
-import net.glowstone.util.lang.LanguageManager;
+import net.glowstone.util.lang.I;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
@@ -204,18 +204,6 @@ public final class GlowServer implements Server {
      */
     private final Set<GlowPlayer> onlineView = Collections.unmodifiableSet(onlinePlayers);
     /**
-    * The default locale to be used in the console and with the locked locale; read from the config.
-    */
-    public static String defaultLocale;
-    /**
-     * Boolean if the default locale in the config should always be used.
-     */
-    public static boolean lockLocale;
-    /**
-     * The LanguageManager for the server. Used for internationalization.
-     */
-    public static LanguageManager lang;
-    /**
      * The plugin type detector of this server.
      */
     private GlowPluginTypeDetector pluginTypeDetector;
@@ -307,10 +295,9 @@ public final class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, Type.NAME);
         ipBans = new GlowBanList(this, Type.IP);
-        defaultLocale = this.config.getString(Key.DEFAULT_LOCALE);
-        lockLocale = this.config.getBoolean(Key.LOCK_LOCALE);
-        lang = new LanguageManager();
-
+        // I18n
+        I.setDefaultLocale(this.config.getString(Key.DEFAULT_LOCALE));
+        I.setLocaleLocked(this.config.getBoolean(Key.LOCK_LOCALE));
 
         Bukkit.setServer(this);
         loadConfig();
@@ -339,10 +326,10 @@ public final class GlowServer implements Server {
 
             server.run();
         } catch (SecurityException e) {
-            logger.log(Level.WARNING, lang.getString("error.server.classpath"), e);
+            logger.log(Level.WARNING, I.tr("error.server.classpath"), e);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, lang.getString("error.server.startup"), t);
+            logger.log(Level.SEVERE, I.tr("error.server.startup"), t);
             System.exit(1);
         }
     }
@@ -469,7 +456,7 @@ public final class GlowServer implements Server {
     public void run() {
         start();
         bind();
-        logger.info(lang.getString("status.connection.ready"));
+        logger.info(I.tr("status.connection.ready"));
 
         if (doMetrics()) {
             new Metrics(this, config.getString(Key.METRICS_UUID), false);
@@ -496,12 +483,12 @@ public final class GlowServer implements Server {
 
         if (getProxySupport()) {
             if (getOnlineMode()) {
-                logger.warning(lang.getString("warning.proxy.online"));
+                logger.warning(I.tr("warning.proxy.online"));
             } else {
-                logger.info(lang.getString("status.proxy.enabled"));
+                logger.info(I.tr("status.proxy.enabled"));
             }
         } else if (!getOnlineMode()) {
-            logger.warning(lang.getString("warning.server.offline"));
+            logger.warning(I.tr("warning.server.offline"));
         }
 
         int openCLMajor = 1;
@@ -520,43 +507,43 @@ public final class GlowServer implements Server {
                     for (CLDevice device : platform.listCLDevices()) {
                         if (device.getType() == CLDevice.Type.GPU) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                            logger.info(lang.getString("opengl.found.flops", device, flops));
+                            logger.info(I.tr("opengl.found.flops", device, flops));
                             if (device.getVendor().contains("Intel")) {
                                 if (flops > maxIntelFlops) {
                                     maxIntelFlops = flops;
-                                    logger.info(lang.getString("opengl.found.best", platform));
+                                    logger.info(I.tr("opengl.found.best", platform));
                                     bestIntelPlatform = platform;
                                 } else if (flops == maxIntelFlops) {
                                     if (bestIntelPlatform != null && bestIntelPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
                                         maxIntelFlops = flops;
-                                        logger.info(lang.getString("opengl.found.tied", platform));
+                                        logger.info(I.tr("opengl.found.tied", platform));
                                         bestIntelPlatform = platform;
                                     }
                                 }
                             } else {
                                 if (flops > maxGpuFlops) {
                                     maxGpuFlops = flops;
-                                    logger.info(lang.getString("opengl.found.best", platform));
+                                    logger.info(I.tr("opengl.found.best", platform));
                                     bestPlatform = platform;
                                 } else if (flops == maxGpuFlops) {
                                     if (bestPlatform != null && bestPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
                                         maxGpuFlops = flops;
-                                        logger.info(lang.getString("opengl.found.tied", platform));
+                                        logger.info(I.tr("opengl.found.tied", platform));
                                         bestPlatform = platform;
                                     }
                                 }
                             }
                         } else {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                            logger.info(lang.getString("opengl.found.flops", device, flops));
+                            logger.info(I.tr("opengl.found.flops", device, flops));
                             if (flops > maxCpuFlops) {
                                 maxCpuFlops = flops;
-                                logger.info(lang.getString("opengl.found.best", platform));
+                                logger.info(I.tr("opengl.found.best", platform));
                                 bestCpuPlatform = platform;
                             } else if (flops == maxCpuFlops) {
                                 if (bestCpuPlatform != null && bestCpuPlatform.getVersion().compareTo(platform.getVersion()) < 0) {
                                     maxCpuFlops = flops;
-                                    logger.info(lang.getString("opengl.found.tied", platform));
+                                    logger.info(I.tr("opengl.found.tied", platform));
                                     bestCpuPlatform = platform;
                                 }
                             }
@@ -574,10 +561,10 @@ public final class GlowServer implements Server {
             } else {
                 if (maxGpuFlops == 0) {
                     if (maxIntelFlops == 0) {
-                        logger.info(lang.getString("opengl.missing.intel"));
+                        logger.info(I.tr("opengl.missing.intel"));
                         bestPlatform = bestCpuPlatform;
                     } else {
-                        logger.info(lang.getString("opengl.missing.dgpu"));
+                        logger.info(I.tr("opengl.missing.dgpu"));
                         bestPlatform = bestIntelPlatform;
                     }
                 }
@@ -585,9 +572,9 @@ public final class GlowServer implements Server {
 
             if (bestPlatform == null) {
                 isCLApplicable = false;
-                logger.info(lang.getString("opengl.required.missing"));
-                logger.info(lang.getString("opengl.required.version", openCLMajor, openCLMinor));
-                logger.info(lang.getString("opengl.required.extensions"));
+                logger.info(I.tr("opengl.required.missing"));
+                logger.info(I.tr("opengl.required.version", openCLMajor, openCLMinor));
+                logger.info(I.tr("opengl.required.extensions"));
             } else {
                 OpenCL.initContext(bestPlatform);
             }
@@ -655,7 +642,7 @@ public final class GlowServer implements Server {
         Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId()).toPath();
         Path destPath = new File(getWorldContainer(), name + suffix).toPath();
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
-            logger.info(lang.getString("world.import.start", destPath, srcPath));
+            logger.info(I.tr("world.import.start", destPath, srcPath));
             try {
                 Files.walkFileTree(srcPath, new FileVisitor<Path>() {
                     @Override
@@ -675,7 +662,7 @@ public final class GlowServer implements Server {
 
                     @Override
                     public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                        logger.warning(lang.getString("world.import.file", srcPath.relativize(file), exc));
+                        logger.warning(I.tr("world.import.file", srcPath.relativize(file), exc));
                         return FileVisitResult.CONTINUE;
                     }
 
@@ -686,14 +673,14 @@ public final class GlowServer implements Server {
                 });
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
-                logger.log(Level.WARNING, lang.getString("world.import.failed", srcPath), e);
+                logger.log(Level.WARNING, I.tr("world.import.failed", srcPath), e);
             }
         }
     }
 
     private void bind() {
         if (Epoll.isAvailable()) {
-            logger.info(lang.getString("status.connection.epoll"));
+            logger.info(I.tr("status.connection.epoll"));
         }
 
         CountDownLatch latch = new CountDownLatch(3);
@@ -718,7 +705,7 @@ public final class GlowServer implements Server {
         try {
             latch.await();
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, lang.getString("error.bind.interrupted"), e);
+            logger.log(Level.SEVERE, I.tr("error.bind.interrupted"), e);
             System.exit(1);
         }
     }
@@ -757,7 +744,7 @@ public final class GlowServer implements Server {
             return;
         }
         isShuttingDown = true;
-        logger.info(lang.getString("status.server.shutdown"));
+        logger.info(I.tr("status.server.shutdown"));
 
         // Disable plugins
         pluginManager.clearPlugins();
@@ -781,7 +768,7 @@ public final class GlowServer implements Server {
 
         // Save worlds
         for (World world : getWorlds()) {
-            logger.info(lang.getString("world.saving", world.getName()));
+            logger.info(I.tr("world.saving", world.getName()));
             unloadWorld(world, true);
         }
 
@@ -822,7 +809,7 @@ public final class GlowServer implements Server {
                 defaultIcon = new GlowServerIcon(file);
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, lang.getString("warning.proxy.icon"), e);
+            logger.log(Level.WARNING, I.tr("warning.proxy.icon"), e);
         }
     }
 
@@ -879,7 +866,7 @@ public final class GlowServer implements Server {
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
-            logger.log(Level.SEVERE, lang.getString("error.plugin.mkdir", folder));
+            logger.log(Level.SEVERE, I.tr("error.plugin.mkdir", folder));
         }
 
         // detect plugin types
@@ -896,7 +883,7 @@ public final class GlowServer implements Server {
             try {
                 plugin.onLoad();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, lang.getString("error.plugin.loading", plugin.getDescription().getFullName(), ex));
+                logger.log(Level.SEVERE, I.tr("error.plugin.loading", plugin.getDescription().getFullName(), ex));
             }
         }
 
@@ -917,11 +904,11 @@ public final class GlowServer implements Server {
             }
 
             if (!hasSponge && spongeOnlyPlugins) {
-                logger.log(Level.WARNING, lang.getString("warning.sponge.found"));
+                logger.log(Level.WARNING, I.tr("warning.sponge.found"));
                 for (File file : getSpongePlugins()) {
-                    logger.log(Level.WARNING, lang.getString("warning.sponge.ignored", file.getPath()));
+                    logger.log(Level.WARNING, I.tr("warning.sponge.ignored", file.getPath()));
                 }
-                logger.log(Level.WARNING, lang.getString("warning.sponge.suggestion"));
+                logger.log(Level.WARNING, I.tr("warning.sponge.suggestion"));
             }
         }
 
@@ -929,19 +916,19 @@ public final class GlowServer implements Server {
                 !pluginTypeDetector.forgefPlugins.isEmpty() ||
                 !pluginTypeDetector.forgenPlugins.isEmpty() ||
                 !pluginTypeDetector.unrecognizedPlugins.isEmpty()) {
-            logger.log(Level.WARNING, lang.getString("warning.plugin.unsupported.types"));
+            logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.types"));
 
             for (File file : pluginTypeDetector.canaryPlugins)
-                logger.log(Level.WARNING, lang.getString("warning.plugin.unsupported.canary", file.getPath()));
+                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.canary", file.getPath()));
 
             for (File file : pluginTypeDetector.forgefPlugins)
-                logger.log(Level.WARNING, lang.getString("warning.plugin.unsupported.forge", file.getPath()));
+                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.forge", file.getPath()));
 
             for (File file : pluginTypeDetector.forgenPlugins)
-                logger.log(Level.WARNING, lang.getString("warning.plugin.unsupported.forge", file.getPath()));
+                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.forge", file.getPath()));
 
             for (File file : pluginTypeDetector.unrecognizedPlugins)
-                logger.log(Level.WARNING, lang.getString("warning.plugin.unsupported.unrecognized", file.getPath()));
+                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.unrecognized", file.getPath()));
         }
 
     }
@@ -971,14 +958,14 @@ public final class GlowServer implements Server {
                     try {
                         pluginManager.addPermission(perm);
                     } catch (IllegalArgumentException ex) {
-                        getLogger().log(Level.WARNING, lang.getString("warning.permission.plugin.taken", plugin.getDescription().getFullName(), perm.getName()), ex);
+                        getLogger().log(Level.WARNING, I.tr("warning.permission.plugin.taken", plugin.getDescription().getFullName(), perm.getName()), ex);
                     }
                 }
 
                 try {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
-                    logger.log(Level.SEVERE, lang.getString("error.plugin.loading", plugin.getDescription().getFullName()), ex);
+                    logger.log(Level.SEVERE, I.tr("error.plugin.loading", plugin.getDescription().getFullName()), ex);
                 }
             }
         }
@@ -988,9 +975,9 @@ public final class GlowServer implements Server {
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
             // Default permissions
-            this.permissionRoot = DefaultPermissions.registerPermission("minecraft", lang.getString("permission.default.minecraft"));
-            this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", lang.getString("permission.default.minecraft.command"), permissionRoot);
-            DefaultPermissions.registerPermission("minecraft.command.tell", lang.getString("permission.default.minecraft.command.tell"), PermissionDefault.TRUE, permissionCommand);
+            this.permissionRoot = DefaultPermissions.registerPermission("minecraft", I.tr("permission.default.minecraft"));
+            this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", I.tr("permission.default.minecraft.command"), permissionRoot);
+            DefaultPermissions.registerPermission("minecraft.command.tell", I.tr("permission.default.minecraft.command.tell"), PermissionDefault.TRUE, permissionCommand);
             permissionCommand.recalculatePermissibles();
             permissionRoot.recalculatePermissibles();
             helpMap.initializeCommands();
@@ -1003,13 +990,13 @@ public final class GlowServer implements Server {
 
             permConfig.getValues(false).forEach((key, value) -> data.put(key, ((MemorySection) value).getValues(false)));
 
-            List<Permission> perms = Permission.loadPermissions(data, lang.getString("error.permission.invalid"), PermissionDefault.OP);
+            List<Permission> perms = Permission.loadPermissions(data, I.tr("error.permission.invalid"), PermissionDefault.OP);
 
             for (Permission perm : perms) {
                 try {
                     pluginManager.addPermission(perm);
                 } catch (IllegalArgumentException ex) {
-                    getLogger().log(Level.WARNING, lang.getString("warning.permission.config.taken", perm.getName()), ex);
+                    getLogger().log(Level.WARNING, I.tr("warning.permission.config.taken", perm.getName()), ex);
                 }
             }
         }
@@ -1036,7 +1023,7 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, lang.getString("error.server.reload"), ex);
+            logger.log(Level.SEVERE, I.tr("error.server.reload"), ex);
         }
     }
 
@@ -1463,7 +1450,7 @@ public final class GlowServer implements Server {
             firstword = firstword.substring(0, firstword.indexOf(' '));
         }
 
-        sender.sendMessage(ChatColor.GRAY + lang.getString("warning.command.unknown", firstword));
+        sender.sendMessage(ChatColor.GRAY + I.tr("warning.command.unknown", firstword));
         return false;
     }
 
@@ -1724,7 +1711,7 @@ public final class GlowServer implements Server {
             return world;
         }
         if (isGenerationDisabled()) {
-            logger.warning(lang.getString("world.generate.disabled"));
+            logger.warning(I.tr("world.generate.disabled"));
         }
 
         if (creator.generator() == null) {

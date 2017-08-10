@@ -1,7 +1,6 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
-
+import net.glowstone.util.lang.I;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +12,7 @@ import java.util.Collections;
 
 public class PardonCommand extends VanillaCommand {
     public PardonCommand() {
-        super("pardon", GlowServer.lang.getString("command.minecraft.pardon.description"), GlowServer.lang.getString("command.minecraft.pardon.usage"), Collections.emptyList());
+        super("pardon", I.tr("command.minecraft.pardon.description"), I.tr("command.minecraft.pardon.usage"), Collections.emptyList());
         setPermission("minecraft.command.pardon");
     }
 
@@ -23,18 +22,18 @@ public class PardonCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.pardon.usage")));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.pardon.usage")));
             return false;
         }
         String name = args[0];
         OfflinePlayer player = Bukkit.getOfflinePlayer(name);
         BanList banList = Bukkit.getServer().getBanList(BanList.Type.NAME);
         if (!banList.isBanned(player.getName())) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.pardon.failed", name));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.pardon.failed", name));
             return false;
         }
         banList.pardon(player.getName());
-        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.pardon.success", name));
+        sender.sendMessage(I.tr(sender, "command.minecraft.pardon.success", name));
         return true;
     }
 }

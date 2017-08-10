@@ -1,7 +1,7 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
 import net.glowstone.command.GameModeUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -16,7 +16,7 @@ import java.util.List;
 public class DefaultGameModeCommand extends VanillaCommand {
 
     public DefaultGameModeCommand() {
-        super("defaultgamemode", GlowServer.lang.getString("command.minecraft.defaultgamemode.description"), GlowServer.lang.getString("command.minecraft.defaultgamemode.usage"), Collections.emptyList());
+        super("defaultgamemode", I.tr("command.minecraft.defaultgamemode.description"), I.tr("command.minecraft.defaultgamemode.usage"), Collections.emptyList());
         setPermission("minecraft.command.defaultgamemode");
     }
 
@@ -25,7 +25,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.usage")));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.defaultgamemode.usage")));
             return false;
         }
 
@@ -33,12 +33,12 @@ public class DefaultGameModeCommand extends VanillaCommand {
         final GameMode gamemode = GameModeUtils.build(inputMode);
 
         if (gamemode == null) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.unknown", inputMode));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.defaultgamemode.unknown", inputMode));
             return false;
         }
 
         Bukkit.getServer().setDefaultGameMode(gamemode);
-        sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.defaultgamemode.unknown", ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode)));
+        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.unknown", ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode)));
 
         return true;
     }

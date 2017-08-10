@@ -32,6 +32,7 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
+import net.glowstone.util.lang.I;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -250,7 +251,7 @@ public class GlowSession extends BasicSession {
             }
             send(new PingMessage(pingMessageId));
         } else {
-            disconnect(GlowServer.lang.getString(player, "event.player.timeout"));
+            disconnect(I.tr(player, "event.player.timeout"));
         }
     }
 
@@ -344,7 +345,7 @@ public class GlowSession extends BasicSession {
         // Kick other players with the same UUID
         for (GlowPlayer other : getServer().getRawOnlinePlayers()) {
             if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
-                other.getSession().disconnect(GlowServer.lang.getString(other, "event.player.doublelogin"), true);
+                other.getSession().disconnect(I.tr(other, "event.player.doublelogin"), true);
                 break;
             }
         }
@@ -363,7 +364,7 @@ public class GlowSession extends BasicSession {
 
         online = true;
 
-        GlowServer.logger.info(GlowServer.lang.getString("event.player.connected", player.getName(), address, player.getUniqueId()));
+        GlowServer.logger.info(I.tr("event.player.connected", player.getName(), address, player.getUniqueId()));
 
         // message and user list
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
@@ -434,7 +435,7 @@ public class GlowSession extends BasicSession {
         }
 
         // log that the player was kicked
-        GlowServer.logger.info(GlowServer.lang.getString("event.player.kicked",
+        GlowServer.logger.info(I.tr("event.player.kicked",
             (player != null ? player.getName() : "[" + address + "]"), reason));
 
         if (quitReason == null) {
@@ -489,7 +490,7 @@ public class GlowSession extends BasicSession {
                 }
             }
 
-            GlowServer.logger.info(GlowServer.lang.getString("event.player.lost", player.getName(), address));
+            GlowServer.logger.info(I.tr("event.player.lost", player.getName(), address));
 
             if (player.isSleeping()) {
                 player.leaveBed(false);

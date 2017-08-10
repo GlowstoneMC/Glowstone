@@ -212,6 +212,15 @@
             </resource>
         </resources>
 
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </testResource>
+        </testResources>
+
         <defaultGoal>package</defaultGoal>
 
         <plugins>

@@ -1,13 +1,13 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+import net.glowstone.util.lang.I;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -207,7 +207,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Storage(Location location) {
             super(location, MinecartType.CHEST);
-            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), GlowServer.lang.getString("entity.inventory.minecart.chest"));
+            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), I.tr("entity.inventory.minecart.chest"));
         }
 
         @Override
@@ -248,7 +248,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
-            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), GlowServer.lang.getString("entity.inventory.minecart.hopper"));
+            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), I.tr("entity.inventory.minecart.hopper"));
         }
 
         @Override

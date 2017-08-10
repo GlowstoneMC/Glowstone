@@ -3,6 +3,7 @@ package net.glowstone;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.glowstone.util.lang.I;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -62,7 +63,7 @@ public final class ConsoleManager {
         try {
             reader = new ConsoleReader();
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, GlowServer.lang.getString("error.command.console.init"), ex);
+            logger.log(Level.SEVERE, I.tr("error.command.console.init"), ex);
         }
         reader.addCompleter(new CommandCompleter());
 
@@ -119,7 +120,7 @@ public final class ConsoleManager {
     public void startFile(String logfile) {
         File parent = new File(logfile).getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
-            logger.warning(GlowServer.lang.getString("warning.command.log.mkdir", parent));
+            logger.warning(I.tr("warning.command.log.mkdir", parent));
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
@@ -191,7 +192,7 @@ public final class ConsoleManager {
             try {
                 setOutputStream(new FileOutputStream(filename, true));
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, GlowServer.lang.getString("error.command.log.open", filename), ex);
+                logger.log(Level.SEVERE, I.tr("error.command.log.open", filename), ex);
             }
         }
 
@@ -201,7 +202,7 @@ public final class ConsoleManager {
                 if (!filename.equals(newFilename)) {
                     filename = newFilename;
                     // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, GlowServer.lang.getString("status.command.log.rotate", filename)));
+                    super.publish(new LogRecord(Level.INFO, I.tr("status.command.log.rotate", filename)));
                     updateOutput();
                 }
             }
@@ -241,7 +242,7 @@ public final class ConsoleManager {
                 // location to position the cursor at (before autofilling takes place)
                 return buffer.lastIndexOf(' ') + 1;
             } catch (Throwable t) {
-                logger.log(Level.WARNING, GlowServer.lang.getString("warning.command.tab"), t);
+                logger.log(Level.WARNING, I.tr("warning.command.tab"), t);
                 return cursor;
             }
         }
@@ -264,9 +265,9 @@ public final class ConsoleManager {
 
                     server.getScheduler().runTask(null, new CommandTask(command.trim()));
                 } catch (CommandException ex) {
-                    logger.log(Level.WARNING, GlowServer.lang.getString("warning.command.execute", command), ex);
+                    logger.log(Level.WARNING, I.tr("warning.command.execute", command), ex);
                 } catch (Exception ex) {
-                    logger.log(Level.SEVERE, GlowServer.lang.getString("error.command.console.read"), ex);
+                    logger.log(Level.SEVERE, I.tr("error.command.console.read"), ex);
                 }
             }
         }
@@ -458,7 +459,7 @@ public final class ConsoleManager {
                     super.flush();
                 }
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, GlowServer.lang.getString("error.command.console.flush"), ex);
+                logger.log(Level.SEVERE, I.tr("error.command.console.flush"), ex);
             }
         }
     }

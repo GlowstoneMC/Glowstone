@@ -1,10 +1,10 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.data.CommandFunction;
+import net.glowstone.util.lang.I;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class FunctionCommand extends VanillaCommand {
 
     public FunctionCommand() {
-        super("function", GlowServer.lang.getString("command.minecraft.function.description"), GlowServer.lang.getString("command.minecraft.function.usage"), Collections.emptyList());
+        super("function", I.tr("command.minecraft.function.description"), I.tr("command.minecraft.function.usage"), Collections.emptyList());
         setPermission("minecraft.command.function");
     }
 
@@ -30,7 +30,7 @@ public class FunctionCommand extends VanillaCommand {
             return false;
         }
         if (args.length == 0 || args.length == 2) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.usage")));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.function.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -41,7 +41,7 @@ public class FunctionCommand extends VanillaCommand {
         String functionName = args[0];
         Map<String, CommandFunction> functions = world.getFunctions();
         if (!functions.containsKey(functionName)) {
-            sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.minecraft.function.unknown", functionName));
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.function.unknown", functionName));
             return false;
         }
         CommandFunction function = functions.get(functionName);
@@ -51,16 +51,16 @@ public class FunctionCommand extends VanillaCommand {
             Entity[] matched = target.getMatched(location);
             if (condition.equals("if")) {
                 if (matched.length == 0) {
-                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.function.skipped", function.getFullName()));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.function.skipped", function.getFullName()));
                     return false;
                 }
             } else if (condition.equals("unless")) {
                 if (matched.length > 0) {
-                    sender.sendMessage(GlowServer.lang.getString(sender, "command.minecraft.function.skipped", function.getFullName()));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.function.skipped", function.getFullName()));
                     return false;
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + GlowServer.lang.getString(sender, "command.generic.usage", GlowServer.lang.getString(sender, "command.minecraft.function.usage")));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.function.usage")));
                 return false;
             }
         }
