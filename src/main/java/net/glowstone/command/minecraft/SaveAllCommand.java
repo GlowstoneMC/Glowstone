@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SaveAllCommand extends VanillaCommand {
     public SaveAllCommand() {
-        super("save-all", I.tr("command.minecraft.saveall.description"), I.tr("command.minecraft.saveall.usage"), Collections.emptyList());
+        super("save-all", I.tr("command.minecraft.saveall.description"), "/save-all", Collections.emptyList());
         setPermission("minecraft.command.save-all");
     }
 

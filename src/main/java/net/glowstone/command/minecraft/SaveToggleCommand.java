@@ -13,7 +13,7 @@ public class SaveToggleCommand extends VanillaCommand {
     private final boolean on;
 
     public SaveToggleCommand(boolean on) {
-        super(on ? "save-on" : "save-off", I.tr("command.minecraft." + (on ? "saveon" : "saveoff") + ".description"), I.tr("command.minecraft." + (on ? "saveon" : "saveoff") + ".usage"), Collections.emptyList());
+        super(on ? "save-on" : "save-off", I.tr("command.minecraft." + (on ? "saveon" : "saveoff") + ".description"), on ? "/save-on" : "/save-off", Collections.emptyList());
         this.on = on;
         setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off");
     }
