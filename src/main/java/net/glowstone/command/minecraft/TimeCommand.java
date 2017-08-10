@@ -19,7 +19,7 @@ public class TimeCommand extends VanillaCommand {
     private static final List<String> TIMES = Arrays.asList("day", "night");
 
     public TimeCommand() {
-        super("time", "Changes the time of the world.", "/time <set|add> <value>", Collections.emptyList());
+        super("time", I.tr("command.minecraft.time.description"), I.tr("command.minecraft.time.usage"), Collections.emptyList());
         setPermission("minecraft.command.time");
     }
 
@@ -29,7 +29,7 @@ public class TimeCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.time.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -50,22 +50,22 @@ public class TimeCommand extends VanillaCommand {
                 try {
                     mod = Integer.valueOf(value);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + "'" + value + "' is not a valid number");
+                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", value));
                     return false;
                 }
             }
-            sender.sendMessage("Set the time to " + mod);
+            sender.sendMessage(I.tr(sender, "command.minecraft.time.set", mod));
         } else if (subcommand.equals("add")) {
             add = true;
             try {
                 mod = Integer.valueOf(value);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + "'" + value + "' is not a valid number");
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", value));
                 return false;
             }
-            sender.sendMessage("Added " + mod + " to the time");
+            sender.sendMessage(I.tr(sender, "command.minecraft.time.added", mod));
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.time.usage")));
             return false;
         }
         world.setTime(add ? world.getTime() + mod : mod);
