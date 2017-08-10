@@ -58,7 +58,7 @@ public class TpCommand extends VanillaCommand {
                         return false;
                     } else {
                         from.teleport(player);
-                        sender.sendMessage(I.tr(sender, "command.minecraft.tp.teleported",CommandUtils.getName(from), player.getName()));
+                        sender.sendMessage(I.tr(sender, "command.minecraft.tp.teleported", CommandUtils.getName(from), player.getName()));
                         return true;
                     }
                 }

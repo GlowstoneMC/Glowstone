@@ -148,7 +148,7 @@ public class TitleCommand extends VanillaCommand {
 
             String raw = message.toString().trim();
             if (!validJson(raw)) {
-                sender.sendMessage(ChatColor.RED + I.tr(s));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.title.invalid"));
                 return false;
             }
 

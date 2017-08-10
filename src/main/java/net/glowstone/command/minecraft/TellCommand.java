@@ -60,8 +60,8 @@ public class TellCommand extends VanillaCommand {
                 sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.tell.self"));
                 continue;
             }
-            player.sendMessage(ChatColor.GRAY + I.tr(sender, "command.minecraft.tell.whisper.1", senderName, message);
-            sender.sendMessage(ChatColor.GRAY + I.tr(sender, "command.minecraft.tell.whisper.2", senderName, player.getName(), message);
+            player.sendMessage(ChatColor.GRAY + I.tr(sender, "command.minecraft.tell.whisper.1", senderName, message));
+            sender.sendMessage(ChatColor.GRAY + I.tr(sender, "command.minecraft.tell.whisper.2", senderName, player.getName(), message));
         }
         return true;
     }

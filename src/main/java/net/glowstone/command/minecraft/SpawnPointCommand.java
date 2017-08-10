@@ -43,7 +43,7 @@ public class SpawnPointCommand extends VanillaCommand {
             if (sender instanceof Player) {
                 targets = ImmutableList.of((Player) sender);
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.specify"));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.specify"));
                 return false;
             }
         } else if (playerPattern.startsWith("@") && playerPattern.length() > 1 && CommandUtils.isPhysical(sender)) { // Manage selectors
@@ -60,7 +60,7 @@ public class SpawnPointCommand extends VanillaCommand {
             final Player player = Bukkit.getPlayerExact(playerPattern);
 
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.missing", playerPattern));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", playerPattern));
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -92,10 +92,10 @@ public class SpawnPointCommand extends VanillaCommand {
             spawnLocation = CommandUtils.getLocation(currentLocation, args[1], args[2], args[3]);
 
             if (spawnLocation.getY() < 0) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.ymin", spawnLocation.getBlockY()));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.ymin", spawnLocation.getY()));
                 return false;
             } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.ymax", spawnLocation.getBlockY(), world.getMaxHeight()));
+                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.ymax", spawnLocation.getY(), world.getMaxHeight()));
                 return false;
             }
         } else { // Use the sender coordinates

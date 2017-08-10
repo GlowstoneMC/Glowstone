@@ -38,4 +38,13 @@ public class GameModeUtilsTest {
         assertThat(GameModeUtils.build(null), nullValue());
         assertThat(GameModeUtils.build("unknown mode"), nullValue());
     }
+
+    @Test
+    public void testPrettyPrint(){
+        assertThat(GameModeUtils.prettyPrint(GameMode.CREATIVE), is("Creative"));
+        assertThat(GameModeUtils.prettyPrint(GameMode.ADVENTURE), is("Adventure"));
+        assertThat(GameModeUtils.prettyPrint(GameMode.SURVIVAL), is("Survival"));
+        assertThat(GameModeUtils.prettyPrint(GameMode.SPECTATOR), is("Spectator"));
+        assertThat(GameModeUtils.prettyPrint(null), nullValue());
+    }
 }

@@ -60,7 +60,7 @@ public final class I {
         try {
             ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
         } catch (MissingResourceException ex) {
-            throw new IllegalArgumentException("Missing locale '" + locale + "'. Language is not installed.");
+            throw new IllegalArgumentException("Missing locale '" + locale + "'. class=" + ex.getClassName());
         }
         defaultLocale = locale;
     }
@@ -98,7 +98,7 @@ public final class I {
         try {
             rb = ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
         } catch (MissingResourceException ex) {
-            throw new IllegalArgumentException("Missing locale '" + locale + "'. Language is not installed.");
+            throw new IllegalArgumentException("Missing locale '" + locale + "'. class=" + ex.getClassName());
         }
 
         String result;
@@ -113,7 +113,7 @@ public final class I {
             }
         }
         for (int i = 0; i != args.length; i++) {
-            result = result.replaceAll("{" + i + "}", args[i].toString());
+            result = result.replaceAll("\\{" + i + "\\}", args[i].toString());
         }
         return result;
     }
@@ -127,7 +127,8 @@ public final class I {
     public static String getEffectiveLocale(CommandSender sender) {
         // Only return the players locale if locale isn't locked.
         if (sender instanceof Player && !localeLocked) {
-            return ((Player) sender).getLocale().replace('_', '-');
+            String locale = ((Player) sender).getLocale();
+            return locale == null ? defaultLocale : locale.replace('_', '-');
         } else {
             return defaultLocale;
         }
