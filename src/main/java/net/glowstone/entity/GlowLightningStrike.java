@@ -9,7 +9,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
-import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
