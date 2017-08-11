@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -124,7 +125,7 @@ public final class I {
         for (int i = 0; i != args.length; i++) {
             result = result.replaceAll("\\{" + i + "\\}", args[i].toString());
         }
-        return result;
+        return ChatColor.translateAlternateColorCodes('&', result);
     }
 
     /**
