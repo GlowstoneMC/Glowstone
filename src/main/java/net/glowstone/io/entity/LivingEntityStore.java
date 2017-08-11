@@ -1,5 +1,6 @@
 package net.glowstone.io.entity;
 
+import net.glowstone.GlowLeashHitch;
 import net.glowstone.entity.AttributeManager;
 import net.glowstone.entity.AttributeManager.Modifier;
 import net.glowstone.entity.AttributeManager.Property;
@@ -8,7 +9,11 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LeashHitch;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -39,8 +44,6 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
     // - int "HurtByTimestamp"
     // - short "DeathTime"
     // - bool "PersistenceRequired"
-    // - bool "Leashed"
-    // - compound "Leash"
     // on ActiveEffects, bool "ShowParticles"
 
     @Override
@@ -128,6 +131,26 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
 
                     am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
                 }
+            }
+        }
+
+        if (compound.isByte("Leashed") && !compound.isCompound("Leash")) {
+            // We know that there was something leashed, but not what entity it was
+            // This can happen, when for example Minecart got leashed
+            // We still have to make sure that we drop a Leash Item
+            entity.setLeashHolderUniqueID(UUID.randomUUID());
+        } else if (compound.isCompound("Leash")) {
+            CompoundTag leash = compound.getCompound("Leash");
+            if (leash.isLong("UUIDMost") && leash.isLong("UUIDLeast")) {
+                UUID uuid = new UUID(leash.getLong("UUIDMost"), leash.getLong("UUIDLeast"));
+                entity.setLeashHolderUniqueID(uuid);
+            } else if (leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
+                int x = leash.getInt("X");
+                int y = leash.getInt("Y");
+                int z = leash.getInt("Z");
+
+                LeashHitch leashHitch = GlowLeashHitch.getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
+                entity.setLeashHolder(leashHitch);
             }
         }
     }
@@ -295,5 +318,26 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             ));
         }
         tag.putBool("CanPickUpLoot", entity.getCanPickupItems());
+
+        tag.putBool("Leashed", entity.isLeashed());
+
+        if (entity.isLeashed()) {
+            Entity leashHolder = entity.getLeashHolder();
+            CompoundTag leash = new CompoundTag();
+
+            // "Non-living entities excluding leashes will not persist as leash holders."
+            // The empty Leash tag is still persisted tough
+            if (leashHolder instanceof LeashHitch) {
+                Location location = leashHolder.getLocation();
+
+                leash.putInt("X", location.getBlockX());
+                leash.putInt("Y", location.getBlockY());
+                leash.putInt("Z", location.getBlockZ());
+            } else if (leashHolder instanceof LivingEntity) {
+                leash.putLong("UUIDMost", entity.getUniqueId().getMostSignificantBits());
+                leash.putLong("UUIDLeast", entity.getUniqueId().getLeastSignificantBits());
+            }
+            tag.putCompound("Leash", leash);
+        }
     }
 }

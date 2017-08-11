@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
+import net.glowstone.GlowLeashHitch;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.monster.complex.GlowEnderDragon;
 import net.glowstone.entity.objects.*;
@@ -51,7 +52,7 @@ public class EntityRegistry {
                     .put(IronGolem.class, GlowIronGolem.class)
                     .put(Item.class, GlowItem.class)
                     .put(ItemFrame.class, GlowItemFrame.class)
-                    //TODO: Leash hitch
+                    .put(LeashHitch.class, GlowLeashHitch.class)                     
                     .put(LightningStrike.class, GlowLightningStrike.class)
                     .put(Llama.class, GlowLlama.class)
                     .put(MagmaCube.class, GlowMagmaCube.class)
