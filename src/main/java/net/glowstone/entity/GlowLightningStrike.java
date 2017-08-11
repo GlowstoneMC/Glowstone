@@ -1,12 +1,15 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
+import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -21,7 +24,6 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -39,10 +41,25 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
      * Whether the lightning strike is just for effect.
      */
     private boolean effect;
+    /**
+     * Whether the lightning strike is silent
+     */
+    private boolean isSilent;
+    private LightningStrike.Spigot spigot = new LightningStrike.Spigot() {
+        @Override
+        public boolean isSilent() {
+            return isSilent;
+        }
+    };
 
-    public GlowLightningStrike(Location location, boolean effect, Random random) {
+    public GlowLightningStrike(Location location) {
+        this(location, false, false, ThreadLocalRandom.current());
+    }
+
+    public GlowLightningStrike(Location location, boolean effect, boolean isSilent, Random random) {
         super(location);
         this.effect = effect;
+        this.isSilent = isSilent;
         ticksToLive = 30;
         this.random = random;
     }
@@ -66,8 +83,10 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         if (getTicksLived() == 1) {
             GlowWorld world = (GlowWorld) location.getWorld();
             // Play Sound
-            world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
-            world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
+            if (!isSilent) {
+                world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000, 0.8F + random.nextFloat() * 0.2F);
+                world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2, 0.5F + random.nextFloat() * 0.2F);
+            }
 
             if (!effect) { // if it's not just a visual effect
                 // set target block on fire if required
@@ -90,6 +109,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }
+                // TODO: Spawn Skeletontrap
             }
         }
     }
@@ -99,12 +119,12 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
-        return Arrays.asList(new SpawnLightningStrikeMessage(id, x, y, z));
+        return Collections.singletonList(new SpawnLightningStrikeMessage(id, x, y, z));
     }
 
     @Override
     public List<Message> createUpdateMessage(GlowSession session) {
-        return Arrays.asList();
+        return Collections.emptyList();
     }
 
     @Override
@@ -135,7 +155,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     }
 
     public LightningStrike.Spigot spigot() {
-        return null;
+        return spigot;
     }
 
     @Override

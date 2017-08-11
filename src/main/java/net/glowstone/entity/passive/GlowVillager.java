@@ -4,9 +4,12 @@ import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.Witch;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.MerchantRecipe;
 
@@ -98,5 +101,15 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_VILLAGER_AMBIENT;
+    }
+
+    @Override
+    public void damage(double amount, Entity source, DamageCause cause) {
+        if (!DamageCause.LIGHTNING.equals(cause)) {
+            super.damage(amount, source, cause);
+        }
+
+        world.spawn(this.location, Witch.class);
+        remove();
     }
 }

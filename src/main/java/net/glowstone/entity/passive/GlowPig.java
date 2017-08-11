@@ -9,8 +9,11 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowPig extends GlowAnimal implements Pig {
@@ -69,5 +72,15 @@ public class GlowPig extends GlowAnimal implements Pig {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_PIG_AMBIENT;
+    }
+
+    @Override
+    public void damage(double amount, Entity source, DamageCause cause) {
+        if (!DamageCause.LIGHTNING.equals(cause)) {
+            super.damage(amount, source, cause);
+        }
+
+        world.spawn(this.location, PigZombie.class);
+        remove();
     }
 }
