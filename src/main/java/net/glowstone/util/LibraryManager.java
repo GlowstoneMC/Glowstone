@@ -51,7 +51,9 @@ public final class LibraryManager {
         downloaderService.execute(new LibraryDownloader("org.apache.logging.log4j", "log4j-core", "2.8.1", ""));
         downloaderService.shutdown();
         try {
-            downloaderService.awaitTermination(5, TimeUnit.SECONDS);
+            if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
+                downloaderService.shutdownNow();
+            }
         } catch (InterruptedException e) {
             GlowServer.logger.log(Level.SEVERE, "Library Manager thread interrupted: ", e);
         }
@@ -74,8 +76,8 @@ public final class LibraryManager {
         @Override
         public void run() {
             // check if we already have it
-            File file = new File(directory, library + '-' + version + ".jar");
-            if (!file.exists() && checksum(file, checksum)) {
+            File file = new File(directory, getLibrary());
+            if (!checksum(file, checksum)) {
                 // download it
                 GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
                 try {
@@ -90,6 +92,7 @@ public final class LibraryManager {
                     }
                 } catch (IOException e) {
                     GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + ' ' + version, e);
+                    file.delete();
                     return;
                 }
             }
@@ -105,9 +108,13 @@ public final class LibraryManager {
             }
         }
 
-        public boolean checksum(File file, String checksum) {
+        String getLibrary() {
+            return library + '-' + version + ".jar";
+        }
+
+        boolean checksum(File file, String checksum) {
             // TODO: actually check checksum
-            return true;
+            return file.exists();
         }
     }
 }
