@@ -9,8 +9,8 @@ public class ItemWrittenBook extends ItemType {
     private static final byte[] EMPTY = new byte[0];
 
     @Override
-    public boolean canOnlyUseSelf() {
-        return true;
+    public Context getContext() {
+        return Context.AIR;
     }
 
     @Override

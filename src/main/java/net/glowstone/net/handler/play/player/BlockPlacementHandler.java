@@ -8,6 +8,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.block.itemtype.ItemType.Context;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
@@ -136,7 +137,7 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // follows ALLOW/DENY: default to if no block was interacted with
         if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
-            if (!rightClickedAir && holding.getType() != Material.AIR && !type.canOnlyUseSelf()) {
+            if (!rightClickedAir && holding.getType() != Material.AIR && (type.getContext() == Context.BLOCK || type.getContext() == Context.AIR_BLOCK)) {
                 type.rightClickBlock(player, clicked, face, holding, clickedLoc, message.getHandSlot());
             }
         }
