@@ -117,7 +117,7 @@ public final class LibraryManager {
                     try (ReadableByteChannel input = Channels.newChannel(connection.getInputStream());
                          FileOutputStream output = new FileOutputStream(file)) {
                         output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
-                        GlowServer.logger.info(I.tr("status.library.downloading", library, version));
+                        GlowServer.logger.info(I.tr("status.library.downloaded", library, version));
                     }
                 } catch (IOException e) {
                     GlowServer.logger.log(Level.WARNING, I.tr("warning.library.download", library, version), e);

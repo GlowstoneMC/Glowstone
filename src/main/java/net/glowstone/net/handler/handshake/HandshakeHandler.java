@@ -40,8 +40,8 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
                 session.setProtocol(protocol);
                 return;
             } catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, I.tr("server.state.proxy.parsing", session), ex);
-                session.disconnect(I.tr("server.state.proxy.failed"));
+                GlowServer.logger.log(Level.SEVERE, I.tr("server.invalid.proxy.parsing", session), ex);
+                session.disconnect(I.tr("server.invalid.proxy.failed"));
                 session.setProtocol(protocol);
                 return;
             }

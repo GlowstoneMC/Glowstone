@@ -18,7 +18,7 @@ public class DifficultyCommand extends VanillaCommand {
     private static final List<String> DIFFICULTIES = Arrays.asList("peaceful", "easy", "normal", "hard");
 
     public DifficultyCommand() {
-        super("difficulty", I.tr("command.minecraft.difficulty.args.description"), I.tr("command.minecraft.difficulty.usage"), Collections.emptyList());
+        super("difficulty", I.tr("command.minecraft.difficulty.description"), I.tr("command.minecraft.difficulty.usage"), Collections.emptyList());
         setPermission("minecraft.command.difficulty");
     }
 

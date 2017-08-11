@@ -59,11 +59,11 @@ public class WeatherCommand extends VanillaCommand {
         } else if (type.equals("rain")) {
             world.setThundering(false);
             world.setStorm(true);
-            sender.sendMessage(I.tr(sender, "command.minecraft.weather.clear"));
+            sender.sendMessage(I.tr(sender, "command.minecraft.weather.rain"));
         } else if (type.equals("thunder")) {
             world.setThundering(true);
             world.setStorm(true);
-            sender.sendMessage(I.tr(sender, "command.minecraft.weather.clear"));
+            sender.sendMessage(I.tr(sender, "command.minecraft.weather.thunder"));
         }
         if (duration != null) {
             world.setWeatherDuration(duration * 20);

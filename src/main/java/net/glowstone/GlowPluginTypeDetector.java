@@ -106,7 +106,7 @@ public class GlowPluginTypeDetector {
                 }
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.WARNING, I.tr("warning.plugin.url.reading", url), ex);
+            GlowServer.logger.log(Level.WARNING, I.tr("warning.plugin.reading", url), ex);
         }
 
         if (isBukkit) bukkitPlugins.add(file);

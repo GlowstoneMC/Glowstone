@@ -38,7 +38,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         }
 
         Bukkit.getServer().setDefaultGameMode(gamemode);
-        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.unknown", ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode)));
+        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.set", ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode)));
 
         return true;
     }

@@ -13,7 +13,7 @@ public class SaveToggleCommand extends VanillaCommand {
     private final boolean on;
 
     public SaveToggleCommand(boolean on) {
-        super(on ? "save-on" : "save-off", I.tr("command.minecraft." + (on ? "save-on" : "save-off") + ".description"), on ? "/save-on" : "/save-off", Collections.emptyList());
+        super(on ? "save-on" : "save-off", on ? I.tr("command.minecraft.save-on.description") : I.tr("command.minecraft.save-off.description"), on ? "/save-on" : "/save-off", Collections.emptyList());
         this.on = on;
         setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off");
     }
@@ -26,7 +26,11 @@ public class SaveToggleCommand extends VanillaCommand {
         for (World world : sender.getServer().getWorlds()) {
             world.setAutoSave(on);
         }
-        sender.sendMessage(I.tr(sender, "command.minecraft." + (on ? "save-on" : "save-off") + ".toggle"));
+        if (on) {
+            sender.sendMessage(I.tr(sender, "command.minecraft.save-on.toggle"));
+        } else {
+            sender.sendMessage(I.tr(sender, "command.minecraft.save-off.toggle"));
+        }
         return true;
     }
 

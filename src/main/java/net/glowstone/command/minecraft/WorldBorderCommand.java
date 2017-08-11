@@ -116,9 +116,17 @@ public class WorldBorderCommand extends VanillaCommand {
                 world.getWorldBorder().setSize(size + world.getWorldBorder().getSize(), time);
             }
             if (time == 0) {
-                sender.sendMessage(I.tr(sender, "command.minecraft.worldborder." + (size >= 0 ? "increased" : "decreased"), size));
+                if (size >= 0) {
+                    sender.sendMessage(I.tr(sender, "command.minecraft.worldborder.increased", size));
+                } else {
+                    sender.sendMessage(I.tr(sender, "command.minecraft.worldborder.decreased", size));
+                }
             } else {
-                sender.sendMessage(I.tr(sender, "command.minecraft.worldborder." + (size >= 0 ? "increasing" : "decreasing"), Math.abs(size), time));
+                if (size >= 0) {
+                    sender.sendMessage(I.tr(sender, "command.minecraft.worldborder.increasing", Math.abs(size), time));
+                } else {
+                    sender.sendMessage(I.tr(sender, "command.minecraft.worldborder.decreasing", Math.abs(size), time));
+                }
             }
         } else if (args[0].equalsIgnoreCase("damage")) {
             if (args.length < 2) {

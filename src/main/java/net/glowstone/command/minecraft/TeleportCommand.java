@@ -33,7 +33,7 @@ public class TeleportCommand extends VanillaCommand {
         }
 
         if (!CommandUtils.isPhysical(sender)) {
-            sender.sendMessage(I.tr(sender, "command.minecraft.teleport.physcial"));
+            sender.sendMessage(I.tr(sender, "command.minecraft.teleport.physical"));
             return false;
         }
 
