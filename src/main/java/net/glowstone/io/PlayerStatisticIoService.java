@@ -61,7 +61,7 @@ public class PlayerStatisticIoService {
                             longValue = (Long) object.get("value");
                         }
                     } else {
-                        GlowServer.logger.warning(I.tr("error.world.statistic.mkdir", entry.getKey(), entry.getValue(), entry.getValue().getClass().getSimpleName()));
+                        GlowServer.logger.warning(I.tr("statistic.unknown", entry.getKey(), entry.getValue(), entry.getValue().getClass().getSimpleName()));
                     }
                     if (longValue != null) {
                         player.getStatisticMap().getValues().put(entry.getKey(), longValue.intValue());
