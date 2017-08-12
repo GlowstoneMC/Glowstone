@@ -35,7 +35,13 @@ public class ITest {
 
     @Test
     public void testUnusedTranslationKeys() throws IOException {
-        File scanFolder = new File(new File(ITest.class.getResource("/").getPath()).getParentFile().getParentFile().getPath());
+        File origFile = new File(ITest.class.getResource("/").getPath());
+        File scanFolder = null;
+        if (origFile.getParentFile().getName().equals("test-classes")) {
+            scanFolder = origFile.getParentFile().getParentFile();
+        } else if (origFile.getParentFile().getName().equals("test")) {
+            scanFolder = origFile.getParentFile().getParentFile().getParentFile().getParentFile();
+        }
         scanFolder = new File(scanFolder, "src");
         scanFolder = new File(scanFolder, "main");
         scanFolder = new File(scanFolder, "java");
