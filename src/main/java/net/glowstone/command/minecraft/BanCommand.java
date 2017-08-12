@@ -4,7 +4,6 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.util.lang.I;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 

@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import org.junit.Test;
 import org.junit.Rule;
@@ -63,7 +64,7 @@ public class ITest {
         // Check all files for the apparance of a translation key
         for (File file : files) {
             @Cleanup BufferedReader br = new BufferedReader(new FileReader(file));
-            for(String line; (line = br.readLine()) != null; ) {
+            for (String line; (line = br.readLine()) != null; ) {
                 for (String key : result.keySet()) {
                     if(line.contains(key)) {
                         result.put(key, true);

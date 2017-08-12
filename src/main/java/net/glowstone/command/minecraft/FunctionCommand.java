@@ -5,7 +5,6 @@ import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.data.CommandFunction;
 import net.glowstone.util.lang.I;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;

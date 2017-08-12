@@ -4,7 +4,6 @@ import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.util.lang.I;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
