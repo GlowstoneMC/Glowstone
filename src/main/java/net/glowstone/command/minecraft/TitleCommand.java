@@ -22,7 +22,7 @@ import java.util.Map;
 public class TitleCommand extends VanillaCommand {
 
     public TitleCommand() {
-        super("title", I.tr("command.minecraft.title.description"), I.tr("command.minecraft.title.usage.1"), Collections.emptyList());
+        super("title", I.tr("command.minecraft.title.description"), "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
         setPermission("minecraft.command.title");
     }
 
@@ -87,7 +87,7 @@ public class TitleCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
         if (args.length < 2) {
-            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.1")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", usageMessage));
             return false;
         }
 
@@ -184,7 +184,7 @@ public class TitleCommand extends VanillaCommand {
 
             sender.sendMessage(I.tr(sender, "command.minecraft.title.updated.3", player.getName()));
         } else {
-            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.1")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", usageMessage));
             return false;
         }
 
