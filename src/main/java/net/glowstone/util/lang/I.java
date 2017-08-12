@@ -66,11 +66,7 @@ public final class I {
      * @throws MissingResourceException Thrown if the specified locale does not exist.
      */
     public static void setDefaultLocale(@NonNull String locale) {
-        try {
-            ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
-        } catch (MissingResourceException ex) {
-            throw new MissingResourceException("Missing locale '" + locale + "'. class=" + ex.getClassName(), ex.getClassName(), ex.getKey());
-        }
+        getResource(locale);
         defaultLocale = locale;
     }
 
@@ -104,13 +100,7 @@ public final class I {
      * @throws MissingResourceException Thrown if the provided specified does not exist.
     */
     public static String trl(@NonNull String locale, @NonNull String key, @NonNull Object ... args) {
-        ResourceBundle rb;
-        try {
-            rb = ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
-        } catch (MissingResourceException ex) {
-            throw new MissingResourceException("Missing locale '" + locale + "'. class=" + ex.getClassName(), ex.getClassName(), ex.getKey());
-        }
-
+        ResourceBundle rb = getResource(locale);
         String result;
         if (rb.containsKey(key)) {
             result = rb.getString(key);
@@ -154,7 +144,7 @@ public final class I {
      */
     public static boolean doesLocaleExist(@NonNull String locale) {
         try {
-            ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
+            getResource(locale);
             return true;
         } catch (MissingResourceException ex) {
             return false;
@@ -167,14 +157,15 @@ public final class I {
      * @throws MissingResourceException Thrown if the specified locale does not exist.
      */
     public static Set<String> getTranslationKeys(@NonNull String locale) {
-        ResourceBundle rb;
+        return getResource(locale).keySet();
+    }
+
+    private ResourceBundle getResource(String locale) throws MissingResourceException {
         try {
-            rb = ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
+            return ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
         } catch (MissingResourceException ex) {
             throw new MissingResourceException("Missing locale '" + locale + "'. class=" + ex.getClassName(), ex.getClassName(), ex.getKey());
         }
-
-        return rb.keySet();
     }
 
 }
