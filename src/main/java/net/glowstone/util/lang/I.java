@@ -25,7 +25,7 @@ public final class I {
      * A full list of all available locales in Minecraft.
      * Updated as of 11 August 2017.
      */
-    public static final List<String> LOCALES = Arrays.asList("af_ZA", "ar_SA", "ast_ES", "az_AZ", "be_BY", "bg_BG", "br_FR", "ca-val_ES", "ca_ES", "cs_CZ", "cy_GB", "da_DK", "de_AT", "de_DE", "el_GR", "en_7S", "en_AU", "en_CA", "en_GB", "en_NZ", "en_UD", "en_US", "eo_UY", "es_AR", "es_ES", "es_MX", "es_UY", "es_VE", "et_EE", "eu_ES", "fa_IR", "fi_FI", "fil_PH", "fo_FO", "fr_CA", "fr_FR", "fy_NL", "ga_IE", "gd_GB", "gl_ES", "gv_IM", "haw", "he_IL", "hi_IN", "hr_HR", "hu_HU", "hy_AM", "id_ID", "io", "is_IS", "it_IT", "ja_JP", "jbo_EN", "ka_GE", "ko_KR", "ksh_DE", "kw_GB", "la_VA", "lb_LU", "li_LI", "lol_US", "lt_LT", "lv_LV", "mi_NZ", "mk_MK", "mn_MN", "ms_MY", "mt_MT", "nb_NO", "nds_DE", "nl_NL", "nn_NO", "no_NO", "oc_FR", "pl_PL", "pt_BR", "pt_PT", "qya_AA", "ro_RO", "ru_RU", "sk_SK", "sl_SI", "sme", "so_SO", "sq_AL", "sr_SP", "sv_SE", "swg_DE", "th_TH", "tl_PH", "tlh_AA", "tr_TR", "tzl_TZL", "uk_UA", "vi_VN", "zh_CN", "zh_TW");
+    public static final List<String> LOCALES = Arrays.asList("af-ZA", "ar-SA", "ast-ES", "az-AZ", "be-BY", "bg-BG", "br-FR", "ca-val-ES", "ca-ES", "cs-CZ", "cy-GB", "da-DK", "de-AT", "de-DE", "el-GR", "en-7S", "en-AU", "en-CA", "en-GB", "en-NZ", "en-UD", "en-US", "eo-UY", "es-AR", "es-ES", "es-MX", "es-UY", "es-VE", "et-EE", "eu-ES", "fa-IR", "fi-FI", "fil-PH", "fo-FO", "fr-CA", "fr-FR", "fy-NL", "ga-IE", "gd-GB", "gl-ES", "gv-IM", "haw", "he-IL", "hi-IN", "hr-HR", "hu-HU", "hy-AM", "id-ID", "io", "is-IS", "it-IT", "ja-JP", "jbo-EN", "ka-GE", "ko-KR", "ksh-DE", "kw-GB", "la-VA", "lb-LU", "li-LI", "lol-US", "lt-LT", "lv-LV", "mi-NZ", "mk-MK", "mn-MN", "ms-MY", "mt-MT", "nb-NO", "nds-DE", "nl-NL", "nn-NO", "no-NO", "oc-FR", "pl-PL", "pt-BR", "pt-PT", "qya-AA", "ro-RO", "ru-RU", "sk-SK", "sl-SI", "sme", "so-SO", "sq-AL", "sr-SP", "sv-SE", "swg-DE", "th-TH", "tl-PH", "tlh-AA", "tr-TR", "tzl-TZL", "uk-UA", "vi-VN", "zh-CN", "zh-TW");
     /**
      * Path basename used when looking up language resources.
      */
@@ -122,10 +122,11 @@ public final class I {
                 throw new MissingTranslationException("Could not find translation for key '" + key + "' in fallback locale", locale, key);
             }
         }
+        result = ChatColor.translateAlternateColorCodes('&', result);
         for (int i = 0; i != args.length; i++) {
-            result = result.replaceAll("\\{" + i + "\\}", args[i].toString());
+            result = result.replace("{" + i + "}", args[i].toString());
         }
-        return ChatColor.translateAlternateColorCodes('&', result);
+        return result;
     }
 
     /**
