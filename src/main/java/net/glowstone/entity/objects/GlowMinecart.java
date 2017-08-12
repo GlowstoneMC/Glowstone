@@ -7,6 +7,7 @@ import net.glowstone.inventory.GlowInventory;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+import net.glowstone.util.lang.I;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -206,7 +207,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Storage(Location location) {
             super(location, MinecartType.CHEST);
-            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), "Minecart with Chest");
+            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), I.tr("entity.inventory.minecart.chest"));
         }
 
         @Override
@@ -247,7 +248,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
-            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
+            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), I.tr("entity.inventory.minecart.hopper"));
         }
 
         @Override

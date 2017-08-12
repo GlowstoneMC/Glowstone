@@ -2,6 +2,7 @@ package net.glowstone.client;
 
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.util.lang.I;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -38,7 +39,7 @@ public class GlowClient {
     }
 
     public void run() {
-        GlowServer.logger.info("[CLIENT] GlowClient " + VERSION + " loaded!");
+        GlowServer.logger.info(I.tr("client.loaded", VERSION));
 
         start();
         pulse();

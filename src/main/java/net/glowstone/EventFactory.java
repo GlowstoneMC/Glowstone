@@ -1,10 +1,10 @@
 package net.glowstone;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.lang.I;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -52,10 +52,10 @@ public final class EventFactory {
             try {
                 return task.get();
             } catch (InterruptedException e) {
-                GlowServer.logger.log(Level.WARNING, "Interrupted while handling " + event.getClass().getSimpleName());
+                GlowServer.logger.log(Level.WARNING, I.tr("event.interrupted", event.getClass().getSimpleName()));
                 return event;
             } catch (CancellationException e) {
-                GlowServer.logger.log(Level.WARNING, "Not handling event " + event.getClass().getSimpleName() + " due to shutdown");
+                GlowServer.logger.log(Level.WARNING, I.tr("event.shutdown", event.getClass().getSimpleName()));
                 return event;
             } catch (ExecutionException e) {
                 throw new RuntimeException(e); // No checked exceptions declared for callEvent
@@ -99,16 +99,16 @@ public final class EventFactory {
 
         if (nameBans.isBanned(player.getName())) {
             event.disallow(Result.KICK_BANNED,
-                    "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
+                    I.tr("event.banned", nameBans.getBanEntry(player.getName()).getReason()));
         } else if (ipBans.isBanned(addressString)) {
             event.disallow(Result.KICK_BANNED,
-                    "Banned: " + ipBans.getBanEntry(addressString).getReason());
+                    I.tr("event.banned", ipBans.getBanEntry(addressString).getReason()));
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
             event.disallow(Result.KICK_WHITELIST,
-                    "You are not whitelisted on this server.");
+                    I.tr("event.whitelist.missing"));
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
             event.disallow(Result.KICK_FULL,
-                    "The server is full (" + player.getServer().getMaxPlayers() + " players).");
+                    I.tr("server.full", player.getServer().getMaxPlayers()));
         }
 
         return callEvent(event);
@@ -138,7 +138,7 @@ public final class EventFactory {
     }
 
     public static PlayerJoinEvent onPlayerJoin(Player player) {
-        return callEvent(new PlayerJoinEvent(player, ChatColor.YELLOW + player.getName() + " joined the game"));
+        return callEvent(new PlayerJoinEvent(player, I.tr("event.player.joined", player.getName())));
     }
 
     public static PlayerKickEvent onPlayerKick(Player player, String reason) {
@@ -146,7 +146,7 @@ public final class EventFactory {
     }
 
     public static PlayerQuitEvent onPlayerQuit(Player player) {
-        return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game"));
+        return callEvent(new PlayerQuitEvent(player, I.tr("event.player.left", player.getName())));
     }
 
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {

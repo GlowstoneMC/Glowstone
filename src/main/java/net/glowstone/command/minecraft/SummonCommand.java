@@ -6,6 +6,7 @@ import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;
+import net.glowstone.util.lang.I;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
@@ -25,7 +26,7 @@ import java.util.List;
 public class SummonCommand extends VanillaCommand {
 
     public SummonCommand() {
-        super("summon", "Summons an entity.", "/summon <EntityName> [x] [y] [z] [dataTag]", Collections.<String>emptyList());
+        super("summon", I.tr("command.minecraft.summon.description"), I.tr("command.minecraft.summon.usage"), Collections.<String>emptyList());
         setPermission("minecraft.command.summon");
     }
 
@@ -34,14 +35,14 @@ public class SummonCommand extends VanillaCommand {
         if (!testPermission(sender)) return true;
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("This command can only be executed by a player or via command blocks.");
+            sender.sendMessage(I.tr(sender, "command.generic.ingame.only"));
             return true;
         }
 
         Location location = CommandUtils.getLocation(sender);
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.summon.usage")));
             return false;
         }
         if (args.length >= 4) {
@@ -59,7 +60,7 @@ public class SummonCommand extends VanillaCommand {
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
-                sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
+                sender.sendMessage(I.tr(sender, "command.minecraft.summon.invalid", e.getMessage()));
             }
         }
 
@@ -78,7 +79,7 @@ public class SummonCommand extends VanillaCommand {
             EntityStorage.load(entity, tag);
         }
 
-        sender.sendMessage("Object successfully summoned.");
+        sender.sendMessage(I.tr(sender, "command.minecraft.summon.success"));
         return true;
     }
 
@@ -89,7 +90,7 @@ public class SummonCommand extends VanillaCommand {
         EntityType entityType = EntityType.fromName(type);
         if (entityType != null && !EntityType.fromName(type).isSpawnable()) {
             if (sender != null)
-                sender.sendMessage(ChatColor.RED + "The entity '" + EntityType.fromName(type).getName() + "' cannot be summoned.");
+                sender.sendMessage(I.tr(sender, "command.minecraft.summon.cannot", EntityType.fromName(type).getName()));
             return false;
         }
         if (entityType != null && EntityRegistry.getEntity(entityType) == null) {
@@ -98,7 +99,7 @@ public class SummonCommand extends VanillaCommand {
             return false;
         } else if (entityType == null && !EntityRegistry.isCustomEntityRegistered(type)) {
             if (sender != null)
-                sender.sendMessage(ChatColor.RED + "The entity '" + type + "' does not exist.");
+                sender.sendMessage(I.tr(sender, "command.minecraft.summon.missing", type));
             return false;
         }
         return true;

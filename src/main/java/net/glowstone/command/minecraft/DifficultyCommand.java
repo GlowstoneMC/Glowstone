@@ -2,7 +2,7 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
-import org.bukkit.ChatColor;
+import net.glowstone.util.lang.I;
 import org.bukkit.Difficulty;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -17,7 +17,7 @@ public class DifficultyCommand extends VanillaCommand {
     private static final List<String> DIFFICULTIES = Arrays.asList("peaceful", "easy", "normal", "hard");
 
     public DifficultyCommand() {
-        super("difficulty", "Sets the difficulty level.", "/difficulty <difficulty>", Collections.emptyList());
+        super("difficulty", I.tr("command.minecraft.difficulty.description"), I.tr("command.minecraft.difficulty.usage"), Collections.emptyList());
         setPermission("minecraft.command.difficulty");
     }
 
@@ -27,7 +27,7 @@ public class DifficultyCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.difficulty.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -59,11 +59,11 @@ public class DifficultyCommand extends VanillaCommand {
                 break;
         }
         if (difficulty == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown difficulty: '" + difficultyId + "'");
+            sender.sendMessage(I.tr(sender, "command.minecraft.difficulty.unknown", difficultyId));
             return false;
         }
         world.setDifficulty(difficulty);
-        sender.sendMessage("Set difficulty of world '" + world.getName() + "' to " + DIFFICULTIES.get(difficulty.ordinal()));
+        sender.sendMessage(I.tr(sender, "command.minecraft.difficulty.set", world.getName(), DIFFICULTIES.get(difficulty.ordinal())));
         return true;
     }
 

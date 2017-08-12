@@ -30,6 +30,7 @@ import net.glowstone.util.GameRuleManager;
 import net.glowstone.util.RayUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
+import net.glowstone.util.lang.I;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -320,14 +321,14 @@ public final class GlowWorld implements World {
         functions = storageProvider.getFunctionIoService().readFunctions().stream()
                 .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
         server.addWorld(this);
-        server.getLogger().info("Preparing spawn for " + name + "...");
+        server.getLogger().info(I.tr("world.spawn.preparing", name));
         EventFactory.callEvent(new WorldInitEvent(this));
 
         spawnChunkLock = keepSpawnLoaded ? newChunkLock("spawn") : null;
 
         setKeepSpawnInMemory(keepSpawnLoaded);
 
-        server.getLogger().info("Preparing spawn for " + name + ": done");
+        server.getLogger().info(I.tr("world.spawn.done", name));
         EventFactory.callEvent(new WorldLoadEvent(this));
 
         // pulse AI tasks
@@ -820,7 +821,7 @@ public final class GlowWorld implements World {
                 spawnChunkLock.acquire(new Key(x, z));
                 if (System.currentTimeMillis() >= loadTime + 1000) {
                     int progress = 100 * current / total;
-                    GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
+                    GlowServer.logger.info(I.tr("world.spawn.progress", name, progress));
                     loadTime = System.currentTimeMillis();
                 }
             }
@@ -1348,9 +1349,9 @@ public final class GlowWorld implements World {
                     entity.remove();
                 }
             } catch (NoSuchMethodException e) {
-                GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
+                GlowServer.logger.log(Level.WARNING, I.tr("entity.spawn.invalid"), e);
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
+                GlowServer.logger.log(Level.SEVERE, I.tr("entity.spawn.unable"), e);
             }
         }
 
@@ -1706,7 +1707,7 @@ public final class GlowWorld implements World {
                 storageProvider.getMetadataService().writeWorldData();
                 storageProvider.getScoreboardIoService().save();
             } catch (IOException e) {
-                server.getLogger().severe("Could not save metadata for world: " + getName());
+                server.getLogger().severe(I.tr("world.metadata.save", getName()));
                 e.printStackTrace();
             }
 

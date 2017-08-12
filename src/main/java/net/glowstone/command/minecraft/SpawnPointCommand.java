@@ -3,8 +3,8 @@ package net.glowstone.command.minecraft;
 import com.google.common.collect.ImmutableList;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.BlockCommandSender;
@@ -20,7 +20,7 @@ import java.util.List;
 public class SpawnPointCommand extends VanillaCommand {
 
     public SpawnPointCommand() {
-        super("spawnpoint", "Sets the spawn point for a player.", "/spawnpoint OR /spawnpoint <player> OR /spawnpoint <player> <x> <y> <z>", Collections.emptyList());
+        super("spawnpoint", I.tr("command.minecraft.spawnpoint.description"), I.tr("command.minecraft.spawnpoint.usage"), Collections.emptyList());
         setPermission("minecraft.command.spawnpoint");
     }
 
@@ -29,7 +29,7 @@ public class SpawnPointCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length != 0 && args.length != 1 && args.length < 4) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.spawnpoint.usage")));
             return false;
         }
 
@@ -42,7 +42,7 @@ public class SpawnPointCommand extends VanillaCommand {
             if (sender instanceof Player) {
                 targets = ImmutableList.of((Player) sender);
             } else {
-                sender.sendMessage(ChatColor.RED + "You must specify which player you wish to perform this action on.");
+                sender.sendMessage(I.tr(sender, "command.generic.player.specify"));
                 return false;
             }
         } else if (playerPattern.startsWith("@") && playerPattern.length() > 1 && CommandUtils.isPhysical(sender)) { // Manage selectors
@@ -59,7 +59,7 @@ public class SpawnPointCommand extends VanillaCommand {
             final Player player = Bukkit.getPlayerExact(playerPattern);
 
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player '" + playerPattern + "' cannot be found");
+                sender.sendMessage(I.tr(sender, "command.generic.player.missing", playerPattern));
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -79,7 +79,7 @@ public class SpawnPointCommand extends VanillaCommand {
             // If we are using relative coordinates, we need to get the sender location
             if (args[1].startsWith("~") || args[2].startsWith("~") || args[3].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
-                    sender.sendMessage(ChatColor.RED + "Relative coordinates can not be used without a physical user.");
+                    sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.relative"));
                     return false;
                 } else {
                     currentLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
@@ -91,17 +91,17 @@ public class SpawnPointCommand extends VanillaCommand {
             spawnLocation = CommandUtils.getLocation(currentLocation, args[1], args[2], args[3]);
 
             if (spawnLocation.getY() < 0) {
-                sender.sendMessage(ChatColor.RED + "The y coordinate (" + spawnLocation.getY() + ") is too small, it must be at least 0.");
+                sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.ymin", spawnLocation.getY()));
                 return false;
             } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
-                sender.sendMessage(ChatColor.RED + "'" + spawnLocation.getY() + "' is too high for the current world. Max value is '" + world.getMaxHeight() + "'.");
+                sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.ymax", spawnLocation.getY(), world.getMaxHeight()));
                 return false;
             }
         } else { // Use the sender coordinates
             if (CommandUtils.isPhysical(sender)) {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
-                sender.sendMessage(ChatColor.RED + "Default coordinates can not be used without a physical user.");
+                sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.default"));
                 return false;
             }
         }

@@ -1,6 +1,7 @@
 package net.glowstone.util;
 
 import net.glowstone.GlowServer;
+import net.glowstone.util.lang.I;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
@@ -42,7 +43,7 @@ public final class LibraryManager {
 
     public void run() {
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            GlowServer.logger.log(Level.SEVERE, "Could not create libraries directory: " + directory);
+            GlowServer.logger.log(Level.SEVERE, I.tr("library.create.failed", directory));
         }
 
         downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.16.1", ""));
@@ -55,7 +56,7 @@ public final class LibraryManager {
                 downloaderService.shutdownNow();
             }
         } catch (InterruptedException e) {
-            GlowServer.logger.log(Level.SEVERE, "Library Manager thread interrupted: ", e);
+            GlowServer.logger.log(Level.SEVERE, I.tr("library.interrupted"), e);
         }
     }
 
@@ -79,7 +80,7 @@ public final class LibraryManager {
             File file = new File(directory, getLibrary());
             if (!checksum(file, checksum)) {
                 // download it
-                GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
+                GlowServer.logger.info(I.tr("library.download.progress", library, version));
                 try {
                     URL downloadUrl = new URL(repository + group.replace('.', '/') + '/' + library + '/' + version + '/' + library + '-' + version + ".jar");
                     HttpsURLConnection connection = (HttpsURLConnection) downloadUrl.openConnection();
@@ -88,10 +89,10 @@ public final class LibraryManager {
                     try (ReadableByteChannel input = Channels.newChannel(connection.getInputStream());
                          FileOutputStream output = new FileOutputStream(file)) {
                         output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
-                        GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
+                        GlowServer.logger.info(I.tr("library.download.done", library, version));
                     }
                 } catch (IOException e) {
-                    GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + ' ' + version, e);
+                    GlowServer.logger.log(Level.WARNING, I.tr("library.download.failed", library, version), e);
                     file.delete();
                     return;
                 }

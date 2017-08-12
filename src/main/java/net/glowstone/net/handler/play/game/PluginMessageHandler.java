@@ -9,6 +9,7 @@ import net.glowstone.inventory.GlowAnvilInventory;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
+import net.glowstone.util.lang.I;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -28,12 +29,12 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
 
         if (channel.equals("REGISTER")) {
             for (String regChannel : string(message.getData()).split("\0")) {
-                GlowServer.logger.info(session + " registered channel: " + regChannel);
+                GlowServer.logger.info(I.tr("server.channel.register", session, regChannel));
                 session.getPlayer().addChannel(regChannel);
             }
         } else if (channel.equals("UNREGISTER")) {
             for (String regChannel : string(message.getData()).split("\0")) {
-                GlowServer.logger.info(session + " unregistered channel: " + regChannel);
+                GlowServer.logger.info(I.tr("server.channel.unregister", session, regChannel));
                 session.getPlayer().removeChannel(regChannel);
             }
         } else if (channel.startsWith("MC|")) {

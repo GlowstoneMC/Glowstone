@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -8,7 +9,7 @@ import java.util.Collections;
 
 public class StopCommand extends VanillaCommand {
     public StopCommand() {
-        super("stop", "Gracefully stops the server.", "/stop", Collections.emptyList());
+        super("stop", I.tr("command.minecraft.stop.description"), "/stop", Collections.emptyList());
         setPermission("minecraft.command.stop");
     }
 

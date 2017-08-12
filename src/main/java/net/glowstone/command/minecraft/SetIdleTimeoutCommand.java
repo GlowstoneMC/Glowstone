@@ -1,7 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class SetIdleTimeoutCommand extends VanillaCommand {
 
     public SetIdleTimeoutCommand() {
-        super("setidletimeout", "Sets the time before idle players are kicked from the server.", "/setidletimeout <Minutes until kick>", Collections.emptyList());
+        super("setidletimeout", I.tr("command.minecraft.setidletimeout.description"), I.tr("command.minecraft.setidletimeout.usage"), Collections.emptyList());
         setPermission("minecraft.command.setidletimeout");
     }
 
@@ -20,7 +20,7 @@ public class SetIdleTimeoutCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.setidletimeout.usage")));
             return false;
         }
 
@@ -30,17 +30,17 @@ public class SetIdleTimeoutCommand extends VanillaCommand {
         try {
             timeout = Integer.parseInt(stringTimeout);
         } catch (NumberFormatException ex) {
-            sender.sendMessage(ChatColor.RED + "'" + stringTimeout + "' is not a valid number");
+            sender.sendMessage(I.tr(sender, "command.generic.nan", stringTimeout));
             return false;
         }
 
         if (timeout <= 0) {
-            sender.sendMessage(ChatColor.RED + "The number you have entered (" + timeout + ") is too small, it must be at least 1");
+            sender.sendMessage(I.tr(sender, "command.minecraft.setidletimeout.toosmall", timeout));
             return false;
         }
 
         Bukkit.getServer().setIdleTimeout(timeout);
-        sender.sendMessage("Successfully set the idle timeout to " + timeout + " minutes.");
+        sender.sendMessage(I.tr(sender, "command.minecraft.setidletimeout.success", timeout));
 
         return true;
     }

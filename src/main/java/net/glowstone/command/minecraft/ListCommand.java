@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.util.lang.I;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -12,7 +13,7 @@ public class ListCommand extends VanillaCommand {
     private static final String[] EMPTY = new String[0];
 
     public ListCommand() {
-        super("list", "Lists players on the server.", "/list [uuids]", Collections.emptyList());
+        super("list", I.tr("command.minecraft.list.description"), I.tr("command.minecraft.list.usage"), Collections.emptyList());
         setPermission("minecraft.command.list");
     }
 
@@ -21,7 +22,7 @@ public class ListCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         Collection<String> messages = new ArrayList<>();
-        messages.add("There are " + players.size() + "/" + Bukkit.getMaxPlayers() + " players online:");
+        messages.add(I.tr(sender, "command.minecraft.list.list", players.size(), Bukkit.getMaxPlayers()));
         if (args.length > 0 && (Objects.equals(args[0], "uuids") || Objects.equals(args[0], "ids"))) {
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(p.getName() + " (" + p.getUniqueId() + ')'));
         } else {

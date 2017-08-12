@@ -5,6 +5,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
@@ -78,7 +79,7 @@ public class PlayerProfile {
         if (uuid != null) {
             return ProfileCache.getProfile(uuid);
         }
-        GlowServer.logger.warning("Unable to get UUID for username: " + name);
+        GlowServer.logger.warning(I.tr("entity.profile.uuid.failed", name));
         return null;
     }
 
@@ -114,7 +115,7 @@ public class PlayerProfile {
         try {
             uuid = UuidUtils.fromFlatString(id);
         } catch (IllegalArgumentException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Returned authentication UUID invalid: " + id);
+            GlowServer.logger.log(Level.SEVERE, I.tr("entity.profile.invalid", id));
             return null;
         }
 

@@ -5,6 +5,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.inventory.GlowEnchantingInventory;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.EnchantItemMessage;
+import net.glowstone.util.lang.I;
 import org.bukkit.inventory.Inventory;
 
 public final class EnchantItemHandler implements MessageHandler<GlowSession, EnchantItemMessage> {
@@ -14,7 +15,7 @@ public final class EnchantItemHandler implements MessageHandler<GlowSession, Enc
         if (view instanceof GlowEnchantingInventory) {
             ((GlowEnchantingInventory) view).onPlayerEnchant(message.getEnchantment());
         } else {
-            GlowServer.logger.info("Player " + session.getPlayer().getName() + " tried to enchant item while no enchanting inventory was open!");
+            GlowServer.logger.info(I.tr("event.enchant.illegal", session.getPlayer().getName()));
         }
     }
 }

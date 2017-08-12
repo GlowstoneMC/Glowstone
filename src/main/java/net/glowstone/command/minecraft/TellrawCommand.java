@@ -1,9 +1,9 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.util.lang.I;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ import java.util.Collections;
 public class TellrawCommand extends VanillaCommand {
 
     public TellrawCommand() {
-        super("tellraw", "Send a private JSON message to the given player", "/tellraw <player> <raw-json-message>", Collections.emptyList());
+        super("tellraw", I.tr("command.minecraft.tellraw.description"), I.tr("command.minecraft.tellraw.usage"), Collections.emptyList());
         setPermission("minecraft.command.tellraw");
     }
 
@@ -25,14 +25,14 @@ public class TellrawCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tellraw.usage")));
             return false;
         }
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
-            sender.sendMessage("There's no player by that name online.");
+            sender.sendMessage(I.tr(sender, "command.generic.player.offline", args[0]));
             return false;
         } else {
             StringBuilder message = new StringBuilder();
@@ -47,7 +47,7 @@ public class TellrawCommand extends VanillaCommand {
             try {
                 obj = JSONValue.parseWithException(json);
             } catch (ParseException e) {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON: " + e.getMessage());
+                sender.sendMessage(I.tr(sender, "command.minecraft.tellraw.parse.1", e.getMessage()));
                 return false;
             }
             if (obj instanceof JSONArray || obj instanceof JSONObject) {
@@ -55,7 +55,7 @@ public class TellrawCommand extends VanillaCommand {
                 player.sendMessage(components);
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON");
+                sender.sendMessage(I.tr(sender, "command.minecraft.tellraw.parse.2"));
                 return false;
             }
         }

@@ -2,7 +2,7 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
-import org.bukkit.ChatColor;
+import net.glowstone.util.lang.I;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
@@ -17,7 +17,7 @@ public class WeatherCommand extends VanillaCommand {
     private static final List<String> WEATHER = Arrays.asList("clear", "rain", "thunder");
 
     public WeatherCommand() {
-        super("weather", "Changes the weather in the world.", "/weather <clear|rain|thunder> [duration in seconds]", Collections.emptyList());
+        super("weather", I.tr("command.minecraft.weather.description"), I.tr("command.minecraft.weather.usage"), Collections.emptyList());
         setPermission("minecraft.command.weather");
     }
 
@@ -27,7 +27,7 @@ public class WeatherCommand extends VanillaCommand {
             return false;
         }
         if (args.length == 0 || args.length > 2 || !WEATHER.contains(args[0])) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.weather.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -40,29 +40,29 @@ public class WeatherCommand extends VanillaCommand {
             try {
                 duration = Integer.valueOf(args[1]);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number");
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[1]));
                 return false;
             }
             if (duration < 1) {
-                sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1] + ") is too small, it must be at least 1");
+                sender.sendMessage(I.tr(sender, "command.minecraft.weather.toosmall", args[1]));
                 return false;
             } else if (duration > 1000000) {
-                sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1] + ") is too big, it must be at most 1000000");
+                sender.sendMessage(I.tr(sender, "command.minecraft.weather.toobig", args[1]));
                 return false;
             }
         }
         if (type.equals("clear")) {
             world.setThundering(false);
             world.setStorm(false);
-            sender.sendMessage("Changing to clear weather");
+            sender.sendMessage(I.tr(sender, "command.minecraft.weather.clear"));
         } else if (type.equals("rain")) {
             world.setThundering(false);
             world.setStorm(true);
-            sender.sendMessage("Changing to rainy weather");
+            sender.sendMessage(I.tr(sender, "command.minecraft.weather.rain"));
         } else if (type.equals("thunder")) {
             world.setThundering(true);
             world.setStorm(true);
-            sender.sendMessage("Changing to rain and thunder");
+            sender.sendMessage(I.tr(sender, "command.minecraft.weather.thunder"));
         }
         if (duration != null) {
             world.setWeatherDuration(duration * 20);

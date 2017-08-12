@@ -1,6 +1,7 @@
 package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,7 @@ public class WhitelistCommand extends VanillaCommand {
     private static final List<String> SUBCOMMANDS = Arrays.asList("on", "off", "list", "add", "remove", "reload");
 
     public WhitelistCommand() {
-        super("whitelist", "Manage the server whitelist.", "/whitelist <on|off|list|add|remove|reload>", Collections.emptyList());
+        super("whitelist", I.tr("command.minecraft.whitelist.description"), "/whitelist <on|off|list|add|remove|reload>", Collections.emptyList());
         setPermission("minecraft.command.whitelist");
     }
 
@@ -31,12 +32,12 @@ public class WhitelistCommand extends VanillaCommand {
         String subcommand = args[0];
         if (subcommand.equals("on")) {
             sender.getServer().setWhitelist(true);
-            sender.sendMessage("Turned on the whitelist");
+            sender.sendMessage(I.tr(sender, "command.minecraft.whitelist.on"));
             return true;
         }
         if (subcommand.equals("off")) {
             sender.getServer().setWhitelist(false);
-            sender.sendMessage("Turned off the whitelist");
+            sender.sendMessage(I.tr(sender, "command.minecraft.whitelist.off"));
             return true;
         }
         if (subcommand.equals("list")) {
@@ -46,38 +47,38 @@ public class WhitelistCommand extends VanillaCommand {
             for (OfflinePlayer p : whitelistedPlayers) {
                 names[i++] = p.getName();
             }
-            sender.sendMessage("There are " + names.length + " whitelisted players:");
+            sender.sendMessage(I.tr(sender, "command.minecraft.whitelist.list", names.length));
             sender.sendMessage(CommandUtils.prettyPrint(names));
             return true;
         }
         if (subcommand.equals("add")) {
             if (args.length != 2) {
-                sender.sendMessage(ChatColor.RED + "Usage: /whitelist add <player>");
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.whitelist.add.usage")));
                 return false;
             }
             String name = args[1];
             OfflinePlayer player = sender.getServer().getOfflinePlayer(name);
             player.setWhitelisted(true);
-            sender.sendMessage("Added " + name + " to the whitelist");
+            sender.sendMessage(I.tr(sender, "command.minecraft.whitelist.add", name));
             return true;
         }
         if (subcommand.equals("remove")) {
             if (args.length != 2) {
-                sender.sendMessage(ChatColor.RED + "Usage: /whitelist remove <player>");
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.whitelist.remove.usage")));
                 return false;
             }
             String name = args[1];
             OfflinePlayer player = sender.getServer().getOfflinePlayer(name);
             player.setWhitelisted(false);
-            sender.sendMessage("Removed " + name + " to the whitelist");
+            sender.sendMessage(I.tr(sender, "command.minecraft.whitelist.remove", name));
             return true;
         }
         if (subcommand.equals("reload")) {
             sender.getServer().reloadWhitelist();
-            sender.sendMessage("Reloaded the whitelist");
+            sender.sendMessage(I.tr(sender, "command.minecraft.whitelist.reload"));
             return true;
         }
-        sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+        sender.sendMessage(I.tr(sender, "command.generic.usage", usageMessage));
         return false;
     }
 

@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import net.glowstone.util.lang.I;
+
 import com.google.common.io.PatternFilenameFilter;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
@@ -33,7 +35,7 @@ public class GlowPluginTypeDetector {
     }
 
     public void scan() {
-        GlowServer.logger.info("Scanning plugins...");
+        GlowServer.logger.info(I.tr("plugin.scanning"));
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;
@@ -43,16 +45,14 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        GlowServer.logger.info("PluginTypeDetector: found " +
-                bukkitPlugins.size() + " Bukkit, " +
-                spongePlugins.size() + " Sponge, " +
-                (forgefPlugins.size() + forgenPlugins.size()) + " Forge, " +
-                canaryPlugins.size() + " Canary, " +
-                unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
+        GlowServer.logger.info(I.tr("plugin.found",
+                bukkitPlugins.size(), spongePlugins.size(),
+                (forgefPlugins.size() + forgenPlugins.size()),
+                canaryPlugins.size(), unrecognizedPlugins.size(), files.length));
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
-                GlowServer.logger.warning("Unrecognized plugin: " + file.getPath());
+                GlowServer.logger.warning(I.tr("plugin.unrecognized", file.getPath()));
             }
         }
     }
@@ -68,7 +68,7 @@ public class GlowPluginTypeDetector {
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
-            GlowServer.logger.log(Level.WARNING, "PluginTypeDetector: Malformed URL: " + file, e);
+            GlowServer.logger.log(Level.WARNING, I.tr("plugin.url.malformed", file), e);
             return;
         }
 
@@ -106,7 +106,7 @@ public class GlowPluginTypeDetector {
                 }
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.WARNING, "PluginTypeDetector: Error reading " + url, ex);
+            GlowServer.logger.log(Level.WARNING, I.tr("plugin.reading.error", url), ex);
         }
 
         if (isBukkit) bukkitPlugins.add(file);

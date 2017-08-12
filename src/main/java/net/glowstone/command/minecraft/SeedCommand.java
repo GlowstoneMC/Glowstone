@@ -1,6 +1,7 @@
 package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -9,7 +10,7 @@ import java.util.Collections;
 
 public class SeedCommand extends VanillaCommand {
     public SeedCommand() {
-        super("seed", "Displays the world seed.", "/seed", Collections.emptyList());
+        super("seed", I.tr("command.minecraft.seed.description"), "/seed", Collections.emptyList());
         setPermission("minecraft.command.seed");
     }
 
@@ -22,7 +23,7 @@ public class SeedCommand extends VanillaCommand {
         if (world == null) {
             return false;
         } else {
-            sender.sendMessage("Seed: " + world.getSeed());
+            sender.sendMessage(I.tr(sender, "command.minecraft.seed.result", world.getSeed()));
         }
 
         return true;

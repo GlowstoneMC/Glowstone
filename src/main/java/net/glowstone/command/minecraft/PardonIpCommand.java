@@ -1,8 +1,8 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.util.lang.I;
 import com.google.common.net.InetAddresses;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class PardonIpCommand extends VanillaCommand {
     public PardonIpCommand() {
-        super("pardon-ip", "Unbans an IP address from the server.", "/pardon-ip <address>", Collections.emptyList());
+        super("pardon-ip", I.tr("command.minecraft.pardon-ip.description"), I.tr("command.minecraft.pardon-ip.usage"), Collections.emptyList());
         setPermission("minecraft.command.pardon-ip");
     }
 
@@ -20,16 +20,16 @@ public class PardonIpCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.pardon-ip.usage")));
             return false;
         }
         String ip = args[0];
         if (!InetAddresses.isInetAddress(ip)) {
-            sender.sendMessage(ChatColor.RED + "You have entered an invalid IP address");
+            sender.sendMessage(I.tr(sender, "command.minecraft.pardon-ip.invalid"));
             return false;
         }
         Bukkit.getServer().unbanIP(ip);
-        sender.sendMessage("Unbanned IP address " + ip);
+        sender.sendMessage(I.tr(sender, "command.minecraft.pardon-ip.success", ip));
         return true;
     }
 }

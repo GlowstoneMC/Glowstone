@@ -3,6 +3,7 @@ package net.glowstone.io;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.StatisticMap;
+import net.glowstone.util.lang.I;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,7 +33,7 @@ public class PlayerStatisticIoService {
      */
     private File getPlayerFile(UUID uuid) {
         if (!statsDir.isDirectory() && !statsDir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + statsDir);
+            server.getLogger().warning(I.tr("world.statistic.mkdir", statsDir));
         }
         return new File(statsDir, uuid + ".json");
     }
@@ -60,7 +61,7 @@ public class PlayerStatisticIoService {
                             longValue = (Long) object.get("value");
                         }
                     } else {
-                        GlowServer.logger.warning("Unknown statistic type for '" + entry.getKey() + "': " + entry.getValue() + " (" + entry.getValue().getClass().getSimpleName() + ")");
+                        GlowServer.logger.warning(I.tr("statistic.unknown", entry.getKey(), entry.getValue(), entry.getValue().getClass().getSimpleName()));
                     }
                     if (longValue != null) {
                         player.getStatisticMap().getValues().put(entry.getKey(), longValue.intValue());

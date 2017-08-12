@@ -1,5 +1,6 @@
 package net.glowstone.data;
 
+import net.glowstone.util.lang.I;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -39,7 +40,7 @@ public class CommandFunction {
             line.execute(sender);
             if (!line.isComment()) count++;
         }
-        sender.sendMessage("Executed " + count + " command(s) from function '" + getFullName() + "'");
+        sender.sendMessage(I.tr(sender, "command.function.execute", count, getFullName()));
     }
 
     @Override

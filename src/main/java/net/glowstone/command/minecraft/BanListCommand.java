@@ -1,10 +1,10 @@
 package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
@@ -17,7 +17,7 @@ public class BanListCommand extends VanillaCommand {
     private static final List<String> BAN_TYPES = Arrays.asList("ips", "players");
 
     public BanListCommand() {
-        super("banlist", "Displays the server's blacklist.", "/banlist [ips|players]", Collections.emptyList());
+        super("banlist", I.tr("command.minecraft.banlist.description"), I.tr("command.minecraft.banlist.usage"), Collections.emptyList());
         setPermission("minecraft.command.ban.list");
     }
 
@@ -33,7 +33,7 @@ public class BanListCommand extends VanillaCommand {
             } else if ("players".equalsIgnoreCase(args[0])) {
                 banType = BanList.Type.NAME;
             } else {
-                sender.sendMessage(ChatColor.RED + "Invalid parameter '" + args[0] + "'. Usage: " + usageMessage);
+                sender.sendMessage(I.tr(sender, "command.minecraft.banlist.invalid", args[0]) + " " + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.banlist.usage")));
                 return false;
             }
         } else {
@@ -43,10 +43,10 @@ public class BanListCommand extends VanillaCommand {
         final Set<BanEntry> banEntries = Bukkit.getBanList(banType).getBanEntries();
 
         if (banEntries.isEmpty()) {
-            sender.sendMessage("There are no banned players");
+            sender.sendMessage(I.tr(sender, "command.minecraft.banlist.empty"));
         } else {
             final List<String> targets = banEntries.stream().map(BanEntry::getTarget).collect(Collectors.toList());
-            sender.sendMessage("There are " + banEntries.size() + " banned players: ");
+            sender.sendMessage(I.tr(sender, "command.minecraft.banlist.count", banEntries.size()));
             sender.sendMessage(CommandUtils.prettyPrint(targets.toArray(new String[targets.size()])));
         }
 

@@ -2,9 +2,9 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TellCommand extends VanillaCommand {
 
     public TellCommand() {
-        super("tell", "Send a private message.", "/tell <player> <private message ...>", Arrays.asList("msg", "w"));
+        super("tell", I.tr("command.minecraft.tell.description"), I.tr("command.minecraft.tell.usage"), Arrays.asList("msg", "w"));
         setPermission("minecraft.command.tell");
     }
 
@@ -26,7 +26,7 @@ public class TellCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length <= 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tell.usage")));
             return false;
         }
         String name = args[0];
@@ -37,7 +37,7 @@ public class TellCommand extends VanillaCommand {
             target.getArguments().put("type", new CommandTarget.SelectorValue("player")); // only players
             Entity[] matched = target.getMatched(location);
             if (matched.length == 0) {
-                sender.sendMessage(ChatColor.RED + "Selector '" + name + "' found nothing");
+                sender.sendMessage(I.tr(sender, "command.generic.selector", name));
                 return false;
             }
             players = new Player[matched.length];
@@ -47,7 +47,7 @@ public class TellCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayer(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player '" + name + "' cannot be found");
+                sender.sendMessage(I.tr(sender, "command.generic.player.missing", name));
                 return false;
             }
             players = new Player[]{player};
@@ -56,11 +56,11 @@ public class TellCommand extends VanillaCommand {
         String message = StringUtils.join(args, ' ', 1, args.length);
         for (Player player : players) {
             if (sender.equals(player)) {
-                sender.sendMessage(ChatColor.RED + "You can't send a private message to yourself!");
+                sender.sendMessage(I.tr(sender, "command.minecraft.tell.self"));
                 continue;
             }
-            player.sendMessage(ChatColor.GRAY + senderName + " whispers " + message);
-            sender.sendMessage(ChatColor.GRAY + "[" + senderName + "->" + player.getName() + "] " + message);
+            player.sendMessage(I.tr(sender, "command.minecraft.tell.whisper.1", senderName, message));
+            sender.sendMessage(I.tr(sender, "command.minecraft.tell.whisper.2", senderName, player.getName(), message));
         }
         return true;
     }

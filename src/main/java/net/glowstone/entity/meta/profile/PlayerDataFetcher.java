@@ -2,6 +2,7 @@ package net.glowstone.entity.meta.profile;
 
 import net.glowstone.GlowServer;
 import net.glowstone.util.UuidUtils;
+import net.glowstone.util.lang.I;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -41,7 +42,7 @@ class PlayerDataFetcher {
             //potentially blocking
             is = conn.getInputStream();
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.lookup.profile.failed"));
             return null;
         }
 
@@ -53,10 +54,10 @@ class PlayerDataFetcher {
                 return new PlayerProfile(null, uuid);
             }
         } catch (ParseException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to parse profile response", e);
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.parse.failed"), e);
             return null;
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.lookup.profile.failed"), e);
             return null;
         }
         return PlayerProfile.fromJson(json);
@@ -77,7 +78,7 @@ class PlayerDataFetcher {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Failed to look up UUID", e);
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.lookup.uuid.failed"), e);
             return null;
         }
 
@@ -93,7 +94,7 @@ class PlayerDataFetcher {
 
             json = (JSONArray) JSONValue.parse(new InputStreamReader(conn.getInputStream()));
         } catch (IOException e) {
-            GlowServer.logger.warning("Couldn't get UUID due to IO error: " + e);
+            GlowServer.logger.warning(I.tr("entity.profile.io.error", e));
             return null;
         }
 

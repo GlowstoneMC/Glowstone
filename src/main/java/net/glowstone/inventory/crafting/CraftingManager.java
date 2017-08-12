@@ -5,6 +5,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.lang.I;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -31,12 +32,10 @@ public final class CraftingManager implements Iterable<Recipe> {
         resetRecipes();
 
         // Report stats
-        GlowServer.logger.info("Recipes: " +
-                shapedRecipes.size() + " shaped, " +
-                shapelessRecipes.size() + " shapeless, " +
-                furnaceRecipes.size() + " furnace, " +
-                dynamicRecipes.size() + " dynamic, " +
-                furnaceFuels.size() + " fuels.");
+        GlowServer.logger.info(I.tr("recipe.stats",
+                shapedRecipes.size(), shapelessRecipes.size(),
+                furnaceRecipes.size(), dynamicRecipes.size(),
+                furnaceFuels.size()));
     }
 
     /**

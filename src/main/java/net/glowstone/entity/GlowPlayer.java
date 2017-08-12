@@ -47,6 +47,7 @@ import net.glowstone.util.Convert;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
+import net.glowstone.util.lang.I;
 import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -879,7 +880,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             spawnAtBed = false;
             if (bedSpawn != null) {
                 setBedSpawnLocation(null);
-                sendMessage("Your home bed was missing or obstructed");
+                sendMessage(I.tr(this, "event.player.respawn.missing"));
             }
         }
 
@@ -1842,7 +1843,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getLocale() {
-        return null;
+        return this.spigot.getLocale();
     }
 
     public boolean affectsSpawning = true;
@@ -1897,15 +1898,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void chat(String text, boolean async) {
         if (text.charAt(0) == '/') {
             Runnable task = () -> {
-                server.getLogger().info(getName() + " issued command: " + text);
+                server.getLogger().info(I.tr("event.command.issued", getName(), text));
                 try {
                     PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(this, text);
                     if (!EventFactory.callEvent(event).isCancelled()) {
                         server.dispatchCommand(this, event.getMessage().substring(1));
                     }
                 } catch (Exception ex) {
-                    sendMessage(ChatColor.RED + "An internal error occurred while executing your command.");
-                    server.getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
+                    sendMessage(I.tr(GlowPlayer.this, "event.command.error"));
+                    server.getLogger().log(Level.SEVERE, I.tr("event.command.exception", text), ex);
                 }
             };
 

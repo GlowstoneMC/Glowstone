@@ -2,8 +2,8 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.lang.I;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class GameRuleCommand extends VanillaCommand {
     public GameRuleCommand() {
-        super("gamerule", "Changes the rules of the server.", "/gamerule [rule] [new value]", Collections.emptyList());
+        super("gamerule", I.tr("command.minecraft.gamerule.description"), I.tr("command.minecraft.gamerule.usage"), Collections.emptyList());
         setPermission("minecraft.command.gamerule");
     }
 
@@ -36,13 +36,13 @@ public class GameRuleCommand extends VanillaCommand {
                 sender.sendMessage(gamerule + " = " + value);
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "No game rule called '" + gamerule + "' is available");
+                sender.sendMessage(I.tr(sender, "command.minecraft.gamerule.missing", gamerule));
                 return false;
             }
         }
         String value = StringUtils.join(args, " ", 1, args.length);
         world.setGameRuleValue(args[0], value);
-        sender.sendMessage("Game rule " + args[0] + " has been updated to " + value);
+        sender.sendMessage(I.tr(sender, "command.minecraft.gamerule.updated", args[0], value));
         return true;
     }
 

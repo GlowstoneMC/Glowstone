@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.TitleMessage;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class TitleCommand extends VanillaCommand {
 
     public TitleCommand() {
-        super("title", "Sends a title to the specified player(s)", "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
+        super("title", I.tr("command.minecraft.title.description"), "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
         setPermission("minecraft.command.title");
     }
 
@@ -86,14 +87,14 @@ public class TitleCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", usageMessage));
             return false;
         }
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
-            sender.sendMessage("There's no player by that name online.");
+            sender.sendMessage(I.tr(sender, "command.generic.player.offline", args[0]));
             return false;
         }
 
@@ -101,13 +102,13 @@ public class TitleCommand extends VanillaCommand {
 
         if (action.equalsIgnoreCase("clear")) {
             ((GlowPlayer) player).clearTitle();
-            sender.sendMessage("Cleared " + player.getName() + "'s title");
+            sender.sendMessage(I.tr(sender, "command.minecraft.title.cleared", player.getName()));
         } else if (action.equalsIgnoreCase("reset")) {
             player.resetTitle();
-            sender.sendMessage("Reset " + player.getName() + "'s title");
+            sender.sendMessage(I.tr(sender, "command.minecraft.title.reset", player.getName()));
         } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.2", action)));
                 return false;
             }
 
@@ -119,7 +120,7 @@ public class TitleCommand extends VanillaCommand {
 
             String raw = message.toString().trim();
             if (!validJson(raw)) {
-                sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                sender.sendMessage(I.tr(sender, "command.minecraft.title.invalid"));
                 return false;
             }
 
@@ -132,10 +133,10 @@ public class TitleCommand extends VanillaCommand {
             ((GlowPlayer) player).updateTitle(TitleMessage.Action.TITLE, component);
             ((GlowPlayer) player).sendTitle();
 
-            sender.sendMessage("Updated " + player.getName() + "'s title");
+            sender.sendMessage(I.tr(sender, "command.minecraft.title.updated.1", player.getName()));
         } else if (action.equalsIgnoreCase("subtitle")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.2", action)));
                 return false;
             }
 
@@ -147,7 +148,7 @@ public class TitleCommand extends VanillaCommand {
 
             String raw = message.toString().trim();
             if (!validJson(raw)) {
-                sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                sender.sendMessage(I.tr(sender, "command.minecraft.title.invalid"));
                 return false;
             }
 
@@ -159,31 +160,31 @@ public class TitleCommand extends VanillaCommand {
 
             ((GlowPlayer) player).updateTitle(TitleMessage.Action.SUBTITLE, component);
 
-            sender.sendMessage("Updated " + player.getName() + "'s subtitle");
+            sender.sendMessage(I.tr(sender, "command.minecraft.title.updated.2", player.getName()));
         } else if (action.equalsIgnoreCase("times")) {
             if (args.length != 5) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <fade in> <stay time> <fade out>");
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.3", action)));
                 return false;
             }
 
             if (!tryParseInt(args[2])) {
-                sender.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a number");
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[2]));
                 return false;
             }
             if (!tryParseInt(args[3])) {
-                sender.sendMessage(ChatColor.RED + "'" + args[3] + "' is not a number");
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[3]));
                 return false;
             }
             if (!tryParseInt(args[4])) {
-                sender.sendMessage(ChatColor.RED + "'" + args[4] + "' is not a number");
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[4]));
                 return false;
             }
 
             ((GlowPlayer) player).updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]), toInt(args[4]));
 
-            sender.sendMessage("Updated " + player.getName() + "'s times");
+            sender.sendMessage(I.tr(sender, "command.minecraft.title.updated.3", player.getName()));
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", usageMessage));
             return false;
         }
 

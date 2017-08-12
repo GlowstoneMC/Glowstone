@@ -1,11 +1,11 @@
 package net.glowstone.inventory;
 
-
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.WeightedRandom;
+import net.glowstone.util.lang.I;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -360,7 +360,7 @@ public class EnchantmentManager {
         //TODO: better handling of for malicious clients?
 
         if (clicked < 0 || clicked > enchLevelCosts.length) {
-            GlowServer.logger.info("Malicious client, cannot enchant slot " + clicked);
+            GlowServer.logger.info(I.tr("client.malicious.slot", clicked));
             update();
             return true;
         }
@@ -368,7 +368,7 @@ public class EnchantmentManager {
         int level = enchLevelCosts[clicked];
         if (player.getGameMode() != GameMode.CREATIVE) {
             if (player.getLevel() < level || inventory.getSecondary() == null || inventory.getSecondary().getAmount() < clicked) {
-                GlowServer.logger.info("Malicious client, player has not enough levels / enough resources to enchant item!");
+                GlowServer.logger.info(I.tr("client.malicious.insufficient"));
                 update();
                 return true;
             }

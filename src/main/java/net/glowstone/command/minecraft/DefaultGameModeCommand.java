@@ -1,8 +1,8 @@
 package net.glowstone.command.minecraft;
 
 import net.glowstone.command.GameModeUtils;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -15,7 +15,7 @@ import java.util.List;
 public class DefaultGameModeCommand extends VanillaCommand {
 
     public DefaultGameModeCommand() {
-        super("defaultgamemode", "Sets the default game mode (creative, survival, etc.) for new players entering a multiplayer server.", "/defaultgamemode <mode>", Collections.emptyList());
+        super("defaultgamemode", I.tr("command.minecraft.defaultgamemode.description"), I.tr("command.minecraft.defaultgamemode.usage"), Collections.emptyList());
         setPermission("minecraft.command.defaultgamemode");
     }
 
@@ -24,7 +24,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.defaultgamemode.usage")));
             return false;
         }
 
@@ -32,12 +32,12 @@ public class DefaultGameModeCommand extends VanillaCommand {
         final GameMode gamemode = GameModeUtils.build(inputMode);
 
         if (gamemode == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown mode '" + inputMode + "'.");
+            sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.unknown", inputMode));
             return false;
         }
 
         Bukkit.getServer().setDefaultGameMode(gamemode);
-        sender.sendMessage("The world's default game mode is now " + ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode) + " Mode");
+        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.set", GameModeUtils.prettyPrint(sender, gamemode)));
 
         return true;
     }

@@ -3,8 +3,8 @@ package net.glowstone.command.minecraft;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class GiveCommand extends VanillaCommand {
     public GiveCommand() {
-        super("give", "Gives an item to a player.", "/give <player> <item> [amount]", Collections.emptyList());
+        super("give", I.tr("command.minecraft.give.description"), I.tr("command.minecraft.give.usage"), Collections.emptyList());
         setPermission("minecraft.command.give");
     }
 
@@ -29,7 +29,7 @@ public class GiveCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.give.usage")));
             return false;
         }
         String name = args[0], itemName = args[1];
@@ -38,7 +38,7 @@ public class GiveCommand extends VanillaCommand {
         }
         Material type = ItemIds.getItem(itemName);
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + "There is no such item with name " + itemName);
+            sender.sendMessage(I.tr(sender, "command.minecraft.give.missing", itemName));
             return false;
         }
         ItemStack stack = new ItemStack(type);
@@ -47,15 +47,15 @@ public class GiveCommand extends VanillaCommand {
             try {
                 int amount = Integer.valueOf(amountString);
                 if (amount > 64) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount + ") is too big, it must be at most 64");
+                    sender.sendMessage(I.tr(sender, "command.minecraft.give.toobig", amount));
                     return false;
                 } else if (amount < 1) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount + ") is too small, it must be at least 1");
+                    sender.sendMessage(I.tr(sender, "command.minecraft.give.toosmall", amount));
                     return false;
                 }
                 stack.setAmount(amount);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + "'" + amountString + "' is not a valid number");
+                sender.sendMessage(I.tr(sender, "command.generic.nan", amountString));
                 return false;
             }
         }
@@ -72,7 +72,7 @@ public class GiveCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
+                sender.sendMessage(I.tr(sender, "command.generic.player.offline", name));
                 return false;
             } else {
                 giveItem(sender, player, stack);
@@ -83,7 +83,7 @@ public class GiveCommand extends VanillaCommand {
 
     private void giveItem(CommandSender sender, Player player, ItemStack stack) {
         player.getInventory().addItem(stack);
-        sender.sendMessage("Given [" + ItemIds.getName(stack.getType()) + "] * " + stack.getAmount() + " to " + player.getName());
+        sender.sendMessage(I.tr(sender, "command.minecraft.give.given", ItemIds.getName(stack.getType()), stack.getAmount(), player.getName()));
     }
 
     @Override

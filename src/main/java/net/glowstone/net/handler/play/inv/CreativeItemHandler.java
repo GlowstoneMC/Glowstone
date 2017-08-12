@@ -9,6 +9,7 @@ import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.CreativeItemMessage;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
+import net.glowstone.util.lang.I;
 import org.bukkit.GameMode;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -32,13 +33,13 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
 
         // only if creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {
-            player.kickPlayer("Illegal creative mode item selection");
+            player.kickPlayer(I.tr("world.creative.illegal"));
             return;
         }
 
         // only if default (player) inventory
         if (!GlowInventoryView.isDefault(player.getOpenInventory())) {
-            player.kickPlayer("Illegal creative mode item selection");
+            player.kickPlayer(I.tr("world.creative.illegal"));
             return;
         }
 

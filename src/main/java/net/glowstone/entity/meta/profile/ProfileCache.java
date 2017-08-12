@@ -1,6 +1,7 @@
 package net.glowstone.entity.meta.profile;
 
 import net.glowstone.GlowServer;
+import net.glowstone.util.lang.I;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,9 +49,9 @@ public class ProfileCache {
         try {
             uuid = uuidFuture.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException e) {
-            GlowServer.logger.log(Level.SEVERE, "UUID Cache interrupted: ", e);
+            GlowServer.logger.log(Level.SEVERE, I.tr("entity.profile.cache.interrupted"), e);
         } catch (TimeoutException e) {
-            GlowServer.logger.log(Level.SEVERE, "UUID Cache lookup timed out: ", e);
+            GlowServer.logger.log(Level.SEVERE, I.tr("entity.profile.cache.timeout"), e);
         }
         return uuid;
     }

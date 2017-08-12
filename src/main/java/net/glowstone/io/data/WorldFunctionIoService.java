@@ -4,6 +4,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.data.CommandFunction;
 import net.glowstone.io.FunctionIoService;
+import net.glowstone.util.lang.I;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class WorldFunctionIoService implements FunctionIoService {
                 functions.addAll(namespaceFunctions);
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading functions for world '" + world.getName() + "'", ex);
+            GlowServer.logger.log(Level.SEVERE, I.tr("world.function.load", world.getName()), ex);
         }
         return functions;
     }
