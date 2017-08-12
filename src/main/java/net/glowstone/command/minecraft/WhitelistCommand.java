@@ -53,7 +53,7 @@ public class WhitelistCommand extends VanillaCommand {
         }
         if (subcommand.equals("add")) {
             if (args.length != 2) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.whitelist.add.usage")));
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.whitelist.add.usage")));
                 return false;
             }
             String name = args[1];
@@ -64,7 +64,7 @@ public class WhitelistCommand extends VanillaCommand {
         }
         if (subcommand.equals("remove")) {
             if (args.length != 2) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.whitelist.remove.usage")));
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.whitelist.remove.usage")));
                 return false;
             }
             String name = args[1];
@@ -78,7 +78,7 @@ public class WhitelistCommand extends VanillaCommand {
             sender.sendMessage(I.tr(sender, "command.minecraft.whitelist.reload"));
             return true;
         }
-        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", usageMessage));
+        sender.sendMessage(I.tr(sender, "command.generic.usage", usageMessage));
         return false;
     }
 

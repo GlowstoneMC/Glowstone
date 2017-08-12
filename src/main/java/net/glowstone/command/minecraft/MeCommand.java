@@ -21,7 +21,7 @@ public class MeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0)  {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.me.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.me.usage")));
             return false;
         }
 

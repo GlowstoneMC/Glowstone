@@ -30,7 +30,7 @@ public class SpawnPointCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length != 0 && args.length != 1 && args.length < 4) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.spawnpoint.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.spawnpoint.usage")));
             return false;
         }
 
@@ -43,7 +43,7 @@ public class SpawnPointCommand extends VanillaCommand {
             if (sender instanceof Player) {
                 targets = ImmutableList.of((Player) sender);
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.specify"));
+                sender.sendMessage(I.tr(sender, "command.generic.player.specify"));
                 return false;
             }
         } else if (playerPattern.startsWith("@") && playerPattern.length() > 1 && CommandUtils.isPhysical(sender)) { // Manage selectors
@@ -60,7 +60,7 @@ public class SpawnPointCommand extends VanillaCommand {
             final Player player = Bukkit.getPlayerExact(playerPattern);
 
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", playerPattern));
+                sender.sendMessage(I.tr(sender, "command.generic.player.missing", playerPattern));
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -80,7 +80,7 @@ public class SpawnPointCommand extends VanillaCommand {
             // If we are using relative coordinates, we need to get the sender location
             if (args[1].startsWith("~") || args[2].startsWith("~") || args[3].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.relative"));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.relative"));
                     return false;
                 } else {
                     currentLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
@@ -92,17 +92,17 @@ public class SpawnPointCommand extends VanillaCommand {
             spawnLocation = CommandUtils.getLocation(currentLocation, args[1], args[2], args[3]);
 
             if (spawnLocation.getY() < 0) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.ymin", spawnLocation.getY()));
+                sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.ymin", spawnLocation.getY()));
                 return false;
             } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.ymax", spawnLocation.getY(), world.getMaxHeight()));
+                sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.ymax", spawnLocation.getY(), world.getMaxHeight()));
                 return false;
             }
         } else { // Use the sender coordinates
             if (CommandUtils.isPhysical(sender)) {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.spawnpoint.default"));
+                sender.sendMessage(I.tr(sender, "command.minecraft.spawnpoint.default"));
                 return false;
             }
         }

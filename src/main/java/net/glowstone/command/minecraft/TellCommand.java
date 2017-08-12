@@ -27,7 +27,7 @@ public class TellCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length <= 1) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tell.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tell.usage")));
             return false;
         }
         String name = args[0];
@@ -38,7 +38,7 @@ public class TellCommand extends VanillaCommand {
             target.getArguments().put("type", new CommandTarget.SelectorValue("player")); // only players
             Entity[] matched = target.getMatched(location);
             if (matched.length == 0) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.selector", name));
+                sender.sendMessage(I.tr(sender, "command.generic.selector", name));
                 return false;
             }
             players = new Player[matched.length];
@@ -48,7 +48,7 @@ public class TellCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayer(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", name));
+                sender.sendMessage(I.tr(sender, "command.generic.player.missing", name));
                 return false;
             }
             players = new Player[]{player};
@@ -57,7 +57,7 @@ public class TellCommand extends VanillaCommand {
         String message = StringUtils.join(args, ' ', 1, args.length);
         for (Player player : players) {
             if (sender.equals(player)) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.tell.self"));
+                sender.sendMessage(I.tr(sender, "command.minecraft.tell.self"));
                 continue;
             }
             player.sendMessage(ChatColor.GRAY + I.tr(sender, "command.minecraft.tell.whisper.1", senderName, message));

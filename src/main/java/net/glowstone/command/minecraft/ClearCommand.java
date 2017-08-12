@@ -39,7 +39,7 @@ public class ClearCommand extends VanillaCommand {
                 Player player = (Player) sender;
                 return clearAll(sender, player, null, -1, -1);
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.clear.usage.2")));
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.clear.usage.2")));
                 return false;
             }
         }
@@ -57,14 +57,14 @@ public class ClearCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", name));
+                sender.sendMessage(I.tr(sender, "command.generic.player.missing", name));
                 return false;
             } else {
                 players.add(player);
             }
         }
         if (players.size() == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", name));
+            sender.sendMessage(I.tr(sender, "command.generic.player.missing", name));
             return false;
         }
         if (args.length >= 2) {
@@ -74,7 +74,7 @@ public class ClearCommand extends VanillaCommand {
             }
             Material type = ItemIds.getItem(itemName);
             if (type == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.clear.item.missing", itemName));
+                sender.sendMessage(I.tr(sender, "command.minecraft.clear.item.missing", itemName));
                 return false;
             }
             if (args.length >= 3) {
@@ -83,11 +83,11 @@ public class ClearCommand extends VanillaCommand {
                 try {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", dataString));
+                    sender.sendMessage(I.tr(sender, "command.generic.nan", dataString));
                     return false;
                 }
                 if (data < -1) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.clear.item.toosmall", data));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.clear.item.toosmall", data));
                     return false;
                 }
                 if (args.length >= 4) {
@@ -96,11 +96,11 @@ public class ClearCommand extends VanillaCommand {
                     try {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", amountString));
+                        sender.sendMessage(I.tr(sender, "command.generic.nan", amountString));
                         return false;
                     }
                     if (amount < -1) {
-                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.command.clear.item.toosmall", amount));
+                        sender.sendMessage(I.tr(sender, "command.minecraft.command.clear.item.toosmall", amount));
                         return false;
                     }
                     if (args.length >= 5) {
@@ -170,7 +170,7 @@ public class ClearCommand extends VanillaCommand {
     private boolean clearAll(CommandSender sender, Player player, Material material, int data, int maxCount) {
         int count = countAllItems(player.getInventory(), material, data, maxCount);
         if (count == 0 && maxCount != 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.clear.failed", player.getName()));
+            sender.sendMessage(I.tr(sender, "command.minecraft.clear.failed", player.getName()));
             return false;
         } else {
             if (material == null) {

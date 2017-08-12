@@ -34,7 +34,7 @@ public class BanListCommand extends VanillaCommand {
             } else if ("players".equalsIgnoreCase(args[0])) {
                 banType = BanList.Type.NAME;
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.banlist.invalid", args[0]) + " " + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.banlist.usage")));
+                sender.sendMessage(I.tr(sender, "command.minecraft.banlist.invalid", args[0]) + " " + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.banlist.usage")));
                 return false;
             }
         } else {

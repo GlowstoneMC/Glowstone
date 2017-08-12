@@ -35,7 +35,7 @@ public class SetWorldSpawnCommand extends VanillaCommand {
             if (CommandUtils.isPhysical(sender)) {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.default"));
+                sender.sendMessage(I.tr(sender, "command.minecraft.setworldspawn.default"));
                 return false;
             }
         } else if (args.length >= 3) { // manage arguments
@@ -44,7 +44,7 @@ public class SetWorldSpawnCommand extends VanillaCommand {
             // Get the sender coordinates if relative is used
             if (args[0].startsWith("~") || args[1].startsWith("~") || args[2].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.relative"));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.setworldspawn.relative"));
                     return false;
                 } else {
                     senderLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
@@ -55,15 +55,15 @@ public class SetWorldSpawnCommand extends VanillaCommand {
 
             spawnLocation = CommandUtils.getLocation(senderLocation, args[0], args[1], args[2]);
         } else {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.setworldspawn.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.setworldspawn.usage")));
             return false;
         }
 
         if (spawnLocation.getBlockY() < 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.ymin", spawnLocation.getBlockY()));
+            sender.sendMessage(I.tr(sender, "command.minecraft.setworldspawn.ymin", spawnLocation.getBlockY()));
             return false;
         } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setworldspawn.ymax", spawnLocation.getBlockY(), world.getMaxHeight()));
+            sender.sendMessage(I.tr(sender, "command.minecraft.setworldspawn.ymax", spawnLocation.getBlockY(), world.getMaxHeight()));
             return false;
         }
 

@@ -44,10 +44,10 @@ public class BanIpCommand extends VanillaCommand {
                 sender.sendMessage(I.tr(sender, "command.minecraft.ban-ip.banned", target));
                 return true;
             }
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.ban-ip.invalid"));
+            sender.sendMessage(I.tr(sender, "command.minecraft.ban-ip.invalid"));
             return false;
         }
-        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.ban-ip.usage")));
+        sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.ban-ip.usage")));
         return false;
     }
 

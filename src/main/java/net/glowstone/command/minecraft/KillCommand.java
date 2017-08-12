@@ -42,7 +42,7 @@ public class KillCommand extends VanillaCommand {
                 }
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.kill.entities"));
+                sender.sendMessage(I.tr(sender, "command.minecraft.kill.entities"));
                 return false;
             }
         }
@@ -53,7 +53,7 @@ public class KillCommand extends VanillaCommand {
                 CommandTarget target = new CommandTarget(sender, name);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.selector", name));
+                    sender.sendMessage(I.tr(sender, "command.generic.selector", name));
                     return false;
                 }
                 for (Entity entity : matched) {
@@ -69,7 +69,7 @@ public class KillCommand extends VanillaCommand {
             } else {
                 Player player = Bukkit.getPlayerExact(name);
                 if (player == null) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", name));
+                    sender.sendMessage(I.tr(sender, "command.generic.player.offline", name));
                     return false;
                 } else {
                     player.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.VOID);
@@ -78,7 +78,7 @@ public class KillCommand extends VanillaCommand {
                 }
             }
         }
-        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.kill.usage")));
+        sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.kill.usage")));
         return false;
     }
 

@@ -21,7 +21,7 @@ public class SetIdleTimeoutCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.setidletimeout.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.setidletimeout.usage")));
             return false;
         }
 
@@ -31,12 +31,12 @@ public class SetIdleTimeoutCommand extends VanillaCommand {
         try {
             timeout = Integer.parseInt(stringTimeout);
         } catch (NumberFormatException ex) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", stringTimeout));
+            sender.sendMessage(I.tr(sender, "command.generic.nan", stringTimeout));
             return false;
         }
 
         if (timeout <= 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.setidletimeout.toosmall", timeout));
+            sender.sendMessage(I.tr(sender, "command.minecraft.setidletimeout.toosmall", timeout));
             return false;
         }
 

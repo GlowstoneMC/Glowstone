@@ -25,7 +25,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.defaultgamemode.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.defaultgamemode.usage")));
             return false;
         }
 
@@ -33,7 +33,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         final GameMode gamemode = GameModeUtils.build(inputMode);
 
         if (gamemode == null) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.defaultgamemode.unknown", inputMode));
+            sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.unknown", inputMode));
             return false;
         }
 

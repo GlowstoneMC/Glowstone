@@ -42,7 +42,7 @@ public class SummonCommand extends VanillaCommand {
         Location location = CommandUtils.getLocation(sender);
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.summon.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.summon.usage")));
             return false;
         }
         if (args.length >= 4) {
@@ -60,7 +60,7 @@ public class SummonCommand extends VanillaCommand {
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.summon.invalid", e.getMessage()));
+                sender.sendMessage(I.tr(sender, "command.minecraft.summon.invalid", e.getMessage()));
             }
         }
 
@@ -90,7 +90,7 @@ public class SummonCommand extends VanillaCommand {
         EntityType entityType = EntityType.fromName(type);
         if (entityType != null && !EntityType.fromName(type).isSpawnable()) {
             if (sender != null)
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.summon.cannot", EntityType.fromName(type).getName()));
+                sender.sendMessage(I.tr(sender, "command.minecraft.summon.cannot", EntityType.fromName(type).getName()));
             return false;
         }
         if (entityType != null && EntityRegistry.getEntity(entityType) == null) {
@@ -99,7 +99,7 @@ public class SummonCommand extends VanillaCommand {
             return false;
         } else if (entityType == null && !EntityRegistry.isCustomEntityRegistered(type)) {
             if (sender != null)
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.summon.missing", type));
+                sender.sendMessage(I.tr(sender, "command.minecraft.summon.missing", type));
             return false;
         }
         return true;

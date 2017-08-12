@@ -23,7 +23,7 @@ public class BanCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
         if (args.length > 0) {
             if (PlayerProfile.getProfile(args[0]) == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.ban.failed", args[0]));
+                sender.sendMessage(I.tr(sender, "command.minecraft.ban.failed", args[0]));
                 return false;
             }
             if (args.length == 1) {
@@ -38,7 +38,7 @@ public class BanCommand extends VanillaCommand {
             sender.sendMessage(I.tr(sender, "command.minecraft.ban.banned", args[0]));
             return true;
         }
-        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.ban.usage")));
+        sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.ban.usage")));
         return false;
     }
 

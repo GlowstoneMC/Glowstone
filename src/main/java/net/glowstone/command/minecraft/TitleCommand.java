@@ -87,7 +87,7 @@ public class TitleCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.1")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.1")));
             return false;
         }
 
@@ -108,7 +108,7 @@ public class TitleCommand extends VanillaCommand {
             sender.sendMessage(I.tr(sender, "command.minecraft.title.reset", player.getName()));
         } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.2", action)));
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.2", action)));
                 return false;
             }
 
@@ -120,7 +120,7 @@ public class TitleCommand extends VanillaCommand {
 
             String raw = message.toString().trim();
             if (!validJson(raw)) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.title.invalid"));
+                sender.sendMessage(I.tr(sender, "command.minecraft.title.invalid"));
                 return false;
             }
 
@@ -136,7 +136,7 @@ public class TitleCommand extends VanillaCommand {
             sender.sendMessage(I.tr(sender, "command.minecraft.title.updated.1", player.getName()));
         } else if (action.equalsIgnoreCase("subtitle")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.2", action)));
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.2", action)));
                 return false;
             }
 
@@ -148,7 +148,7 @@ public class TitleCommand extends VanillaCommand {
 
             String raw = message.toString().trim();
             if (!validJson(raw)) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.title.invalid"));
+                sender.sendMessage(I.tr(sender, "command.minecraft.title.invalid"));
                 return false;
             }
 
@@ -163,20 +163,20 @@ public class TitleCommand extends VanillaCommand {
             sender.sendMessage(I.tr(sender, "command.minecraft.title.updated.2", player.getName()));
         } else if (action.equalsIgnoreCase("times")) {
             if (args.length != 5) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.3", action)));
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.3", action)));
                 return false;
             }
 
             if (!tryParseInt(args[2])) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", args[2]));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[2]));
                 return false;
             }
             if (!tryParseInt(args[3])) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", args[3]));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[3]));
                 return false;
             }
             if (!tryParseInt(args[4])) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", args[4]));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[4]));
                 return false;
             }
 
@@ -184,7 +184,7 @@ public class TitleCommand extends VanillaCommand {
 
             sender.sendMessage(I.tr(sender, "command.minecraft.title.updated.3", player.getName()));
         } else {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.1")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.title.usage.1")));
             return false;
         }
 

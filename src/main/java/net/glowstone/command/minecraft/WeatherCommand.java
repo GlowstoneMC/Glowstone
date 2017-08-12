@@ -28,7 +28,7 @@ public class WeatherCommand extends VanillaCommand {
             return false;
         }
         if (args.length == 0 || args.length > 2 || !WEATHER.contains(args[0])) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.weather.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.weather.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -41,14 +41,14 @@ public class WeatherCommand extends VanillaCommand {
             try {
                 duration = Integer.valueOf(args[1]);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", args[1]));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[1]));
                 return false;
             }
             if (duration < 1) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.weather.toosmall", args[1]));
+                sender.sendMessage(I.tr(sender, "command.minecraft.weather.toosmall", args[1]));
                 return false;
             } else if (duration > 1000000) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.weather.toobig", args[1]));
+                sender.sendMessage(I.tr(sender, "command.minecraft.weather.toobig", args[1]));
                 return false;
             }
         }

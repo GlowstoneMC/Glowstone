@@ -29,13 +29,13 @@ public class GameModeCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length == 0 || args.length == 1 && !(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.gamemode.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.gamemode.usage")));
             return false;
         }
         String gm = args[0];
         GameMode gamemode = GameModeUtils.build(gm);
         if (gamemode == null) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", gm));
+            sender.sendMessage(I.tr(sender, "command.generic.nan", gm));
             return false;
         }
         if (args.length == 1) {
@@ -58,7 +58,7 @@ public class GameModeCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", name));
+                sender.sendMessage(I.tr(sender, "command.generic.player.offline", name));
             } else {
                 updateGameMode(sender, player, gamemode);
             }

@@ -28,7 +28,7 @@ public class DifficultyCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.difficulty.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.difficulty.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -60,7 +60,7 @@ public class DifficultyCommand extends VanillaCommand {
                 break;
         }
         if (difficulty == null) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.difficulty.unknown", difficultyId));
+            sender.sendMessage(I.tr(sender, "command.minecraft.difficulty.unknown", difficultyId));
             return false;
         }
         world.setDifficulty(difficulty);

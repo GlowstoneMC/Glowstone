@@ -21,13 +21,13 @@ public class KickCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.kick.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.kick.usage")));
             return false;
         }
         String playerName = args[0];
         Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", playerName));
+            sender.sendMessage(I.tr(sender, "command.generic.player.offline", playerName));
             return false;
         }
         if (args.length == 1) {

@@ -25,7 +25,7 @@ public class TpCommand extends VanillaCommand {
             return false;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tp.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tp.usage")));
             return false;
         }
         if (args.length <= 2) {
@@ -34,7 +34,7 @@ public class TpCommand extends VanillaCommand {
                 if (sender instanceof Player) {
                     from = (Entity) sender;
                 } else {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.tp.entity"));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.tp.entity"));
                     return false;
                 }
                 String name = args[0];
@@ -43,7 +43,7 @@ public class TpCommand extends VanillaCommand {
                     CommandTarget target = new CommandTarget(sender, name);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
-                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.selector", name));
+                        sender.sendMessage(I.tr(sender, "command.generic.selector", name));
                         return false;
                     }
                     for (Entity entity : matched) {
@@ -54,7 +54,7 @@ public class TpCommand extends VanillaCommand {
                 } else {
                     Player player = Bukkit.getPlayerExact(name);
                     if (player == null) {
-                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", name));
+                        sender.sendMessage(I.tr(sender, "command.generic.player.offline", name));
                         return false;
                     } else {
                         from.teleport(player);
@@ -70,7 +70,7 @@ public class TpCommand extends VanillaCommand {
                     CommandTarget target = new CommandTarget(sender, fromName);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
-                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.selector", fromName));
+                        sender.sendMessage(I.tr(sender, "command.generic.selector", fromName));
                         return false;
                     }
                     for (Entity entity : matched) {
@@ -79,14 +79,14 @@ public class TpCommand extends VanillaCommand {
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.selector", destName));
+                                sender.sendMessage(I.tr(sender, "command.generic.selector", destName));
                                 return false;
                             }
                             destination = matched2[0];
                         } else {
                             Player player = Bukkit.getPlayerExact(destName);
                             if (player == null) {
-                                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", destName));
+                                sender.sendMessage(I.tr(sender, "command.generic.player.offline", destName));
                                 return false;
                             } else {
                                 destination = player;
@@ -99,7 +99,7 @@ public class TpCommand extends VanillaCommand {
                 } else {
                     Player player = Bukkit.getPlayerExact(fromName);
                     if (player == null) {
-                        sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", fromName));
+                        sender.sendMessage(I.tr(sender, "command.generic.player.offline", fromName));
                         return false;
                     } else {
                         if (destName.startsWith("@") && !destName.startsWith("@e") && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
@@ -107,14 +107,14 @@ public class TpCommand extends VanillaCommand {
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.selector", destName));
+                                sender.sendMessage(I.tr(sender, "command.generic.selector", destName));
                                 return false;
                             }
                             destination = matched2[0];
                         } else {
                             Player player2 = Bukkit.getPlayerExact(destName);
                             if (player2 == null) {
-                                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", destName));
+                                sender.sendMessage(I.tr(sender, "command.generic.player.offline", destName));
                                 return false;
                             } else {
                                 destination = player;

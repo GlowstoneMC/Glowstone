@@ -22,14 +22,14 @@ public class PardonCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.pardon.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.pardon.usage")));
             return false;
         }
         String name = args[0];
         OfflinePlayer player = Bukkit.getOfflinePlayer(name);
         BanList banList = Bukkit.getServer().getBanList(BanList.Type.NAME);
         if (!banList.isBanned(player.getName())) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.pardon.failed", name));
+            sender.sendMessage(I.tr(sender, "command.minecraft.pardon.failed", name));
             return false;
         }
         banList.pardon(player.getName());

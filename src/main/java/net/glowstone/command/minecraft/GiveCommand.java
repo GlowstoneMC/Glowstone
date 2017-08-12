@@ -30,7 +30,7 @@ public class GiveCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.give.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.give.usage")));
             return false;
         }
         String name = args[0], itemName = args[1];
@@ -39,7 +39,7 @@ public class GiveCommand extends VanillaCommand {
         }
         Material type = ItemIds.getItem(itemName);
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.give.missing", itemName));
+            sender.sendMessage(I.tr(sender, "command.minecraft.give.missing", itemName));
             return false;
         }
         ItemStack stack = new ItemStack(type);
@@ -48,15 +48,15 @@ public class GiveCommand extends VanillaCommand {
             try {
                 int amount = Integer.valueOf(amountString);
                 if (amount > 64) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.give.toobig", amount));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.give.toobig", amount));
                     return false;
                 } else if (amount < 1) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.give.toosmall", amount));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.give.toosmall", amount));
                     return false;
                 }
                 stack.setAmount(amount);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", amountString));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", amountString));
                 return false;
             }
         }
@@ -73,7 +73,7 @@ public class GiveCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.offline", name));
+                sender.sendMessage(I.tr(sender, "command.generic.player.offline", name));
                 return false;
             } else {
                 giveItem(sender, player, stack);

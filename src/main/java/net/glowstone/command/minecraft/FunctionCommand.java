@@ -30,7 +30,7 @@ public class FunctionCommand extends VanillaCommand {
             return false;
         }
         if (args.length == 0 || args.length == 2) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.function.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.function.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -41,7 +41,7 @@ public class FunctionCommand extends VanillaCommand {
         String functionName = args[0];
         Map<String, CommandFunction> functions = world.getFunctions();
         if (!functions.containsKey(functionName)) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.function.unknown", functionName));
+            sender.sendMessage(I.tr(sender, "command.minecraft.function.unknown", functionName));
             return false;
         }
         CommandFunction function = functions.get(functionName);
@@ -60,7 +60,7 @@ public class FunctionCommand extends VanillaCommand {
                     return false;
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.function.usage")));
+                sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.function.usage")));
                 return false;
             }
         }

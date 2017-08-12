@@ -37,7 +37,7 @@ public class GameRuleCommand extends VanillaCommand {
                 sender.sendMessage(gamerule + " = " + value);
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.gamerule.missing", gamerule));
+                sender.sendMessage(I.tr(sender, "command.minecraft.gamerule.missing", gamerule));
                 return false;
             }
         }

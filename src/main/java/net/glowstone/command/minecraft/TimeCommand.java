@@ -29,7 +29,7 @@ public class TimeCommand extends VanillaCommand {
             return false;
         }
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.time.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.time.usage")));
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -50,7 +50,7 @@ public class TimeCommand extends VanillaCommand {
                 try {
                     mod = Integer.valueOf(value);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", value));
+                    sender.sendMessage(I.tr(sender, "command.generic.nan", value));
                     return false;
                 }
             }
@@ -60,12 +60,12 @@ public class TimeCommand extends VanillaCommand {
             try {
                 mod = Integer.valueOf(value);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", value));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", value));
                 return false;
             }
             sender.sendMessage(I.tr(sender, "command.minecraft.time.added", mod));
         } else {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.time.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.time.usage")));
             return false;
         }
         world.setTime(add ? world.getTime() + mod : mod);

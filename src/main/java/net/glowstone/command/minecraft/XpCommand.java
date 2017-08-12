@@ -25,7 +25,7 @@ public class XpCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.xp.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.xp.usage")));
             return false;
         } else {
             final String stringAmount = args[0], playerPattern = (args.length > 1) ? args[1] : null;
@@ -36,26 +36,26 @@ public class XpCommand extends VanillaCommand {
             // Handle the amount
             if (addLevels) {
                 if (stringAmount.length() == 1) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.xp.amount") + " " + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.xp.usage")));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.xp.amount") + " " + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.xp.usage")));
                     return false;
                 }
 
                 try {
                     amount = Integer.parseInt(stringAmount.substring(0, stringAmount.length() - 1));
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", stringAmount));
+                    sender.sendMessage(I.tr(sender, "command.generic.nan", stringAmount));
                     return false;
                 }
             } else {
                 try {
                     amount = Integer.parseInt(stringAmount);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", stringAmount));
+                    sender.sendMessage(I.tr(sender, "command.generic.nan", stringAmount));
                     return false;
                 }
 
                 if (amount < 0) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.xp.negative"));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.xp.negative"));
                     return false;
                 }
             }
@@ -81,7 +81,7 @@ public class XpCommand extends VanillaCommand {
                 }
 
                 if (player == null) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", playerPattern));
+                    sender.sendMessage(I.tr(sender, "command.generic.player.missing", playerPattern));
                     return false;
                 } else {
                     targets = Collections.singletonList(player);
@@ -89,7 +89,7 @@ public class XpCommand extends VanillaCommand {
             }
 
             if (targets.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.none"));
+                sender.sendMessage(I.tr(sender, "command.generic.player.none"));
                 return false;
             }
 

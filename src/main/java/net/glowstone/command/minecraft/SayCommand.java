@@ -23,7 +23,7 @@ public class SayCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.say.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.say.usage")));
             return false;
         }
         StringBuilder message = new StringBuilder("[").append(sender.getName() == null ? I.tr("command.minecraft.say.server") : sender.getName()).append("] ");
@@ -34,7 +34,7 @@ public class SayCommand extends VanillaCommand {
                 CommandTarget target = new CommandTarget(sender, arg);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.selector", arg));
+                    sender.sendMessage(I.tr(sender, "command.generic.selector", arg));
                     return false;
                 }
                 message.append(CommandUtils.prettyPrint(matched)).append(" ");

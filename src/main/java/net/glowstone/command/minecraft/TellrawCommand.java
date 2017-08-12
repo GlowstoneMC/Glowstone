@@ -26,7 +26,7 @@ public class TellrawCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) return true;
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tellraw.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.tellraw.usage")));
             return false;
         }
 
@@ -48,7 +48,7 @@ public class TellrawCommand extends VanillaCommand {
             try {
                 obj = JSONValue.parseWithException(json);
             } catch (ParseException e) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.tellraw.parse.1", e.getMessage()));
+                sender.sendMessage(I.tr(sender, "command.minecraft.tellraw.parse.1", e.getMessage()));
                 return false;
             }
             if (obj instanceof JSONArray || obj instanceof JSONObject) {
@@ -56,7 +56,7 @@ public class TellrawCommand extends VanillaCommand {
                 player.sendMessage(components);
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.tellraw.parse.2"));
+                sender.sendMessage(I.tr(sender, "command.minecraft.tellraw.parse.2"));
                 return false;
             }
         }

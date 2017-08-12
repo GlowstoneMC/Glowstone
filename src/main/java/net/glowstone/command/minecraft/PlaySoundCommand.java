@@ -31,7 +31,7 @@ public class PlaySoundCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         if (args.length < 3 || args.length == 4 || args.length == 5) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.playsound.usage")));
+            sender.sendMessage(I.tr(sender, "command.generic.usage", I.tr(sender, "command.minecraft.playsound.usage")));
             return false;
         }
 
@@ -49,12 +49,12 @@ public class PlaySoundCommand extends VanillaCommand {
         double volume = 1, minimumVolume = 0, pitch = 1;
 
         if (sound == null) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.playsound.invalid.sound", stringSound));
+            sender.sendMessage(I.tr(sender, "command.minecraft.playsound.invalid.sound", stringSound));
             return false;
         }
 
         if (soundCategory == null) {
-            sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.playsound.invalid.category", stringCategory));
+            sender.sendMessage(I.tr(sender, "command.minecraft.playsound.invalid.category", stringCategory));
             return false;
         }
 
@@ -67,7 +67,7 @@ public class PlaySoundCommand extends VanillaCommand {
             final GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(playerPattern);
 
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.player.missing", playerPattern));
+                sender.sendMessage(I.tr(sender, "command.generic.player.missing", playerPattern));
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -79,11 +79,11 @@ public class PlaySoundCommand extends VanillaCommand {
                 minimumVolume = Double.valueOf(args[8]);
 
                 if (minimumVolume < 0 || minimumVolume > 1) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.playsound.invalid.volume", args[8]));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.playsound.invalid.volume", args[8]));
                     return false;
                 }
             } catch (final NumberFormatException n) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", args[8]));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[8]));
                 return false;
             }
         }
@@ -93,14 +93,14 @@ public class PlaySoundCommand extends VanillaCommand {
                 pitch = Double.valueOf(args[7]);
 
                 if (pitch < 0 || pitch > 2) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.playsound.invalid.pitch", args[7]));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.playsound.invalid.pitch", args[7]));
                     return false;
                 } else if (pitch < 0.5) {
                     pitch = 0.5;
                 }
 
             } catch (final NumberFormatException n) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", args[7]));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[7]));
                 return false;
             }
         }
@@ -109,7 +109,7 @@ public class PlaySoundCommand extends VanillaCommand {
             try {
                 volume = Double.valueOf(args[6]);
             } catch (final NumberFormatException n) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.generic.nan", args[6]));
+                sender.sendMessage(I.tr(sender, "command.generic.nan", args[6]));
                 return false;
             }
         }
@@ -131,14 +131,14 @@ public class PlaySoundCommand extends VanillaCommand {
                     soundLocation = targetLocation;
                 }
             } catch (final NumberFormatException n) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.playsound.invalid.position", args[3], args[4], args[5]));
+                sender.sendMessage(I.tr(sender, "command.minecraft.playsound.invalid.position", args[3], args[4], args[5]));
                 return false;
             }
 
             // If the target is outside the normal audible sphere
             if (targetLocation.distanceSquared(soundLocation) > Math.pow(volume, 2)) {
                 if (minimumVolume <= 0) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.minecraft.playsound.toofar", target.getName()));
+                    sender.sendMessage(I.tr(sender, "command.minecraft.playsound.toofar", target.getName()));
                     return false;
                 } else {
                     final double deltaX = soundLocation.getX() - targetLocation.getX(),

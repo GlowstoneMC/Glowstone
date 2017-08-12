@@ -76,7 +76,7 @@ public class GlowstoneCommand extends BukkitCommand {
                 String key = args[1].toLowerCase();
                 String value = System.getProperty(key);
                 if (value == null) {
-                    sender.sendMessage(ChatColor.RED + I.tr(sender, "command.glowstone.property.unknown", key));
+                    sender.sendMessage(I.tr(sender, "command.glowstone.property.unknown", key));
                 } else {
                     sender.sendMessage(I.tr(sender, "command.glowstone.property.result", ChatColor.AQUA + key + ChatColor.RESET, ChatColor.GOLD + value + ChatColor.RESET));
                 }
@@ -104,14 +104,14 @@ public class GlowstoneCommand extends BukkitCommand {
                 return true;
             }
             if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.glowstone.world.players"));
+                sender.sendMessage(I.tr(sender, "command.glowstone.world.players"));
                 return false;
             }
             GlowPlayer player = (GlowPlayer) sender;
             String worldName = args[1];
             GlowWorld world = player.getServer().getWorld(worldName);
             if (world == null) {
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.glowstone.world.missing", worldName));
+                sender.sendMessage(I.tr(sender, "command.glowstone.world.missing", worldName));
                 return false;
             }
             player.teleport(world.getSpawnLocation());
@@ -121,7 +121,7 @@ public class GlowstoneCommand extends BukkitCommand {
         if (args[0].equalsIgnoreCase("eval")) {
             if (args.length == 1) {
                 // no args, send usage
-                sender.sendMessage(ChatColor.RED + I.tr(sender, "command.glowstone.eval.usage", label));
+                sender.sendMessage(I.tr(sender, "command.glowstone.eval.usage", label));
                 return false;
             }
             StringBuilder builder = new StringBuilder();
