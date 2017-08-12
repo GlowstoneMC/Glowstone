@@ -5,7 +5,6 @@ import net.glowstone.command.CommandUtils;
 import net.glowstone.util.lang.I;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -60,8 +59,8 @@ public class TellCommand extends VanillaCommand {
                 sender.sendMessage(I.tr(sender, "command.minecraft.tell.self"));
                 continue;
             }
-            player.sendMessage(ChatColor.GRAY + I.tr(sender, "command.minecraft.tell.whisper.1", senderName, message));
-            sender.sendMessage(ChatColor.GRAY + I.tr(sender, "command.minecraft.tell.whisper.2", senderName, player.getName(), message));
+            player.sendMessage(I.tr(sender, "command.minecraft.tell.whisper.1", senderName, message));
+            sender.sendMessage(I.tr(sender, "command.minecraft.tell.whisper.2", senderName, player.getName(), message));
         }
         return true;
     }

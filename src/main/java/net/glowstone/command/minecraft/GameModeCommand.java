@@ -5,7 +5,6 @@ import net.glowstone.command.CommandUtils;
 import net.glowstone.command.GameModeUtils;
 import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -70,9 +69,9 @@ public class GameModeCommand extends VanillaCommand {
         String gameModeName = GameModeUtils.prettyPrint(gameMode);
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
-            sender.sendMessage(I.tr(sender, "command.minecraft.gamemode.updated.1", who.getDisplayName(), ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName +  ChatColor.RESET));
+            sender.sendMessage(I.tr(sender, "command.minecraft.gamemode.updated.1", who.getDisplayName(), gameModeName));
         }
-        who.sendMessage(I.tr(who, "command.minecraft.gamemode.updated.2", ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + ChatColor.RESET));
+        who.sendMessage(I.tr(who, "command.minecraft.gamemode.updated.2", gameModeName));
     }
 
     @Override

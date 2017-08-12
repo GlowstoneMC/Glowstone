@@ -53,7 +53,7 @@ public class GlowstoneCommand extends BukkitCommand {
                     threadCount++;
                 }
             }
-            sender.sendMessage(I.tr(sender, "command.glowstone.about.threads", ChatColor.AQUA + threadCount));
+            sender.sendMessage(I.tr(sender, "command.glowstone.about.threads", threadCount));
             return false;
         }
         if (args[0].equalsIgnoreCase("help")) {

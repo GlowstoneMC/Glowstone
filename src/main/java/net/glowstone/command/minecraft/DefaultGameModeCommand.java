@@ -3,7 +3,6 @@ package net.glowstone.command.minecraft;
 import net.glowstone.command.GameModeUtils;
 import net.glowstone.util.lang.I;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -38,7 +37,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         }
 
         Bukkit.getServer().setDefaultGameMode(gamemode);
-        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.set", ChatColor.GRAY + "" + ChatColor.ITALIC + GameModeUtils.prettyPrint(gamemode)));
+        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.set", GameModeUtils.prettyPrint(gamemode)));
 
         return true;
     }

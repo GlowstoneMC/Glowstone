@@ -1905,7 +1905,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                         server.dispatchCommand(this, event.getMessage().substring(1));
                     }
                 } catch (Exception ex) {
-                    sendMessage(ChatColor.RED + I.tr(GlowPlayer.this, "event.command.error"));
+                    sendMessage(I.tr(GlowPlayer.this, "event.command.error"));
                     server.getLogger().log(Level.SEVERE, I.tr("event.command.exception", text), ex);
                 }
             };

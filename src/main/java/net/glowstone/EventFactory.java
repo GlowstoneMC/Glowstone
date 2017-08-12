@@ -5,7 +5,6 @@ import net.glowstone.util.lang.I;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -139,7 +138,7 @@ public final class EventFactory {
     }
 
     public static PlayerJoinEvent onPlayerJoin(Player player) {
-        return callEvent(new PlayerJoinEvent(player, ChatColor.YELLOW + I.tr("event.player.joined", player.getName())));
+        return callEvent(new PlayerJoinEvent(player, I.tr("event.player.joined", player.getName())));
     }
 
     public static PlayerKickEvent onPlayerKick(Player player, String reason) {
@@ -147,7 +146,7 @@ public final class EventFactory {
     }
 
     public static PlayerQuitEvent onPlayerQuit(Player player) {
-        return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + I.tr("event.player.left", player.getName())));
+        return callEvent(new PlayerQuitEvent(player, I.tr("event.player.left", player.getName())));
     }
 
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {
