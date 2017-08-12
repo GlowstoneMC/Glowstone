@@ -34,17 +34,6 @@ public class ITest {
     }
 
     @Test
-    public void testCommandUsage() {
-        for (String key : I.getTranslationKeys(I.getDefaultLocale())) {
-            // Skip if generic or not usage
-            if (key.equalsIgnoreCase("command.generic.usage") || !key.startsWith("command.minecraft") || !key.contains("usage")) {
-                continue;
-            }
-            assertThat("Expected translation result of key \"" + key + "\" to contain command \"" + "/" + key.split("\\.")[2] + "\".", I.tr(key).contains("/" + key.split("\\.")[2]), is(true));
-        }
-    }
-
-    @Test
     public void testUnusedTranslationKeys() throws IOException {
         File scanFolder = new File(new File(ITest.class.getResource("/").getPath()).getParentFile().getParentFile().getPath());
         scanFolder = new File(scanFolder, "src");
