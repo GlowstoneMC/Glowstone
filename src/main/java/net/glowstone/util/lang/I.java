@@ -160,7 +160,7 @@ public final class I {
         return getResource(locale).keySet();
     }
 
-    private ResourceBundle getResource(String locale) throws MissingResourceException {
+    private static ResourceBundle getResource(String locale) throws MissingResourceException {
         try {
             return ResourceBundle.getBundle(BASE_NAME, Locale.forLanguageTag(locale));
         } catch (MissingResourceException ex) {
