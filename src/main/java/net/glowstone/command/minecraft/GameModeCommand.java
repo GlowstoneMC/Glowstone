@@ -66,7 +66,7 @@ public class GameModeCommand extends VanillaCommand {
     }
 
     private void updateGameMode(CommandSender sender, Player who, GameMode gameMode) {
-        String gameModeName = GameModeUtils.prettyPrint(gameMode);
+        String gameModeName = GameModeUtils.prettyPrint(sender, gameMode);
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
             sender.sendMessage(I.tr(sender, "command.minecraft.gamemode.updated.1", who.getDisplayName(), gameModeName));

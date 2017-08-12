@@ -37,7 +37,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
         }
 
         Bukkit.getServer().setDefaultGameMode(gamemode);
-        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.set", GameModeUtils.prettyPrint(gamemode)));
+        sender.sendMessage(I.tr(sender, "command.minecraft.defaultgamemode.set", GameModeUtils.prettyPrint(sender, gamemode)));
 
         return true;
     }
