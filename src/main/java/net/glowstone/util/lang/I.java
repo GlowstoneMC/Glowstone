@@ -122,7 +122,9 @@ public final class I {
                 throw new MissingTranslationException("Could not find translation for key '" + key + "' in fallback locale", locale, key);
             }
         }
+        result = result.replaceAll("\\\\&", "\0"); // replace \& with nul to escape color coding
         result = ChatColor.translateAlternateColorCodes('&', result);
+        result = result.replaceAll("\0", "&"); // replace back nul with &
         for (int i = 0; i != args.length; i++) {
             result = result.replace("{" + i + "}", args[i].toString());
         }
