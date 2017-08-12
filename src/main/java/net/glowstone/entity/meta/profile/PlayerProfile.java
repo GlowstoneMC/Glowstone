@@ -79,7 +79,7 @@ public class PlayerProfile {
         if (uuid != null) {
             return ProfileCache.getProfile(uuid);
         }
-        GlowServer.logger.warning(I.tr("warning.entity.profile.uuid", name));
+        GlowServer.logger.warning(I.tr("entity.profile.uuid.failed", name));
         return null;
     }
 
@@ -115,7 +115,7 @@ public class PlayerProfile {
         try {
             uuid = UuidUtils.fromFlatString(id);
         } catch (IllegalArgumentException ex) {
-            GlowServer.logger.log(Level.SEVERE, I.tr("error.entity.profile.invalid", id));
+            GlowServer.logger.log(Level.SEVERE, I.tr("entity.profile.invalid", id));
             return null;
         }
 

@@ -33,7 +33,7 @@ public class PlayerStatisticIoService {
      */
     private File getPlayerFile(UUID uuid) {
         if (!statsDir.isDirectory() && !statsDir.mkdirs()) {
-            server.getLogger().warning(I.tr("error.world.statistic.mkdir", statsDir));
+            server.getLogger().warning(I.tr("world.statistic.mkdir", statsDir));
         }
         return new File(statsDir, uuid + ".json");
     }

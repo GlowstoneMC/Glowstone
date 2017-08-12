@@ -42,7 +42,7 @@ class PlayerDataFetcher {
             //potentially blocking
             is = conn.getInputStream();
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.lookup.profile"));
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.lookup.profile.failed"));
             return null;
         }
 
@@ -54,10 +54,10 @@ class PlayerDataFetcher {
                 return new PlayerProfile(null, uuid);
             }
         } catch (ParseException e) {
-            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.parse"), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.parse.failed"), e);
             return null;
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.lookup.profile"), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.lookup.profile.failed"), e);
             return null;
         }
         return PlayerProfile.fromJson(json);
@@ -78,7 +78,7 @@ class PlayerDataFetcher {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.profile.lookup.uuid"), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("entity.profile.lookup.uuid.failed"), e);
             return null;
         }
 
@@ -94,7 +94,7 @@ class PlayerDataFetcher {
 
             json = (JSONArray) JSONValue.parse(new InputStreamReader(conn.getInputStream()));
         } catch (IOException e) {
-            GlowServer.logger.warning(I.tr("warning.entity.profile.io", e));
+            GlowServer.logger.warning(I.tr("entity.profile.io.error", e));
             return null;
         }
 

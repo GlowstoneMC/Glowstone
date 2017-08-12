@@ -325,10 +325,10 @@ public final class GlowServer implements Server {
 
             server.run();
         } catch (SecurityException e) {
-            logger.log(Level.WARNING, I.tr("error.server.classpath"), e);
+            logger.log(Level.WARNING, I.tr("server.classpath"), e);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, I.tr("error.server.startup"), t);
+            logger.log(Level.SEVERE, I.tr("server.startup.error"), t);
             System.exit(1);
         }
     }
@@ -455,7 +455,7 @@ public final class GlowServer implements Server {
     public void run() {
         start();
         bind();
-        logger.info(I.tr("status.connection.ready"));
+        logger.info(I.tr("connection.ready"));
 
         if (doMetrics()) {
             new Metrics(this, config.getString(Key.METRICS_UUID), false);
@@ -482,9 +482,9 @@ public final class GlowServer implements Server {
 
         if (getProxySupport()) {
             if (getOnlineMode()) {
-                logger.warning(I.tr("warning.proxy.online"));
+                logger.warning(I.tr("proxy.support.online"));
             } else {
-                logger.info(I.tr("status.proxy.enabled"));
+                logger.info(I.tr("proxy.support.enabled"));
             }
         } else if (!getOnlineMode()) {
             logger.warning(I.tr("server.offline"));
@@ -679,7 +679,7 @@ public final class GlowServer implements Server {
 
     private void bind() {
         if (Epoll.isAvailable()) {
-            logger.info(I.tr("status.connection.epoll"));
+            logger.info(I.tr("connection.epoll"));
         }
 
         CountDownLatch latch = new CountDownLatch(3);
@@ -704,7 +704,7 @@ public final class GlowServer implements Server {
         try {
             latch.await();
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, I.tr("error.bind.interrupted"), e);
+            logger.log(Level.SEVERE, I.tr("server.bind.interrupted"), e);
             System.exit(1);
         }
     }
@@ -743,7 +743,7 @@ public final class GlowServer implements Server {
             return;
         }
         isShuttingDown = true;
-        logger.info(I.tr("status.server.shutdown"));
+        logger.info(I.tr("server.shutdown"));
 
         // Disable plugins
         pluginManager.clearPlugins();
@@ -808,7 +808,7 @@ public final class GlowServer implements Server {
                 defaultIcon = new GlowServerIcon(file);
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, I.tr("warning.proxy.icon"), e);
+            logger.log(Level.WARNING, I.tr("server.icon.failed"), e);
         }
     }
 
@@ -865,7 +865,7 @@ public final class GlowServer implements Server {
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
-            logger.log(Level.SEVERE, I.tr("error.plugin.mkdir", folder));
+            logger.log(Level.SEVERE, I.tr("plugin.mkdir.failed", folder));
         }
 
         // detect plugin types
@@ -882,7 +882,7 @@ public final class GlowServer implements Server {
             try {
                 plugin.onLoad();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, I.tr("error.plugin.loading", plugin.getDescription().getFullName(), ex));
+                logger.log(Level.SEVERE, I.tr("plugin.loading.error", plugin.getDescription().getFullName(), ex));
             }
         }
 
@@ -915,19 +915,19 @@ public final class GlowServer implements Server {
                 !pluginTypeDetector.forgefPlugins.isEmpty() ||
                 !pluginTypeDetector.forgenPlugins.isEmpty() ||
                 !pluginTypeDetector.unrecognizedPlugins.isEmpty()) {
-            logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.types"));
+            logger.log(Level.WARNING, I.tr("plugin.unsupported.types"));
 
             for (File file : pluginTypeDetector.canaryPlugins)
-                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.canary", file.getPath()));
+                logger.log(Level.WARNING, I.tr("plugin.unsupported.canary", file.getPath()));
 
             for (File file : pluginTypeDetector.forgefPlugins)
-                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.forge", file.getPath()));
+                logger.log(Level.WARNING, I.tr("plugin.unsupported.forge", file.getPath()));
 
             for (File file : pluginTypeDetector.forgenPlugins)
-                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.forge", file.getPath()));
+                logger.log(Level.WARNING, I.tr("plugin.unsupported.forge", file.getPath()));
 
             for (File file : pluginTypeDetector.unrecognizedPlugins)
-                logger.log(Level.WARNING, I.tr("warning.plugin.unsupported.unrecognized", file.getPath()));
+                logger.log(Level.WARNING, I.tr("plugin.unsupported.unrecognized", file.getPath()));
         }
 
     }
@@ -957,14 +957,14 @@ public final class GlowServer implements Server {
                     try {
                         pluginManager.addPermission(perm);
                     } catch (IllegalArgumentException ex) {
-                        getLogger().log(Level.WARNING, I.tr("warning.permission.plugin.taken", plugin.getDescription().getFullName(), perm.getName()), ex);
+                        getLogger().log(Level.WARNING, I.tr("permission.plugin.taken", plugin.getDescription().getFullName(), perm.getName()), ex);
                     }
                 }
 
                 try {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
-                    logger.log(Level.SEVERE, I.tr("error.plugin.loading", plugin.getDescription().getFullName()), ex);
+                    logger.log(Level.SEVERE, I.tr("plugin.loading.error", plugin.getDescription().getFullName()), ex);
                 }
             }
         }
@@ -989,13 +989,13 @@ public final class GlowServer implements Server {
 
             permConfig.getValues(false).forEach((key, value) -> data.put(key, ((MemorySection) value).getValues(false)));
 
-            List<Permission> perms = Permission.loadPermissions(data, I.tr("error.permission.invalid"), PermissionDefault.OP);
+            List<Permission> perms = Permission.loadPermissions(data, I.tr("permission.invalid"), PermissionDefault.OP);
 
             for (Permission perm : perms) {
                 try {
                     pluginManager.addPermission(perm);
                 } catch (IllegalArgumentException ex) {
-                    getLogger().log(Level.WARNING, I.tr("warning.permission.config.taken", perm.getName()), ex);
+                    getLogger().log(Level.WARNING, I.tr("permission.config.taken", perm.getName()), ex);
                 }
             }
         }
@@ -1022,7 +1022,7 @@ public final class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, I.tr("error.server.reload"), ex);
+            logger.log(Level.SEVERE, I.tr("server.reload.error"), ex);
         }
     }
 

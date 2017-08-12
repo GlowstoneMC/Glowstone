@@ -32,7 +32,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         resetRecipes();
 
         // Report stats
-        GlowServer.logger.info(I.tr("status.recipe.stats",
+        GlowServer.logger.info(I.tr("recipe.stats",
                 shapedRecipes.size(), shapelessRecipes.size(),
                 furnaceRecipes.size(), dynamicRecipes.size(),
                 furnaceFuels.size()));

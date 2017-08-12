@@ -1349,9 +1349,9 @@ public final class GlowWorld implements World {
                     entity.remove();
                 }
             } catch (NoSuchMethodException e) {
-                GlowServer.logger.log(Level.WARNING, I.tr("warning.entity.spawn"), e);
+                GlowServer.logger.log(Level.WARNING, I.tr("entity.spawn.invalid"), e);
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                GlowServer.logger.log(Level.SEVERE, I.tr("error.entity.spawn"), e);
+                GlowServer.logger.log(Level.SEVERE, I.tr("entity.spawn.unable"), e);
             }
         }
 
@@ -1707,7 +1707,7 @@ public final class GlowWorld implements World {
                 storageProvider.getMetadataService().writeWorldData();
                 storageProvider.getScoreboardIoService().save();
             } catch (IOException e) {
-                server.getLogger().severe(I.tr("error.world.metadata.save", getName()));
+                server.getLogger().severe(I.tr("world.metadata.save", getName()));
                 e.printStackTrace();
             }
 

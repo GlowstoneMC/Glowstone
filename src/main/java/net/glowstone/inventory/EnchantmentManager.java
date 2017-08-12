@@ -360,7 +360,7 @@ public class EnchantmentManager {
         //TODO: better handling of for malicious clients?
 
         if (clicked < 0 || clicked > enchLevelCosts.length) {
-            GlowServer.logger.info(I.tr("status.malicious.slot", clicked));
+            GlowServer.logger.info(I.tr("client.malicious.slot", clicked));
             update();
             return true;
         }
@@ -368,7 +368,7 @@ public class EnchantmentManager {
         int level = enchLevelCosts[clicked];
         if (player.getGameMode() != GameMode.CREATIVE) {
             if (player.getLevel() < level || inventory.getSecondary() == null || inventory.getSecondary().getAmount() < clicked) {
-                GlowServer.logger.info(I.tr("status.malicious.insufficient"));
+                GlowServer.logger.info(I.tr("client.malicious.insufficient"));
                 update();
                 return true;
             }

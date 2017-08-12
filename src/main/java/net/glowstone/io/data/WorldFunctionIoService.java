@@ -37,7 +37,7 @@ public class WorldFunctionIoService implements FunctionIoService {
                 functions.addAll(namespaceFunctions);
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.SEVERE, I.tr("error.world.function.load", world.getName()), ex);
+            GlowServer.logger.log(Level.SEVERE, I.tr("world.function.load", world.getName()), ex);
         }
         return functions;
     }

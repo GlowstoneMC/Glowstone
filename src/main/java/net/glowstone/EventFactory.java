@@ -52,10 +52,10 @@ public final class EventFactory {
             try {
                 return task.get();
             } catch (InterruptedException e) {
-                GlowServer.logger.log(Level.WARNING, I.tr("warning.event.interrupted", event.getClass().getSimpleName()));
+                GlowServer.logger.log(Level.WARNING, I.tr("event.interrupted", event.getClass().getSimpleName()));
                 return event;
             } catch (CancellationException e) {
-                GlowServer.logger.log(Level.WARNING, I.tr("warning.event.shutdown", event.getClass().getSimpleName()));
+                GlowServer.logger.log(Level.WARNING, I.tr("event.shutdown", event.getClass().getSimpleName()));
                 return event;
             } catch (ExecutionException e) {
                 throw new RuntimeException(e); // No checked exceptions declared for callEvent
@@ -108,7 +108,7 @@ public final class EventFactory {
                     I.tr("event.whitelist.missing"));
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
             event.disallow(Result.KICK_FULL,
-                    I.tr("status.server.full", player.getServer().getMaxPlayers()));
+                    I.tr("server.full", player.getServer().getMaxPlayers()));
         }
 
         return callEvent(event);

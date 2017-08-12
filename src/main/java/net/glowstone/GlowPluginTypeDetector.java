@@ -35,7 +35,7 @@ public class GlowPluginTypeDetector {
     }
 
     public void scan() {
-        GlowServer.logger.info(I.tr("status.plugin.scanning"));
+        GlowServer.logger.info(I.tr("plugin.scanning"));
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;
@@ -45,14 +45,14 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        GlowServer.logger.info(I.tr("status.plugin.found",
+        GlowServer.logger.info(I.tr("plugin.found",
                 bukkitPlugins.size(), spongePlugins.size(),
                 (forgefPlugins.size() + forgenPlugins.size()),
                 canaryPlugins.size(), unrecognizedPlugins.size(), files.length));
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
-                GlowServer.logger.warning(I.tr("warning.plugin.unrecognized", file.getPath()));
+                GlowServer.logger.warning(I.tr("plugin.unrecognized", file.getPath()));
             }
         }
     }
@@ -68,7 +68,7 @@ public class GlowPluginTypeDetector {
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
-            GlowServer.logger.log(Level.WARNING, I.tr("warning.plugin.url.malformed", file), e);
+            GlowServer.logger.log(Level.WARNING, I.tr("plugin.url.malformed", file), e);
             return;
         }
 
@@ -106,7 +106,7 @@ public class GlowPluginTypeDetector {
                 }
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.WARNING, I.tr("warning.plugin.reading", url), ex);
+            GlowServer.logger.log(Level.WARNING, I.tr("plugin.reading.error", url), ex);
         }
 
         if (isBukkit) bukkitPlugins.add(file);

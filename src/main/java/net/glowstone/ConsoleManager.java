@@ -63,7 +63,7 @@ public final class ConsoleManager {
         try {
             reader = new ConsoleReader();
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, I.tr("error.command.console.init"), ex);
+            logger.log(Level.SEVERE, I.tr("command.console.init"), ex);
         }
         reader.addCompleter(new CommandCompleter());
 
@@ -192,7 +192,7 @@ public final class ConsoleManager {
             try {
                 setOutputStream(new FileOutputStream(filename, true));
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, I.tr("error.command.log.open", filename), ex);
+                logger.log(Level.SEVERE, I.tr("command.log.open", filename), ex);
             }
         }
 
@@ -202,7 +202,7 @@ public final class ConsoleManager {
                 if (!filename.equals(newFilename)) {
                     filename = newFilename;
                     // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, I.tr("status.command.log.rotate", filename)));
+                    super.publish(new LogRecord(Level.INFO, I.tr("command.log.rotate", filename)));
                     updateOutput();
                 }
             }
@@ -267,7 +267,7 @@ public final class ConsoleManager {
                 } catch (CommandException ex) {
                     logger.log(Level.WARNING, I.tr("command.execute.exception", command), ex);
                 } catch (Exception ex) {
-                    logger.log(Level.SEVERE, I.tr("error.command.console.read"), ex);
+                    logger.log(Level.SEVERE, I.tr("command.console.read"), ex);
                 }
             }
         }
@@ -459,7 +459,7 @@ public final class ConsoleManager {
                     super.flush();
                 }
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, I.tr("error.command.console.flush"), ex);
+                logger.log(Level.SEVERE, I.tr("command.console.flush"), ex);
             }
         }
     }
