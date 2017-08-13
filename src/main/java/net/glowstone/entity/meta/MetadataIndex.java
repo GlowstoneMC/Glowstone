@@ -175,6 +175,11 @@ public enum MetadataIndex {
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
     TNT_PRIMED(6, INT, TNTPrimed.class),
+
+    /**
+     * Hooked entity id + 1, or 0 if there is no hooked entity
+     */
+    FISHING_HOOK_HOOKED_ENTITY(6, INT, FishHook.class)
     ;
 
 

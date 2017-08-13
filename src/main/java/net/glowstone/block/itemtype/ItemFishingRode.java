@@ -1,6 +1,7 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.passive.GlowFishingHook;
 import org.bukkit.Location;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
@@ -11,8 +12,16 @@ public class ItemFishingRode extends ItemType {
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        Location location = calculateSpawnLocation(player);
-        player.getWorld().spawn(location, FishHook.class);
+        if (player.getCurrentFishingHook() == null) {
+            Location location = calculateSpawnLocation(player);
+            FishHook fishHook = new GlowFishingHook(location, holding);
+            fishHook.setShooter(player);
+            player.setCurrentFishingHook((GlowFishingHook) fishHook);
+        } else {
+            player.getCurrentFishingHook().reelIn();
+            player.setCurrentFishingHook(null);
+        }
+
     }
 
     private Location calculateSpawnLocation(Player player) {

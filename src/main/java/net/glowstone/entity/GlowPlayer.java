@@ -27,6 +27,7 @@ import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
+import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
@@ -311,6 +312,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private long usageTime;
     @Getter
     private final PlayerRecipeMonitor recipeMonitor;
+
+    /**
+     * Current casted fishing hook
+     */
+    @Getter
+    private GlowFishingHook currentFishingHook;
 
     /**
      * Creates a new player and adds it to the world.
@@ -2990,5 +2997,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public boolean isInWater() {
         Material mat = getLocation().getBlock().getType();
         return mat == Material.WATER || mat == Material.STATIONARY_WATER;
+    }
+
+    public void setCurrentFishingHook(GlowFishingHook fishingHook) {
+        if (currentFishingHook != null && !currentFishingHook.isDead()) {
+            currentFishingHook.remove();
+        }
+
+        currentFishingHook = fishingHook;
     }
 }

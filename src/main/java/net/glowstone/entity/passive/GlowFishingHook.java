@@ -3,19 +3,46 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.GlowProjectile;
+import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
     private int lived;
     private int lifeTime;
 
     public GlowFishingHook(Location location) {
+        this(location, null);
+    }
+
+    public GlowFishingHook(Location location, ItemStack itemStack) {
         super(location);
-        lifeTime = ThreadLocalRandom.current().nextInt(0, 46);
+        setSize(0.25f, 0.25f);
+
+        // "There will be a period where the player must wait, randomly chosen from 5 to 45 seconds."
+        lifeTime = ThreadLocalRandom.current().nextInt(5, 46);
+        if (!InventoryUtil.isEmpty(itemStack) && itemStack.getType() == Material.FISHING_ROD) {
+            // "Each level of Lure enchantment on the fishing rod will subtract 5 seconds from this wait time."
+            int level = itemStack.getEnchantmentLevel(Enchantment.LURE);
+            lifeTime -= level * 5;
+            lifeTime = Math.max(lifeTime, 0);
+        }
+        lifeTime *= 20;
+
+        // TODO: velocity does not match vanilla
+        Vector direction = location.getDirection();
+        setVelocity(direction.multiply(1.5));
     }
 
     @Override
@@ -48,8 +75,49 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         // Not supported in newer mc versions anymore
     }
 
+    private Entity getHookedEntity() {
+        int entityID = metadata.getInt(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY);
+        return world.getEntityManager().getEntity(entityID - 1);
+    }
+
+    private void setHookedEntity(Entity entity) {
+        metadata.set(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY, entity.getEntityId() + 1);
+    }
+
     @Override
     public void pulse() {
         super.pulse();
+
+        // TODO: Particles
+        if (location.getBlock().getType() == Material.WATER) {
+            increaseTimeLived();
+
+        }
+    }
+
+    private void increaseTimeLived() {
+        // "If the bobber is not directly exposed to sun or moonlight,[note 1] the wait time will be approximately doubled.[note 2]"
+        Block highestBlockAt = world.getHighestBlockAt(location);
+        if (location.getY() < highestBlockAt.getLocation().getY()) {
+            if (ThreadLocalRandom.current().nextDouble(100) < 50) {
+                return;
+            }
+        }
+
+        if (GlowBiomeClimate.isRainy(location.getBlock())) {
+            if (ThreadLocalRandom.current().nextDouble(100) < 20) {
+                lived++;
+            }
+        }
+
+        lived++;
+    }
+
+    public void reelIn() {
+        if (location.getBlock().getType() == Material.WATER) {
+            increaseTimeLived();
+
+        }
+        remove();
     }
 }
