@@ -43,7 +43,7 @@ public class EntityRegistry {
                     .put(FallingBlock.class, GlowFallingBlock.class)
                     //TODO: Fireball
                     //TODO: Firework
-                    //TODO: Fishing hook
+                    .put(FishHook.class, GlowFishingHook.class)
                     .put(Ghast.class, GlowGhast.class)
                     .put(Giant.class, GlowGiant.class)
                     .put(Guardian.class, GlowGuardian.class)

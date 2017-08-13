@@ -330,6 +330,7 @@ public final class ItemTable {
         reg(Material.BOAT_ACACIA, new ItemBoat(TreeSpecies.ACACIA));
         reg(Material.BOAT_DARK_OAK, new ItemBoat(TreeSpecies.DARK_OAK));
         reg(Material.PAINTING, new ItemPainting());
+        reg(Material.FISHING_ROD, new ItemFishingRode());
     }
 
     private void reg(Material material, ItemType type) {
