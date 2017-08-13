@@ -19,6 +19,7 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -31,9 +32,9 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     static {
         REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH), 60.0));
-        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short)0, (byte) 1), 25));
-        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short)0, (byte) 2), 2));
-        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short)0, (byte) 3), 13));
+        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short) 0, (byte) 1), 25));
+        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short) 0, (byte) 2), 2));
+        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short) 0, (byte) 3), 13));
 
         REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.BOW), 16.67));
         REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.ENCHANTED_BOOK), 16.67));
@@ -49,7 +50,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.ROTTEN_FLESH), 12));
         REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.STICK), 6));
         REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.STRING), 6));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.POTION, 1, (short)0, (byte) 1), 12));
+        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.POTION, 1, (short) 0, (byte) 1), 12));
         REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.BONE), 12));
         REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.INK_SACK, 10), 1.2));
         REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.TRIPWIRE_HOOK), 12));
@@ -124,6 +125,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         super.pulse();
 
         // TODO: Particles
+        // TODO: Boper movement
         if (location.getBlock().getType() == Material.WATER) {
             increaseTimeLived();
 
@@ -150,15 +152,34 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     public void reelIn() {
         if (location.getBlock().getType() == Material.WATER) {
-            increaseTimeLived();
-
+            if (getShooter() instanceof Player) {
+                // TODO: Item should "fly" towards player
+                world.dropItemNaturally(((Player) getShooter()).getLocation(), getRewardItem());
+                ((Player) getShooter()).giveExp(ThreadLocalRandom.current().nextInt(1, 7));
+            }
         }
         remove();
     }
 
     private ItemStack getRewardItem() {
         RewardCategory rewardCategory = getRewardCategory();
+        int level = getEnchantmentLevel();
 
+        if (rewardCategory == null || REWARDS.get(rewardCategory).isEmpty()) {
+            return InventoryUtil.createEmptyStack();
+        }
+        double rewardCategoryChance = rewardCategory.chance + rewardCategory.modifier * level;
+        double random = ThreadLocalRandom.current().nextDouble(100);
+
+        for (RewardItem rewardItem : REWARDS.get(rewardCategory)) {
+            random -= rewardItem.chance * rewardCategoryChance / 100.0;
+            if (random < 0) {
+                // TODO: enchantments and damage on book, bow, and fishingrode
+                return rewardItem.item.clone();
+            }
+        }
+
+        return InventoryUtil.createEmptyStack();
     }
 
     private int getEnchantmentLevel() {
@@ -169,19 +190,11 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int level = getEnchantmentLevel();
         double random = ThreadLocalRandom.current().nextDouble(100);
 
-        random -= RewardCategory.FISH.chance + RewardCategory.FISH.getModifier() * level;
-        if (random <= 0) {
-            return RewardCategory.FISH;
-        }
-
-        random -= RewardCategory.TREASURE.chance + RewardCategory.TREASURE.getModifier() * level;
-        if (random <= 0) {
-            return RewardCategory.TREASURE;
-        }
-
-        random -= RewardCategory.TRASH.chance + RewardCategory.TRASH.getModifier() * level;
-        if (random <= 0) {
-            return RewardCategory.TRASH;
+        for (RewardCategory rewardCategory : RewardCategory.values()) {
+            random -= rewardCategory.chance + rewardCategory.modifier * level;
+            if (random <= 0) {
+                return rewardCategory;
+            }
         }
 
         return null;
