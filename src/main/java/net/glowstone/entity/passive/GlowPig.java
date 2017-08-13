@@ -78,9 +78,11 @@ public class GlowPig extends GlowAnimal implements Pig {
     public void damage(double amount, Entity source, DamageCause cause) {
         if (!DamageCause.LIGHTNING.equals(cause)) {
             super.damage(amount, source, cause);
+            return;
         }
 
-        world.spawn(this.location, PigZombie.class);
+        PigZombie pigZombie = world.spawn(this.location, PigZombie.class);
+        pigZombie.damage(amount, source, cause);
         remove();
     }
 }

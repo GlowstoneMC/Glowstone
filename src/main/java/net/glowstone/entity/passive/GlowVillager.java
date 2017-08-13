@@ -107,9 +107,12 @@ public class GlowVillager extends GlowAgeable implements Villager {
     public void damage(double amount, Entity source, DamageCause cause) {
         if (!DamageCause.LIGHTNING.equals(cause)) {
             super.damage(amount, source, cause);
+            return;
         }
 
-        world.spawn(this.location, Witch.class);
+        Witch witch = world.spawn(this.location, Witch.class);
+        witch.damage(amount, source, cause);
+        witch.setFireTicks(this.getFireTicks());
         remove();
     }
 }

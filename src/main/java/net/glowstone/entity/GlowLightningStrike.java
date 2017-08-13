@@ -44,7 +44,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
      * Whether the lightning strike is silent
      */
     private boolean isSilent;
-    private LightningStrike.Spigot spigot = new LightningStrike.Spigot() {
+    private final LightningStrike.Spigot spigot = new LightningStrike.Spigot() {
         @Override
         public boolean isSilent() {
             return isSilent;
@@ -103,6 +103,10 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
 
                 // deal damage to nearby entities
                 for (Entity entity : getNearbyEntities(3, 6, 3)) {
+                    if (entity.isDead()) {
+                        continue;
+                    }
+
                     if (entity instanceof Damageable) {
                         ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }

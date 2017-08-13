@@ -52,7 +52,7 @@ public class EntityRegistry {
                     .put(IronGolem.class, GlowIronGolem.class)
                     .put(Item.class, GlowItem.class)
                     .put(ItemFrame.class, GlowItemFrame.class)
-                    .put(LeashHitch.class, GlowLeashHitch.class)                     
+                    .put(LeashHitch.class, GlowLeashHitch.class)
                     .put(LightningStrike.class, GlowLightningStrike.class)
                     .put(Llama.class, GlowLlama.class)
                     .put(MagmaCube.class, GlowMagmaCube.class)

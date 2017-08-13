@@ -7,6 +7,7 @@ import org.bukkit.entity.PigZombie;
 
 import java.util.Random;
 import java.util.UUID;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 
@@ -59,5 +60,13 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ZOMBIE_PIG_AMBIENT;
+    }
+
+    @Override
+    public boolean canTakeDamage(DamageCause damageCause) {
+        if (damageCause == DamageCause.FIRE || damageCause == DamageCause.LAVA) {
+            return false;
+        }
+        return super.canTakeDamage(damageCause);
     }
 }
