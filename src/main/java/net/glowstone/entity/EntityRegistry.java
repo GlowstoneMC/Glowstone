@@ -53,7 +53,7 @@ public class EntityRegistry {
                     .put(Item.class, GlowItem.class)
                     .put(ItemFrame.class, GlowItemFrame.class)
                     .put(LeashHitch.class, GlowLeashHitch.class)
-                    //TODO: Lightning
+                    .put(LightningStrike.class, GlowLightningStrike.class)
                     .put(Llama.class, GlowLlama.class)
                     .put(MagmaCube.class, GlowMagmaCube.class)
                     .put(GlowMinecart.MinecartType.RIDEABLE.getEntityClass(), GlowMinecart.MinecartType.RIDEABLE.getMinecartClass())
