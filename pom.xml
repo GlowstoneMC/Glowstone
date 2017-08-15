@@ -292,6 +292,14 @@
                                     <shadedPattern>org.bukkit.craftbukkit.libs.it.unimi</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>mojang-translations/*</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
