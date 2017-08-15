@@ -30,32 +30,6 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     private static final Multimap<RewardCategory, RewardItem> REWARDS = HashMultimap.create();
 
-    static {
-        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH), 60.0));
-        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short) 0, (byte) 1), 25));
-        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short) 0, (byte) 2), 2));
-        REWARDS.put(RewardCategory.FISH, new RewardItem(new ItemStack(Material.RAW_FISH, 1, (short) 0, (byte) 3), 13));
-
-        REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.BOW), 16.67));
-        REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.ENCHANTED_BOOK), 16.67));
-        REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.FISHING_ROD), 16.67));
-        REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.NAME_TAG), 16.67));
-        REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.SADDLE), 16.67));
-        REWARDS.put(RewardCategory.TREASURE, new RewardItem(new ItemStack(Material.WATER_LILY), 16.67));
-
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.BOWL), 12));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.FISHING_ROD), 2.4));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.LEATHER), 12));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.LEATHER_BOOTS), 12));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.ROTTEN_FLESH), 12));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.STICK), 6));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.STRING), 6));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.POTION, 1, (short) 0, (byte) 1), 12));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.BONE), 12));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.INK_SACK, 10), 1.2));
-        REWARDS.put(RewardCategory.TRASH, new RewardItem(new ItemStack(Material.TRIPWIRE_HOOK), 12));
-    }
-
     public GlowFishingHook(Location location) {
         this(location, null);
     }
@@ -198,34 +172,5 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         }
 
         return null;
-    }
-
-    @Getter
-    private enum RewardCategory {
-        FISH(85.0, -1.15),
-        TREASURE(5.0, 2.1),
-        TRASH(10.0, -1.95);
-
-        private double chance;
-
-        /**
-         * Each level of the "Luck of the Sea" enchantment will modify this categories chance to appear by modifier amount
-         */
-        private double modifier;
-
-        RewardCategory(double chance, double modifier) {
-            this.chance = chance;
-            this.modifier = modifier;
-        }
-    }
-
-    @Getter
-    @AllArgsConstructor
-    private static class RewardItem {
-        private ItemStack item;
-        /**
-         * Chance to get this item in his category
-         */
-        private double chance;
     }
 }
