@@ -14,6 +14,7 @@ import org.bukkit.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class FunctionCommand extends VanillaCommand {
 
@@ -37,17 +38,12 @@ public class FunctionCommand extends VanillaCommand {
             return false;
         }
         String functionName = args[0];
-        CommandFunction function = null;
-        for (CommandFunction f : world.getFunctions()) {
-            if (f.getFullName().equals(functionName)) {
-                function = f;
-                break;
-            }
-        }
-        if (function == null) {
+        Map<String, CommandFunction> functions = world.getFunctions();
+        if (!functions.containsKey(functionName)) {
             sender.sendMessage(ChatColor.RED + "Unknown function '" + functionName + "'");
             return false;
         }
+        CommandFunction function = functions.get(functionName);
         if (args.length > 2 && location != null) {
             String condition = args[1].toLowerCase();
             CommandTarget target = new CommandTarget(sender, args[2]);
@@ -76,7 +72,7 @@ public class FunctionCommand extends VanillaCommand {
         if (args.length == 1) {
             GlowWorld world = CommandUtils.getWorld(sender);
             if (world != null) {
-                return (List) StringUtil.copyPartialMatches(args[0], world.getFunctionNames(), new ArrayList(world.getFunctionNames().size()));
+                return (List) StringUtil.copyPartialMatches(args[0], world.getFunctions().keySet(), new ArrayList(world.getFunctions().size()));
             }
         }
         return super.tabComplete(sender, alias, args);

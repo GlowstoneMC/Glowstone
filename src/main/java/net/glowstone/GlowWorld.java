@@ -167,6 +167,16 @@ public final class GlowWorld implements World {
         public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius) {
             showParticle(location, effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, radius);
         }
+
+        @Override
+        public LightningStrike strikeLightning(Location loc, boolean isSilent) {
+            return strikeLightningFireEvent(loc, false, isSilent);
+        }
+
+        @Override
+        public LightningStrike strikeLightningEffect(Location loc, boolean isSilent) {
+            return strikeLightningFireEvent(loc, true, isSilent);
+        }
     };
     /**
      * The spawn position.
@@ -263,11 +273,7 @@ public final class GlowWorld implements World {
     /**
      * The functions for this world.
      */
-    private final List<CommandFunction> functions;
-    /**
-     * The names of the functions for this world;
-     */
-    private final List<String> functionNames = new ArrayList<>();
+    private final Map<String, CommandFunction> functions;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -321,8 +327,8 @@ public final class GlowWorld implements World {
 
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         structures = storageProvider.getStructureDataService().readStructuresData();
-        functions = storageProvider.getFunctionIoService().readFunctions();
-        functions.forEach(f -> functionNames.add(f.getFullName()));
+        functions = storageProvider.getFunctionIoService().readFunctions().stream()
+                .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
         EventFactory.callEvent(new WorldInitEvent(this));
@@ -1429,8 +1435,8 @@ public final class GlowWorld implements World {
         return spawn(loc, type.getEntityClass());
     }
 
-    private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect) {
-        GlowLightningStrike strike = new GlowLightningStrike(loc, effect, random);
+    private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect, boolean isSilent) {
+        GlowLightningStrike strike = new GlowLightningStrike(loc, effect, isSilent, random);
         LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
         if (EventFactory.callEvent(event).isCancelled()) {
             return null;
@@ -1440,12 +1446,12 @@ public final class GlowWorld implements World {
 
     @Override
     public GlowLightningStrike strikeLightning(Location loc) {
-        return strikeLightningFireEvent(loc, false);
+        return strikeLightningFireEvent(loc, false, false);
     }
 
     @Override
     public GlowLightningStrike strikeLightningEffect(Location loc) {
-        return strikeLightningFireEvent(loc, true);
+        return strikeLightningFireEvent(loc, true, false);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1815,12 +1821,8 @@ public final class GlowWorld implements World {
         return worldBorder;
     }
 
-    public List<CommandFunction> getFunctions() {
+    public Map<String, CommandFunction> getFunctions() {
         return functions;
-    }
-
-    public List<String> getFunctionNames() {
-        return functionNames;
     }
 
     @Override

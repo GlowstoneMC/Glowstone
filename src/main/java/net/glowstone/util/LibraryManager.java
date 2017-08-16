@@ -6,17 +6,12 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,37 +34,10 @@ public final class LibraryManager {
 
     private final ExecutorService downloaderService = Executors.newCachedThreadPool();
 
-    private static final LibraryClassLoader loader = new LibraryClassLoader();
-
     public LibraryManager() {
         // todo: allow configuration of repository, libraries, and directory
         repository = "https://repo.glowstone.net/service/local/repositories/central/content/";
         directory = new File("lib");
-    }
-
-    public static void addToClasspath(String... paths) {
-        try {
-            for (String path : Objects.requireNonNull(paths)) {
-                String trimmedPath;
-                if (path != null && !(trimmedPath = path.trim()).isEmpty()) {
-                    loader.addURL(Paths.get(trimmedPath).toUri().toURL());
-                }
-            }
-        } catch (IllegalArgumentException | MalformedURLException e) {
-            RuntimeException re = new RuntimeException(e);
-            re.setStackTrace(e.getStackTrace());
-            throw re;
-        }
-    }
-
-    public static ClassLoader getLibraryClassLoader() {
-        return loader;
-    }
-
-    public static void addToLibraryPath(String... paths) {
-        for (String path : Objects.requireNonNull(paths)) {
-            loader.addLibPath(path);
-        }
     }
 
     public void run() {
@@ -79,9 +47,13 @@ public final class LibraryManager {
 
         downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.16.1", ""));
         downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.42", ""));
+        downloaderService.execute(new LibraryDownloader("org.apache.logging.log4j", "log4j-api", "2.8.1", ""));
+        downloaderService.execute(new LibraryDownloader("org.apache.logging.log4j", "log4j-core", "2.8.1", ""));
         downloaderService.shutdown();
         try {
-            downloaderService.awaitTermination(5, TimeUnit.SECONDS);
+            if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
+                downloaderService.shutdownNow();
+            }
         } catch (InterruptedException e) {
             GlowServer.logger.log(Level.SEVERE, "Library Manager thread interrupted: ", e);
         }
@@ -104,8 +76,8 @@ public final class LibraryManager {
         @Override
         public void run() {
             // check if we already have it
-            File file = new File(directory, library + '-' + version + ".jar");
-            if (!file.exists() && checksum(file, checksum)) {
+            File file = new File(directory, getLibrary());
+            if (!checksum(file, checksum)) {
                 // download it
                 GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
                 try {
@@ -120,44 +92,29 @@ public final class LibraryManager {
                     }
                 } catch (IOException e) {
                     GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + ' ' + version, e);
+                    file.delete();
                     return;
                 }
             }
 
-            addToClasspath(file.getAbsolutePath());
+            // hack it onto the classpath
+            URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+            try {
+                Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                method.setAccessible(true);
+                method.invoke(sysLoader, file.toURI().toURL());
+            } catch (ReflectiveOperationException | MalformedURLException e) {
+                GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + " " + version, e);
+            }
         }
 
-        public boolean checksum(File file, String checksum) {
+        String getLibrary() {
+            return library + '-' + version + ".jar";
+        }
+
+        boolean checksum(File file, String checksum) {
             // TODO: actually check checksum
-            return true;
-        }
-    }
-
-    private static class LibraryClassLoader extends URLClassLoader {
-
-        static {
-            ClassLoader.registerAsParallelCapable();
-        }
-
-        private final Set<Path> libPaths = new CopyOnWriteArraySet<>();
-
-        private LibraryClassLoader() {
-            super(new URL[0]);
-        }
-
-        @Override
-        protected void addURL(URL url) {
-            super.addURL(url);
-        }
-
-        protected void addLibPath(String path) {
-            libPaths.add(Paths.get(path).toAbsolutePath());
-        }
-
-        @Override
-        protected String findLibrary(String libname) {
-            String nativeName = System.mapLibraryName(libname);
-            return libPaths.stream().map(path -> path.resolve(nativeName)).filter(Files::exists).map(Path::toString).findFirst().orElse(super.findLibrary(libname));
+            return file.exists();
         }
     }
 }

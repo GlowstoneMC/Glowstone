@@ -88,7 +88,8 @@ public final class ItemTable {
         reg(Material.RED_SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.SANDSTONE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.NETHER_BRICK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.NETHER_FENCE, new BlockDirectDrops(Material.NETHER_FENCE, ToolType.PICKAXE));
+        reg(Material.NETHER_FENCE, new BlockFence(Material.NETHER_FENCE, ToolType.PICKAXE));
+        reg(Material.FENCE, new BlockFence(Material.FENCE));
         reg(Material.NETHERRACK, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.IRON_FENCE, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.BRICK, new BlockDirectDrops(ToolType.PICKAXE));

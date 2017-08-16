@@ -15,6 +15,7 @@ public final class SpawnObjectMessage implements Message {
     public static final int ENDER_CRYSTAL = 51;
     public static final int ITEM_FRAME = 71;
     public static final int FIREWORK = 76;
+    public static final int LEASH_HITCH = 77;
 
     private final int id;
     private final UUID uuid; //TODO: Handle UUID

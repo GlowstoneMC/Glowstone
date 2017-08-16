@@ -2,9 +2,11 @@ package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowLeashHitch;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
@@ -36,7 +38,10 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityPortalExitEvent;
+import org.bukkit.event.entity.EntityUnleashEvent;
+import org.bukkit.event.entity.EntityUnleashEvent.UnleashReason;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
@@ -160,6 +165,25 @@ public abstract class GlowEntity implements Entity {
      */
     @Getter
     private final Location origin;
+
+    /**
+     * All entities that currently have this entity as leash holder
+     */
+    @Getter
+    private final List<GlowEntity> leashedEntities = Lists.newArrayList();
+
+    /**
+     * The leash holders uuid of the entity. Will be null after the entities first tick.
+     */
+    private UUID leashHolderUniqueID;
+    /**
+     * Has the leash holder of the entity changed.
+     */
+    private boolean leashHolderChanged;
+    /**
+     * The leash holder of the entity.
+     */
+    private GlowEntity leashHolder;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -326,7 +350,7 @@ public abstract class GlowEntity implements Entity {
         if (this.gravity) {
             return this.gravityAccel;
         } else {
-            return this.zeroG;
+            return GlowEntity.zeroG;
         }
     }
 
@@ -437,6 +461,8 @@ public abstract class GlowEntity implements Entity {
             entity.getTaskManager().pulse();
         }
 
+        followLead();
+
         pulsePhysics();
 
         if (hasMoved()) {
@@ -460,6 +486,61 @@ public abstract class GlowEntity implements Entity {
                 }
             }
         }
+
+        if (leashHolderUniqueID != null && ticksLived < 2) {
+            Optional<GlowEntity> any = world.getEntityManager().getAll()
+                .stream()
+                .filter(e -> leashHolderUniqueID.equals(e.getUniqueId()))
+                .findAny();
+            if (!any.isPresent()) {
+                world.dropItemNaturally(location, new ItemStack(Material.LEASH));
+            }
+            setLeashHolder(any.orElse(null));
+            leashHolderUniqueID = null;
+        }
+    }
+
+    private void followLead() {
+        if (!isLeashed()) {
+            return;
+        }
+
+        double distanceSquared = location.distanceSquared(leashHolder.getLocation());
+
+        // No need to move when already close enough
+        if (distanceSquared < 2 * 2) {
+            return;
+        }
+
+        // TODO: Physics are not right
+        // For example, gravity is not respected
+
+        // Leashes break when the distance between leashholder and leashedentity is greater than 10 blocks
+        if (distanceSquared > 10 * 10) {
+            // break leashitch, if the entity is the only one left attached
+            // will also destroy all remaining leashes
+            if (EntityType.LEASH_HITCH.equals(leashHolder.getType()) && leashHolder.leashedEntities.size() == 1) {
+                leashHolder.remove();
+            } else {
+                // break leash
+                unleash(this, UnleashReason.DISTANCE);
+            }
+            return;
+        }
+
+        if (!leashHolder.hasMoved()) {
+            this.setVelocity(new Vector(0, 0, 0));
+            return;
+        }
+
+        // Don't move when already close enough
+        double speed = distanceSquared / (10.0 * 10.0 * 2);
+
+        Vector direction = leashHolder.getLocation().toVector().subtract(location.toVector());
+        direction.normalize();
+
+        direction.multiply(speed);
+        this.setVelocity(direction);
     }
 
     /**
@@ -470,6 +551,7 @@ public abstract class GlowEntity implements Entity {
         metadata.resetChanges();
         teleported = false;
         velocityChanged = false;
+        leashHolderChanged = false;
     }
 
     /**
@@ -532,6 +614,36 @@ public abstract class GlowEntity implements Entity {
      * @return A message which can spawn this entity.
      */
     public abstract List<Message> createSpawnMessage();
+
+    /**
+     * Creates a List of {@link Message} which can be sent to a client directly after the entity is spawned.
+     *
+     * @param session Session to update this entity for
+     * @return A message which can spawn this entity.
+     */
+    public List<Message> createAfterSpawnMessage(GlowSession session) {
+        List<Message> result = Lists.newArrayList();
+
+        GlowPlayer player = session.getPlayer();
+        boolean visible = player.canSeeEntity(this);
+        for (GlowEntity leashedEntity : leashedEntities) {
+            if (visible && player.canSeeEntity(leashedEntity)) {
+                int attached = player.getEntityId() == this.getEntityId() ? 0 : leashedEntity.getEntityId();
+                int holder = this.getEntityId();
+
+                result.add(new AttachEntityMessage(attached, holder));
+            }
+        }
+
+        if (isLeashed() && visible && player.canSeeEntity(leashHolder)) {
+            int attached = player.getEntityId() == this.getEntityId() ? 0 : this.getEntityId();
+            int holder = leashHolder.getEntityId();
+
+            result.add(new AttachEntityMessage(attached, holder));
+        }
+
+        return result;
+    }
 
     /**
      * Creates a {@link Message} which can be sent to a client to update this
@@ -597,6 +709,16 @@ public abstract class GlowEntity implements Entity {
             });
             result.add(new SetPassengerMessage(getEntityId(), passengerIds.stream().mapToInt(Integer::intValue).toArray()));
             passengerChanged = false;
+        }
+
+        if (leashHolderChanged) {
+            int attached = isLeashed() && session.getPlayer().getEntityId() == leashHolder.getEntityId() ? 0 : this.getEntityId();
+            int holder = !isLeashed() ? -1 : leashHolder.getEntityId();
+
+            // When the leashHolder is not visible, the AttachEntityMessage will be created in createAfterSpawnMessage()
+            if (!isLeashed() || session.getPlayer().canSeeEntity(leashHolder)) {
+                result.add(new AttachEntityMessage(attached, holder));
+            }
         }
 
         return result;
@@ -1012,6 +1134,18 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().unregister(this);
         server.getEntityIdManager().deallocate(this);
         this.setPassenger(null);
+
+        ImmutableList.copyOf(this.leashedEntities).forEach(e -> unleash(e, UnleashReason.HOLDER_GONE));
+
+        if (isLeashed()) {
+            unleash(this, UnleashReason.HOLDER_GONE);
+        }
+    }
+
+    private void unleash(GlowEntity entity, UnleashReason reason) {
+        EventFactory.callEvent(new EntityUnleashEvent(entity, reason));
+        world.dropItemNaturally(entity.location, new ItemStack(Material.LEASH));
+        entity.setLeashHolder(null);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1434,5 +1568,56 @@ public abstract class GlowEntity implements Entity {
         protected String disambiguate(Entity subject, String metadataKey) {
             return subject.getUniqueId() + ":" + metadataKey;
         }
+    }
+
+    public boolean isLeashed() {
+        return leashHolder != null;
+    }
+
+    public Entity getLeashHolder() throws IllegalStateException {
+        if (!isLeashed()) {
+            throw new IllegalStateException("Entity not leashed");
+        }
+
+        return leashHolder;
+    }
+
+    public boolean setLeashHolder(Entity holder) {
+        // "This method has no effect on EnderDragons, Withers, Players, or Bats"
+        if (!GlowLeashHitch.isAllowedLeashHolder(this.getType())) {
+            return false;
+        }
+
+        if (this.leashHolder != null) {
+            this.leashHolder.leashedEntities.remove(this);
+        }
+
+        if (holder == null) {
+            // unleash
+            this.leashHolder = null;
+            leashHolderChanged = true;
+            return true;
+        }
+
+        if (holder.isDead()) {
+            return false;
+        }
+
+        this.leashHolder = (GlowEntity) holder;
+        this.leashHolder.leashedEntities.add(this);
+        leashHolderChanged = true;
+        return true;
+    }
+
+    /**
+     * Set the unique ID of this entities leash holder.
+     * Only useful during load of the entity.
+     * @param uniqueID
+     */
+    public void setLeashHolderUniqueID(UUID uniqueID) {
+        if (ticksLived > 1 || isLeashed()) {
+            return;
+        }
+        this.leashHolderUniqueID = uniqueID;
     }
 }

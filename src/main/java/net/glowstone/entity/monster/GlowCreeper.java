@@ -5,9 +5,11 @@ import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import java.util.List;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class GlowCreeper extends GlowMonster implements Creeper {
 
@@ -68,5 +70,13 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     @Override
     protected Sound getHurtSound() {
         return Sound.ENTITY_CREEPER_HURT;
+    }
+
+    @Override
+    public void damage(double amount, Entity source, DamageCause cause) {
+        super.damage(amount, source, cause);
+        if (DamageCause.LIGHTNING.equals(cause)) {
+            setPowered(true);
+        }
     }
 }
