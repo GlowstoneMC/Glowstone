@@ -168,16 +168,16 @@ public class ItemType {
      */
     public enum Context {
         /**
-         * The Item can only be used in Air
+         * The item can only be used when clicking in the air
          */
         AIR,
         /**
-         * The Item can only be used in conjunction with a block
+         * The item can only be used when clicking against a block
          */
         BLOCK,
         /**
-         * The Item can be used in Air and in conjunction with a block
+         * The item can be used on any click
          */
-        AIR_BLOCK
+        ANY
     }
 }

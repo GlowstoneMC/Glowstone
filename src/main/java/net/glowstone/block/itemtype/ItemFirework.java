@@ -44,6 +44,6 @@ public class ItemFirework extends ItemType {
 
     @Override
     public Context getContext() {
-        return Context.AIR_BLOCK;
+        return Context.ANY;
     }
 }

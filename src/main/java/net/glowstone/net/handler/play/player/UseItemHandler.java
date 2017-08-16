@@ -15,12 +15,12 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
     @Override
     public void handle(GlowSession session, UseItemMessage message) {
         GlowPlayer player = session.getPlayer();
-        ItemStack holding = player.getItemInHand();
+        ItemStack holding = player.getInventory().getItem(message.getEquipmentSlot());
 
         if (!InventoryUtil.isEmpty(holding)) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
             if (type != null) {
-                if (type.getContext() == Context.AIR || type.getContext() == Context.AIR_BLOCK) {
+                if (type.getContext() == Context.AIR || type.getContext() == Context.ANY) {
                     type.rightClickAir(player, holding);
                 } else {
                     if (holding.getType() == Material.WATER_BUCKET || holding.getType() == Material.LAVA_BUCKET) {
@@ -29,10 +29,10 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                 }
             }
 
-            if (!InventoryUtil.isEmpty(holding) && holding.getAmount() <= 0) {
+            if (holding.getAmount() <= 0) {
                 holding = InventoryUtil.createEmptyStack();
             }
-            player.setItemInHand(holding);
+            player.getInventory().setItem(message.getEquipmentSlot(), holding);
         }
     }
 }

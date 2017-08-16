@@ -29,7 +29,7 @@ public class FireworkStore extends EntityStore<GlowFirework> {
             entity.setLifeTime(tag.getInt("LifeTime"));
         }
         if (tag.isCompound("FireworksItem")) {
-            entity.setItem(NbtSerialization.readItem(tag.getCompound("FireworksItem")));
+            entity.setFireworkItem(NbtSerialization.readItem(tag.getCompound("FireworksItem")));
         }
         if (tag.isLong("SpawningEntityMost") && tag.isLong("SpawningEntityLeast")) {
             UUID uuid = new UUID(tag.getLong("SpawningEntityMost"), tag.getLong("SpawningEntityLeast"));
@@ -43,7 +43,7 @@ public class FireworkStore extends EntityStore<GlowFirework> {
 
         tag.putInt("Life", entity.getTicksLived());
         tag.putInt("LifeTime", entity.getLifeTime());
-        CompoundTag fireworkItem = NbtSerialization.writeItem(entity.getItem(), -1);
+        CompoundTag fireworkItem = NbtSerialization.writeItem(entity.getFireworkItem(), -1);
         tag.putCompound("FireworksItem", fireworkItem);
 
         tag.putLong("SpawningEntityMost", entity.getSpawningEntity().getMostSignificantBits());

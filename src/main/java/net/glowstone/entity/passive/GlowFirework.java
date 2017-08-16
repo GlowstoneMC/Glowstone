@@ -32,9 +32,6 @@ public class GlowFirework extends GlowEntity implements Firework {
 
     @Getter
     @Setter
-    private ItemStack item;
-    @Getter
-    @Setter
     private UUID spawningEntity;
     @Getter
     private LivingEntity boostedEntity;
@@ -44,6 +41,7 @@ public class GlowFirework extends GlowEntity implements Firework {
     @Getter
     @Setter
     private int lifeTime;
+    public static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK);
 
     public GlowFirework(Location location) {
         super(location);
@@ -59,12 +57,8 @@ public class GlowFirework extends GlowEntity implements Firework {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         setVelocity(new Vector(random.nextGaussian() * 0.001, 0.05, random.nextGaussian() * 0.001));
 
-        this.item = InventoryUtil.itemOrEmpty(item).clone();
-        int power = 0;
-        if (!InventoryUtil.isEmpty(item) && item.getItemMeta() instanceof FireworkMeta) {
-            this.metadata.set(MetadataIndex.FIREWORK_INFO, item.clone());
-            power = ((FireworkMeta) item.getItemMeta()).getPower();
-        }
+        setFireworkItem(item);
+        int power = getFireworkMeta().getPower();
         lifeTime = calculateLifeTime(power);
     }
 
@@ -87,7 +81,7 @@ public class GlowFirework extends GlowEntity implements Firework {
 
     @Override
     public FireworkMeta getFireworkMeta() {
-        return ((FireworkMeta) item.getItemMeta()).clone();
+        return ((FireworkMeta) getFireworkItem().getItemMeta()).clone();
     }
 
     @Override
@@ -96,18 +90,39 @@ public class GlowFirework extends GlowEntity implements Firework {
             return;
         }
 
-        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK.equals(item.getType())) {
-            item = new ItemStack(Material.FIREWORK);
-        }
-
-        this.item.setItemMeta(fireworkMeta.clone());
-        this.metadata.set(MetadataIndex.FIREWORK_INFO, item.clone());
+        ItemStack item = getFireworkItem();
+        item.setItemMeta(fireworkMeta.clone());
+        setFireworkItem(item);
         this.lifeTime = calculateLifeTime(fireworkMeta.getPower());
+    }
+
+    /**
+     * Get
+     * @return
+     */
+    public ItemStack getFireworkItem() {
+        ItemStack item = this.metadata.getItem(MetadataIndex.FIREWORK_INFO);
+        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK.equals(item.getType())) {
+            item = DEFAULT_FIREWORK_ITEM.clone();
+        }
+        return item;
+    }
+
+    /**
+     * Set the firework item of this firework entity.
+     * If an empty ItemStack, or one not of the type {{@link Material#FIREWORK}} was given, an new Firework ItemStack will be created.
+     * @param item FireWork Item this entity should use
+     */
+    public void setFireworkItem(ItemStack item) {
+        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK.equals(item.getType())) {
+            item = DEFAULT_FIREWORK_ITEM.clone();
+        }
+        this.metadata.set(MetadataIndex.FIREWORK_INFO, item.clone());
     }
 
     private int calculateLifeTime(int power) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        return ((power + 1) * 10 + random.nextInt(0, 6) + random.nextInt(0, 7));
+        return ((power + 1) * 10 + random.nextInt(6) + random.nextInt(7));
     }
 
     @Override
@@ -135,7 +150,7 @@ public class GlowFirework extends GlowEntity implements Firework {
         if (!EventFactory.callEvent(new FireworkExplodeEvent(this)).isCancelled()) {
             this.playEffect(EntityEffect.FIREWORK_EXPLODE);
 
-            int effectsSize = item != null && item.getItemMeta() instanceof FireworkMeta ? ((FireworkMeta) item.getItemMeta()).getEffectsSize() : 0;
+            int effectsSize = getFireworkMeta().getEffectsSize();
             if (effectsSize > 0) {
                 if (boostedEntity != null) {
                     boostedEntity.damage((5 + effectsSize * 2), DamageCause.ENTITY_EXPLOSION);
