@@ -41,7 +41,7 @@ public class GlowFirework extends GlowEntity implements Firework {
     @Getter
     @Setter
     private int lifeTime;
-    public static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK);
+    private static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK);
 
     public GlowFirework(Location location) {
         super(location);
@@ -97,8 +97,9 @@ public class GlowFirework extends GlowEntity implements Firework {
     }
 
     /**
-     * Get
-     * @return
+     * Get the underlying firework item.
+     *
+     * @return The Firework ItemStack of this Firework entity, or a new Firework ItemStack
      */
     public ItemStack getFireworkItem() {
         ItemStack item = this.metadata.getItem(MetadataIndex.FIREWORK_INFO);
@@ -110,7 +111,8 @@ public class GlowFirework extends GlowEntity implements Firework {
 
     /**
      * Set the firework item of this firework entity.
-     * If an empty ItemStack, or one not of the type {{@link Material#FIREWORK}} was given, an new Firework ItemStack will be created.
+     * If an empty ItemStack, or none of the type {{@link Material#FIREWORK}} was given, a new Firework ItemStack will be created.
+     *
      * @param item FireWork Item this entity should use
      */
     public void setFireworkItem(ItemStack item) {
