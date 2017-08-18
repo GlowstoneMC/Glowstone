@@ -133,11 +133,11 @@ public class ItemType {
     }
 
     /**
-     * If this item can only be used without any context (essentially used in air)
-     * @return If this item can only be used without any context
+     * Get the context this item can be used in
+     * @return context of the item, default is {{@link Context#BLOCK}}
      */
-    public boolean canOnlyUseSelf() {
-        return false;
+    public Context getContext() {
+        return Context.BLOCK;
     }
 
     /**
@@ -161,5 +161,23 @@ public class ItemType {
     @Override
     public final String toString() {
         return getClass().getSimpleName() + "{" + getId() + " -> " + getMaterial() + "}";
+    }
+
+    /**
+     * Context of the Items interaction
+     */
+    public enum Context {
+        /**
+         * The item can only be used when clicking in the air
+         */
+        AIR,
+        /**
+         * The item can only be used when clicking against a block
+         */
+        BLOCK,
+        /**
+         * The item can be used on any click
+         */
+        ANY
     }
 }

@@ -3,9 +3,11 @@ package net.glowstone.net.handler.play.player;
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.block.itemtype.ItemType.Context;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.UseItemMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,12 +15,12 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
     @Override
     public void handle(GlowSession session, UseItemMessage message) {
         GlowPlayer player = session.getPlayer();
-        ItemStack holding = player.getItemInHand();
+        ItemStack holding = player.getInventory().getItem(message.getEquipmentSlot());
 
-        if (holding != null) {
+        if (!InventoryUtil.isEmpty(holding)) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
             if (type != null) {
-                if (type.canOnlyUseSelf()) {
+                if (type.getContext() == Context.AIR || type.getContext() == Context.ANY) {
                     type.rightClickAir(player, holding);
                 } else {
                     if (holding.getType() == Material.WATER_BUCKET || holding.getType() == Material.LAVA_BUCKET) {
@@ -26,6 +28,11 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                     }
                 }
             }
+
+            if (holding.getAmount() <= 0) {
+                holding = InventoryUtil.createEmptyStack();
+            }
+            player.getInventory().setItem(message.getEquipmentSlot(), holding);
         }
     }
 }

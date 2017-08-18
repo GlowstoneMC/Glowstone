@@ -23,8 +23,8 @@ public class ItemFood extends ItemTimedUsage {
     }
 
     @Override
-    public boolean canOnlyUseSelf() {
-        return true;
+    public Context getContext() {
+        return Context.AIR;
     }
 
     protected int getFoodLevel(ItemStack stack) {

@@ -37,7 +37,7 @@ public class ItemBoat extends ItemType {
     }
 
     @Override
-    public boolean canOnlyUseSelf() {
-        return true;
+    public Context getContext() {
+        return Context.AIR;
     }
 }

@@ -37,6 +37,10 @@ public class GlowChargeFadeMatcher extends ItemMatcher {
         FireworkEffectMeta meta = (FireworkEffectMeta) charge.getItemMeta();
         FireworkEffect old = meta.getEffect();
 
+        if (old == null) {
+            return null;
+        }
+
         FireworkEffect newEffect = FireworkEffect.builder()
                 .with(old.getType())
                 .withColor(old.getColors())
