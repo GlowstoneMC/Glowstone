@@ -7,6 +7,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
+import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -52,10 +53,10 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             } else {
                 double distance = newLocation.distanceSquared(oldLocation);
                 if (distance > 100 * 100) {
-                    session.getPlayer().kickPlayer("You moved too quickly :( (Hacking?)");
+                    player.kickPlayer("You moved too quickly :( (Hacking?)");
                     return;
                 } else if (distance > 100) {
-                    GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly!");
+                    GlowServer.logger.warning(player.getName() + " moved too quickly!");
                 }
             }
         }
@@ -77,7 +78,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
                 return;
             }
 
-            if (!Objects.equals(session.getPlayer().getLocation(), oldLocation)) {
+            if (!Objects.equals(player.getLocation(), oldLocation)) {
                 // plugin changed location on move event
                 return;
             }
@@ -85,6 +86,9 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // move event was not fired or did nothing, simply update location
         player.setRawLocation(newLocation);
+        if (Position.hasRotated(oldLocation, newLocation)) {
+            player.setHeadYaw(newLocation.getYaw());
+        }
 
         // do stuff with onGround if we need to
         if (player.isOnGround() != message.isOnGround()) {
