@@ -10,6 +10,6 @@ public class UseItemMessage implements Message {
     private final int hand;
 
     public EquipmentSlot getEquipmentSlot() {
-        return EquipmentSlot.values()[hand];
+        return hand == 1 ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND;
     }
 }
