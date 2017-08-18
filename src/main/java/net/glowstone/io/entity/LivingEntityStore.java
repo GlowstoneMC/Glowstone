@@ -134,7 +134,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             }
         }
 
-        if (compound.isByte("Leashed") && !compound.isCompound("Leash")) {
+        if (compound.isByte("Leashed") && compound.getBool("Leashed") && !compound.isCompound("Leash")) {
             // We know that there was something leashed, but not what entity it was
             // This can happen, when for example Minecart got leashed
             // We still have to make sure that we drop a Leash Item
