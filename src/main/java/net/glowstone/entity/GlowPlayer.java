@@ -701,6 +701,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(new SetPassengerMessage(SELF_ID, getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
         }
         getAttributeManager().sendMessages(session);
+
+        if (currentFishingHook != null && getInventory().getItemInMainHand().getType() != Material.FISHING_ROD && getInventory().getItemInOffHand().getType() != Material.FISHING_ROD) {
+            setCurrentFishingHook(null);
+        }
     }
 
     @Override
