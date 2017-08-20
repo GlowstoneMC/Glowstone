@@ -1,13 +1,11 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.glowstone.constants.GlowBiomeClimate;
+import net.glowstone.entity.FishingRewardManager.RewardCategory;
+import net.glowstone.entity.FishingRewardManager.RewardItem;
 import net.glowstone.entity.GlowProjectile;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -28,8 +26,6 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     private int lifeTime;
     private ItemStack itemStack;
 
-    private static final Multimap<RewardCategory, RewardItem> REWARDS = HashMultimap.create();
-
     public GlowFishingHook(Location location) {
         this(location, null);
     }
@@ -40,15 +36,13 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
         // "There will be a period where the player must wait, randomly chosen from 5 to 45 seconds."
         lifeTime = ThreadLocalRandom.current().nextInt(5, 46);
-        if (!InventoryUtil.isEmpty(itemStack) && itemStack.getType() == Material.FISHING_ROD) {
-            // "Each level of Lure enchantment on the fishing rod will subtract 5 seconds from this wait time."
-            int level = itemStack.getEnchantmentLevel(Enchantment.LURE);
-            lifeTime -= level * 5;
-            lifeTime = Math.max(lifeTime, 0);
 
-            this.itemStack = itemStack.clone();
-        }
+        int level = getEnchantmentLevel(Enchantment.LURE);
+        lifeTime -= level * 5;
+        lifeTime = Math.max(lifeTime, 0);
         lifeTime *= 20;
+
+        this.itemStack = InventoryUtil.itemOrEmpty(itemStack).clone();
 
         // TODO: velocity does not match vanilla
         Vector direction = location.getDirection();
@@ -137,35 +131,35 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     private ItemStack getRewardItem() {
         RewardCategory rewardCategory = getRewardCategory();
-        int level = getEnchantmentLevel();
+        int level = getEnchantmentLevel(Enchantment.LUCK);
 
-        if (rewardCategory == null || REWARDS.get(rewardCategory).isEmpty()) {
+        if (rewardCategory == null || world.getServer().getFishingRewardManager().getCategoryItems(rewardCategory).isEmpty()) {
             return InventoryUtil.createEmptyStack();
         }
-        double rewardCategoryChance = rewardCategory.chance + rewardCategory.modifier * level;
+        double rewardCategoryChance = rewardCategory.getChance() + rewardCategory.getModifier() * level;
         double random = ThreadLocalRandom.current().nextDouble(100);
 
-        for (RewardItem rewardItem : REWARDS.get(rewardCategory)) {
-            random -= rewardItem.chance * rewardCategoryChance / 100.0;
+        for (RewardItem rewardItem : world.getServer().getFishingRewardManager().getCategoryItems(rewardCategory)) {
+            random -= rewardItem.getChance() * rewardCategoryChance / 100.0;
             if (random < 0) {
                 // TODO: enchantments and damage on book, bow, and fishingrode
-                return rewardItem.item.clone();
+                return rewardItem.getItem().clone();
             }
         }
 
         return InventoryUtil.createEmptyStack();
     }
 
-    private int getEnchantmentLevel() {
-        return !InventoryUtil.isEmpty(itemStack) && itemStack.getType() == Material.FISHING_ROD ? itemStack.getEnchantmentLevel(Enchantment.LUCK) : 0;
+    private int getEnchantmentLevel(Enchantment enchantment) {
+        return !InventoryUtil.isEmpty(itemStack) && itemStack.getType() == Material.FISHING_ROD ? itemStack.getEnchantmentLevel(enchantment) : 0;
     }
 
     private RewardCategory getRewardCategory() {
-        int level = getEnchantmentLevel();
+        int level = getEnchantmentLevel(Enchantment.LUCK);
         double random = ThreadLocalRandom.current().nextDouble(100);
 
         for (RewardCategory rewardCategory : RewardCategory.values()) {
-            random -= rewardCategory.chance + rewardCategory.modifier * level;
+            random -= rewardCategory.getChance() + rewardCategory.getModifier() * level;
             if (random <= 0) {
                 return rewardCategory;
             }

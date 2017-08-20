@@ -21,6 +21,7 @@ import net.glowstone.command.minecraft.*;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
+import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.generator.*;
@@ -271,6 +272,11 @@ public final class GlowServer implements Server {
      * The {@link GlowAdvancement}s of this server.
      */
     private final Map<NamespacedKey, Advancement> advancements;
+    /**
+     * The FishingRewards of this server.
+     */
+    @Getter
+    private final FishingRewardManager fishingRewardManager;
 
     /**
      * Creates a new server.
@@ -278,7 +284,10 @@ public final class GlowServer implements Server {
      * @param config This server's config.
      */
     public GlowServer(ServerConfig config) {
+        Bukkit.setServer(this);
+
         materialValueManager = new BuiltinMaterialValueManager();
+        fishingRewardManager = new FishingRewardManager();
         bossBarManager = new BossBarManager(this);
         advancements = new HashMap<>();
         // test advancement
@@ -295,7 +304,6 @@ public final class GlowServer implements Server {
         nameBans = new GlowBanList(this, Type.NAME);
         ipBans = new GlowBanList(this, Type.IP);
 
-        Bukkit.setServer(this);
         loadConfig();
     }
 
