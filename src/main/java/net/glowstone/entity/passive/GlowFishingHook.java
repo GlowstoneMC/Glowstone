@@ -33,20 +33,24 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     public GlowFishingHook(Location location, ItemStack itemStack) {
         super(location);
         setSize(0.25f, 0.25f);
-
-        // "There will be a period where the player must wait, randomly chosen from 5 to 45 seconds."
-        lifeTime = ThreadLocalRandom.current().nextInt(5, 46);
-
-        int level = getEnchantmentLevel(Enchantment.LURE);
-        lifeTime -= level * 5;
-        lifeTime = Math.max(lifeTime, 0);
-        lifeTime *= 20;
+        lifeTime = calculateLifeTime();
 
         this.itemStack = InventoryUtil.itemOrEmpty(itemStack).clone();
 
         // TODO: velocity does not match vanilla
         Vector direction = location.getDirection();
         setVelocity(direction.multiply(1.5));
+    }
+
+    private int calculateLifeTime() {
+        // "There will be a period where the player must wait, randomly chosen from 5 to 45 seconds."
+        int lifeTime = ThreadLocalRandom.current().nextInt(5, 46);
+
+        int level = getEnchantmentLevel(Enchantment.LURE);
+        lifeTime -= level * 5;
+        lifeTime = Math.max(lifeTime, 0);
+        lifeTime *= 20;
+        return lifeTime;
     }
 
     @Override
@@ -101,6 +105,13 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     }
 
     private void increaseTimeLived() {
+        // "The window for reeling in when a fish bites is about half a second.
+        // If a bite is missed, the line can be left in the water to wait for another bite."
+        if (lived - lifeTime > 10) {
+            lifeTime = calculateLifeTime();
+            lived = 0;
+        }
+
         // "If the bobber is not directly exposed to sun or moonlight,[note 1] the wait time will be approximately doubled.[note 2]"
         Block highestBlockAt = world.getHighestBlockAt(location);
         if (location.getY() < highestBlockAt.getLocation().getY()) {
