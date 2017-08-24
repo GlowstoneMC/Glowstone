@@ -702,8 +702,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         getAttributeManager().sendMessages(session);
 
-        if (currentFishingHook != null && getInventory().getItemInMainHand().getType() != Material.FISHING_ROD && getInventory().getItemInOffHand().getType() != Material.FISHING_ROD) {
-            setCurrentFishingHook(null);
+        if (currentFishingHook != null) {
+            // The line will disappear if the player wanders more than 32 blocks away from the bobber, or if the player stops holding a fishing rod.
+            if (getInventory().getItemInMainHand().getType() != Material.FISHING_ROD && getInventory().getItemInOffHand().getType() != Material.FISHING_ROD) {
+                setCurrentFishingHook(null);
+            }
+
+            if (currentFishingHook.location.distanceSquared(location) > 32 * 32) {
+                setCurrentFishingHook(null);
+            }
         }
     }
 
