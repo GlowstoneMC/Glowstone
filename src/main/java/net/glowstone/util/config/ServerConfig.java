@@ -356,6 +356,7 @@ public final class ServerConfig {
         RESOURCE_PACK("game.resource-pack", "", Migrate.PROPS, "resource-pack"),
         RESOURCE_PACK_HASH("game.resource-pack-hash", "", Migrate.PROPS, "resource-pack-hash"),
         SNOOPER_ENABLED("server.snooper-enabled", false, Migrate.PROPS, "snooper-enabled"),
+        PREVENT_PROXY("server.prevent-proxy-connections", true, Migrate.PROPS, "prevent-proxy-connections"),
 
         // critters
         SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters"),

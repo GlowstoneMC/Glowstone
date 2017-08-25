@@ -2091,4 +2091,8 @@ public final class GlowServer implements Server {
     public boolean doesUseGPGPU() {
         return isCLApplicable && config.getBoolean(Key.GPGPU);
     }
+
+    public boolean shouldPreventProxy() {
+        return config.getBoolean(Key.PREVENT_PROXY);
+    }
 }
