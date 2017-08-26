@@ -105,9 +105,9 @@ public class EffectCommand extends VanillaCommand {
         }
     }
     
-    private PotionEffectType parseEffectName(String name) {
+    private PotionEffectType parseEffectName(String effectName) {
         try {
-            int effectId = Integer.parseInt(name);
+            int effectId = Integer.parseInt(effectName);
             PotionEffectType type = PotionEffectType.getById(effectId);
             
             if (type == null) {
@@ -116,7 +116,10 @@ public class EffectCommand extends VanillaCommand {
                 return type;
             }
         } catch (NumberFormatException exc) {
-            PotionEffectType type = PotionEffectType.getByName(name);
+            if (effectName.startsWith("minecraft:")) {
+                effectName = effectName.split(":")[1];
+            }
+            PotionEffectType type = PotionEffectType.getByName(effectName);
             
             if (type == null) {
                 return null;
