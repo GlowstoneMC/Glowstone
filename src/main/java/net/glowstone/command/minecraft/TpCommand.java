@@ -117,7 +117,7 @@ public class TpCommand extends VanillaCommand {
                                 sender.sendMessage(ChatColor.RED + "Player '" + destName + "' is not online");
                                 return false;
                             } else {
-                                destination = player;
+                                destination = player2;
                             }
                         }
                     }
