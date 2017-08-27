@@ -1,13 +1,20 @@
 package net.glowstone.constants;
 
-import org.bukkit.Color;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.potion.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.bukkit.Color;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionBrewer;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffectTypeWrapper;
+import org.bukkit.potion.PotionType;
 
 /**
  * Definitions of potion effect types.
@@ -46,6 +53,11 @@ public final class GlowPotionEffect extends PotionEffectType {
         } else {
             return null;
         }
+    }
+    
+    public static List<String> getEffectNames() {
+        return Arrays.stream(Impl.values()).map(impl -> impl.toString().toLowerCase()).collect(
+            Collectors.toList());
     }
 
     @Override

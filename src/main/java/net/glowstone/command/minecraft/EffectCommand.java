@@ -1,11 +1,13 @@
 package net.glowstone.command.minecraft;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,14 +15,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.StringUtil;
 
 public class EffectCommand extends VanillaCommand {
+    
+    private static final List<String> EFFECT_NAMES = GlowPotionEffect.getEffectNames();
     
     public EffectCommand() {
         super("effect",
             "Gives a player an effect",
             "/effect <player> clear OR /effect <player> <effect> [seconds] [amplifier] [hideParticles]",
             Collections.emptyList());
+        setPermission("minecraft.command.effect");
     }
     
     @Override
@@ -103,6 +109,20 @@ public class EffectCommand extends VanillaCommand {
             }
             return true;
         }
+    }
+    
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        if (args == null) {
+            return Collections.emptyList();
+        } else if (args.length == 2) {
+            String effectName = args[1];
+            if (effectName.startsWith("minecraft:")) {
+                effectName = effectName.split(":")[1];
+            }
+            return StringUtil.copyPartialMatches(effectName, EFFECT_NAMES, new ArrayList(EFFECT_NAMES.size()));
+        }
+        return super.tabComplete(sender, alias, args);
     }
     
     private PotionEffectType parseEffectName(String effectName) {
