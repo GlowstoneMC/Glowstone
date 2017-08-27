@@ -19,7 +19,7 @@ import org.bukkit.util.StringUtil;
 
 public class EffectCommand extends VanillaCommand {
     
-    private static final List<String> EFFECT_NAMES = GlowPotionEffect.getEffectNames();
+    private static final List<String> VANILLA_IDS = GlowPotionEffect.getVanillaIds();
     
     public EffectCommand() {
         super("effect",
@@ -68,7 +68,7 @@ public class EffectCommand extends VanillaCommand {
             }
             return true;
         } else {
-            PotionEffectType effectType = parseEffectName(args[1]);
+            PotionEffectType effectType = GlowPotionEffect.parsePotionEffectId(args[1]);
             if (effectType == null) {
                 sender.sendMessage(ChatColor.RED + "Potion effect " + args[1] + " is unknown");
                 return false;
@@ -117,35 +117,14 @@ public class EffectCommand extends VanillaCommand {
             return Collections.emptyList();
         } else if (args.length == 2) {
             String effectName = args[1];
-            if (effectName.startsWith("minecraft:")) {
-                effectName = effectName.split(":")[1];
+            
+            if (!effectName.startsWith("minecraft:")) {
+                final int colonIndex = effectName.indexOf(':');
+                effectName = "minecraft:" + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
             }
-            return StringUtil.copyPartialMatches(effectName, EFFECT_NAMES, new ArrayList(EFFECT_NAMES.size()));
+            
+            return StringUtil.copyPartialMatches(effectName, VANILLA_IDS, new ArrayList(VANILLA_IDS.size()));
         }
         return super.tabComplete(sender, alias, args);
-    }
-    
-    private PotionEffectType parseEffectName(String effectName) {
-        try {
-            int effectId = Integer.parseInt(effectName);
-            PotionEffectType type = PotionEffectType.getById(effectId);
-            
-            if (type == null) {
-                return null;
-            } else {
-                return type;
-            }
-        } catch (NumberFormatException exc) {
-            if (effectName.startsWith("minecraft:")) {
-                effectName = effectName.split(":")[1];
-            }
-            PotionEffectType type = PotionEffectType.getByName(effectName);
-            
-            if (type == null) {
-                return null;
-            } else {
-                return type;
-            }
-        }
     }
 }
