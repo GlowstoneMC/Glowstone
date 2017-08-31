@@ -21,7 +21,10 @@ import org.json.simple.parser.ParseException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -99,6 +102,17 @@ public final class EncryptionKeyResponseHandler implements MessageHandler<GlowSe
         }
 
         String url = BASE_URL + "?username=" + session.getVerifyUsername() + "&serverId=" + hash;
+        if (session.getServer().shouldPreventProxy()) {
+            try {
+                //in case we are dealing with an IPv6 address rather than an IPv4 we have to encode it properly
+                url += "&ip=" + URLEncoder.encode(session.getAddress().getAddress().getHostAddress(), "UTF-8");
+            } catch (UnsupportedEncodingException encodingEx) {
+                //unlikely to happen, because UTF-8 is part of the StandardCharset in Java
+                //but if it happens, the client will still able to login, because we won't add the IP parameter
+                GlowServer.logger.log(Level.WARNING, "Cannot encode ip address for proxy check", encodingEx);
+            }
+        }
+
         HttpClient.connect(url, session.getChannel().eventLoop(), new ClientAuthCallback(session));
     }
 
