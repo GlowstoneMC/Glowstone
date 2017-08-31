@@ -200,7 +200,7 @@ public class GlowInventory implements Inventory {
         }
         ItemStack maxStack = stack.clone();
         maxStack.setAmount(stack.getMaxStackSize());
-        Integer firstEmpty = null;
+        int firstEmpty = -1;
         for (int s = 0; s < slots.length && stack.getAmount() > 0; s += 2) {
             // Iterate through all pairs of start and end slots
             int start = slots[s];
@@ -214,7 +214,7 @@ public class GlowInventory implements Inventory {
 
                 ItemStack currentStack = getItem(i);
                 // Store the first empty slot
-                if (firstEmpty == null && InventoryUtil.isEmpty(currentStack)) {
+                if (firstEmpty == -1 && InventoryUtil.isEmpty(currentStack)) {
                     firstEmpty = i;
                 } else if (currentStack.isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
                     // Calculate the amount of transferable items
@@ -231,7 +231,7 @@ public class GlowInventory implements Inventory {
 
             }
         }
-        if (firstEmpty != null) { // Fill empty slot
+        if (firstEmpty != -1) { // Fill empty slot
             if (stack.getAmount() > stack.getMaxStackSize()) {
                 setItem(firstEmpty, maxStack);
                 stack.setAmount(stack.getAmount() - stack.getMaxStackSize());
