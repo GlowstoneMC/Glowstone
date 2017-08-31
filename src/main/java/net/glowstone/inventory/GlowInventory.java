@@ -200,6 +200,7 @@ public class GlowInventory implements Inventory {
         }
         ItemStack maxStack = stack.clone();
         maxStack.setAmount(stack.getMaxStackSize());
+        Integer firstEmpty = null;
         for (int s = 0; s < slots.length && stack.getAmount() > 0; s += 2) {
             // Iterate through all pairs of start and end slots
             int start = slots[s];
@@ -212,15 +213,9 @@ public class GlowInventory implements Inventory {
                 }
 
                 ItemStack currentStack = getItem(i);
-                if (InventoryUtil.isEmpty(currentStack)) {
-                    if (stack.getAmount() > stack.getMaxStackSize()) {
-                        setItem(i, maxStack);
-                        stack.setAmount(stack.getAmount() - stack.getMaxStackSize());
-                    } else {
-                        ItemStack finalStack = stack.clone();
-                        setItem(i, finalStack);
-                        stack.setAmount(0);
-                    }
+                // Store the first empty slot
+                if (firstEmpty == null && InventoryUtil.isEmpty(currentStack)) {
+                    firstEmpty = i;
                 } else if (currentStack.isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
                     // Calculate the amount of transferable items
                     int amount = currentStack.getAmount();
@@ -234,6 +229,16 @@ public class GlowInventory implements Inventory {
                     setItem(i, currentStack);
                 }
 
+            }
+        }
+        if (firstEmpty != null) { // Fill empty slot
+            if (stack.getAmount() > stack.getMaxStackSize()) {
+                setItem(firstEmpty, maxStack);
+                stack.setAmount(stack.getAmount() - stack.getMaxStackSize());
+            } else {
+                ItemStack finalStack = stack.clone();
+                setItem(firstEmpty, finalStack);
+                stack.setAmount(0);
             }
         }
         if (stack.getAmount() <= 0) {
