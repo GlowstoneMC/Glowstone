@@ -1,21 +1,13 @@
 package net.glowstone.constants;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.bukkit.Color;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionBrewer;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionEffectTypeWrapper;
-import org.bukkit.potion.PotionType;
+import org.bukkit.potion.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Definitions of potion effect types.
@@ -23,13 +15,14 @@ import org.bukkit.potion.PotionType;
 public final class GlowPotionEffect extends PotionEffectType {
 
     private static final List<String> VANILLA_IDS = new ArrayList<>();
-    
+    private static final Map<String, PotionEffectType> BY_VANILLA_ID = new HashMap<>();
+
     private final Impl impl;
 
     static {
         VANILLA_IDS.addAll(Arrays.stream(Impl.values()).map(Impl::getVanillaId).collect(Collectors.toSet()));
     }
-    
+
     private GlowPotionEffect(Impl impl) {
         super(impl.id);
         this.impl = impl;
@@ -41,7 +34,9 @@ public final class GlowPotionEffect extends PotionEffectType {
     public static void register() {
         Potion.setPotionBrewer(new Brewer());
         for (Impl impl : Impl.values()) {
-            registerPotionEffectType(new GlowPotionEffect(impl));
+            GlowPotionEffect effect = new GlowPotionEffect(impl);
+            BY_VANILLA_ID.put(impl.getVanillaId(), effect);
+            registerPotionEffectType(effect);
         }
         stopAcceptingRegistrations();
     }
@@ -61,7 +56,7 @@ public final class GlowPotionEffect extends PotionEffectType {
             return null;
         }
     }
-    
+
     /**
      * Parses a PotionEffect id or name if possible.
      *
@@ -72,7 +67,7 @@ public final class GlowPotionEffect extends PotionEffectType {
         try {
             int effectId = Integer.parseInt(effectName);
             PotionEffectType type = PotionEffectType.getById(effectId);
-            
+
             if (type == null) {
                 return null;
             } else {
@@ -80,18 +75,29 @@ public final class GlowPotionEffect extends PotionEffectType {
             }
         } catch (NumberFormatException exc) {
             if (effectName.startsWith("minecraft:")) {
-                effectName = effectName.split(":")[1];
-            }
-            PotionEffectType type = PotionEffectType.getByName(effectName);
-            
-            if (type == null) {
-                return null;
+                PotionEffectType type = GlowPotionEffect.getByVanillaId(effectName);
+
+                if (type == null) {
+                    return null;
+                } else {
+                    return type;
+                }
             } else {
-                return type;
+                PotionEffectType type = PotionEffectType.getByName(effectName);
+
+                if (type == null) {
+                    return null;
+                } else {
+                    return type;
+                }
             }
         }
     }
-    
+
+    public static PotionEffectType getByVanillaId(String vanillaId) {
+        return BY_VANILLA_ID.get(vanillaId);
+    }
+
     @Override
     public String getName() {
         return impl.name();
@@ -105,7 +111,7 @@ public final class GlowPotionEffect extends PotionEffectType {
     public String getVanillaId() {
         return impl.getVanillaId();
     }
-    
+
     public static List<String> getVanillaIds() {
         return VANILLA_IDS;
     }
@@ -145,7 +151,7 @@ public final class GlowPotionEffect extends PotionEffectType {
         SPEED(1, false, 1.0, "minecraft:speed"),
         SLOW(2, false, 0.5, "minecraft:slowness"),
         FAST_DIGGING(3, false, 1.5, "minecraft:haste"),
-        SLOW_DIGGING(4, false, 0.5, "minecraft:mining_fatigue "),
+        SLOW_DIGGING(4, false, 0.5, "minecraft:mining_fatigue"),
         INCREASE_DAMAGE(5, false, 1.0, "minecraft:strength"),
         HEAL(6, true, 1.0, "minecraft:instant_heal"),
         HARM(7, true, 0.5, "minecraft:instant_damage"),
@@ -181,7 +187,7 @@ public final class GlowPotionEffect extends PotionEffectType {
             this.modifier = modifier;
             this.vanillaId = vanillaId;
         }
-        
+
         public String getVanillaId() {
             return vanillaId;
         }
