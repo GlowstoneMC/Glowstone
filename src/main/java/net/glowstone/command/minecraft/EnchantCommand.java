@@ -6,6 +6,7 @@ import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.enchantments.Enchantment;
@@ -69,10 +70,14 @@ public class EnchantCommand extends VanillaCommand {
             return false;
         }
 
-        players.stream().map(GlowPlayer::getItemInHand).filter(Objects::nonNull).forEach(itemStack -> {
-            itemStack.addUnsafeEnchantment(enchantment, level);
-            sender.sendMessage("Enchanting succeeded");
-        });
+        players.stream().map(GlowPlayer::getItemInHand)
+                .filter(itemStack -> itemStack.getData().getItemType() != Material.AIR)
+                .filter(Objects::nonNull)
+                .filter(enchantment::canEnchantItem)
+                .forEach(itemStack -> {
+                    itemStack.addUnsafeEnchantment(enchantment, level);
+                    sender.sendMessage("Enchanting succeeded");
+                });
         return true;
     }
 
