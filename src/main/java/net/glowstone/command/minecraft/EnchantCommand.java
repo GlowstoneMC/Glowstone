@@ -71,8 +71,8 @@ public class EnchantCommand extends VanillaCommand {
         }
 
         players.stream().map(GlowPlayer::getItemInHand)
-                .filter(itemStack -> itemStack.getData().getItemType() != Material.AIR)
                 .filter(Objects::nonNull)
+                .filter(itemStack -> itemStack.getData().getItemType() != Material.AIR)
                 .filter(enchantment::canEnchantItem)
                 .forEach(itemStack -> {
                     itemStack.addUnsafeEnchantment(enchantment, level);
