@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
@@ -70,12 +71,14 @@ public class EnchantCommand extends VanillaCommand {
             return false;
         }
 
-        players.stream().map(GlowPlayer::getItemInHand)
-                .filter(Objects::nonNull)
-                .filter(itemStack -> itemStack.getData().getItemType() != Material.AIR)
-                .filter(enchantment::canEnchantItem)
-                .forEach(itemStack -> {
-                    itemStack.addUnsafeEnchantment(enchantment, level);
+        players.stream()
+                .filter(player -> player.getItemInHand() != null)
+                .filter(player -> player.getItemInHand().getData().getItemType() != Material.AIR)
+                .filter(player -> enchantment.canEnchantItem(player.getItemInHand()))
+                .forEach(player -> {
+                    ItemStack itemInHand = player.getItemInHand();
+                    itemInHand.addUnsafeEnchantment(enchantment, level);
+                    player.setItemInHand(itemInHand);
                     sender.sendMessage("Enchanting succeeded");
                 });
         return true;
