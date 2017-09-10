@@ -49,6 +49,11 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
+    public Career getCareer() {
+        return career;
+    }
+
+    @Override
     public void setCareer(Career career) {
         if (profession == null || profession.isZombie()) {
             return;
