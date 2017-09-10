@@ -1,9 +1,17 @@
 package net.glowstone.io.entity;
 
 import net.glowstone.entity.passive.GlowVillager;
+import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.TagType;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantRecipe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class VillagerStore extends AgeableStore<GlowVillager> {
 
@@ -19,6 +27,43 @@ class VillagerStore extends AgeableStore<GlowVillager> {
         } else {
             entity.setProfession(Profession.FARMER);
         }
+        if (compound.isInt("Career")) {
+            int id = compound.getInt("Career");
+            Villager.Career career = GlowVillager.getCareerById(id, entity.getProfession());
+            if (career != null) {
+                entity.setCareer(career);
+            }
+        }
+        if (compound.isInt("Riches")) {
+            entity.setRiches(compound.getInt("Riches"));
+        }
+        // Recipes
+        if (compound.isCompound("Offers")) {
+            CompoundTag offers = compound.getCompound("Offers");
+            if (offers.isList("Recipes", TagType.COMPOUND)) {
+                entity.clearRecipes();
+                List<CompoundTag> recipesList = offers.getList("Recipes", TagType.COMPOUND);
+                for (CompoundTag recipeTag : recipesList) {
+                    boolean experienceReward = recipeTag.getBool("rewardExp");
+                    int uses = recipeTag.getInt("uses");
+                    int maxUses = recipeTag.getInt("maxUses");
+                    CompoundTag sellTag = recipeTag.getCompound("sell"), buy1tag = recipeTag.getCompound("buy"), buy2tag = null;
+                    if (recipeTag.isCompound("buyB")) {
+                        buy2tag = recipeTag.getCompound("buyB");
+                    }
+                    List<ItemStack> ingredients = new ArrayList<>();
+                    ItemStack sell = NbtSerialization.readItem(sellTag);
+                    ItemStack buy = NbtSerialization.readItem(buy1tag);
+                    ingredients.add(buy);
+                    if (buy2tag != null) {
+                        ingredients.add(NbtSerialization.readItem(buy2tag));
+                    }
+                    MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses, experienceReward);
+                    recipe.setIngredients(ingredients);
+                    entity.getRecipes().add(recipe);
+                }
+            }
+        }
 
         //TODO: remaining data
     }
@@ -27,6 +72,26 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     public void save(GlowVillager entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putInt("Profession", entity.getProfession().ordinal());
+        if (entity.getCareer() != null) {
+            tag.putInt("Career", entity.getCareer().getId());
+        }
+        tag.putInt("Riches", entity.getRiches());
+        // Recipes
+        CompoundTag offers = new CompoundTag();
+        List<CompoundTag> recipesList = new ArrayList<>();
+        for (MerchantRecipe recipe : entity.getRecipes()) {
+            CompoundTag recipeTag = new CompoundTag();
+            recipeTag.putBool("rewardExp", recipe.hasExperienceReward());
+            recipeTag.putInt("uses", recipe.getUses());
+            recipeTag.putInt("maxUses", recipe.getMaxUses());
+            recipeTag.putCompound("sell", NbtSerialization.writeItem(recipe.getResult(), 0));
+            recipeTag.putCompound("buy", NbtSerialization.writeItem(recipe.getIngredients().get(0), 0));
+            if (recipe.getIngredients().size() > 1) {
+                recipeTag.putCompound("buyB", NbtSerialization.writeItem(recipe.getIngredients().get(1), 0));
+            }
+        }
+        offers.putCompoundList("Recipes", recipesList);
+        tag.putCompound("Offers", offers);
         //TODO: remaining data
     }
 
