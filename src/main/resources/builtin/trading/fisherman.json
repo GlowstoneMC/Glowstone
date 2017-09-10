@@ -1,0 +1,79 @@
+{
+    "career": "FISHERMAN",
+    "tiers": [
+        [
+            {
+                "ingredients": [
+                    {
+                        "item": "minecraft:string",
+                        "quantity": {
+                            "max": 20,
+                            "min": 15
+                        }
+                    }
+                ],
+                "result": [
+                    {
+                        "item": "minecraft:emerald",
+                        "quantity": 1
+                    }
+                ]
+            },
+            {
+                "ingredients": [
+                    {
+                        "item": "minecraft:coal",
+                        "quantity": {
+                            "max": 24,
+                            "min": 16
+                        }
+                    }
+                ],
+                "result": [
+                    {
+                        "item": "minecraft:emerald",
+                        "quantity": 1
+                    }
+                ]
+            },
+            {
+                "ingredients": [
+                    {
+                        "item": "minecraft:fish",
+                        "quantity": 6
+                    },
+                    {
+                        "item": "minecraft:emerald",
+                        "quantity": 1
+                    }
+                ],
+                "result": [
+                    {
+                        "item": "minecraft:cooked_fish",
+                        "quantity": 6
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "ingredients": [
+                    {
+                        "item": "minecraft:emerald",
+                        "quantity": {
+                            "max": 8,
+                            "min": 7
+                        }
+                    }
+                ],
+                "result": [
+                    {
+                        "item": "minecraft:fishing_rod",
+                        "enchanted": true,
+                        "quantity": 1
+                    }
+                ]
+            }
+        ]
+    ]
+}
