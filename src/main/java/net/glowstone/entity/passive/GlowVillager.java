@@ -26,6 +26,8 @@ public class GlowVillager extends GlowAgeable implements Villager {
     private int riches;
     private GlowHumanEntity trader;
     private List<MerchantRecipe> recipes = new ArrayList<>();
+    private boolean willing;
+    private int careerLevel;
 
     public GlowVillager(Location location) {
         super(location, EntityType.VILLAGER, 20);
@@ -130,6 +132,42 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public void setRiches(int riches) {
         this.riches = riches;
+    }
+
+    /**
+     * Get whether or not this villager is willing to mate.
+     *
+     * @return true if this villager is willing to mate, false otherwise
+     */
+    public boolean isWilling() {
+        return willing;
+    }
+
+    /**
+     * Sets whether or not this villager is willing to mate.
+     *
+     * @param willing true if this villager is willing to mate, false otherwise
+     */
+    public void setWilling(boolean willing) {
+        this.willing = willing;
+    }
+
+    /**
+     * Get the current level of this villager's trading options.
+     *
+     * @return the current level of this villager's trading options
+     */
+    public int getCareerLevel() {
+        return careerLevel;
+    }
+
+    /**
+     * Set the current level of this villager's trading options.
+     *
+     * @param careerLevel the level of this villager's trading options
+     */
+    public void setCareerLevel(int careerLevel) {
+        this.careerLevel = careerLevel;
     }
 
     @Override

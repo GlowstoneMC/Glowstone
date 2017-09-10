@@ -37,6 +37,12 @@ class VillagerStore extends AgeableStore<GlowVillager> {
         if (compound.isInt("Riches")) {
             entity.setRiches(compound.getInt("Riches"));
         }
+        if (compound.isByte("Willing")) {
+            entity.setWilling(compound.getBool("Willing"));
+        }
+        if (compound.isInt("CareerLevel")) {
+            entity.setCareerLevel(compound.getInt("CareerLevel"));
+        }
         // Recipes
         if (compound.isCompound("Offers")) {
             CompoundTag offers = compound.getCompound("Offers");
@@ -76,6 +82,8 @@ class VillagerStore extends AgeableStore<GlowVillager> {
             tag.putInt("Career", entity.getCareer().getId());
         }
         tag.putInt("Riches", entity.getRiches());
+        tag.putBool("Willing", entity.isWilling());
+        tag.putInt("CareerLevel", entity.getCareerLevel());
         // Recipes
         CompoundTag offers = new CompoundTag();
         List<CompoundTag> recipesList = new ArrayList<>();
@@ -89,6 +97,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
             if (recipe.getIngredients().size() > 1) {
                 recipeTag.putCompound("buyB", NbtSerialization.writeItem(recipe.getIngredients().get(1), 0));
             }
+            recipesList.add(recipeTag);
         }
         offers.putCompoundList("Recipes", recipesList);
         tag.putCompound("Offers", offers);
