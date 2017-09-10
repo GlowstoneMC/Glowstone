@@ -15,10 +15,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.EntityEffectMessage;
-import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
-import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
-import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
+import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.*;
@@ -550,6 +547,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return true;
     }
 
+    /**
+     * Get whether of not this entity is an arthropod.
+     *
+     * @return true if this entity is an arthropod, false otherwise
+     */
+    public boolean isArthropod() {
+        return false;
+    }
+
+    /**
+     * Get whether or not this entity is undead.
+     *
+     * @return true if this entity is undead, false otherwise
+     */
+    public boolean isUndead() {
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Line of Sight
 
@@ -982,6 +997,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setArrowsStuck(int arrowsStuck) {
         // todo: 1.11
+    }
+
+    @Override
+    public void playAnimation(EntityAnimation animation) {
+        AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
+        getWorld().getRawPlayers().stream()
+                .filter(observer -> observer != this && observer.canSeeEntity(this))
+                .forEach(observer -> observer.getSession().send(message));
     }
 
     @Override

@@ -1729,9 +1729,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // Call event
         EventFactory.callEvent(new PlayerBedLeaveEvent(this, head));
 
-        getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.LEAVE_BED));
-        AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.LEAVE_BED);
-        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
+        playAnimationToSelf(EntityAnimation.LEAVE_BED);
+        playAnimation(EntityAnimation.LEAVE_BED);
     }
 
     @Override
@@ -2990,5 +2989,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public boolean isInWater() {
         Material mat = getLocation().getBlock().getType();
         return mat == Material.WATER || mat == Material.STATIONARY_WATER;
+    }
+
+    @Override
+    public void playAnimationToSelf(EntityAnimation animation) {
+        AnimateEntityMessage message = new AnimateEntityMessage(SELF_ID, animation.ordinal());
+        getSession().send(message);
     }
 }

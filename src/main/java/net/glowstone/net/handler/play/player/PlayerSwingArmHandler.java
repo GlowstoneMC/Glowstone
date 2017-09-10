@@ -1,12 +1,11 @@
 package net.glowstone.net.handler.play.player;
 
-import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.player.PlayerSwingArmMessage;
+import org.bukkit.EntityAnimation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
@@ -36,8 +35,7 @@ public final class PlayerSwingArmHandler implements MessageHandler<GlowSession, 
 
         if (!EventFactory.callEvent(new PlayerAnimationEvent(player)).isCancelled()) {
             // play the animation to others
-            Message toSend = new AnimateEntityMessage(player.getEntityId(), message.getHand() == 1 ? AnimateEntityMessage.SWING_OFF_HAND : AnimateEntityMessage.SWING_MAIN_HAND);
-            player.getWorld().getRawPlayers().stream().filter(observer -> observer != player && observer.canSeeEntity(player)).forEach(observer -> observer.getSession().send(toSend));
+            player.playAnimation(message.getHand() == 1 ? EntityAnimation.SWING_OFF_HAND : EntityAnimation.SWING_MAIN_HAND);
         }
     }
 }

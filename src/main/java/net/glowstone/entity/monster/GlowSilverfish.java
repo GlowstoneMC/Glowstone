@@ -25,4 +25,9 @@ public class GlowSilverfish extends GlowMonster implements Silverfish {
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SILVERFISH_AMBIENT;
     }
+
+    @Override
+    public boolean isArthropod() {
+        return true;
+    }
 }

@@ -49,11 +49,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
-    public Career getCareer() {
-        return career;
-    }
-
-    @Override
     public void setCareer(Career career) {
         if (profession == null || profession.isZombie()) {
             return;
@@ -186,6 +181,11 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_VILLAGER_AMBIENT;
+    }
+
+    @Override
+    public boolean isUndead() {
+        return profession != null && profession.isZombie();
     }
 
     @Override
