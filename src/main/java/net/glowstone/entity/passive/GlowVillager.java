@@ -39,6 +39,16 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
+    public Career getCareer() {
+        return null;
+    }
+
+    @Override
+    public void setCareer(Career career) {
+
+    }
+
+    @Override
     public List<MerchantRecipe> getRecipes() {
         return null;
     }

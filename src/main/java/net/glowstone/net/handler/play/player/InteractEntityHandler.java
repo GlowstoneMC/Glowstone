@@ -12,9 +12,9 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
+import org.bukkit.EntityAnimation;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Statistic;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -58,7 +58,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 float damage = AttackDamage.getMeleeDamage(type, critical);
                 if (critical) {
                     // Critical-hit effect
-                    player.getWorld().spawnParticle(Particle.CRIT, target.getEyeLocation().add(0, 0.5, 0), 10);
+                    target.playAnimation(EntityAnimation.CRITICAL_HIT);
                 }
 
                 // Set entity on fire if the item has Fire Aspect
@@ -101,7 +101,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                     }
                 }
                 if (showMagicCrit) {
-                    player.getWorld().spawnParticle(Particle.CRIT_MAGIC, target.getEyeLocation().add(0, 0.5, 0), 10);
+                    target.playAnimation(EntityAnimation.MAGIC_CRITICAL_HIT);
                 }
 
                 // Apply damage. Calls the EntityDamageByEntityEvent
