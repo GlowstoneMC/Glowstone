@@ -1,331 +1,331 @@
 {
-    "career": "SHEPHERD",
-    "tiers": [
-        [
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:wool",
-                        "quantity": {
-                            "max": 22,
-                            "min": 16
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 4,
-                            "min": 3
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:shears",
-                        "quantity": 1
-                    }
-                ]
+  "career": "SHEPHERD",
+  "tiers": [
+    [
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:wool",
+            "quantity": {
+              "max": 22,
+              "min": 16
             }
+          }
         ],
-        [
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 0,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 1,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 2,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 3,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 4,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 5,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 6,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 7,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 8,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 9,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 10,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 11,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 12,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 13,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 14,
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": {
-                            "max": 2,
-                            "min": 1
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:wool",
-                        "damage": 15,
-                        "quantity": 1
-                    }
-                ]
-            }
+        "result": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
         ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 4,
+              "min": 3
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:shears",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 0,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 1,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 2,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 3,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 4,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 5,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 6,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 7,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 8,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 9,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 10,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 11,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 12,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 13,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 14,
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": {
+              "max": 2,
+              "min": 1
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:wool",
+            "damage": 15,
+            "quantity": 1
+          }
+        ]
+      }
     ]
+  ]
 }

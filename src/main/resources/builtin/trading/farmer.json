@@ -1,216 +1,216 @@
 {
-    "career": "FARMER",
-    "tiers": [
-        [
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:wheat",
-                        "quantity": {
-                            "max": 22,
-                            "min": 18
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:potato",
-                        "quantity": {
-                            "max": 19,
-                            "min": 15
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:carrot",
-                        "quantity": {
-                            "max": 19,
-                            "min": 15
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:bread",
-                        "quantity": {
-                            "max": 4,
-                            "min": 2
-                        }
-                    }
-                ]
+  "career": "FARMER",
+  "tiers": [
+    [
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:wheat",
+            "quantity": {
+              "max": 22,
+              "min": 18
             }
+          }
         ],
-        [
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:pumpkin",
-                        "quantity": {
-                            "max": 13,
-                            "min": 8
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:pumpkin_pie",
-                        "quantity": {
-                            "max": 3,
-                            "min": 2
-                        }
-                    }
-                ]
-            }
-        ],
-        [
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:melon_block",
-                        "quantity": {
-                            "max": 12,
-                            "min": 7
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:apple",
-                        "quantity": {
-                            "max": 7,
-                            "min": 5
-                        }
-                    }
-                ]
-            }
-        ],
-        [
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:pumpkin",
-                        "quantity": {
-                            "max": 13,
-                            "min": 8
-                        }
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:pumpkin_pie",
-                        "quantity": {
-                            "max": 3,
-                            "min": 2
-                        }
-                    }
-                ]
-            }
-        ],
-        [
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:cookie",
-                        "quantity": {
-                            "max": 10,
-                            "min": 6
-                        }
-                    }
-                ]
-            },
-            {
-                "ingredients": [
-                    {
-                        "item": "minecraft:emerald",
-                        "quantity": 1
-                    }
-                ],
-                "result": [
-                    {
-                        "item": "minecraft:cake",
-                        "quantity": 1
-                    }
-                ]
-            }
+        "result": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
         ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:potato",
+            "quantity": {
+              "max": 19,
+              "min": 15
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:carrot",
+            "quantity": {
+              "max": 19,
+              "min": 15
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:bread",
+            "quantity": {
+              "max": 4,
+              "min": 2
+            }
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:pumpkin",
+            "quantity": {
+              "max": 13,
+              "min": 8
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:pumpkin_pie",
+            "quantity": {
+              "max": 3,
+              "min": 2
+            }
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:melon_block",
+            "quantity": {
+              "max": 12,
+              "min": 7
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:apple",
+            "quantity": {
+              "max": 7,
+              "min": 5
+            }
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:pumpkin",
+            "quantity": {
+              "max": 13,
+              "min": 8
+            }
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:pumpkin_pie",
+            "quantity": {
+              "max": 3,
+              "min": 2
+            }
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:cookie",
+            "quantity": {
+              "max": 10,
+              "min": 6
+            }
+          }
+        ]
+      },
+      {
+        "ingredients": [
+          {
+            "item": "minecraft:emerald",
+            "quantity": 1
+          }
+        ],
+        "result": [
+          {
+            "item": "minecraft:cake",
+            "quantity": 1
+          }
+        ]
+      }
     ]
+  ]
 }
