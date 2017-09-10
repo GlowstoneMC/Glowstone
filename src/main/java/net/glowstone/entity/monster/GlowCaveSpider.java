@@ -25,4 +25,9 @@ public class GlowCaveSpider extends GlowMonster implements CaveSpider {
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SPIDER_AMBIENT;
     }
+
+    @Override
+    public boolean isArthropod() {
+        return true;
+    }
 }

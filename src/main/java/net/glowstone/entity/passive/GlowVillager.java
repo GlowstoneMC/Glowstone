@@ -104,6 +104,11 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
+    public boolean isUndead() {
+        return profession != null && profession.isZombie();
+    }
+
+    @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         if (!DamageCause.LIGHTNING.equals(cause)) {
             super.damage(amount, source, cause);

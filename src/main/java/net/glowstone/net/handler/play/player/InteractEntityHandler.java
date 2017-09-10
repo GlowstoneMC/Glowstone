@@ -7,12 +7,14 @@ import net.glowstone.constants.AttackDamage;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.inventory.ToolType;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Statistic;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -52,12 +54,54 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 ItemStack itemInHand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(hand));
                 Material type = itemInHand.getType();
 
-                // todo: Actual critical hit check
-                float damage = AttackDamage.getMeleeDamage(type, false);
+                boolean critical = player.getFallDistance() > 0.0F;
+                float damage = AttackDamage.getMeleeDamage(type, critical);
+                if (critical) {
+                    // Critical-hit effect
+                    player.getWorld().spawnParticle(Particle.CRIT, target.getEyeLocation().add(0, 0.5, 0), 10);
+                }
 
                 // Set entity on fire if the item has Fire Aspect
-                if (itemInHand.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)) {
-                    target.setFireTicks(target.getFireTicks() + itemInHand.getEnchantments().get(Enchantment.FIRE_ASPECT) * 80);
+                if (itemInHand.containsEnchantment(Enchantment.FIRE_ASPECT)) {
+                    target.setFireTicks(target.getFireTicks() + itemInHand.getEnchantmentLevel(Enchantment.FIRE_ASPECT) * 80);
+                }
+                boolean showMagicCrit = false; // Shows the "magic crit" particles (blue) if the weapon was a sword or an axe (and with a damaging enchantment)
+                // Apply other enchantments that amplify damage
+                if (itemInHand.containsEnchantment(Enchantment.DAMAGE_ALL)) {
+                    // Sharpness
+                    int level = itemInHand.getEnchantmentLevel(Enchantment.DAMAGE_ALL);
+                    if (level > 0) {
+                        damage += 1.0F + 0.5F * (level - 1);
+                    }
+                    if (!showMagicCrit) {
+                        showMagicCrit = ToolType.SWORD.matches(type) || ToolType.AXE.matches(type);
+                    }
+                }
+                if (itemInHand.containsEnchantment(Enchantment.DAMAGE_ARTHROPODS)) {
+                    // Bane of Arthropods (applies to Spiders, Cave Spiders, Silverfish and Endermites)
+                    if (target.isArthropod()) {
+                        int level = itemInHand.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS);
+                        if (level > 0) {
+                            damage += level * 2.5F;
+                            // TODO: add Slowness potion effect (after damaging and checking for event-cancellation)
+                        }
+                    }
+                    if (!showMagicCrit) {
+                        showMagicCrit = ToolType.SWORD.matches(type) || ToolType.AXE.matches(type);
+                    }
+                }
+                if (itemInHand.containsEnchantment(Enchantment.DAMAGE_UNDEAD)) {
+                    // Smite (applies to "undead" mobs)
+                    if (target.isUndead()) {
+                        int level = itemInHand.getEnchantmentLevel(Enchantment.DAMAGE_UNDEAD);
+                        damage += level * 2.5F;
+                    }
+                    if (!showMagicCrit) {
+                        showMagicCrit = ToolType.SWORD.matches(type) || ToolType.AXE.matches(type);
+                    }
+                }
+                if (showMagicCrit) {
+                    player.getWorld().spawnParticle(Particle.CRIT_MAGIC, target.getEyeLocation().add(0, 0.5, 0), 10);
                 }
 
                 // Apply damage. Calls the EntityDamageByEntityEvent

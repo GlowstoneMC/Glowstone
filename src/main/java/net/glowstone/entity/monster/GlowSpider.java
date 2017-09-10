@@ -35,4 +35,9 @@ public class GlowSpider extends GlowMonster implements Spider {
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SPIDER_AMBIENT;
     }
+
+    @Override
+    public boolean isArthropod() {
+        return true;
+    }
 }

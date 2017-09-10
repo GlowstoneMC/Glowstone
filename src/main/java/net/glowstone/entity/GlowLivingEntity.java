@@ -550,6 +550,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return true;
     }
 
+    /**
+     * Get whether of not this entity is an arthropod.
+     *
+     * @return true if this entity is an arthropod, false otherwise
+     */
+    public boolean isArthropod() {
+        return false;
+    }
+
+    /**
+     * Get whether or not this entity is undead.
+     *
+     * @return true if this entity is undead, false otherwise
+     */
+    public boolean isUndead() {
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Line of Sight
 

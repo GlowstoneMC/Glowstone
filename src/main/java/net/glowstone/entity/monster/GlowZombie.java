@@ -101,4 +101,9 @@ public class GlowZombie extends GlowMonster implements Zombie {
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ZOMBIE_AMBIENT;
     }
+
+    @Override
+    public boolean isUndead() {
+        return true;
+    }
 }
