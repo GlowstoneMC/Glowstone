@@ -54,7 +54,7 @@ public final class InteractEntityHandler implements MessageHandler<GlowSession, 
                 ItemStack itemInHand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(hand));
                 Material type = itemInHand.getType();
 
-                boolean critical = player.getFallDistance() > 0.0F;
+                boolean critical = player.getFallDistance() > 0.0F && !player.isOnGround() && !player.isInWater() && !player.isInsideVehicle() && !player.isSprinting();
                 float damage = AttackDamage.getMeleeDamage(type, critical);
                 if (critical) {
                     // Critical-hit effect
