@@ -42,6 +42,8 @@ class VillagerStore extends AgeableStore<GlowVillager> {
         }
         if (compound.isInt("CareerLevel")) {
             entity.setCareerLevel(compound.getInt("CareerLevel"));
+        } else if (entity.getCareer() != null) {
+            entity.setCareerLevel(1);
         }
         // Recipes
         if (compound.isCompound("Offers")) {

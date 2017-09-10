@@ -66,6 +66,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
             setProfession(profession);
         }
         this.career = career;
+        this.careerLevel = 1;
     }
 
     @Override
@@ -163,6 +164,8 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     /**
      * Set the current level of this villager's trading options.
+     * <br>
+     * If 0, the next trade will assign a new career and set the career level to 1.
      *
      * @param careerLevel the level of this villager's trading options
      */
@@ -208,6 +211,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
             Random random = ThreadLocalRandom.current();
             Career[] careers = getCareersByProfession(profession);
             this.career = careers[random.nextInt(careers.length)];
+            this.careerLevel = 1;
         }
     }
 
