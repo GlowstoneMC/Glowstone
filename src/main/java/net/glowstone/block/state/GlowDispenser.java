@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 import java.util.Map;
 import java.util.Random;
 
-public class GlowDispenser extends GlowLootableBlock implements Dispenser, BlockProjectileSource {
+public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 
     private static final Random random = new Random();
 

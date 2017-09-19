@@ -12,7 +12,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class GlowChest extends GlowLootableBlock implements Chest {
+public class GlowChest extends GlowContainer implements Chest {
 
     public GlowChest(GlowBlock block) {
         super(block);

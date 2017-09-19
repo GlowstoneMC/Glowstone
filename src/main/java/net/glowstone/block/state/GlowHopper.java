@@ -5,7 +5,7 @@ import net.glowstone.block.entity.HopperEntity;
 import org.bukkit.block.Hopper;
 import org.bukkit.inventory.Inventory;
 
-public class GlowHopper extends GlowLootableBlock implements Hopper {
+public class GlowHopper extends GlowContainer implements Hopper {
 
     public GlowHopper(GlowBlock block) {
         super(block);
