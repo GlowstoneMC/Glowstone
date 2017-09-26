@@ -13,5 +13,9 @@ public class CustomEntityDescriptor<T extends GlowEntity> {
     private final Plugin plugin;
     private final String id;
     private final EntityStore<T> storage;
+    private boolean summonable;
 
+    public CustomEntityDescriptor(Class<T> entityClass, Plugin plugin, String id, EntityStore<T> storage) {
+        this(entityClass, plugin, id, storage, true);
+    }
 }
