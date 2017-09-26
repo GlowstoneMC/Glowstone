@@ -63,10 +63,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -466,6 +463,23 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void damage(double amount, Entity cause) {
         super.damage(amount, cause);
         sendHealth();
+    }
+
+    @Override
+    public void damage(double amount, Entity source, DamageCause cause) {
+        boolean pvpAllowed = server.isPvpEnabled() && world.getPVP();
+        if (!pvpAllowed) {
+            if (source instanceof Player) {
+                return;
+            }
+            if (cause == DamageCause.PROJECTILE && source instanceof Projectile) {
+                Projectile projectile = (Projectile) source;
+                if (projectile.getShooter() instanceof Player) {
+                    return;
+                }
+            }
+        }
+        super.damage(amount, source, cause);
     }
 
     ////////////////////////////////////////////////////////////////////////////

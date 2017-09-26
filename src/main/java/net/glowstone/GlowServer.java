@@ -2019,6 +2019,10 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.HARDCORE);
     }
 
+    public boolean isPvpEnabled() {
+        return config.getBoolean(Key.PVP_ENABLED);
+    }
+
     @Override
     public int getMonsterSpawnLimit() {
         return config.getInt(Key.MONSTER_LIMIT);
