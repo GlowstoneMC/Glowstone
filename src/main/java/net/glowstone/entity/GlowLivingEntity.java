@@ -829,6 +829,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         this.lastDamager = lastDamager;
     }
 
+    @Override
+    public void setKiller(Player player) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Potion effects
 

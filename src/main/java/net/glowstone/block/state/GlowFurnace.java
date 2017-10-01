@@ -5,7 +5,7 @@ import net.glowstone.block.entity.FurnaceEntity;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
 
-public class GlowFurnace extends GlowLootableBlock implements Furnace {
+public class GlowFurnace extends GlowContainer implements Furnace {
 
     private short burnTime;
     private short cookTime;
@@ -60,5 +60,10 @@ public class GlowFurnace extends GlowLootableBlock implements Furnace {
             furnace.setCookTime(cookTime);
         }
         return result;
+    }
+
+    @Override
+    public FurnaceInventory getSnapshotInventory() {
+        throw new UnsupportedOperationException();
     }
 }

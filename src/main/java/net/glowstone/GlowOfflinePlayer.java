@@ -158,6 +158,10 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return lastPlayed;
     }
 
+    public PlayerProfile getProfile() {
+        return profile;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Ban, op, whitelist
 

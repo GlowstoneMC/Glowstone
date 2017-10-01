@@ -4,12 +4,14 @@ import com.destroystokyo.paper.loottable.LootableBlockInventory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import org.bukkit.Nameable;
+import org.bukkit.block.Container;
 import org.bukkit.block.Lockable;
+import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
 
-public class GlowLootableBlock extends GlowBlockState implements LootableBlockInventory, Lockable, Nameable {
-    public GlowLootableBlock(GlowBlock block) {
+public abstract class GlowContainer extends GlowBlockState implements LootableBlockInventory, Lockable, Nameable, Container {
+    public GlowContainer(GlowBlock block) {
         super(block);
     }
 
@@ -118,5 +120,10 @@ public class GlowLootableBlock extends GlowBlockState implements LootableBlockIn
     @Override
     public void setLock(String s) {
 
+    }
+
+    @Override
+    public Inventory getSnapshotInventory() {
+        throw new UnsupportedOperationException();
     }
 }

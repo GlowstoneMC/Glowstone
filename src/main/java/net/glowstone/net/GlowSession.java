@@ -121,7 +121,7 @@ public class GlowSession extends BasicSession {
     /**
      * The ID of the last ping message sent, used to ensure the client responded correctly.
      */
-    private int pingMessageId;
+    private long pingMessageId;
 
     /**
      * Stores the last block placement message sent, see BlockPlacementHandler.
@@ -244,10 +244,7 @@ public class GlowSession extends BasicSession {
      */
     public void idle() {
         if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
-            pingMessageId = random.nextInt();
-            if (pingMessageId == 0) {
-                pingMessageId++;
-            }
+            pingMessageId = System.currentTimeMillis();
             send(new PingMessage(pingMessageId));
         } else {
             disconnect("Timed out");
