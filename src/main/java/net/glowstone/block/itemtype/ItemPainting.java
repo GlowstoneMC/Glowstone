@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowPainting;
@@ -37,7 +38,7 @@ public class ItemPainting extends ItemType {
             )
         ).arrayListValues().build();
 
-        Arrays.stream(Art.values()).forEach(art -> ART_BY_SIZE.put(new Key(art.getBlockHeight(), art.getBlockWidth()), art));
+        Arrays.stream(Art.values()).forEach(art -> ART_BY_SIZE.put(GlowChunk.ChunkKeyStore.get(art.getBlockHeight(), art.getBlockWidth()), art));
     }
 
     @Override

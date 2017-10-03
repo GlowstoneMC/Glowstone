@@ -282,7 +282,7 @@ public final class GlowChunk implements Chunk {
      * @param cy   the Y coordinate of the BlockEntity
      * @param cz   the Z coordinate of the BlockEntity
      * @param type the type of BlockEntity
-     * @return     The BlockEntity that was created.
+     * @return The BlockEntity that was created.
      */
     public BlockEntity createEntity(int cx, int cy, int cz, int type) {
         Material material = Material.getMaterial(type);
@@ -694,7 +694,7 @@ public final class GlowChunk implements Chunk {
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
      * parts of this chunk to them.
      *
-     * @param skylight Whether to include skylight data.
+     * @param skylight    Whether to include skylight data.
      * @param entireChunk Whether to send all chunk sections.
      * @return The {@link ChunkDataMessage}.
      */
@@ -755,7 +755,30 @@ public final class GlowChunk implements Chunk {
         /**
          * The coordinates.
          */
-        private final int x, z;
+        private final int x, z, hashCode;
+
+        private Key(int x, int z) {
+            this.x = x;
+            this.z = z;
+            this.hashCode = x * 31 + z;
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
     }
 
+    public static final class ChunkKeyStore {
+        private static final ConcurrentHashMap<Integer, Key> keys = new ConcurrentHashMap<>();
+
+        public static Key get(int x, int z) {
+            int id = x * 31 + z;
+            Key key = keys.get(id);
+            if (key != null) return key;
+            key = new Key(x, z);
+            keys.put(id, key);
+            return key;
+        }
+    }
 }

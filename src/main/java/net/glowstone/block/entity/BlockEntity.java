@@ -2,6 +2,7 @@ package net.glowstone.block.entity;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
@@ -41,7 +42,7 @@ public abstract class BlockEntity {
      * Update this BlockEntity's visible state to all players in range.
      */
     public final void updateInRange() {
-        Key key = new Key(block.getChunk().getX(), block.getChunk().getZ());
+        Key key = GlowChunk.ChunkKeyStore.get(block.getChunk().getX(), block.getChunk().getZ());
         block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(this::update);
     }
 
