@@ -1278,7 +1278,7 @@ public final class GlowServer implements Server {
 
     @Override
     public String getName() {
-        return getClass().getPackage().getImplementationTitle();
+        return GlowServer.class.getPackage().getImplementationTitle();
     }
 
     @Override
