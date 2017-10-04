@@ -6,13 +6,13 @@
 
 # Glowstone
 
-A fast, customizable and compatible open source Minecraft server.
+A fast, customizable and compatible open source server for Minecraft: Java Edition.
 
 ## Introduction
 
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](http://minecraft.net) server written in Java that supports plugins
-written for the Bukkit API.
+written for the Bukkit API and its major forks, Spigot and Paper.
 
 The main goals of the project are to provide a lightweight implementation
 of the Bukkit API and Minecraft server where exact vanilla functionality is
