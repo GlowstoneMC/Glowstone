@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -28,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
-public class GlowFirework extends GlowEntity implements Firework {
+public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
     @Getter
     @Setter

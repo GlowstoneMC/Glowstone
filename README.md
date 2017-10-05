@@ -6,13 +6,13 @@
 
 # Glowstone
 
-A fast, customizable and compatible open source Minecraft server.
+A fast, customizable and compatible open source server for Minecraft: Java Edition.
 
 ## Introduction
 
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](http://minecraft.net) server written in Java that supports plugins
-written for the Bukkit API.
+written for the Bukkit API and its major forks, Spigot and Paper.
 
 The main goals of the project are to provide a lightweight implementation
 of the Bukkit API and Minecraft server where exact vanilla functionality is
@@ -108,9 +108,9 @@ When reporting bugs, please retest and include whether the problem reproduces on
 * Earlier [builds](https://circleci.com/gh/GlowstoneMC/Glowstone) of Glowstone
 * [Glowstone Legacy](https://github.com/GlowstoneMC/Glowstone-Legacy), if applicable
 
-Javadocs for Glowstone can be found [here](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/JavaDocs/index.html).
+Javadocs for Glowstone can be found [here](https://glowstone.net/jd/glowstone/).
 
-For documentation on the Glowkit API (an updated Bukkit for Glowstone, based on the Paper API, compatible with Spigot's update to Bukkit), see the [Glowkit Javadocs](https://bamboo.gserv.me/browse/GSPP-KIT/latestSuccessful/artifact/shared/JavaDocs/index.html).
+For documentation on the Glowkit API (an updated Bukkit for Glowstone, based on the Paper API, compatible with Spigot's update to Bukkit), see the [Glowkit Javadocs](https://glowstone.net/jd/glowkit/).
 
 ## Contributing
 

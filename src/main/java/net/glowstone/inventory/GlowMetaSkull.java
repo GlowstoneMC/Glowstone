@@ -1,8 +1,12 @@
 package net.glowstone.inventory;
 
+import net.glowstone.GlowOfflinePlayer;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Map;
@@ -92,5 +96,22 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         }
         this.owner = owner;
         return true;
+    }
+
+    @Override
+    public OfflinePlayer getOwningPlayer() {
+        return ((GlowServer) Bukkit.getServer()).getOfflinePlayer(owner);
+    }
+
+    @Override
+    public boolean setOwningPlayer(OfflinePlayer owningPlayer) {
+        if (hasOwner()) {
+            return false;
+        }
+        if (owningPlayer instanceof GlowOfflinePlayer) {
+            GlowOfflinePlayer impl = (GlowOfflinePlayer) owningPlayer;
+            this.owner = impl.getProfile();
+        }
+        return false;
     }
 }

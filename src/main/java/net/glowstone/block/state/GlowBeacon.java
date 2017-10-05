@@ -5,14 +5,14 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BeaconEntity;
 import org.bukkit.block.Beacon;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 import java.util.Collections;
 
-public class GlowBeacon extends GlowLootableBlock implements Beacon {
+public class GlowBeacon extends GlowContainer implements Beacon {
 
     private PotionEffect primaryEffect;
     private PotionEffect secondaryEffect;
@@ -64,7 +64,12 @@ public class GlowBeacon extends GlowLootableBlock implements Beacon {
     }
 
     @Override
-    public Inventory getInventory() {
+    public BeaconInventory getInventory() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BeaconInventory getSnapshotInventory() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

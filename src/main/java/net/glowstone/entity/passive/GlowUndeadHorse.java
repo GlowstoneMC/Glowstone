@@ -14,4 +14,9 @@ public class GlowUndeadHorse extends GlowAbstractHorse implements AbstractHorse 
     public Inventory getInventory() {
         return null;
     }
+
+    @Override
+    public boolean isUndead() {
+        return true;
+    }
 }

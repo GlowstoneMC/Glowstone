@@ -5,7 +5,7 @@ import net.glowstone.block.entity.BrewingStandEntity;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.inventory.BrewerInventory;
 
-public class GlowBrewingStand extends GlowLootableBlock implements BrewingStand {
+public class GlowBrewingStand extends GlowContainer implements BrewingStand {
 
     private int brewTime;
 
@@ -57,5 +57,10 @@ public class GlowBrewingStand extends GlowLootableBlock implements BrewingStand 
             stand.updateInRange();
         }
         return result;
+    }
+
+    @Override
+    public BrewerInventory getSnapshotInventory() {
+        throw new UnsupportedOperationException();
     }
 }

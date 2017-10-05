@@ -3,8 +3,10 @@ package net.glowstone.command.minecraft;
 import com.google.common.base.Preconditions;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.entity.CustomEntityDescriptor;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.Summonable;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
@@ -87,14 +89,21 @@ public class SummonCommand extends VanillaCommand {
             return false;
         }
         EntityType entityType = EntityType.fromName(type);
-        if (entityType != null && !EntityType.fromName(type).isSpawnable()) {
-            if (sender != null)
-                sender.sendMessage(ChatColor.RED + "The entity '" + EntityType.fromName(type).getName() + "' cannot be summoned.");
-            return false;
+        if (entityType == null && EntityRegistry.isCustomEntityRegistered(type)) {
+            CustomEntityDescriptor descriptor = EntityRegistry.getCustomEntityDescriptor(type);
+            if (!descriptor.isSummonable()) {
+                sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' cannot be summoned.");
+                return false;
+            }
+            return true;
         }
         if (entityType != null && EntityRegistry.getEntity(entityType) == null) {
             if (sender != null)
                 sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' is not implemented yet.");
+            return false;
+        } else if (entityType != null && (entityType.isSpawnable() || !Summonable.class.isAssignableFrom(EntityRegistry.getEntity(entityType)))) {
+                if (sender != null)
+                    sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' cannot be summoned.");
             return false;
         } else if (entityType == null && !EntityRegistry.isCustomEntityRegistered(type)) {
             if (sender != null)

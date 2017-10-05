@@ -63,10 +63,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -466,6 +463,23 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void damage(double amount, Entity cause) {
         super.damage(amount, cause);
         sendHealth();
+    }
+
+    @Override
+    public void damage(double amount, Entity source, DamageCause cause) {
+        boolean pvpAllowed = server.isPvpEnabled() && world.getPVP();
+        if (!pvpAllowed) {
+            if (source instanceof Player) {
+                return;
+            }
+            if (cause == DamageCause.PROJECTILE && source instanceof Projectile) {
+                Projectile projectile = (Projectile) source;
+                if (projectile.getShooter() instanceof Player) {
+                    return;
+                }
+            }
+        }
+        super.damage(amount, source, cause);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1729,9 +1743,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // Call event
         EventFactory.callEvent(new PlayerBedLeaveEvent(this, head));
 
-        getSession().send(new AnimateEntityMessage(SELF_ID, AnimateEntityMessage.LEAVE_BED));
-        AnimateEntityMessage msg = new AnimateEntityMessage(getEntityId(), AnimateEntityMessage.LEAVE_BED);
-        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
+        playAnimationToSelf(EntityAnimation.LEAVE_BED);
+        playAnimation(EntityAnimation.LEAVE_BED);
     }
 
     @Override
@@ -2990,5 +3003,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public boolean isInWater() {
         Material mat = getLocation().getBlock().getType();
         return mat == Material.WATER || mat == Material.STATIONARY_WATER;
+    }
+
+    @Override
+    public void playAnimationToSelf(EntityAnimation animation) {
+        AnimateEntityMessage message = new AnimateEntityMessage(SELF_ID, animation.ordinal());
+        getSession().send(message);
     }
 }

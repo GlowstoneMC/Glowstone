@@ -104,11 +104,11 @@ public final class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.12.1";
+    public static final String GAME_VERSION = "1.12.2";
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 338;
+    public static final int PROTOCOL_VERSION = 340;
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -858,6 +858,8 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new ToggleDownfallCommand());
         commandMap.register("minecraft", new SetWorldSpawnCommand());
         commandMap.register("minecraft", new PlaySoundCommand());
+        commandMap.register("minecraft", new EffectCommand());
+        commandMap.register("minecraft", new EnchantCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -1276,7 +1278,7 @@ public final class GlowServer implements Server {
 
     @Override
     public String getName() {
-        return getClass().getPackage().getImplementationTitle();
+        return GlowServer.class.getPackage().getImplementationTitle();
     }
 
     @Override
@@ -2017,6 +2019,10 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.HARDCORE);
     }
 
+    public boolean isPvpEnabled() {
+        return config.getBoolean(Key.PVP_ENABLED);
+    }
+
     @Override
     public int getMonsterSpawnLimit() {
         return config.getInt(Key.MONSTER_LIMIT);
@@ -2090,5 +2096,9 @@ public final class GlowServer implements Server {
 
     public boolean doesUseGPGPU() {
         return isCLApplicable && config.getBoolean(Key.GPGPU);
+    }
+
+    public boolean shouldPreventProxy() {
+        return config.getBoolean(Key.PREVENT_PROXY);
     }
 }
