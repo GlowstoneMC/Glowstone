@@ -4,11 +4,18 @@ import net.glowstone.io.nbt.reflection.serialization.NBTFieldSerialization;
 import net.glowstone.io.nbt.reflection.serialization.SerializableNBTComponent;
 import net.glowstone.util.nbt.TagType;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Declares a default NBT tag that will be stored when saving the entity's NBT tag.
  * <br>
  * This tag may be overridden by the extension of the entity's class.
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface NBTDefault {
     String name();
 
