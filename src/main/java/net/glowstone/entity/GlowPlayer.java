@@ -734,7 +734,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
             for (BlockChangeMessage message : messages) {
                 if (message != null) {
-                    Key key = new Key(message.getX() >> 4, message.getZ() >> 4);
+                    Key key = GlowChunk.ChunkKeyStore.get(message.getX() >> 4, message.getZ() >> 4);
                     if (canSeeChunk(key)) {
                         Map<BlockVector, BlockChangeMessage> map = chunks.computeIfAbsent(key, k -> new HashMap<>());
                         map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
@@ -772,7 +772,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         int radius = Math.min(server.getViewDistance(), 1 + settings.getViewDistance());
         for (int x = centralX - radius; x <= centralX + radius; x++) {
             for (int z = centralZ - radius; z <= centralZ + radius; z++) {
-                Key key = new Key(x, z);
+                Key key = GlowChunk.ChunkKeyStore.get(x, z);
                 if (knownChunks.contains(key)) {
                     previousChunks.remove(key);
                 } else {
@@ -2188,7 +2188,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void sendBlockChange(BlockChangeMessage message) {
         // only send message if the chunk is within visible range
-        Key key = new Key(message.getX() >> 4, message.getZ() >> 4);
+        Key key = GlowChunk.ChunkKeyStore.get(message.getX() >> 4, message.getZ() >> 4);
         if (canSeeChunk(key)) {
             blockChanges.add(message);
         }
@@ -2953,7 +2953,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
-        GlowChunk.Key key = new GlowChunk.Key(block.getChunk().getX(), block.getChunk().getZ());
+        GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(block.getChunk().getX(), block.getChunk().getZ());
         block.getWorld().getRawPlayers().stream()
                 .filter(player -> player.canSeeChunk(key) && player != this)
                 .forEach(player -> player.sendBlockBreakAnimation(block.getLocation(), destroyStage));

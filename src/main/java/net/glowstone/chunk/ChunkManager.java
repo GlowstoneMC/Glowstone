@@ -96,7 +96,7 @@ public final class ChunkManager {
      * @return The chunk.
      */
     public GlowChunk getChunk(int x, int z) {
-        Key key = new Key(x, z);
+        Key key = GlowChunk.ChunkKeyStore.get(x, z);
         if (chunks.containsKey(key)) {
             return chunks.get(key);
         } else {
@@ -115,7 +115,7 @@ public final class ChunkManager {
      * @return true if the chunk is loaded, otherwise false.
      */
     public boolean isChunkLoaded(int x, int z) {
-        Key key = new Key(x, z);
+        Key key = GlowChunk.ChunkKeyStore.get(x, z);
         return chunks.containsKey(key) && chunks.get(key).isLoaded();
     }
 
@@ -127,7 +127,7 @@ public final class ChunkManager {
      * @return Whether the chunk is in use.
      */
     public boolean isChunkInUse(int x, int z) {
-        Key key = new Key(x, z);
+        Key key = GlowChunk.ChunkKeyStore.get(x, z);
         Set<ChunkLock> lockSet = locks.get(key);
         return lockSet != null && !lockSet.isEmpty();
     }

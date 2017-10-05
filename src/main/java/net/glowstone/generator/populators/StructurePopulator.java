@@ -2,7 +2,7 @@ package net.glowstone.generator.populators;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.chunk.GlowChunk.Key;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.structure.StructureStorage;
 import net.glowstone.io.structure.StructureStore;
@@ -36,7 +36,7 @@ public class StructurePopulator extends BlockPopulator {
                     if (world.getChunkAt(x, z).isLoaded() || world.getChunkAt(x, z).load(true)) {
                         random.setSeed(x * xRand + z * zRand ^ world.getSeed());
                         Map<Integer, GlowStructure> structures = ((GlowWorld) world).getStructures();
-                        int key = new Key(x, z).hashCode();
+                        int key = GlowChunk.ChunkKeyStore.get(x, z).hashCode();
                         if (!structures.containsKey(key)) {
                             for (StructureStore<?> store : StructureStorage.getStructureStores()) {
                                 GlowStructure structure = store.createNewStructure((GlowWorld) world, random, x, z);

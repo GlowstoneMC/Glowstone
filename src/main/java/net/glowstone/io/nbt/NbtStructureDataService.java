@@ -2,7 +2,7 @@ package net.glowstone.io.nbt;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.chunk.GlowChunk.Key;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.StructureDataService;
 import net.glowstone.io.structure.StructureStorage;
@@ -51,7 +51,7 @@ public class NbtStructureDataService implements StructureDataService {
                             CompoundTag features = data.getCompound("Features");
                             features.getValue().keySet().stream().filter(features::isCompound).forEach(key -> {
                                 GlowStructure structure = StructureStorage.loadStructure(world, features.getCompound(key));
-                                structures.put(new Key(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
+                                structures.put(GlowChunk.ChunkKeyStore.get(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
                             });
                         }
                     } else {
