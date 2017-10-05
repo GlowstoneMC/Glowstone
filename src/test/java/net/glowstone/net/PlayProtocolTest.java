@@ -24,7 +24,7 @@ import java.util.UUID;
 public class PlayProtocolTest extends BaseProtocolTest {
 
     private static final Message[] TEST_MESSAGES = new Message[]{
-            new PingMessage(1),
+            new PingMessage(1L),
             new IncomingChatMessage("test"),
             new InteractEntityMessage(1, 1),
             new InteractEntityMessage(1, 2, 1f, 2f, 3f, 0),
