@@ -6,10 +6,10 @@ import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.TreeSpecies;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.TreeSpecies;
 
 /**
  * The lookup table for block and item types.
