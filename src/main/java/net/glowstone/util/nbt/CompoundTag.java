@@ -277,7 +277,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return tag != null && clazz == tag.getClass();
     }
 
-    void put(String key, Tag tag) {
+    public void put(String key, Tag tag) {
         checkNotNull(key, "Key cannot be null");
         checkNotNull(tag, "Tag cannot be null");
         value.put(key, tag);

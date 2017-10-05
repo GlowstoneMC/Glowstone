@@ -18,10 +18,13 @@ import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.entity.objects.GlowPainting;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
+import net.glowstone.io.nbt.reflection.NBT;
+import net.glowstone.io.nbt.reflection.NBTDefault;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.*;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+import net.glowstone.util.nbt.TagType;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -63,6 +66,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Graham Edgecombe
  */
+@NBTDefault(name = "Air", type = TagType.INT, intValue = 300) // in case Vanilla or CraftBukkit expects non-living entities to have this tag
 public abstract class GlowEntity implements Entity {
 
     /**
@@ -132,14 +136,17 @@ public abstract class GlowEntity implements Entity {
     /**
      * A flag indicting if the entity is on the ground
      */
+    @NBT(name = "OnGround")
     private boolean onGround = true;
     /**
      * The distance the entity is currently falling without touching the ground.
      */
+    @NBT(name = "FallDistance")
     private float fallDistance;
     /**
      * How long the entity has been on fire, or 0 if it is not.
      */
+    @NBT(name = "Fire")
     private int fireTicks;
     /**
      * Passenger
@@ -149,6 +156,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Whether gravity applies to the entity.
      */
+    @NBT(name = "NoGravity", inverted = true)
     private boolean gravity = true;
     /**
      * Whether this entity is invulnerable.
@@ -1230,21 +1238,25 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
+    @NBT(name = "Glowing")
     public void setGlowing(boolean glowing) {
         metadata.setBit(MetadataIndex.STATUS, StatusFlags.GLOWING, glowing);
     }
 
     @Override
+    @NBT(name = "Glowing")
     public boolean isGlowing() {
         return metadata.getBit(MetadataIndex.STATUS, StatusFlags.GLOWING);
     }
 
     @Override
+    @NBT(name = "Invulnerable")
     public void setInvulnerable(boolean invulnerable) {
         this.invulnerable = invulnerable;
     }
 
     @Override
+    @NBT(name = "Invulnerable")
     public boolean isInvulnerable() {
         return invulnerable;
     }
@@ -1409,11 +1421,13 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
+    @NBT(name = "Silent")
     public boolean isSilent() {
         return metadata.getBoolean(MetadataIndex.SILENT);
     }
 
     @Override
+    @NBT(name = "Silent")
     public void setSilent(boolean silent) {
         metadata.set(MetadataIndex.SILENT, silent);
     }
