@@ -3,12 +3,18 @@ package net.glowstone.block.itemtype;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.function.ItemFunction;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Base class for specific types of items.
@@ -23,6 +29,11 @@ public class ItemType {
      * The maximum stack size of the item.
      */
     private int maxStackSize = 64;
+
+    /**
+     * The functions of this item type.
+     */
+    protected Map<String, List<ItemFunction>> functions = new HashMap<>();
 
     /**
      * Get the id assigned to this ItemType.
@@ -153,6 +164,24 @@ public class ItemType {
         if (placeAs != null) {
             placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
         }
+    }
+
+    /**
+     * Add this Glowstone default function to the item's behavior
+     *
+     * Only for internal use. Use the addFunction in ItemTable instead.
+     *
+     * @see ItemTable#addFunction(ItemType, ItemFunction)
+     *
+     * @param function The function to add
+     */
+    public void addFunction(ItemFunction function) {
+        if (function.isSingle()) {
+            functions.put(function.getFunctionality(), new ArrayList<>());
+        } else {
+            functions.putIfAbsent(function.getFunctionality(), new ArrayList<>());
+        }
+        functions.get(function.getFunctionality()).add(function);
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 package net.glowstone.block;
 
 import net.glowstone.block.blocktype.*;
+import net.glowstone.block.function.*;
 import net.glowstone.block.itemtype.*;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.inventory.ToolType;
@@ -20,9 +21,20 @@ public final class ItemTable {
 
     static {
         INSTANCE.registerBuiltins();
+        INSTANCE.assignHandler("block.interact", INSTANCE.blockFunctionHandler);
+        INSTANCE.assignHandler("block.pulse", INSTANCE.blockFunctionHandler);
+        INSTANCE.assignHandler("block.pulse.rate", INSTANCE.blockFunctionHandler);
+        INSTANCE.assignHandler("block.pulse.multiple", INSTANCE.blockFunctionHandler);
+        INSTANCE.addFunction(INSTANCE.getBlock(Material.DIRT), (BlockFunctions.BlockFunctionInteract) (player, block, face, clickedLoc) -> {
+            block.setType(Material.GRASS);
+            return true;
+        });
     }
 
     private final Map<Integer, ItemType> idToType = new HashMap<>(512);
+    private final Map<String, ItemFunctionHandler> itemFunctionHandlers = new HashMap<>();
+    private final ItemFunctionHandler itemFunctionHandler = new GlowItemFunctionHandler();
+    private final ItemFunctionHandler blockFunctionHandler = new GlowBlockFunctionHandler();
     private int nextBlockId, nextItemId;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -452,4 +464,34 @@ public final class ItemTable {
         return getBlock(mat.getId());
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Functions
+
+    /**
+     * Assigns a function handler to accept new function registrations of this type.
+     * @param functionality The type of function this function handler accepts
+     * @param handler The handler
+     * @return The resultant handler that will be used to handle functions of this type
+     */
+    public ItemFunctionHandler assignHandler(String functionality, ItemFunctionHandler handler) {
+        return itemFunctionHandlers.putIfAbsent(functionality, handler);
+    }
+
+    /**
+     * Get the function handler that accepts functions of this type.
+     * @param functionality The function type
+     * @return The function handler
+     */
+    public ItemFunctionHandler getFunctionHandler(String functionality) {
+        return itemFunctionHandlers.get(functionality);
+    }
+
+    /**
+     * Add this function to the specified item's behavior
+     * @param item The item
+     * @param function The function to add
+     */
+    public void addFunction(ItemType item, ItemFunction function) {
+        itemFunctionHandlers.get(function.getFunctionality()).accept(item, function);
+    }
 }

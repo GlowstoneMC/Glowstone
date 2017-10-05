@@ -6,6 +6,8 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.function.BlockFunctions;
+import net.glowstone.block.function.ItemFunction;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
@@ -193,6 +195,20 @@ public class BlockType extends ItemType {
      * @return Whether the interaction occurred.
      */
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+        List<ItemFunction> funcs = functions.get("block.interact");
+        if (funcs != null) {
+            boolean result = false;
+            for (ItemFunction function : funcs) {
+                if (function instanceof BlockFunctions.BlockFunctionInteract) {
+                    if (result) {
+                        ((BlockFunctions.BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
+                    } else {
+                        result = ((BlockFunctions.BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
+                    }
+                }
+            }
+            return result;
+        }
         return false;
     }
 
