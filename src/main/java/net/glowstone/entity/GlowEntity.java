@@ -184,6 +184,15 @@ public abstract class GlowEntity implements Entity {
      * The leash holder of the entity.
      */
     private GlowEntity leashHolder;
+    /**
+     * List of custom String data for the entity.
+     */
+    @Getter
+    private final List<String> customTags = Lists.newArrayList();
+    /**
+     *
+     */
+    private int portalCooldown;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -1211,13 +1220,12 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public int getPortalCooldown() {
-        // todo: 1.11
-        return 0;
+        return portalCooldown;
     }
 
     @Override
     public void setPortalCooldown(int cooldown) {
-        // todo: 1.11
+        this.portalCooldown = cooldown;
     }
 
     @Override

@@ -93,6 +93,14 @@ public abstract class EntityStore<T extends GlowEntity> {
         if (tag.isByte("Invulnerable")) {
             entity.setInvulnerable(tag.getBool("Invulnerable"));
         }
+        if (tag.isList("Tags", TagType.STRING)) {
+            List<String> list = tag.getList("Tags", TagType.STRING);
+            entity.getCustomTags().clear();
+            entity.getCustomTags().addAll(list);
+        }
+        if (tag.isInt("PortalCooldown")) {
+            entity.setPortalCooldown(tag.getInt("PortalCooldown"));
+        }
 
         if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
             UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
@@ -165,6 +173,11 @@ public abstract class EntityStore<T extends GlowEntity> {
         tag.putBool("Silent", entity.isSilent());
         tag.putBool("Invulnerable", entity.isInvulnerable());
         tag.putBool("Glowing", entity.isGlowing());
+        tag.putInt("PortalCooldown", entity.getPortalCooldown());
+
+        if (!entity.getCustomTags().isEmpty()) {
+            tag.putList("Tags", TagType.STRING, entity.getCustomTags());
+        }
 
         // in case Vanilla or CraftBukkit expects non-living entities to have this tag
         tag.putInt("Air", 300);
