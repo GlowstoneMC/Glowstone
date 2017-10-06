@@ -190,7 +190,7 @@ public abstract class GlowEntity implements Entity {
     @Getter
     private final List<String> customTags = Lists.newArrayList();
     /**
-     *
+     * The Nether portal cooldown for the entity.
      */
     private int portalCooldown;
 
