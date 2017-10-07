@@ -101,7 +101,7 @@ public class SummonCommand extends VanillaCommand {
             if (sender != null)
                 sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' is not implemented yet.");
             return false;
-        } else if (entityType != null && (entityType.isSpawnable() || !Summonable.class.isAssignableFrom(EntityRegistry.getEntity(entityType)))) {
+        } else if (entityType != null && (!entityType.isSpawnable() && !Summonable.class.isAssignableFrom(EntityRegistry.getEntity(entityType)))) {
                 if (sender != null)
                     sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' cannot be summoned.");
             return false;
