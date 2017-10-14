@@ -8,6 +8,7 @@ import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.TreeSpecies;
+import pl.joegreen.lambdaFromString.TypeReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,18 +21,11 @@ public final class ItemTable {
     private static final ItemTable INSTANCE = new ItemTable();
 
     static {
-        INSTANCE.registerBuiltins();
-        INSTANCE.assignHandler("block.interact", INSTANCE.blockFunctionHandler);
-        INSTANCE.assignHandler("block.pulse", INSTANCE.blockFunctionHandler);
-        INSTANCE.assignHandler("block.pulse.rate", INSTANCE.blockFunctionHandler);
-        INSTANCE.assignHandler("block.pulse.multiple", INSTANCE.blockFunctionHandler);
-        INSTANCE.addFunction(INSTANCE.getBlock(Material.DIRT), (BlockFunctions.BlockFunctionInteract) (player, block, face, clickedLoc) -> {
-            block.setType(Material.GRASS);
-            return true;
-        });
+        INSTANCE.init();
     }
 
     private final Map<Integer, ItemType> idToType = new HashMap<>(512);
+    private final Map<String, TypeReference> functionalityTypeRefs = new HashMap<>();
     private final Map<String, ItemFunctionHandler> itemFunctionHandlers = new HashMap<>();
     private final ItemFunctionHandler itemFunctionHandler = new GlowItemFunctionHandler();
     private final ItemFunctionHandler blockFunctionHandler = new GlowBlockFunctionHandler();
@@ -41,6 +35,20 @@ public final class ItemTable {
     // Data
 
     private ItemTable() {
+    }
+
+    private void init() {
+        registerBuiltins();
+        assignTypeRef("block.interact", new TypeReference<BlockFunctions.BlockFunctionInteract>() {
+        });
+        assignHandler("block.interact", blockFunctionHandler);
+        assignHandler("block.pulse", blockFunctionHandler);
+        assignHandler("block.pulse.rate", blockFunctionHandler);
+        assignHandler("block.pulse.multiple", blockFunctionHandler);
+        addFunction(getBlock(Material.DIRT), (BlockFunctions.BlockFunctionInteract) (player, block, face, clickedLoc) -> {
+            block.setType(Material.GRASS);
+            return true;
+        });
     }
 
     public static ItemTable instance() {
@@ -484,6 +492,24 @@ public final class ItemTable {
      */
     public ItemFunctionHandler getFunctionHandler(String functionality) {
         return itemFunctionHandlers.get(functionality);
+    }
+
+    /**
+     * Assigns a type reference to this functionality to apply text lambdas to functions through server commands.
+     * @param functionality The type of function
+     * @param typeRef The type reference of this functionality
+     */
+    public void assignTypeRef(String functionality, TypeReference typeRef) {
+        functionalityTypeRefs.putIfAbsent(functionality, typeRef);
+    }
+
+    /**
+     * Gets the type reference of
+     * @param functionality The type of function
+     * @return The type reference
+     */
+    public TypeReference getTypeRef(String functionality) {
+        return functionalityTypeRefs.get(functionality);
     }
 
     /**
