@@ -116,15 +116,19 @@ public class CommandUtils {
         return builder.toString();
     }
 
+    private static GlowWorld getDefaultWorld() {
+        return (GlowWorld) Bukkit.getServer().getWorlds().get(0);
+    }
+
     public static GlowWorld getWorld(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
-            return (GlowWorld) Bukkit.getServer().getWorlds().get(0); // get the default world
+            return getDefaultWorld();
         } else if (sender instanceof Entity) {
             return (GlowWorld) ((Entity) sender).getWorld();
         } else if (sender instanceof BlockCommandSender) {
             return (GlowWorld) ((BlockCommandSender) sender).getBlock().getWorld();
         }
-        return null;
+        return getDefaultWorld();
     }
 
     public static Location getLocation(CommandSender sender) {
@@ -133,7 +137,7 @@ public class CommandUtils {
         } else if (sender instanceof BlockCommandSender) {
             return ((BlockCommandSender) sender).getBlock().getLocation();
         }
-        return null;
+        return new Location(getDefaultWorld(), 0, 0, 0);
     }
 
     public static String getName(CommandSender sender) {

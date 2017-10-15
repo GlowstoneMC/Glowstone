@@ -82,7 +82,7 @@ public class TestForCommand extends VanillaCommand {
             }
         }
 
-        // Note: When command blocks are implemented, this should be updated to output the number of matching entities.
+        // TODO: When command blocks are implemented, this should be updated to output the number of matching entities.
         return true;
     }
 }
