@@ -59,6 +59,38 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         value.remove(key);
     }
 
+    /**
+     * Checks to see if this tag is a strict, deep submap of the given CompoundTag.
+     * @param other The CompoundTag that should contain our values.
+     * @return
+     */
+    public boolean matches(CompoundTag other) {
+        for (Entry<String, Tag> entry : value.entrySet()) {
+            if (!other.value.containsKey(entry.getKey())) {
+                return false;
+            }
+            Tag value = entry.getValue();
+            Tag otherValue = other.value.get(entry.getKey());
+            if ((value == null && otherValue != null) || (value != null && otherValue == null)) {
+                return false;
+            }
+            if (value != null) {
+                if (value.getClass() != otherValue.getClass()) {
+                    return false;
+                }
+                if (value instanceof CompoundTag) {
+                    if (!((CompoundTag) value).matches((CompoundTag) otherValue)) {
+                        return false;
+                    }
+                } else if (!value.equals(otherValue)) {
+                    // Note: When Mojang actually starts using lists, revisit this.
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Simple gets
 
