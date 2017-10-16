@@ -36,10 +36,6 @@ public class PlaySoundCommand extends VanillaCommand {
 
         final World world = CommandUtils.getWorld(sender);
 
-        if (world == null) {
-            return false;
-        }
-
         String stringSound = args[0], stringCategory = args[1], playerPattern = args[2];
         final Sound sound = GlowSound.getVanillaSound(stringSound.startsWith("minecraft:") ? stringSound : "minecraft:" + stringSound);
         final SoundCategory soundCategory = SoundUtil.buildSoundCategory(stringCategory);
@@ -169,9 +165,9 @@ public class PlaySoundCommand extends VanillaCommand {
                 sound = "minecraft:" + sound.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
             }
 
-            return StringUtil.copyPartialMatches(sound, SOUNDS, new ArrayList(SOUNDS.size()));
+            return StringUtil.copyPartialMatches(sound, SOUNDS, new ArrayList<>(SOUNDS.size()));
         } else if (args.length == 2) {
-            return StringUtil.copyPartialMatches(args[1], SOURCES, new ArrayList(SOURCES.size()));
+            return StringUtil.copyPartialMatches(args[1], SOURCES, new ArrayList<>(SOURCES.size()));
         } else if (args.length == 3) {
             return super.tabComplete(sender, alias, args);
         } else {

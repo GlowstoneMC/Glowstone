@@ -123,7 +123,7 @@ public class EffectCommand extends VanillaCommand {
                 effectName = "minecraft:" + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
             }
             
-            return StringUtil.copyPartialMatches(effectName, VANILLA_IDS, new ArrayList(VANILLA_IDS.size()));
+            return StringUtil.copyPartialMatches(effectName, VANILLA_IDS, new ArrayList<>(VANILLA_IDS.size()));
         }
         return super.tabComplete(sender, alias, args);
     }
