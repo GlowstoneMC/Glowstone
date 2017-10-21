@@ -34,9 +34,6 @@ public class FunctionCommand extends VanillaCommand {
         }
         GlowWorld world = CommandUtils.getWorld(sender);
         Location location = CommandUtils.getLocation(sender);
-        if (world == null) {
-            return false;
-        }
         String functionName = args[0];
         Map<String, CommandFunction> functions = world.getFunctions();
         if (!functions.containsKey(functionName)) {
@@ -44,7 +41,7 @@ public class FunctionCommand extends VanillaCommand {
             return false;
         }
         CommandFunction function = functions.get(functionName);
-        if (args.length > 2 && location != null) {
+        if (args.length > 2) {
             String condition = args[1].toLowerCase();
             CommandTarget target = new CommandTarget(sender, args[2]);
             Entity[] matched = target.getMatched(location);
@@ -71,9 +68,7 @@ public class FunctionCommand extends VanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
             GlowWorld world = CommandUtils.getWorld(sender);
-            if (world != null) {
-                return (List) StringUtil.copyPartialMatches(args[0], world.getFunctions().keySet(), new ArrayList(world.getFunctions().size()));
-            }
+            return StringUtil.copyPartialMatches(args[0], world.getFunctions().keySet(), new ArrayList<>(world.getFunctions().size()));
         }
         return super.tabComplete(sender, alias, args);
     }

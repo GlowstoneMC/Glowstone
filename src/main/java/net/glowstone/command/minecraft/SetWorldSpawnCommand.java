@@ -26,10 +26,6 @@ public class SetWorldSpawnCommand extends VanillaCommand {
 
         final World world = CommandUtils.getWorld(sender);
 
-        if (world == null) {
-            return false;
-        }
-
         if (args.length == 0) { // Get the player current location
             if (CommandUtils.isPhysical(sender)) {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();

@@ -31,9 +31,6 @@ public class DifficultyCommand extends VanillaCommand {
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
-        if (world == null) {
-            return false;
-        }
         String difficultyId = args[0];
         Difficulty difficulty = null;
         switch (difficultyId.toLowerCase()) {
@@ -70,7 +67,7 @@ public class DifficultyCommand extends VanillaCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], DIFFICULTIES, new ArrayList(DIFFICULTIES.size()));
+            return StringUtil.copyPartialMatches(args[0], DIFFICULTIES, new ArrayList<>(DIFFICULTIES.size()));
         }
         return super.tabComplete(sender, alias, args);
     }

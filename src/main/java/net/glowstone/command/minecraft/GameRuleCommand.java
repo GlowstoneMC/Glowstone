@@ -23,7 +23,6 @@ public class GameRuleCommand extends VanillaCommand {
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) return false;
         GlowWorld world = CommandUtils.getWorld(sender);
-        if (world == null) return false;
         if (args.length == 0) {
             sender.sendMessage(CommandUtils.prettyPrint(world.getGameRules()));
             return true;
@@ -49,9 +48,8 @@ public class GameRuleCommand extends VanillaCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         GlowWorld world = CommandUtils.getWorld(sender);
-        if (world == null) return Collections.emptyList();
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], Arrays.asList(world.getGameRules()), new ArrayList(world.getGameRules().length));
+            return StringUtil.copyPartialMatches(args[0], Arrays.asList(world.getGameRules()), new ArrayList<>(world.getGameRules().length));
         }
         return Collections.emptyList();
     }

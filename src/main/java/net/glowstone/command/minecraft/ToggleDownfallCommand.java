@@ -20,13 +20,9 @@ public class ToggleDownfallCommand extends VanillaCommand {
 
         final World world = CommandUtils.getWorld(sender);
 
-        if (world == null) {
-            return false;
-        } else {
-            world.setThundering(!world.hasStorm());
-            world.setStorm(!world.hasStorm());
-            sender.sendMessage("Toggled downfall");
-        }
+        world.setThundering(!world.hasStorm());
+        world.setStorm(!world.hasStorm());
+        sender.sendMessage("Toggled downfall");
 
         return true;
     }

@@ -18,13 +18,7 @@ public class SeedCommand extends VanillaCommand {
         if (!testPermission(sender)) return false;
 
         final World world = CommandUtils.getWorld(sender);
-
-        if (world == null) {
-            return false;
-        } else {
-            sender.sendMessage("Seed: " + world.getSeed());
-        }
-
+        sender.sendMessage("Seed: " + world.getSeed());
         return true;
     }
 }

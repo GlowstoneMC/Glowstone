@@ -49,9 +49,6 @@ public class SummonCommand extends VanillaCommand {
         if (args.length >= 4) {
             location = CommandUtils.getLocation(location, args[1], args[2], args[3]);
         }
-        if (location == null) {
-            return false;
-        }
         location.setYaw(0.0f);
         location.setPitch(0.0f);
 

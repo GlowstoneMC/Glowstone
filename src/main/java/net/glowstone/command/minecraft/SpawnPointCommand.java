@@ -72,10 +72,6 @@ public class SpawnPointCommand extends VanillaCommand {
 
             final World world = CommandUtils.getWorld(sender);
 
-            if (world == null) {
-                return false;
-            }
-
             // If we are using relative coordinates, we need to get the sender location
             if (args[1].startsWith("~") || args[2].startsWith("~") || args[3].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {

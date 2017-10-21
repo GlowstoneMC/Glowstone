@@ -31,9 +31,6 @@ public class WeatherCommand extends VanillaCommand {
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
-        if (world == null) {
-            return false;
-        }
         String type = args[0];
         Integer duration = null;
         if (args.length == 2) {

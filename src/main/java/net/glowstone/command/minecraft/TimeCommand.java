@@ -32,9 +32,6 @@ public class TimeCommand extends VanillaCommand {
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
-        if (world == null) {
-            return false;
-        }
         String subcommand = args[0];
         String value = args[1];
         int mod;
