@@ -82,6 +82,14 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
                     if (!((CompoundTag) value).matches((CompoundTag) otherValue)) {
                         return false;
                     }
+                } else if (value instanceof IntArrayTag) {
+                    if (!Arrays.equals(((IntArrayTag) value).getValue(), ((IntArrayTag) otherValue).getValue())) {
+                        return false;
+                    }
+                } else if (value instanceof ByteArrayTag) {
+                    if (!Arrays.equals(((ByteArrayTag) value).getValue(), ((ByteArrayTag) otherValue).getValue())) {
+                        return false;
+                    }
                 } else if (!value.equals(otherValue)) {
                     // Note: When Mojang actually starts using lists, revisit this.
                     return false;

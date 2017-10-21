@@ -32,7 +32,7 @@ public class TestForCommand extends VanillaCommand {
         }
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage:" + usageMessage);
+            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
 
@@ -57,7 +57,7 @@ public class TestForCommand extends VanillaCommand {
         }
 
         if (args.length >= 2) {
-            String data = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
+            String data = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             CompoundTag tag;
             try {
                 tag = Mojangson.parseCompound(data);
