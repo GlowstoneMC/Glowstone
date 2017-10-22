@@ -601,7 +601,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         super.pulse();
 
         if (usageItem != null) {
-            if (usageItem == getItemInHand()) {
+            if (usageItem.equals(getItemInHand())) { //todo: implement offhand
                 if (--usageTime == 0) {
                     ItemType item = ItemTable.instance().getItem(usageItem.getType());
                     if (item instanceof ItemFood) {
