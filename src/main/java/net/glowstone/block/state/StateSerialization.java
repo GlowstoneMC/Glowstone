@@ -55,7 +55,7 @@ public class StateSerialization {
     }
 
     public static BlockStateReader getReader(Material material) {
-        if (!READERS.containsKey(material)) {
+        if (material == null) {
             return null;
         }
         return READERS.get(material);
