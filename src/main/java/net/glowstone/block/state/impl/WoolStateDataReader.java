@@ -16,9 +16,11 @@ public class WoolStateDataReader extends BlockStateReader<Wool> {
         if (data.containsKey("color")) {
             DyeColor color = StateSerialization.getColor(data.get("color"));
             if (color == null) {
-                return null;
+                throw new InvalidBlockStateException(material, data);
             }
             wool.setColor(color);
+        } else {
+            wool.setColor(DyeColor.WHITE);
         }
         return wool;
     }
