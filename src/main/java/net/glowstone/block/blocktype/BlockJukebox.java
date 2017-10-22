@@ -3,7 +3,7 @@ package net.glowstone.block.blocktype;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.JukeboxEntity;
-import net.glowstone.block.state.GlowJukebox;
+import net.glowstone.block.entity.state.GlowJukebox;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;

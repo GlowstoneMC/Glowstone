@@ -5,7 +5,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BedEntity;
 import net.glowstone.block.entity.BlockEntity;
-import net.glowstone.block.state.GlowBed;
+import net.glowstone.block.entity.state.GlowBed;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.DyeColor;

@@ -11,7 +11,7 @@ import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
-import net.glowstone.block.state.GlowDispenser;
+import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.client.GlowClient;

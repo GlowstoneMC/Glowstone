@@ -1,5 +1,5 @@
 
-package net.glowstone.block.state;
+package net.glowstone.block.entity.state;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BeaconEntity;
