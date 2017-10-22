@@ -40,6 +40,9 @@ public class StateSerialization {
         if (state == null || data == null || data.getItemType() != type) {
             return false;
         }
+        if (state.isEmpty()) {
+            return true;
+        }
         BlockStateReader reader = getReader(type);
         if (reader == null) return false;
         return reader.matches(state, data);

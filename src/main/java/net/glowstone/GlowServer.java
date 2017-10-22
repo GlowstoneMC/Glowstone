@@ -861,6 +861,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new EffectCommand());
         commandMap.register("minecraft", new EnchantCommand());
         commandMap.register("minecraft", new TestForCommand());
+        commandMap.register("minecraft", new TestForBlockCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
