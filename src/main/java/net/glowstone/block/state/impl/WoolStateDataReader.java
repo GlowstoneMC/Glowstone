@@ -14,7 +14,7 @@ public class WoolStateDataReader extends BlockStateReader<Wool> {
     public Wool read(Material material, BlockStateData data) throws InvalidBlockStateException {
         Wool wool = new Wool();
         if (data.containsKey("color")) {
-            DyeColor color = StateSerialization.getColor(data.get("wool"));
+            DyeColor color = StateSerialization.getColor(data.get("color"));
             if (color == null) {
                 return null;
             }
@@ -26,7 +26,7 @@ public class WoolStateDataReader extends BlockStateReader<Wool> {
     @Override
     public boolean matches(BlockStateData state, Wool data) throws InvalidBlockStateException {
         if (state.containsKey("color")) {
-            DyeColor color = StateSerialization.getColor(state.get("wool"));
+            DyeColor color = StateSerialization.getColor(state.get("color"));
             if (color == null) {
                 throw new InvalidBlockStateException(data.getItemType(), state);
             }
