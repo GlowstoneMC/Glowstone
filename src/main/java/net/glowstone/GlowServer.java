@@ -11,7 +11,7 @@ import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
-import net.glowstone.block.state.GlowDispenser;
+import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.client.GlowClient;
@@ -861,6 +861,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new EffectCommand());
         commandMap.register("minecraft", new EnchantCommand());
         commandMap.register("minecraft", new TestForCommand());
+        commandMap.register("minecraft", new TestForBlockCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {

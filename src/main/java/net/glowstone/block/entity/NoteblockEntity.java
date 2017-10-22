@@ -2,7 +2,7 @@ package net.glowstone.block.entity;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.state.GlowNoteBlock;
+import net.glowstone.block.entity.state.GlowNoteBlock;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Note;
 

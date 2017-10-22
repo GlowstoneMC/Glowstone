@@ -5,7 +5,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockDispenser;
 import net.glowstone.block.blocktype.BlockLiquid;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.block.state.GlowDispenser;
+import net.glowstone.block.entity.state.GlowDispenser;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

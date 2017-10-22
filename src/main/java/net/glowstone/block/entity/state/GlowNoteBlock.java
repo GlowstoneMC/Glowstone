@@ -1,4 +1,4 @@
-package net.glowstone.block.state;
+package net.glowstone.block.entity.state;
 
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;

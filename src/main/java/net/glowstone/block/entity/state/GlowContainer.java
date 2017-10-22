@@ -1,4 +1,4 @@
-package net.glowstone.block.state;
+package net.glowstone.block.entity.state;
 
 import com.destroystokyo.paper.loottable.LootableBlockInventory;
 import net.glowstone.block.GlowBlock;
