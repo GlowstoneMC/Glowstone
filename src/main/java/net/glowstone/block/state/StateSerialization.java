@@ -13,7 +13,7 @@ public class StateSerialization {
     private static final Map<Material, BlockStateReader> READERS = new HashMap<>();
 
     public static BlockStateData parse(Material material, String state) throws InvalidBlockStateException {
-        if (state == null || state.trim().isEmpty()) {
+        if (state == null || state.trim().isEmpty() || state.trim().equals("*")) {
             return new BlockStateData();
         }
         if (material == null || getReader(material) == null) {
