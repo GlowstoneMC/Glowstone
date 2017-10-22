@@ -1,5 +1,6 @@
 package net.glowstone.block.state.impl;
 
+import com.google.common.collect.Sets;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.BlockStateReader;
 import net.glowstone.block.state.InvalidBlockStateException;
@@ -8,7 +9,16 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.material.Wool;
 
+import java.util.Set;
+
 public class WoolStateDataReader extends BlockStateReader<Wool> {
+
+    private static final Set<String> VALID_STATES = Sets.newHashSet("color");
+
+    @Override
+    public Set<String> getValidStates() {
+        return VALID_STATES;
+    }
 
     @Override
     public Wool read(Material material, BlockStateData data) throws InvalidBlockStateException {

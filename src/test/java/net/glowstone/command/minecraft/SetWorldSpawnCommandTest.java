@@ -46,7 +46,7 @@ public class SetWorldSpawnCommandTest {
 
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opPlayer.getName()).thenReturn("ChuckNorris");
-        Mockito.when(((Entity)opPlayer).getLocation()).thenReturn(new Location(world, 10.5, 20.5, 30.5));
+        Mockito.when(((Entity)opPlayer).getLocation()).thenReturn(new Location(world, 10.5, 20.0, 30.5));
 
         Mockito.when(world.getMaxHeight()).thenReturn(50);
 
@@ -100,7 +100,7 @@ public class SetWorldSpawnCommandTest {
     public void testExecuteFailsWithYCoordinatesTooSmall() {
         assertThat(command.execute(opSender, "label", new String[]{"2", "-10000", "4"}), is(false));
         // -10001 because of the floor, it's not supposed to be negative
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The y coordinate (-10001) is too small, it must be at least 0."));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The y coordinate (-10000) is too small, it must be at least 0."));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class SetWorldSpawnCommandTest {
     @Test
     public void testExecuteSucceedsWithRelativeLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"30", "~20", "10"}), is(true));
-        Mockito.verify(world).setSpawnLocation(30, 41, 10);
+        Mockito.verify(world).setSpawnLocation(30, 40, 10);
     }
 
     @Test

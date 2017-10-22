@@ -16,7 +16,8 @@ public class StateSerialization {
         if (state == null || state.trim().isEmpty() || state.trim().equals("*")) {
             return new BlockStateData();
         }
-        if (material == null || getReader(material) == null) {
+        BlockStateReader reader = getReader(material);
+        if (material == null || reader == null) {
             throw new InvalidBlockStateException(material, state);
         }
         BlockStateData data = new BlockStateData();
@@ -29,6 +30,9 @@ public class StateSerialization {
             keyVal[0] = keyVal[0].trim().toLowerCase();
             keyVal[1] = keyVal[1].trim().toLowerCase();
             if (keyVal[0].isEmpty() || keyVal[1].isEmpty()) {
+                throw new InvalidBlockStateException(material, state);
+            }
+            if (!reader.getValidStates().contains(keyVal[0])) {
                 throw new InvalidBlockStateException(material, state);
             }
             data.put(keyVal[0], keyVal[1]);

@@ -1,18 +1,25 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
 import net.glowstone.block.state.StateSerialization;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.util.mojangson.Mojangson;
+import net.glowstone.util.mojangson.ex.MojangsonParseException;
+import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
+import org.bukkit.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class TestForBlockCommand extends VanillaCommand {
     public TestForBlockCommand() {
@@ -38,7 +45,7 @@ public class TestForBlockCommand extends VanillaCommand {
         }
         Material type = ItemIds.getItem(itemName);
         Location location = CommandUtils.getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
-        Block block = location.getBlock();
+        GlowBlock block = (GlowBlock) location.getBlock();
         if (block.getType() != type) {
             sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
                     " is " + ItemIds.getName(block.getType()) + " (expected: " + ItemIds.getName(type) + ")");
@@ -70,10 +77,38 @@ public class TestForBlockCommand extends VanillaCommand {
                 }
             }
         }
-        // TODO: Data Tag
+        if (args.length > 5 && block.getBlockEntity() != null) {
+            String dataTag = String.join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
+            try {
+                CompoundTag tag = Mojangson.parseCompound(dataTag);
+                CompoundTag blockTag = new CompoundTag();
+                block.getBlockEntity().saveNbt(blockTag);
+                if (!tag.matches(blockTag)) {
+                    sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
+                            " did not have the required NBT keys");
+                    return false;
+                }
+            } catch (MojangsonParseException e) {
+                sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
+                return false;
+            }
+        }
         // All is well
         sendSuccess(sender, location);
         return true;
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        if (args.length == 4) {
+            String start = args[3];
+            if (!"minecraft:".startsWith(start)) {
+                int colon = start.indexOf(':');
+                start = "minecraft:" + start.substring(colon == -1 ? 0 : (colon + 1));
+            }
+            return (List) StringUtil.copyPartialMatches(start, ItemIds.getIds(), new ArrayList(ItemIds.getIds().size()));
+        }
+        return Collections.emptyList();
     }
 
     private void sendSuccess(CommandSender sender, Location location) {
