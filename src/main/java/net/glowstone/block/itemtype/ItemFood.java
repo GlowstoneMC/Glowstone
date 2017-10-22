@@ -35,8 +35,7 @@ public class ItemFood extends ItemTimedUsage {
         return saturation;
     }
 
-    public boolean eat(GlowPlayer player, ItemStack item) {
-
+    protected boolean handleEat(GlowPlayer player, ItemStack item) {
         PlayerItemConsumeEvent event1 = new PlayerItemConsumeEvent(player, item);
         EventFactory.callEvent(event1);
         if (event1.isCancelled()) return false;
@@ -50,6 +49,13 @@ public class ItemFood extends ItemTimedUsage {
 
         player.setUsageItem(null);
         player.setUsageTime(0);
+        return true;
+    }
+
+    public boolean eat(GlowPlayer player, ItemStack item) {
+        if (!handleEat(player, item)) {
+            return false;
+        }
         if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         } else {
