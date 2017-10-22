@@ -5,6 +5,8 @@ import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockActionMessage;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -66,13 +68,6 @@ public class BlockPiston extends BlockDirectional {
         if (me.isBlockIndirectlyPowered() && !isPistonExtended(me)) {
             List<Block> blocks = new ArrayList<>();
 
-            me.getWorld().getNearbyEntities(me.getLocation(), 20, 20, 20).stream().filter(entity -> entity.getType() == EntityType.PLAYER).forEach(player -> {
-                ((GlowPlayer) player).getSession().send(message);
-            });
-
-            // extended state for piston base
-            me.setData((byte) (me.getData() | 0x08));
-
             // get all blocks to be pushed by piston
             // add 2 to push limit to compensate for i starting at 1 and also to get the block after the push limit
             for (int i = 1; i < PUSH_LIMIT + 2; i++) {
@@ -92,6 +87,15 @@ public class BlockPiston extends BlockDirectional {
                 blocks.add(block);
             }
 
+            me.getWorld().getNearbyEntities(me.getLocation(), 20, 20, 20).stream().filter(entity -> entity.getType() == EntityType.PLAYER).forEach(player -> {
+                ((GlowPlayer) player).getSession().send(message);
+            });
+
+            me.getWorld().playSound(me.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f, 0.75f);
+
+            // extended state for piston base
+            me.setData((byte) (me.getData() | 0x08));
+
             for (int i = blocks.size() - 1; i >= 0; i--) {
                 Block block = blocks.get(i);
 
@@ -104,9 +108,15 @@ public class BlockPiston extends BlockDirectional {
             return;
         }
 
+        if (!isPistonExtended(me)) {
+            return;
+        }
+
         me.getWorld().getNearbyEntities(me.getLocation(), 20, 20, 20).stream().filter(entity -> entity.getType() == EntityType.PLAYER).forEach(player -> {
             ((GlowPlayer) player).getSession().send(message);
         });
+
+        me.getWorld().playSound(me.getLocation(), Sound.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f, 0.75f);
 
         // normal state for piston
         setType(me, me.getTypeId(), me.getData() & ~0x08);
@@ -133,7 +143,7 @@ public class BlockPiston extends BlockDirectional {
     private boolean isPistonExtended(Block block) {
         // TODO: check direction of piston_extension to make sure that the extension is attached to piston
         Block pistonHead = block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing());
-        return pistonHead.isBlockPowered() && pistonHead.getType() == Material.PISTON_EXTENSION;
+        return pistonHead.getType() == Material.PISTON_EXTENSION;
     }
 
     // update block server side without sending block change packets
