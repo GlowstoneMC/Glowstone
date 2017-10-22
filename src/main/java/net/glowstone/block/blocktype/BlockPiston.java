@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
@@ -10,7 +11,6 @@ import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonBaseMaterial;
 
@@ -61,9 +61,12 @@ public class BlockPiston extends BlockDirectional {
     public void onRedstoneUpdate(GlowBlock me) {
         PistonBaseMaterial piston = (PistonBaseMaterial) me.getState().getData();
         BlockFace pistonBlockFace = piston.getFacing();
-        PistonDirection pistonDirection = PistonDirection.getByBlockFace(pistonBlockFace);
+        int rawFace = BlockDirectional.getRawFace(pistonBlockFace);
+        BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(), me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getTypeId());
 
-        BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(), me.isBlockIndirectlyPowered() ? 0 : 1, pistonDirection.ordinal(), me.getTypeId());
+        GlowChunk chunk = me.getChunk();
+        GlowChunk.Key chunkKey = GlowChunk.ChunkKeyStore.get(chunk.getX(), chunk.getZ());
+        GlowWorld world = me.getWorld();
 
         if (me.isBlockIndirectlyPowered() && !isPistonExtended(me)) {
             List<Block> blocks = new ArrayList<>();
@@ -87,11 +90,8 @@ public class BlockPiston extends BlockDirectional {
                 blocks.add(block);
             }
 
-            me.getWorld().getNearbyEntities(me.getLocation(), 20, 20, 20).stream().filter(entity -> entity.getType() == EntityType.PLAYER).forEach(player -> {
-                ((GlowPlayer) player).getSession().send(message);
-            });
-
-            me.getWorld().playSound(me.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f, 0.75f);
+            world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.getSession().send(message));
+            world.playSound(me.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f, 0.75f);
 
             // extended state for piston base
             me.setData((byte) (me.getData() | 0x08));
@@ -103,7 +103,7 @@ public class BlockPiston extends BlockDirectional {
             }
 
             // set piston head block when extended
-            setType(me.getRelative(pistonBlockFace), 34, sticky ? me.getData() | 0x08 : pistonDirection.ordinal());
+            setType(me.getRelative(pistonBlockFace), 34, sticky ? me.getData() | 0x08 : rawFace);
 
             return;
         }
@@ -112,11 +112,8 @@ public class BlockPiston extends BlockDirectional {
             return;
         }
 
-        me.getWorld().getNearbyEntities(me.getLocation(), 20, 20, 20).stream().filter(entity -> entity.getType() == EntityType.PLAYER).forEach(player -> {
-            ((GlowPlayer) player).getSession().send(message);
-        });
-
-        me.getWorld().playSound(me.getLocation(), Sound.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f, 0.75f);
+        world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.getSession().send(message));
+        world.playSound(me.getLocation(), Sound.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f, 0.75f);
 
         // normal state for piston
         setType(me, me.getTypeId(), me.getData() & ~0x08);
@@ -155,33 +152,5 @@ public class BlockPiston extends BlockDirectional {
 
         ((GlowChunk) world.getChunkAt(block)).setType(x & 0xf, z & 0xf, y, type);
         ((GlowChunk) world.getChunkAt(block)).setMetaData(x & 0xf, z & 0xf, y, data);
-    }
-
-    public enum PistonDirection {
-        DOWN,
-        UP,
-        NORTH,
-        SOUTH,
-        WEST,
-        EAST;
-
-        public static PistonDirection getByBlockFace(BlockFace face) {
-            switch (face) {
-                case DOWN:
-                    return PistonDirection.DOWN;
-                case UP:
-                    return PistonDirection.UP;
-                case NORTH:
-                    return PistonDirection.NORTH;
-                case SOUTH:
-                    return PistonDirection.SOUTH;
-                case WEST:
-                    return PistonDirection.WEST;
-                case EAST:
-                    return PistonDirection.EAST;
-            }
-
-            return null;
-        }
     }
 }
