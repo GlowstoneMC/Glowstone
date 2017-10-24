@@ -17,7 +17,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
@@ -176,8 +176,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             } else {
                 placeFallingBlock();
                 if (material == Material.ANVIL) {
-                    Random random = new Random();
-                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
+                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F + (ThreadLocalRandom.current().nextFloat() - ThreadLocalRandom.current().nextFloat()) * 0.2F) * 0.7F);
                 }
                 remove();
             }

@@ -62,11 +62,6 @@ public class GlowSession extends BasicSession {
     private final ConnectionManager connectionManager;
 
     /**
-     * The Random for this session
-     */
-    private final Random random = new Random();
-
-    /**
      * A queue of incoming and unprocessed messages.
      */
     private final Queue<Message> messageQueue = new ArrayDeque<>();

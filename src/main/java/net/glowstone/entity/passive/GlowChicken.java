@@ -8,7 +8,7 @@ import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowChicken extends GlowAnimal implements Chicken {
 
@@ -38,8 +38,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     }
 
     private void generateEggLayDelay() {
-        Random r = new Random();
-        setEggLayTime(r.nextInt(20 * 60 * 5) + 20 * 60 * 5);
+        setEggLayTime(ThreadLocalRandom.current().nextInt(20 * 60 * 5) + 20 * 60 * 5);
     }
 
     @Override

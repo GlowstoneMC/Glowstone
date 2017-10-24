@@ -8,6 +8,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class CommandTarget {
@@ -234,14 +235,10 @@ public class CommandTarget {
             count = entities.size();
         List<Entity> matched = new ArrayList<>();
         List<Integer> used = new ArrayList<>();
-        Random rand = null;
         for (int i = 0; i < count; i++) {
             if (selector == SelectorType.RANDOM) {
-                if (rand == null) {
-                    rand = new Random();
-                }
                 while (true) {
-                    int random = rand.nextInt(entities.size());
+                    int random = ThreadLocalRandom.current().nextInt(entities.size());
                     if (!used.contains(random)) {
                         matched.add(entities.get(random));
                         used.add(random);

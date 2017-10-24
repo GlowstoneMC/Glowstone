@@ -16,7 +16,6 @@ import org.bukkit.inventory.MerchantRecipe;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowVillager extends GlowAgeable implements Villager {
@@ -31,8 +30,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     public GlowVillager(Location location) {
         super(location, EntityType.VILLAGER, 20);
-        Random random = ThreadLocalRandom.current();
-        setProfession(Profession.values()[random.nextInt(Profession.values().length - 2) + 1]);
+        setProfession(Profession.values()[ThreadLocalRandom.current().nextInt(Profession.values().length - 2) + 1]);
         setBoundingBox(0.6, 1.95);
     }
 
@@ -213,9 +211,8 @@ public class GlowVillager extends GlowAgeable implements Villager {
         if (profession == null || profession.isZombie()) {
             this.career = null;
         } else {
-            Random random = ThreadLocalRandom.current();
             Career[] careers = getCareersByProfession(profession);
-            this.career = careers[random.nextInt(careers.length)];
+            this.career = careers[ThreadLocalRandom.current().nextInt(careers.length)];
             this.careerLevel = 1;
         }
     }

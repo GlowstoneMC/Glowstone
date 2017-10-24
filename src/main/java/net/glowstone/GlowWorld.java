@@ -61,6 +61,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -119,10 +120,6 @@ public final class GlowWorld implements World {
      * The entity manager.
      */
     private final EntityManager entities = new EntityManager();
-    /**
-     * This world's Random instance.
-     */
-    private final Random random = new Random();
     /**
      * The chunk generator for this world.
      */
@@ -457,7 +454,7 @@ public final class GlowWorld implements World {
     private void updateBlocksInSection(GlowChunk chunk, ChunkSection section, int i) {
         if (section != null) {
             for (int j = 0; j < 3; j++) {
-                int n = random.nextInt();
+                int n = ThreadLocalRandom.current().nextInt();
                 int x = n & 0xF;
                 int z = n >> 8 & 0xF;
                 int y = n >> 16 & 0xF;
@@ -578,14 +575,14 @@ public final class GlowWorld implements World {
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {
         if (environment == Environment.NORMAL && currentlyRaining && currentlyThundering) {
-            if (random.nextInt(100000) == 0) {
+            if (ThreadLocalRandom.current().nextInt(100000) == 0) {
                 strikeLightningInChunk(cx, cz);
             }
         }
     }
 
     private void strikeLightningInChunk(int cx, int cz) {
-        int n = random.nextInt();
+        int n = ThreadLocalRandom.current().nextInt();
         // get lightning target block
         int x = (cx << 4) + (n & 0xF);
         int z = (cz << 4) + (n >> 8 & 0xF);
@@ -611,7 +608,7 @@ public final class GlowWorld implements World {
         // re-target lightning if required
         if (!livingEntities.isEmpty()) {
             // randomly choose an entity
-            LivingEntity entity = livingEntities.get(random.nextInt(livingEntities.size()));
+            LivingEntity entity = livingEntities.get(ThreadLocalRandom.current().nextInt(livingEntities.size()));
             // re-target lightning on this living entity
             Vector newTarget = entity.getLocation().toVector();
             x = newTarget.getBlockX();
@@ -770,16 +767,16 @@ public final class GlowWorld implements World {
 
         if (needSpawn) {
             // find a spawn if needed
-            Location spawn = generator.getFixedSpawnLocation(this, random);
+            Location spawn = generator.getFixedSpawnLocation(this, ThreadLocalRandom.current());
             // we're already going to anchor if told to, so don't request another anchor
             if (spawn == null) {
                 // determine a location randomly
-                int spawnX = random.nextInt(256) - 128, spawnZ = random.nextInt(256) - 128;
+                int spawnX = ThreadLocalRandom.current().nextInt(256) - 128, spawnZ = ThreadLocalRandom.current().nextInt(256) - 128;
                 getChunkAt(spawnX >> 4, spawnZ >> 4).load(true);  // I'm not sure there's a sane way around this
 
                 for (int tries = 0; tries < 1000 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
-                    spawnX += random.nextInt(256) - 128;
-                    spawnZ += random.nextInt(256) - 128;
+                    spawnX += ThreadLocalRandom.current().nextInt(256) - 128;
+                    spawnZ += ThreadLocalRandom.current().nextInt(256) - 128;
                 }
                 setSpawnLocation(spawnX, getHighestBlockYAt(spawnX, spawnZ), spawnZ);
                 needSpawn = false;
@@ -1032,7 +1029,7 @@ public final class GlowWorld implements World {
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
+        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate).generate()) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, false, null, blockStates);
             EventFactory.callEvent(growEvent);
@@ -1378,9 +1375,9 @@ public final class GlowWorld implements World {
 
     @Override
     public GlowItem dropItemNaturally(Location location, ItemStack item) {
-        double xs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double ys = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double zs = random.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double xs = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double ys = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
+        double zs = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         location = location.clone().add(xs, ys, zs);
         GlowItem dropItem = new GlowItem(location, item);
         dropItem.setVelocity(new Vector(0, 0.01F, 0));
@@ -1392,7 +1389,7 @@ public final class GlowWorld implements World {
         Arrow arrow = spawn(location, Arrow.class);
 
         // Transformative magic
-        Vector randVec = new Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
+        Vector randVec = new Vector(ThreadLocalRandom.current().nextGaussian(), ThreadLocalRandom.current().nextGaussian(), ThreadLocalRandom.current().nextGaussian());
         randVec.multiply(0.0075 * spread);
 
         velocity.normalize();
@@ -1436,7 +1433,7 @@ public final class GlowWorld implements World {
     }
 
     private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect, boolean isSilent) {
-        GlowLightningStrike strike = new GlowLightningStrike(loc, effect, isSilent, random);
+        GlowLightningStrike strike = new GlowLightningStrike(loc, effect, isSilent);
         LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
         if (EventFactory.callEvent(event).isCancelled()) {
             return null;
@@ -1501,9 +1498,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
-            setWeatherDuration(random.nextInt(HALF_DAY_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setWeatherDuration(ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS) + HALF_DAY_IN_TICKS);
         } else {
-            setWeatherDuration(random.nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setWeatherDuration(ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
 
         // update players
@@ -1540,9 +1537,9 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
-            setThunderDuration(random.nextInt(HALF_DAY_IN_TICKS) + 180 * TICKS_PER_SECOND);
+            setThunderDuration(ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS) + 180 * TICKS_PER_SECOND);
         } else {
-            setThunderDuration(random.nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setThunderDuration(ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
     }
 

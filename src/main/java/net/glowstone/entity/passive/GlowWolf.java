@@ -8,7 +8,7 @@ import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 //import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
 
@@ -18,8 +18,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
 
     public GlowWolf(Location location) {
         super(location, EntityType.WOLF, 8);
-        Random r = new Random();
-        collarColor = DyeColor.getByDyeData((byte) r.nextInt(DyeColor.values().length));
+        collarColor = DyeColor.getByDyeData((byte) ThreadLocalRandom.current().nextInt(DyeColor.values().length));
         setBoundingBox(0.6, 0.85);
     }
 

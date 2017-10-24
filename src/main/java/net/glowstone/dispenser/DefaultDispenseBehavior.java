@@ -11,11 +11,9 @@ import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DefaultDispenseBehavior implements DispenseBehavior {
-
-    private final Random random = new Random();
 
     @Override
     public ItemStack dispense(GlowBlock block, ItemStack stack) {
@@ -50,13 +48,13 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
         }
 
 
-        double velocity = random.nextDouble() * 0.1 + 0.2;
+        double velocity = ThreadLocalRandom.current().nextDouble() * 0.1 + 0.2;
         double velocityX = facing.getModX() * velocity;
         double velocityY = 0.2;
         double velocityZ = facing.getModZ() * velocity;
-        velocityX += random.nextGaussian() * 0.0075 * power;
-        velocityY += random.nextGaussian() * 0.0075 * power;
-        velocityZ += random.nextGaussian() * 0.0075 * power;
+        velocityX += ThreadLocalRandom.current().nextGaussian() * 0.0075 * power;
+        velocityY += ThreadLocalRandom.current().nextGaussian() * 0.0075 * power;
+        velocityZ += ThreadLocalRandom.current().nextGaussian() * 0.0075 * power;
 
         BlockDispenseEvent dispenseEvent = new BlockDispenseEvent(block, items, new Vector(velocityX, velocityY, velocityZ));
         EventFactory.callEvent(dispenseEvent);

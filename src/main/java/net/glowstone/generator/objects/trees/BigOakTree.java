@@ -10,15 +10,12 @@ import java.util.Collection;
 import java.util.Random;
 
 public class BigOakTree extends GenericTree {
-
     private static final float LEAF_DENSITY = 1.0F;
-    private final Random random = new Random();
     private int maxLeafDistance = 5;
     private int trunkHeight;
 
     public BigOakTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
-        this.random.setSeed(random.nextLong());
         setHeight(this.random.nextInt(12) + 5);
     }
 

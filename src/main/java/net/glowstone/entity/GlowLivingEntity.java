@@ -713,9 +713,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     if (data.getExperience() > 0) {
                         // split experience
                         Integer[] values = ExperienceSplitter.cut(data.getExperience());
-                        Random random = new Random();
                         for (Integer exp : values) {
-                            double xMod = random.nextDouble() - 0.5, zMod = random.nextDouble() - 0.5;
+                            double xMod = ThreadLocalRandom.current().nextDouble() - 0.5, zMod = ThreadLocalRandom.current().nextDouble() - 0.5;
                             Location xpLocation = new Location(world, location.getBlockX() + 0.5 + xMod, location.getY(), location.getBlockZ() + 0.5 + zMod);
                             GlowExperienceOrb orb = (GlowExperienceOrb) world.spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
                             orb.setExperience(exp);

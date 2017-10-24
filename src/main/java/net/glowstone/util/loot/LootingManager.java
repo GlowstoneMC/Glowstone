@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LootingManager {
 
@@ -91,19 +91,19 @@ public class LootingManager {
         if (!entities.containsKey(entity.getType())) {
             return new LootData(InventoryUtil.NO_ITEMS, 0);
         }
-        Random random = LootingUtil.random;
+
         EntityLootTable table = entities.get(entity.getType());
         ArrayList<ItemStack> items = new ArrayList<>();
         for (LootItem lootItem : table.getItems()) {
             DefaultLootItem defaultItem = lootItem.getDefaultItem();
-            int count = defaultItem.getCount().generate(random, entity);
+            int count = defaultItem.getCount().generate(ThreadLocalRandom.current(), entity);
             int data = 0;
             if (defaultItem.getData().isPresent()) {
-                data = defaultItem.getData().get().generate(random);
+                data = defaultItem.getData().get().generate(ThreadLocalRandom.current());
             } else if (defaultItem.getReflectiveData().isPresent()) {
                 data = ((Number) defaultItem.getReflectiveData().get().process(entity)).intValue();
             }
-            String name = defaultItem.getType().generate(random);
+            String name = defaultItem.getType().generate(ThreadLocalRandom.current());
             if (name == null) {
                 name = "";
             }
@@ -113,17 +113,17 @@ public class LootingManager {
             for (ConditionalLootItem condition : conditions) {
                 if (LootingUtil.conditionValue(entity, condition.getCondition())) {
                     if (condition.getCount().isPresent()) {
-                        count = condition.getCount().get().generate(random, entity);
+                        count = condition.getCount().get().generate(ThreadLocalRandom.current(), entity);
                     }
                     if (condition.getType().isPresent()) {
-                        name = condition.getType().get().generate(random);
+                        name = condition.getType().get().generate(ThreadLocalRandom.current());
                         if (name == null) {
                             name = "";
                         }
                         name = name.toUpperCase();
                     }
                     if (condition.getData().isPresent()) {
-                        data = condition.getData().get().generate(random);
+                        data = condition.getData().get().generate(ThreadLocalRandom.current());
                     } else if (condition.getReflectiveData().isPresent()) {
                         data = ((Number) condition.getReflectiveData().get().process(entity)).intValue();
                     }
@@ -134,7 +134,7 @@ public class LootingManager {
                 items.add(new ItemStack(material, count, (byte) data));
             }
         }
-        int experience = table.getExperience().generate(random, entity);
+        int experience = table.getExperience().generate(ThreadLocalRandom.current(), entity);
         return new LootData(items.toArray(new ItemStack[items.size()]), experience);
     }
 }

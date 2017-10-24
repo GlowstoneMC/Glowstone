@@ -6,7 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowSlime extends GlowMonster implements Slime {
 
@@ -18,10 +18,9 @@ public class GlowSlime extends GlowMonster implements Slime {
 
     protected GlowSlime(Location loc, EntityType type) {
         super(loc, type, 1);
-        Random r = new Random();
         byte size = 1;
         double health = 1;
-        switch (r.nextInt(3)) {
+        switch (ThreadLocalRandom.current().nextInt(3)) {
             case 0:
                 size = 1;
                 health = 1;

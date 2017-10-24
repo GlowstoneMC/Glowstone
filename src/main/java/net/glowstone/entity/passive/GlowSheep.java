@@ -12,7 +12,7 @@ import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowSheep extends GlowAnimal implements Sheep {
 
@@ -22,8 +22,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     public GlowSheep(Location location) {
         super(location, EntityType.SHEEP, 8);
         setSize(0.9F, 1.3F);
-        Random r = new Random();
-        int colorpc = r.nextInt(10000);
+        int colorpc = ThreadLocalRandom.current().nextInt(10000);
         if (colorpc < 8184) {
             setColor(DyeColor.WHITE);
         } else if (colorpc >= 8184 && 8684 > colorpc) {
@@ -92,9 +91,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
 
                     getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
 
-                    Random r = new Random();
-
-                    getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.WOOL, r.nextInt(3) + 1, getColor().getWoolData()));
+                    getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.WOOL, ThreadLocalRandom.current().nextInt(3) + 1, getColor().getWoolData()));
 
                     setSheared(true);
                     return true;

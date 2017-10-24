@@ -27,6 +27,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Represents a single block in a world.
@@ -453,14 +454,12 @@ public final class GlowBlock implements Block {
     }
 
     public boolean breakNaturally(float yield, Collection<ItemStack> drops) {
-        Random r = new Random();
-
         if (getType() == Material.AIR) {
             return false;
         }
 
         Location location = getLocation();
-        drops.stream().filter(stack -> r.nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
+        drops.stream().filter(stack -> ThreadLocalRandom.current().nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
         setType(Material.AIR);
         return true;

@@ -1,12 +1,5 @@
 package net.glowstone;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
@@ -32,6 +25,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
 public final class Explosion {
 
     public static final int POWER_TNT = 4;
@@ -42,7 +39,6 @@ public final class Explosion {
     public static final int POWER_WITHER_SKULL = 1;
     public static final int POWER_WITHER_CREATION = 7;
     public static final int POWER_ENDER_CRYSTAL = 6;
-    private static final Random random = new Random();
     public static final int EXPLOSION_VISIBILITY_RADIUS = 64;
     private static final List<Vector> RAY_DIRECTIONS = new ArrayList<>();
 
@@ -196,7 +192,7 @@ public final class Explosion {
     }
 
     private float calculateStartPower() {
-        float rand = random.nextFloat();
+        float rand = ThreadLocalRandom.current().nextFloat();
         rand *= 0.6F; // (max - 0.7)
         rand += 0.7; // min
         return rand * power;
@@ -213,7 +209,7 @@ public final class Explosion {
     }
 
     private void setBlockOnFire(GlowBlock block) {
-        if (random.nextInt(3) != 0) {
+        if (ThreadLocalRandom.current().nextInt(3) != 0) {
             return;
         }
         Block below = block.getRelative(BlockFace.DOWN);
@@ -327,7 +323,7 @@ public final class Explosion {
     ///////////////////////////////////////
     // Visualize
     private void playOutSoundAndParticles() {
-        world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 4, (1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
+        world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 4, (1.0F + (ThreadLocalRandom.current().nextFloat() - ThreadLocalRandom.current().nextFloat()) * 0.2F) * 0.7F);
 
         if (power >= 2.0F && breakBlocks) {
             // send huge explosion
