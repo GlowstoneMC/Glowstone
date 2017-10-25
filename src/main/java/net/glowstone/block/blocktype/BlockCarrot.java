@@ -8,13 +8,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockCarrot extends BlockCrops {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CARROT_ITEM, random.nextInt(4) + 1)));
+            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CARROT_ITEM, ThreadLocalRandom.current().nextInt(4) + 1)));
         } else {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CARROT_ITEM, 1)));
         }

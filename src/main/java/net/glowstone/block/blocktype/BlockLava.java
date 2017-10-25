@@ -8,6 +8,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockLava extends BlockLiquid {
 
     private static final BlockFace[] FLAMMABLE_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
@@ -28,10 +30,10 @@ public class BlockLava extends BlockLiquid {
         if (!block.getWorld().getGameRuleMap().getBoolean("doFireTick")) {
             return;
         }
-        int n = random.nextInt(3);
+        int n = ThreadLocalRandom.current().nextInt(3);
         if (n == 0) {
             for (int i = 0; i < 3; i++) {
-                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 0, -1 + random.nextInt(3)).getBlock();
+                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + ThreadLocalRandom.current().nextInt(3), 0, -1 + ThreadLocalRandom.current().nextInt(3)).getBlock();
                 GlowBlock bAbove = b.getRelative(BlockFace.UP);
                 if (bAbove.isEmpty() && b.isFlammable()) {
                     BlockIgniteEvent igniteEvent = new BlockIgniteEvent(bAbove, IgniteCause.LAVA, block);
@@ -45,7 +47,7 @@ public class BlockLava extends BlockLiquid {
             }
         } else {
             for (int i = 0; i < n; i++) {
-                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 1, -1 + random.nextInt(3)).getBlock();
+                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + ThreadLocalRandom.current().nextInt(3), 1, -1 + ThreadLocalRandom.current().nextInt(3)).getBlock();
                 if (b.isEmpty()) {
                     if (hasNearFlammableBlock(b)) {
                         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(b, IgniteCause.LAVA, block);

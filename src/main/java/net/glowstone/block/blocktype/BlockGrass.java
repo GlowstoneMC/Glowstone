@@ -17,6 +17,8 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.LongGrass;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockGrass extends BlockType implements IBlockGrowable {
 
     public BlockGrass() {
@@ -51,12 +53,12 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                 if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
                     GlowBlock b = block.getRelative(BlockFace.UP);
                     GlowBlockState blockState = b.getState();
-                    if (random.nextFloat() < 0.125D) {
+                    if (ThreadLocalRandom.current().nextFloat() < 0.125D) {
                         // sometimes grow random flower
                         // would be better to call a method that choose a random
                         // flower depending on the biome
                         FlowerType[] flowers = FlowerForestPopulator.FLOWERS;
-                        Material flower = flowers[random.nextInt(flowers.length)].getType();
+                        Material flower = flowers[ThreadLocalRandom.current().nextInt(flowers.length)].getType();
                         if (ItemTable.instance().getBlock(flower).canPlaceAt(b, BlockFace.DOWN)) {
                             blockState.setType(flower);
                         }
@@ -77,9 +79,9 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                     int x = block.getX();
                     int y = block.getY();
                     int z = block.getZ();
-                    x += random.nextInt(3) - 1;
-                    y += random.nextInt(3) * random.nextInt(3) / 2;
-                    z += random.nextInt(3) - 1;
+                    x += ThreadLocalRandom.current().nextInt(3) - 1;
+                    y += ThreadLocalRandom.current().nextInt(3) * ThreadLocalRandom.current().nextInt(3) / 2;
+                    z += ThreadLocalRandom.current().nextInt(3) - 1;
                     if (world.getBlockAt(x, y, z).getType() == Material.GRASS) {
                         j++;
                         continue;
@@ -111,9 +113,9 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
 
             // grass spread randomly around
             for (int i = 0; i < 4; i++) {
-                int x = sourceX + random.nextInt(3) - 1;
-                int z = sourceZ + random.nextInt(3) - 1;
-                int y = sourceY + random.nextInt(5) - 3;
+                int x = sourceX + ThreadLocalRandom.current().nextInt(3) - 1;
+                int z = sourceZ + ThreadLocalRandom.current().nextInt(3) - 1;
+                int y = sourceY + ThreadLocalRandom.current().nextInt(5) - 3;
 
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);

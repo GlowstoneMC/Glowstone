@@ -2,9 +2,11 @@ package net.glowstone.entity.ai;
 
 import net.glowstone.entity.GlowLivingEntity;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class LookAroundTask extends EntityTask {
 
-    private int delay = random.nextInt(10) + 15;
+    private int delay = ThreadLocalRandom.current().nextInt(10) + 15;
 
     public LookAroundTask() {
         super("look_around");
@@ -28,7 +30,7 @@ public class LookAroundTask extends EntityTask {
     @Override
     public boolean shouldStart(GlowLivingEntity entity) {
         EntityTask task = entity.getTaskManager().getTask("look_player");
-        return (task == null || !task.isExecuting()) && random.nextFloat() <= 0.1;
+        return (task == null || !task.isExecuting()) && ThreadLocalRandom.current().nextFloat() <= 0.1;
     }
 
     @Override
@@ -37,13 +39,13 @@ public class LookAroundTask extends EntityTask {
 
     @Override
     public void end(GlowLivingEntity entity) {
-        delay = random.nextInt(20) + 60;
+        delay = ThreadLocalRandom.current().nextInt(20) + 60;
     }
 
     @Override
     public void execute(GlowLivingEntity entity) {
-        if (random.nextFloat() <= 0.15 && delay == 0) {
-            entity.setHeadYaw(entity.getHeadYaw() + random.nextFloat() * 179 - 90); // todo: smooth
+        if (ThreadLocalRandom.current().nextFloat() <= 0.15 && delay == 0) {
+            entity.setHeadYaw(entity.getHeadYaw() + ThreadLocalRandom.current().nextFloat() * 179 - 90); // todo: smooth
             delay = 20;
         }
         if (delay > 0) delay--;

@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -126,7 +127,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
         if (data instanceof CocoaPlant) {
             CocoaPlant cocoa = (CocoaPlant) data;
             CocoaPlantSize size = cocoa.getSize();
-            if (size != CocoaPlantSize.LARGE && random.nextInt(5) == 0) {
+            if (size != CocoaPlantSize.LARGE && ThreadLocalRandom.current().nextInt(5) == 0) {
                 if (size == CocoaPlantSize.SMALL) {
                     cocoa.setSize(CocoaPlantSize.MEDIUM);
                 } else if (size == CocoaPlantSize.MEDIUM) {

@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockVine extends BlockClimbable {
 
@@ -108,18 +109,18 @@ public class BlockVine extends BlockClimbable {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (random.nextInt(4) == 0) {
+        if (ThreadLocalRandom.current().nextInt(4) == 0) {
             GlowBlockState state = block.getState();
             MaterialData data = state.getData();
             if (data instanceof Vine) {
                 Vine vine = (Vine) data;
                 boolean hasNearVineBlocks = hasNearVineBlocks(block);
-                BlockFace face = FACES[random.nextInt(FACES.length)];
+                BlockFace face = FACES[ThreadLocalRandom.current().nextInt(FACES.length)];
                 if (block.getY() < 255 && face == BlockFace.UP && block.getRelative(face).isEmpty()) {
                     if (!hasNearVineBlocks) {
                         Vine v = (Vine) data;
                         for (BlockFace f : HORIZONTAL_FACES) {
-                            if (random.nextInt(2) == 0 || !block.getRelative(f).getRelative(face).getType().isSolid()) {
+                            if (ThreadLocalRandom.current().nextInt(2) == 0 || !block.getRelative(f).getRelative(face).getType().isSolid()) {
                                 v.removeFromFace(f);
                             }
                         }
@@ -156,7 +157,7 @@ public class BlockVine extends BlockClimbable {
                     Vine v = (Vine) data;
                     if (b.getType() == Material.VINE || b.isEmpty()) {
                         for (BlockFace f : HORIZONTAL_FACES) {
-                            if (random.nextInt(2) == 0) {
+                            if (ThreadLocalRandom.current().nextInt(2) == 0) {
                                 v.removeFromFace(f);
                             }
                         }

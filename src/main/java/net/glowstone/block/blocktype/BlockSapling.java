@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -43,7 +44,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean canGrowWithChance(GlowBlock block) {
-        return random.nextFloat() < 0.45D;
+        return ThreadLocalRandom.current().nextFloat() < 0.45D;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
         if (data == TreeSpecies.GENERIC.ordinal()) {
             // 1 chance on 10 to grow a big oak tree
-            if (random.nextInt(10) > 0) {
+            if (ThreadLocalRandom.current().nextInt(10) > 0) {
                 generateTree(TreeType.TREE, block, player);
             } else {
                 generateTree(TreeType.BIG_TREE, block, player);
@@ -109,7 +110,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         Location loc = block.getLocation();
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         boolean canGrow = false;
-        if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
+        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate).generate()) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
                     new StructureGrowEvent(loc, type, player != null, player, blockStates);
@@ -172,7 +173,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 && random.nextInt(7) == 0) {
+        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 && ThreadLocalRandom.current().nextInt(7) == 0) {
             int dataValue = block.getData();
             if ((dataValue & 8) == 0) {
                 block.setData((byte) (dataValue | 8));

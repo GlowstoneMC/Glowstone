@@ -19,6 +19,7 @@ import org.bukkit.util.Vector;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockFire extends BlockNeedsAttached {
 
@@ -103,7 +104,7 @@ public class BlockFire extends BlockNeedsAttached {
         int age = state.getRawData();
         if (age < MAX_FIRE_AGE) {
             // increase fire age
-            state.setRawData((byte) (age + random.nextInt(3) / 2));
+            state.setRawData((byte) (age + ThreadLocalRandom.current().nextInt(3) / 2));
             state.update(true);
         }
 
@@ -114,7 +115,7 @@ public class BlockFire extends BlockNeedsAttached {
                     block.breakNaturally();
                     world.cancelPulse(block);
                 }
-            } else if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable() && random.nextInt(4) == 0) {
+            } else if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable() && ThreadLocalRandom.current().nextInt(4) == 0) {
                 // if fire reached max age, bottom block is not flammable, 25% chance to stop fire
                 block.breakNaturally();
                 world.cancelPulse(block);
@@ -157,7 +158,7 @@ public class BlockFire extends BlockNeedsAttached {
                                         resistance /= 2;
                                     }
                                     if ((!world.hasStorm() || !isRainingAround(propagationBlock))
-                                            && resistance > 0 && random.nextInt(y > 1 ? 100 + 100 * (y - 1) : 100) <= resistance) {
+                                            && resistance > 0 && ThreadLocalRandom.current().nextInt(y > 1 ? 100 + 100 * (y - 1) : 100) <= resistance) {
                                         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(propagationBlock, IgniteCause.SPREAD, block);
                                         EventFactory.callEvent(igniteEvent);
                                         if (!igniteEvent.isCancelled()) {
@@ -220,7 +221,7 @@ public class BlockFire extends BlockNeedsAttached {
     }
 
     private void burnBlock(GlowBlock block, int burnResistance, int fireAge) {
-        if (random.nextInt(burnResistance) < block.getMaterialValues().getFireResistance()) {
+        if (ThreadLocalRandom.current().nextInt(burnResistance) < block.getMaterialValues().getFireResistance()) {
             BlockBurnEvent burnEvent = new BlockBurnEvent(block);
             EventFactory.callEvent(burnEvent);
             if (!burnEvent.isCancelled()) {
@@ -228,7 +229,7 @@ public class BlockFire extends BlockNeedsAttached {
                     BlockTNT.igniteBlock(block, false);
                 } else {
                     GlowBlockState state = block.getState();
-                    if (random.nextInt(10 + fireAge) < 5 && !GlowBiomeClimate.isRainy(block)) {
+                    if (ThreadLocalRandom.current().nextInt(10 + fireAge) < 5 && !GlowBiomeClimate.isRainy(block)) {
                         int increasedAge = increaseFireAge(fireAge);
                         state.setType(Material.FIRE);
                         state.setRawData((byte) (increasedAge > MAX_FIRE_AGE ? MAX_FIRE_AGE : increasedAge));
@@ -243,7 +244,7 @@ public class BlockFire extends BlockNeedsAttached {
     }
 
     private int increaseFireAge(int age) {
-        return age + random.nextInt(5) / 4;
+        return age + ThreadLocalRandom.current().nextInt(5) / 4;
     }
 
     @Override
