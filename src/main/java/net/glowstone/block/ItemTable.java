@@ -245,6 +245,8 @@ public final class ItemTable {
         reg(Material.RED_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.RED_GLAZED_TERRACOTTA));
         reg(Material.SILVER_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.SILVER_GLAZED_TERRACOTTA));
         reg(Material.YELLOW_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.YELLOW_GLAZED_TERRACOTTA));
+        reg(Material.CHORUS_FLOWER, new BlockChorusFlower());
+        reg(Material.CHORUS_PLANT, new BlockChorusPlant());
 
 
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
@@ -316,7 +318,7 @@ public final class ItemTable {
         reg(Material.RABBIT, new ItemFood(3, 1.8f));
         reg(Material.ROTTEN_FLESH, new ItemRottenFlesh());
         reg(Material.SPIDER_EYE, new ItemSpiderEye());
-        reg(Material.CHORUS_FRUIT, new ItemFood(4, 2.4f)); //todo: chorus fruit teleportation
+        reg(Material.CHORUS_FRUIT, new ItemChorusFruit());
         reg(Material.ARMOR_STAND, new ItemArmorStand());
         reg(Material.MILK_BUCKET, new ItemMilk());
         reg(Material.MINECART, new ItemMinecart(GlowMinecart.MinecartType.RIDEABLE));
