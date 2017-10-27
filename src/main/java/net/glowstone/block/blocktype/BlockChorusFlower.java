@@ -6,7 +6,7 @@ import org.bukkit.block.BlockFace;
 
 public class BlockChorusFlower extends BlockType {
 
-    private static final BlockFace[] FACES = new BlockFace[] { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+    private static final BlockFace[] FACES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {

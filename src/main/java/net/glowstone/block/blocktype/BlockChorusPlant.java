@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class BlockChorusPlant extends BlockType {
 
-    private static final BlockFace[] FACES = new BlockFace[] { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+    private static final BlockFace[] FACES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
