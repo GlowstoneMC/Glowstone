@@ -21,9 +21,6 @@ import java.util.Collection;
 
 public class BlockChest extends BlockContainer {
 
-    private static final BlockFace[] NEAR_CHESTS = new BlockFace[]{
-            BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
-    };
     private final boolean isTrapped;
 
     public BlockChest() {
@@ -148,7 +145,7 @@ public class BlockChest extends BlockContainer {
     private Collection<BlockFace> searchChests(GlowBlock block) {
         Collection<BlockFace> chests = new ArrayList<>();
 
-        for (BlockFace face : NEAR_CHESTS) {
+        for (BlockFace face : SIDES) {
             GlowBlock possibleChest = block.getRelative(face);
             if (possibleChest.getType() == (isTrapped ? Material.TRAPPED_CHEST : Material.CHEST)) {
                 chests.add(face);

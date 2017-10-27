@@ -14,8 +14,6 @@ import org.bukkit.util.Vector;
 
 public class BlockLever extends BlockAttachable {
 
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-
     public BlockLever() {
         setDrops(new ItemStack(Material.LEVER));
     }

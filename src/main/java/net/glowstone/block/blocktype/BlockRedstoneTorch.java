@@ -16,8 +16,6 @@ import org.bukkit.util.Vector;
 
 public class BlockRedstoneTorch extends BlockNeedsAttached {
 
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-
     public BlockRedstoneTorch() {
         setDrops(new ItemStack(Material.REDSTONE_TORCH_ON));
     }

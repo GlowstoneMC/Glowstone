@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockEnderPortalFrame extends BlockDropless {
-    private static final BlockFace[] DIRECTION = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
@@ -68,7 +67,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
     private void searchForCompletedPortal(GlowPlayer player, GlowBlock changed) {
         for (int i = 0; i < 4; i++) {
             for (int j = -1; j <= 1; j++) {
-                GlowBlock center = changed.getRelative(DIRECTION[i], 2).getRelative(DIRECTION[(i + 1) % 4], j);
+                GlowBlock center = changed.getRelative(SIDES[i], 2).getRelative(SIDES[(i + 1) % 4], j);
                 if (isCompletedPortal(center)) {
                     createPortal(player, center);
                     return;
@@ -83,7 +82,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
     private boolean isCompletedPortal(GlowBlock center) {
         for (int i = 0; i < 4; i++) {
             for (int j = -1; j <= 1; j++) {
-                GlowBlock block = center.getRelative(DIRECTION[i], 2).getRelative(DIRECTION[(i + 1) % 4], j);
+                GlowBlock block = center.getRelative(SIDES[i], 2).getRelative(SIDES[(i + 1) % 4], j);
                 if (block.getType() != Material.ENDER_PORTAL_FRAME || (block.getData() & 0x4) == 0) {
                     return false;
                 }

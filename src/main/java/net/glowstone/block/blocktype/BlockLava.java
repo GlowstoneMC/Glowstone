@@ -12,8 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockLava extends BlockLiquid {
 
-    private static final BlockFace[] FLAMMABLE_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-
     public BlockLava() {
         super(Material.LAVA_BUCKET);
     }
@@ -68,7 +66,7 @@ public class BlockLava extends BlockLiquid {
 
     private boolean hasNearFlammableBlock(GlowBlock block) {
         // check there's at least a flammable block around
-        for (BlockFace face : FLAMMABLE_FACES) {
+        for (BlockFace face : ADJACENT) {
             if (block.getRelative(face).isFlammable()) {
                 return true;
             }

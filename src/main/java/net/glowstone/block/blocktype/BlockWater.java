@@ -11,8 +11,6 @@ import org.bukkit.material.MaterialData;
 
 public class BlockWater extends BlockLiquid {
 
-    private static final BlockFace[] SOLID_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
-
     public BlockWater() {
         super(Material.WATER_BUCKET);
     }
@@ -42,7 +40,7 @@ public class BlockWater extends BlockLiquid {
 
     private boolean hasNearSolidBlock(GlowBlock block) {
         // check there's at least a solid block around
-        for (BlockFace face : SOLID_FACES) {
+        for (BlockFace face : SIDES) {
             if (block.getRelative(face).getType().isSolid()) {
                 return true;
             }

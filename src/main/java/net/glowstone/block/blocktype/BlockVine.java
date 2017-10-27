@@ -19,7 +19,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockVine extends BlockClimbable {
 
-    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN, BlockFace.UP};
     private static final BlockFace[] HORIZONTAL_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 
     private static BlockFace getClockwiseFace(BlockFace face) {
@@ -115,7 +114,7 @@ public class BlockVine extends BlockClimbable {
             if (data instanceof Vine) {
                 Vine vine = (Vine) data;
                 boolean hasNearVineBlocks = hasNearVineBlocks(block);
-                BlockFace face = FACES[ThreadLocalRandom.current().nextInt(FACES.length)];
+                BlockFace face = ADJACENT[ThreadLocalRandom.current().nextInt(ADJACENT.length)];
                 if (block.getY() < 255 && face == BlockFace.UP && block.getRelative(face).isEmpty()) {
                     if (!hasNearVineBlocks) {
                         Vine v = (Vine) data;

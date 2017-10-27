@@ -20,9 +20,6 @@ import java.util.List;
  */
 public class BlockRedstone extends BlockNeedsAttached {
 
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-
     public BlockRedstone() {
         setDrops(new ItemStack(Material.REDSTONE));
     }

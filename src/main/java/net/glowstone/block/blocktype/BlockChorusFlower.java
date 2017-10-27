@@ -6,8 +6,6 @@ import org.bukkit.block.BlockFace;
 
 public class BlockChorusFlower extends BlockType {
 
-    private static final BlockFace[] FACES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         GlowBlock under = block.getRelative(BlockFace.DOWN);
@@ -15,7 +13,7 @@ public class BlockChorusFlower extends BlockType {
             return true;
         } else if (under.getType() == Material.AIR) {
             boolean hasSupport = false;
-            for (BlockFace side : FACES) {
+            for (BlockFace side : SIDES) {
                 GlowBlock relative = block.getRelative(side);
                 if (relative.getType() == Material.CHORUS_PLANT) {
                     if (hasSupport) { //only one chorus plant allowed on the side
