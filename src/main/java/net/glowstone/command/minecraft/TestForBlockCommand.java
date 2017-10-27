@@ -53,17 +53,16 @@ public class TestForBlockCommand extends VanillaCommand {
         }
         if (args.length > 4) {
             String state = args[4];
-            try {
-                int data = Integer.valueOf(state);
-                if (data != -1 && block.getData() != data) {
-                    sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
-                            " had the data value of " + block.getData() + " (expected: " + data + ")");
-                    return false;
-                }
-            } catch (NumberFormatException numberEx) {
-                // It's not a data value
+            BlockStateData data = CommandUtils.readState(sender, block, state);
+            if (data == null) {
+                return false;
+            }
+            if (data.isNumeric() && block.getData() != data.getNumericValue()) {
+                sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
+                        " had the data value of " + block.getData() + " (expected: " + data + ")");
+                return false;
+            } else if (!data.isNumeric()) {
                 try {
-                    BlockStateData data = StateSerialization.parse(block.getType(), state);
                     boolean matches = StateSerialization.matches(block.getType(), block.getState().getData(), data);
                     if (!matches) {
                         // TODO: Print the actual state of the block

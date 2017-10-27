@@ -27,6 +27,9 @@ public class StateSerialization {
                 throw new InvalidBlockStateException(material, state);
             }
             String[] keyVal = section.split("=");
+            if (keyVal.length < 2) {
+                throw new InvalidBlockStateException(material, state);
+            }
             keyVal[0] = keyVal[0].trim().toLowerCase();
             keyVal[1] = keyVal[1].trim().toLowerCase();
             if (keyVal[0].isEmpty() || keyVal[1].isEmpty()) {
