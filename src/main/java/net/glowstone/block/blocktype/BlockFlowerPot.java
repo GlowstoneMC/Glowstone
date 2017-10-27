@@ -4,7 +4,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.FlowerPotEntity;
-import net.glowstone.block.state.GlowFlowerPot;
+import net.glowstone.block.entity.state.GlowFlowerPot;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GrassSpecies;

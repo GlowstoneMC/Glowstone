@@ -55,7 +55,7 @@ public class SpawnPointCommandTest {
         world = PowerMockito.mock(GlowWorld.class);
         command = new SpawnPointCommand();
 
-        final Location location = new Location(world, 10.5, 20.5, 30.5);
+        final Location location = new Location(world, 10.5, 20.0, 30.5);
         Mockito.when(fakePlayer1.getName()).thenReturn("player1");
         Mockito.when(fakePlayer2.getName()).thenReturn("player2");
         Mockito.when(fakePlayer3.getName()).thenReturn("thePlayer3");
@@ -132,55 +132,55 @@ public class SpawnPointCommandTest {
     @Test
     public void testExecuteFailsWithYCoordinatesTooHigh() {
         assertThat(command.execute(opSender, "label", new String[]{"player1", "2", "10000", "4"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'10000.5' is too high for the current world. Max value is '50'."));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'10000.0' is too high for the current world. Max value is '50'."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooSmall() {
         assertThat(command.execute(opSender, "label", new String[]{"player1", "2", "-10000", "4"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The y coordinate (-10000.5) is too small, it must be at least 0."));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The y coordinate (-10000.0) is too small, it must be at least 0."));
     }
 
     @Test
     public void testExecuteSucceedsWithCurrentLocation() {
         assertThat(command.execute(opPlayer, "label", new String[0]), is(true));
-        Mockito.verify((Player) opPlayer).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
+        Mockito.verify((Player) opPlayer).setBedSpawnLocation(new Location(world, 10.5, 20.0, 30.5), true);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithCurrentLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"player1"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 10.5, 20.0, 30.5), true);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithSpecificLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"player1", "30", "20", "10"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 20.0, 10.5), true);
     }
 
     @Test
     public void testExecuteSucceedsAllPlayersWithCurrentLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"@a"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
-        Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
-        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 10.5, 20.5, 30.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 10.5, 20.0, 30.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 10.5, 20.0, 30.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 10.5, 20.0, 30.5), true);
     }
 
     @Test
     public void testExecuteSucceedsAllPlayersWithSpecificLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"@a", "30", "20", "10"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
-        Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
-        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 30.5, 20.5, 10.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 20.0, 10.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 30.5, 20.0, 10.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 30.5, 20.0, 10.5), true);
     }
 
     @Test
     public void testExecuteSucceedsAllPlayersWithRelativeLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"@a", "30", "~20", "10"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 41, 10.5), true);
-        Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 30.5, 41, 10.5), true);
-        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 30.5, 41, 10.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).setBedSpawnLocation(new Location(world, 30.5, 40.0, 10.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("player2")).setBedSpawnLocation(new Location(world, 30.5, 40.0, 10.5), true);
+        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).setBedSpawnLocation(new Location(world, 30.5, 40.0, 10.5), true);
     }
 
     @Test

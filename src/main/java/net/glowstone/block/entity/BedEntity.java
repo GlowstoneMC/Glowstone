@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.state.GlowBed;
+import net.glowstone.block.entity.state.GlowBed;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
