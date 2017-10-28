@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -23,9 +24,9 @@ public class ItemChorusFruit extends ItemFood {
 
         for (int i = 0; i < 16; i++) { //16 attempts: +/- 8 blocks in every direction
             Location attempt = player.getLocation();
-            double deltaX = Math.random() * 16 - 8;
-            double deltaY = Math.random() * 16 - 8;
-            double deltaZ = Math.random() * 16 - 8;
+            double deltaX = ThreadLocalRandom.current().nextDouble() * 16 - 8;
+            double deltaY = ThreadLocalRandom.current().nextDouble() * 16 - 8;
+            double deltaZ = ThreadLocalRandom.current().nextDouble() * 16 - 8;
             attempt.setX(attempt.getX() + deltaX);
             attempt.setY(Math.min(Math.max(attempt.getY() + deltaY, 0), player.getWorld().getMaxHeight() - 1));
             attempt.setZ(attempt.getZ() + deltaZ);
