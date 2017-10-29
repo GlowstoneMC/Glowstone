@@ -1284,7 +1284,7 @@ public final class GlowServer implements Server {
 
     @Override
     public String getVersion() {
-        return GlowServer.class.getPackage().getImplementationVersion() + "-MC" + GAME_VERSION;
+        return GlowServer.class.getPackage().getImplementationVersion() + " (MC: " + GAME_VERSION + ")";
     }
 
     @Override
