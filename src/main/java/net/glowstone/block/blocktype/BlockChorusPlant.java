@@ -3,6 +3,8 @@ package net.glowstone.block.blocktype;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
+
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,7 +17,7 @@ public class BlockChorusPlant extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (random.nextBoolean()) {
+        if (ThreadLocalRandom.current().nextBoolean()) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CHORUS_FRUIT, 1)));
         } else {
             return Collections.unmodifiableList(Arrays.asList());
