@@ -17,6 +17,7 @@ import org.bukkit.material.MaterialData;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -29,7 +30,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (random.nextFloat() < .125) {
+        if (ThreadLocalRandom.current().nextFloat() < .125) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
         }
         return BlockDropless.EMPTY_STACK;

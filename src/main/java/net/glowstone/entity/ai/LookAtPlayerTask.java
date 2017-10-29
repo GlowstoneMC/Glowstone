@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LookAtPlayerTask extends EntityTask {
 
@@ -36,7 +37,7 @@ public class LookAtPlayerTask extends EntityTask {
     @Override
     public boolean shouldStart(GlowLivingEntity entity) {
         EntityTask task = entity.getTaskManager().getTask("look_around");
-        return task != null && !task.isExecuting() && random.nextFloat() <= 0.025;
+        return task != null && !task.isExecuting() && ThreadLocalRandom.current().nextFloat() <= 0.025;
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.bukkit.block.Biome;
 import java.util.Random;
 
 public abstract class MapLayer {
-
     private final Random random = new Random();
     private long seed;
 

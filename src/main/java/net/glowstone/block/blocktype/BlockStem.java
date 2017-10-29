@@ -14,6 +14,7 @@ import org.bukkit.material.Pumpkin;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockStem extends BlockCrops {
     private Material fruitType;
@@ -37,7 +38,7 @@ public class BlockStem extends BlockCrops {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getState().getRawData() >= CropState.RIPE.ordinal()) {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(seedsType, random.nextInt(4))));
+            return Collections.unmodifiableList(Arrays.asList(new ItemStack(seedsType, ThreadLocalRandom.current().nextInt(4))));
         } else {
             return BlockDropless.EMPTY_STACK;
         }
@@ -62,7 +63,7 @@ public class BlockStem extends BlockCrops {
     public void grow(GlowPlayer player, GlowBlock block) {
         GlowBlockState state = block.getState();
         int cropState = block.getData()
-                + random.nextInt(CropState.MEDIUM.ordinal())
+                + ThreadLocalRandom.current().nextInt(CropState.MEDIUM.ordinal())
                 + CropState.VERY_SMALL.ordinal();
         if (cropState > CropState.RIPE.ordinal()) {
             cropState = CropState.RIPE.ordinal();
@@ -80,7 +81,7 @@ public class BlockStem extends BlockCrops {
         // we check light level on the above block, meaning stems needs at least one free block above it
         // in order to grow naturally (vanilla behavior)
         if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
-                random.nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
+                ThreadLocalRandom.current().nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
 
             int cropState = block.getData();
             if (cropState >= CropState.RIPE.ordinal()) {
@@ -92,7 +93,7 @@ public class BlockStem extends BlockCrops {
                     return;
                 }
                 // produce a fruit if possible
-                int n = random.nextInt(4);
+                int n = ThreadLocalRandom.current().nextInt(4);
                 BlockFace face;
                 switch (n) {
                     case 1:

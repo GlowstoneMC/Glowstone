@@ -9,6 +9,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockNetherWart extends BlockNeedsAttached {
 
     public BlockNetherWart() {
@@ -28,7 +30,7 @@ public class BlockNetherWart extends BlockNeedsAttached {
     @Override
     public void updateBlock(GlowBlock block) {
         int cropState = block.getData();
-        if (cropState < NetherWartsState.RIPE.ordinal() && random.nextInt(10) == 0) {
+        if (cropState < NetherWartsState.RIPE.ordinal() && ThreadLocalRandom.current().nextInt(10) == 0) {
             cropState++;
             GlowBlockState state = block.getState();
             state.setRawData((byte) cropState);

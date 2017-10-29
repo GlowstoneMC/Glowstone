@@ -20,6 +20,7 @@ import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -57,7 +58,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
     @Override
     public boolean canGrowWithChance(GlowBlock block) {
-        return random.nextFloat() < 0.4D;
+        return ThreadLocalRandom.current().nextFloat() < 0.4D;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         }
         Location loc = block.getLocation();
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
+        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate).generate()) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player, blockStates);
             EventFactory.callEvent(growEvent);
@@ -86,7 +87,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (random.nextInt(25) == 0) {
+        if (ThreadLocalRandom.current().nextInt(25) == 0) {
             GlowWorld world = block.getWorld();
             int x, y, z;
             int i = 0;
@@ -103,9 +104,9 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             }
 
             int nX, nY, nZ;
-            nX = block.getX() + random.nextInt(3) - 1;
-            nY = block.getY() + random.nextInt(2) - random.nextInt(2);
-            nZ = block.getZ() + random.nextInt(3) - 1;
+            nX = block.getX() + ThreadLocalRandom.current().nextInt(3) - 1;
+            nY = block.getY() + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current().nextInt(2);
+            nZ = block.getZ() + ThreadLocalRandom.current().nextInt(3) - 1;
 
             x = block.getX();
             y = block.getY();
@@ -117,9 +118,9 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                     y = nY;
                     z = nZ;
                 }
-                nX = x + random.nextInt(3) - 1;
-                nY = y + random.nextInt(2) - random.nextInt(2);
-                nZ = z + random.nextInt(3) - 1;
+                nX = x + ThreadLocalRandom.current().nextInt(3) - 1;
+                nY = y + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current().nextInt(2);
+                nZ = z + ThreadLocalRandom.current().nextInt(3) - 1;
             }
 
             if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR

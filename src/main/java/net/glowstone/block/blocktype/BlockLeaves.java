@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockLeaves extends BlockType {
 
@@ -39,10 +40,10 @@ public class BlockLeaves extends BlockType {
 
         List<ItemStack> drops = new ArrayList<>();
 
-        if (random.nextFloat() < (block.getData() == 3 ? .025f : .05f)) { //jungle leaves drop with 2.5% chance, others drop with 5%
+        if (ThreadLocalRandom.current().nextFloat() < (block.getData() == 3 ? .025f : .05f)) { //jungle leaves drop with 2.5% chance, others drop with 5%
             drops.add(new ItemStack(Material.SAPLING, 1, (short) data));
         }
-        if (data == 0 && random.nextFloat() < .005) { //oak leaves have a .5% chance to drop an apple
+        if (data == 0 && ThreadLocalRandom.current().nextFloat() < .005) { //oak leaves have a .5% chance to drop an apple
             drops.add(new ItemStack(Material.APPLE));
         }
         return Collections.unmodifiableList(drops);

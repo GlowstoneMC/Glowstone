@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockHugeMushroom extends BlockType {
     private final Material mushroomType;
@@ -27,7 +28,7 @@ public class BlockHugeMushroom extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        int rnd = random.nextInt(100);
+        int rnd = ThreadLocalRandom.current().nextInt(100);
         if (rnd < 80) {
             return BlockDropless.EMPTY_STACK;
         } else {

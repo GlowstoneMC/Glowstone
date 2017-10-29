@@ -10,6 +10,8 @@ import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockMycel extends BlockType {
 
     public BlockMycel() {
@@ -41,9 +43,9 @@ public class BlockMycel extends BlockType {
 
             // mycel spread randomly around
             for (int i = 0; i < 4; i++) {
-                int x = sourceX + random.nextInt(3) - 1;
-                int z = sourceZ + random.nextInt(3) - 1;
-                int y = sourceY + random.nextInt(5) - 3;
+                int x = sourceX + ThreadLocalRandom.current().nextInt(3) - 1;
+                int z = sourceZ + ThreadLocalRandom.current().nextInt(3) - 1;
+                int y = sourceY + ThreadLocalRandom.current().nextInt(5) - 3;
 
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);

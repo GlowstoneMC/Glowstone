@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -24,7 +25,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, random.nextInt(4)),
+            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, ThreadLocalRandom.current().nextInt(4)),
                     new ItemStack(Material.WHEAT, 1)));
         } else {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
@@ -45,7 +46,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     public void grow(GlowPlayer player, GlowBlock block) {
         GlowBlockState state = block.getState();
         int cropState = block.getData()
-                + random.nextInt(CropState.MEDIUM.ordinal())
+                + ThreadLocalRandom.current().nextInt(CropState.MEDIUM.ordinal())
                 + CropState.VERY_SMALL.ordinal();
         if (cropState > CropState.RIPE.ordinal()) {
             cropState = CropState.RIPE.ordinal();
@@ -70,7 +71,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
         // we check light level on the above block, meaning crops needs at least one free block above it
         // in order to grow naturally (vanilla behavior)
         if (cropState < CropState.RIPE.ordinal() && block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
-                random.nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
+                ThreadLocalRandom.current().nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
             cropState++;
             if (cropState > CropState.RIPE.ordinal()) {
                 cropState = CropState.RIPE.ordinal();

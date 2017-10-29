@@ -14,11 +14,9 @@ import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
-
-    private static final Random random = new Random();
 
     private static final DispenseBehaviorRegistry dispenseBehaviorRegistry = new DispenseBehaviorRegistry();
 
@@ -92,7 +90,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
     }
 
     public int getDispenseSlot() {
-        return InventoryUtil.getRandomSlot(random, getInventory(), true);
+        return InventoryUtil.getRandomSlot(ThreadLocalRandom.current(), getInventory(), true);
     }
 
     public ItemStack placeInDispenser(ItemStack toPlace) {

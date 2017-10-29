@@ -2,12 +2,9 @@ package net.glowstone.entity.ai;
 
 import net.glowstone.entity.GlowLivingEntity;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class EntityTask {
-
-    protected static final Random random = new Random();
-
     private final String name;
     private boolean executing = false;
     private int duration = 0;
@@ -36,7 +33,7 @@ public abstract class EntityTask {
             return;
         }
         if (!executing && shouldStart(entity)) {
-            duration = getDurationMin() == getDurationMax() ? getDurationMin() : random.nextInt(getDurationMax() - getDurationMin()) + getDurationMin();
+            duration = getDurationMin() == getDurationMax() ? getDurationMin() : ThreadLocalRandom.current().nextInt(getDurationMax() - getDurationMin()) + getDurationMin();
             executing = true;
             start(entity);
         }
