@@ -24,7 +24,7 @@ public abstract class BlockLiquid extends BlockType {
     private static final int TICK_RATE_WATER = 4;
     private static final int TICK_RATE_LAVA = 20;
     private final Material bucketType;
-    private BlockFace[] sides = {NORTH, EAST, SOUTH, WEST};
+
     protected BlockLiquid(Material bucketType) {
         this.bucketType = bucketType;
     }
@@ -119,7 +119,7 @@ public abstract class BlockLiquid extends BlockType {
             if (block.getY() > 0) {
                 if (calculateTarget(block.getRelative(DOWN), DOWN, true)) {
                     if (!block.getRelative(UP).isLiquid() && Byte.compare(state.getRawData(), STRENGTH_SOURCE) == 0) {
-                        for (BlockFace face : sides) {
+                        for (BlockFace face : SIDES) {
                             calculateTarget(block.getRelative(face), face, true);
                         }
                     }
@@ -128,7 +128,7 @@ public abstract class BlockLiquid extends BlockType {
                     // search 5 blocks out
                     for (int j = 1; j < 6; j++) {
                         // from each horizontal face
-                        for (BlockFace face : sides) {
+                        for (BlockFace face : SIDES) {
                             if (calculateTarget(block.getRelative(face, j).getRelative(DOWN), face, false) && calculateTarget(block.getRelative(face), face, true)) {
                                 state.setFlowed(true);
                             }
@@ -138,7 +138,7 @@ public abstract class BlockLiquid extends BlockType {
                             return;
                         }
                     }
-                    for (BlockFace face : sides) {
+                    for (BlockFace face : SIDES) {
                         calculateTarget(block.getRelative(face), face, true);
                     }
                     state.setFlowed(true);

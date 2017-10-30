@@ -13,8 +13,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class BlockChorusPlant extends BlockType {
 
-    private static final BlockFace[] FACES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (ThreadLocalRandom.current().nextBoolean()) {
@@ -27,7 +25,7 @@ public class BlockChorusPlant extends BlockType {
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         boolean sideSupport = false;
-        for (BlockFace face : FACES) {
+        for (BlockFace face : SIDES) {
             Block relative = block.getRelative(face);
             if (relative.getType() == Material.CHORUS_PLANT && hasDownSupport(relative)) {
                 sideSupport = true;

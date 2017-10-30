@@ -23,7 +23,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockFire extends BlockNeedsAttached {
 
-    private static final BlockFace[] FLAMMABLE_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
     private static final BlockFace[] RAIN_FACES = {BlockFace.SELF, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
     private static final int TICK_RATE = 20;
     private static final int MAX_FIRE_AGE = 15;
@@ -190,7 +189,7 @@ public class BlockFire extends BlockNeedsAttached {
 
     private boolean hasNearFlammableBlock(GlowBlock block) {
         // check there's at least a flammable block around
-        for (BlockFace face : FLAMMABLE_FACES) {
+        for (BlockFace face : ADJACENT) {
             if (block.getRelative(face).isFlammable()) {
                 return true;
             }
@@ -203,7 +202,7 @@ public class BlockFire extends BlockNeedsAttached {
             return 0;
         } else {
             int flameResistance = 0;
-            for (BlockFace face : FLAMMABLE_FACES) {
+            for (BlockFace face : ADJACENT) {
                 flameResistance = Math.max(flameResistance, block.getRelative(face).getMaterialValues().getFlameResistance());
             }
             return flameResistance;

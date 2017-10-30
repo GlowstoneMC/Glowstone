@@ -15,8 +15,6 @@ import java.util.Collections;
 
 public class BlockSugarCane extends BlockNeedsAttached {
 
-    private static final BlockFace[] DIRECT_FACES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH};
-
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
@@ -85,7 +83,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
     }
 
     private boolean isNearWater(Block block) {
-        for (BlockFace face : DIRECT_FACES) {
+        for (BlockFace face : SIDES) {
             switch (block.getRelative(face).getType()) {
                 case WATER:
                 case STATIONARY_WATER:

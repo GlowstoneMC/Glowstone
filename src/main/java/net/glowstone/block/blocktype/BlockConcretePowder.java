@@ -23,11 +23,9 @@ public class BlockConcretePowder extends BlockFalling {
         }
     }
 
-    private BlockFace[] faces = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-
     @Override
     public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte data) {
-        for (BlockFace face : faces) {
+        for (BlockFace face : ADJACENT) {
             if (block.getRelative(face).isLiquid()) {
                 block.setType(Material.CONCRETE);
             }

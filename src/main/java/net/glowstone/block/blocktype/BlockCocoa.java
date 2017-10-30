@@ -22,8 +22,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
-    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
@@ -45,7 +43,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         BlockFace face = against.getOppositeFace();
-        if (Arrays.asList(FACES).contains(face) && block.getRelative(face).getType() == Material.LOG) {
+        if (Arrays.asList(SIDES).contains(face) && block.getRelative(face).getType() == Material.LOG) {
             MaterialData data = block.getRelative(face).getState().getData();
             if (data instanceof Tree) {
                 if (((Tree) data).getSpecies() == TreeSpecies.JUNGLE) {
