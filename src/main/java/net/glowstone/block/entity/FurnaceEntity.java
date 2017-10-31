@@ -4,7 +4,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.state.GlowFurnace;
+import net.glowstone.block.entity.state.GlowFurnace;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowFurnaceInventory;
 import net.glowstone.inventory.crafting.CraftingManager;

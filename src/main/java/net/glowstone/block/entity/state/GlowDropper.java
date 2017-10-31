@@ -1,4 +1,4 @@
-package net.glowstone.block.state;
+package net.glowstone.block.entity.state;
 
 import net.glowstone.block.GlowBlock;
 import org.bukkit.block.Dropper;

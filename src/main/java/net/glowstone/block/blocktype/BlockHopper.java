@@ -5,7 +5,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ContainerEntity;
 import net.glowstone.block.entity.HopperEntity;
-import net.glowstone.block.state.GlowHopper;
+import net.glowstone.block.entity.state.GlowHopper;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;

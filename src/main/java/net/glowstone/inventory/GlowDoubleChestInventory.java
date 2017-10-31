@@ -1,7 +1,7 @@
 package net.glowstone.inventory;
 
 import com.google.common.collect.ImmutableList;
-import net.glowstone.block.state.GlowChest;
+import net.glowstone.block.entity.state.GlowChest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;

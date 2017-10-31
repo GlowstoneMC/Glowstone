@@ -2,7 +2,7 @@ package net.glowstone.block.entity;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.state.GlowChest;
+import net.glowstone.block.entity.state.GlowChest;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowChestInventory;
 import net.glowstone.net.message.play.game.BlockActionMessage;

@@ -1,7 +1,13 @@
 package net.glowstone.command;
 
 import net.glowstone.GlowWorld;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.state.BlockStateData;
+import net.glowstone.block.state.InvalidBlockStateException;
+import net.glowstone.block.state.StateSerialization;
+import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -31,26 +37,26 @@ public class CommandUtils {
         if (xRelative.startsWith("~")) {
             double diff = 0;
             if (xRelative.length() > 1)
-                diff = getDouble(xRelative.substring(1));
+                diff = getDouble(xRelative.substring(1), true);
             x = location.getX() + diff;
         } else {
-            x = getDouble(xRelative);
+            x = getDouble(xRelative, true);
         }
         if (yRelative.startsWith("~")) {
             double diff = 0;
             if (yRelative.length() > 1)
-                diff = getDouble(yRelative.substring(1));
+                diff = getDouble(yRelative.substring(1), false);
             y = location.getY() + diff;
         } else {
-            y = getDouble(yRelative);
+            y = getDouble(yRelative, false);
         }
         if (zRelative.startsWith("~")) {
             double diff = 0;
             if (zRelative.length() > 1)
-                diff = getDouble(zRelative.substring(1));
+                diff = getDouble(zRelative.substring(1), true);
             z = location.getZ() + diff;
         } else {
-            z = getDouble(zRelative);
+            z = getDouble(zRelative, true);
         }
         return new Location(location.getWorld(), x, y, z);
     }
@@ -85,11 +91,27 @@ public class CommandUtils {
         return new Location(location.getWorld(), location.getX(), location.getY(), location.getZ(), yaw, pitch);
     }
 
-    private static double getDouble(String d) {
+    private static double getDouble(String d, boolean shift) {
         boolean literal = d.split("\\.").length != 1;
-        if (!literal)
+        if (shift && !literal)
             d += ".5";
         return Double.valueOf(d);
+    }
+
+    public static BlockStateData readState(CommandSender sender, GlowBlock block, String state) {
+        if (isNumeric(state)) {
+            return new BlockStateData(Integer.parseInt(state));
+        }
+        try {
+            return StateSerialization.parse(block.getType(), state);
+        } catch (InvalidBlockStateException e) {
+            sender.sendMessage(ChatColor.RED + e.getMessage());
+            return null;
+        }
+    }
+
+    public static boolean isNumeric(String argument) {
+        return NumberUtils.isNumber(argument);
     }
 
     public static String prettyPrint(Entity[] entities) {

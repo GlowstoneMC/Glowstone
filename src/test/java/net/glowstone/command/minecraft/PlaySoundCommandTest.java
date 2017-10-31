@@ -53,7 +53,7 @@ public class PlaySoundCommandTest {
         fakePlayer2 = PowerMockito.mock(GlowPlayer.class);
         fakePlayer3 = PowerMockito.mock(GlowPlayer.class);
 
-        final Location location = new Location(world, 10.5, 20.5, 30.5);
+        final Location location = new Location(world, 10.5, 20.0, 30.5);
         Mockito.when(fakePlayer1.getName()).thenReturn("player1");
         Mockito.when(fakePlayer2.getName()).thenReturn("player2");
         Mockito.when(fakePlayer3.getName()).thenReturn("thePlayer3");
@@ -153,53 +153,53 @@ public class PlaySoundCommandTest {
     @Test
     public void testExecuteSucceedsWithoutMinecraftPrefix() {
         assertThat(command.execute(opSender, "label", new String[]{"entity.parrot.imitate.wither", "master", "player1"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.5, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.0, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithCurrentLocation() {
         assertThat(command.execute(opSender, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.5, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.0, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
     }
 
     @Test
     public void testExecuteSucceedsOnAllPlayersWithCurrentLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "@a"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.5, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
-        Mockito.verify(Bukkit.getPlayerExact("player2")).playSound(new Location(world, 10.5, 20.5, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
-        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).playSound(new Location(world, 10.5, 20.5, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 10.5, 20.0, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player2")).playSound(new Location(world, 10.5, 20.0, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
+        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).playSound(new Location(world, 10.5, 20.0, 30.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 1, 1);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithSpecificLocation() {
         assertThat(command.execute(opSender, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0", "0", "200"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.5, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.0, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
     }
 
     @Test
     public void testExecuteSucceedsOnAllPlayersWithSpecificLocation() {
         assertThat(command.execute(opPlayer, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "@a", "0", "0", "0", "200"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.5, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
-        Mockito.verify(Bukkit.getPlayerExact("player2")).playSound(new Location(world, 0.5, 0.5, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
-        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).playSound(new Location(world, 0.5, 0.5, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.0, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player2")).playSound(new Location(world, 0.5, 0.0, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
+        Mockito.verify(Bukkit.getPlayerExact("thePlayer3")).playSound(new Location(world, 0.5, 0.0, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithRelativeLocation() {
         assertThat(command.execute(opSender, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "~20", "~20", "~5", "200"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 31, 41, 36), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 31, 40.0, 36), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, 1);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithSmallPitch() {
         assertThat(command.execute(opSender, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0", "0", "200", "0.05"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.5, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, (float) 0.5);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.0, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, (float) 0.5);
     }
 
     @Test
     public void testExecuteSucceedsOnAnotherPlayerWithSpecificPitch() {
         assertThat(command.execute(opSender, "label", new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0", "0", "200", "0.6"}), is(true));
-        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.5, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, (float) 0.6);
+        Mockito.verify(Bukkit.getPlayerExact("player1")).playSound(new Location(world, 0.5, 0.0, 0.5), Sound.ENTITY_PARROT_IMITATE_WITHER, SoundCategory.MASTER, 200, (float) 0.6);
     }
 
     @Test
