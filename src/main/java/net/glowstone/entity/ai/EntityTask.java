@@ -4,7 +4,7 @@ import net.glowstone.entity.GlowLivingEntity;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class EntityTask {
+public abstract class EntityTask implements Comparable<EntityTask> {
     private final String name;
     private boolean executing = false;
     private int duration = 0;
@@ -12,6 +12,11 @@ public abstract class EntityTask {
 
     public EntityTask(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int compareTo(EntityTask other) {
+        return 0;
     }
 
     public final void pulse(GlowLivingEntity entity) {
