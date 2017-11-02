@@ -2,18 +2,18 @@ package net.glowstone.entity.ai;
 
 import net.glowstone.entity.GlowLivingEntity;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class TaskManager {
 
     private final GlowLivingEntity entity;
-    private final List<EntityTask> tasks;
+    private final Set<EntityTask> tasks;
 
     public TaskManager(GlowLivingEntity entity) {
         this.entity = entity;
-        this.tasks = new CopyOnWriteArrayList<>();
+        this.tasks = new ConcurrentSkipListSet<>();
     }
 
     public EntityTask getTask(String name) {
