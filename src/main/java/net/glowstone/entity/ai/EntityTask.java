@@ -16,7 +16,7 @@ public abstract class EntityTask implements Comparable<EntityTask> {
 
     @Override
     public int compareTo(EntityTask other) {
-        return 0;
+        return 0; // TODO: AI task priority
     }
 
     public final void pulse(GlowLivingEntity entity) {
