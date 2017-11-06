@@ -7,6 +7,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -108,6 +109,15 @@ public class GlowstoneCommand extends BukkitCommand {
             }
             player.teleport(world.getSpawnLocation());
             player.sendMessage("Teleported to world '" + world.getName() + "'.");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("chunk")) {
+            if (!CommandUtils.isPhysical(sender)) {
+                sender.sendMessage(ChatColor.RED + "Cannot use this command from outside the world.");
+                return false;
+            }
+            Chunk chunk = CommandUtils.getLocation(sender).getChunk();
+            sender.sendMessage("Chunk coordinates: [x=" + chunk.getX() + ", z=" + chunk.getZ() + "]");
             return true;
         }
         if (args[0].equalsIgnoreCase("eval")) {
