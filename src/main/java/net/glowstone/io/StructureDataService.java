@@ -14,12 +14,12 @@ public interface StructureDataService {
      *
      * @return A map containing structures indexed by their chunk hash.
      */
-    Map<Integer, GlowStructure> readStructuresData();
+    Map<Long, GlowStructure> readStructuresData();
 
     /**
      * Write the structures data to storage.
      *
      * @param structures The structures to write to storage.
      */
-    void writeStructuresData(Map<Integer, GlowStructure> structures);
+    void writeStructuresData(Map<Long, GlowStructure> structures);
 }

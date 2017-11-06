@@ -19,7 +19,6 @@ import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
-import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.*;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -123,7 +122,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The chunks that the client knows about.
      */
-    private final Set<Key> knownChunks = new HashSet<>();
+    private final Set<Long> knownChunks = new HashSet<>();
 
     /**
      * A queue of BlockChangeMessages to be sent.
@@ -690,7 +689,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // add entities
         knownChunks.parallelStream().forEach(key -> {
-            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
+            GlowChunk chunk = world.getChunkAt(GlowChunk.getXFromKey(key), GlowChunk.getZFromKey(key));
             chunk.getRawEntities().stream()
                     .filter(entity -> this != entity)
                     .filter(this::isWithinDistance)
@@ -731,10 +730,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             blockChanges.clear();
             // separate messages by chunk
             // inner map is used to only send one entry for same coordinates
-            Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
+            Map<Long, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
             for (BlockChangeMessage message : messages) {
                 if (message != null) {
-                    Key key = GlowChunk.ChunkKeyStore.get(message.getX() >> 4, message.getZ() >> 4);
+                    long key = GlowChunk.getKeyFromXZ(message.getX() >> 4, message.getZ() >> 4);
                     if (canSeeChunk(key)) {
                         Map<BlockVector, BlockChangeMessage> map = chunks.computeIfAbsent(key, k -> new HashMap<>());
                         map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
@@ -742,14 +741,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 }
             }
             // send away
-            for (Map.Entry<Key, Map<BlockVector, BlockChangeMessage>> entry : chunks.entrySet()) {
-                Key key = entry.getKey();
+            for (Map.Entry<Long, Map<BlockVector, BlockChangeMessage>> entry : chunks.entrySet()) {
+                long key = entry.getKey();
                 List<BlockChangeMessage> value = new ArrayList<>(entry.getValue().values());
 
                 if (value.size() == 1) {
                     session.send(value.get(0));
                 } else if (value.size() > 1) {
-                    session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
+                    session.send(new MultiBlockChangeMessage(GlowChunk.getXFromKey(key), GlowChunk.getZFromKey(key), value));
                 }
             }
             // now send post-block-change messages
@@ -763,8 +762,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * Streams chunks to the player's client.
      */
     private void streamBlocks() {
-        Set<Key> previousChunks = new HashSet<>(knownChunks);
-        ArrayList<Key> newChunks = new ArrayList<>();
+        Set<Long> previousChunks = new HashSet<>(knownChunks);
+        ArrayList<Long> newChunks = new ArrayList<>();
 
         int centralX = location.getBlockX() >> 4;
         int centralZ = location.getBlockZ() >> 4;
@@ -772,7 +771,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         int radius = Math.min(server.getViewDistance(), 1 + settings.getViewDistance());
         for (int x = centralX - radius; x <= centralX + radius; x++) {
             for (int z = centralZ - radius; z <= centralZ + radius; z++) {
-                Key key = GlowChunk.ChunkKeyStore.get(x, z);
+                long key = GlowChunk.getKeyFromXZ(x, z);
                 if (knownChunks.contains(key)) {
                     previousChunks.remove(key);
                 } else {
@@ -788,11 +787,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // sort chunks by distance from player - closer chunks sent first
         newChunks.sort((a, b) -> {
-            double dx = 16 * a.getX() + 8 - location.getX();
-            double dz = 16 * a.getZ() + 8 - location.getZ();
+            double dx = 16 * GlowChunk.getXFromKey(a) + 8 - location.getX();
+            double dz = 16 * GlowChunk.getZFromKey(b) + 8 - location.getZ();
             double da = dx * dx + dz * dz;
-            dx = 16 * b.getX() + 8 - location.getX();
-            dz = 16 * b.getZ() + 8 - location.getZ();
+            dx = 16 * GlowChunk.getXFromKey(b) + 8 - location.getX();
+            dz = 16 * GlowChunk.getZFromKey(b) + 8 - location.getZ();
             double db = dx * dx + dz * dz;
             return Double.compare(da, db);
         });
@@ -803,30 +802,30 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // one of its neighbors has populated
 
         // first step: force population then acquire lock on each chunk
-        for (Key key : newChunks) {
-            world.getChunkManager().forcePopulation(key.getX(), key.getZ());
+        for (long key : newChunks) {
+            world.getChunkManager().forcePopulation(GlowChunk.getXFromKey(key), GlowChunk.getZFromKey(key));
             knownChunks.add(key);
             chunkLock.acquire(key);
         }
 
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
 
-        for (Key key : newChunks) {
-            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
+        for (long key : newChunks) {
+            GlowChunk chunk = world.getChunkAt(GlowChunk.getXFromKey(key), GlowChunk.getZFromKey(key));
             session.send(chunk.toMessage(skylight));
         }
 
         // send visible block entity data
-        for (Key key : newChunks) {
-            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
+        for (long key : newChunks) {
+            GlowChunk chunk = world.getChunkAt(GlowChunk.getXFromKey(key), GlowChunk.getZFromKey(key));
             for (BlockEntity entity : chunk.getRawBlockEntities()) {
                 entity.update(this);
             }
         }
 
         // and remove old chunks
-        for (Key key : previousChunks) {
-            session.send(new UnloadChunkMessage(key.getX(), key.getZ()));
+        for (long key : previousChunks) {
+            session.send(new UnloadChunkMessage(GlowChunk.getXFromKey(key), GlowChunk.getZFromKey(key)));
             knownChunks.remove(key);
             chunkLock.release(key);
         }
@@ -925,7 +924,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param chunk The chunk to check.
      * @return If the chunk is known to the player's client.
      */
-    public boolean canSeeChunk(Key chunk) {
+    public boolean canSeeChunk(long chunk) {
         return knownChunks.contains(chunk);
     }
 
@@ -2188,7 +2187,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void sendBlockChange(BlockChangeMessage message) {
         // only send message if the chunk is within visible range
-        Key key = GlowChunk.ChunkKeyStore.get(message.getX() >> 4, message.getZ() >> 4);
+        long key = GlowChunk.getKeyFromXZ(message.getX() >> 4, message.getZ() >> 4);
         if (canSeeChunk(key)) {
             blockChanges.add(message);
         }
@@ -2953,7 +2952,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
-        GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(block.getChunk().getX(), block.getChunk().getZ());
+        long key = GlowChunk.getKeyFromXZ(block.getChunk().getX(), block.getChunk().getZ());
         block.getWorld().getRawPlayers().stream()
                 .filter(player -> player.canSeeChunk(key) && player != this)
                 .forEach(player -> player.sendBlockBreakAnimation(block.getLocation(), destroyStage));

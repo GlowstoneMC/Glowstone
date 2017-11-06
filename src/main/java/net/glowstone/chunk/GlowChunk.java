@@ -2,7 +2,6 @@ package net.glowstone.chunk;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import lombok.Data;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -746,43 +745,15 @@ public final class GlowChunk implements Chunk {
         return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities.toArray(new CompoundTag[blockEntities.size()]));
     }
 
-    /**
-     * A chunk key represents the X and Z coordinates of a chunk in a manner
-     * suitable for use as a key in a hash table or set.
-     */
-    @Data
-    public static final class Key {
-        /**
-         * The coordinates.
-         */
-        private final int x, z, hashCode;
-
-        private Key(int x, int z) {
-            this.x = x;
-            this.z = z;
-            this.hashCode = hashCode(x, z);
-        }
-
-        @Override
-        public int hashCode() {
-            return hashCode;
-        }
-
-        private static int hashCode(int x, int z) {
-            return x * 31 + z;
-        }
+    public static long getKeyFromXZ(int x, int z) {
+        return (((long) x) << 32) | (z & 0xffffffffL);
     }
 
-    public static final class ChunkKeyStore {
-        private static final ConcurrentHashMap<Integer, Key> keys = new ConcurrentHashMap<>();
+    public static int getXFromKey(long key) {
+        return (int) (key >> 32);
+    }
 
-        public static Key get(int x, int z) {
-            int id = Key.hashCode(x, z);
-            Key key = keys.get(id);
-            if (key != null) return key;
-            key = new Key(x, z);
-            keys.put(id, key);
-            return key;
-        }
+    public static int getZFromKey(long key) {
+        return (int) (key);
     }
 }

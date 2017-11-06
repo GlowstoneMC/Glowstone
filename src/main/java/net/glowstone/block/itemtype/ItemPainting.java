@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
-import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowPainting;
 import org.bukkit.Art;
@@ -28,17 +27,17 @@ public class ItemPainting extends ItemType {
      * Contains all Arts
      * Key is the size of the art in descending order
      */
-    private static final ListMultimap<Key, Art> ART_BY_SIZE;
+    private static final ListMultimap<Long, Art> ART_BY_SIZE;
 
     static {
         ART_BY_SIZE = MultimapBuilder.treeKeys(
             reverseOrder(
-                comparingInt(Key::getX)
-                .thenComparingInt(Key::getZ)
+                comparingInt(GlowChunk::getXFromKey)
+                .thenComparingInt(GlowChunk::getZFromKey)
             )
         ).arrayListValues().build();
 
-        Arrays.stream(Art.values()).forEach(art -> ART_BY_SIZE.put(GlowChunk.ChunkKeyStore.get(art.getBlockHeight(), art.getBlockWidth()), art));
+        Arrays.stream(Art.values()).forEach(art -> ART_BY_SIZE.put(GlowChunk.getKeyFromXZ(art.getBlockHeight(), art.getBlockWidth()), art));
     }
 
     @Override
@@ -46,7 +45,7 @@ public class ItemPainting extends ItemType {
         Location center = target.getRelative(face).getLocation();
         GlowPainting painting = new GlowPainting(center, face);
 
-        for (Key key : ART_BY_SIZE.keySet()) {
+        for (long key : ART_BY_SIZE.keySet()) {
             List<Art> arts = ART_BY_SIZE.get(key);
             painting.setArtInternal(arts.get(0));
 

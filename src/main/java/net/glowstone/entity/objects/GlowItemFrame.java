@@ -3,7 +3,6 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import net.glowstone.EventFactory;
 import net.glowstone.chunk.GlowChunk;
-import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -148,7 +147,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
                 break;
         }
 
-        Key key = GlowChunk.ChunkKeyStore.get(location.getChunk().getX(), location.getChunk().getZ());
+        long key = GlowChunk.getKeyFromXZ(location.getChunk().getX(), location.getChunk().getZ());
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSeeChunk(key)) {
                 double x = location.getX();
