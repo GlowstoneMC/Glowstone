@@ -65,7 +65,7 @@ public class BlockPiston extends BlockDirectional {
         BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(), me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getTypeId());
 
         GlowChunk chunk = me.getChunk();
-        long chunkKey = GlowChunk.getKeyFromXZ(chunk.getX(), chunk.getZ());
+        GlowChunk.Key chunkKey = GlowChunk.ChunkKeyStore.get(chunk.getX(), chunk.getZ());
         GlowWorld world = me.getWorld();
 
         if (me.isBlockIndirectlyPowered() && !isPistonExtended(me)) {

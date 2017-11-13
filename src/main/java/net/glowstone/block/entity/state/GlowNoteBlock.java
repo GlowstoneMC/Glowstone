@@ -5,6 +5,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.NoteblockEntity;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.chunk.GlowChunk.Key;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -196,7 +197,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
         Location location = getBlock().getLocation();
 
-        long key = GlowChunk.getKeyFromXZ(getX() >> 4, getZ() >> 4);
+        Key key = GlowChunk.ChunkKeyStore.get(getX() >> 4, getZ() >> 4);
         getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(player -> player.playNote(location, instrument, note));
 
         return true;

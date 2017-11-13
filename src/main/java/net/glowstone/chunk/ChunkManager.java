@@ -3,6 +3,7 @@ package net.glowstone.chunk;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;
@@ -55,12 +56,12 @@ public final class ChunkManager {
     /**
      * A map of chunks currently loaded in memory.
      */
-    private final ConcurrentMap<Long, GlowChunk> chunks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, GlowChunk> chunks = new ConcurrentHashMap<>();
 
     /**
      * A map of chunks which are being kept loaded by players or other factors.
      */
-    private final ConcurrentMap<Long, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
 
     /**
      * Creates a new chunk manager with the specified I/O service and world
@@ -95,7 +96,7 @@ public final class ChunkManager {
      * @return The chunk.
      */
     public GlowChunk getChunk(int x, int z) {
-        long key = GlowChunk.getKeyFromXZ(x, z);
+        Key key = GlowChunk.ChunkKeyStore.get(x, z);
         if (chunks.containsKey(key)) {
             return chunks.get(key);
         } else {
@@ -114,7 +115,7 @@ public final class ChunkManager {
      * @return true if the chunk is loaded, otherwise false.
      */
     public boolean isChunkLoaded(int x, int z) {
-        long key = GlowChunk.getKeyFromXZ(x, z);
+        Key key = GlowChunk.ChunkKeyStore.get(x, z);
         return chunks.containsKey(key) && chunks.get(key).isLoaded();
     }
 
@@ -126,7 +127,7 @@ public final class ChunkManager {
      * @return Whether the chunk is in use.
      */
     public boolean isChunkInUse(int x, int z) {
-        long key = GlowChunk.getKeyFromXZ(x, z);
+        Key key = GlowChunk.ChunkKeyStore.get(x, z);
         Set<ChunkLock> lockSet = locks.get(key);
         return lockSet != null && !lockSet.isEmpty();
     }
@@ -185,7 +186,7 @@ public final class ChunkManager {
      * Unload chunks with no locks on them.
      */
     public void unloadOldChunks() {
-        for (Entry<Long, GlowChunk> entry : chunks.entrySet()) {
+        for (Entry<Key, GlowChunk> entry : chunks.entrySet()) {
             Set<ChunkLock> lockSet = locks.get(entry.getKey());
             if (lockSet == null || lockSet.isEmpty()) {
                 if (!entry.getValue().unload(true, true)) {
@@ -425,7 +426,7 @@ public final class ChunkManager {
      * @param key The chunk key.
      * @return The set of locks for that chunk.
      */
-    private Set<ChunkLock> getLockSet(long key) {
+    private Set<ChunkLock> getLockSet(Key key) {
         if (locks.containsKey(key)) {
             return locks.get(key);
         } else {
@@ -440,24 +441,24 @@ public final class ChunkManager {
     /**
      * A group of locks on chunks to prevent them from being unloaded while in use.
      */
-    public static class ChunkLock implements Iterable<Long> {
+    public static class ChunkLock implements Iterable<Key> {
         private final ChunkManager cm;
         private final String desc;
-        private final Set<Long> keys = new HashSet<>();
+        private final Set<Key> keys = new HashSet<>();
 
         public ChunkLock(ChunkManager cm, String desc) {
             this.cm = cm;
             this.desc = desc;
         }
 
-        public void acquire(long key) {
+        public void acquire(Key key) {
             if (keys.contains(key)) return;
             keys.add(key);
             cm.getLockSet(key).add(this);
             //GlowServer.logger.info(this + " acquires " + key);
         }
 
-        public void release(long key) {
+        public void release(Key key) {
             if (!keys.contains(key)) return;
             keys.remove(key);
             cm.getLockSet(key).remove(this);
@@ -465,7 +466,7 @@ public final class ChunkManager {
         }
 
         public void clear() {
-            for (long key : keys) {
+            for (Key key : keys) {
                 cm.getLockSet(key).remove(this);
                 //GlowServer.logger.info(this + " clearing " + key);
             }
@@ -478,7 +479,7 @@ public final class ChunkManager {
         }
 
         @Override
-        public Iterator<Long> iterator() {
+        public Iterator<Key> iterator() {
             return keys.iterator();
         }
     }

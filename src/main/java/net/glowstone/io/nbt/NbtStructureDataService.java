@@ -37,8 +37,8 @@ public class NbtStructureDataService implements StructureDataService {
     }
 
     @Override
-    public Map<Long, GlowStructure> readStructuresData() {
-        Map<Long, GlowStructure> structures = new HashMap<>();
+    public Map<Integer, GlowStructure> readStructuresData() {
+        Map<Integer, GlowStructure> structures = new HashMap<>();
         for (StructureStore<?> store : StructureStorage.getStructureStores()) {
             File structureFile = new File(structureDir, store.getId() + ".dat");
             if (structureFile.exists()) {
@@ -51,7 +51,7 @@ public class NbtStructureDataService implements StructureDataService {
                             CompoundTag features = data.getCompound("Features");
                             features.getValue().keySet().stream().filter(features::isCompound).forEach(key -> {
                                 GlowStructure structure = StructureStorage.loadStructure(world, features.getCompound(key));
-                                structures.put(GlowChunk.getKeyFromXZ(structure.getChunkX(), structure.getChunkZ()), structure);
+                                structures.put(GlowChunk.ChunkKeyStore.get(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
                             });
                         }
                     } else {
@@ -66,7 +66,7 @@ public class NbtStructureDataService implements StructureDataService {
     }
 
     @Override
-    public void writeStructuresData(Map<Long, GlowStructure> structures) {
+    public void writeStructuresData(Map<Integer, GlowStructure> structures) {
         for (GlowStructure structure : structures.values()) {
             if (structure.isDirty()) {
                 CompoundTag root = new CompoundTag();
