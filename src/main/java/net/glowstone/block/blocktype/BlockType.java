@@ -155,7 +155,18 @@ public class BlockType extends ItemType {
      * @return Whether the placement is valid.
      */
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return true;
+        List<ItemFunction> funcs = functions.get("block.place.allow");
+        if (funcs != null) {
+            for (ItemFunction function : funcs) {
+                if (function instanceof BlockFunctions.BlockFunctionPlaceAllow) {
+                    if (!((BlockFunctions.BlockFunctionPlaceAllow) function).apply(block, against)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
