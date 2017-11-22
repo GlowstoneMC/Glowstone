@@ -3,7 +3,9 @@ package net.glowstone.block.function;
 import net.glowstone.block.function.BlockFunctions.BlockFunctionInteract;
 import net.glowstone.inventory.GlowAnvilInventory;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
 
 import java.util.function.Predicate;
 
@@ -32,6 +34,16 @@ public class GlowBlockFunctions {
          * Opens an anvil inventory
          */
         public static final BlockFunctionInteract ANVIL = (player, block, face, clickedLoc) -> player.openInventory(new GlowAnvilInventory(player)) != null;
+
+        /**
+         * Opens a chest
+         */
+        public static final BlockFunctionInteract CHEST = (player, block, face, clickedLoc) -> {
+            Chest chest = (Chest) block.getState();
+            player.openInventory(chest.getInventory());
+            player.incrementStatistic(Statistic.CHEST_OPENED);
+            return true;
+        };
     }
 
     public static class Util {

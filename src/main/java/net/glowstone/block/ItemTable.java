@@ -500,7 +500,7 @@ public final class ItemTable {
     }
 
     /**
-     * Gets the type reference of
+     * Gets the type reference of this functionality
      * @param functionality The type of function
      * @return The type reference
      */

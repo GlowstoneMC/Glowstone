@@ -5,10 +5,10 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ChestEntity;
+import net.glowstone.block.function.GlowBlockFunctions;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
-import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +29,7 @@ public class BlockChest extends BlockContainer {
 
     public BlockChest(boolean isTrapped) {
         this.isTrapped = isTrapped;
+        addFunction(GlowBlockFunctions.Interact.CHEST);
     }
 
     private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing, BlockFace connection, GlowPlayer player) {
@@ -110,21 +111,6 @@ public class BlockChest extends BlockContainer {
         } else {
             warnMaterialData(Chest.class, data);
         }
-    }
-
-    @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
-        BlockState state = block.getState();
-        if (state instanceof org.bukkit.block.Chest) {
-            org.bukkit.block.Chest chest = (org.bukkit.block.Chest) state;
-            player.openInventory(chest.getInventory());
-            player.incrementStatistic(Statistic.CHEST_OPENED);
-            return true;
-        }
-
-        GlowServer.logger.warning("Calling blockInteract on BlockChest, but BlockState is " + state);
-
-        return false;
     }
 
     @Override
