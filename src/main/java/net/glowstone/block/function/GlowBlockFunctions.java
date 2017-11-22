@@ -1,5 +1,7 @@
 package net.glowstone.block.function;
 
+import net.glowstone.block.function.BlockFunctions.BlockFunctionInteract;
+import net.glowstone.inventory.GlowAnvilInventory;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 
@@ -7,20 +9,16 @@ import java.util.function.Predicate;
 
 import static net.glowstone.block.function.BlockFunctions.BlockFunctionPlaceAllow;
 
-public class BuiltinBlockFunctions {
+public class GlowBlockFunctions {
     public static class PlaceAllow {
         /**
-         * Default check for allowing placement
-         */
-        public static final BlockFunctionPlaceAllow DEFAULT = (block, against) -> true;
-        /**
-         * Check for allowing place for cacti
+         * Check for allowing place for cactus
          */
         public static final BlockFunctionPlaceAllow CACTUS = (block, against) -> {
             Material below = block.getRelative(BlockFace.DOWN).getType();
             boolean hasSurroundingBlocks = false;
-            for (BlockFace face : BlockFunctionUtil.NEAR_BLOCKS) {
-                if (!BlockFunctionUtil.CACTUS_BUILD.test(block.getRelative(face).getType())) {
+            for (BlockFace face : Util.ADJACENT_FACES) {
+                if (!Util.CACTUS_BUILD.test(block.getRelative(face).getType())) {
                     hasSurroundingBlocks = true;
                     break;
                 }
@@ -29,8 +27,22 @@ public class BuiltinBlockFunctions {
         };
     }
 
-    public static class BlockFunctionUtil {
-        public static final BlockFace[] NEAR_BLOCKS = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
+    public static class Interact {
+        /**
+         * Opens an anvil inventory
+         */
+        public static final BlockFunctionInteract ANVIL = (player, block, face, clickedLoc) -> player.openInventory(new GlowAnvilInventory(player)) != null;
+    }
+
+    public static class Util {
+        /**
+         * Directly adjacent block faces
+         */
+        public static final BlockFace[] ADJACENT_FACES = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
+
+        /**
+         * Checks if cactus can be placed next to this block
+         */
         public static Predicate<Material> CACTUS_BUILD = (type) -> {
             switch (type) {
                 case GRASS:

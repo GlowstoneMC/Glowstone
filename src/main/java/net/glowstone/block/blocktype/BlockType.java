@@ -164,9 +164,8 @@ public class BlockType extends ItemType {
                     }
                 }
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     /**

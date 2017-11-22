@@ -3,7 +3,7 @@ package net.glowstone.block.blocktype;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.function.BuiltinBlockFunctions;
+import net.glowstone.block.function.GlowBlockFunctions;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -13,7 +13,7 @@ public class BlockCactus extends BlockType {
 
     public BlockCactus() {
         super();
-        addFunction(BuiltinBlockFunctions.PlaceAllow.CACTUS);
+        addFunction(GlowBlockFunctions.PlaceAllow.CACTUS);
     }
 
     @Override
