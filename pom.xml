@@ -79,6 +79,13 @@
             <artifactId>flow-network</artifactId>
             <version>1.1.0-SNAPSHOT</version>
         </dependency>
+        <!-- Operator Overloads -->
+        <dependency>
+            <groupId>java-oo</groupId>
+            <artifactId>javac8-oo-plugin</artifactId>
+            <version>0.5</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Kotlin -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -231,7 +238,15 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
