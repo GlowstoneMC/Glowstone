@@ -45,10 +45,6 @@ public final class ItemTable {
         assignHandler("block.pulse", blockFunctionHandler);
         assignHandler("block.pulse.rate", blockFunctionHandler);
         assignHandler("block.pulse.multiple", blockFunctionHandler);
-        addFunction(getBlock(Material.DIRT), (BlockFunctions.BlockFunctionInteract) (player, block, face, clickedLoc) -> {
-            block.setType(Material.GRASS);
-            return true;
-        });
     }
 
     public static ItemTable instance() {
