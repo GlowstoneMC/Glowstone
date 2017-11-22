@@ -760,7 +760,7 @@ public final class GlowChunk implements Chunk {
         private Key(int x, int z) {
             this.x = x;
             this.z = z;
-            this.hashCode = hashCode(x, z);
+            this.hashCode = x * 31 + z;
         }
 
         @Override
@@ -768,16 +768,16 @@ public final class GlowChunk implements Chunk {
             return hashCode;
         }
 
-        private static int hashCode(int x, int z) {
-            return x * 31 + z;
+        private static long mapCode(int x, int z) {
+            return (((long) x) << 32) | (z & 0xffffffffL);
         }
     }
 
     public static final class ChunkKeyStore {
-        private static final ConcurrentHashMap<Integer, Key> keys = new ConcurrentHashMap<>();
+        private static final ConcurrentHashMap<Long, Key> keys = new ConcurrentHashMap<>();
 
         public static Key get(int x, int z) {
-            int id = Key.hashCode(x, z);
+            long id = Key.mapCode(x, z);
             Key key = keys.get(id);
             if (key != null) return key;
             key = new Key(x, z);

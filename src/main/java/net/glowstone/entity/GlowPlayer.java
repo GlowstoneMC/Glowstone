@@ -81,6 +81,7 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -1028,6 +1029,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public InetSocketAddress getAddress() {
+        return session.getAddress();
+    }
+
+    @Override
+    public int getProtocolVersion() {
+        return GlowServer.PROTOCOL_VERSION;
+    }
+
+    @Nullable
+    @Override
+    public InetSocketAddress getVirtualHost() {
         return session.getAddress();
     }
 
