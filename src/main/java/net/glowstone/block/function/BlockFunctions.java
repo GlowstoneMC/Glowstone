@@ -11,12 +11,32 @@ import org.bukkit.util.Vector;
 
 public class BlockFunctions {
     @FunctionalInterface
+    public interface BlockFunctionPlaceAllow extends ItemFunction {
+        boolean apply(GlowBlock block, BlockFace against);
+
+        @Override
+        default String getFunctionality() {
+            return "block.place.allow";
+        }
+    }
+
+    @FunctionalInterface
     public interface BlockFunctionPlace extends ItemFunction {
         void apply(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState);
 
         @Override
         default String getFunctionality() {
             return "block.place";
+        }
+    }
+
+    @FunctionalInterface
+    public interface BlockFunctionPlaceAfter extends ItemFunction {
+        void apply(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState);
+
+        @Override
+        default String getFunctionality() {
+            return "block.place.after";
         }
     }
 
