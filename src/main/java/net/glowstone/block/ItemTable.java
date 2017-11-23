@@ -40,7 +40,7 @@ public final class ItemTable {
 
     private void init() {
         registerBuiltins();
-        assignHandler("block,place.allow", blockFunctionHandler);
+        assignHandler("block.place.allow", blockFunctionHandler);
         assignHandler("block.interact", blockFunctionHandler);
         assignHandler("block.pulse", blockFunctionHandler);
         assignHandler("block.pulse.rate", blockFunctionHandler);
