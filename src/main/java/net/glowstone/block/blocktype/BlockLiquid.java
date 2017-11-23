@@ -38,7 +38,7 @@ public abstract class BlockLiquid extends BlockType {
         return data < STRENGTH_MAX || data > (isWater ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA);
     }
 
-    public static boolean isStationary(Material material) {
+    private static boolean isStationary(Material material) {
         switch (material) {
             case STATIONARY_WATER:
             case STATIONARY_LAVA:
