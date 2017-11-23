@@ -69,11 +69,6 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>pl.joegreen</groupId>
-            <artifactId>lambda-from-string</artifactId>
-            <version>1.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.14.8</version>
