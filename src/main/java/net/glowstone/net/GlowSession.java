@@ -374,7 +374,7 @@ public class GlowSession extends BasicSession {
             }
         }
         send(new UserListItemMessage(Action.ADD_PLAYER, entries));
-        send(server.createAdvancementsMessage(false, Collections.emptyList(), player));
+        send(server.createAdvancementsMessage(false, Collections.emptyList()));
     }
 
     @Override

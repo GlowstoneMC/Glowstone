@@ -329,7 +329,7 @@ public final class GlowServer implements Server {
         }
     }
 
-    public static GlowServer createFromArguments(String... args) {
+    private static GlowServer createFromArguments(String... args) {
         ServerConfig config = parseArguments(args);
 
         // we don't want to create a server when called with --version
@@ -448,6 +448,9 @@ public final class GlowServer implements Server {
         return new ServerConfig(configDir, configFile, parameters);
     }
 
+    /**
+     * Starts the server starting sequence (starting, binding to port, etc.)
+     */
     public void run() {
         start();
         bind();
@@ -705,10 +708,24 @@ public final class GlowServer implements Server {
         }
     }
 
+    /**
+     * Sets the port that the Query server will expose.
+     * <br />
+     * This does not change the port the server will run on.
+     *
+     * @param port the port number
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     * Sets the IP address that the Query server will expose.
+     * <br />
+     * This does not change the IP address the server will run on.
+     *
+     * @param ip the IP address
+     */
     public void setIp(String ip) {
         this.ip = ip;
     }
@@ -932,7 +949,11 @@ public final class GlowServer implements Server {
 
     }
 
-    // API for Bukkit2Sponge
+    /**
+     * A list of detected files that are Sponge plugins.
+     *
+     * @return a list of {@link File Files} that are Sponge plugins.
+     */
     public List<File> getSpongePlugins() {
         return pluginTypeDetector.spongePlugins;
     }
@@ -1058,15 +1079,39 @@ public final class GlowServer implements Server {
         return Iterators.cycle(advancements.values());
     }
 
+    /**
+     * Registers an advancement to the advancement registry.
+     *
+     * @param advancement the advancement to add.
+     */
     public void addAdvancement(Advancement advancement) {
         advancements.put(advancement.getKey(), advancement);
     }
 
-    public AdvancementsMessage createAdvancementsMessage(boolean clear, List<NamespacedKey> remove, Player player) {
-        return createAdvancementsMessage(advancements, clear, remove, player);
+    /**
+     * Creates an {@link AdvancementsMessage} containing a list of advancements the server has, along with some extra actions.
+     * <br />
+     * This does not affect the server's advancement registry.
+     *
+     * @param clear  whether to clear the advancements on the player's perspective.
+     * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove from the player's perspective.
+     * @return a resulting {@link AdvancementsMessage} packet
+     */
+    public AdvancementsMessage createAdvancementsMessage(boolean clear, List<NamespacedKey> remove) {
+        return createAdvancementsMessage(advancements, clear, remove);
     }
 
-    public AdvancementsMessage createAdvancementsMessage(Map<NamespacedKey, Advancement> advancements, boolean clear, List<NamespacedKey> remove, Player player) {
+    /**
+     * Creates an {@link AdvancementsMessage} containing a given list of advancements, along with some extra actions.
+     * <br />
+     * This does not affect the server's advancement registry.
+     *
+     * @param advancements the advancements to add to the player's perspective.
+     * @param clear        whether to clear the advancements on the player's perspective.
+     * @param remove       a list of advancement {@link NamespacedKey NamespacedKeys} to remove from the player's perspective.
+     * @return a resulting {@link AdvancementsMessage} packet
+     */
+    public AdvancementsMessage createAdvancementsMessage(Map<NamespacedKey, Advancement> advancements, boolean clear, List<NamespacedKey> remove) {
         return new AdvancementsMessage(clear, advancements, remove);
     }
 
@@ -1225,10 +1270,20 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.RCON_COLORS);
     }
 
+    /**
+     * Gets the {@link MaterialValueManager} for this server.
+     *
+     * @return the {@link MaterialValueManager} for this server.
+     */
     public MaterialValueManager getMaterialValueManager() {
         return materialValueManager;
     }
 
+    /**
+     * Gets the {@link BossBarManager} for this server.
+     *
+     * @return the {@link BossBarManager} for this server.
+     */
     public BossBarManager getBossBarManager() {
         return bossBarManager;
     }
@@ -1358,13 +1413,18 @@ public final class GlowServer implements Server {
         return spigot;
     }
 
+    /**
+     * Gets the world configuration for this server.
+     *
+     * @return the world configuration for this server.
+     */
     public static WorldConfig getWorldConfig() {
         return worldConfig;
     }
 
     @Override
     public void reloadPermissions() {
-
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -1463,7 +1523,12 @@ public final class GlowServer implements Server {
         return onlineView;
     }
 
-    public Collection<GlowPlayer> getRawOnlinePlayers() {
+    /**
+     * Gets the modifiable set of the server's online players
+     *
+     * @return the server's modifiable set of players.
+     */
+    public Set<GlowPlayer> getRawOnlinePlayers() {
         return onlinePlayers;
     }
 
@@ -1543,6 +1608,12 @@ public final class GlowServer implements Server {
         return result;
     }
 
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given {@link PlayerProfile}.
+     *
+     * @param profile the player's profile.
+     * @return a new {@link GlowOfflinePlayer} instance for the given profile.
+     */
     public OfflinePlayer getOfflinePlayer(PlayerProfile profile) {
         return new GlowOfflinePlayer(this, profile);
     }
@@ -1600,6 +1671,11 @@ public final class GlowServer implements Server {
 
     }
 
+    /**
+     * Broadcasts a packet for all online players.
+     *
+     * @param message the packet to broadcast.
+     */
     public void broadcastPacket(Message message) {
         for (GlowPlayer player : getRawOnlinePlayers()) {
             player.getSession().send(message);
@@ -1932,6 +2008,11 @@ public final class GlowServer implements Server {
         return port;
     }
 
+    /**
+     * Gets the configuration for this server.
+     *
+     * @return the configuration for this server.
+     */
     public ServerConfig getConfig() {
         return config;
     }
@@ -2021,6 +2102,11 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.HARDCORE);
     }
 
+    /**
+     * Gets whether PVP is enabled on the server.
+     *
+     * @return true if PVP is enabled on the server, false otherwise.
+     */
     public boolean isPvpEnabled() {
         return config.getBoolean(Key.PVP_ENABLED);
     }
@@ -2055,51 +2141,115 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.ALLOW_FLIGHT);
     }
 
+    /**
+     * Gets the max building height of the server.
+     *
+     * @return the max building height of the server, in blocks.
+     */
     public int getMaxBuildHeight() {
         return Math.max(64, Math.min(256, config.getInt(Key
                 .MAX_BUILD_HEIGHT)));
     }
 
+    /**
+     * Whether the server uses the classic water flowing algorithm.
+     *
+     * @return true if the server uses the classic water flowing algorithm, false otherwise.
+     */
     public boolean getClassicWater() {
         return config.getBoolean(Key.WATER_CLASSIC);
     }
 
+    /**
+     * Gets the server's console prompt.
+     *
+     * @return the server's console prompt.
+     */
     public String getConsolePrompt() {
         return config.getString(Key.CONSOLE_PROMPT);
     }
 
+    /**
+     * Gets the server console's date format.
+     *
+     * @return the server console's date format.
+     */
     public String getConsoleDateFormat() {
         return config.getString(Key.CONSOLE_DATE);
     }
 
+    /**
+     * Gets the server's console logs date format.
+     *
+     * @return the server's console logs date format.
+     */
     public String getConsoleLogDateFormat() {
         return config.getString(Key.CONSOLE_LOG_DATE);
     }
 
+    /**
+     * Gets the server type.
+     * <br />
+     * Currently, this value is set to {@code VANILLA}.
+     *
+     * @return the server type.
+     */
     public String getServerType() {
         return "VANILLA";
     }
 
+    /**
+     * Gets whether metrics are enabled on the server.
+     *
+     * @return true if metrics are enabled, false otherwise.
+     */
     public boolean doMetrics() {
         return config.getBoolean(Key.METRICS);
     }
 
+    /**
+     * Gets whether the server allows client mods.
+     * <br />
+     * This rule is not actually enforced, and is simply exposed to clients as a warning.
+     *
+     * @return true if client mods are allowed, false otherwise.
+     */
     public boolean getAllowClientMods() {
         return config.getBoolean(Key.ALLOW_CLIENT_MODS);
     }
 
+    /**
+     * Gets the maximum size of the player sample as shown on the client's server list when pinging the server.
+     *
+     * @return the maximum size of the player sample as shown on the client's server list.
+     */
     public int getPlayerSampleCount() {
         return config.getInt(Key.PLAYER_SAMPLE_COUNT);
     }
 
+    /**
+     * Gets whether world generation is disabled on the server.
+     *
+     * @return true if world generation is disabled on the server, false otherwise.
+     */
     public boolean isGenerationDisabled() {
         return config.getBoolean(Key.DISABLE_GENERATION);
     }
 
+    /**
+     * Gets whether the server is OpenCL-capable and allowed to use GPGPU functionality.
+     *
+     * @return true if the server is capable and allowed to use GPGPU functionality, false otherwise.
+     */
     public boolean doesUseGPGPU() {
         return isCLApplicable && config.getBoolean(Key.GPGPU);
     }
 
+    /**
+     * Gets whether the server should prevent player proxy connections.
+     *
+     * @return true if the server should prevent player proxy connections, false otherwise.
+     */
     public boolean shouldPreventProxy() {
         return config.getBoolean(Key.PREVENT_PROXY);
     }
