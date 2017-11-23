@@ -1,7 +1,6 @@
 package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
-import net.glowstone.GlowLeashHitch;
 import net.glowstone.entity.monster.*;
 import net.glowstone.entity.monster.complex.GlowEnderDragon;
 import net.glowstone.entity.objects.*;

@@ -3,9 +3,9 @@ package net.glowstone.block.blocktype;
 
 import com.google.common.collect.ImmutableList;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowLeashHitch;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
