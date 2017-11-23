@@ -124,6 +124,10 @@
         <module name="TypeName">
             <message key="name.invalidPattern" value="Type name ''{0}'' must match pattern ''{1}''."/>
         </module>
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
 
         <!-- Checks that the code doesn't yet pass -->
         <!--<module name="AvoidStarImport"/>-->
