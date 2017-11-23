@@ -2,17 +2,18 @@ package net.glowstone.entity.ai;
 
 import net.glowstone.entity.GlowLivingEntity;
 
-import java.util.ArrayList;
+import java.util.Set;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class TaskManager {
 
     private final GlowLivingEntity entity;
-    private final ArrayList<EntityTask> tasks;
+    private final Set<EntityTask> tasks;
 
     public TaskManager(GlowLivingEntity entity) {
         this.entity = entity;
-        this.tasks = new ArrayList<>();
+        this.tasks = new ConcurrentSkipListSet<>();
     }
 
     public EntityTask getTask(String name) {
