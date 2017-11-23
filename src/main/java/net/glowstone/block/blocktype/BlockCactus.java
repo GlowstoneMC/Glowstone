@@ -3,7 +3,7 @@ package net.glowstone.block.blocktype;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.function.GlowBlockFunctions;
+import net.glowstone.block.function.BlockFunctions;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -13,7 +13,7 @@ public class BlockCactus extends BlockType {
 
     public BlockCactus() {
         super();
-        addFunction(GlowBlockFunctions.PlaceAllow.CACTUS);
+        addFunction(Functions.PlaceAllow.CACTUS);
     }
 
     @Override
@@ -67,6 +67,72 @@ public class BlockCactus extends BlockType {
                     updatePhysics(blockAbove);
                 }
             }
+        }
+    }
+
+    private static boolean canPlaceNear(Material type) {
+        // TODO: return true for non-buildable blocks
+        switch (type) {
+            case GRASS:
+            case DIRT:
+            case SAND:
+            case GLASS:
+            case STONE:
+            case FURNACE:
+            case BURNING_FURNACE:
+            case STAINED_GLASS:
+            case THIN_GLASS:
+            case FENCE:
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case DARK_OAK_FENCE:
+            case IRON_FENCE:
+            case JUNGLE_FENCE:
+            case NETHER_FENCE:
+            case SPRUCE_FENCE:
+            case ACACIA_FENCE_GATE:
+            case BIRCH_FENCE_GATE:
+            case DARK_OAK_FENCE_GATE:
+            case SPRUCE_FENCE_GATE:
+            case JUNGLE_FENCE_GATE:
+            case FENCE_GATE:
+            case ACACIA_DOOR:
+            case BIRCH_DOOR:
+            case DARK_OAK_DOOR:
+            case IRON_DOOR:
+            case JUNGLE_DOOR:
+            case SPRUCE_DOOR:
+            case WOODEN_DOOR:
+            case TRAP_DOOR:
+            case IRON_TRAPDOOR:
+            case SPONGE:
+            case COBBLESTONE:
+            case MOSSY_COBBLESTONE:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Builtin block functions specific to cactus.
+     */
+    public static class Functions {
+        public static class PlaceAllow {
+            /**
+             * Check for allowing place for cactus
+             */
+            public static final BlockFunctions.BlockFunctionPlaceAllow CACTUS = (block, against) -> {
+                Material below = block.getRelative(BlockFace.DOWN).getType();
+                boolean hasSurroundingBlocks = false;
+                for (BlockFace face : SIDES) {
+                    if (!canPlaceNear(block.getRelative(face).getType())) {
+                        hasSurroundingBlocks = true;
+                        break;
+                    }
+                }
+                return ((below == Material.CACTUS) || below == Material.SAND) && !hasSurroundingBlocks;
+            };
         }
     }
 }

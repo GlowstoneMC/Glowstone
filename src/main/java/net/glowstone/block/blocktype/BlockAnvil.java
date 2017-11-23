@@ -1,7 +1,6 @@
 package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.function.GlowBlockFunctions;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +12,7 @@ public class BlockAnvil extends BlockFalling {
 
     public BlockAnvil() {
         super(Material.ANVIL);
-        addFunction(GlowBlockFunctions.Interact.ANVIL);
+        addFunction(Functions.Interact.ANVIL);
     }
 
     @Override

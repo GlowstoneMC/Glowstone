@@ -6,7 +6,6 @@ import net.glowstone.block.itemtype.ItemType;
 public class GlowBlockFunctionHandler implements ItemFunctionHandler {
     @Override
     public void accept(ItemType item, ItemFunction itemFunction) {
-        ItemFunctionHandler.super.accept(item, itemFunction);
         if (item instanceof BlockType) {
             item.addFunction(itemFunction);
         } else {

@@ -5,7 +5,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ChestEntity;
-import net.glowstone.block.function.GlowBlockFunctions;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
@@ -28,8 +27,9 @@ public class BlockChest extends BlockContainer {
     }
 
     public BlockChest(boolean isTrapped) {
+        super();
         this.isTrapped = isTrapped;
-        addFunction(GlowBlockFunctions.Interact.CHEST);
+        addFunction(Functions.Interact.CHEST);
     }
 
     private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing, BlockFace connection, GlowPlayer player) {

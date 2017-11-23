@@ -1,14 +1,16 @@
 package net.glowstone.block;
 
 import net.glowstone.block.blocktype.*;
-import net.glowstone.block.function.*;
+import net.glowstone.block.function.GlowBlockFunctionHandler;
+import net.glowstone.block.function.GlowItemFunctionHandler;
+import net.glowstone.block.function.ItemFunction;
+import net.glowstone.block.function.ItemFunctionHandler;
 import net.glowstone.block.itemtype.*;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.TreeSpecies;
-import pl.joegreen.lambdaFromString.TypeReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,6 @@ public final class ItemTable {
     }
 
     private final Map<Integer, ItemType> idToType = new HashMap<>(512);
-    private final Map<String, TypeReference> functionalityTypeRefs = new HashMap<>();
     private final Map<String, ItemFunctionHandler> itemFunctionHandlers = new HashMap<>();
     private final ItemFunctionHandler itemFunctionHandler = new GlowItemFunctionHandler();
     private final ItemFunctionHandler blockFunctionHandler = new GlowBlockFunctionHandler();
@@ -39,8 +40,7 @@ public final class ItemTable {
 
     private void init() {
         registerBuiltins();
-        assignTypeRef("block.interact", new TypeReference<BlockFunctions.BlockFunctionInteract>() {
-        });
+        assignHandler("block,place.allow", blockFunctionHandler);
         assignHandler("block.interact", blockFunctionHandler);
         assignHandler("block.pulse", blockFunctionHandler);
         assignHandler("block.pulse.rate", blockFunctionHandler);
@@ -488,24 +488,6 @@ public final class ItemTable {
      */
     public ItemFunctionHandler getFunctionHandler(String functionality) {
         return itemFunctionHandlers.get(functionality);
-    }
-
-    /**
-     * Assigns a type reference to this functionality to apply text lambdas to functions through server commands.
-     * @param functionality The type of function
-     * @param typeRef The type reference of this functionality
-     */
-    public void assignTypeRef(String functionality, TypeReference typeRef) {
-        functionalityTypeRefs.putIfAbsent(functionality, typeRef);
-    }
-
-    /**
-     * Gets the type reference of this functionality
-     * @param functionality The type of function
-     * @return The type reference
-     */
-    public TypeReference getTypeRef(String functionality) {
-        return functionalityTypeRefs.get(functionality);
     }
 
     /**

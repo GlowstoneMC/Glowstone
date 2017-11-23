@@ -6,38 +6,53 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BlockEntity;
-import net.glowstone.block.function.BlockFunctions;
+import net.glowstone.block.entity.FurnaceEntity;
+import net.glowstone.block.function.BlockFunctions.*;
 import net.glowstone.block.function.ItemFunction;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.BlockBoundingBox;
+import net.glowstone.inventory.GlowAnvilInventory;
 import net.glowstone.util.SoundInfo;
 import net.glowstone.util.SoundUtil;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Jukebox;
+import org.bukkit.block.NoteBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
+import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Base class for specific types of blocks.
  */
-public class BlockType extends ItemType {
 
+public class BlockType extends ItemType {
     protected static final BlockFace[] SIDES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
     protected static final BlockFace[] ADJACENT = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     protected List<ItemStack> drops;
 
     protected SoundInfo placeSound = new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
+
+    public BlockType() {
+        super();
+        addFunction(Functions.DestroyAfter.DEFAULT);
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use
@@ -158,10 +173,8 @@ public class BlockType extends ItemType {
         List<ItemFunction> funcs = functions.get("block.place.allow");
         if (funcs != null) {
             for (ItemFunction function : funcs) {
-                if (function instanceof BlockFunctions.BlockFunctionPlaceAllow) {
-                    if (!((BlockFunctions.BlockFunctionPlaceAllow) function).apply(block, against)) {
-                        return false;
-                    }
+                if (!((BlockFunctionPlaceAllow) function).apply(block, against)) {
+                    return false;
                 }
             }
         }
@@ -209,12 +222,10 @@ public class BlockType extends ItemType {
         if (funcs != null) {
             boolean result = false;
             for (ItemFunction function : funcs) {
-                if (function instanceof BlockFunctions.BlockFunctionInteract) {
-                    if (result) {
-                        ((BlockFunctions.BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
-                    } else {
-                        result = ((BlockFunctions.BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
-                    }
+                if (result) {
+                    ((BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
+                } else {
+                    result = ((BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
                 }
             }
             return result;
@@ -230,7 +241,12 @@ public class BlockType extends ItemType {
      * @param face   The block face
      */
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
-        // do nothing
+        List<ItemFunction> funcs = functions.get("block.destroy");
+        if (funcs != null) {
+            for (ItemFunction function : funcs) {
+                ((BlockFunctionDestroy) function).apply(player, block, face);
+            }
+        }
     }
 
     /**
@@ -242,16 +258,28 @@ public class BlockType extends ItemType {
      * @param oldState The block state of the block the player destroyed.
      */
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face, GlowBlockState oldState) {
-        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
+        List<ItemFunction> funcs = functions.get("block.destroy.after");
+        if (funcs != null) {
+            for (ItemFunction function : funcs) {
+                ((BlockFunctionDestroyAfter) function).apply(player, block, face, oldState);
+            }
+        }
     }
 
     /**
      * Called when the BlockType gets pulsed as requested.
      *
-     * @param block The block that was pulsed pulsed
+     * @param block The block that was pulsed
      */
     public void receivePulse(GlowBlock block) {
-        block.getWorld().cancelPulse(block);
+        List<ItemFunction> funcs = functions.get("block.tick");
+        if (funcs != null) {
+            for (ItemFunction function : funcs) {
+                ((BlockFunctionTick) function).apply(block);
+            }
+        } else {
+            block.getWorld().cancelPulse(block);
+        }
     }
 
     /**
@@ -320,7 +348,12 @@ public class BlockType extends ItemType {
      * @param block The block
      */
     public void updatePhysics(GlowBlock block) {
-        // do nothing
+        List<ItemFunction> funcs = functions.get("block.physics");
+        if (funcs != null) {
+            for (ItemFunction function : funcs) {
+                ((BlockFunctionPhysics) function).apply(block);
+            }
+        }
     }
 
     @Override
@@ -479,5 +512,105 @@ public class BlockType extends ItemType {
      */
     public boolean isPulseOnce(GlowBlock block) {
         return true;
+    }
+
+    /**
+     * Vanilla builtins for block functions.
+     */
+    public static class Functions {
+        public static class PlaceAllow {
+
+        }
+
+        public static class Interact {
+            /**
+             * Opens an anvil inventory
+             */
+            public static final BlockFunctionInteract ANVIL = (player, block, face, clickedLoc) -> player.openInventory(new GlowAnvilInventory(player)) != null;
+
+            /**
+             * Opens a chest
+             */
+            public static final BlockFunctionInteract CHEST = (player, block, face, clickedLoc) -> {
+                Chest chest = (Chest) block.getState();
+                player.openInventory(chest.getInventory());
+                player.incrementStatistic(Statistic.CHEST_OPENED);
+                return true;
+            };
+
+            /**
+             * Plays a record
+             */
+            public static final BlockFunctionInteract JUKEBOX = (player, block, face, clickedLoc) -> {
+                Jukebox jukebox = (Jukebox) block.getState();
+                if (jukebox.isPlaying()) {
+                    jukebox.eject();
+                    jukebox.update();
+                    return true;
+                }
+                ItemStack handItem = player.getItemInHand();
+                if (handItem != null && handItem.getType().isRecord()) {
+                    jukebox.setPlaying(handItem.getType());
+                    jukebox.update();
+                    if (player.getGameMode() != GameMode.CREATIVE) {
+                        handItem.setAmount(handItem.getAmount() - 1);
+                        player.setItemInHand(handItem);
+                    }
+                    return true;
+                }
+                return false;
+            };
+
+            /**
+             * Tunes a note
+             */
+            public static final BlockFunctionInteract NOTE = (player, block, face, clickedLoc) -> {
+                NoteBlock noteBlock = (NoteBlock) block.getState();
+                Note note = noteBlock.getNote();
+                noteBlock.setNote(new Note(note.getId() == 24 ? 0 : note.getId() + 1));
+                noteBlock.update();
+                return noteBlock.play();
+            };
+        }
+
+        public static class Destroy {
+            public static final BlockFunctionDestroy DOUBLE_PLANT = (player, block, face) -> {
+                DoublePlantSpecies species = ((DoublePlant) block.getState().getData()).getSpecies();
+                if (species == DoublePlantSpecies.PLANT_APEX) {
+                    GlowBlock blockUnder = block.getRelative(BlockFace.DOWN);
+                    if (!(blockUnder.getState().getData() instanceof DoublePlant)) {
+                        return;
+                    }
+                    blockUnder.setType(Material.AIR);
+                } else {
+                    GlowBlock blockTop = block.getRelative(BlockFace.UP);
+                    if (!(blockTop.getState().getData() instanceof DoublePlant)) {
+                        return;
+                    }
+                    blockTop.setType(Material.AIR);
+                }
+            };
+
+            public static final BlockFunctionDestroy JUKEBOX = (player, block, face) -> {
+                Jukebox jukebox = (Jukebox) block.getState();
+                if (jukebox.eject()) {
+                    jukebox.update();
+                }
+            };
+        }
+
+        public static class DestroyAfter {
+            public static final BlockFunctionDestroyAfter DEFAULT = (player, block, face, oldState) -> block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(), block.getData());
+        }
+
+        public static class Tick {
+            public static final BlockFunctionTick FURNACE = block -> ((FurnaceEntity) block.getBlockEntity()).burn();
+            public static final BlockFunctionTick UPDATE_PHYSICS = block -> ItemTable.instance().getBlock(block.getType()).updatePhysics(block);
+            public static final BlockFunctionTick UPDATE_BLOCK = block -> ItemTable.instance().getBlock(block.getType()).updateBlock(block);
+        }
+
+        public static class Physics {
+
+        }
     }
 }
