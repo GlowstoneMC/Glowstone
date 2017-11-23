@@ -5,19 +5,25 @@ import net.glowstone.net.message.play.game.WorldBorderMessage;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
-import org.bukkit.entity.Player;
 
 public class GlowWorldBorder implements WorldBorder {
 
     private final World world;
-    public double size, futureSize, step;
+    private double size, futureSize, step;
     private Location center;
     private double damageBuffer, damagePerBlock;
     private int warningTime, warningDistance;
-    public long time;
+    private long time;
+    private long lastWorldTick;
 
+    /**
+     * Initializes a new {@link WorldBorder} for the given world.
+     *
+     * @param world the world to initialize a new {@link WorldBorder} for.
+     */
     public GlowWorldBorder(World world) {
         this.world = world;
+        lastWorldTick = world.getFullTime();
         size = 60000000;
         time = 0;
         futureSize = size;
@@ -29,17 +35,25 @@ public class GlowWorldBorder implements WorldBorder {
         warningDistance = 5;
     }
 
-    public void broadcast(WorldBorderMessage message) {
-        for (Player player : world.getPlayers()) {
-            ((GlowPlayer) player).getSession().send(message);
-        }
-    }
-
+    /**
+     * Creates a {@link WorldBorderMessage} containing information to initialize the world border on the client-side.
+     *
+     * @return a new {@link WorldBorderMessage} for this world border.
+     */
     public WorldBorderMessage createMessage() {
         return new WorldBorderMessage(WorldBorderMessage.Action.INITIALIZE, center.getX(), center.getZ(), size, futureSize, time * 1000, 29999984, warningTime, warningDistance);
     }
 
+    /**
+     * Pulses the world border for each tick.
+     * <p>
+     * Attempts to call this method more than once per tick will be ignored.
+     */
     public void pulse() {
+        if (lastWorldTick >= world.getFullTime()) {
+            // The pulse method is being called more than once per tick; abort.
+            return;
+        }
         if (step != 0) {
             size += step;
             if (Math.abs(size - futureSize) < 1) {
@@ -95,8 +109,8 @@ public class GlowWorldBorder implements WorldBorder {
     }
 
     @Override
-    public void setCenter(double x, double y) {
-        setCenter(new Location(world, 0, 0, 0));
+    public void setCenter(double x, double z) {
+        setCenter(new Location(world, x, 0, z));
     }
 
     @Override
@@ -151,5 +165,27 @@ public class GlowWorldBorder implements WorldBorder {
     public boolean isInside(Location location) {
         Location max = center.clone().add(size / 2, 0, size / 2), min = center.clone().subtract(size / 2, 0, size / 2);
         return location.getX() <= max.getX() && location.getZ() <= max.getZ() && location.getX() >= min.getX() && location.getZ() >= min.getZ();
+    }
+
+    /**
+     * The target side length the world border is being resized to, in blocks.
+     *
+     * @return the target side length the world border is being resized to.
+     */
+    public double getSizeLerpTarget() {
+        return futureSize;
+    }
+
+    /**
+     * The delay in ticks until the world border's sides should reach the target length.
+     *
+     * @return the delay until the world border's sides should reach the target length.
+     */
+    public long getSizeLerpTime() {
+        return time;
+    }
+
+    private void broadcast(WorldBorderMessage message) {
+        world.getPlayers().forEach(player -> ((GlowPlayer) player).getSession().send(message));
     }
 }

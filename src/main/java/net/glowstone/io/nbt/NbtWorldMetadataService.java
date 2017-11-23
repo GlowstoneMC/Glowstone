@@ -2,7 +2,6 @@ package net.glowstone.io.nbt;
 
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.GlowWorldBorder;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
@@ -211,8 +210,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         out.putDouble("BorderCenterX", world.getWorldBorder().getCenter().getX());
         out.putDouble("BorderCenterZ", world.getWorldBorder().getCenter().getZ());
         out.putDouble("BorderSize", world.getWorldBorder().getSize());
-        out.putDouble("BorderSizeLerpTarget", ((GlowWorldBorder) world.getWorldBorder()).futureSize);
-        out.putLong("BorderSizeLerpTime", ((GlowWorldBorder) world.getWorldBorder()).time);
+        out.putDouble("BorderSizeLerpTarget", world.getWorldBorder().getSizeLerpTarget());
+        out.putLong("BorderSizeLerpTime", world.getWorldBorder().getSizeLerpTime());
         out.putDouble("BorderSafeZone", world.getWorldBorder().getDamageBuffer());
         out.putDouble("BorderWarningTime", world.getWorldBorder().getWarningTime());
         out.putDouble("BorderWarningBlocks", world.getWorldBorder().getWarningDistance());

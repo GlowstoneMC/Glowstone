@@ -1814,7 +1814,7 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public WorldBorder getWorldBorder() {
+    public GlowWorldBorder getWorldBorder() {
         return worldBorder;
     }
 
