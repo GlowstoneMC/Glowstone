@@ -15,6 +15,10 @@ import org.bukkit.util.Vector;
 
 public class ItemFlintAndSteel extends ItemTool {
 
+    public ItemFlintAndSteel() {
+        this.setPlaceAs(Material.FIRE);
+    }
+
     @Override
     public boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (target.getType() == Material.OBSIDIAN) {
