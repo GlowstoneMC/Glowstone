@@ -127,6 +127,7 @@
         <module name="JavadocMethod">
             <property name="scope" value="public"/>
             <property name="tokens" value="METHOD_DEF"/>
+            <property name="allowedAnnotations" value="Override, Test"/>
         </module>
 
         <!-- Checks that the code doesn't yet pass -->
