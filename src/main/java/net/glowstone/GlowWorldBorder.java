@@ -54,6 +54,7 @@ public class GlowWorldBorder implements WorldBorder {
             // The pulse method is being called more than once per tick; abort.
             return;
         }
+        lastWorldTick = world.getFullTime();
         if (step != 0) {
             size += step;
             if (Math.abs(size - futureSize) < 1) {
