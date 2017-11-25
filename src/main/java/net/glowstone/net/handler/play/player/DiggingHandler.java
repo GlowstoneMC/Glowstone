@@ -155,6 +155,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 }
                 if (holding.getType().getMaxDurability() != 0 && holding.getDurability() >= holding.getType().getMaxDurability()) {
                     player.getItemInHand().setType(Material.AIR);
+                } else {
+                    player.setItemInHand(holding);
                 }
             }
             player.setDigging(null);
