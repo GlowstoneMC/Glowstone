@@ -95,7 +95,7 @@ public class CloneCommand extends VanillaCommand {
         }
 
         if (!CommandUtils.isPhysical(sender)) {
-            sender.sendMessage("Cannot access blocks outside of the world");
+            sender.sendMessage("This command may only be executed by physical objects");
             return false;
         }
 
@@ -148,7 +148,7 @@ public class CloneCommand extends VanillaCommand {
                         } catch (NumberFormatException ignored) {
                         }
                         if (data == null || 0 > data || data > 15) {
-                            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+                            sender.sendMessage(ChatColor.RED + "Filtered block data not a number between 0 and 15, inclusive.");
                             return false;
                         } else {
                             blockFilter = new FilteredWithDataBlockFilter(blockType, data);
@@ -157,7 +157,7 @@ public class CloneCommand extends VanillaCommand {
                         blockFilter = new FilteredBlockFilter(blockType);
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+                    sender.sendMessage(ChatColor.RED + "You must specify a block type and, optionally, block data when using the filtered mask mode.");
                     return false;
                 }
                 break;
@@ -251,7 +251,7 @@ public class CloneCommand extends VanillaCommand {
             if (current <= max) {
                 // Could use a post-increment operator here, but this is a bit more clear in getting the meaning across.
                 int retval = current;
-                current += 1;
+                current++;
                 return retval;
             }
             return endOfData();
@@ -284,7 +284,7 @@ public class CloneCommand extends VanillaCommand {
             if (current >= 0) {
                 // Could use a post-decrement operator here, but this is a bit more clear in getting the meaning across.
                 int retval = current;
-                current -= 1;
+                current--;
                 return retval;
             }
             return endOfData();
