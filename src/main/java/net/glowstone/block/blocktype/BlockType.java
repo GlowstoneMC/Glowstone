@@ -25,6 +25,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
@@ -294,6 +295,18 @@ public class BlockType extends ItemType {
      * @return Whether the place should occur into the block given.
      */
     public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
+        List<ItemFunction> funcs = functions.get("block.absorb");
+        if (funcs != null) {
+            boolean result = false;
+            for (ItemFunction function : funcs) {
+                if (!result) {
+                    ((BlockFunctionAbsorb) function).apply(block, face, holding);
+                } else {
+                    result = ((BlockFunctionAbsorb) function).apply(block, face, holding);
+                }
+            }
+            return result;
+        }
         return false;
     }
 
@@ -481,7 +494,12 @@ public class BlockType extends ItemType {
      * @param entity the entity
      */
     public void onEntityStep(GlowBlock block, LivingEntity entity) {
-        // do nothing
+        List<ItemFunction> funcs = functions.get("block.step");
+        if (funcs != null) {
+            for (ItemFunction function : funcs) {
+                ((BlockFunctionStep) function).apply(block, entity);
+            }
+        }
     }
 
     @Override
@@ -609,8 +627,17 @@ public class BlockType extends ItemType {
             public static final BlockFunctionTick UPDATE_BLOCK = block -> ItemTable.instance().getBlock(block.getType()).updateBlock(block);
         }
 
+        public static class Absorb {
+            public static final BlockFunctionAbsorb ALWAYS = (block, face, holding) -> true;
+            public static final BlockFunctionAbsorb SNOW = (block, face, holding) -> holding.getType() == Material.SNOW && block.getData() < 7 || block.getData() == 0;
+        }
+
         public static class Physics {
 
+        }
+
+        public static class Step {
+            public static final BlockFunctionStep MAGMA = (block, entity) -> entity.damage(1.0, EntityDamageEvent.DamageCause.FIRE);
         }
     }
 }

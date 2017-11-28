@@ -21,6 +21,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable {
 
+    public BlockTallGrass() {
+        super();
+        addFunction(Functions.Absorb.ALWAYS);
+    }
+
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         int typeIdBelow = block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
@@ -34,11 +39,6 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
         }
         return BlockDropless.EMPTY_STACK;
-    }
-
-    @Override
-    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
-        return true;
     }
 
     @Override

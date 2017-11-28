@@ -133,11 +133,6 @@ public class BlockFunctions {
         default String getFunctionality() {
             return "block.absorb";
         }
-
-        @Override
-        default boolean isSingle() {
-            return true;
-        }
     }
 
     @FunctionalInterface
