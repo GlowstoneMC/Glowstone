@@ -3,11 +3,9 @@ package net.glowstone.constants;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -19,7 +17,7 @@ public final class ItemIds {
     private static final Map<Integer, String> names = new HashMap<>();
     private static final Map<String, Integer> items = new HashMap<>();
     private static final Map<String, Integer> blocks = new HashMap<>();
-    private static final List<String> ids = new ArrayList<>();
+    private static final Set<String> ids = new HashSet<>();
 
     static {
         // blocks
@@ -567,8 +565,28 @@ public final class ItemIds {
         return stack;
     }
 
-    public static List<String> getIds() {
-        return ids;
+    /**
+     * Gets a copy of the list of registered item IDs, in their name-spaced form.
+     *
+     * @return a copy of the list of registered item IDs.
+     */
+    public static Collection<String> getIds() {
+        return Collections.unmodifiableSet(ids);
+    }
+
+    /**
+     * Generates a list of possible tab-completion item ID entries for a given prefix.
+     *
+     * @param prefix the item ID prefix.
+     * @return a list of tab-completed item ID entries.
+     */
+    public static List<String> getTabCompletion(String prefix) {
+        prefix = prefix.toLowerCase();
+        if (!"minecraft:".startsWith(prefix)) {
+            int colon = prefix.indexOf(':');
+            prefix = "minecraft:" + prefix.substring(colon == -1 ? 0 : (colon + 1));
+        }
+        return StringUtil.copyPartialMatches(prefix, ids, new ArrayList<>(ids.size()));
     }
 
     private static void block(int id, String key) {

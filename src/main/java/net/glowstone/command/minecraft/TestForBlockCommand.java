@@ -14,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
-import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,12 +99,7 @@ public class TestForBlockCommand extends VanillaCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         if (args.length == 4) {
-            String start = args[3];
-            if (!"minecraft:".startsWith(start)) {
-                int colon = start.indexOf(':');
-                start = "minecraft:" + start.substring(colon == -1 ? 0 : (colon + 1));
-            }
-            return (List) StringUtil.copyPartialMatches(start, ItemIds.getIds(), new ArrayList(ItemIds.getIds().size()));
+            return ItemIds.getTabCompletion(args[3]);
         }
         return Collections.emptyList();
     }

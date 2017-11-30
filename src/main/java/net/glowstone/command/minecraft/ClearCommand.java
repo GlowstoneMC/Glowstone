@@ -15,7 +15,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -206,12 +205,7 @@ public class ClearCommand extends VanillaCommand {
             return super.tabComplete(sender, alias, args);
         }
         if (args.length == 2) {
-            String start = args[1];
-            if (!"minecraft:".startsWith(start)) {
-                int colon = start.indexOf(':');
-                start = "minecraft:" + start.substring(colon == -1 ? 0 : (colon + 1));
-            }
-            return (List) StringUtil.copyPartialMatches(start, ItemIds.getIds(), new ArrayList(ItemIds.getIds().size()));
+            return ItemIds.getTabCompletion(args[1]);
         }
         return Collections.emptyList();
     }
