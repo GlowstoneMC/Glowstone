@@ -709,7 +709,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
                 if (world.getGameRuleMap().getBoolean("doMobLoot")) {
                     LootData data = LootingManager.generate(this);
-                    Collections.addAll(deathEvent.getDrops(), data.getItems());
+                    deathEvent.getDrops().addAll(data.getItems());
                     if (data.getExperience() > 0) {
                         // split experience
                         Integer[] values = ExperienceSplitter.cut(data.getExperience());

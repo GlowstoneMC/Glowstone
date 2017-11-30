@@ -232,8 +232,11 @@ public final class Explosion {
         float power = this.power;
         this.power *= 2;
 
-        GlowEntity[] entities = getNearbyEntities();
-        for (GlowEntity entity : entities) {
+        Collection<Entity> entities = getNearbyEntities();
+        for (Entity entity : entities) {
+            if (!(entity instanceof GlowEntity)) {
+                continue;
+            }
             // refine area to sphere, instead of box
             if (distanceToSquared(entity) > power * power) {
                 continue;
@@ -256,7 +259,7 @@ public final class Explosion {
             } else {
                 damageCause = DamageCause.ENTITY_EXPLOSION;
             }
-            entity.damage(damage, source, damageCause);
+            ((GlowEntity) entity).damage(damage, source, damageCause);
 
             if (entity instanceof GlowPlayer && ((GlowPlayer) entity).isFlying()) {
                 continue;
@@ -303,9 +306,8 @@ public final class Explosion {
         return level << 1;
     }
 
-    private GlowEntity[] getNearbyEntities() {
-        Collection<Entity> entities = location.getWorld().getNearbyEntities(location, power, power, power);
-        return entities.stream().filter(entity -> entity instanceof GlowEntity).toArray(GlowEntity[]::new);
+    private Collection<Entity> getNearbyEntities() {
+        return location.getWorld().getNearbyEntities(location, power, power, power);
     }
 
     private double distanceTo(Entity entity) {

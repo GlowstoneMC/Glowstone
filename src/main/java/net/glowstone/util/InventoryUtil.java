@@ -4,13 +4,12 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class InventoryUtil {
 
     public static final ItemStack[] NO_ITEMS = new ItemStack[0];
+    public static final Collection<ItemStack> NO_ITEMS_COLLECTION = Collections.emptyList();
     public static final ImmutableItemStack EMPTY_STACK = new ImmutableItemStack(Material.AIR, 0);
 
     /**

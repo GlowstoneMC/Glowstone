@@ -29,7 +29,7 @@ public final class ChunkDataCodec implements Codec<ChunkDataMessage> {
         } finally {
             data.release();
         }
-        ByteBufUtils.writeVarInt(buf, message.getBlockEntities().length);
+        ByteBufUtils.writeVarInt(buf, message.getBlockEntities().size());
         for (CompoundTag tag : message.getBlockEntities()) {
             GlowBufUtils.writeCompound(buf, tag);
         }

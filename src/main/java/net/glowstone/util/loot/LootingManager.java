@@ -11,9 +11,10 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LootingManager {
@@ -89,11 +90,11 @@ public class LootingManager {
 
     public static LootData generate(GlowLivingEntity entity) {
         if (!entities.containsKey(entity.getType())) {
-            return new LootData(InventoryUtil.NO_ITEMS, 0);
+            return new LootData(InventoryUtil.NO_ITEMS_COLLECTION, 0);
         }
 
         EntityLootTable table = entities.get(entity.getType());
-        ArrayList<ItemStack> items = new ArrayList<>();
+        Set<ItemStack> items = new HashSet<>();
         for (LootItem lootItem : table.getItems()) {
             DefaultLootItem defaultItem = lootItem.getDefaultItem();
             int count = defaultItem.getCount().generate(ThreadLocalRandom.current(), entity);
@@ -135,6 +136,6 @@ public class LootingManager {
             }
         }
         int experience = table.getExperience().generate(ThreadLocalRandom.current(), entity);
-        return new LootData(items.toArray(new ItemStack[items.size()]), experience);
+        return new LootData(items, experience);
     }
 }

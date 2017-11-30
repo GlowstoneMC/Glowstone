@@ -736,14 +736,14 @@ public final class GlowChunk implements Chunk {
             buf.writeBytes(biomes);
         }
 
-        ArrayList<CompoundTag> blockEntities = new ArrayList<>();
+        Set<CompoundTag> blockEntities = new HashSet<>();
         for (BlockEntity blockEntity : getRawBlockEntities()) {
             CompoundTag tag = new CompoundTag();
             blockEntity.saveNbt(tag);
             blockEntities.add(tag);
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities.toArray(new CompoundTag[blockEntities.size()]));
+        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities);
     }
 
     /**
