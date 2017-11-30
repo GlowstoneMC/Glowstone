@@ -61,6 +61,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     /**
      * Checks to see if this tag is a strict, deep submap of the given CompoundTag.
+     *
      * @param other The CompoundTag that should contain our values.
      * @return
      */
@@ -97,6 +98,21 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             }
         }
         return true;
+    }
+
+    /**
+     * Merges the contents of this compound into the supplied compound.
+     *
+     * @param other     the other compound to merge into.
+     * @param overwrite whether keys already set in the other compound should be overwritten.
+     */
+    public void mergeInto(CompoundTag other, boolean overwrite) {
+        for (String key : value.keySet()) {
+            if (!overwrite && other.containsKey(key)) {
+                continue;
+            }
+            other.put(key, value.get(key));
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

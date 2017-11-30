@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TestForBlockCommand extends VanillaCommand {
-    public TestForBlockCommand() {
-        super("testforblock",
-                "Tests for a certain block at a given location",
-                "/testforblock <x> <y> <z> <block> [dataValue|state] [dataTag]",
+public class SetBlockCommand extends VanillaCommand {
+    public SetBlockCommand() {
+        super("setblock",
+                "Changes a block to another block.",
+                "/setblock <x> <y> <z> <block> [dataValue|state] [dataTag]",
                 Collections.emptyList());
-        setPermission("minecraft.command.testforblock");
+        setPermission("minecraft.command.setblock");
     }
 
     @Override
@@ -44,58 +44,44 @@ public class TestForBlockCommand extends VanillaCommand {
         }
         Material type = ItemIds.getBlock(itemName);
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + itemName + " is not a valid block type.");
+            sender.sendMessage(ChatColor.RED + itemName + " is not a valid block type");
+            return false;
         }
         Location location = CommandUtils.getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
         GlowBlock block = (GlowBlock) location.getBlock();
-        if (block.getType() != type) {
-            sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
-                    " is " + ItemIds.getName(block.getType()) + " (expected: " + ItemIds.getName(type) + ")");
-            return false;
-        }
+        byte dataValue = 0;
         if (args.length > 4) {
             String state = args[4];
-            BlockStateData data = CommandUtils.readState(sender, block.getType(), state);
+            BlockStateData data = CommandUtils.readState(sender, type, state);
             if (data == null) {
                 return false;
             }
-            if (data.isNumeric() && block.getData() != data.getNumericValue()) {
-                sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
-                        " had the data value of " + block.getData() + " (expected: " + data + ")");
-                return false;
-            } else if (!data.isNumeric()) {
+            if (data.isNumeric()) {
+                dataValue = data.getNumericValue();
+            } else {
                 try {
-                    boolean matches = StateSerialization.matches(block.getType(), block.getState().getData(), data);
-                    if (!matches) {
-                        // TODO: Print the actual state of the block
-                        sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
-                                " did not match the expected state of " + state);
-                        return false;
-                    }
+                    dataValue = StateSerialization.parseData(type, data).getData();
                 } catch (InvalidBlockStateException e) {
                     sender.sendMessage(ChatColor.RED + e.getMessage());
                     return false;
                 }
             }
         }
+        block.setType(type, dataValue, true);
         if (args.length > 5 && block.getBlockEntity() != null) {
             String dataTag = String.join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
             try {
+                CompoundTag prev = new CompoundTag();
+                block.getBlockEntity().saveNbt(prev);
                 CompoundTag tag = Mojangson.parseCompound(dataTag);
-                CompoundTag blockTag = new CompoundTag();
-                block.getBlockEntity().saveNbt(blockTag);
-                if (!tag.matches(blockTag)) {
-                    sender.sendMessage(ChatColor.RED + "The block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() +
-                            " did not have the required NBT keys");
-                    return false;
-                }
+                tag.mergeInto(prev, true);
+                block.getBlockEntity().loadNbt(prev);
             } catch (MojangsonParseException e) {
                 sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
                 return false;
             }
         }
-        // All is well
-        sendSuccess(sender, location);
+        sender.sendMessage("Block placed");
         return true;
     }
 
@@ -105,9 +91,5 @@ public class TestForBlockCommand extends VanillaCommand {
             return ItemIds.getTabCompletion(args[3]);
         }
         return Collections.emptyList();
-    }
-
-    private void sendSuccess(CommandSender sender, Location location) {
-        sender.sendMessage("Successfully found the block at " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
     }
 }

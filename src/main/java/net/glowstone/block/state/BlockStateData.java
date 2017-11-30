@@ -7,9 +7,9 @@ import java.util.Map;
 public class BlockStateData {
 
     private final Map<String, String> map = Maps.newHashMap();
-    private final int numericValue;
+    private final byte numericValue;
 
-    public BlockStateData(int numericValue) {
+    public BlockStateData(byte numericValue) {
         this.numericValue = numericValue;
     }
 
@@ -37,7 +37,7 @@ public class BlockStateData {
         return numericValue != -1;
     }
 
-    public int getNumericValue() {
+    public byte getNumericValue() {
         return numericValue;
     }
 

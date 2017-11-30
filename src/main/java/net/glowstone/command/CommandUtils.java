@@ -1,7 +1,6 @@
 package net.glowstone.command;
 
 import net.glowstone.GlowWorld;
-import net.glowstone.block.GlowBlock;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
 import net.glowstone.block.state.StateSerialization;
@@ -9,6 +8,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -98,12 +98,12 @@ public class CommandUtils {
         return Double.valueOf(d);
     }
 
-    public static BlockStateData readState(CommandSender sender, GlowBlock block, String state) {
+    public static BlockStateData readState(CommandSender sender, Material type, String state) {
         if (isNumeric(state)) {
-            return new BlockStateData(Integer.parseInt(state));
+            return new BlockStateData(Byte.parseByte(state));
         }
         try {
-            return StateSerialization.parse(block.getType(), state);
+            return StateSerialization.parse(type, state);
         } catch (InvalidBlockStateException e) {
             sender.sendMessage(ChatColor.RED + e.getMessage());
             return null;
