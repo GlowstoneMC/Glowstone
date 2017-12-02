@@ -892,7 +892,6 @@ public abstract class GlowEntity implements Entity {
                 velocity.setZ(0);
             }
         } else {
-            location.add(velocity);
             // apply friction and gravity
             if (location.getBlock().getType() == Material.WATER) {
                 velocity.multiply(liquidDrag);
@@ -910,6 +909,7 @@ public abstract class GlowEntity implements Entity {
                     velocity.setZ(velocity.getZ() * 0.91);
                 }
             }
+            setRawLocation(velLoc);
         }
     }
 
