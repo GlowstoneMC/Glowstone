@@ -585,17 +585,19 @@ public abstract class GlowEntity implements Entity {
 
         Material type = location.getBlock().getType();
 
-        if (!fall || type == Material.LADDER // todo: horses are not affected
-                || type == Material.VINE // todo: horses are not affected
-                || type == Material.WATER
-                || type == Material.STATIONARY_WATER
-                || type == Material.WEB
-                || type == Material.TRAP_DOOR
-                || type == Material.IRON_TRAPDOOR
-                || onGround) {
-            setFallDistance(0);
-        } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
-            setFallDistance((float) (fallDistance + previousLocation.getY() - location.getY()));
+        if (hasMoved()) {
+            if (!fall || type == Material.LADDER // todo: horses are not affected
+                    || type == Material.VINE // todo: horses are not affected
+                    || type == Material.WATER
+                    || type == Material.STATIONARY_WATER
+                    || type == Material.WEB
+                    || type == Material.TRAP_DOOR
+                    || type == Material.IRON_TRAPDOOR
+                    || onGround) {
+                setFallDistance(0);
+            } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
+                setFallDistance((float) (fallDistance + previousLocation.getY() - location.getY()));
+            }
         }
 
         if (fall && !(this instanceof GlowPlayer)) {
