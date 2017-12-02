@@ -909,8 +909,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void setOnGround(boolean onGround) {
-        if (onGround && getFallDistance() > 3f) {
-            float damage = getFallDistance() - 3f;
+        float fallDistance = getFallDistance();
+        if (onGround && fallDistance > 3f) {
+            float damage = fallDistance - 3f;
             damage = Math.round(damage);
             if (damage > 0f) {
                 Material standingType = location.getBlock().getRelative(BlockFace.DOWN).getType();

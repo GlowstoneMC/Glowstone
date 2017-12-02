@@ -593,9 +593,9 @@ public abstract class GlowEntity implements Entity {
                 || type == Material.TRAP_DOOR
                 || type == Material.IRON_TRAPDOOR
                 || onGround) {
-            fallDistance = 0;
+            setFallDistance(0);
         } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
-            fallDistance += previousLocation.getY() - location.getY();
+            setFallDistance((float) (fallDistance + previousLocation.getY() - location.getY()));
         }
 
         if (fall && !(this instanceof GlowPlayer)) {
@@ -974,7 +974,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void setOnGround(boolean onGround) {
-        if (onGround) {
+        if (this.onGround != onGround) {
             setFallDistance(0);
         }
         this.onGround = onGround;
