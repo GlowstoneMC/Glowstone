@@ -635,7 +635,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         if (getHealth() < getMaxHealth() && !isDead()) {
-            if (food > 18 && ticksLived % 80 == 0 || world.getDifficulty() == Difficulty.PEACEFUL) {
+            if (food >= 18 && ticksLived % 80 == 0 || world.getDifficulty() == Difficulty.PEACEFUL) {
 
                 EntityRegainHealthEvent event1 = new EntityRegainHealthEvent(this, 1f, RegainReason.SATIATED);
                 EventFactory.callEvent(event1);
