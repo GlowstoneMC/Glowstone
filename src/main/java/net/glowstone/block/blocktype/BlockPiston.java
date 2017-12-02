@@ -5,10 +5,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockActionMessage;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -149,8 +146,8 @@ public class BlockPiston extends BlockDirectional {
         int x = block.getX();
         int y = block.getY();
         int z = block.getZ();
-
-        ((GlowChunk) world.getChunkAt(block)).setType(x & 0xf, z & 0xf, y, type);
-        ((GlowChunk) world.getChunkAt(block)).setMetaData(x & 0xf, z & 0xf, y, data);
+        GlowChunk chunk = (GlowChunk) world.getChunkAt(block);
+        chunk.setType(x & 0xf, z & 0xf, y, type);
+        chunk.setMetaData(x & 0xf, z & 0xf, y, data);
     }
 }

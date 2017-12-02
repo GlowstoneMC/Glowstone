@@ -1945,15 +1945,17 @@ public final class GlowWorld implements World {
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
         for (Location location : getTickMap()) {
-            if (!location.getChunk().isLoaded()) {
+            GlowChunk chunk = (GlowChunk) location.getChunk();
+            if (!chunk.isLoaded()) {
                 continue;
             }
-            BlockType type = itemTable.getBlock(Material.getMaterial(getBlockTypeIdAt(location)));
+            int typeId = chunk.getType(location.getBlockX() & 0xF, location.getBlockZ() & 0xF, location.getBlockY());
+            BlockType type = itemTable.getBlock(Material.getMaterial(typeId));
             if (type == null) {
                 cancelPulse(location);
                 continue;
             }
-            GlowBlock block = (GlowBlock) location.getBlock();
+            GlowBlock block = new GlowBlock(chunk, location.getBlockX(), location.getBlockY(), location.getBlockZ());
             Integer speed = type.getPulseTickSpeed(block);
             boolean once = type.isPulseOnce(block);
             if (speed == 0) {

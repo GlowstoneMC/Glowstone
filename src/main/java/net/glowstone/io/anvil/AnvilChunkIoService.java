@@ -16,6 +16,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -234,7 +235,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         List<CompoundTag> tileTicks = new ArrayList<>();
         for (Location location : chunk.getWorld().getTickMap()) {
-            if (location.getChunk().getX() == chunk.getX() && location.getChunk().getZ() == chunk.getZ()) {
+            Chunk locationChunk = location.getChunk();
+            if (locationChunk.getX() == chunk.getX() && locationChunk.getZ() == chunk.getZ()) {
                 int tileX = location.getBlockX();
                 int tileY = location.getBlockY();
                 int tileZ = location.getBlockZ();

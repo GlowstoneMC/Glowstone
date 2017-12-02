@@ -42,7 +42,7 @@ public abstract class BlockEntity {
      * Update this BlockEntity's visible state to all players in range.
      */
     public final void updateInRange() {
-        Key key = GlowChunk.ChunkKeyStore.get(block.getChunk().getX(), block.getChunk().getZ());
+        Key key = GlowChunk.ChunkKeyStore.get(block.getX() >> 4, block.getZ() >> 4);
         block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(this::update);
     }
 

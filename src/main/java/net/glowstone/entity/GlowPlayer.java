@@ -2965,7 +2965,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
-        GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(block.getChunk().getX(), block.getChunk().getZ());
+        GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(block.getX() >> 4, block.getZ() >> 4);
         block.getWorld().getRawPlayers().stream()
                 .filter(player -> player.canSeeChunk(key) && player != this)
                 .forEach(player -> player.sendBlockBreakAnimation(block.getLocation(), destroyStage));
