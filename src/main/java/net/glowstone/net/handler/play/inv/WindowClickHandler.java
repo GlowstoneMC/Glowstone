@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 import static org.bukkit.event.inventory.InventoryAction.MOVE_TO_OTHER_INVENTORY;
+import static org.bukkit.event.inventory.InventoryAction.NOTHING;
 
 public final class WindowClickHandler implements MessageHandler<GlowSession, WindowClickMessage> {
     @Override
@@ -202,18 +203,20 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             }
 
             int cursorAmount = InventoryUtil.itemOrEmpty(cursor).getAmount();
-            if (!InventoryUtil.isEmpty(slotItem) && cursorAmount + slotItem.getAmount() <= slotItem.getMaxStackSize()) {
-                // if the player can take the whole result
-                if (WindowClickLogic.isPickupAction(action) || WindowClickLogic.isPlaceAction(action)) {
-                    // always take the whole crafting result out of the crafting inventories
-                    action = InventoryAction.PICKUP_ALL;
-                } else if (action == InventoryAction.DROP_ONE_SLOT) {
-                    // always drop the whole stack, not just single items
-                    action = InventoryAction.DROP_ALL_SLOT;
+            if (message.getMode() == 0 && slotItem.isSimilar(cursor)) {
+                if (!InventoryUtil.isEmpty(slotItem) && cursorAmount + slotItem.getAmount() <= slotItem.getMaxStackSize()) {
+                    // if the player can take the whole result
+                    if (WindowClickLogic.isPickupAction(action) || WindowClickLogic.isPlaceAction(action)) {
+                        // always take the whole crafting result out of the crafting inventories
+                        action = InventoryAction.PICKUP_ALL;
+                    } else if (action == InventoryAction.DROP_ONE_SLOT) {
+                        // always drop the whole stack, not just single items
+                        action = InventoryAction.DROP_ALL_SLOT;
+                    }
+                } else {
+                    // if their cursor is full, do nothing
+                    action = InventoryAction.NOTHING;
                 }
-            } else {
-                // if their cursor is full, do nothing
-                action = InventoryAction.NOTHING;
             }
             // if we do anything, call the CraftItemEvent
             // this ignores whether the crafting process actually happens (full inventory, etc.)
@@ -398,7 +401,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
                 break;
         }
 
-        if (handled && top == inv && top instanceof GlowCraftingInventory && top.getSlotType(invSlot) == SlotType.RESULT && action != MOVE_TO_OTHER_INVENTORY) {
+        if (handled && top == inv && top instanceof GlowCraftingInventory && top.getSlotType(invSlot) == SlotType.RESULT && action != MOVE_TO_OTHER_INVENTORY && action != NOTHING) {
             // If we are crafting (but not using shift click because no more items can be crafted for the given pattern. If a new item can be crafted with another pattern, a new click is required).
             final GlowCraftingInventory glowCraftingInventory = (GlowCraftingInventory) top;
             glowCraftingInventory.craft();
