@@ -1,6 +1,6 @@
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
 [![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-738bd7.svg?style=flat-square)](https://discord.gg/TFJqhsC)
-[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev.png)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev)
+[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone)
 
 <img align="right" alt="Glowstone logo" width="100" src="etc/logo/logo.png">
 
@@ -51,9 +51,9 @@ However, there are several drawbacks:
 For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features).
 
 ## Downloads
-[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev)
+[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone)
 
-If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**. The `glowstone.jar` artifact will be under `tmp/circle-artifacts.#######/`.
+If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**. The `glowstone.jar` artifact will be under `tmp/circle-artifacts.#######/`.
 
 ## Building
 
