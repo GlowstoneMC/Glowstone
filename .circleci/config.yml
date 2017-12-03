@@ -17,14 +17,14 @@ jobs:
             - restore_cache:
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn dependency:go-offline
+            - run: mvn -T 2 -B dependency:go-offline
 
             - save_cache:
                 paths:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -B -s .circleci/maven.xml javadoc:javadoc javadoc:jar deploy
+            - run: mvn -T 2 -B -s .circleci/maven.xml javadoc:javadoc javadoc:jar deploy
 
             - run: mv target/site/apidocs ./glowstone
 
@@ -57,14 +57,14 @@ jobs:
             - restore_cache:
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn dependency:go-offline
+            - run: mvn -T 2 -B dependency:go-offline
 
             - save_cache:
                 paths:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -B package
+            - run: mvn -T 2 -B package
 
             - store_test_results:
                 path: target/surefire-reports
