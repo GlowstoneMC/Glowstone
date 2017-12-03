@@ -24,9 +24,9 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -T 2 -B -s .circleci/maven.xml javadoc:javadoc javadoc:jar deploy
+            - run: mvn -T 2 -B -s .circleci/maven.xml source:jar javadoc:jar deploy
 
-            - run: mv target/site/apidocs ./glowstone
+            - run: mv target/apidocs ./glowstone
 
             - run: zip -r javadocs.zip glowstone/
 
