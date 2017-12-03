@@ -7,7 +7,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -15,7 +14,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class GlowBanner extends GlowBlockState implements Banner {
 
     private DyeColor base;
-    private List<Pattern> patterns = new ArrayList<>();
+    private List<Pattern> patterns;
 
     public GlowBanner(GlowBlock block) {
         super(block);
