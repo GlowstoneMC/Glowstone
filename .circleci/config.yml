@@ -1,6 +1,9 @@
 version: 2
 jobs:
     build:
+        branches:
+            only:
+                - dev
 
         working_directory: ~/glowstone
 
@@ -35,3 +38,35 @@ jobs:
 
             - store_artifacts:
                 path: javadocs.zip
+
+    build_other:
+        branches:
+            ignore:
+                - dev
+
+        working_directory: ~/glowstone
+
+        docker:
+            - image: circleci/openjdk:8-jdk-browsers
+
+        steps:
+
+            - checkout
+
+            - restore_cache:
+                key: glowstone-{{ checksum "pom.xml" }}
+
+            - run: mvn dependency:go-offline
+
+            - save_cache:
+                paths:
+                    - ~/.m2
+                key: glowstone-{{ checksum "pom.xml" }}
+
+            - run: mvn -B package
+
+            - store_test_results:
+                path: target/surefire-reports
+
+            - store_artifacts:
+                path: target/glowstone.jar
