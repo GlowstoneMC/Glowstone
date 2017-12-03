@@ -1,8 +1,8 @@
 package net.glowstone.chunk;
 
-import gnu.trove.map.hash.TLongObjectHashMap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Data;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -775,7 +775,7 @@ public final class GlowChunk implements Chunk {
     }
 
     public static final class ChunkKeyStore {
-        private static final TLongObjectHashMap<Key> keys = new TLongObjectHashMap<>();
+        private static final Long2ObjectOpenHashMap<Key> keys = new Long2ObjectOpenHashMap<>(512, 0.5F);
 
         public static Key get(int x, int z) {
             long id = Key.mapCode(x, z);
