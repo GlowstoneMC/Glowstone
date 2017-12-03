@@ -35,6 +35,7 @@ jobs:
 
             - store_artifacts:
                 path: target/glowstone.jar
+                destination: glowstone.jar
 
             - store_artifacts:
                 path: javadocs.zip
@@ -70,3 +71,4 @@ jobs:
 
             - store_artifacts:
                 path: target/glowstone.jar
+                destination: glowstone.jar
