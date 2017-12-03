@@ -42,6 +42,12 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     // Internal stuff
 
     @Override
+    public BookMeta.Spigot spigot() {
+        return new BookMeta.Spigot() {
+        };
+    }
+
+    @Override
     public BookMeta clone() {
         return new GlowMetaBook(this);
     }

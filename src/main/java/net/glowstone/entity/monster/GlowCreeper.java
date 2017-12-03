@@ -7,9 +7,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import java.util.List;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class GlowCreeper extends GlowMonster implements Creeper {
 
@@ -38,19 +38,23 @@ public class GlowCreeper extends GlowMonster implements Creeper {
         metadata.set(MetadataIndex.CREEPER_POWERED, value);
     }
 
+    @Override
     public int getExplosionRadius() {
         return explosionRadius;
     }
 
+    @Override
     public void setExplosionRadius(int explosionRadius) {
         this.explosionRadius = explosionRadius;
     }
 
-    public int getFuse() {
+    @Override
+    public int getMaxFuseTicks() {
         return fuse;
     }
 
-    public void setFuse(int fuse) {
+    @Override
+    public void setMaxFuseTicks(int fuse) {
         this.fuse = fuse;
     }
 

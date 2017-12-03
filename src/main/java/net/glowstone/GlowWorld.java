@@ -732,13 +732,17 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public boolean setSpawnLocation(int x, int y, int z) {
-        return setSpawnLocation(x, y, z, true);
+    public boolean setSpawnLocation(Location newSpawn) {
+        return setSpawnLocation(newSpawn, true);
     }
 
-    public boolean setSpawnLocation(int x, int y, int z, boolean anchor) {
+    @Override
+    public boolean setSpawnLocation(int x, int y, int z) {
+        return setSpawnLocation(new Location(this, x, y, z), true);
+    }
+
+    public boolean setSpawnLocation(Location newSpawn, boolean anchor) {
         Location oldSpawn = spawnLocation;
-        Location newSpawn = new Location(this, x, y, z);
         if (newSpawn.equals(oldSpawn)) {
             return false;
         }
@@ -748,6 +752,10 @@ public final class GlowWorld implements World {
         }
         EventFactory.callEvent(new SpawnChangeEvent(this, oldSpawn));
         return true;
+    }
+
+    public boolean setSpawnLocation(int x, int y, int z, boolean anchor) {
+        return setSpawnLocation(new Location(this, x, y, z), anchor);
     }
 
     @Override

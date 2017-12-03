@@ -123,6 +123,11 @@ public final class GlowBlock implements Block {
     }
 
     @Override
+    public GlowBlockState getState(boolean useSnapshot) {
+        return getState(); // TODO: disable use of snapshot
+    }
+
+    @Override
     public Biome getBiome() {
         return getWorld().getBiome(x, z);
     }
