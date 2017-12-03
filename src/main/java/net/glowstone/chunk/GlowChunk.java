@@ -1,5 +1,6 @@
 package net.glowstone.chunk;
 
+import gnu.trove.map.hash.TLongObjectHashMap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.Data;
@@ -774,7 +775,7 @@ public final class GlowChunk implements Chunk {
     }
 
     public static final class ChunkKeyStore {
-        private static final ConcurrentHashMap<Long, Key> keys = new ConcurrentHashMap<>();
+        private static final TLongObjectHashMap<Key> keys = new TLongObjectHashMap<>();
 
         public static Key get(int x, int z) {
             long id = Key.mapCode(x, z);
