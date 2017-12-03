@@ -25,43 +25,6 @@ package net.glowstone.io.anvil;
  * Later changes made by the Glowstone project.
  */
 
-// Interfaces with region files on the disk
-
-/*
-
- Region File Format
-
- Concept: The minimum unit of storage on hard drives is 4KB. 90% of Minecraft
- chunks are smaller than 4KB. 99% are smaller than 8KB. Write a simple
- container to store chunks in single files in runs of 4KB sectors.
-
- Each region file represents a 32x32 group of chunks. The conversion from
- chunk number to region number is floor(coord / 32): a chunk at (30, -3)
- would be in region (0, -1), and one at (70, -30) would be at (3, -1).
- Region files are named "r.x.z.data", where x and z are the region coordinates.
-
- A region file begins with a 4KB header that describes where chunks are stored
- in the file. A 4-byte big-endian integer represents sector offsets and sector
- counts. The chunk offset for a chunk (x, z) begins at byte 4*(x+z*32) in the
- file. The bottom byte of the chunk offset indicates the number of sectors the
- chunk takes up, and the top 3 bytes represent the sector number of the chunk.
- Given a chunk offset o, the chunk data begins at byte 4096*(o/256) and takes up
- at most 4096*(o%256) bytes. A chunk cannot exceed 1MB in size. If a chunk
- offset is 0, the corresponding chunk is not stored in the region file.
-
- Chunk data begins with a 4-byte big-endian integer representing the chunk data
- length in bytes, not counting the length field. The length must be smaller than
- 4096 times the number of sectors. The next byte is a version field, to allow
- backwards-compatible updates to how chunks are encoded.
-
- A version of 1 represents a gzipped NBT file. The gzipped data is the chunk
- length - 1.
-
- A version of 2 represents a deflated (zlib compressed) NBT file. The deflated
- data is the chunk length - 1.
-
- */
-
 import net.glowstone.GlowServer;
 
 import java.io.*;
@@ -70,6 +33,40 @@ import java.nio.IntBuffer;
 import java.util.BitSet;
 import java.util.zip.*;
 
+/**
+ * Interfaces with region files on the disk
+ *
+ * Region File Format
+ *
+ * <p>Concept: The minimum unit of storage on hard drives is 4KB. 90% of Minecraft
+ * chunks are smaller than 4KB. 99% are smaller than 8KB. Write a simple
+ * container to store chunks in single files in runs of 4KB sectors.
+ *
+ * <p>Each region file represents a 32x32 group of chunks. The conversion from
+ * chunk number to region number is floor(coord / 32): a chunk at (30, -3)
+ * would be in region (0, -1), and one at (70, -30) would be at (3, -1).
+ * Region files are named "r.x.z.data", where x and z are the region coordinates.
+ *
+ * <p>A region file begins with a 4KB header that describes where chunks are stored
+ * in the file. A 4-byte big-endian integer represents sector offsets and sector
+ * counts. The chunk offset for a chunk (x, z) begins at byte 4*(x+z*32) in the
+ * file. The bottom byte of the chunk offset indicates the number of sectors the
+ * chunk takes up, and the top 3 bytes represent the sector number of the chunk.
+ * Given a chunk offset o, the chunk data begins at byte 4096*(o/256) and takes up
+ * at most 4096*(o%256) bytes. A chunk cannot exceed 1MB in size. If a chunk
+ * offset is 0, the corresponding chunk is not stored in the region file.
+ *
+ * <p>Chunk data begins with a 4-byte big-endian integer representing the chunk data
+ * length in bytes, not counting the length field. The length must be smaller than
+ * 4096 times the number of sectors. The next byte is a version field, to allow
+ * backwards-compatible updates to how chunks are encoded.
+ *
+ * <p>A version of 1 represents a gzipped NBT file. The gzipped data is the chunk
+ * length - 1.
+ *
+ * <p>A version of 2 represents a deflated (zlib compressed) NBT file. The deflated
+ * data is the chunk length - 1.
+ */
 public class RegionFile {
 
     private static final byte VERSION_GZIP = 1;
@@ -101,46 +98,47 @@ public class RegionFile {
 
         file = new RandomAccessFile(path, "rw");
 
-        // seek to the end to prepare size checking
-        file.seek(file.length());
+        int initialLength = (int) file.length();
 
         // if the file size is under 8KB, grow it (4K chunk offset table, 4K timestamp table)
-        if (lastModified == 0 || file.length() == 0) {
-            // fast path for new or zero-length region files
+        if (lastModified == 0 || initialLength < 4096) {
+            // fast path for new or region files under 4K
             file.write(emptySector);
             file.write(emptySector);
             sizeDelta = 2 * SECTOR_BYTES;
         } else {
-            if (file.length() < 2 * SECTOR_BYTES) {
-                sizeDelta += 2 * SECTOR_BYTES - file.length();
-                GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + file.length() + " increasing by " + (2 * SECTOR_BYTES - file.length()));
+            // seek to the end to prepare for grows
+            file.seek(initialLength);
+            if (initialLength < 2 * SECTOR_BYTES) {
+                // if the file size is under 8KB, grow it
+                sizeDelta = 2 * SECTOR_BYTES - initialLength;
+                GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + initialLength + " increasing by " + (2 * SECTOR_BYTES - initialLength));
 
-                for (long i = file.length(); i < 2 * SECTOR_BYTES; ++i) {
+                for (long i = 0; i < sizeDelta; ++i) {
                     file.write(0);
                 }
-            }
+            } else if ((initialLength & (SECTOR_BYTES - 1)) != 0) {
+                // if the file size is not a multiple of 4KB, grow it
+                sizeDelta = initialLength & (SECTOR_BYTES - 1);
+                GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + initialLength + " increasing by " + (SECTOR_BYTES - (initialLength & (SECTOR_BYTES - 1))));
 
-            // if the file size is not a multiple of 4KB, grow it
-            if ((file.length() & 0xfff) != 0) {
-                sizeDelta += SECTOR_BYTES - (file.length() & 0xfff);
-                GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + file.length() + " increasing by " + (SECTOR_BYTES - (file.length() & 0xfff)));
-
-                for (long i = file.length() & 0xfff; i < SECTOR_BYTES; ++i) {
+                for (long i = 0; i < sizeDelta; ++i) {
                     file.write(0);
                 }
             }
         }
 
         // set up the available sector map
-        totalSectors = (int) (file.length() / SECTOR_BYTES);
-        sectorsUsed = new BitSet();
+        totalSectors = (int) file.length() / SECTOR_BYTES;
+        sectorsUsed = new BitSet(totalSectors);
 
         sectorsUsed.set(0, true);
         sectorsUsed.set(1, true);
 
         // read offset table and timestamp tables
         file.seek(0);
-        ByteBuffer header = ByteBuffer.allocate(8192);
+
+        ByteBuffer header = ByteBuffer.allocate(2 * SECTOR_BYTES);
         while (header.hasRemaining()) {
             if (file.getChannel().read(header) == -1) {
                 throw new EOFException();
@@ -155,7 +153,7 @@ public class RegionFile {
             offsets[i] = offset;
 
             int startSector = offset >> 8;
-            int numSectors = offset & 0xff;
+            int numSectors = offset & 255;
 
             if (offset != 0 && startSector >= 0 && startSector + numSectors <= totalSectors) {
                 for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
