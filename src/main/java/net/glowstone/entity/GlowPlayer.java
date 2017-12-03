@@ -2206,6 +2206,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    @Deprecated
+    public void sendBlockChangeForce(BlockChangeMessage message) {
+        blockChanges.add(message);
+    }
+
     @Override
     public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet.");

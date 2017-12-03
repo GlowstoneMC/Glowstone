@@ -24,6 +24,7 @@ import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
+import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
@@ -571,6 +572,10 @@ public final class GlowWorld implements World {
             }
         }
         return true;
+    }
+
+    public void broadcastBlockChangeInRange(GlowChunk.Key chunkKey, BlockChangeMessage message) {
+        getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.sendBlockChangeForce(message));
     }
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {
