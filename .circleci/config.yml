@@ -11,8 +11,8 @@ jobs:
             - run: mvn dependency:go-offline
             - save_cache:
                 paths:
-                 - ~/.m2
-                 key: glowstone-{{ checksum "pom.xml" }}
+                    - ~/.m2
+                    key: glowstone-{{ checksum "pom.xml" }}
              - run: mvn -B -s .circleci/maven.xml javadoc:javadoc javadoc:jar deploy
              - run: mv target/site/apidocs ./glowstone
              - run: zip -r javadocs.zip glowstone/
