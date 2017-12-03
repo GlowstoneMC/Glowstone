@@ -1,0 +1,35 @@
+version: 2
+jobs:
+    build:
+        working_directory: ~/glowstone
+        docker:
+            - image: circleci/openjdk:8-jdk-browsers
+        steps:
+            - checkout
+            - restore_cache:
+                key: glowstone-{{ checksum "pom.xml" }}
+            - run: mvn dependency:go-offline
+            - save_cache:
+                paths:
+                 - ~/.m2
+                 key: glowstone-{{ checksum "pom.xml" }}
+             - run: mvn -B -s .circleci.settings.xml javadoc:javadoc javadoc:jar deploy
+             - run: mv target/site/apidocs ./glowstone
+             - run: zip -r javadocs.zip glowstone/
+             - store_test_results:
+                path: target/surefire-reports
+            - store_artifacts:
+                path: target/glowstone.jar
+            - store_artifacts:
+                path: javadocs.zip
+        test:
+            override:
+                - ./setup.sh
+        deployment:
+            master:
+                branch: dev
+                commands:
+                    - "mvn -B -s .circleci.settings.xml -Dmaven.test.skip=true javadoc:javadoc javadoc:jar deploy"
+                    - "mv target/site/apidocs ./glowstone"
+                    - "zip -r javadocs.zip glowstone/"
+                    - "cp javadocs.zip $CIRCLE_ARTIFACTS/"
