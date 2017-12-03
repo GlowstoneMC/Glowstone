@@ -753,6 +753,9 @@ public final class GlowChunk implements Chunk {
      */
     @Data
     public static final class Key {
+        // Key cache storage
+        private static final Long2ObjectOpenHashMap<Key> keys = new Long2ObjectOpenHashMap<>(512, 0.5F);
+
         /**
          * The coordinates.
          */
@@ -772,13 +775,9 @@ public final class GlowChunk implements Chunk {
         private static long mapCode(int x, int z) {
             return (((long) x) << 32) | (z & 0xffffffffL);
         }
-    }
 
-    public static final class ChunkKeyStore {
-        private static final Long2ObjectOpenHashMap<Key> keys = new Long2ObjectOpenHashMap<>(512, 0.5F);
-
-        public static Key get(int x, int z) {
-            long id = Key.mapCode(x, z);
+        public static Key of(int x, int z) {
+            long id = mapCode(x, z);
             return keys.computeIfAbsent(id, l -> new Key(x, z));
         }
     }

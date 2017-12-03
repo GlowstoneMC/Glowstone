@@ -424,7 +424,7 @@ public final class GlowWorld implements World {
             for (int x = cx - radius; x <= cx + radius; x++) {
                 for (int z = cz - radius; z <= cz + radius; z++) {
                     if (isChunkLoaded(cx, cz)) {
-                        activeChunksSet.add(GlowChunk.ChunkKeyStore.get(x, z));
+                        activeChunksSet.add(GlowChunk.Key.of(x, z));
                     }
                 }
             }
@@ -829,7 +829,7 @@ public final class GlowWorld implements World {
                 } else {
                     loadChunk(x, z);
                 }
-                spawnChunkLock.acquire(GlowChunk.ChunkKeyStore.get(x, z));
+                spawnChunkLock.acquire(GlowChunk.Key.of(x, z));
                 if (System.currentTimeMillis() >= loadTime + 1000) {
                     int progress = 100 * current / total;
                     GlowServer.logger.info("Preparing spawn for " + name + ": " + progress + "%");
@@ -1273,7 +1273,7 @@ public final class GlowWorld implements World {
             return false;
         }
 
-        Key key = GlowChunk.ChunkKeyStore.get(x, z);
+        Key key = GlowChunk.Key.of(x, z);
         boolean result = false;
 
         for (GlowPlayer player : getRawPlayers()) {

@@ -233,7 +233,7 @@ public final class GlowBlock implements Block {
 
         if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
             world.getChunkAtAsync(this, c -> ((GlowChunk) c).setType(x & 0xf, z & 0xf, y + 1, 0));
-            GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(x >> 4, z >> 4);
+            GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
             BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
             world.broadcastBlockChangeInRange(key, bcmsg);
         }
@@ -242,7 +242,7 @@ public final class GlowBlock implements Block {
             applyPhysics(oldTypeId, type, oldData, data);
         }
 
-        GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(x >> 4, z >> 4);
+        GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
         world.broadcastBlockChangeInRange(key, bcmsg);
 
@@ -302,7 +302,7 @@ public final class GlowBlock implements Block {
             applyPhysics(getType(), getTypeId(), oldData, data);
         }
 
-        GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(x >> 4, z >> 4);
+        GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
         world.broadcastBlockChangeInRange(key, bcmsg);
     }

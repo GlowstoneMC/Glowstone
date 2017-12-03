@@ -148,7 +148,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
                 break;
         }
 
-        Key key = GlowChunk.ChunkKeyStore.get(location.getBlockX() >> 4, location.getBlockZ() >> 4);
+        Key key = GlowChunk.Key.of(location.getBlockX() >> 4, location.getBlockZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSeeChunk(key)) {
                 double x = location.getX();

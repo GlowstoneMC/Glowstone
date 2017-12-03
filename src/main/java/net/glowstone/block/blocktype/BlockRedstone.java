@@ -269,7 +269,7 @@ public class BlockRedstone extends BlockNeedsAttached {
 
     @Override
     public void receivePulse(GlowBlock me) {
-        GlowChunk.Key key = GlowChunk.ChunkKeyStore.get(me.getX() >> 4, me.getZ() >> 4);
+        GlowChunk.Key key = GlowChunk.Key.of(me.getX() >> 4, me.getZ() >> 4);
         BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(), me.getTypeId(), me.getData());
         me.getWorld().broadcastBlockChangeInRange(key, bcmsg);
     }

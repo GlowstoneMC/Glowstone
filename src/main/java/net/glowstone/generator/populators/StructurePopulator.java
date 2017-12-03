@@ -36,7 +36,7 @@ public class StructurePopulator extends BlockPopulator {
                     if (world.getChunkAt(x, z).isLoaded() || world.getChunkAt(x, z).load(true)) {
                         random.setSeed(x * xRand + z * zRand ^ world.getSeed());
                         Map<Integer, GlowStructure> structures = ((GlowWorld) world).getStructures();
-                        int key = GlowChunk.ChunkKeyStore.get(x, z).hashCode();
+                        int key = GlowChunk.Key.of(x, z).hashCode();
                         if (!structures.containsKey(key)) {
                             for (StructureStore<?> store : StructureStorage.getStructureStores()) {
                                 GlowStructure structure = store.createNewStructure((GlowWorld) world, random, x, z);

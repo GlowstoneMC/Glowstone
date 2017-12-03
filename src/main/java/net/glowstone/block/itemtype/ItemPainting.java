@@ -38,7 +38,7 @@ public class ItemPainting extends ItemType {
             )
         ).arrayListValues().build();
 
-        Arrays.stream(Art.values()).forEach(art -> ART_BY_SIZE.put(GlowChunk.ChunkKeyStore.get(art.getBlockHeight(), art.getBlockWidth()), art));
+        Arrays.stream(Art.values()).forEach(art -> ART_BY_SIZE.put(GlowChunk.Key.of(art.getBlockHeight(), art.getBlockWidth()), art));
     }
 
     @Override
