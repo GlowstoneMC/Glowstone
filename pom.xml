@@ -22,8 +22,12 @@
 
   <repositories>
     <repository>
-      <id>glowstone</id>
+      <id>glowstone-internal</id>
       <url>https://repo.glowstone.net/repository/internal/</url>
+    </repository>
+    <repository>
+      <id>glowstone-snapshots</id>
+      <url>https://repo.glowstone.net/repository/snapshots/</url>
     </repository>
   </repositories>
 
