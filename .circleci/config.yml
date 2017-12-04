@@ -26,9 +26,9 @@ jobs:
 
             - run: mvn -T 2 -B -s .circleci/maven.xml source:jar javadoc:jar deploy
 
-            - run: mv target/apidocs ./glowstone
+            - run: mv target/apidocs ./javadocs
 
-            - run: zip -r javadocs.zip glowstone/
+            - run: zip -r javadocs.zip javadocs/
 
             - store_test_results:
                 path: target/surefire-reports
@@ -39,6 +39,11 @@ jobs:
 
             - store_artifacts:
                 path: javadocs.zip
+                destination: javadocs.zip
+
+            - store_artifacts:
+                path: javadocs
+                destination: javadocs
 
     build_other:
         branches:
