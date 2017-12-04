@@ -409,6 +409,7 @@ public final class ServerConfig {
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
         GRAPHICS_COMPUTE("advanced.graphics-compute.enable", false),
         GRAPHICS_COMPUTE_ANY_DEVICE("advanced.graphics-compute.use-any-device", false),
+        REGION_CACHE_SIZE("advanced.region-file-cache-size", 256),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),

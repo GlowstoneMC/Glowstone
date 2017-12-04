@@ -224,6 +224,8 @@ public class RegionFile {
         int length = file.readInt();
         if (length > SECTOR_BYTES * numSectors) {
             throw new IOException("Invalid length: " + length + " > " + SECTOR_BYTES * numSectors);
+        } else if (length <= 0) {
+            throw new IOException("Invalid length: " + length + " <= 0 ");
         }
 
         byte version = file.readByte();

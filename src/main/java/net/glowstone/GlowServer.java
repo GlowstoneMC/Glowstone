@@ -205,10 +205,6 @@ public final class GlowServer implements Server {
      */
     public static final int PROTOCOL_VERSION = 340;
     /**
-     * The world config for extended world customization.
-     */
-    private static WorldConfig worldConfig;
-    /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
     private final SessionRegistry sessions = new SessionRegistry();
@@ -248,6 +244,10 @@ public final class GlowServer implements Server {
      * The configuration for the server.
      */
     private final ServerConfig config;
+    /**
+     * The world config for extended world customization.
+     */
+    private static WorldConfig worldConfig;
     /**
      * The list of OPs on the server.
      */
@@ -545,6 +545,10 @@ public final class GlowServer implements Server {
         File configFile = new File(configDir, configFileName);
 
         return new ServerConfig(configDir, configFile, parameters);
+    }
+
+    public ServerConfig getServerConfig() {
+        return config;
     }
 
     public static WorldConfig getWorldConfig() {

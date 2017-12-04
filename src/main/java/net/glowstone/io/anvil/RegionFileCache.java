@@ -31,18 +31,20 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import net.glowstone.GlowServer;
+import net.glowstone.util.config.ServerConfig.Key;
+import org.bukkit.Bukkit;
 
 /**
  * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
  */
 public class RegionFileCache {
 
-    private static final int MAX_CACHE_SIZE = 256;
+    private static final int MAX_CACHE_SIZE = ((GlowServer) Bukkit.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
 
-    private final Map<File, Reference<RegionFile>> cache = new HashMap<>();
+    private final Map<File, Reference<RegionFile>> cache = new LinkedHashMap<>(MAX_CACHE_SIZE, 0.9f, true);
 
     private final String extension;
     private final File regionDir;
