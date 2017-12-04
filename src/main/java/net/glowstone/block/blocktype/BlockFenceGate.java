@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -8,9 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Gate;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 public class BlockFenceGate extends BlockOpenable {
 
@@ -42,7 +41,8 @@ public class BlockFenceGate extends BlockOpenable {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData materialData = state.getData();
@@ -57,10 +57,12 @@ public class BlockFenceGate extends BlockOpenable {
     }
 
     @Override
-    protected void onOpened(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc, GlowBlockState state, MaterialData materialData) {
+    protected void onOpened(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc,
+        GlowBlockState state, MaterialData materialData) {
         if (materialData instanceof Gate) {
             Gate gate = (Gate) materialData;
-            gate.setFacingDirection(getOpenDirection(player.getLocation().getYaw(), gate.getFacing()));
+            gate.setFacingDirection(
+                getOpenDirection(player.getLocation().getYaw(), gate.getFacing()));
         } else {
             warnMaterialData(Gate.class, materialData);
         }

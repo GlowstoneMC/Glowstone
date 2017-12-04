@@ -1,5 +1,9 @@
 package net.glowstone.command.minecraft;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
@@ -15,17 +19,13 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public class SetBlockCommand extends VanillaCommand {
+
     public SetBlockCommand() {
         super("setblock",
-                "Changes a block to another block.",
-                "/setblock <x> <y> <z> <block> [dataValue|state] [dataTag]",
-                Collections.emptyList());
+            "Changes a block to another block.",
+            "/setblock <x> <y> <z> <block> [dataValue|state] [dataTag]",
+            Collections.emptyList());
         setPermission("minecraft.command.setblock");
     }
 
@@ -47,7 +47,8 @@ public class SetBlockCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + itemName + " is not a valid block type");
             return false;
         }
-        Location location = CommandUtils.getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
+        Location location = CommandUtils
+            .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
         GlowBlock block = (GlowBlock) location.getBlock();
         byte dataValue = 0;
         if (args.length > 4) {
@@ -69,7 +70,8 @@ public class SetBlockCommand extends VanillaCommand {
         }
         block.setType(type, dataValue, true);
         if (args.length > 5 && block.getBlockEntity() != null) {
-            String dataTag = String.join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
+            String dataTag = String
+                .join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
             try {
                 CompoundTag prev = new CompoundTag();
                 block.getBlockEntity().saveNbt(prev);
@@ -86,7 +88,8 @@ public class SetBlockCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 4) {
             return ItemIds.getTabCompletion(args[3]);
         }

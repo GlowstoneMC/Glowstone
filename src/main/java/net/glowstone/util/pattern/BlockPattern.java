@@ -37,8 +37,10 @@ public class BlockPattern {
         for (PatternItem block : blocks) {
             int xzDiff = block.xz - xz;
             int yDiff = block.y - y;
-            Location relative = location.clone().add(xzDiff * alignment.x, -yDiff, xzDiff * alignment.z);
-            if (relative.getBlock().getType() != block.getType() || ((relative.getBlock().getData() != block.getData()) && block.getData() != -1)) {
+            Location relative = location.clone()
+                .add(xzDiff * alignment.x, -yDiff, xzDiff * alignment.z);
+            if (relative.getBlock().getType() != block.getType() || (
+                (relative.getBlock().getData() != block.getData()) && block.getData() != -1)) {
                 return null;
             }
             r[i++] = relative;
@@ -46,10 +48,24 @@ public class BlockPattern {
         return r;
     }
 
+    private enum Alignment {
+        X(1, 0), Z(0, 1);
+
+        private final int x;
+        private final int z;
+
+        Alignment(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
+    }
+
     public static class PatternItem {
+
         private Material type;
         private byte data;
-        private int xz, y;
+        private int xz;
+        private int y;
 
         public PatternItem(Material type, byte data, int xz, int y) {
             this.type = type;
@@ -90,18 +106,6 @@ public class BlockPattern {
             }
             PatternItem item = (PatternItem) obj;
             return item.xz == xz && item.y == y && item.type == type && item.data == data;
-        }
-    }
-
-    private enum Alignment {
-        X(1, 0), Z(0, 1);
-
-        private final int x;
-        private final int z;
-
-        Alignment(int x, int z) {
-            this.x = x;
-            this.z = z;
         }
     }
 }

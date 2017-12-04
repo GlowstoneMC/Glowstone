@@ -1,5 +1,9 @@
 package net.glowstone.entity.monster.complex;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.monster.GlowMonster;
 import org.bukkit.Location;
@@ -8,12 +12,8 @@ import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 public class GlowEnderDragon extends GlowMonster implements EnderDragon {
+
     private Map<String, GlowEnderDragonPart> parts = new HashMap<>();
 
     public GlowEnderDragon(Location loc, EntityType type, double maxHealth) {

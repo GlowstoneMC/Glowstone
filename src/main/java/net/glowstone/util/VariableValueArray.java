@@ -23,6 +23,21 @@ public final class VariableValueArray implements Cloneable {
         this.capacity = capacity;
     }
 
+    /**
+     * Calculates the number of bits that would be needed to store the given value.
+     *
+     * @param number the value
+     * @return The number of bits that would be needed to store the value.
+     */
+    public static int calculateNeededBits(int number) {
+        int count = 0;
+        do {
+            count++;
+            number >>>= 1;
+        } while (number != 0);
+        return count;
+    }
+
     public long[] getBacking() {
         return backing;
     }
@@ -89,23 +104,17 @@ public final class VariableValueArray implements Cloneable {
     }
 
     /**
-     * Creates a new VariableValueArray with the contents of this one, and the
-     * given bits per value.
+     * Creates a new VariableValueArray with the contents of this one, and the given bits per value.
      *
-     * @param newBitsPerValue
-     *            The new value. Must be larger than the current value (
-     *            {@link #getBitsPerValue()}).
-     * @throws IllegalArgumentException
-     *             If newBitsPerValue is less than or equal to the current bits
-     *             per value. Setting it to the same size would be a waste of
-     *             resources, and decreasing could lead to data loss.
+     * @param newBitsPerValue The new value. Must be larger than the current value ( {@link #getBitsPerValue()}).
      * @return A new VariableValueArray
+     * @throws IllegalArgumentException If newBitsPerValue is less than or equal to the current bits per value. Setting it to the same size would be a waste of resources, and decreasing could lead to data loss.
      */
     public VariableValueArray increaseBitsPerValueTo(int newBitsPerValue) {
         if (newBitsPerValue < this.bitsPerValue) {
             throw new IllegalArgumentException("Cannot decrease bits per value!  (was " + this.bitsPerValue + ", new size " + newBitsPerValue + ")");
         } else if (newBitsPerValue == this.bitsPerValue) {
-            throw new IllegalArgumentException("Cannot resize to the same size!  (size was "  + newBitsPerValue + ")");
+            throw new IllegalArgumentException("Cannot resize to the same size!  (size was " + newBitsPerValue + ")");
         }
 
         VariableValueArray returned = new VariableValueArray(newBitsPerValue, this.capacity);
@@ -120,21 +129,5 @@ public final class VariableValueArray implements Cloneable {
         VariableValueArray clone = new VariableValueArray(this.bitsPerValue, this.capacity);
         System.arraycopy(this.backing, 0, clone.backing, 0, this.backing.length);
         return clone;
-    }
-
-    /**
-     * Calculates the number of bits that would be needed to store the given
-     * value.
-     *
-     * @param  number the value
-     * @return The number of bits that would be needed to store the value.
-     */
-    public static int calculateNeededBits(int number) {
-        int count = 0;
-        do {
-            count++;
-            number >>>= 1;
-        } while (number != 0);
-        return count;
     }
 }

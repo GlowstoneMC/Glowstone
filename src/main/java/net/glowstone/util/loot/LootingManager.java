@@ -1,5 +1,12 @@
 package net.glowstone.util.loot;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.util.InventoryUtil;
@@ -8,14 +15,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class LootingManager {
 
@@ -76,13 +75,16 @@ public class LootingManager {
         try {
             InputStream in = LootingManager.class.getClassLoader().getResourceAsStream(location);
             if (in == null) {
-                GlowServer.logger.warning("Could not find default entity loot table '" + location + "' on classpath");
+                GlowServer.logger.warning(
+                    "Could not find default entity loot table '" + location + "' on classpath");
                 return;
             }
             JSONObject json = (JSONObject) new JSONParser().parse(new InputStreamReader(in));
             entities.put(type, new EntityLootTable(json));
         } catch (Exception e) {
-            Exception ex = new Exception("Failed to load loot table '" + location + "': " + e.getClass().getName() + " (" + e.getMessage() + ")");
+            Exception ex = new Exception(
+                "Failed to load loot table '" + location + "': " + e.getClass().getName() + " (" + e
+                    .getMessage() + ")");
             ex.setStackTrace(e.getStackTrace());
             throw ex;
         }
@@ -114,7 +116,8 @@ public class LootingManager {
             for (ConditionalLootItem condition : conditions) {
                 if (LootingUtil.conditionValue(entity, condition.getCondition())) {
                     if (condition.getCount().isPresent()) {
-                        count = condition.getCount().get().generate(ThreadLocalRandom.current(), entity);
+                        count = condition.getCount().get()
+                            .generate(ThreadLocalRandom.current(), entity);
                     }
                     if (condition.getType().isPresent()) {
                         name = condition.getType().get().generate(ThreadLocalRandom.current());
@@ -126,7 +129,8 @@ public class LootingManager {
                     if (condition.getData().isPresent()) {
                         data = condition.getData().get().generate(ThreadLocalRandom.current());
                     } else if (condition.getReflectiveData().isPresent()) {
-                        data = ((Number) condition.getReflectiveData().get().process(entity)).intValue();
+                        data = ((Number) condition.getReflectiveData().get().process(entity))
+                            .intValue();
                     }
                 }
             }

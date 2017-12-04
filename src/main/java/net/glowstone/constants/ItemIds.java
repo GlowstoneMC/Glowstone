@@ -1,13 +1,19 @@
 package net.glowstone.constants;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
-
-import java.util.*;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Temporary mappings for Minecraft's string-based item ids.
@@ -533,8 +539,7 @@ public final class ItemIds {
     }
 
     /**
-     * Verify that a given material is a valid item. All non-blocks are valid
-     * items, but some blocks cannot be represented as items.
+     * Verify that a given material is a valid item. All non-blocks are valid items, but some blocks cannot be represented as items.
      *
      * @param material The material to verify.
      * @return true if the material is a valid item.
@@ -544,8 +549,7 @@ public final class ItemIds {
     }
 
     /**
-     * Convert an ItemStack which may have a type that is unrepresentable as
-     * an item to one that does, or to an empty stack if this is not possible.
+     * Convert an ItemStack which may have a type that is unrepresentable as an item to one that does, or to an empty stack if this is not possible.
      *
      * @param stack The stack to sanitize.
      * @return The sanitized stack, or null.

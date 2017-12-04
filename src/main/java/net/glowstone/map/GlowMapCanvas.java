@@ -1,14 +1,12 @@
 package net.glowstone.map;
 
+import java.awt.Image;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapFont;
 
-import java.awt.*;
-
 /**
- * Represents a canvas for drawing to a map. Each canvas is associated with a
- * specific {@link org.bukkit.map.MapRenderer} and represents that renderer's layer on the map.
+ * Represents a canvas for drawing to a map. Each canvas is associated with a specific {@link org.bukkit.map.MapRenderer} and represents that renderer's layer on the map.
  */
 public final class GlowMapCanvas implements MapCanvas {
 
@@ -39,7 +37,9 @@ public final class GlowMapCanvas implements MapCanvas {
 
     @Override
     public void setPixel(int x, int y, byte color) {
-        if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return;
+        if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) {
+            return;
+        }
         if (buffer[y * MAP_SIZE + x] != color) {
             buffer[y * MAP_SIZE + x] = color;
             // todo: mark dirty
@@ -48,13 +48,17 @@ public final class GlowMapCanvas implements MapCanvas {
 
     @Override
     public byte getPixel(int x, int y) {
-        if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return 0;
+        if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) {
+            return 0;
+        }
         return buffer[y * MAP_SIZE + x];
     }
 
     @Override
     public byte getBasePixel(int x, int y) {
-        if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return 0;
+        if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) {
+            return 0;
+        }
         return base[y * MAP_SIZE + x];
     }
 

@@ -20,7 +20,8 @@ public class BlockButton extends BlockAttachable {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
 
@@ -45,9 +46,12 @@ public class BlockButton extends BlockAttachable {
             public void run() {
                 button.setPowered(false);
                 state.update();
-                if (block.getType() == Material.WOOD_BUTTON || block.getType() == Material.STONE_BUTTON) {
+                if (block.getType() == Material.WOOD_BUTTON
+                    || block.getType() == Material.STONE_BUTTON) {
                     extraUpdate(block);
-                    block.getWorld().playSound(block.getLocation(), block.getType() == Material.WOOD_BUTTON ? Sound.BLOCK_WOOD_BUTTON_CLICK_OFF : Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 0.3f, 0.5f);
+                    block.getWorld().playSound(block.getLocation(),
+                        block.getType() == Material.WOOD_BUTTON ? Sound.BLOCK_WOOD_BUTTON_CLICK_OFF
+                            : Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 0.3f, 0.5f);
                 }
             }
         }.runTaskLater(null, block.getType() == Material.STONE_BUTTON ? 20 : 30);
@@ -65,7 +69,9 @@ public class BlockButton extends BlockAttachable {
                 BlockType notifyType = itemTable.getBlock(target2.getTypeId());
                 if (notifyType != null) {
                     if (target2.getFace(block) == null) {
-                        notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                        notifyType
+                            .onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(),
+                                block.getData(), block.getType(), block.getData());
                     }
                     notifyType.onRedstoneUpdate(target2);
                 }
@@ -74,7 +80,8 @@ public class BlockButton extends BlockAttachable {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();

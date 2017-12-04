@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class EmptyBucketDispenseBehavior extends DefaultDispenseBehavior {
+
     private DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
 
     @Override

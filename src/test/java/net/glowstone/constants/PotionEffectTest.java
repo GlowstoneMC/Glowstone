@@ -1,5 +1,14 @@
 package net.glowstone.constants;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionEffectTypeWrapper;
 import org.hamcrest.number.OrderingComparison;
@@ -7,16 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowPotionEffect}.
@@ -42,7 +41,8 @@ public class PotionEffectTest {
         Field[] fields = PotionEffectType.class.getFields();
         List<Object[]> result = new ArrayList<>(fields.length);
         for (Field field : PotionEffectType.class.getFields()) {
-            if (field.getType() == PotionEffectType.class && (field.getModifiers() & STATIC_FINAL) == STATIC_FINAL) {
+            if (field.getType() == PotionEffectType.class
+                && (field.getModifiers() & STATIC_FINAL) == STATIC_FINAL) {
                 result.add(new Object[]{field});
             }
         }
@@ -57,7 +57,8 @@ public class PotionEffectTest {
         assertThat("wrong name on wrapped effect", effect.getName(), is(field.getName()));
         assertThat("missing from byName", PotionEffectType.getByName(effect.getName()), is(effect));
         assertThat("missing from byId", PotionEffectType.getById(effect.getId()), is(effect));
-        assertThat("non-positive duration amplifier for " + effect, effect.getDurationModifier(), OrderingComparison.greaterThan(0d));
+        assertThat("non-positive duration amplifier for " + effect, effect.getDurationModifier(),
+            OrderingComparison.greaterThan(0d));
     }
 
 }

@@ -1,18 +1,17 @@
 package net.glowstone.io;
 
-import net.glowstone.GlowServer;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.util.StatisticMap;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
+import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.StatisticMap;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class PlayerStatisticIoService {
 

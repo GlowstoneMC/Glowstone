@@ -1,10 +1,9 @@
 package net.glowstone.entity.ai;
 
-import net.glowstone.entity.GlowLivingEntity;
-
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import net.glowstone.entity.GlowLivingEntity;
 
 public class TaskManager {
 
@@ -48,7 +47,8 @@ public class TaskManager {
 
     public void updateState() {
         cancelTasks();
-        for (String task : EntityDirector.getEntityMobStateTask(entity.getType(), entity.getState())) {
+        for (String task : EntityDirector
+            .getEntityMobStateTask(entity.getType(), entity.getState())) {
             addTask(task);
         }
     }

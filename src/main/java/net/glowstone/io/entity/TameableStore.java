@@ -1,12 +1,11 @@
 package net.glowstone.io.entity;
 
+import java.util.UUID;
 import net.glowstone.entity.passive.GlowTameable;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
-
-import java.util.UUID;
 
 abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
 

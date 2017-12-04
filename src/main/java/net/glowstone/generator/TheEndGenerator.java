@@ -1,5 +1,7 @@
 package net.glowstone.generator;
 
+import java.util.Map;
+import java.util.Random;
 import net.glowstone.GlowServer;
 import net.glowstone.generator.populators.TheEndPopulator;
 import net.glowstone.util.config.WorldConfig;
@@ -9,9 +11,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.OctaveGenerator;
-
-import java.util.Map;
-import java.util.Random;
 
 public class TheEndGenerator extends GlowChunkGenerator {
 
@@ -36,7 +35,8 @@ public class TheEndGenerator extends GlowChunkGenerator {
     }
 
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ,
+        BiomeGrid biomes) {
         return generateRawTerrain(world, chunkX, chunkZ);
     }
 
@@ -94,7 +94,8 @@ public class TheEndGenerator extends GlowChunkGenerator {
                             for (int n = 0; n < 8; n++) {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air.
                                 if (dens > 0) {
-                                    chunkData.setBlock(m + (i << 3), l + (k << 2), n + (j << 3), Material.ENDER_STONE);
+                                    chunkData.setBlock(m + (i << 3), l + (k << 2), n + (j << 3),
+                                        Material.ENDER_STONE);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 8;
@@ -119,9 +120,12 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
     private void generateTerrainDensity(World world, int x, int z) {
         Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
-        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).fBm(x, 0, z, 0.5D, 2.0D);
-        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).fBm(x, 0, z, 0.5D, 2.0D);
-        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).fBm(x, 0, z, 0.5D, 2.0D);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
 
         int index = 0;
 
@@ -134,7 +138,8 @@ public class TheEndGenerator extends GlowChunkGenerator {
                     double noiseR2 = roughnessNoise2[index] / 512.0D;
                     double noiseD = (detailNoise[index] / 10.0D + 1.0D) / 2.0D;
                     // linear interpolation
-                    double dens = noiseD < 0 ? noiseR : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
+                    double dens = noiseD < 0 ? noiseR
+                        : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
                     dens = dens - 8.0D + nH;
                     index++;
                     if (k < 8) {

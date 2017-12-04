@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import java.util.Arrays;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
@@ -7,9 +8,11 @@ import net.glowstone.util.InventoryUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.inventory.*;
-
-import java.util.Arrays;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 /**
  * Represents a crafting grid inventory, both workbench and per-player.
@@ -22,7 +25,8 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     public GlowCraftingInventory(InventoryHolder owner, InventoryType type) {
         super(owner, type);
         if (type != InventoryType.CRAFTING && type != InventoryType.WORKBENCH) {
-            throw new IllegalArgumentException("GlowCraftingInventory cannot be " + type + ", only CRAFTING or WORKBENCH.");
+            throw new IllegalArgumentException(
+                "GlowCraftingInventory cannot be " + type + ", only CRAFTING or WORKBENCH.");
         }
 
         getSlot(RESULT_SLOT).setType(SlotType.RESULT);
@@ -47,7 +51,8 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
             // If the player clicked on the result give it to them
             Recipe recipe = getRecipe();
@@ -123,7 +128,8 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
     @Override
     public Recipe getRecipe() {
-        return ((GlowServer) Bukkit.getServer()).getCraftingManager().getCraftingRecipe(getMatrix());
+        return ((GlowServer) Bukkit.getServer()).getCraftingManager()
+            .getCraftingRecipe(getMatrix());
     }
 
     /**

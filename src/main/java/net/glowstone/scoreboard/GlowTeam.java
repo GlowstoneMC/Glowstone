@@ -1,7 +1,14 @@
 package net.glowstone.scoreboard;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
@@ -11,14 +18,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Implementation for scoreboard teams.
@@ -64,11 +63,15 @@ public final class GlowTeam implements Team {
     Message getCreateMessage() {
         List<String> playerNames = new ArrayList<>(players.size());
         playerNames.addAll(players);
-        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
+        return ScoreboardTeamMessage
+            .create(name, displayName, prefix, suffix, friendlyFire, seeInvisible,
+                nameTagVisibility, collisionRule, color, playerNames);
     }
 
     private void update() {
-        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color));
+        scoreboard.broadcast(ScoreboardTeamMessage
+            .update(name, displayName, prefix, suffix, friendlyFire, seeInvisible,
+                nameTagVisibility, collisionRule, color));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -84,7 +87,8 @@ public final class GlowTeam implements Team {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) throws IllegalStateException, IllegalArgumentException {
+    public void setDisplayName(String displayName)
+        throws IllegalStateException, IllegalArgumentException {
         checkNotNull(displayName, "Display name cannot be null");
         checkValid();
         this.displayName = displayName;
@@ -157,7 +161,8 @@ public final class GlowTeam implements Team {
     }
 
     @Deprecated
-    public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
+    public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility)
+        throws IllegalStateException, IllegalArgumentException {
         checkNotNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
         this.deathMessageVisibility = OptionStatus.valueOf(deathMessageVisibility.name());
@@ -202,7 +207,9 @@ public final class GlowTeam implements Team {
     @Deprecated
     public Set<OfflinePlayer> getPlayers() throws IllegalStateException {
         Set<OfflinePlayer> playerObjectSet = new HashSet<>(players.size());
-        playerObjectSet.addAll(players.stream().map(s -> new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), s)).collect(Collectors.toList()));
+        playerObjectSet.addAll(
+            players.stream().map(s -> new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), s))
+                .collect(Collectors.toList()));
         return playerObjectSet;
     }
 
@@ -215,7 +222,8 @@ public final class GlowTeam implements Team {
 
     @Override
     @Deprecated
-    public boolean hasPlayer(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
+    public boolean hasPlayer(OfflinePlayer player)
+        throws IllegalArgumentException, IllegalStateException {
         return players.contains(player.getName());
     }
 
@@ -233,7 +241,8 @@ public final class GlowTeam implements Team {
 
     @Override
     @Deprecated
-    public void addPlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
+    public void addPlayer(OfflinePlayer player)
+        throws IllegalStateException, IllegalArgumentException {
         players.add(player.getName());
     }
 
@@ -258,7 +267,8 @@ public final class GlowTeam implements Team {
 
     @Override
     @Deprecated
-    public boolean removePlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
+    public boolean removePlayer(OfflinePlayer player)
+        throws IllegalStateException, IllegalArgumentException {
         return players.remove(player.getName());
     }
 

@@ -2,6 +2,7 @@ package net.glowstone.io.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
@@ -12,14 +13,13 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-import java.util.UUID;
-
 /**
  * The base for entity store classes.
  *
  * @param <T> The type of entity being stored.
  */
 public abstract class EntityStore<T extends GlowEntity> {
+
     protected final Class<? extends T> clazz;
     protected final String type;
 
@@ -27,7 +27,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         this.clazz = clazz;
         this.type = type.getName();
     }
-    
+
     public EntityStore(Class<? extends T> clazz, String name) {
         this.type = name;
         this.clazz = clazz;
@@ -42,8 +42,7 @@ public abstract class EntityStore<T extends GlowEntity> {
     }
 
     /**
-     * Create a new entity of this store's type at the given location. The
-     * load method will be called separately.
+     * Create a new entity of this store's type at the given location. The load method will be called separately.
      *
      * @param location The location.
      * @param compound The entity's tag, if extra data is needed.
@@ -59,18 +58,18 @@ public abstract class EntityStore<T extends GlowEntity> {
     // - int "PortalCooldown"
 
     /**
-     * Load data into an existing entity of the appropriate type from the
-     * given compound tag.
+     * Load data into an existing entity of the appropriate type from the given compound tag.
      *
      * @param entity The target entity.
-     * @param tag    The entity's tag.
+     * @param tag The entity's tag.
      */
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
         // base stuff for all entities is here:
 
         if (tag.isList("Motion", TagType.DOUBLE)) {
-            entity.setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
+            entity
+                .setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
         }
         if (tag.isFloat("FallDistance")) {
             entity.setFallDistance(tag.getFloat("FallDistance"));
@@ -138,7 +137,8 @@ public abstract class EntityStore<T extends GlowEntity> {
             return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
         } catch (Exception e) {
             String id = compoundTag.isString("id") ? compoundTag.getString("id") : "<missing>";
-            if (e.getMessage() != null && e.getMessage().startsWith("Unknown entity type to load:")) {
+            if (e.getMessage() != null && e.getMessage()
+                .startsWith("Unknown entity type to load:")) {
                 GlowServer.logger.warning("Skipping Entity with id " + id);
             } else {
                 GlowServer.logger.log(Level.WARNING, "Error loading entity " + id, e);
@@ -151,7 +151,7 @@ public abstract class EntityStore<T extends GlowEntity> {
      * Save information about this entity to the given tag.
      *
      * @param entity The entity to save.
-     * @param tag    The target tag.
+     * @param tag The target tag.
      */
     public void save(T entity, CompoundTag tag) {
         tag.putString("id", "minecraft:" + type);
@@ -200,7 +200,9 @@ public abstract class EntityStore<T extends GlowEntity> {
                 passengers.add(compound);
                 savePassengers(glowEntity, compound);
             } catch (Exception e) {
-                GlowServer.logger.log(Level.WARNING, "Error saving " + passenger + " from vehicle " + vehicle, e);
+                GlowServer.logger
+                    .log(Level.WARNING, "Error saving " + passenger + " from vehicle " + vehicle,
+                        e);
             }
         }
         if (!passengers.isEmpty()) {

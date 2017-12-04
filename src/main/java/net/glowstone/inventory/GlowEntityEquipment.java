@@ -19,6 +19,7 @@ public class GlowEntityEquipment implements EntityEquipment {
 
     /**
      * Returns the ItemStack found in the slot at the given EquipmentSlot
+     *
      * @param slot The EquipmentSlot of the Slot's ItemStack to return
      * @return The ItemStack in the slot
      */
@@ -39,6 +40,7 @@ public class GlowEntityEquipment implements EntityEquipment {
 
     /**
      * Stores the ItemStack at the given index of the inventory.
+     *
      * @param slot The EquipmentSlot where to put the ItemStack
      * @param item The ItemStack to set
      */
@@ -230,6 +232,7 @@ public class GlowEntityEquipment implements EntityEquipment {
 
     @AllArgsConstructor
     private class Entry {
+
         private ItemStack item;
         private float dropChance;
     }

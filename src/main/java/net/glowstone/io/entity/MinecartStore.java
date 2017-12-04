@@ -1,13 +1,12 @@
 package net.glowstone.io.entity;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.inventory.InventoryHolder;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 public class MinecartStore extends EntityStore<GlowMinecart> {
 
@@ -21,7 +20,8 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
     @Override
     public GlowMinecart createEntity(Location location, CompoundTag compound) {
         try {
-            Constructor<? extends GlowMinecart> constructor = type.getMinecartClass().getConstructor(Location.class);
+            Constructor<? extends GlowMinecart> constructor = type.getMinecartClass()
+                .getConstructor(Location.class);
             return constructor.newInstance(location);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
@@ -35,7 +35,8 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
         if (entity instanceof InventoryHolder) {
             InventoryHolder inv = (InventoryHolder) entity;
             if (inv.getInventory() != null) {
-                inv.getInventory().setContents(NbtSerialization.readInventory(tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
+                inv.getInventory().setContents(NbtSerialization
+                    .readInventory(tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
             }
         }
         // todo
@@ -47,7 +48,8 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
         if (entity instanceof InventoryHolder) {
             InventoryHolder inv = (InventoryHolder) entity;
             if (inv.getInventory() != null) {
-                tag.putCompoundList("Items", NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
+                tag.putCompoundList("Items",
+                    NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
             }
         }
         // todo

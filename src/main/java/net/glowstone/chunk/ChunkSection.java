@@ -5,19 +5,18 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
+import javax.annotation.Nullable;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
-
-import javax.annotation.Nullable;
 
 /**
  * A single cubic section of a chunk, with all data.
  */
 public final class ChunkSection {
+
     /**
-     * The number of blocks in a chunk section, and thus the number of elements
-     * in all arrays used for it.
+     * The number of blocks in a chunk section, and thus the number of elements in all arrays used for it.
      */
     public static final int ARRAY_SIZE = GlowChunk.WIDTH * GlowChunk.HEIGHT * GlowChunk.SEC_DEPTH;
     /**
@@ -40,13 +39,11 @@ public final class ChunkSection {
     private IntList palette;
     private VariableValueArray data;
     /**
-     * The block light and sky light arrays. These arrays are always set, even
-     * in dimensions without skylight.
+     * The block light and sky light arrays. These arrays are always set, even in dimensions without skylight.
      */
     private NibbleArray skyLight, blockLight;
     /**
-     * The number of non-air blocks in this section, used to determine whether
-     * it is empty.
+     * The number of non-air blocks in this section, used to determine whether it is empty.
      */
     private int count;
 
@@ -58,9 +55,9 @@ public final class ChunkSection {
     }
 
     /**
-     * Create a new, unlit chunk section with the specified chunk data. This
-     * ChunkSection assumes ownership of the arrays passed in, and they should
-     * not be further modified.
+     * Create a new, unlit chunk section with the specified chunk data.
+     *
+     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be further modified.
      *
      * @param types An array of block state IDs for this chunk section (containing type and metadata)
      */
@@ -69,9 +66,9 @@ public final class ChunkSection {
     }
 
     /**
-     * Create a ChunkSection with the specified chunk data. This
-     * ChunkSection assumes ownership of the arrays passed in, and they
-     * should not be further modified.
+     * Create a ChunkSection with the specified chunk data.
+     *
+     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be further modified.
      *
      * @param types An array of block types for this chunk section.
      * @param skyLight An array for skylight data for this chunk section.
@@ -88,9 +85,9 @@ public final class ChunkSection {
     }
 
     /**
-     * Create a ChunkSection with the specified chunk data. This
-     * ChunkSection assumes ownership of the arrays passed in, and they
-     * should not be further modified.
+     * Create a ChunkSection with the specified chunk data.
+     *
+     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be further modified.
      *
      * @param data An array of blocks in this section.
      * @param palette The palette that is associated with that data.  If null, the global palette is used.
@@ -194,7 +191,6 @@ public final class ChunkSection {
      * @param x The x coordinate, for east and west.
      * @param y The y coordinate, for up and down.
      * @param z The z coordinate, for north and south.
-     *
      * @return The index.
      */
     public int index(int x, int y, int z) {
@@ -205,8 +201,7 @@ public final class ChunkSection {
     }
 
     /**
-     * Loads the contents of this chunk section from the given type array,
-     * initializing the palette.
+     * Loads the contents of this chunk section from the given type array, initializing the palette.
      *
      * @param types The type array.
      */
@@ -246,9 +241,9 @@ public final class ChunkSection {
     }
 
     /**
-     * Optimizes this chunk section, removing unneeded palette entries and
-     * recounting non-air blocks. This is an expensive operation, but
-     * occasionally performing it will improve sending the section.
+     * Optimizes this chunk section, removing unneeded palette entries and recounting non-air blocks.
+     *
+     * <p>This is an expensive operation, but occasionally performing it will improve sending the section.
      */
     public void optimize() {
         loadTypeArray(getTypes());
@@ -285,7 +280,6 @@ public final class ChunkSection {
      * @param x The x coordinate, for east and west.
      * @param y The y coordinate, for up and down.
      * @param z The z coordinate, for north and south.
-     *
      * @return A type ID
      */
     public char getType(int x, int y, int z) {
@@ -363,6 +357,15 @@ public final class ChunkSection {
     }
 
     /**
+     * Gets the block light array.
+     *
+     * @return The block light array.
+     */
+    public NibbleArray getBlockLight() {
+        return blockLight;
+    }
+
+    /**
      * Gets the block light at the given block.
      *
      * @param x The x coordinate, for east and west.
@@ -387,12 +390,12 @@ public final class ChunkSection {
     }
 
     /**
-     * Gets the block light array.
+     * Gets the sky light array.
      *
-     * @return The block light array.
+     * @return The sky light array. If the dimension of this chunk section's chunk's world is not the overworld, this array contains only maximum light levels.
      */
-    public NibbleArray getBlockLight() {
-        return blockLight;
+    public NibbleArray getSkyLight() {
+        return skyLight;
     }
 
     /**
@@ -420,25 +423,13 @@ public final class ChunkSection {
     }
 
     /**
-     * Gets the sky light array.
-     *
-     * @return The sky light array. If the dimension of this chunk section's
-     *         chunk's world is not the overworld, this array contains only
-     *         maximum light levels.
-     */
-    public NibbleArray getSkyLight() {
-        return skyLight;
-    }
-
-    /**
      * Is this chunk section empty, IE doesn't need to be sent or saved?
      *
-     * This implementation has the same issue that causes <a
-     * href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>: It
-     * assumes that a chunk section with only air blocks has no meaningful
-     * data. This assumption is incorrect for sections near light
-     * sources, which can create lighting bugs. However, it is more
-     * expensive to send additional sections with just light data.
+     * <p>This implementation has the same issue that causes <a href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>:
+     *
+     * <p>It assumes that a chunk section with only air blocks has no meaningful data.
+     * This assumption is incorrect for sections near light sources, which can create lighting bugs.
+     * However, it is more expensive to send additional sections with just light data.
      *
      * @return True if this chunk section is empty and can be removed.
      */
@@ -448,6 +439,7 @@ public final class ChunkSection {
 
     /**
      * Writes this chunk section to the given ByteBuf.
+     *
      * @param buf The buffer to write to.
      * @param skylight True if skylight should be included.
      * @throws IllegalStateException If this chunk section {@linkplain #isEmpty() is empty}
@@ -482,8 +474,7 @@ public final class ChunkSection {
     }
 
     /**
-     * Writes this chunk section to a NBT compound. Note that the Y coordinate
-     * is not written.
+     * Writes this chunk section to a NBT compound. Note that the Y coordinate is not written.
      *
      * @param sectionTag The tag to write to
      */

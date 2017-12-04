@@ -1,22 +1,25 @@
 package net.glowstone.command;
 
-
 import com.google.common.collect.ImmutableList;
-import org.bukkit.GameMode;
 
 import java.util.List;
+
+import org.bukkit.GameMode;
 
 /**
  * Utility class to create GameMode
  */
 public class GameModeUtils {
 
-    public static final List<String> GAMEMODE_NAMES = ImmutableList.of("adventure", "creative", "survival", "spectator");
+    public static final List<String> GAMEMODE_NAMES = ImmutableList
+        .of("adventure", "creative", "survival", "spectator");
 
-    private GameModeUtils() { }
+    private GameModeUtils() {
+    }
 
     /**
      * Create a GameMode from a string
+     *
      * @param mode The mode to convert
      * @return The matching mode if any, null otherwise.
      */
@@ -49,6 +52,7 @@ public class GameModeUtils {
 
     /**
      * Pretty print the given GameMode
+     *
      * @param gameMode The mode to print
      * @return A string containing the pretty name of the mode, 'Unknown' if the mode is not known and null if the given mode is null.
      */

@@ -1,14 +1,13 @@
 package net.glowstone.constants;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Id mappings for particles.
@@ -166,8 +165,7 @@ public final class GlowParticle {
 
 
     /**
-     * Determine whether a particle type is considered long distance, meaning
-     * it has a higher visible range than normal.
+     * Determine whether a particle type is considered long distance, meaning it has a higher visible range than normal.
      *
      * @param particle the Particle.
      * @return True if the particle is long distance.
@@ -184,8 +182,7 @@ public final class GlowParticle {
     }
 
     /**
-     * Determine whether a particle type is considered long distance, meaning
-     * it has a higher visible range than normal.
+     * Determine whether a particle type is considered long distance, meaning it has a higher visible range than normal.
      *
      * @param particle the Particle.
      * @return True if the particle is long distance.

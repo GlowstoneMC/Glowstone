@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -12,13 +14,11 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public class BlockLog extends BlockType {
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
@@ -46,7 +46,8 @@ public class BlockLog extends BlockType {
                     GlowBlock b = world.getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
                     if (b.getType() == Material.LEAVES || b.getType() == Material.LEAVES_2) {
                         GlowBlockState state = b.getState();
-                        if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04) == 0) { // check decay is off and decay is on
+                        if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04)
+                            == 0) { // check decay is off and decay is on
                             // set decay check on for this leaves block
                             state.setRawData((byte) (state.getRawData() | 0x08));
                             state.update(true);

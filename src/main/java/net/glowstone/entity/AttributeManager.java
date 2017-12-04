@@ -1,15 +1,20 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.EntityPropertyMessage;
 
-import java.util.*;
-
 public class AttributeManager {
+
     private static final List<Modifier> EMPTY_LIST = new ArrayList<>();
 
     private final GlowLivingEntity entity;
@@ -24,15 +29,17 @@ public class AttributeManager {
     }
 
     public void applyMessages(Collection<Message> messages) {
-        if (!needsUpdate)
+        if (!needsUpdate) {
             return;
+        }
         messages.add(new EntityPropertyMessage(entity.id, properties));
         needsUpdate = false;
     }
 
     public void sendMessages(GlowSession session) {
-        if (!needsUpdate)
+        if (!needsUpdate) {
             return;
+        }
         int id = entity.id;
         if (entity instanceof GlowPlayer) {
             GlowPlayer player = (GlowPlayer) entity;
@@ -48,14 +55,6 @@ public class AttributeManager {
         setProperty(key.toString(), Math.max(0, Math.min(value, key.max)), null);
     }
 
-    public double getPropertyValue(Key key) {
-        if (properties.containsKey(key.toString())) {
-            return properties.get(key.toString()).value;
-        }
-
-        return key.def;
-    }
-
     public void setProperty(String key, double value, List<Modifier> modifiers) {
         if (properties.containsKey(key)) {
             properties.get(key).value = value;
@@ -65,6 +64,14 @@ public class AttributeManager {
         }
 
         needsUpdate = true;
+    }
+
+    public double getPropertyValue(Key key) {
+        if (properties.containsKey(key.toString())) {
+            return properties.get(key.toString()).value;
+        }
+
+        return key.def;
     }
 
     public Map<String, Property> getAllProperties() {
@@ -96,6 +103,7 @@ public class AttributeManager {
     }
 
     public static class Property {
+
         @Getter
         private double value;
         @Getter
@@ -109,6 +117,7 @@ public class AttributeManager {
 
     @Data
     public static class Modifier {
+
         private final String name;
         private final UUID uuid;
         private final double amount;

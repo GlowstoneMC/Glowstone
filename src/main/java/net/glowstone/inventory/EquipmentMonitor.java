@@ -1,13 +1,12 @@
 package net.glowstone.inventory;
 
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Tracker for when the equipment of an entity is changed.
@@ -45,8 +44,10 @@ public final class EquipmentMonitor {
 
     /**
      * Get the item in the inventory.
-     * Slot 0 is the item in the hand.
-     * Slot 1 to 4 is armor (boots to helmet).
+     *
+     * <p>Slot 0 is the item in the hand.
+     *
+     * <p>Slot 1 to 4 is armor (boots to helmet).
      *
      * @return The item in that slot.
      */
@@ -131,6 +132,7 @@ public final class EquipmentMonitor {
      * An entry which has been changed.
      */
     public static class Entry {
+
         public final int slot;
         public final ItemStack item;
 

@@ -1,19 +1,18 @@
 package net.glowstone.entity.ai;
 
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class LookAtPlayerTask extends EntityTask {
 
+    private static final double RANGE = 10;
     private GlowPlayer target;
     private int delay = 1;
-    private static final double RANGE = 10;
 
     public LookAtPlayerTask() {
         super("look_player");
@@ -37,7 +36,8 @@ public class LookAtPlayerTask extends EntityTask {
     @Override
     public boolean shouldStart(GlowLivingEntity entity) {
         EntityTask task = entity.getTaskManager().getTask("look_around");
-        return task != null && !task.isExecuting() && ThreadLocalRandom.current().nextFloat() <= 0.025;
+        return task != null && !task.isExecuting()
+            && ThreadLocalRandom.current().nextFloat() <= 0.025;
     }
 
     @Override
@@ -72,7 +72,8 @@ public class LookAtPlayerTask extends EntityTask {
             delay = 0;
             return;
         }
-        if (target == null || !target.isOnline() || entity.getLocation().distanceSquared(target.getLocation()) > (RANGE * RANGE)) {
+        if (target == null || !target.isOnline()
+            || entity.getLocation().distanceSquared(target.getLocation()) > (RANGE * RANGE)) {
             reset(entity);
             return;
         }

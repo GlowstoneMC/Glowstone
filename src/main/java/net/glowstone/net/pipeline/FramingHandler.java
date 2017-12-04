@@ -4,7 +4,6 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
-
 import java.util.List;
 
 /**
@@ -39,7 +38,8 @@ public final class FramingHandler extends ByteToMessageCodec<ByteBuf> {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out)
+        throws Exception {
         // check for length field readability
         in.markReaderIndex();
         if (!readableVarInt(in)) {

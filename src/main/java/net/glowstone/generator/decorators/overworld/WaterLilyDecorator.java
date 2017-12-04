@@ -1,13 +1,12 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
-
-import java.util.Random;
 
 public class WaterLilyDecorator extends BlockDecorator {
 
@@ -17,7 +16,7 @@ public class WaterLilyDecorator extends BlockDecorator {
         int sourceZ = (source.getZ() << 4) + random.nextInt(16);
         int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) << 1);
         while (world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType() == Material.AIR
-                && sourceY > 0) {
+            && sourceY > 0) {
             sourceY--;
         }
 
@@ -27,7 +26,7 @@ public class WaterLilyDecorator extends BlockDecorator {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             if (y >= 0 && y <= 255 && world.getBlockAt(x, y, z).getType() == Material.AIR
-                    && world.getBlockAt(x, y - 1, z).getType() == Material.STATIONARY_WATER) {
+                && world.getBlockAt(x, y - 1, z).getType() == Material.STATIONARY_WATER) {
                 BlockState state = world.getBlockAt(x, y, z).getState();
                 state.setType(Material.WATER_LILY);
                 state.setData(new MaterialData(Material.WATER_LILY));

@@ -19,7 +19,9 @@ public class JukeboxEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        playing = tag.containsKey("RecordItem") ? NbtSerialization.readItem(tag.getCompound("RecordItem")) : null;
+        playing =
+            tag.containsKey("RecordItem") ? NbtSerialization.readItem(tag.getCompound("RecordItem"))
+                : null;
     }
 
     @Override

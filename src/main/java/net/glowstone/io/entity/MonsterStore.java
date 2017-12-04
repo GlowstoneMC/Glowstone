@@ -1,11 +1,10 @@
 package net.glowstone.io.entity;
 
+import java.lang.reflect.Constructor;
 import net.glowstone.entity.monster.GlowMonster;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-
-import java.lang.reflect.Constructor;
 
 public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 

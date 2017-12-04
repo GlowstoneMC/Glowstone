@@ -1,5 +1,14 @@
 package net.glowstone.io.nbt;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.UUID;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.io.WorldMetadataService;
@@ -10,12 +19,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WorldType;
 
-import java.io.*;
-import java.util.Calendar;
-import java.util.UUID;
-import java.util.logging.Level;
-
 public class NbtWorldMetadataService implements WorldMetadataService {
+
     private final GlowWorld world;
     private final File dir;
     private final GlowServer server;
@@ -57,7 +62,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
                 if (level.isCompound("Data")) {
                     level = level.getCompound("Data");
                 } else {
-                    server.getLogger().warning("Loading world \"" + world.getName() + "\": reading from root, not Data");
+                    server.getLogger().warning(
+                        "Loading world \"" + world.getName() + "\": reading from root, not Data");
                 }
             } catch (IOException e) {
                 handleWorldException("level.dat", e);
@@ -103,7 +109,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // spawn position
         if (level.isInt("SpawnX") && level.isInt("SpawnY") && level.isInt("SpawnZ")) {
-            world.setSpawnLocation(level.getInt("SpawnX"), level.getInt("SpawnY"), level.getInt("SpawnZ"), false);
+            world.setSpawnLocation(level.getInt("SpawnX"), level.getInt("SpawnY"),
+                level.getInt("SpawnZ"), false);
             level.remove("SpawnX");
             level.remove("SpawnY");
             level.remove("SpawnZ");
@@ -112,7 +119,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         // game rules
         if (level.isCompound("GameRules")) {
             CompoundTag gameRules = level.getCompound("GameRules");
-            gameRules.getValue().keySet().stream().filter(gameRules::isString).forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)));
+            gameRules.getValue().keySet().stream().filter(gameRules::isString)
+                .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)));
             level.remove("GameRules");
         }
 
@@ -132,7 +140,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             level.remove("BorderSize");
         }
         if (level.isDouble("BorderSizeLerpTarget") && level.isLong("BorderSizeLerpTime")) {
-            world.getWorldBorder().setSize(level.getDouble("BorderSizeLerpTarget"), level.getLong("BorderSizeLerpTime"));
+            world.getWorldBorder().setSize(level.getDouble("BorderSizeLerpTarget"),
+                level.getLong("BorderSizeLerpTime"));
             level.remove("BorderSizeLerpTarget");
             level.remove("BorderSizeLerpTime");
         }
@@ -155,7 +164,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // strip single-player Player tag if it exists
         if (level.isCompound("Player")) {
-            server.getLogger().warning("World \"" + world.getName() + "\": removing single-player Player tag");
+            server.getLogger()
+                .warning("World \"" + world.getName() + "\": removing single-player Player tag");
             level.remove("Player");
         }
 
@@ -167,7 +177,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
     private void handleWorldException(String file, IOException e) {
         server.unloadWorld(world, false);
-        server.getLogger().log(Level.SEVERE, "Unable to access " + file + " for world " + world.getName(), e);
+        server.getLogger()
+            .log(Level.SEVERE, "Unable to access " + file + " for world " + world.getName(), e);
     }
 
     @Override
@@ -230,7 +241,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         CompoundTag root = new CompoundTag();
         root.putCompound("Data", out);
-        try (NBTOutputStream nbtOut = new NBTOutputStream(new FileOutputStream(new File(dir, "level.dat")))) {
+        try (NBTOutputStream nbtOut = new NBTOutputStream(
+            new FileOutputStream(new File(dir, "level.dat")))) {
             nbtOut.writeTag(root);
         } catch (IOException e) {
             handleWorldException("level.dat", e);

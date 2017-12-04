@@ -42,17 +42,20 @@ public final class TitleMessage implements Message {
 
     public static TitleMessage[] fromTitle(Title title) {
         TextMessage titleMessage = asTextMessage(BaseComponent.toLegacyText(title.getTitle()));
-        TextMessage subTitleMessage = title.getSubtitle() != null ? asTextMessage(BaseComponent.toLegacyText(title.getSubtitle())) : asTextMessage(null);
+        TextMessage subTitleMessage = title.getSubtitle() != null ? asTextMessage(
+            BaseComponent.toLegacyText(title.getSubtitle())) : asTextMessage(null);
 
         return new TitleMessage[]{
-                new TitleMessage(Action.TITLE, titleMessage),
-                new TitleMessage(Action.SUBTITLE, subTitleMessage),
-                new TitleMessage(Action.TIMES, title.getFadeIn(), title.getStay(), title.getFadeOut())
+            new TitleMessage(Action.TITLE, titleMessage),
+            new TitleMessage(Action.SUBTITLE, subTitleMessage),
+            new TitleMessage(Action.TIMES, title.getFadeIn(), title.getStay(), title.getFadeOut())
         };
     }
 
     private static TextMessage asTextMessage(String rawString) {
-        if (rawString == null) rawString = "";
+        if (rawString == null) {
+            rawString = "";
+        }
         return new TextMessage(rawString);
     }
 

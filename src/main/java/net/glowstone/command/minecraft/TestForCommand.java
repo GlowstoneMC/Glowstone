@@ -1,5 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Arrays;
+import java.util.Collections;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.GlowEntity;
@@ -14,14 +16,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 
-import java.util.*;
-
 public class TestForCommand extends VanillaCommand {
+
     public TestForCommand() {
         super("testfor",
-                "Tests for a certain target in game",
-                "/testfor <player> [dataTag]",
-                Collections.emptyList());
+            "Tests for a certain target in game",
+            "/testfor <player> [dataTag]",
+            Collections.emptyList());
         setPermission("minecraft.command.testfor");
     }
 
@@ -52,7 +53,7 @@ public class TestForCommand extends VanillaCommand {
                 sender.sendMessage(ChatColor.RED + "Entity '" + name + "' cannot be found");
                 return false;
             } else {
-                entities = new Entity[] {player};
+                entities = new Entity[]{player};
             }
         }
 
@@ -72,7 +73,8 @@ public class TestForCommand extends VanillaCommand {
                     if (tag.matches(entityTag)) {
                         sender.sendMessage("Found " + CommandUtils.getName(entity));
                     } else {
-                        sender.sendMessage(ChatColor.RED + CommandUtils.getName(entity) + " did not match the required data structure");
+                        sender.sendMessage(ChatColor.RED + CommandUtils.getName(entity)
+                            + " did not match the required data structure");
                     }
                 }
             }

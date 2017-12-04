@@ -17,14 +17,12 @@ import net.glowstone.net.protocol.ProtocolType;
 public final class GlowChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     /**
-     * The time in seconds which are elapsed before a client is disconnected due
-     * to a read timeout.
+     * The time in seconds which are elapsed before a client is disconnected due to a read timeout.
      */
     private static final int READ_IDLE_TIMEOUT = 20;
 
     /**
-     * The time in seconds which are elapsed before a client is deemed idle due
-     * to a write timeout.
+     * The time in seconds which are elapsed before a client is deemed idle due to a write timeout.
      */
     private static final int WRITE_IDLE_TIMEOUT = 15;
 
@@ -49,12 +47,12 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
         c.config().setAllocator(PooledByteBufAllocator.DEFAULT);
 
         c.pipeline()
-                .addLast("idle_timeout", new IdleStateHandler(READ_IDLE_TIMEOUT, WRITE_IDLE_TIMEOUT, 0))
-                .addLast("legacy_ping", new LegacyPingHandler(connectionManager))
-                .addLast("encryption", NoopHandler.INSTANCE)
-                .addLast("framing", framing)
-                .addLast("compression", NoopHandler.INSTANCE)
-                .addLast("codecs", codecs)
-                .addLast("handler", handler);
+            .addLast("idle_timeout", new IdleStateHandler(READ_IDLE_TIMEOUT, WRITE_IDLE_TIMEOUT, 0))
+            .addLast("legacy_ping", new LegacyPingHandler(connectionManager))
+            .addLast("encryption", NoopHandler.INSTANCE)
+            .addLast("framing", framing)
+            .addLast("compression", NoopHandler.INSTANCE)
+            .addLast("codecs", codecs)
+            .addLast("handler", handler);
     }
 }

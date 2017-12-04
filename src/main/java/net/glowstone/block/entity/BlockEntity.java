@@ -9,8 +9,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.block.Block;
 
 /**
- * Base class for block entities (blocks with NBT data) in the world.
- * Most access to block entities should occur through the Bukkit BlockState API.
+ * Base class for block entities (blocks with NBT data) in the world. Most access to block entities should occur through the Bukkit BlockState API.
  */
 public abstract class BlockEntity {
 
@@ -43,15 +42,15 @@ public abstract class BlockEntity {
      */
     public final void updateInRange() {
         Key key = GlowChunk.Key.of(block.getX() >> 4, block.getZ() >> 4);
-        block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(this::update);
+        block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key))
+            .forEach(this::update);
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // World I/O
 
     /**
-     * Set the text ID this block entity is saved to disk with. If this is not
-     * set, then load and save of the "id" tag must be performed manually.
+     * Set the text ID this block entity is saved to disk with. If this is not set, then load and save of the "id" tag must be performed manually.
      *
      * @param saveId The ID.
      */
@@ -71,7 +70,8 @@ public abstract class BlockEntity {
         // verify id and coordinates
         if (saveId != null) {
             if (!tag.isString("id") || !tag.getString("id").equals(saveId)) {
-                throw new IllegalArgumentException("Expected block entity id of " + saveId + ", got " + tag.getString("id"));
+                throw new IllegalArgumentException(
+                    "Expected block entity id of " + saveId + ", got " + tag.getString("id"));
             }
         }
 
@@ -82,7 +82,9 @@ public abstract class BlockEntity {
             int z = tag.getInt("z");
             int rx = block.getX(), ry = block.getY(), rz = block.getZ();
             if (x != rx || y != ry || z != rz) {
-                throw new IllegalArgumentException("Tried to load block entity with coords (" + x + "," + y + "," + z + ") into (" + rx + "," + ry + "," + rz + ")");
+                throw new IllegalArgumentException(
+                    "Tried to load block entity with coords (" + x + "," + y + "," + z + ") into ("
+                        + rx + "," + ry + "," + rz + ")");
             }
         }
     }

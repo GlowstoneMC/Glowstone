@@ -6,9 +6,8 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.LastHttpContent;
-import lombok.RequiredArgsConstructor;
-
 import java.nio.charset.Charset;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class HttpHandler extends SimpleChannelInboundHandler<Object> {
@@ -39,7 +38,8 @@ public class HttpHandler extends SimpleChannelInboundHandler<Object> {
             }
 
             if (responseCode != HttpResponseStatus.OK.code()) {
-                throw new IllegalStateException("Expected HTTP response 200 OK, got " + responseCode);
+                throw new IllegalStateException(
+                    "Expected HTTP response 200 OK, got " + responseCode);
             }
         }
 

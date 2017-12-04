@@ -13,7 +13,9 @@ public class ItemRottenFlesh extends ItemFood {
 
     @Override
     public boolean eat(GlowPlayer player, ItemStack item) {
-        if (!super.eat(player, item)) return false;
+        if (!super.eat(player, item)) {
+            return false;
+        }
 
         if (Math.random() < 0.8) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 30 * 20, 0), true);

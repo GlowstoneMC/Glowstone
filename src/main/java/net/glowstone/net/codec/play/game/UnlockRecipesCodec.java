@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 
-import java.io.IOException;
-
 public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
+
     @Override
     public UnlockRecipesMessage decode(ByteBuf buf) throws IOException {
         int action = ByteBufUtils.readVarInt(buf);
@@ -40,7 +40,8 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
         for (int recipe : message.getRecipes()) {
             ByteBufUtils.writeVarInt(buf, recipe);
         }
-        if (message.getAction() == UnlockRecipesMessage.ACTION_INIT && message.getAllRecipes() != null) {
+        if (message.getAction() == UnlockRecipesMessage.ACTION_INIT
+            && message.getAllRecipes() != null) {
             ByteBufUtils.writeVarInt(buf, message.getAllRecipes().length);
             for (int recipe : message.getAllRecipes()) {
                 ByteBufUtils.writeVarInt(buf, recipe);

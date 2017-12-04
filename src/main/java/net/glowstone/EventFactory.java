@@ -1,5 +1,14 @@
 package net.glowstone;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.logging.Level;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -12,18 +21,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.logging.Level;
+import org.bukkit.event.player.PlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  * Central class for the calling of events.
@@ -98,17 +105,13 @@ public final class EventFactory {
         BanList ipBans = server.getBanList(Type.IP);
 
         if (nameBans.isBanned(player.getName())) {
-            event.disallow(Result.KICK_BANNED,
-                    "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
+            event.disallow(Result.KICK_BANNED, "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
         } else if (ipBans.isBanned(addressString)) {
-            event.disallow(Result.KICK_BANNED,
-                    "Banned: " + ipBans.getBanEntry(addressString).getReason());
+            event.disallow(Result.KICK_BANNED, "Banned: " + ipBans.getBanEntry(addressString).getReason());
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
-            event.disallow(Result.KICK_WHITELIST,
-                    "You are not whitelisted on this server.");
+            event.disallow(Result.KICK_WHITELIST, "You are not whitelisted on this server.");
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
-            event.disallow(Result.KICK_FULL,
-                    "The server is full (" + player.getServer().getMaxPlayers() + " players).");
+            event.disallow(Result.KICK_FULL, "The server is full (" + player.getServer().getMaxPlayers() + " players).");
         }
 
         return callEvent(event);

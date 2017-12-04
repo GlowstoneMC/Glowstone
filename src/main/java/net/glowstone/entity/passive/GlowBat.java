@@ -1,6 +1,9 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -12,10 +15,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 
 public class GlowBat extends GlowAmbient implements Bat {
 
@@ -34,7 +33,9 @@ public class GlowBat extends GlowAmbient implements Bat {
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnMobMessage(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList())); //TODO 1.9 - Real UUID
+        result.add(
+            new SpawnMobMessage(id, UUID.randomUUID(), getType().getTypeId(), x, y, z, yaw, pitch,
+                pitch, 0, 0, 0, metadata.getEntryList())); //TODO 1.9 - Real UUID
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));
@@ -87,13 +88,13 @@ public class GlowBat extends GlowAmbient implements Bat {
     }
 
     @Override
-    public void setCollidable(boolean b) {
-
+    public boolean isCollidable() {
+        return false;
     }
 
     @Override
-    public boolean isCollidable() {
-        return false;
+    public void setCollidable(boolean b) {
+
     }
 
     @Override

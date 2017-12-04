@@ -1,15 +1,13 @@
-package net.glowstone.io.anvil;
-
 /*
- ** 2011 January 5
- **
- ** The author disclaims copyright to this source code.  In place of
- ** a legal notice, here is a blessing:
- **
- **    May you do good and not evil.
- **    May you find forgiveness for yourself and forgive others.
- **    May you share freely, never taking more than you give.
- **/
+ * 2011 January 5
+ *
+ * The author disclaims copyright to this source code. In place of
+ * a legal notice, here is a blessing:
+ *
+ *    May you do good and not evil.
+ *    May you find forgiveness for yourself and forgive others.
+ *    May you share freely, never taking more than you give.
+ */
 
 /*
  * 2011 February 16
@@ -25,13 +23,28 @@ package net.glowstone.io.anvil;
  * Later changes made by the Glowstone project.
  */
 
-import net.glowstone.GlowServer;
+package net.glowstone.io.anvil;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.BitSet;
-import java.util.zip.*;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+import java.util.zip.ZipException;
+import net.glowstone.GlowServer;
 
 /**
  * Interfaces with region files on the disk
@@ -61,11 +74,11 @@ import java.util.zip.*;
  * 4096 times the number of sectors. The next byte is a version field, to allow
  * backwards-compatible updates to how chunks are encoded.
  *
- * <p>A version of 1 represents a gzipped NBT file. The gzipped data is the chunk
- * length - 1.
+ * <p>A version of 1 represents a gzipped NBT file.
+ * The gzipped data is the chunk length - 1.
  *
- * <p>A version of 2 represents a deflated (zlib compressed) NBT file. The deflated
- * data is the chunk length - 1.
+ * <p>A version of 2 represents a deflated (zlib compressed) NBT file.
+ * The deflated data is the chunk length - 1.
  */
 public class RegionFile {
 
@@ -112,7 +125,9 @@ public class RegionFile {
             if (initialLength < 2 * SECTOR_BYTES) {
                 // if the file size is under 8KB, grow it
                 sizeDelta = 2 * SECTOR_BYTES - initialLength;
-                GlowServer.logger.warning("Region \"" + path + "\" under 8K: " + initialLength + " increasing by " + (2 * SECTOR_BYTES - initialLength));
+                GlowServer.logger.warning(
+                    "Region \"" + path + "\" under 8K: " + initialLength + " increasing by " + (
+                        2 * SECTOR_BYTES - initialLength));
 
                 for (long i = 0; i < sizeDelta; ++i) {
                     file.write(0);
@@ -120,7 +135,9 @@ public class RegionFile {
             } else if ((initialLength & (SECTOR_BYTES - 1)) != 0) {
                 // if the file size is not a multiple of 4KB, grow it
                 sizeDelta = initialLength & (SECTOR_BYTES - 1);
-                GlowServer.logger.warning("Region \"" + path + "\" not aligned: " + initialLength + " increasing by " + (SECTOR_BYTES - (initialLength & (SECTOR_BYTES - 1))));
+                GlowServer.logger.warning(
+                    "Region \"" + path + "\" not aligned: " + initialLength + " increasing by " + (
+                        SECTOR_BYTES - (initialLength & (SECTOR_BYTES - 1))));
 
                 for (long i = 0; i < sizeDelta; ++i) {
                     file.write(0);
@@ -160,7 +177,9 @@ public class RegionFile {
                     sectorsUsed.set(startSector + sectorNum, true);
                 }
             } else if (offset != 0) {
-                GlowServer.logger.warning("Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector + "," + numSectors + " does not fit");
+                GlowServer.logger.warning(
+                    "Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector
+                        + "," + numSectors + " does not fit");
             }
         }
         // read timestamps from timestamp table
@@ -197,7 +216,8 @@ public class RegionFile {
         int sectorNumber = offset >> 8;
         int numSectors = offset & 0xFF;
         if (sectorNumber + numSectors > totalSectors) {
-            throw new IOException("Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
+            throw new IOException(
+                "Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
@@ -211,19 +231,23 @@ public class RegionFile {
             byte[] data = new byte[length - 1];
             file.read(data);
             try {
-                return new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
+                return new DataInputStream(new BufferedInputStream(
+                    new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
             } catch (ZipException e) {
                 if (e.getMessage().equals("Not in GZIP format")) {
                     GlowServer.logger.info("Incorrect region version, switching to zlib...");
                     file.seek((sectorNumber * SECTOR_BYTES) + Integer.BYTES);
                     file.write(VERSION_DEFLATE);
-                    return new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
+                    return new DataInputStream(new BufferedInputStream(
+                        new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(),
+                            2048)));
                 }
             }
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
+            return new DataInputStream(new BufferedInputStream(
+                new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
         }
 
         throw new IOException("Unknown version: " + version);
@@ -231,7 +255,8 @@ public class RegionFile {
 
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);
-        return new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(), 2048)));
+        return new DataOutputStream(new BufferedOutputStream(
+            new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(), 2048)));
     }
 
     /* write a chunk at (x,z) with length bytes of data to disk */
@@ -351,6 +376,7 @@ public class RegionFile {
      * chunk is serializing -- only writes when serialization is over
      */
     class ChunkBuffer extends ByteArrayOutputStream {
+
         private final int x, z;
 
         public ChunkBuffer(int x, int z) {

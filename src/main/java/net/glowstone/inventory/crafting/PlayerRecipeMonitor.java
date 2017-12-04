@@ -1,22 +1,21 @@
 package net.glowstone.inventory.crafting;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 @Data
 public final class PlayerRecipeMonitor {
 
     private final GlowPlayer player;
+    private final Set<String> recipes, toBeDisplayed;
     private boolean bookOpen;
     private boolean filterCraftable;
-    private final Set<String> recipes, toBeDisplayed;
 
     public PlayerRecipeMonitor(GlowPlayer player) {
         this.player = player;
@@ -30,7 +29,8 @@ public final class PlayerRecipeMonitor {
         int status = UnlockRecipesMessage.ACTION_INIT;
         int[] recipeIds = new int[0]; // todo: conversion to internal IDs
         int[] toBeDisplayedIds = new int[0]; // todo: conversion to internal IDs
-        return new UnlockRecipesMessage(status, bookOpen, filterCraftable, toBeDisplayedIds, recipeIds);
+        return new UnlockRecipesMessage(status, bookOpen, filterCraftable, toBeDisplayedIds,
+            recipeIds);
     }
 
     public void read(CompoundTag playerData) {

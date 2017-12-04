@@ -1,14 +1,13 @@
 package net.glowstone.generator.objects;
 
-import org.bukkit.material.types.DoublePlantSpecies;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.DoublePlant;
-
-import java.util.Random;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 public class DoubleTallPlant {
 
@@ -27,7 +26,7 @@ public class DoubleTallPlant {
 
             Block block = world.getBlockAt(x, y, z);
             if (y < 255 && block.isEmpty() && block.getRelative(BlockFace.UP).isEmpty() &&
-                    block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
+                block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                 BlockState state = block.getState();
                 state.setType(Material.DOUBLE_PLANT);
                 state.setData(new DoublePlant(species));

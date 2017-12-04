@@ -1,5 +1,12 @@
 package net.glowstone.generator;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -8,8 +15,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
-
-import java.util.*;
 
 /**
  * Base chunk generator class.
@@ -28,7 +33,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     }
 
     /**
-     * @param world   The world to create OctaveGenerators for
+     * @param world The world to create OctaveGenerators for
      * @param octaves The map to put the OctaveGenerators into
      */
     protected void createWorldOctaves(World world, Map<String, OctaveGenerator> octaves) {

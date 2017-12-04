@@ -1,16 +1,21 @@
 package net.glowstone.util;
 
-import com.jogamp.opencl.*;
-import net.glowstone.GlowServer;
-
+import com.jogamp.opencl.CLCommandQueue;
+import com.jogamp.opencl.CLContext;
+import com.jogamp.opencl.CLDevice;
+import com.jogamp.opencl.CLKernel;
+import com.jogamp.opencl.CLPlatform;
+import com.jogamp.opencl.CLProgram;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
 
-public class OpenCL {
+public class OpenCompute {
+
     private static File openCLDir;
     private static CLPlatform platform;
     private static CLContext context;
@@ -34,7 +39,7 @@ public class OpenCL {
                         GlowServer.logger.log(Level.WARNING, "Could not load custom OpenCL program. Trying builtins.", ex);
                     }
                 } else {
-                    try (InputStream input = OpenCL.class.getClassLoader().getResourceAsStream("builtin/opencl/" + name)) {
+                    try (InputStream input = OpenCompute.class.getClassLoader().getResourceAsStream("builtin/opencl/" + name)) {
                         CLProgram program = context.createProgram(input).build();
                         programs.put(name, program);
                         return program;
@@ -79,7 +84,7 @@ public class OpenCL {
 
         programs = new HashMap<>();
         kernels = new HashMap<>();
-        OpenCL.platform = platform;
+        OpenCompute.platform = platform;
         context = CLContext.create(platform);
         device = context.getMaxFlopsDevice();
         queue = device.createCommandQueue();

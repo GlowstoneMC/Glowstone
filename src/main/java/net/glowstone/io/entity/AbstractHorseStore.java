@@ -5,6 +5,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 
 public class AbstractHorseStore<T extends GlowAbstractHorse> extends TameableStore<T> {
+
     public AbstractHorseStore(Class<T> clazz, EntityType type) {
         super(clazz, type);
     }

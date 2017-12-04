@@ -10,6 +10,14 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
+import java.net.InetSocketAddress;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.logging.Level;
+import javax.crypto.SecretKey;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -38,14 +46,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
-import javax.crypto.SecretKey;
-import java.net.InetSocketAddress;
-import java.util.*;
-import java.util.logging.Level;
-
 /**
- * A single connection to the server, which may or may not be associated with a
- * player.
+ * A single connection to the server, which may or may not be associated with a player.
  *
  * @author Graham Edgecombe
  */
@@ -102,9 +104,11 @@ public class GlowSession extends BasicSession {
     private int version = -1;
 
     /**
-     * Data regarding a user who has connected through a proxy, used to
-     * provide online-mode UUID and properties and other data even if the
-     * server is running in offline mode. Null for non-proxied sessions.
+     * Data regarding a user who has connected through a proxy,
+     * used to provide online-mode UUID and properties and
+     * other data even if the server is running in offline mode.
+     *
+     * <p>Null for non-proxied sessions.
      */
     private ProxyData proxyData;
 
@@ -141,8 +145,8 @@ public class GlowSession extends BasicSession {
     /**
      * Creates a new session.
      *
-     * @param server            The server this session belongs to.
-     * @param channel           The channel associated with this session.
+     * @param server The server this session belongs to.
+     * @param channel The channel associated with this session.
      * @param connectionManager The connection manager to manage connections for this session.
      */
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
@@ -230,7 +234,9 @@ public class GlowSession extends BasicSession {
     }
 
     public void setVersion(int version) {
-        if (this.version != -1) throw new IllegalStateException("Cannot set version twice");
+        if (this.version != -1) {
+            throw new IllegalStateException("Cannot set version twice");
+        }
         this.version = version;
     }
 
@@ -306,8 +312,7 @@ public class GlowSession extends BasicSession {
      * Sets the player associated with this session.
      *
      * @param profile The player's profile with name and UUID information.
-     * @throws IllegalStateException if there is already a player associated
-     *                               with this session.
+     * @throws IllegalStateException if there is already a player associated with this session.
      */
     public void setPlayer(PlayerProfile profile) {
         if (player != null) {
@@ -393,9 +398,9 @@ public class GlowSession extends BasicSession {
     }
 
     /**
-     * Disconnects the session with the specified reason. This causes a
-     * KickMessage to be sent. When it has been delivered, the channel
-     * is closed.
+     * Disconnects the session with the specified reason.
+     *
+     * <p>This causes a KickMessage to be sent. When it has been delivered, the channel is closed.
      *
      * @param reason The reason for disconnection.
      */
@@ -404,11 +409,11 @@ public class GlowSession extends BasicSession {
     }
 
     /**
-     * Disconnects the session with the specified reason. This causes a
-     * KickMessage to be sent. When it has been delivered, the channel
-     * is closed.
+     * Disconnects the session with the specified reason.
      *
-     * @param reason       The reason for disconnection.
+     * <p>This causes a KickMessage to be sent. When it has been delivered, the channel is closed.
+     *
+     * @param reason The reason for disconnection.
      * @param overrideKick Whether to skip the kick event.
      */
     public void disconnect(String reason, boolean overrideKick) {

@@ -1,15 +1,16 @@
 package net.glowstone.command;
 
-import org.bukkit.GameMode;
-import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.bukkit.GameMode;
+import org.junit.Test;
+
 public class GameModeUtilsTest {
 
     @Test
-    public void testGameModeBuild(){
+    public void testGameModeBuild() {
         assertThat(GameModeUtils.build("s"), is(GameMode.SURVIVAL));
         assertThat(GameModeUtils.build("S"), is(GameMode.SURVIVAL));
         assertThat(GameModeUtils.build("survival"), is(GameMode.SURVIVAL));
@@ -40,7 +41,7 @@ public class GameModeUtilsTest {
     }
 
     @Test
-    public void testPrettyPrint(){
+    public void testPrettyPrint() {
         assertThat(GameModeUtils.prettyPrint(GameMode.CREATIVE), is("Creative"));
         assertThat(GameModeUtils.prettyPrint(GameMode.ADVENTURE), is("Adventure"));
         assertThat(GameModeUtils.prettyPrint(GameMode.SURVIVAL), is("Survival"));

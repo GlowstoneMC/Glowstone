@@ -1,6 +1,7 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowMetaSpawn;
@@ -15,8 +16,6 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 /**
  * Represents a creature that ages, such as a sheep.
@@ -36,8 +35,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     /**
      * Creates a new ageable creature.
      *
-     * @param location  The location of the creature.
-     * @param type      The type of monster.
+     * @param location The location of the creature.
+     * @param type The type of monster.
      * @param maxHealth The max health of the creature.
      */
     public GlowAgeable(Location location, EntityType type, double maxHealth) {
@@ -153,7 +152,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
         if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            ItemStack item = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+            ItemStack item = InventoryUtil
+                .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
             // Spawn eggs are used to spawn babies
             if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
@@ -161,12 +161,14 @@ public class GlowAgeable extends GlowCreature implements Ageable {
                 if (meta.hasSpawnedType() && meta.getSpawnedType() == this.getType()) {
                     this.createBaby();
 
-                    if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                    if (player.getGameMode() == GameMode.SURVIVAL
+                        || player.getGameMode() == GameMode.ADVENTURE) {
                         // Consume the egg
                         if (item.getAmount() > 1) {
                             item.setAmount(item.getAmount() - 1);
                         } else {
-                            player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                            player.getInventory()
+                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
                         }
                     }
                     return true;
@@ -178,7 +180,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     public Ageable createBaby() {
         Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(getType());
-        GlowAgeable ageable = (GlowAgeable) getWorld().spawn(getLocation(), spawn, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
+        GlowAgeable ageable = (GlowAgeable) getWorld()
+            .spawn(getLocation(), spawn, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         ageable.setBaby();
         ageable.setParent(this);
 

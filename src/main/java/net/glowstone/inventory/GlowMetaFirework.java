@@ -1,20 +1,19 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.FireworkMeta;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
@@ -23,7 +22,9 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
     public GlowMetaFirework(GlowMetaItem meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaFirework)) return;
+        if (!(meta instanceof GlowMetaFirework)) {
+            return;
+        }
 
         GlowMetaFirework firework = (GlowMetaFirework) meta;
         effects.addAll(firework.effects);
@@ -48,7 +49,8 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
         result.put("power", power);
 
         if (hasEffects()) {
-            List<Object> effects = this.effects.stream().map(FireworkEffect::serialize).collect(Collectors.toList());
+            List<Object> effects = this.effects.stream().map(FireworkEffect::serialize)
+                .collect(Collectors.toList());
             result.put("effects", effects);
         }
 
@@ -63,7 +65,8 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
         List<CompoundTag> explosions = new ArrayList<>();
         if (hasEffects()) {
-            explosions.addAll(effects.stream().map(GlowMetaFireworkEffect::toExplosion).collect(Collectors.toList()));
+            explosions.addAll(effects.stream().map(GlowMetaFireworkEffect::toExplosion)
+                .collect(Collectors.toList()));
         }
         firework.putCompoundList("Explosions", explosions);
     }
@@ -74,7 +77,8 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
         power = firework.getByte("Flight");
 
         List<CompoundTag> explosions = firework.getCompoundList("Explosions");
-        effects.addAll(explosions.stream().map(GlowMetaFireworkEffect::toEffect).collect(Collectors.toList()));
+        effects.addAll(
+            explosions.stream().map(GlowMetaFireworkEffect::toEffect).collect(Collectors.toList()));
     }
 
     @Override

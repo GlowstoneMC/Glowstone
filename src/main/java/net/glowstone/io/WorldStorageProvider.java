@@ -1,12 +1,10 @@
 package net.glowstone.io;
 
+import java.io.File;
 import net.glowstone.GlowWorld;
 
-import java.io.File;
-
 /**
- * Interface for providers of world data storage, including chunks and various
- * metadata.
+ * Interface for providers of world data storage, including chunks and various metadata.
  */
 public interface WorldStorageProvider {
 
@@ -25,24 +23,21 @@ public interface WorldStorageProvider {
     File getFolder();
 
     /**
-     * Get the {@link ChunkIoService} for this world, to be used for reading
-     * and writing chunk data.
+     * Get the {@link ChunkIoService} for this world, to be used for reading and writing chunk data.
      *
      * @return The {@link ChunkIoService}.
      */
     ChunkIoService getChunkIoService();
 
     /**
-     * Get the {@link WorldMetadataService} for this world, to be used for
-     * reading and writing world metadata (seed, time, so on).
+     * Get the {@link WorldMetadataService} for this world, to be used for reading and writing world metadata (seed, time, so on).
      *
      * @return The {@link WorldMetadataService}.
      */
     WorldMetadataService getMetadataService();
 
     /**
-     * Get the {@link PlayerDataService} for this world, to be used for
-     * reading and writing data for online and offline players.
+     * Get the {@link PlayerDataService} for this world, to be used for reading and writing data for online and offline players.
      *
      * @return The {@link PlayerDataService}.
      */

@@ -1,10 +1,9 @@
 package net.glowstone.generator.decorators;
 
+import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.Random;
 
 public abstract class BlockDecorator extends BlockPopulator {
 

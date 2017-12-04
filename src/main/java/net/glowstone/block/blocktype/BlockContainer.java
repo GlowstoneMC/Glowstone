@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ContainerEntity;
@@ -11,17 +14,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-
 /**
  * Base BlockType for containers.
  */
 public class BlockContainer extends BlockType {
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         BlockEntity te = block.getBlockEntity();
         if (te instanceof ContainerEntity) {
             switch (((ContainerEntity) te).getInventory().getType()) {
@@ -60,7 +60,8 @@ public class BlockContainer extends BlockType {
 
         MaterialMatcher neededTool = getNeededMiningTool(block);
         if (neededTool == null ||
-                !InventoryUtil.isEmpty(tool) && neededTool.matches(InventoryUtil.itemOrEmpty(tool).getType())) {
+            !InventoryUtil.isEmpty(tool) && neededTool
+                .matches(InventoryUtil.itemOrEmpty(tool).getType())) {
             drops.addAll(getBlockDrops(block));
         }
 
@@ -76,7 +77,8 @@ public class BlockContainer extends BlockType {
 
     public Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
-        for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory().getContents()) {
+        for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory()
+            .getContents()) {
             if (!InventoryUtil.isEmpty(i)) {
                 drops.add(i);
             }

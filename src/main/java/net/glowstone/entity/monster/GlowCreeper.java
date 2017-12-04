@@ -1,6 +1,7 @@
 package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -8,8 +9,6 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
-import java.util.List;
 
 public class GlowCreeper extends GlowMonster implements Creeper {
 

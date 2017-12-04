@@ -1,5 +1,6 @@
 package net.glowstone.entity.passive;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowAnimal;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -7,8 +8,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowChicken extends GlowAnimal implements Chicken {
 

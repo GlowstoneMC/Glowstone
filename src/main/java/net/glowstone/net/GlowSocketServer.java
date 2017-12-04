@@ -10,20 +10,16 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import net.glowstone.GlowServer;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import net.glowstone.GlowServer;
 
 public abstract class GlowSocketServer extends GlowNetworkServer {
+
     protected final EventLoopGroup bossGroup;
     protected final EventLoopGroup workerGroup;
     protected final ServerBootstrap bootstrap;
     protected Channel channel;
-
-    public Channel getChannel() {
-        return channel;
-    }
 
     public GlowSocketServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
@@ -32,11 +28,11 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
         workerGroup = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         bootstrap = new ServerBootstrap();
 
-        bootstrap
-                .group(bossGroup, workerGroup)
-                .channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                .childOption(ChannelOption.TCP_NODELAY, true)
-                .childOption(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.group(bossGroup, workerGroup).channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class).childOption(ChannelOption.TCP_NODELAY, true).childOption(ChannelOption.SO_KEEPALIVE, true);
+    }
+
+    public Channel getChannel() {
+        return channel;
     }
 
     public ChannelFuture bind(InetSocketAddress address) {

@@ -2,11 +2,11 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.player.ClientStatusMessage;
 
-import java.io.IOException;
-
 public final class ClientStatusCodec implements Codec<ClientStatusMessage> {
+
     @Override
     public ClientStatusMessage decode(ByteBuf buf) throws IOException {
         int action = buf.readUnsignedByte();

@@ -16,7 +16,8 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
 
     @Override
     public Villager.Profession getVillagerProfession() {
-        int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) ? metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
+        int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) ? metadata
+            .getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
         return Villager.Profession.values()[profession];
     }
 

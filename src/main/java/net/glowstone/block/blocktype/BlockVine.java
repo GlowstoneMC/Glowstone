@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -13,13 +16,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Vine;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class BlockVine extends BlockClimbable {
 
-    private static final BlockFace[] HORIZONTAL_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+    private static final BlockFace[] HORIZONTAL_FACES = {BlockFace.NORTH, BlockFace.SOUTH,
+        BlockFace.EAST, BlockFace.WEST};
 
     private static BlockFace getClockwiseFace(BlockFace face) {
         switch (face) {
@@ -67,7 +67,8 @@ public class BlockVine extends BlockClimbable {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
@@ -95,8 +96,9 @@ public class BlockVine extends BlockClimbable {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (tool != null && tool.getType() == Material.SHEARS)
+        if (tool != null && tool.getType() == Material.SHEARS) {
             return Arrays.asList(new ItemStack(Material.VINE));
+        }
 
         return BlockDropless.EMPTY_STACK;
     }
@@ -115,11 +117,13 @@ public class BlockVine extends BlockClimbable {
                 Vine vine = (Vine) data;
                 boolean hasNearVineBlocks = hasNearVineBlocks(block);
                 BlockFace face = ADJACENT[ThreadLocalRandom.current().nextInt(ADJACENT.length)];
-                if (block.getY() < 255 && face == BlockFace.UP && block.getRelative(face).isEmpty()) {
+                if (block.getY() < 255 && face == BlockFace.UP && block.getRelative(face)
+                    .isEmpty()) {
                     if (!hasNearVineBlocks) {
                         Vine v = (Vine) data;
                         for (BlockFace f : HORIZONTAL_FACES) {
-                            if (ThreadLocalRandom.current().nextInt(2) == 0 || !block.getRelative(f).getRelative(face).getType().isSolid()) {
+                            if (ThreadLocalRandom.current().nextInt(2) == 0 || !block.getRelative(f)
+                                .getRelative(face).getType().isSolid()) {
                                 v.removeFromFace(f);
                             }
                         }
@@ -139,10 +143,13 @@ public class BlockVine extends BlockClimbable {
                                 putVine(b, new Vine(clockwiseFace), block);
                             } else if (isOnCCWFace && counterClockwiseBlock.getType().isSolid()) {
                                 putVine(b, new Vine(counterClockwiseFace), block);
-                            } else if (isOnCWFace && clockwiseBlock.isEmpty() && block.getRelative(clockwiseFace).getType().isSolid()) {
+                            } else if (isOnCWFace && clockwiseBlock.isEmpty() && block
+                                .getRelative(clockwiseFace).getType().isSolid()) {
                                 putVine(clockwiseBlock, new Vine(face.getOppositeFace()), block);
-                            } else if (isOnCCWFace && counterClockwiseBlock.isEmpty() && block.getRelative(counterClockwiseFace).getType().isSolid()) {
-                                putVine(counterClockwiseBlock, new Vine(face.getOppositeFace()), block);
+                            } else if (isOnCCWFace && counterClockwiseBlock.isEmpty() && block
+                                .getRelative(counterClockwiseFace).getType().isSolid()) {
+                                putVine(counterClockwiseBlock, new Vine(face.getOppositeFace()),
+                                    block);
                             } else if (b.getRelative(BlockFace.UP).getType().isSolid()) {
                                 putVine(b, new Vine(), block);
                             }
@@ -203,7 +210,8 @@ public class BlockVine extends BlockClimbable {
         for (int x = 0; x < 9; x++) {
             for (int z = 0; z < 9; z++) {
                 for (int y = 0; y < 3; y++) {
-                    if (world.getBlockAt(block.getLocation().add(x - 4, y - 1, z - 4)).getType() == Material.VINE) {
+                    if (world.getBlockAt(block.getLocation().add(x - 4, y - 1, z - 4)).getType()
+                        == Material.VINE) {
                         if (++vineCount >= 5) {
                             return true;
                         }

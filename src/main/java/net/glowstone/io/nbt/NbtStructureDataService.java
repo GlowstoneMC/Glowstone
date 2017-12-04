@@ -1,5 +1,12 @@
 package net.glowstone.io.nbt;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
@@ -11,14 +18,6 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import org.bukkit.Bukkit;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
 
 public class NbtStructureDataService implements StructureDataService {
 
@@ -49,16 +48,22 @@ public class NbtStructureDataService implements StructureDataService {
                         data = data.getCompound("data");
                         if (data.isCompound("Features")) {
                             CompoundTag features = data.getCompound("Features");
-                            features.getValue().keySet().stream().filter(features::isCompound).forEach(key -> {
-                                GlowStructure structure = StructureStorage.loadStructure(world, features.getCompound(key));
-                                structures.put(GlowChunk.Key.of(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
-                            });
+                            features.getValue().keySet().stream().filter(features::isCompound)
+                                .forEach(key -> {
+                                    GlowStructure structure = StructureStorage
+                                        .loadStructure(world, features.getCompound(key));
+                                    structures.put(GlowChunk.Key
+                                        .of(structure.getChunkX(), structure.getChunkZ())
+                                        .hashCode(), structure);
+                                });
                         }
                     } else {
                         server.getLogger().log(Level.SEVERE, "No data tag in " + structureFile);
                     }
                 } catch (IOException e) {
-                    server.getLogger().log(Level.SEVERE, "Failed to read structure data from " + structureFile, e);
+                    server.getLogger()
+                        .log(Level.SEVERE, "Failed to read structure data from " + structureFile,
+                            e);
                 }
             }
         }
@@ -73,10 +78,12 @@ public class NbtStructureDataService implements StructureDataService {
                 CompoundTag data = new CompoundTag();
                 CompoundTag features = new CompoundTag();
                 CompoundTag feature = new CompoundTag();
-                StructureStore<GlowStructure> store = StructureStorage.saveStructure(structure, feature);
+                StructureStore<GlowStructure> store = StructureStorage
+                    .saveStructure(structure, feature);
                 File structureFile = new File(structureDir, store.getId() + ".dat");
                 if (structureFile.exists()) {
-                    try (NBTInputStream in = new NBTInputStream(new FileInputStream(structureFile))) {
+                    try (NBTInputStream in = new NBTInputStream(
+                        new FileInputStream(structureFile))) {
                         data = new CompoundTag();
                         data = in.readCompound();
                         if (data.isCompound("data")) {
@@ -86,17 +93,20 @@ public class NbtStructureDataService implements StructureDataService {
                             }
                         }
                     } catch (IOException e) {
-                        server.getLogger().log(Level.SEVERE, "Failed to read structure data from " + structureFile, e);
+                        server.getLogger().log(Level.SEVERE,
+                            "Failed to read structure data from " + structureFile, e);
                     }
                 }
                 String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);
                 data.putCompound("Features", features);
                 root.putCompound("data", data);
-                try (NBTOutputStream nbtOut = new NBTOutputStream(new FileOutputStream(structureFile))) {
+                try (NBTOutputStream nbtOut = new NBTOutputStream(
+                    new FileOutputStream(structureFile))) {
                     nbtOut.writeTag(root);
                 } catch (IOException e) {
-                    server.getLogger().log(Level.SEVERE, "Failed to write structure data to " + structureFile, e);
+                    server.getLogger()
+                        .log(Level.SEVERE, "Failed to write structure data to " + structureFile, e);
                 }
                 structure.setDirty(false);
             }

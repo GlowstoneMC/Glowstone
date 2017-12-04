@@ -1,5 +1,11 @@
 package net.glowstone.block;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.MaterialValueManager.ValueCollection;
@@ -25,9 +31,6 @@ import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-
 /**
  * Represents a single block in a world.
  */
@@ -36,10 +39,7 @@ public final class GlowBlock implements Block {
     /**
      * The BlockFaces of a single-layer 3x3 area.
      */
-    private static final BlockFace[] LAYER = new BlockFace[]{
-            BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
-            BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
-            BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
+    private static final BlockFace[] LAYER = new BlockFace[]{BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SELF, BlockFace.WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
 
     /**
      * The BlockFaces of all directly adjacent.
@@ -152,9 +152,7 @@ public final class GlowBlock implements Block {
     @Override
     public BlockFace getFace(Block block) {
         for (BlockFace face : BlockFace.values()) {
-            if (x + face.getModX() == block.getX()
-                    && y + face.getModY() == block.getY()
-                    && z + face.getModZ() == block.getZ()) {
+            if (x + face.getModX() == block.getX() && y + face.getModY() == block.getY() && z + face.getModZ() == block.getZ()) {
                 return face;
             }
         }
@@ -184,17 +182,17 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public void setType(Material type) {
-        setTypeId(type.getId());
-    }
-
-    @Override
     public int getTypeId() {
         return getTypeIdNoCache();
     }
 
     private int getTypeIdNoCache() {
         return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
+    }
+
+    @Override
+    public void setType(Material type) {
+        setTypeId(type.getId());
     }
 
     /**
@@ -206,8 +204,7 @@ public final class GlowBlock implements Block {
     }
 
     /**
-     * Set the Material type of a block with data and optionally apply
-     * physics.
+     * Set the Material type of a block with data and optionally apply physics.
      *
      * @param type The type to set the block to.
      * @param data The raw data to set the block to.
@@ -341,8 +338,7 @@ public final class GlowBlock implements Block {
             return true;
         }
 
-        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON)
-                && ((Button) getState().getData()).isPowered()) {
+        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON) && ((Button) getState().getData()).isPowered()) {
             return true;
         }
 
@@ -519,13 +515,12 @@ public final class GlowBlock implements Block {
     // Physics
 
     /**
-     * Notify this block and its surrounding blocks that this block has changed
-     * type and data.
+     * Notify this block and its surrounding blocks that this block has changed type and data.
      *
-     * @param oldType   the old block type
+     * @param oldType the old block type
      * @param newTypeId the new block type
-     * @param oldData   the old data
-     * @param newData   the new data
+     * @param oldData the old data
+     * @param newData the new data
      */
     public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
         // notify the surrounding blocks that this block has changed

@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import java.util.Objects;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.ChatColor;
@@ -12,8 +13,6 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Objects;
 
 public class GlowAnvilInventory extends GlowInventory implements AnvilInventory {
 
@@ -49,7 +48,8 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
             // If the player clicked on the result give it to them
             ItemStack forged = getForged();
@@ -101,7 +101,8 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
                 result = getResultItem();
             }
             book.getStoredEnchants().forEach((enchantment, level) -> {
-                if (enchantment.canEnchantItem(result) || result.getType() == Material.ENCHANTED_BOOK) {
+                if (enchantment.canEnchantItem(result)
+                    || result.getType() == Material.ENCHANTED_BOOK) {
                     result.addUnsafeEnchantment(enchantment, level);
                 }
             });

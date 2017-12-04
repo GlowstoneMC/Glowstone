@@ -1,11 +1,25 @@
 package net.glowstone.entity;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.inventory.*;
+import net.glowstone.inventory.ArmorConstants;
+import net.glowstone.inventory.EquipmentMonitor;
+import net.glowstone.inventory.GlowCraftingInventory;
+import net.glowstone.inventory.GlowEnchantingInventory;
+import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowInventoryView;
+import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -33,11 +47,6 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
-
-import java.util.*;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents a human entity, such as an NPC or a player.
@@ -103,7 +112,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * Creates a human within the specified world and with the specified name.
      *
      * @param location The location.
-     * @param profile  The human's profile with name and UUID information.
+     * @param profile The human's profile with name and UUID information.
      */
     public GlowHumanEntity(Location location, PlayerProfile profile) {
         super(location);
@@ -130,7 +139,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch, metadata.getEntryList()));
+        result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch,
+            metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));
@@ -174,8 +184,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             }
         }
         if (armorUpdate) {
-            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR, ArmorConstants.getDefense(getEquipment().getArmorContents()));
-            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS, ArmorConstants.getToughness(getEquipment().getArmorContents()));
+            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR,
+                ArmorConstants.getDefense(getEquipment().getArmorContents()));
+            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS,
+                ArmorConstants.getToughness(getEquipment().getArmorContents()));
         }
         needsArmorUpdate = true;
     }
@@ -214,7 +226,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public void setUniqueId(UUID uuid) {
         // silently allow setting the same UUID again
         if (!profile.getUniqueId().equals(uuid)) {
-            throw new IllegalStateException("UUID of " + this + " is already " + profile.getUniqueId());
+            throw new IllegalStateException(
+                "UUID of " + this + " is already " + profile.getUniqueId());
         }
     }
 
@@ -299,7 +312,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
+        int ticks) {
         return permissions.addAttachment(plugin, name, value, ticks);
     }
 
@@ -334,7 +348,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public boolean canTakeDamage(DamageCause damageCause) {
-        return (damageCause == DamageCause.VOID || damageCause == DamageCause.SUICIDE || gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) && super.canTakeDamage(damageCause);
+        return (damageCause == DamageCause.VOID || damageCause == DamageCause.SUICIDE
+            || gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) && super
+            .canTakeDamage(damageCause);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -389,6 +405,19 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
+    public void openInventory(InventoryView inventory) {
+        checkNotNull(inventory);
+        this.inventory.getDragTracker().reset();
+
+        // stop viewing the old inventory and start viewing the new one
+        removeViewer(inventoryView.getTopInventory());
+        removeViewer(inventoryView.getBottomInventory());
+        inventoryView = inventory;
+        addViewer(inventoryView.getTopInventory());
+        addViewer(inventoryView.getBottomInventory());
+    }
+
+    @Override
     public InventoryView openWorkbench(Location location, boolean force) {
         if (location == null) {
             location = getLocation();
@@ -408,19 +437,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             return null;
         }
         return openInventory(new GlowEnchantingInventory(location, (GlowPlayer) this));
-    }
-
-    @Override
-    public void openInventory(InventoryView inventory) {
-        checkNotNull(inventory);
-        this.inventory.getDragTracker().reset();
-
-        // stop viewing the old inventory and start viewing the new one
-        removeViewer(inventoryView.getTopInventory());
-        removeViewer(inventoryView.getBottomInventory());
-        inventoryView = inventory;
-        addViewer(inventoryView.getTopInventory());
-        addViewer(inventoryView.getBottomInventory());
     }
 
     @Override
@@ -486,8 +502,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     /**
-     * Drops the item this entity currently has in its hands and remove the
-     * item from the HumanEntity's inventory.
+     * Drops the item this entity currently has in its hands and remove the item from the HumanEntity's inventory.
      *
      * @param wholeStack True if the whole stack should be dropped
      */
@@ -517,8 +532,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     /**
-     * Spawns a new {@link GlowItem} in the world, as if this HumanEntity had
-     * dropped it. Note that this does NOT remove the item from the inventory.
+     * Spawns a new {@link GlowItem} in the world, as if this HumanEntity had dropped it.
+     *
+     * <p>Note that this does NOT remove the item from the inventory.
      *
      * @param stack The item to drop
      * @return the GlowItem that was generated, or null if the spawning was cancelled
@@ -606,13 +622,13 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return tag == null ? new CompoundTag() : (CompoundTag) tag;
     }
 
+    public void setLeftShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
     public CompoundTag getRightShoulderTag() {
         Object tag = metadata.get(MetadataIndex.PLAYER_RIGHT_SHOULDER);
         return tag == null ? new CompoundTag() : (CompoundTag) tag;
-    }
-
-    public void setLeftShoulderTag(CompoundTag tag) {
-        metadata.set(MetadataIndex.PLAYER_LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
     }
 
     public void setRightShoulderTag(CompoundTag tag) {

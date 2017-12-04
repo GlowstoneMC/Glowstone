@@ -1,5 +1,10 @@
 package net.glowstone.command.minecraft;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
+
+import java.util.Collections;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.World;
@@ -8,17 +13,10 @@ import org.bukkit.command.CommandSender;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.util.Collections;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class, GlowWorld.class})
@@ -38,7 +36,8 @@ public class ToggleDownfallCommandTest {
         opSender = PowerMockito.mock(CommandSender.class);
 
         Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
-        PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class)).toReturn(world);
+        PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
+            .toReturn(world);
     }
 
     @Test
@@ -66,9 +65,13 @@ public class ToggleDownfallCommandTest {
 
     @Test
     public void testTabComplete() {
-        assertThat(command.tabComplete(opSender, "alias", new String[0]), is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{""}), is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{"test"}), is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{"test", "test"}), is(Collections.emptyList()));
+        assertThat(command.tabComplete(opSender, "alias", new String[0]),
+            is(Collections.emptyList()));
+        assertThat(command.tabComplete(opSender, "alias", new String[]{""}),
+            is(Collections.emptyList()));
+        assertThat(command.tabComplete(opSender, "alias", new String[]{"test"}),
+            is(Collections.emptyList()));
+        assertThat(command.tabComplete(opSender, "alias", new String[]{"test", "test"}),
+            is(Collections.emptyList()));
     }
 }

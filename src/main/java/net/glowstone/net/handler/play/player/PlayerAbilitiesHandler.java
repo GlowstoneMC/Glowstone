@@ -5,7 +5,9 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 
-public final class PlayerAbilitiesHandler implements MessageHandler<GlowSession, PlayerAbilitiesMessage> {
+public final class PlayerAbilitiesHandler implements
+    MessageHandler<GlowSession, PlayerAbilitiesMessage> {
+
     @Override
     public void handle(GlowSession session, PlayerAbilitiesMessage message) {
         // player sends this when changing whether or not they are currently flying

@@ -1,33 +1,46 @@
 package net.glowstone.io.entity;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.monster.*;
+import net.glowstone.entity.monster.GlowBlaze;
+import net.glowstone.entity.monster.GlowCaveSpider;
+import net.glowstone.entity.monster.GlowGiant;
+import net.glowstone.entity.monster.GlowMagmaCube;
+import net.glowstone.entity.monster.GlowSilverfish;
+import net.glowstone.entity.monster.GlowSkeleton;
+import net.glowstone.entity.monster.GlowSlime;
+import net.glowstone.entity.monster.GlowSnowman;
+import net.glowstone.entity.monster.GlowSpider;
+import net.glowstone.entity.monster.GlowWitch;
 import net.glowstone.entity.objects.GlowMinecart;
-import net.glowstone.entity.passive.*;
+import net.glowstone.entity.passive.GlowCow;
+import net.glowstone.entity.passive.GlowDonkey;
+import net.glowstone.entity.passive.GlowLlama;
+import net.glowstone.entity.passive.GlowMooshroom;
+import net.glowstone.entity.passive.GlowMule;
+import net.glowstone.entity.passive.GlowPolarBear;
+import net.glowstone.entity.passive.GlowSkeletonHorse;
+import net.glowstone.entity.passive.GlowSquid;
+import net.glowstone.entity.passive.GlowZombieHorse;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * The class responsible for mapping entity types to their storage methods
- * and reading and writing entity data using those storage methods.
+ * The class responsible for mapping entity types to their storage methods and reading and writing entity data using those storage methods.
  */
 public final class EntityStorage {
 
     /**
-     * A table which maps entity ids to compound readers. This is generally used to map
-     * stored entities to actual entities.
+     * A table which maps entity ids to compound readers. This is generally used to map stored entities to actual entities.
      */
     private static final Map<String, EntityStore<?>> idTable = new HashMap<>();
     /**
-     * A table which maps entities to stores. This is generally used to map
-     * entities being stored.
+     * A table which maps entities to stores. This is generally used to map entities being stored.
      */
     private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable = new HashMap<>();
 
@@ -110,7 +123,7 @@ public final class EntityStorage {
      * Binds a store by adding entries for it to the tables.
      *
      * @param store The store object.
-     * @param <T>   The type of entity.
+     * @param <T> The type of entity.
      */
     public static <T extends GlowEntity> void bind(EntityStore<T> store) {
         idTable.put(store.getEntityType(), store);
@@ -120,7 +133,7 @@ public final class EntityStorage {
     /**
      * Load a new entity in the given world from the given data tag.
      *
-     * @param world    The target world.
+     * @param world The target world.
      * @param compound The tag to load from.
      * @return The newly constructed entity.
      * @throws IllegalArgumentException if there is an error in the data.
@@ -136,13 +149,15 @@ public final class EntityStorage {
         }
         EntityStore<?> store = idTable.get(id);
         if (store == null) {
-            throw new IllegalArgumentException("Unknown entity type to load: \"" + compound.getString("id") + "\"");
+            throw new IllegalArgumentException(
+                "Unknown entity type to load: \"" + compound.getString("id") + "\"");
         }
 
         // verify that, if the tag contains a world, it's correct
         World checkWorld = NbtSerialization.readWorld(world.getServer(), compound);
         if (checkWorld != null && checkWorld != world) {
-            throw new IllegalArgumentException("Entity in wrong world: stored in " + world + " but data says " + checkWorld);
+            throw new IllegalArgumentException(
+                "Entity in wrong world: stored in " + world + " but data says " + checkWorld);
         }
 
         // find out the entity's location
@@ -158,7 +173,8 @@ public final class EntityStorage {
     /**
      * Helper method to call EntityStore methods for type safety.
      */
-    private static <T extends GlowEntity> T createEntity(EntityStore<T> store, Location location, CompoundTag compound) {
+    private static <T extends GlowEntity> T createEntity(EntityStore<T> store, Location location,
+        CompoundTag compound) {
         T entity = store.createEntity(location, compound);
         store.load(entity, compound);
         return entity;
@@ -187,7 +203,7 @@ public final class EntityStorage {
     /**
      * Save an entity's data to the given compound tag.
      *
-     * @param entity   The entity to save.
+     * @param entity The entity to save.
      * @param compound The target tag.
      */
     public static void save(GlowEntity entity, CompoundTag compound) {
@@ -201,7 +217,7 @@ public final class EntityStorage {
     /**
      * Load an entity's data from the given compound tag.
      *
-     * @param entity   The target entity.
+     * @param entity The target entity.
      * @param compound The tag to load from.
      */
     public static void load(GlowEntity entity, CompoundTag compound) {

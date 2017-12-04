@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
@@ -8,8 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
-
-import java.util.Collections;
 
 public class SayCommand extends VanillaCommand {
 
@@ -20,12 +19,15 @@ public class SayCommand extends VanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) return false;
+        if (!testPermission(sender)) {
+            return false;
+        }
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
-        StringBuilder message = new StringBuilder("[").append(sender.getName() == null ? "Server" : sender.getName()).append("] ");
+        StringBuilder message = new StringBuilder("[")
+            .append(sender.getName() == null ? "Server" : sender.getName()).append("] ");
         for (String arg : args) {
             if (arg.startsWith("@") && arg.length() >= 2 && CommandUtils.isPhysical(sender)) {
                 // command targets

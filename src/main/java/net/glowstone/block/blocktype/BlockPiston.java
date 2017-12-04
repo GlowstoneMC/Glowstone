@@ -1,20 +1,23 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockActionMessage;
-import org.bukkit.*;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonBaseMaterial;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BlockPiston extends BlockDirectional {
+
     private static final int PUSH_LIMIT = 12;
     private final boolean sticky;
 
@@ -47,7 +50,8 @@ public class BlockPiston extends BlockDirectional {
         if (block.getType() == Material.PISTON_BASE) {
             // break piston extension if extended
             if (isPistonExtended(block)) {
-                block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing()).setType(Material.AIR);
+                block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing())
+                    .setType(Material.AIR);
             }
         }
 
@@ -59,7 +63,8 @@ public class BlockPiston extends BlockDirectional {
         PistonBaseMaterial piston = (PistonBaseMaterial) me.getState().getData();
         BlockFace pistonBlockFace = piston.getFacing();
         int rawFace = BlockDirectional.getRawFace(pistonBlockFace);
-        BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(), me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getTypeId());
+        BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(),
+            me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getTypeId());
 
         GlowChunk chunk = me.getChunk();
         GlowChunk.Key chunkKey = GlowChunk.Key.of(chunk.getX(), chunk.getZ());
@@ -87,8 +92,10 @@ public class BlockPiston extends BlockDirectional {
                 blocks.add(block);
             }
 
-            world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.getSession().send(message));
-            world.playSound(me.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f, 0.75f);
+            world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey))
+                .forEach(player -> player.getSession().send(message));
+            world.playSound(me.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f,
+                0.75f);
 
             // extended state for piston base
             me.setData((byte) (me.getData() | 0x08));
@@ -109,8 +116,10 @@ public class BlockPiston extends BlockDirectional {
             return;
         }
 
-        world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.getSession().send(message));
-        world.playSound(me.getLocation(), Sound.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f, 0.75f);
+        world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey))
+            .forEach(player -> player.getSession().send(message));
+        world.playSound(me.getLocation(), Sound.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f,
+            0.75f);
 
         // normal state for piston
         setType(me, me.getTypeId(), me.getData() & ~0x08);
@@ -136,7 +145,8 @@ public class BlockPiston extends BlockDirectional {
 
     private boolean isPistonExtended(Block block) {
         // TODO: check direction of piston_extension to make sure that the extension is attached to piston
-        Block pistonHead = block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing());
+        Block pistonHead = block
+            .getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing());
         return pistonHead.getType() == Material.PISTON_EXTENSION;
     }
 

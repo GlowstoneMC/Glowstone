@@ -22,8 +22,10 @@ public class ItemBoat extends ItemType {
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        List<Block> lastTwoTargetBlocks = player.getLastTwoTargetBlocks((HashSet<Material>) null, 5);
-        Optional<Block> first = lastTwoTargetBlocks.stream().filter(b -> b.getType() != Material.AIR).findFirst();
+        List<Block> lastTwoTargetBlocks = player
+            .getLastTwoTargetBlocks((HashSet<Material>) null, 5);
+        Optional<Block> first = lastTwoTargetBlocks.stream()
+            .filter(b -> b.getType() != Material.AIR).findFirst();
 
         if (first.isPresent()) {
             Block block = first.get();

@@ -3,19 +3,20 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.BlockBreakAnimationMessage;
 import org.bukkit.util.BlockVector;
 
-import java.io.IOException;
-
 public class BlockBreakAnimationCodec implements Codec<BlockBreakAnimationMessage> {
+
     @Override
     public BlockBreakAnimationMessage decode(ByteBuf buf) throws IOException {
         int entityId = ByteBufUtils.readVarInt(buf);
         BlockVector vector = GlowBufUtils.readBlockPosition(buf);
         int destroyStage = buf.readByte();
-        return new BlockBreakAnimationMessage(entityId, vector.getBlockX(), vector.getBlockY(), vector.getBlockZ(), destroyStage);
+        return new BlockBreakAnimationMessage(entityId, vector.getBlockX(), vector.getBlockY(),
+            vector.getBlockZ(), destroyStage);
     }
 
     @Override

@@ -21,9 +21,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public final class BlockPlacementHandler implements MessageHandler<GlowSession, BlockPlacementMessage> {
+public final class BlockPlacementHandler implements
+    MessageHandler<GlowSession, BlockPlacementMessage> {
+
     private static final BlockFace[] faces = {
-            BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
+        BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST,
+        BlockFace.EAST
     };
 
     static boolean selectResult(Result result, boolean def) {
@@ -49,8 +52,9 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
     @Override
     public void handle(GlowSession session, BlockPlacementMessage message) {
         GlowPlayer player = session.getPlayer();
-        if (player == null)
+        if (player == null) {
             return;
+        }
 
         //GlowServer.logger.info(session + ": " + message);
 
@@ -75,7 +79,8 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
          */
 
         Action action = Action.RIGHT_CLICK_BLOCK;
-        GlowBlock clicked = player.getWorld().getBlockAt(message.getX(), message.getY(), message.getZ());
+        GlowBlock clicked = player.getWorld()
+            .getBlockAt(message.getX(), message.getY(), message.getZ());
 
         /*
          * Check if the message is a -1. If we *just* got a message with the
@@ -98,9 +103,11 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         session.setPreviousPlacement(message);
 
         // Get values from the message
-        Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(), message.getCursorZ());
+        Vector clickedLoc = new Vector(message.getCursorX(), message.getCursorY(),
+            message.getCursorZ());
         BlockFace face = convertFace(message.getDirection());
-        ItemStack holding = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+        ItemStack holding = InventoryUtil
+            .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
         boolean rightClickedAir = false;
         // check that a block-click wasn't against air
@@ -116,13 +123,15 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         }
 
         // call interact event
-        PlayerInteractEvent event = EventFactory.onPlayerInteract(player, action, rightClickedAir ? null : clicked, face);
+        PlayerInteractEvent event = EventFactory
+            .onPlayerInteract(player, action, rightClickedAir ? null : clicked, face);
         //GlowServer.logger.info("Interact: " + action + " " + clicked + " " + face);
 
         // attempt to use interacted block
         // DEFAULT is treated as ALLOW, and sneaking is always considered
         boolean useInteractedBlock = event.useInteractedBlock() != Result.DENY;
-        if (useInteractedBlock && !rightClickedAir && (!player.isSneaking() || InventoryUtil.isEmpty(holding))) {
+        if (useInteractedBlock && !rightClickedAir && (!player.isSneaking() || InventoryUtil
+            .isEmpty(holding))) {
             BlockType blockType = ItemTable.instance().getBlock(clicked.getType());
             if (blockType != null) {
                 useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
@@ -137,8 +146,10 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
         // follows ALLOW/DENY: default to if no block was interacted with
         if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
-            if (!rightClickedAir && holding.getType() != Material.AIR && (type.getContext() == Context.BLOCK || type.getContext() == Context.ANY)) {
-                type.rightClickBlock(player, clicked, face, holding, clickedLoc, message.getHandSlot());
+            if (!rightClickedAir && holding.getType() != Material.AIR && (
+                type.getContext() == Context.BLOCK || type.getContext() == Context.ANY)) {
+                type.rightClickBlock(player, clicked, face, holding, clickedLoc,
+                    message.getHandSlot());
             }
         }
 
@@ -151,7 +162,8 @@ public final class BlockPlacementHandler implements MessageHandler<GlowSession, 
 
         // if there's been a change in the held item, make it valid again
         if (!InventoryUtil.isEmpty(holding)) {
-            if (holding.getType().getMaxDurability() > 0 && holding.getDurability() > holding.getType().getMaxDurability()) {
+            if (holding.getType().getMaxDurability() > 0 && holding.getDurability() > holding
+                .getType().getMaxDurability()) {
                 holding.setAmount(holding.getAmount() - 1);
                 holding.setDurability((short) 0);
             }

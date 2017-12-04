@@ -1,6 +1,8 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.LinkedList;
+import java.util.List;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
@@ -10,9 +12,6 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Represents a creature entity such as a pig.
@@ -33,7 +32,7 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
      * Creates a new monster.
      *
      * @param location The location of the monster.
-     * @param type     The type of monster.
+     * @param type The type of monster.
      * @param maxHealth The max health of the monster.
      */
     public GlowCreature(Location location, EntityType type, double maxHealth) {
@@ -61,7 +60,9 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnMobMessage(id, getUniqueId(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0, 0, 0, metadata.getEntryList()));
+        result.add(
+            new SpawnMobMessage(id, getUniqueId(), type.getTypeId(), x, y, z, yaw, pitch, pitch, 0,
+                0, 0, metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));

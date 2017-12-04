@@ -1,11 +1,12 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.BeaconEntity;
+import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Material;
 
 public class BlockBeacon extends BlockDirectDrops {
+
     public BlockBeacon() {
         super(Material.BEACON);
     }

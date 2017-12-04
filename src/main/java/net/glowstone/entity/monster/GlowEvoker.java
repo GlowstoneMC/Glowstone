@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -9,9 +10,8 @@ import org.bukkit.entity.Evoker;
 import org.bukkit.entity.Spellcaster;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class GlowEvoker extends GlowMonster implements Evoker {
+
     public GlowEvoker(Location loc) {
         super(loc, EntityType.EVOKER, 24);
         metadata.set(MetadataIndex.EVOKER_SPELL, (byte) Spell.NONE.ordinal());
@@ -52,7 +52,8 @@ public class GlowEvoker extends GlowMonster implements Evoker {
                 // todo
                 break;
             case SUMMON_VEX:
-                world.playSound(location, Sound.ENTITY_EVOCATION_ILLAGER_PREPARE_SUMMON, 1.0f, 1.0f);
+                world
+                    .playSound(location, Sound.ENTITY_EVOCATION_ILLAGER_PREPARE_SUMMON, 1.0f, 1.0f);
                 int count = 3;
                 for (int i = 0; i < count; i++) {
                     double y = random.nextDouble() + 0.5 + location.getY();

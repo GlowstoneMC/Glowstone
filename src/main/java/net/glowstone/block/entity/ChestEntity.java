@@ -30,7 +30,8 @@ public class ChestEntity extends ContainerEntity {
         viewers++;
         if (viewers == 1) {
             updateInRange();
-            SoundUtil.playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 0.9F, 0.1F);
+            SoundUtil
+                .playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 0.9F, 0.1F);
         }
     }
 
@@ -38,7 +39,8 @@ public class ChestEntity extends ContainerEntity {
         viewers--;
         if (viewers == 0) {
             updateInRange();
-            SoundUtil.playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_CLOSE, 0.5F, 0.9F, 0.1F);
+            SoundUtil.playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_CLOSE, 0.5F, 0.9F,
+                0.1F);
         }
     }
 
@@ -46,6 +48,7 @@ public class ChestEntity extends ContainerEntity {
     public void update(GlowPlayer player) {
         super.update(player);
 
-        player.getSession().send(new BlockActionMessage(block.getX(), block.getY(), block.getZ(), 1, viewers == 0 ? 0 : 1, block.getTypeId()));
+        player.getSession().send(new BlockActionMessage(block.getX(), block.getY(), block.getZ(), 1,
+            viewers == 0 ? 0 : 1, block.getTypeId()));
     }
 }

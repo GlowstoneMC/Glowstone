@@ -11,7 +11,8 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
     private final double x, y, z;
     private final float yaw, pitch;
 
-    public PlayerPositionLookMessage(boolean onGround, double x, double y, double z, float yaw, float pitch) {
+    public PlayerPositionLookMessage(boolean onGround, double x, double y, double z, float yaw,
+        float pitch) {
         super(onGround);
         this.x = x;
         this.y = y;
@@ -37,13 +38,13 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
     @Override
     public String toString() {
         return "PlayerPositionLookMessage(" +
-                "onGround=" + isOnGround() +
-                ", x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                ", yaw=" + yaw +
-                ", pitch=" + pitch +
-                ')';
+            "onGround=" + isOnGround() +
+            ", x=" + x +
+            ", y=" + y +
+            ", z=" + z +
+            ", yaw=" + yaw +
+            ", pitch=" + pitch +
+            ')';
     }
 
 }

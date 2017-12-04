@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class FlintAndSteelDispenseBehavior extends DefaultDispenseBehavior {
+
     private boolean successful = true;
 
     @Override

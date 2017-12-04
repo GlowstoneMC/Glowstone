@@ -1,8 +1,5 @@
 package net.glowstone.util;
 
-import net.glowstone.GlowServer;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import javax.net.ssl.HttpsURLConnection;
+import net.glowstone.GlowServer;
 
 /**
  * Simple library manager which downloads external dependencies.
@@ -45,8 +44,8 @@ public final class LibraryManager {
             GlowServer.logger.log(Level.SEVERE, "Could not create libraries directory: " + directory);
         }
 
-        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.16.1", ""));
-        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.42", ""));
+        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.21.0", ""));
+        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.44", ""));
         downloaderService.execute(new LibraryDownloader("org.apache.logging.log4j", "log4j-api", "2.8.1", ""));
         downloaderService.execute(new LibraryDownloader("org.apache.logging.log4j", "log4j-core", "2.8.1", ""));
         downloaderService.shutdown();
@@ -85,8 +84,7 @@ public final class LibraryManager {
                     HttpsURLConnection connection = (HttpsURLConnection) downloadUrl.openConnection();
                     connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-                    try (ReadableByteChannel input = Channels.newChannel(connection.getInputStream());
-                         FileOutputStream output = new FileOutputStream(file)) {
+                    try (ReadableByteChannel input = Channels.newChannel(connection.getInputStream()); FileOutputStream output = new FileOutputStream(file)) {
                         output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
                         GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
                     }

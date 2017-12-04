@@ -30,17 +30,20 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof RedstoneTorch) {
@@ -67,8 +70,10 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
             if (!powered && me.getCounter() > 8) {
                 powered = true;
                 if (me.getCounter() == 9) {
-                    me.getWorld().playSound(me.getLocation(), Sound.BLOCK_REDSTONE_TORCH_BURNOUT, 1, 1);
-                    me.getWorld().playEffect(me.getLocation().add(0.5, 0.75, 0.5), Effect.SMOKE, BlockFace.UP);
+                    me.getWorld()
+                        .playSound(me.getLocation(), Sound.BLOCK_REDSTONE_TORCH_BURNOUT, 1, 1);
+                    me.getWorld().playEffect(me.getLocation().add(0.5, 0.75, 0.5), Effect.SMOKE,
+                        BlockFace.UP);
                 }
             }
 
@@ -78,7 +83,9 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
                     me.count(60);
                 }
 
-                me.setTypeIdAndData((powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(), me.getData(), true);
+                me.setTypeIdAndData(
+                    (powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(),
+                    me.getData(), true);
                 extraUpdate(me);
             }
         }
@@ -93,7 +100,9 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
                 BlockType notifyType = itemTable.getBlock(target2.getTypeId());
                 if (notifyType != null) {
                     if (target2.getFace(block) == null) {
-                        notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                        notifyType
+                            .onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(),
+                                block.getData(), block.getType(), block.getData());
                     }
                     notifyType.onRedstoneUpdate(target2);
                 }

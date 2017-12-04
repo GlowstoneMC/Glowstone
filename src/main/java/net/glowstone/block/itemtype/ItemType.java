@@ -66,15 +66,6 @@ public class ItemType {
     /**
      * Set this item to act like the given block type when being placed.
      *
-     * @param placeAs The block to place as.
-     */
-    protected final void setPlaceAs(BlockType placeAs) {
-        this.placeAs = placeAs;
-    }
-
-    /**
-     * Set this item to act like the given block type when being placed.
-     *
      * @param placeAs The material to place as.
      */
     protected final void setPlaceAs(Material placeAs) {
@@ -86,6 +77,15 @@ public class ItemType {
                 throw new IllegalArgumentException("Material " + placeAs + " is not a valid block");
             }
         }
+    }
+
+    /**
+     * Set this item to act like the given block type when being placed.
+     *
+     * @param placeAs The block to place as.
+     */
+    protected final void setPlaceAs(BlockType placeAs) {
+        this.placeAs = placeAs;
     }
 
     /**
@@ -122,10 +122,9 @@ public class ItemType {
     // Actions
 
     /**
-     * Called when a player right-clicks in midair while holding this item.
-     * Also called by default if rightClickBlock is not overridden.
+     * Called when a player right-clicks in midair while holding this item. Also called by default if rightClickBlock is not overridden.
      *
-     * @param player  The player
+     * @param player The player
      * @param holding The ItemStack the player was holding
      */
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
@@ -134,6 +133,7 @@ public class ItemType {
 
     /**
      * Get the context this item can be used in
+     *
      * @return context of the item, default is {{@link Context#BLOCK}}
      */
     public Context getContext() {
@@ -143,13 +143,14 @@ public class ItemType {
     /**
      * Called when a player right-clicks on a block while holding this item.
      *
-     * @param player     The player
-     * @param target     The block the player right-clicked
-     * @param face       The face on which the click occurred
-     * @param holding    The ItemStack the player was holding
+     * @param player The player
+     * @param target The block the player right-clicked
+     * @param face The face on which the click occurred
+     * @param holding The ItemStack the player was holding
      * @param clickedLoc The coordinates at which the click occurred
      */
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
+        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (placeAs != null) {
             placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
         }

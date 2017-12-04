@@ -7,7 +7,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToMessageCodec;
-
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -30,7 +29,8 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out)
+        throws Exception {
         ByteBuf prefixBuf = ctx.alloc().buffer(5);
         ByteBuf contentsBuf;
 
@@ -74,7 +74,8 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out)
+        throws Exception {
         int index = msg.readerIndex();
         int uncompressedSize = ByteBufUtils.readVarInt(msg);
         if (uncompressedSize == 0) {
@@ -82,7 +83,9 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
             int length = msg.readableBytes();
             if (length >= threshold) {
                 // invalid
-                throw new DecoderException("Received uncompressed message of size " + length + " greater than threshold " + threshold);
+                throw new DecoderException(
+                    "Received uncompressed message of size " + length + " greater than threshold "
+                        + threshold);
             }
 
             ByteBuf buf = ctx.alloc().buffer(length);
@@ -105,7 +108,9 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
                 msg.retain();
                 out.add(msg);
             } else if (resultLength != uncompressedSize) {
-                throw new DecoderException("Received compressed message claiming to be of size " + uncompressedSize + " but actually " + resultLength);
+                throw new DecoderException(
+                    "Received compressed message claiming to be of size " + uncompressedSize
+                        + " but actually " + resultLength);
             } else {
                 out.add(Unpooled.wrappedBuffer(destData));
             }

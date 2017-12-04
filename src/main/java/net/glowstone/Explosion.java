@@ -1,5 +1,12 @@
 package net.glowstone;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.GlowEntity;
@@ -24,10 +31,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
-
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 public final class Explosion {
 
@@ -72,15 +75,15 @@ public final class Explosion {
     private float yield = 0.3f;
 
     /**
-     * Creates a new explosion
+     * Creates a new explosion.
      *
-     * @param source      The entity causing this explosion
-     * @param world       The world this explosion is in
-     * @param x           The X location of the explosion
-     * @param y           The Y location of the explosion
-     * @param z           The Z location of the explosion
-     * @param power       The power of the explosion
-     * @param incendiary  Whether or not blocks should be set on fire
+     * @param source The entity causing this explosion
+     * @param world The world this explosion is in
+     * @param x The X location of the explosion
+     * @param y The Y location of the explosion
+     * @param z The Z location of the explosion
+     * @param power The power of the explosion
+     * @param incendiary Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
     public Explosion(Entity source, GlowWorld world, double x, double y, double z, float power, boolean incendiary, boolean breakBlocks) {
@@ -88,12 +91,12 @@ public final class Explosion {
     }
 
     /**
-     * Creates a new explosion
+     * Creates a new explosion.
      *
-     * @param source      The entity causing this explosion
-     * @param location    The location this explosion is occuring at. Must contain a GlowWorld
-     * @param power       The power of the explosion
-     * @param incendiary  Whether or not blocks should be set on fire
+     * @param source The entity causing this explosion
+     * @param location The location this explosion is occuring at. Must contain a GlowWorld
+     * @param power The power of the explosion
+     * @param incendiary Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
     public Explosion(Entity source, Location location, float power, boolean incendiary, boolean breakBlocks) {
@@ -110,14 +113,17 @@ public final class Explosion {
     }
 
     public boolean explodeWithEvent() {
-        if (power < 0.1f)
+        if (power < 0.1f) {
             return true;
+        }
 
         Set<BlockVector> droppedBlocks = calculateBlocks();
 
         List<Block> blocks = toBlockList(droppedBlocks);
         EntityExplodeEvent event = EventFactory.callEvent(new EntityExplodeEvent(source, location, blocks, yield));
-        if (event.isCancelled()) return false;
+        if (event.isCancelled()) {
+            return false;
+        }
 
         yield = event.getYield();
 
@@ -146,8 +152,9 @@ public final class Explosion {
     // Calculate all the dropping blocks
 
     private Set<BlockVector> calculateBlocks() {
-        if (!breakBlocks)
+        if (!breakBlocks) {
             return new HashSet<>();
+        }
 
         Set<BlockVector> blocks = new HashSet<>();
 
@@ -297,8 +304,9 @@ public final class Explosion {
             for (ItemStack stack : livingEntity.getEquipment().getArmorContents()) {
                 if (stack != null) {
                     int stackLevel = stack.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS);
-                    if (stackLevel > level)
+                    if (stackLevel > level) {
                         level = stackLevel;
+                    }
                 }
             }
         }
@@ -348,18 +356,13 @@ public final class Explosion {
         }
 
         Vector velocity = player.getVelocity();
-        ExplosionMessage message = new ExplosionMessage((float) location.getX(), (float) location.getY(), (float) location.getZ(),
-                power,
-                (float) velocity.getX(), (float) velocity.getY(), (float) velocity.getZ(),
-                records);
+        ExplosionMessage message = new ExplosionMessage((float) location.getX(), (float) location.getY(), (float) location.getZ(), power, (float) velocity.getX(), (float) velocity.getY(), (float) velocity.getZ(), records);
 
         player.getSession().send(message);
     }
 
     private Collection<GlowPlayer> collectPlayersInRadius(int radius) {
         int radiusSquared = radius * radius;
-        return world.getRawPlayers().stream()
-            .filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared)
-            .collect(Collectors.toList());
+        return world.getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).collect(Collectors.toList());
     }
 }

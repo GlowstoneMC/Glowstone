@@ -133,12 +133,12 @@ public class GlowBoat extends GlowEntity implements Boat {
         return new ItemStack(type);
     }
 
-    private void setDamage(float damage) {
-        metadata.set(MetadataIndex.BOAT_DAMAGE_TAKEN, Math.max(damage, 0));
-    }
-
     private float getDamage() {
         return metadata.getFloat(MetadataIndex.BOAT_DAMAGE_TAKEN);
+    }
+
+    private void setDamage(float damage) {
+        metadata.set(MetadataIndex.BOAT_DAMAGE_TAKEN, Math.max(damage, 0));
     }
 
     private int getHitTime() {
@@ -200,19 +200,19 @@ public class GlowBoat extends GlowEntity implements Boat {
         this.workOnLand = workOnLand;
     }
 
-    public void setRightPaddleTurning(boolean rightPaddleTurning) {
-        metadata.set(MetadataIndex.BOAT_RIGHT_PADDLE_TURNING, rightPaddleTurning);
-    }
-
     public boolean getRightPaddleTurning() {
         return metadata.getBoolean(MetadataIndex.BOAT_RIGHT_PADDLE_TURNING);
     }
 
-    public void setLeftPaddleTurning(boolean leftPaddleTurning) {
-        metadata.set(MetadataIndex.BOAT_LEFT_PADDLE_TURNING, leftPaddleTurning);
+    public void setRightPaddleTurning(boolean rightPaddleTurning) {
+        metadata.set(MetadataIndex.BOAT_RIGHT_PADDLE_TURNING, rightPaddleTurning);
     }
 
     public boolean getLeftPaddleTurning() {
         return metadata.getBoolean(MetadataIndex.BOAT_LEFT_PADDLE_TURNING);
+    }
+
+    public void setLeftPaddleTurning(boolean leftPaddleTurning) {
+        metadata.set(MetadataIndex.BOAT_LEFT_PADDLE_TURNING, leftPaddleTurning);
     }
 }

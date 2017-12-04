@@ -1,6 +1,9 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
@@ -14,10 +17,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
@@ -41,7 +40,8 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         this(location, material, blockData, null);
     }
 
-    public GlowFallingBlock(Location location, Material material, byte blockData, BlockEntity blockEntity) {
+    public GlowFallingBlock(Location location, Material material, byte blockData,
+        BlockEntity blockEntity) {
         super(location);
         blockEntityCompoundTag = null;
         if (blockEntity != null) {
@@ -133,7 +133,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         int blockIdData = getBlockId() | getBlockData() << 12;
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), 70, x, y, z, pitch, yaw, blockIdData)
+            new SpawnObjectMessage(id, getUniqueId(), 70, x, y, z, pitch, yaw, blockIdData)
         );
     }
 
@@ -167,7 +167,8 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 }
                 // todo: add event if desired
                 if (getDropItem()) {
-                    world.dropItemNaturally(location, new ItemStack(material, 1, (short) 0, getBlockData()));
+                    world.dropItemNaturally(location,
+                        new ItemStack(material, 1, (short) 0, getBlockData()));
                 }
                 if (replaceBlock) {
                     placeFallingBlock();
@@ -176,7 +177,9 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             } else {
                 placeFallingBlock();
                 if (material == Material.ANVIL) {
-                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F + (ThreadLocalRandom.current().nextFloat() - ThreadLocalRandom.current().nextFloat()) * 0.2F) * 0.7F);
+                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F +
+                        (ThreadLocalRandom.current().nextFloat() - ThreadLocalRandom.current()
+                            .nextFloat()) * 0.2F) * 0.7F);
                 }
                 remove();
             }

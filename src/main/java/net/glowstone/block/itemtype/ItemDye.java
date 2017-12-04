@@ -19,18 +19,21 @@ import org.bukkit.util.Vector;
 public class ItemDye extends ItemType {
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
+        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         MaterialData data = holding.getData();
         if (data instanceof Dye) {
             Dye dye = (Dye) data;
 
-            if (dye.getColor() == DyeColor.WHITE && player.getGameMode() != GameMode.ADVENTURE) { // player interacts with bone meal in hand
+            if (dye.getColor() == DyeColor.WHITE && player.getGameMode()
+                != GameMode.ADVENTURE) { // player interacts with bone meal in hand
                 BlockType blockType = ItemTable.instance().getBlock(target.getType());
                 if (blockType instanceof IBlockGrowable) {
                     IBlockGrowable growable = (IBlockGrowable) blockType;
                     if (growable.isFertilizable(target)) {
                         // spawn some green particles
-                        target.getWorld().playEffect(target.getLocation(), Effect.HAPPY_VILLAGER, 0);
+                        target.getWorld()
+                            .playEffect(target.getLocation(), Effect.HAPPY_VILLAGER, 0);
 
                         if (growable.canGrowWithChance(target)) {
                             growable.grow(player, target);
@@ -43,7 +46,8 @@ public class ItemDye extends ItemType {
                     }
                 }
             } else if (dye.getColor() == DyeColor.BROWN && target.getType() == Material.LOG) {
-                ItemTable.instance().getBlock(Material.COCOA).rightClickBlock(player, target, face, holding, clickedLoc, hand);
+                ItemTable.instance().getBlock(Material.COCOA)
+                    .rightClickBlock(player, target, face, holding, clickedLoc, hand);
             }
         }
     }

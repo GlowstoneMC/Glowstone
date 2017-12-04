@@ -1,21 +1,22 @@
 package net.glowstone.inventory;
 
+import java.util.Map;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
-import java.util.Map;
-
 public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
+
     private EntityType type;
     private CompoundTag entityTag;
 
     public GlowMetaSpawn(GlowMetaItem meta) {
         super(meta);
 
-        if (!(meta instanceof GlowMetaSpawn))
+        if (!(meta instanceof GlowMetaSpawn)) {
             return;
+        }
 
         GlowMetaSpawn spawn = (GlowMetaSpawn) meta;
         if (spawn.hasSpawnedType()) {

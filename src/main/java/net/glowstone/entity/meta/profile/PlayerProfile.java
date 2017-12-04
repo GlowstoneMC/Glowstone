@@ -1,5 +1,13 @@
 package net.glowstone.entity.meta.profile;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
 import lombok.Data;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -9,11 +17,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import java.util.*;
-import java.util.logging.Level;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Information about a player's name, UUID, and other properties.
@@ -39,8 +42,8 @@ public class PlayerProfile {
     /**
      * Construct a new profile with additional properties.
      *
-     * @param name       The player's name.
-     * @param uuid       The player's UUID.
+     * @param name The player's name.
+     * @param uuid The player's UUID.
      * @param properties A list of extra properties.
      * @throws IllegalArgumentException if any arguments are null.
      */
@@ -96,7 +99,8 @@ public class PlayerProfile {
         if (tag.containsKey("Properties")) {
             CompoundTag texture = tag.getCompound("Properties").getCompoundList("textures").get(0);
             if (texture.containsKey("Signature")) {
-                properties.add(new PlayerProperty("textures", texture.getString("Value"), texture.getString("Signature")));
+                properties.add(new PlayerProperty("textures", texture.getString("Value"),
+                    texture.getString("Signature")));
             } else {
                 properties.add(new PlayerProperty("textures", texture.getString("Value")));
             }

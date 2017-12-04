@@ -1,16 +1,15 @@
 package net.glowstone.constants;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
+
+import java.util.Collection;
 import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Statistic;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Collection;
-
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowStatistic}.
@@ -35,7 +34,8 @@ public class StatisticTest {
             // typed statistics not yet tested
             return;
         }
-        assertThat("Name missing for untyped statistic " + statistic, GlowStatistic.getName(statistic), not(sameInstance(null)));
+        assertThat("Name missing for untyped statistic " + statistic,
+            GlowStatistic.getName(statistic), not(sameInstance(null)));
     }
 
 }

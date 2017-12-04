@@ -11,6 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
 public class BucketDispenseBehavior extends DefaultDispenseBehavior {
+
     DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
 
     @Override

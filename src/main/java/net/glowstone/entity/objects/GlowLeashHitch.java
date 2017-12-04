@@ -1,8 +1,14 @@
 package net.glowstone.entity.objects;
 
+import static java.util.Comparator.comparingInt;
+
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import net.glowstone.EventFactory;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockFence;
@@ -27,13 +33,6 @@ import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.Comparator.comparingInt;
-
 public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
     public GlowLeashHitch(Location location) {
@@ -46,6 +45,53 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         setGravity(false);
     }
 
+    /**
+     * Get all LeashHitch Entities in the specified block
+     *
+     * @param block the Block to search LeashHitch Entities in
+     * @return a Stream of all found LeashHitch Entities
+     */
+    private static Stream<LeashHitch> getExistingLeashHitches(Block block) {
+        Location location = block.getLocation().add(0.5, 0.5, 0.5);
+
+        Collection<Entity> nearbyEntities = block.getWorld()
+            .getNearbyEntities(location, 0.49, 0.49, 0.49);
+
+        return nearbyEntities.stream()
+            .filter(e -> e instanceof LeashHitch)
+            .map(e -> (LeashHitch) e);
+    }
+
+    /**
+     * Get the Leash Hitch to witch entities should be attached at the block Useful if multiple Leash Hitches could exists
+     *
+     * @param block the Block to get the relevant Leash Hitch for
+     * @return either an already existing Leash Hitch, or a newly spawned one
+     */
+    public static LeashHitch getLeashHitchAt(Block block) {
+        // Use the oldest leash entity as leash holder
+        // If none found, create a new leash hitch
+        Stream<LeashHitch> sorted = GlowLeashHitch.getExistingLeashHitches(block).sorted(
+            comparingInt(Entity::getTicksLived)
+                .reversed()
+        );
+
+        Optional<LeashHitch> first = sorted.findFirst();
+        return first.orElseGet(
+            () -> first.orElse(block.getWorld().spawn(block.getLocation(), LeashHitch.class)));
+    }
+
+    /**
+     * Checks if an Entity of the specified type is allowed to be a leash holder
+     *
+     * @param type type of the entity which wishes to become a leash holder
+     * @return if the type is allowed as a leash holder true, otherwise false
+     */
+    public static boolean isAllowedLeashHolder(EntityType type) {
+        return !(EntityType.ENDER_DRAGON.equals(type) || EntityType.WITHER.equals(type)
+            || EntityType.PLAYER.equals(type) || EntityType.BAT.equals(type));
+    }
+
     @Override
     public List<Message> createSpawnMessage() {
         int x = location.getBlockX();
@@ -53,7 +99,8 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         int z = location.getBlockZ();
 
         return Lists.newArrayList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.LEASH_HITCH, x, y, z, 0, 0),
+            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.LEASH_HITCH, x, y, z, 0,
+                0),
             new EntityMetadataMessage(id, metadata.getEntryList())
         );
     }
@@ -100,62 +147,21 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         }
     }
 
-    /**
-     * Get all LeashHitch Entities in the specified block
-     *
-     * @param block the Block to search LeashHitch Entities in
-     * @return a Stream of all found LeashHitch Entities
-     */
-    private static Stream<LeashHitch> getExistingLeashHitches(Block block) {
-        Location location = block.getLocation().add(0.5, 0.5, 0.5);
-
-        Collection<Entity> nearbyEntities = block.getWorld().getNearbyEntities(location, 0.49, 0.49, 0.49);
-
-        return nearbyEntities.stream()
-            .filter(e -> e instanceof LeashHitch)
-            .map(e -> (LeashHitch) e);
-    }
-
-    /**
-     * Get the Leash Hitch to witch entities should be attached at the block
-     * Useful if multiple Leash Hitches could exists
-     *
-     * @param block the Block to get the relevant Leash Hitch for
-     * @return either an already existing Leash Hitch, or a newly spawned one
-     */
-    public static LeashHitch getLeashHitchAt(Block block) {
-        // Use the oldest leash entity as leash holder
-        // If none found, create a new leash hitch
-        Stream<LeashHitch> sorted = GlowLeashHitch.getExistingLeashHitches(block).sorted(
-            comparingInt(Entity::getTicksLived)
-                .reversed()
-        );
-
-        Optional<LeashHitch> first = sorted.findFirst();
-        return first.orElseGet(() -> first.orElse(block.getWorld().spawn(block.getLocation(), LeashHitch.class)));
-    }
-
-    /**
-     * Checks if an Entity of the specified type is allowed to be a leash holder
-     *
-     * @param type type of the entity which wishes to become a leash holder
-     * @return if the type is allowed as a leash holder true, otherwise false
-     */
-    public static boolean isAllowedLeashHolder(EntityType type) {
-        return !(EntityType.ENDER_DRAGON.equals(type) || EntityType.WITHER.equals(type) || EntityType.PLAYER.equals(type) || EntityType.BAT.equals(type));
-    }
-
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if ((message.getAction() == Action.ATTACK.ordinal()) && message.getHandSlot() == EquipmentSlot.HAND) {
+        if ((message.getAction() == Action.ATTACK.ordinal())
+            && message.getHandSlot() == EquipmentSlot.HAND) {
             remove();
         }
 
-        if ((message.getAction() == Action.INTERACT.ordinal()) && message.getHandSlot() == EquipmentSlot.HAND) {
+        if ((message.getAction() == Action.INTERACT.ordinal())
+            && message.getHandSlot() == EquipmentSlot.HAND) {
             if (player.getLeashedEntities().isEmpty()) {
                 List<GlowEntity> entities = ImmutableList.copyOf(getLeashedEntities());
                 for (GlowEntity leashedEntity : entities) {
-                    if (EventFactory.callEvent(EventFactory.callEvent(new PlayerUnleashEntityEvent(leashedEntity, player))).isCancelled()) {
+                    if (EventFactory.callEvent(
+                        EventFactory.callEvent(new PlayerUnleashEntityEvent(leashedEntity, player)))
+                        .isCancelled()) {
                         continue;
                     }
                     if (player.getGameMode() != GameMode.CREATIVE) {
@@ -169,7 +175,9 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
             } else {
                 List<GlowEntity> entities = ImmutableList.copyOf(player.getLeashedEntities());
                 for (GlowEntity leashedEntity : entities) {
-                    if (EventFactory.callEvent(EventFactory.callEvent(new PlayerLeashEntityEvent(leashedEntity, this, player))).isCancelled()) {
+                    if (EventFactory.callEvent(EventFactory
+                        .callEvent(new PlayerLeashEntityEvent(leashedEntity, this, player)))
+                        .isCancelled()) {
                         continue;
                     }
                     leashedEntity.setLeashHolder(this);

@@ -1,11 +1,14 @@
 package net.glowstone.generator.structures;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
-
-import java.util.*;
 
 public abstract class GlowStructure {
 
@@ -61,9 +64,11 @@ public abstract class GlowStructure {
     public abstract boolean shouldGenerate(Random random);
 
     public void wrapAllPieces() {
-        boundingBox = new StructureBoundingBox(new Vector(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE),
-                new Vector(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE));
-        children.stream().filter(Objects::nonNull).forEach(piece -> boundingBox.expandTo(piece.getBoundingBox()));
+        boundingBox = new StructureBoundingBox(
+            new Vector(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE),
+            new Vector(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE));
+        children.stream().filter(Objects::nonNull)
+            .forEach(piece -> boundingBox.expandTo(piece.getBoundingBox()));
     }
 
     public boolean generate(Random random, int x, int z, BlockStateDelegate delegate) {
@@ -75,7 +80,9 @@ public abstract class GlowStructure {
         while (it.hasNext()) {
             GlowStructurePiece piece = it.next();
             if (piece != null && piece.getBoundingBox().intersectsWith(x, z, x + 15, z + 15) &&
-                    piece.generate(world, random, new StructureBoundingBox(new Vector(x, 1, z), new Vector(x + 15, 511, z + 15)), delegate)) {
+                piece.generate(world, random,
+                    new StructureBoundingBox(new Vector(x, 1, z), new Vector(x + 15, 511, z + 15)),
+                    delegate)) {
                 it.remove();
             } else {
                 return false;

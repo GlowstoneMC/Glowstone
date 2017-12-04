@@ -1,6 +1,7 @@
 package net.glowstone.block.entity.state;
 
 import com.destroystokyo.paper.loottable.LootableBlockInventory;
+import java.util.UUID;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import org.bukkit.Nameable;
@@ -8,9 +9,9 @@ import org.bukkit.block.Container;
 import org.bukkit.block.Lockable;
 import org.bukkit.inventory.Inventory;
 
-import java.util.UUID;
+public abstract class GlowContainer extends GlowBlockState implements LootableBlockInventory,
+    Lockable, Nameable, Container {
 
-public abstract class GlowContainer extends GlowBlockState implements LootableBlockInventory, Lockable, Nameable, Container {
     public GlowContainer(GlowBlock block) {
         super(block);
     }

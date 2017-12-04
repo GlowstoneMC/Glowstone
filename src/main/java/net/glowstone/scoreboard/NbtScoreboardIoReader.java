@@ -1,5 +1,11 @@
 package net.glowstone.scoreboard;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.TagType;
@@ -7,9 +13,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
-
-import java.io.*;
-import java.util.List;
 
 public class NbtScoreboardIoReader {
 
@@ -87,7 +90,8 @@ public class NbtScoreboardIoReader {
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
         boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
         boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
-        Team.OptionStatus nameTagVisibility = Team.OptionStatus.valueOf(data.getString("NameTagVisibility").toUpperCase());
+        Team.OptionStatus nameTagVisibility = Team.OptionStatus
+            .valueOf(data.getString("NameTagVisibility").toUpperCase());
         Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
         switch (data.getString("DeathMessageVisibility")) {
             case "never":

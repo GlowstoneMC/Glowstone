@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class RayUtil {
+
     public static Vector getVelocityRay(Vector ray) {
         Vector velocityRay = ray.clone();
         if (velocityRay.lengthSquared() == 0) {

@@ -1,12 +1,12 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
-import lombok.Data;
-
 import java.util.Collection;
+import lombok.Data;
 
 @Data
 public class ExplosionMessage implements Message {
+
     private final float x;
     private final float y;
     private final float z;
@@ -19,13 +19,14 @@ public class ExplosionMessage implements Message {
     @Override
     public String toString() {
         return "ExplosionMessage{x=" + x + ",y=" + y + ",z=" + z +
-                ",radius=" + radius +
-                ",motX=" + playerMotionX + ",motY=" + playerMotionY + ",motZ=" + playerMotionZ +
-                ",recordCount=" + records.size() + "}";
+            ",radius=" + radius +
+            ",motX=" + playerMotionX + ",motY=" + playerMotionY + ",motZ=" + playerMotionZ +
+            ",recordCount=" + records.size() + "}";
     }
 
     @Data
     public static class Record {
+
         private final byte x, y, z;
     }
 }

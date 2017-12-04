@@ -9,10 +9,14 @@ import org.bukkit.WorldBorder;
 public class GlowWorldBorder implements WorldBorder {
 
     private final World world;
-    private double size, futureSize, step;
+    private double size;
+    private double futureSize;
+    private double step;
     private Location center;
-    private double damageBuffer, damagePerBlock;
-    private int warningTime, warningDistance;
+    private double damageBuffer;
+    private double damagePerBlock;
+    private int warningTime;
+    private int warningDistance;
     private long time;
     private long lastWorldTick;
 
@@ -46,8 +50,8 @@ public class GlowWorldBorder implements WorldBorder {
 
     /**
      * Pulses the world border for each tick.
-     * <p>
-     * Attempts to call this method more than once per tick will be ignored.
+     *
+     * <p>Attempts to call this method more than once per tick will be ignored.
      */
     public void pulse() {
         if (lastWorldTick >= world.getFullTime()) {
@@ -110,14 +114,14 @@ public class GlowWorldBorder implements WorldBorder {
     }
 
     @Override
-    public void setCenter(double x, double z) {
-        setCenter(new Location(world, x, 0, z));
-    }
-
-    @Override
     public void setCenter(Location location) {
         center = location.clone();
         broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_CENTER, center.getX(), center.getZ()));
+    }
+
+    @Override
+    public void setCenter(double x, double z) {
+        setCenter(new Location(world, x, 0, z));
     }
 
     @Override
@@ -164,7 +168,8 @@ public class GlowWorldBorder implements WorldBorder {
 
     @Override
     public boolean isInside(Location location) {
-        Location max = center.clone().add(size / 2, 0, size / 2), min = center.clone().subtract(size / 2, 0, size / 2);
+        Location max = center.clone().add(size / 2, 0, size / 2);
+        Location min = center.clone().subtract(size / 2, 0, size / 2);
         return location.getX() <= max.getX() && location.getZ() <= max.getZ() && location.getX() >= min.getX() && location.getZ() >= min.getZ();
     }
 

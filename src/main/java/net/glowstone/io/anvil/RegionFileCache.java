@@ -1,15 +1,13 @@
-package net.glowstone.io.anvil;
-
 /*
- ** 2011 January 5
- **
- ** The author disclaims copyright to this source code.  In place of
- ** a legal notice, here is a blessing:
- **
- **    May you do good and not evil.
- **    May you find forgiveness for yourself and forgive others.
- **    May you share freely, never taking more than you give.
- **/
+ * 2011 January 5
+ *
+ * The author disclaims copyright to this source code. In place of
+ * a legal notice, here is a blessing:
+ *
+ *    May you do good and not evil.
+ *    May you find forgiveness for yourself and forgive others.
+ *    May you share freely, never taking more than you give.
+ */
 
 /*
  * 2011 February 16
@@ -24,10 +22,10 @@ package net.glowstone.io.anvil;
  */
 
 /*
- * Some changes have been made as part of the Glowstone project.
+ * Later changes made by the Glowstone project.
  */
 
-import net.glowstone.GlowServer;
+package net.glowstone.io.anvil;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,10 +33,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
+import net.glowstone.GlowServer;
 
 /**
- * A simple cache and wrapper for efficiently accessing multiple RegionFiles
- * simultaneously.
+ * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
  */
 public class RegionFileCache {
 

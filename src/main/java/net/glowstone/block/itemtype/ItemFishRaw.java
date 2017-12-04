@@ -37,7 +37,9 @@ public class ItemFishRaw extends ItemFood {
 
     @Override
     public boolean eat(GlowPlayer player, ItemStack item) {
-        if (!super.eat(player, item)) return false;
+        if (!super.eat(player, item)) {
+            return false;
+        }
 
         if (item.getData().getData() == 3) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60 * 20, 3), true);

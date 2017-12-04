@@ -1,13 +1,13 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
+import java.util.List;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
-import java.util.Collections;
-import java.util.List;
-
 public class SaveAllCommand extends VanillaCommand {
+
     public SaveAllCommand() {
         super("save-all", "Saves the server to disk.", "/save-all", Collections.emptyList());
         setPermission("minecraft.command.save-all");
@@ -28,7 +28,8 @@ public class SaveAllCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         return Collections.emptyList();
     }
 }

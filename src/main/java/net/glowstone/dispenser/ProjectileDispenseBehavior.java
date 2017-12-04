@@ -10,13 +10,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public abstract class ProjectileDispenseBehavior extends DefaultDispenseBehavior {
+
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {
         GlowWorld world = block.getWorld();
         Vector position = BlockDispenser.getDispensePosition(block);
         BlockFace face = BlockDispenser.getFacing(block);
         Projectile entity = getProjectileEntity(world, position);
-        entity.setVelocity(new Vector(face.getModX(), face.getModY() + 0.1f, face.getModZ()).multiply(6));
+        entity.setVelocity(
+            new Vector(face.getModX(), face.getModY() + 0.1f, face.getModZ()).multiply(6));
 
         stack.setAmount(stack.getAmount() - 1);
         if (stack.getAmount() < 1) {

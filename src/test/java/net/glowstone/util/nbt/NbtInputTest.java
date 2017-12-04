@@ -1,12 +1,11 @@
 package net.glowstone.util.nbt;
 
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 /**
  * Tests for {@link NBTInputStream} and reading from {@link CompoundTag}s.

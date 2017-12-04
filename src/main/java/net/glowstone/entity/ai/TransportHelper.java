@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class TransportHelper {
+
     public static void moveTowards(GlowLivingEntity entity, Location direction) {
         moveTowards(entity, direction, 0.3);
     }

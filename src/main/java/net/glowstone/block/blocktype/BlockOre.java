@@ -1,24 +1,25 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class BlockOre extends BlockNeedsTool {
+
     private final Material dropType;
     private final MaterialMatcher neededTool;
     private final int minCount, maxCount;
     private final int data;
 
-    public BlockOre(Material dropType, MaterialMatcher neededTool, int data, int minCount, int maxCount) {
+    public BlockOre(Material dropType, MaterialMatcher neededTool, int data, int minCount,
+        int maxCount) {
         this.dropType = dropType;
         this.neededTool = neededTool;
         this.minCount = minCount;
@@ -53,7 +54,8 @@ public class BlockOre extends BlockNeedsTool {
             return drops;
         }
         if (tool.containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-            stack.setAmount(count * getMultiplicator(random, tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS)));
+            stack.setAmount(count * getMultiplicator(random,
+                tool.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS)));
         }
         return Collections.unmodifiableList(Arrays.asList(stack));
     }

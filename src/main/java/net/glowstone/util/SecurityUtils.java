@@ -1,13 +1,17 @@
 package net.glowstone.util;
 
-import net.glowstone.GlowServer;
-
-import java.security.*;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
 
 /**
- * Utility class for performing encrypted authentication
+ * Utility class for performing encrypted authentication.
  */
 public final class SecurityUtils {
 
@@ -17,7 +21,7 @@ public final class SecurityUtils {
     }
 
     /**
-     * Generate a RSA key pair
+     * Generate a RSA key pair.
      *
      * @return The RSA key pair.
      */
@@ -35,7 +39,7 @@ public final class SecurityUtils {
     }
 
     /**
-     * Generate a random verify token
+     * Generate a random verify token.
      *
      * @return An array of 4 random bytes.
      */
@@ -46,7 +50,7 @@ public final class SecurityUtils {
     }
 
     /**
-     * Generates an X509 formatted key used in authentication
+     * Generates an X509 formatted key used in authentication.
      *
      * @param base The key to use to generate a public key from its key spec.
      * @return The X509 formatted key.

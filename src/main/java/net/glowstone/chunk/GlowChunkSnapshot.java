@@ -1,7 +1,6 @@
 package net.glowstone.chunk;
 
 import net.glowstone.constants.GlowBiome;
-
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -152,8 +151,9 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     }
 
     private int coordToIndex(int x, int z) {
-        if (x < 0 || z < 0 || x >= GlowChunk.WIDTH || z >= GlowChunk.HEIGHT)
+        if (x < 0 || z < 0 || x >= GlowChunk.WIDTH || z >= GlowChunk.HEIGHT) {
             throw new IndexOutOfBoundsException();
+        }
 
         return z * GlowChunk.WIDTH + x;
     }

@@ -1,6 +1,8 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.TabCompleteMessage;
@@ -9,10 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class TabCompleteHandler implements MessageHandler<GlowSession, TabCompleteMessage> {
+
     @Override
     public void handle(GlowSession session, TabCompleteMessage message) {
         Player sender = session.getPlayer();
@@ -23,7 +23,8 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
         if (!buffer.isEmpty() && buffer.charAt(0) == '/' || message.isAssumeCommand()) {
             List<String> items;
             if (!buffer.isEmpty() && buffer.charAt(0) == '/') {
-                items = session.getServer().getCommandMap().tabComplete(sender, buffer.substring(1));
+                items = session.getServer().getCommandMap()
+                    .tabComplete(sender, buffer.substring(1));
             } else {
                 items = session.getServer().getCommandMap().tabComplete(sender, buffer);
             }

@@ -5,6 +5,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 
 public class VexStore extends MonsterStore<GlowVex> {
+
     public VexStore() {
         super(GlowVex.class, EntityType.VEX);
     }

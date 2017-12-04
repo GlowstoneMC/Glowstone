@@ -7,6 +7,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.SteerBoatMessage;
 
 public class SteerBoatHandler implements MessageHandler<GlowSession, SteerBoatMessage> {
+
     @Override
     public void handle(GlowSession session, SteerBoatMessage message) {
         GlowPlayer player = session.getPlayer();

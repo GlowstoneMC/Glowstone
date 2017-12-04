@@ -5,6 +5,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 
 public class VindicatorStore extends MonsterStore<GlowVindicator> {
+
     public VindicatorStore() {
         super(GlowVindicator.class, EntityType.VINDICATOR);
     }

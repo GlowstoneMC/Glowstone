@@ -1,13 +1,12 @@
 package net.glowstone.util.loot;
 
-import lombok.Data;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import lombok.Data;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 @Data
 public class ProbableValue<T> {
@@ -30,7 +29,8 @@ public class ProbableValue<T> {
     }
 
     public T generate(Random random) {
-        if (possibilities.size() == 1 && (Double) Arrays.asList(possibilities.values().toArray()).get(0) == 1.0) {
+        if (possibilities.size() == 1
+            && (Double) Arrays.asList(possibilities.values().toArray()).get(0) == 1.0) {
             return (T) Arrays.asList(possibilities.keySet().toArray()).get(0);
         }
         double rand = random.nextDouble();

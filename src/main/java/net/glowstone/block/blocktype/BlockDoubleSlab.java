@@ -1,29 +1,14 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public class BlockDoubleSlab extends BlockType {
-
-    @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (block.getType() == Material.WOOD_DOUBLE_STEP ||
-                tool != null && ToolType.PICKAXE.matches(tool.getType())) {
-            return getMinedDrops(block);
-        }
-        return BlockDropless.EMPTY_STACK;
-    }
-
-    @Override
-    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        return Arrays.asList(getDrops(block));
-    }
 
     private ItemStack getDrops(GlowBlock block) {
         switch (block.getType()) {
@@ -40,4 +25,17 @@ public class BlockDoubleSlab extends BlockType {
         return new ItemStack(Material.STEP, 2);
     }
 
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        if (block.getType() == Material.WOOD_DOUBLE_STEP ||
+            tool != null && ToolType.PICKAXE.matches(tool.getType())) {
+            return getMinedDrops(block);
+        }
+        return BlockDropless.EMPTY_STACK;
+    }
+
+    @Override
+    public Collection<ItemStack> getMinedDrops(GlowBlock block) {
+        return Arrays.asList(getDrops(block));
+    }
 }

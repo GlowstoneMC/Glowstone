@@ -31,7 +31,8 @@ public class BlockDoor extends BlockType {
     }
 
     @Override
-    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType,
+        byte newData) {
         if (newType != Material.AIR) {
             return;
         }
@@ -54,7 +55,8 @@ public class BlockDoor extends BlockType {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         // place the door and calculate the facing
         super.placeBlock(player, state, face, holding, clickedLoc);
 
@@ -117,7 +119,8 @@ public class BlockDoor extends BlockType {
      * Opens and closes the door when right-clicked by the player.
      */
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         // handles opening and closing the door
         if (block.getType() == Material.IRON_DOOR_BLOCK) {
             return false;

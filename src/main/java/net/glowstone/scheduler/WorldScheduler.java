@@ -2,9 +2,6 @@ package net.glowstone.scheduler;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,13 +9,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
 
 /**
  * Manager for world thread pool.
- * <p>
- * This is a little magical and finnicky, so tread with caution when messing with the phasers
+ *
+ * <p>This is a little magical and finnicky, so tread with caution when messing with the phasers
  */
 public class WorldScheduler {
+
     private final Object advanceCondition = new Object();
     private final ExecutorService worldExecutor = Executors.newCachedThreadPool();
     private final Phaser tickBegin = new Phaser(1);
@@ -102,7 +102,8 @@ public class WorldScheduler {
         // Mark ourselves as arrived so world threads automatically trigger advance once done
         int endPhase = tickEnd.arriveAndAwaitAdvance();
         if (endPhase != currentTick + 1) {
-            GlowServer.logger.warning("Tick end barrier " + endPhase + " has advanced differently from tick begin barrier:" + currentTick + 1);
+            GlowServer.logger.warning("Tick end barrier " + endPhase
+                + " has advanced differently from tick begin barrier:" + currentTick + 1);
         }
         synchronized (advanceCondition) {
             advanceCondition.notifyAll();
@@ -114,6 +115,7 @@ public class WorldScheduler {
     }
 
     private static class WorldEntry {
+
         private final GlowWorld world;
         private WorldThread task;
 
@@ -123,6 +125,7 @@ public class WorldScheduler {
     }
 
     private class WorldThread extends Thread {
+
         private final GlowWorld world;
 
         public WorldThread(GlowWorld world) {
@@ -138,7 +141,8 @@ public class WorldScheduler {
                     try {
                         world.pulse();
                     } catch (Exception e) {
-                        GlowServer.logger.log(Level.SEVERE, "Error occurred while pulsing world " + world.getName(), e);
+                        GlowServer.logger.log(Level.SEVERE,
+                            "Error occurred while pulsing world " + world.getName(), e);
                     } finally {
                         tickEnd.arriveAndAwaitAdvance();
                     }
