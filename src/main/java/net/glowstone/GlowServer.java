@@ -1815,9 +1815,6 @@ public final class GlowServer implements Server {
 
     @Override
     public boolean unloadWorld(World world, boolean save) {
-        if (!(world instanceof GlowWorld)) {
-            return false;
-        }
         GlowWorld glowWorld = (GlowWorld) world;
         if (save) {
             glowWorld.setAutoSave(false);
