@@ -257,8 +257,7 @@ public class RegionFile {
     }
 
     private DataInputStream getZlibInputStream(byte[] data) {
-        InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048);
-        return new DataInputStream(new BufferedInputStream(iis));
+        return new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
     }
 
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
