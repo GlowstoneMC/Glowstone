@@ -834,7 +834,7 @@ public abstract class GlowEntity implements Entity {
      * Determine if this entity is intersecting a block of the specified type.
      *
      * <p>If the entity has a defined bounding box, that is used to check for intersection.
-     * Otherwise, a less accurate calculation using only the entity's location and its surround block is used.
+     * Otherwise, a less accurate calculation using only the entity's location and its surrounding blocks are used.
      *
      * @param material The material to check for.
      * @return True if the entity is intersecting
