@@ -45,6 +45,8 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
 import net.glowstone.GlowServer;
+import net.glowstone.util.config.ServerConfig.Key;
+import org.bukkit.Bukkit;
 
 /**
  * Interfaces with region files on the disk
@@ -81,6 +83,8 @@ import net.glowstone.GlowServer;
  * The deflated data is the chunk length - 1.
  */
 public class RegionFile {
+
+    private static final boolean COMPRESSION_ENABLED = ((GlowServer) Bukkit.getServer()).getConfig().getBoolean(Key.REGION_COMPRESSION);
 
     private static final byte VERSION_GZIP = 1;
     private static final byte VERSION_DEFLATE = 2;
@@ -149,8 +153,8 @@ public class RegionFile {
         totalSectors = (int) file.length() / SECTOR_BYTES;
         sectorsUsed = new BitSet(totalSectors);
 
-        sectorsUsed.set(0, true);
-        sectorsUsed.set(1, true);
+        sectorsUsed.set(0);
+        sectorsUsed.set(1);
 
         // read offset table and timestamp tables
         file.seek(0);
@@ -174,7 +178,7 @@ public class RegionFile {
 
             if (offset != 0 && startSector >= 0 && startSector + numSectors <= totalSectors) {
                 for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
-                    sectorsUsed.set(startSector + sectorNum, true);
+                    sectorsUsed.set(startSector + sectorNum);
                 }
             } else if (offset != 0) {
                 GlowServer.logger.warning(
@@ -240,25 +244,29 @@ public class RegionFile {
                     GlowServer.logger.info("Incorrect region version, switching to zlib...");
                     file.seek((sectorNumber * SECTOR_BYTES) + Integer.BYTES);
                     file.write(VERSION_DEFLATE);
-                    return new DataInputStream(new BufferedInputStream(
-                        new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(),
-                            2048)));
+                    return getZlibInputStream(data);
                 }
             }
         } else if (version == VERSION_DEFLATE) {
             byte[] data = new byte[length - 1];
             file.read(data);
-            return new DataInputStream(new BufferedInputStream(
-                new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
+            return getZlibInputStream(data);
         }
 
         throw new IOException("Unknown version: " + version);
     }
 
+    private DataInputStream getZlibInputStream(byte[] data) {
+        InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048);
+        return new DataInputStream(new BufferedInputStream(iis));
+    }
+
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);
-        return new DataOutputStream(new BufferedOutputStream(
-            new DeflaterOutputStream(new ChunkBuffer(x, z), new Deflater(), 2048)));
+        Deflater deflater = new Deflater(COMPRESSION_ENABLED ? Deflater.BEST_SPEED : Deflater.NO_COMPRESSION);
+        deflater.setStrategy(Deflater.HUFFMAN_ONLY);
+        DeflaterOutputStream dos = new DeflaterOutputStream(new ChunkBuffer(x, z), deflater, 2048);
+        return new DataOutputStream(new BufferedOutputStream(dos));
     }
 
     /* write a chunk at (x,z) with length bytes of data to disk */
