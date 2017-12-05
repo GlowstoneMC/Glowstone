@@ -106,7 +106,6 @@ The best place to receive support is on [GitHub issues](https://github.com/Glows
 When reporting bugs, please retest and include whether the problem reproduces on:
 
 * Earlier [builds](https://circleci.com/gh/GlowstoneMC/Glowstone) of Glowstone
-* [Glowstone Legacy](https://github.com/GlowstoneMC/Glowstone-Legacy), if applicable
 
 Javadocs for Glowstone can be found [here](https://glowstone.net/jd/glowstone/).
 
