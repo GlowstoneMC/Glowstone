@@ -2209,10 +2209,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (location == null || sound == null) {
             return;
         }
-        // the loss of precision here is a bit unfortunate but it's what CraftBukkit does
-        double x = location.getBlockX() + 0.5;
-        double y = location.getBlockY() + 0.5;
-        double z = location.getBlockZ() + 0.5;
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
         session.send(new NamedSoundEffectMessage(sound, category, x, y, z, volume, pitch));
     }
 
