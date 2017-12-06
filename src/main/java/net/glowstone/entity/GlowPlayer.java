@@ -39,7 +39,6 @@ import net.glowstone.GlowWorldBorder;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockBed;
-import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.SignEntity;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
@@ -435,12 +434,25 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private long usageTime;
     private Entity spectating;
     private HashMap<Advancement, AdvancementProgress> advancements;
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Damages
     private String resourcePackHash;
     private PlayerResourcePackStatusEvent.Status resourcePackStatus;
     private List<Conversation> conversations = new ArrayList<>();
+    /**
+     * The player's previous chunk x coordinate.
+     */
+    private int prevCentralX;
+    /**
+     * The player's previous chunk x coordinate.
+     */
+    private int prevCentralZ;
+    /**
+     * If this is the player's first time getting blocks streamed.
+     */
+    private boolean firstStream = true;
+    /**
+     * If we should force block streaming regardless of chunk difference.
+     */
+    private boolean forceStream = false;
 
     /**
      * Creates a new player and adds it to the world.
@@ -779,19 +791,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // add entities
-        knownChunks.parallelStream().forEach(key -> {
-            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            chunk.getRawEntities().stream()
-                .filter(entity -> this != entity)
-                .filter(this::isWithinDistance)
-                .filter(entity -> !entity.isDead())
-                .filter(entity -> !knownEntities.contains(entity))
-                .filter(entity -> !hiddenEntities.contains(entity.getUniqueId())).forEach((entity) -> {
+        knownChunks.forEach(key -> world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
+                .filter(entity -> this != entity
+                    && isWithinDistance(entity)
+                    && !entity.isDead()
+                    && !knownEntities.contains(entity)
+                    && !hiddenEntities.contains(entity.getUniqueId()))
+                .forEach((entity) -> Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
                     knownEntities.add(entity);
                     entity.createSpawnMessage().forEach(session::send);
                     entity.createAfterSpawnMessage(session).forEach(session::send);
-                });
-        });
+                })));
 
         if (passengerChanged) {
             session.send(new SetPassengerMessage(SELF_ID, getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
@@ -852,28 +862,45 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * Streams chunks to the player's client.
      */
     private void streamBlocks() {
-        Set<Key> previousChunks = new HashSet<>(knownChunks);
-        ArrayList<Key> newChunks = new ArrayList<>();
+        Set<Key> previousChunks = null;
+        ArrayList<Key> newChunks = new ArrayList<>();;
 
         int centralX = location.getBlockX() >> 4;
         int centralZ = location.getBlockZ() >> 4;
-
         int radius = Math.min(server.getViewDistance(), 1 + settings.getViewDistance());
-        for (int x = centralX - radius; x <= centralX + radius; x++) {
-            for (int z = centralZ - radius; z <= centralZ + radius; z++) {
-                Key key = GlowChunk.Key.of(x, z);
-                if (knownChunks.contains(key)) {
-                    previousChunks.remove(key);
-                } else {
-                    newChunks.add(key);
+
+        if (firstStream) {
+            firstStream = false;
+            for (int x = centralX - radius; x <= centralX + radius; x++) {
+                for (int z = centralZ - radius; z <= centralZ + radius; z++) {
+                    newChunks.add(GlowChunk.Key.of(x, z));
                 }
             }
+        } else if (Math.abs(centralX - prevCentralX) > radius || Math.abs(centralZ - prevCentralZ) > radius) {
+            knownChunks.clear();
+            for (int x = centralX - radius; x <= centralX + radius; x++) {
+                for (int z = centralZ - radius; z <= centralZ + radius; z++) {
+                    newChunks.add(GlowChunk.Key.of(x, z));
+                }
+            }
+        } else if (forceStream || prevCentralX != centralX || prevCentralZ != centralZ) {
+            previousChunks = new HashSet<>(knownChunks);
+            for (int x = centralX - radius; x <= centralX + radius; x++) {
+                for (int z = centralZ - radius; z <= centralZ + radius; z++) {
+                    Key key = GlowChunk.Key.of(x, z);
+                    if (knownChunks.contains(key)) {
+                        previousChunks.remove(key);
+                    } else {
+                        newChunks.add(key);
+                    }
+                }
+            }
+        } else {
+            return; // early end if there's no changes
         }
 
-        // early end if there's no changes
-        if (newChunks.isEmpty() && previousChunks.isEmpty()) {
-            return;
-        }
+        prevCentralX = centralX;
+        prevCentralZ = centralZ;
 
         // sort chunks by distance from player - closer chunks sent first
         newChunks.sort((a, b) -> {
@@ -892,35 +919,31 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // one of its neighbors has populated
 
         // first step: force population then acquire lock on each chunk
-        for (Key key : newChunks) {
-            world.getChunkManager().forcePopulation(key.getX(), key.getZ());
-            knownChunks.add(key);
-            chunkLock.acquire(key);
-        }
+        newChunks.forEach(newChunk -> {
+            world.getChunkManager().forcePopulation(newChunk.getX(), newChunk.getZ());
+            knownChunks.add(newChunk);
+            chunkLock.acquire(newChunk);
+        });
 
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
 
-        for (Key key : newChunks) {
-            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            session.send(chunk.toMessage(skylight));
-        }
+        newChunks.stream().map(key -> world.getChunkAt(key.getX(), key.getZ()).toMessage(skylight))
+            .forEach(session::send);
 
         // send visible block entity data
-        for (Key key : newChunks) {
-            GlowChunk chunk = world.getChunkAt(key.getX(), key.getZ());
-            for (BlockEntity entity : chunk.getRawBlockEntities()) {
-                entity.update(this);
-            }
-        }
+        newChunks.stream().flatMap(key -> world.getChunkAt(key.getX(),
+            key.getZ()).getRawBlockEntities().stream())
+            .forEach(entity -> entity.update(this));
 
         // and remove old chunks
-        for (Key key : previousChunks) {
-            session.send(new UnloadChunkMessage(key.getX(), key.getZ()));
-            knownChunks.remove(key);
-            chunkLock.release(key);
+        if (previousChunks != null) {
+            previousChunks.forEach(key -> {
+                session.send(new UnloadChunkMessage(key.getX(), key.getZ()));
+                knownChunks.remove(key);
+                chunkLock.release(key);
+            });
+            previousChunks.clear();
         }
-
-        previousChunks.clear();
     }
 
     /**
@@ -1098,6 +1121,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param settings The settings to set.
      */
     public void setSettings(ClientSettings settings) {
+        forceStream = settings.getViewDistance() != this.settings.getViewDistance() && settings.getViewDistance() + 1 <= server.getViewDistance();
         this.settings = settings;
         metadata.set(MetadataIndex.PLAYER_SKIN_PARTS, settings.getSkinFlags());
         metadata.set(MetadataIndex.PLAYER_MAIN_HAND, settings.getMainHand());
