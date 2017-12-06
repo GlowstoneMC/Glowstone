@@ -863,7 +863,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private void streamBlocks() {
         Set<Key> previousChunks = null;
-        ArrayList<Key> newChunks = new ArrayList<>();;
+        ArrayList<Key> newChunks = new ArrayList<>();
 
         int centralX = location.getBlockX() >> 4;
         int centralZ = location.getBlockZ() >> 4;
