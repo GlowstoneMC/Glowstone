@@ -22,6 +22,9 @@ import org.bukkit.Rotation;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.EquipmentSlot;
@@ -76,16 +79,22 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         }
         if (message.getAction() == Action.ATTACK.ordinal()) {
             if (isEmpty()) {
-                // TODO: use correct RemoveCause
-                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.DEFAULT))
+                if (EventFactory.callEvent(new HangingBreakByEntityEvent(this, player))
                     .isCancelled()) {
                     return false;
                 }
+                if (player.getGameMode() != GameMode.CREATIVE) {
+                    world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
+                }
                 remove();
             } else {
-                world.dropItemNaturally(location, getItem().clone());
+                if (EventFactory.callEvent(new EntityDamageByEntityEvent(player, this, DamageCause.ENTITY_ATTACK, 0)).isCancelled()) {
+                    return false;
+                }
+                if (player.getGameMode() != GameMode.CREATIVE) {
+                    world.dropItemNaturally(location, getItem().clone());
+                }
                 setItem(InventoryUtil.createEmptyStack());
-                setRotation(Rotation.NONE);
             }
         }
         return true;
@@ -186,7 +195,6 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         is.setAmount(1);
 
         metadata.set(MetadataIndex.ITEM_FRAME_ITEM, is);
-        setRotation(Rotation.NONE);
     }
 
     @Override
