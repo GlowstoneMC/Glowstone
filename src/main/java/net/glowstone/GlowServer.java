@@ -1566,7 +1566,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<OfflinePlayer> getOperators() {
-        return opsList.getUUIDs().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
+        return opsList.getProfiles().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1675,21 +1675,13 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public OfflinePlayer getOfflinePlayer(String name) {
-        Player onlinePlayer = getPlayerExact(name);
-        if (onlinePlayer != null) {
-            return onlinePlayer;
+        // probably blocking
+        PlayerProfile profile = PlayerProfile.getProfile(name);
+        if (profile == null) {
+            return getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+        } else {
+            return getOfflinePlayer(profile);
         }
-        OfflinePlayer result = getPlayerExact(name);
-        if (result == null) {
-            //probably blocking (same player once per minute)
-            PlayerProfile profile = PlayerProfile.getProfile(name);
-            if (profile == null) {
-                result = getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
-            } else {
-                result = getOfflinePlayer(profile);
-            }
-        }
-        return result;
     }
 
     @Override
@@ -1697,12 +1689,9 @@ public final class GlowServer implements Server {
         Player onlinePlayer = getPlayer(uuid);
         if (onlinePlayer != null) {
             return onlinePlayer;
+        } else {
+            return new GlowOfflinePlayer(this, uuid);
         }
-        OfflinePlayer result = getPlayer(uuid);
-        if (result == null) {
-            result = new GlowOfflinePlayer(this, uuid);
-        }
-        return result;
     }
 
     @Override

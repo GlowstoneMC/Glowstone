@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
-    private PlayerProfile profile;
+    private final PlayerProfile profile;
 
     private boolean hasPlayed;
     private long firstPlayed;
@@ -31,7 +31,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private Location bedSpawn;
 
     /**
-     * Create a new offline player for the given name. If possible, the player's UUID will be found and then their data.
+     * Create a new offline player for the given name. If possible, the player's data will be loaded.
      *
      * @param server The server of the offline player. Must not be null.
      * @param profile The profile associated with the player. Must not be null.
@@ -41,20 +41,6 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         checkNotNull(profile, "profile must not be null");
         this.server = server;
         this.profile = profile;
-        loadData();
-    }
-
-    /**
-     * Create a new offline player for the given UUID. If possible, the player's data (including name) will be loaded based on the UUID.
-     *
-     * @param server The server of the offline player. Must not be null.
-     * @param name The name of the player. Must not be null.
-     */
-    public GlowOfflinePlayer(GlowServer server, String name) {
-        checkNotNull(server, "server must not be null");
-        checkNotNull(name, "name cannot be null");
-        this.server = server;
-        profile = PlayerProfile.getProfile(name);
         loadData();
     }
 
@@ -132,11 +118,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public Player getPlayer() {
-        if (getUniqueId() != null) {
-            return server.getPlayer(getUniqueId());
-        } else {
-            return server.getPlayerExact(getName());
-        }
+        return server.getPlayer(getUniqueId());
     }
 
     @Override

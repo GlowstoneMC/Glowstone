@@ -45,7 +45,7 @@ class PlayerDataFetcher {
             is = conn.getInputStream();
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
-            return null;
+            return new PlayerProfile(null, uuid);
         }
 
         JSONObject json;
@@ -57,10 +57,10 @@ class PlayerDataFetcher {
             }
         } catch (ParseException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to parse profile response", e);
-            return null;
+            return new PlayerProfile(null, uuid);
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
-            return null;
+            return new PlayerProfile(null, uuid);
         }
         return PlayerProfile.fromJson(json);
     }

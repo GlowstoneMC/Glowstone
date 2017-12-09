@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowServer;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -208,8 +206,7 @@ public final class GlowTeam implements Team {
     public Set<OfflinePlayer> getPlayers() throws IllegalStateException {
         Set<OfflinePlayer> playerObjectSet = new HashSet<>(players.size());
         playerObjectSet.addAll(
-            players.stream().map(s -> new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), s))
-                .collect(Collectors.toList()));
+            players.stream().map(Bukkit::getOfflinePlayer).collect(Collectors.toList()));
         return playerObjectSet;
     }
 

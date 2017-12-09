@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import org.bukkit.OfflinePlayer;
@@ -21,19 +20,12 @@ public final class UuidListFile extends JsonListFile {
         super(file);
     }
 
-    public List<UUID> getUUIDs() {
-        List<UUID> result = new ArrayList<>(entries.size());
-        result.addAll(entries.stream().map(baseEntry -> ((Entry) baseEntry).uuid)
-            .collect(Collectors.toList()));
-        return result;
-    }
-
     public List<PlayerProfile> getProfiles() {
         List<PlayerProfile> result = new ArrayList<>(entries.size());
         for (BaseEntry baseEntry : entries) {
             Entry entry = (Entry) baseEntry;
             PlayerProfile profile = ProfileCache.getProfile(entry.uuid);
-            if (profile == null) {
+            if (profile.getName() == null) {
                 profile = new PlayerProfile(entry.fallbackName, entry.uuid);
             }
             result.add(profile);
@@ -98,9 +90,7 @@ public final class UuidListFile extends JsonListFile {
         @Override
         public Map<String, String> write() {
             PlayerProfile profile = ProfileCache.getProfile(uuid);
-            String name =
-                profile != null ? profile.getName() != null ? profile.getName() : fallbackName
-                    : fallbackName;
+            String name = profile.getName() != null ? profile.getName() : fallbackName;
             Map<String, String> result = new HashMap<>(2);
             result.put("uuid", uuid.toString());
             result.put("name", name);

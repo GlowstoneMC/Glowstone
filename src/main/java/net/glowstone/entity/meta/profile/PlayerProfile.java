@@ -32,8 +32,11 @@ public class PlayerProfile {
     /**
      * Construct a new profile with only a name and UUID.
      *
+     * <p>This does not try to resolve the name if it's null.
+     *
      * @param name The player's name.
      * @param uuid The player's UUID.
+     * @throws IllegalArgumentException if uuid is null.
      */
     public PlayerProfile(String name, UUID uuid) {
         this(name, uuid, Collections.emptyList());
@@ -42,19 +45,16 @@ public class PlayerProfile {
     /**
      * Construct a new profile with additional properties.
      *
+     * <p>This does not try to resolve the name if it's null.
+     *
      * @param name The player's name.
      * @param uuid The player's UUID.
      * @param properties A list of extra properties.
-     * @throws IllegalArgumentException if any arguments are null.
+     * @throws IllegalArgumentException if uuid or properties are null.
      */
     public PlayerProfile(String name, UUID uuid, List<PlayerProperty> properties) {
         checkNotNull(uuid, "uuid must not be null");
         checkNotNull(properties, "properties must not be null");
-
-        if (null == name) {
-            PlayerProfile profile = ProfileCache.getProfile(uuid);
-            name = profile != null ? profile.getName() : null;
-        }
 
         this.name = name;
         uniqueId = uuid;
@@ -65,21 +65,23 @@ public class PlayerProfile {
      * Get the profile for a username.
      *
      * @param name The username to lookup.
-     * @return The profile.
+     * @return The profile. May be null if the name could not be resolved.
      */
     public static PlayerProfile getProfile(String name) {
         if (name == null || name.length() > MAX_USERNAME_LENGTH || name.isEmpty()) {
             return null;
         }
 
-        Player player = Bukkit.getServer().getPlayer(name);
+        Player player = Bukkit.getServer().getPlayerExact(name);
         if (player != null) {
             return ((GlowPlayer) player).getProfile();
         }
 
-        UUID uuid = ProfileCache.getUUID(name);
-        if (uuid != null) {
-            return ProfileCache.getProfile(uuid);
+        if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
+            UUID uuid = ProfileCache.getUUID(name);
+            if (uuid != null) {
+                return ProfileCache.getProfile(uuid);
+            }
         }
         GlowServer.logger.warning("Unable to get UUID for username: " + name);
         return null;
