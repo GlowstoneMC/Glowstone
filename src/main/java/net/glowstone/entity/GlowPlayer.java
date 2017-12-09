@@ -388,7 +388,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         @Override
         public Set<Player> getHiddenPlayers() {
-            return hiddenEntities.stream().map((uuid) -> Bukkit.getPlayer(uuid)).filter((p) -> p != null).collect(Collectors.toSet());
+            return hiddenEntities.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).collect(Collectors.toSet());
         }
 
         @Override
