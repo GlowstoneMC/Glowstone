@@ -373,9 +373,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         @Override
         public void respawn() {
-            if (isDead()) {
-                GlowPlayer.this.respawn();
-            }
+            GlowPlayer.this.respawn();
         }
 
         @Override
@@ -386,6 +384,36 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         @Override
         public void setCollidesWithEntities(boolean collides) {
             setCollidable(collides);
+        }
+
+        @Override
+        public Set<Player> getHiddenPlayers() {
+            return hiddenEntities.stream().map((uuid) -> Bukkit.getPlayer(uuid)).filter((p) -> p != null).collect(Collectors.toSet());
+        }
+
+        @Override
+        public void sendMessage(ChatMessageType position, BaseComponent... components) {
+            GlowPlayer.this.sendMessage(position, components);
+        }
+
+        @Override
+        public void sendMessage(ChatMessageType position, BaseComponent component) {
+            GlowPlayer.this.sendMessage(position, component);
+        }
+
+        @Override
+        public void sendMessage(BaseComponent... components) {
+            GlowPlayer.this.sendMessage(components);
+        }
+
+        @Override
+        public void sendMessage(BaseComponent component) {
+            GlowPlayer.this.sendMessage(component);
+        }
+
+        @Override
+        public String getLocale() {
+            return GlowPlayer.this.getLocale();
         }
     };
     /**
@@ -995,6 +1023,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * Respawn the player after they have died.
      */
     public void respawn() {
+        if (!isDead()) {
+            return;
+        }
+
         // restore health
         setHealth(getMaxHealth());
         setFoodLevel(20);
