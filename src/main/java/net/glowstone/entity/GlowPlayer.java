@@ -57,6 +57,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -1065,6 +1066,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         signLocation.setX(loc.getBlockX());
         signLocation.setY(loc.getBlockY());
         signLocation.setZ(loc.getBlockZ());
+        signLocation.setYaw(0);
+        signLocation.setPitch(0);
+
+        // Client closes inventory when sign editor is opened
+        if (!GlowInventoryView.isDefault(getOpenInventory())) {
+            closeInventory();
+        }
+
         session.send(new SignEditorMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
     }
 
