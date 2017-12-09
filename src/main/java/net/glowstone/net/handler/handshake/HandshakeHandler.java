@@ -27,7 +27,8 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         // Proxies modify the hostname in the HandshakeMessage to contain
         // the client's UUID and (optionally) properties
-        if (session.getServer().getProxySupport()) {
+        // Only applicable if ProtocolType is login
+        if (protocol == ProtocolType.LOGIN && session.getServer().getProxySupport()) {
             try {
                 session.setProxyData(new ProxyData(session, message.getAddress()));
             } catch (IllegalArgumentException ex) {
