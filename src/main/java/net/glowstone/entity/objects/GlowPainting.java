@@ -254,7 +254,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     /**
-     * Check if the painting can survive at the current location.
+     * Check if the painting is obstructed at the current location.
      *
      * <p>Survivability is defined as:
      * <ul>
@@ -263,7 +263,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
      *     <li>The painting is not inside another entity</li>
      * </ul>
      *
-     * @return true if the painting can survive, false otherwise
+     * @return true if the painting should drop, false otherwise
      */
     public boolean isObstructed() {
         Location current = getTopLeftCorner();
