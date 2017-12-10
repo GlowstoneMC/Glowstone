@@ -710,8 +710,8 @@ public final class GlowServer implements Server {
 
     /**
      * Sets the port that the Query server will expose.
-     * <br />
-     * This does not change the port the server will run on.
+     *
+     * <p>This does not change the port the server will run on.
      *
      * @param port the port number
      */
@@ -721,8 +721,8 @@ public final class GlowServer implements Server {
 
     /**
      * Sets the IP address that the Query server will expose.
-     * <br />
-     * This does not change the IP address the server will run on.
+     *
+     * <p>This does not change the IP address the server will run on.
      *
      * @param ip the IP address
      */
@@ -1090,8 +1090,8 @@ public final class GlowServer implements Server {
 
     /**
      * Creates an {@link AdvancementsMessage} containing a list of advancements the server has, along with some extra actions.
-     * <br />
-     * This does not affect the server's advancement registry.
+     *
+     * <p>This does not affect the server's advancement registry.
      *
      * @param clear  whether to clear the advancements on the player's perspective.
      * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove from the player's perspective.
@@ -1103,8 +1103,8 @@ public final class GlowServer implements Server {
 
     /**
      * Creates an {@link AdvancementsMessage} containing a given list of advancements, along with some extra actions.
-     * <br />
-     * This does not affect the server's advancement registry.
+     *
+     * <p>This does not affect the server's advancement registry.
      *
      * @param advancements the advancements to add to the player's perspective.
      * @param clear        whether to clear the advancements on the player's perspective.
@@ -2189,8 +2189,8 @@ public final class GlowServer implements Server {
 
     /**
      * Gets the server type.
-     * <br />
-     * Currently, this value is set to {@code VANILLA}.
+     *
+     * <p>Currently, this value is set to {@code VANILLA}.
      *
      * @return the server type.
      */
@@ -2209,8 +2209,8 @@ public final class GlowServer implements Server {
 
     /**
      * Gets whether the server allows client mods.
-     * <br />
-     * This rule is not actually enforced, and is simply exposed to clients as a warning.
+     *
+     * <p>This rule is not actually enforced, and is simply exposed to clients as a warning.
      *
      * @return true if client mods are allowed, false otherwise.
      */
