@@ -4,18 +4,23 @@ jobs:
         branches:
             only:
                 - dev
+        docker:
+            - image: circleci/openjdk:8-jdk
 
         working_directory: ~/glowstone
 
-        docker:
-            - image: circleci/openjdk:8-jdk-browsers
+        environment:
+            MAVEN_OPTS: -Xmx3200m
 
         steps:
-
             - checkout
 
             - restore_cache:
-                key: glowstone-{{ checksum "pom.xml" }}
+                keys:
+                # Use cache for this pom
+                - glowstone-{{ checksum "pom.xml" }}
+                # Fallback to latest cache is an exact match is not found
+                - glowstone-
 
             - run: mvn -T 2 -B dependency:go-offline
 
@@ -46,17 +51,23 @@ jobs:
             ignore:
                 - dev
 
+        docker:
+            - image: circleci/openjdk:8-jdk
+
         working_directory: ~/glowstone
 
-        docker:
-            - image: circleci/openjdk:8-jdk-browsers
+        environment:
+            MAVEN_OPTS: -Xmx3200m
 
         steps:
-
             - checkout
 
             - restore_cache:
-                key: glowstone-{{ checksum "pom.xml" }}
+                keys:
+                # Use cache for this pom
+                - glowstone-{{ checksum "pom.xml" }}
+                # Fallback to latest cache is an exact match is not found
+                - glowstone-
 
             - run: mvn -T 2 -B dependency:go-offline
 
