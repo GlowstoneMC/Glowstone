@@ -27,26 +27,25 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
 
         // Proxies modify the hostname in the HandshakeMessage to contain
         // the client's UUID and (optionally) properties
-        // Only applicable if ProtocolType is login
-        if (protocol == ProtocolType.LOGIN && session.getServer().getProxySupport()) {
+
+        session.setProtocol(protocol);
+
+        if (session.getServer().getProxySupport()) {
             try {
                 session.setProxyData(new ProxyData(session, message.getAddress()));
             } catch (IllegalArgumentException ex) {
-                session.disconnect("Invalid proxy data provided.");
-                // protocol is still set here and below to prevent errors
-                // trying to decode packets after this one under the wrong
-                // protocol, even though client is kicked
-                session.setProtocol(protocol);
-                return;
+                if (protocol == ProtocolType.LOGIN) {
+                    session.disconnect("Invalid proxy data provided.");
+                }
+                return; // silently ignore parse data in PING protocol
             } catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error parsing proxy data for " + session, ex);
-                session.disconnect("Failed to parse proxy data.");
-                session.setProtocol(protocol);
-                return;
+                if (protocol == ProtocolType.LOGIN) {
+                    GlowServer.logger.log(Level.SEVERE, "Error parsing proxy data for " + session, ex);
+                    session.disconnect("Failed to parse proxy data.");
+                }
+                return; // silently ignore parse data in PING protocol
             }
         }
-
-        session.setProtocol(protocol);
 
         if (protocol == ProtocolType.LOGIN) {
             if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {

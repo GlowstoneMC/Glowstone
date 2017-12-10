@@ -2947,6 +2947,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void hidePlayer(Plugin plugin, Player player) {
+        hidePlayer(player); // call old
+    }
+
+    @Override
     public void showPlayer(Player player) {
         checkNotNull(player, "player cannot be null");
         if (equals(player) || !player.isOnline() || !session.isActive()) {
@@ -2958,6 +2963,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         hiddenEntities.remove(player.getUniqueId());
         session.send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, ((GlowPlayer) player).getUserListEntry()));
+    }
+
+    @Override
+    public void showPlayer(Plugin plugin, Player player) {
+        showPlayer(player); // call old
     }
 
     @Override
