@@ -1,4 +1,5 @@
 package net.glowstone.block.itemtype;
+import org.bukkit.Location;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
@@ -22,6 +23,8 @@ public class ItemEnderPearl extends ItemType {
 	}
 	
 	private void throwEnderPearl(GlowPlayer player) {
-		new GlowEnderPearl(player.getLocation());
+		Location throwLoc = player.getLocation().clone();
+		//throwLoc.setY(player.getEyeHeight());
+		new GlowEnderPearl(throwLoc);
 	}
 }
