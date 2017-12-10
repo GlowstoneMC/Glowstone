@@ -88,11 +88,6 @@ public class GlowSession extends BasicSession {
     private String verifyUsername;
 
     /**
-     * A message describing under what circumstances the connection ended.
-     */
-    private String quitReason;
-
-    /**
      * The hostname used to connect.
      */
     private String hostname;
@@ -437,14 +432,13 @@ public class GlowSession extends BasicSession {
             GlowServer.logger.info("[" + address + "] kicked: " + reason);
         }
 
-        if (quitReason == null) {
-            quitReason = "kicked";
-        }
-
         // perform the kick, sending a kick message if possible
         if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
-            sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+            ChannelFuture future = sendWithFuture(new KickMessage(reason));
+            if (future != null) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
         } else {
             getChannel().close();
         }
@@ -582,10 +576,7 @@ public class GlowSession extends BasicSession {
             GlowServer.logger.log(Level.SEVERE, "Error in network input", t);
         } else {
             // probably a network-level error - consider the client gone
-            if (quitReason == null) {
-                quitReason = "read error: " + t;
-            }
-            getChannel().close();
+            disconnect("read error: " + t.getMessage(), true);
         }
     }
 
@@ -596,15 +587,13 @@ public class GlowSession extends BasicSession {
             GlowServer.logger.log(Level.SEVERE, "Error in network output", t);
         } else {
             // probably a network-level error - consider the client gone
-            if (quitReason == null) {
-                quitReason = "write error: " + t;
-            }
-            getChannel().close();
+            disconnect("write error: " + t.getMessage(), true);
         }
     }
 
     @Override
     public void onHandlerThrowable(Message message, MessageHandler<?, ?> handle, Throwable t) {
+        //TODO disconnect on error
         // can be safely logged and the connection maintained
         GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
     }

@@ -2,6 +2,7 @@ package net.glowstone.chunk;
 
 import net.glowstone.constants.GlowBiome;
 import org.bukkit.ChunkSnapshot;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
@@ -110,6 +111,11 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) >> 4;
+    }
+
+    @Override
+    public Material getBlockType(int x, int y, int z) {
+        return Material.getMaterial(getBlockTypeId(x, y, z));
     }
 
     @Override
