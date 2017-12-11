@@ -25,6 +25,6 @@ public class ItemEnderPearl extends ItemType {
 	private void throwEnderPearl(GlowPlayer player) {
 		Location throwLoc = player.getLocation().clone();
 		//throwLoc.setY(player.getEyeHeight());
-		new GlowEnderPearl(throwLoc);
+		new GlowEnderPearl(throwLoc).setShooter(player);
 	}
 }
