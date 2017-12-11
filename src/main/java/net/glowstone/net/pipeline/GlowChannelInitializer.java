@@ -44,7 +44,6 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
             // Not supported on all OSs, like Windows XP and lesser
             GlowServer.logger.warning("Your OS does not support type of service.");
         }
-        c.config().setAllocator(PooledByteBufAllocator.DEFAULT);
 
         c.pipeline()
             .addLast("idle_timeout", new IdleStateHandler(READ_IDLE_TIMEOUT, WRITE_IDLE_TIMEOUT, 0))
