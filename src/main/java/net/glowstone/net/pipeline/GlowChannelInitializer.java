@@ -1,6 +1,5 @@
 package net.glowstone.net.pipeline;
 
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelException;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
