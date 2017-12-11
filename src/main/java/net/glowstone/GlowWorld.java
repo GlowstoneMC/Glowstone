@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import com.flowpowered.network.Message;
+import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -37,6 +38,7 @@ import net.glowstone.constants.GlowParticle;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.constants.GlowTree;
 import net.glowstone.data.CommandFunction;
+import net.glowstone.entity.CustomEntityDescriptor;
 import net.glowstone.entity.EntityManager;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;
@@ -333,7 +335,7 @@ public final class GlowWorld implements World {
     /**
      * Creates a new world from the options in the given WorldCreator.
      *
-     * @param server The server for the world.
+     * @param server  The server for the world.
      * @param creator The WorldCreator to use.
      */
     public GlowWorld(GlowServer server, WorldCreator creator) {
@@ -687,7 +689,7 @@ public final class GlowWorld implements World {
      * Calculates how much the rays from the location to the entity's bounding box is blocked.
      *
      * @param location The location for the rays to start
-     * @param entity The entity that's bounding box is the ray's end point
+     * @param entity   The entity that's bounding box is the ray's end point
      * @return a value between 0 and 1, where 0 = all rays blocked and 1 = all rays unblocked
      */
     public float rayTrace(Location location, GlowEntity entity) {
@@ -724,13 +726,13 @@ public final class GlowWorld implements World {
 
     /**
      * Returns a list of entities within a bounding box centered around a Location.
-     *
+     * <p>
      * <p>Some implementations may impose artificial restrictions on the size of the search bounding box.
      *
      * @param location The center of the bounding box
-     * @param x 1/2 the size of the box along x axis
-     * @param y 1/2 the size of the box along y axis
-     * @param z 1/2 the size of the box along z axis
+     * @param x        1/2 the size of the box along x axis
+     * @param y        1/2 the size of the box along y axis
+     * @param z        1/2 the size of the box along z axis
      * @return the collection of entities near location. This will always be a non-null collection.
      */
     @Override
@@ -1443,6 +1445,36 @@ public final class GlowWorld implements World {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Spawn a custom entity at the given {@link Location}
+     *
+     * @param location the {@link Location} to spawn the entity at
+     * @param id       the id of the custom entity
+     * @param <T>      the class of the {@link Entity} to spawn
+     * @return an instance of the spawned {@link Entity}
+     */
+    public <T extends Entity> T spawnCustomEntity(Location location, String id) throws IllegalArgumentException {
+        return spawnCustomEntity(location, id, SpawnReason.CUSTOM);
+    }
+
+    /**
+     * Spawn a custom entity at the given {@link Location}, with the given {@link SpawnReason}
+     *
+     * @param location the {@link Location} to spawn the entity at
+     * @param id       the id of the custom entity
+     * @param reason   the reason for the spawning of the entity
+     * @param <T>      the class of the {@link Entity} to spawn
+     * @return an instance of the spawned {@link Entity}
+     */
+    public <T extends Entity> T spawnCustomEntity(Location location, String id, SpawnReason reason) throws IllegalArgumentException {
+        Preconditions.checkNotNull(id);
+        CustomEntityDescriptor descriptor = EntityRegistry.getCustomEntityDescriptor(id);
+        if (descriptor == null) {
+            throw new IllegalArgumentException("Could not find a custom entity descriptor for the given id '" + id + "'");
+        }
+        return (T) spawn(location, descriptor.getEntityClass(), reason);
+    }
+
     @Override
     public GlowItem dropItem(Location location, ItemStack item) {
         return new GlowItem(location, item);
@@ -1683,12 +1715,12 @@ public final class GlowWorld implements World {
     /**
      * Create an explosion with a specific entity as the source.
      *
-     * @param source The entity to treat as the source, or null.
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @param z Z coordinate
-     * @param power The power of explosion, where 4F is TNT
-     * @param incendiary Whether or not to set blocks on fire
+     * @param source      The entity to treat as the source, or null.
+     * @param x           X coordinate
+     * @param y           Y coordinate
+     * @param z           Z coordinate
+     * @param power       The power of explosion, where 4F is TNT
+     * @param incendiary  Whether or not to set blocks on fire
      * @param breakBlocks Whether or not to have blocks be destroyed
      * @return false if explosion was canceled, otherwise true
      */
@@ -1804,7 +1836,7 @@ public final class GlowWorld implements World {
     /**
      * Execute a runnable, optionally asynchronously.
      *
-     * @param async Whether to run the runnable in an asynchronous task.
+     * @param async    Whether to run the runnable in an asynchronous task.
      * @param runnable The runnable to run.
      */
     private void maybeAsync(boolean async, Runnable runnable) {
