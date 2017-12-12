@@ -110,10 +110,6 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         return material.getId();
     }
 
-    public Location getSourceLoc() {
-        return sourceLocation;
-    }
-
     @Override
     public List<Message> createSpawnMessage() {
         double x = location.getX();
