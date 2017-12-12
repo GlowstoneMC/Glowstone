@@ -101,17 +101,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
     }
 
     @Override
-    public Location getSourceLoc() {
-        return null;
-    }
-
-    @Override
     public final EntityType getType() {
         return EntityType.PRIMED_TNT;
-    }
-
-    @Override
-    public Location getOrigin() {
-        return null;
     }
 }

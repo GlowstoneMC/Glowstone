@@ -93,11 +93,6 @@ public class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
     public void pulse() {
         super.pulse();
 

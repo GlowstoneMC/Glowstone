@@ -160,9 +160,4 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     public LightningStrike.Spigot spigot() {
         return spigot;
     }
-
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
 }

@@ -388,11 +388,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
     public ItemStack getItemInHand() {
         return equipment.getItemInHand();
     }

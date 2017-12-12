@@ -46,11 +46,6 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
     public List<Message> createSpawnMessage() {
         List<Message> result = new LinkedList<>();
 

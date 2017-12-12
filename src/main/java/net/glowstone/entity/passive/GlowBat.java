@@ -58,11 +58,6 @@ public class GlowBat extends GlowAmbient implements Bat {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
     public AttributeInstance getAttribute(Attribute attribute) {
         return null;
     }

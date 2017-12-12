@@ -97,11 +97,6 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         this.blockData = blockData;
     }
 
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
-
     public CompoundTag getBlockEntityCompoundTag() {
         return blockEntityCompoundTag;
     }

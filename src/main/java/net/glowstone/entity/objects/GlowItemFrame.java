@@ -180,11 +180,6 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
     public ItemStack getItem() {
         return metadata.getItem(MetadataIndex.ITEM_FRAME_ITEM);
     }

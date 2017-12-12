@@ -2317,11 +2317,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return spigot;
     }
 
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
-
     //@Override
     public void showParticle(Location loc, Effect particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         if (location == null || particle == null || particle.getType() != Type.PARTICLE) {
