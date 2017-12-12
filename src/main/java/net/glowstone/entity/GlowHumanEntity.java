@@ -147,9 +147,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
         // equipment
         EntityEquipment equipment = getEquipment();
-        result.add(new EntityEquipmentMessage(id, 0, equipment.getItemInHand()));
+        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, equipment.getItemInMainHand()));
+        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.OFF_HAND, equipment.getItemInOffHand()));
         for (int i = 0; i < 4; i++) {
-            result.add(new EntityEquipmentMessage(id, i + 1, equipment.getArmorContents()[i]));
+            result.add(new EntityEquipmentMessage(id, i + 2, equipment.getArmorContents()[i]));
         }
         return result;
     }
@@ -363,12 +364,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public ItemStack getItemInHand() {
-        return getInventory().getItemInHand();
+        return getInventory().getItemInMainHand();
     }
 
     @Override
     public void setItemInHand(ItemStack item) {
-        getInventory().setItemInHand(item);
+        getInventory().setItemInMainHand(item);
     }
 
     @Override
