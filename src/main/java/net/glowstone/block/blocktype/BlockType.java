@@ -366,7 +366,7 @@ public class BlockType extends ItemType {
 
         // call blockPlace event
         BlockPlaceEvent event = new BlockPlaceEvent(target, oldState, against, holding, player,
-            canBuild);
+            canBuild, hand);
         EventFactory.callEvent(event);
         if (event.isCancelled() || !event.canBuild()) {
             oldState.update(true);
