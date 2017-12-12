@@ -726,8 +726,8 @@ public final class GlowWorld implements World {
 
     /**
      * Returns a list of entities within a bounding box centered around a Location.
-     * <p>
-     * Some implementations may impose artificial restrictions on the size of the search bounding box.
+     *
+     * <p>Some implementations may impose artificial restrictions on the size of the search bounding box.
      *
      * @param location The center of the bounding box
      * @param x        1/2 the size of the box along x axis
