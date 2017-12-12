@@ -26,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
@@ -60,7 +61,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 eventBlock = null;
             }
             PlayerInteractEvent interactEvent = EventFactory
-                .onPlayerInteract(player, action, eventBlock, face);
+                .onPlayerInteract(player, action, EquipmentSlot.HAND, eventBlock, face);
 
             // blocks don't get interacted with on left click, so ignore that
             // attempt to use item in hand, that is, dig up the block

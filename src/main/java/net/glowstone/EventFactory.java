@@ -31,6 +31,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 /**
  * Central class for the calling of events.
@@ -152,12 +153,14 @@ public final class EventFactory {
         return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game"));
     }
 
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {
-        return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), null, null));
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, EquipmentSlot hand) {
+        return callEvent(new PlayerInteractEvent(player, action,
+            hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand(), null, null, hand));
     }
 
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, Block clicked, BlockFace face) {
-        return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), clicked, face));
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, EquipmentSlot hand, Block clicked, BlockFace face) {
+        return callEvent(new PlayerInteractEvent(player, action,
+            hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand(), clicked, face, hand));
     }
 
     public static <T extends EntityDamageEvent> T onEntityDamage(T event) {

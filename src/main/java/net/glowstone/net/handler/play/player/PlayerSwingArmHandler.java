@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 public final class PlayerSwingArmHandler implements
     MessageHandler<GlowSession, PlayerSwingArmMessage> {
@@ -29,7 +30,7 @@ public final class PlayerSwingArmHandler implements
         }
 
         if (block == null || block.isEmpty()) {
-            if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).useItemInHand()
+            if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR, message.getHandSlot()).useItemInHand()
                 == Result.DENY) {
                 return;
             }

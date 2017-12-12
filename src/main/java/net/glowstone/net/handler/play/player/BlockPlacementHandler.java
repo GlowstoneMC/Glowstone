@@ -124,7 +124,7 @@ public final class BlockPlacementHandler implements
 
         // call interact event
         PlayerInteractEvent event = EventFactory
-            .onPlayerInteract(player, action, rightClickedAir ? null : clicked, face);
+            .onPlayerInteract(player, action, message.getHandSlot(), rightClickedAir ? null : clicked, face);
         //GlowServer.logger.info("Interact: " + action + " " + clicked + " " + face);
 
         // attempt to use interacted block
