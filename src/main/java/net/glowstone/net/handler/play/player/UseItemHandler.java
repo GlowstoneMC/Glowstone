@@ -27,7 +27,8 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                     type.rightClickAir(player, holding);
                 } else {
                     if ((holding.getType() == Material.WATER_BUCKET
-                        || holding.getType() == Material.LAVA_BUCKET) && player.getGameMode() != GameMode.CREATIVE) {
+                        || holding.getType() == Material.LAVA_BUCKET) 
+                            && player.getGameMode() != GameMode.CREATIVE) {
                         holding.setType(Material.BUCKET);
                     }
                 }

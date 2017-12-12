@@ -12,10 +12,10 @@ public final class SpawnObjectMessage implements Message {
     public static final int BOAT = 1;
     public static final int ITEM = 2;
     public static final int ENDER_CRYSTAL = 51;
+    public static final int THROWN_ENDERPEARL = 65;
     public static final int ITEM_FRAME = 71;
     public static final int FIREWORK = 76;
     public static final int LEASH_HITCH = 77;
-    public static final int THROWN_ENDERPEARL = 65;
     
     private final int id;
     private final UUID uuid; //TODO: Handle UUID
