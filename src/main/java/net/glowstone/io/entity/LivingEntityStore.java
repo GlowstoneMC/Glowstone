@@ -34,7 +34,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
     }
 
     public LivingEntityStore(Class<T> clazz, EntityType type) {
-        this(clazz, type.getName());
+        super(clazz, type);
     }
 
     // these tags that apply to living entities only are documented as global:

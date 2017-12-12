@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 abstract class CreatureStore<T extends GlowCreature> extends LivingEntityStore<T> {
 
     public CreatureStore(Class<T> clazz, EntityType type) {
-        super(clazz, type.getName());
+        super(clazz, type);
     }
 
     public CreatureStore(Class<T> clazz, String type) {
