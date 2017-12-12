@@ -334,7 +334,7 @@ public final class GlowChunk implements Chunk {
             case DAYLIGHT_DETECTOR_INVERTED:
             case REDSTONE_COMPARATOR_OFF:
             case REDSTONE_COMPARATOR_ON:
-                BlockType blockType = ItemTable.instance().getBlock(type);
+                BlockType blockType = ItemTable.instance().getBlock(material);
                 if (blockType == null) {
                     return null;
                 }

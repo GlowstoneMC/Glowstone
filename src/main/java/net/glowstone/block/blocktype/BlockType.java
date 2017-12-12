@@ -320,13 +320,13 @@ public class BlockType extends ItemType {
         }
 
         // check whether the block clicked against should absorb the placement
-        BlockType againstType = ItemTable.instance().getBlock(against.getTypeId());
+        BlockType againstType = ItemTable.instance().getBlock(against.getType());
         if (againstType != null) {
             if (againstType.canAbsorb(against, face, holding)) {
                 target = against;
             } else if (!target.isEmpty()) {
                 // air can always be overridden
-                BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
+                BlockType targetType = ItemTable.instance().getBlock(target.getType());
                 if (targetType != null && !targetType.canOverride(target, face, holding)) {
                     return;
                 }

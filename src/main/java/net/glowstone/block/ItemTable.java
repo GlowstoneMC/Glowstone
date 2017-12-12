@@ -134,6 +134,7 @@ import net.glowstone.block.itemtype.ItemWrittenBook;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.TreeSpecies;
 
@@ -148,8 +149,10 @@ public final class ItemTable {
         INSTANCE.registerBuiltins();
     }
 
-    private final Map<Integer, ItemType> idToType = new HashMap<>(512);
-    private int nextBlockId, nextItemId;
+    private final Map<Material, ItemType> materialToType = new HashMap<>(512);
+    private final Map<String, ItemType> extraTypes = new HashMap<>();
+    private int nextBlockId;
+    private int nextItemId;
 
     ////////////////////////////////////////////////////////////////////////////
     // Data
@@ -468,12 +471,13 @@ public final class ItemTable {
             throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
         }
 
-        if (idToType.containsKey(material.getId())) {
-            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + idToType.get(material.getId()));
+        if (materialToType.containsKey(material)) {
+            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + materialToType
+                .get(material));
         }
 
-        idToType.put(material.getId(), type);
-        type.setId(material.getId());
+        materialToType.put(material, type);
+        type.setMaterial(material);
 
         if (material.isBlock()) {
             nextBlockId = Math.max(nextBlockId, material.getId() + 1);
@@ -490,12 +494,13 @@ public final class ItemTable {
             throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
         }
 
-        if (idToType.containsKey(material.getId())) {
-            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + idToType.get(material.getId()));
+        if (materialToType.containsKey(material)) {
+            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + materialToType
+                .get(material));
         }
 
-        idToType.put(material.getId(), type);
-        type.setId(material.getId());
+        materialToType.put(material, type);
+        type.setMaterial(material);
 
         if (material.isBlock()) {
             nextBlockId = Math.max(nextBlockId, material.getId() + 1);
@@ -508,33 +513,38 @@ public final class ItemTable {
     /**
      * Register a new, non-Vanilla ItemType. It will be assigned an ID automatically.
      *
+     * @param key the namespaced key of the ItemType
      * @param type the ItemType to register.
+     * @return if the registration was successful
      */
-    public void register(ItemType type) {
+    public boolean register(NamespacedKey key, ItemType type) {
         int id;
-        if (type instanceof BlockType) {
+        boolean block = type instanceof BlockType;
+        if (block) {
             id = nextBlockId;
         } else {
             id = nextItemId;
         }
-
-        while (idToType.containsKey(id)) {
-            ++id;
-        }
-
-        idToType.put(id, type);
-        type.setId(id);
-
-        if (type instanceof BlockType) {
-            nextBlockId = id + 1;
+        if (extraTypes.putIfAbsent(key.toString(), type) == null) {
+            type.setId(id);
+            if (block) {
+                nextBlockId++;
+            } else {
+                nextItemId++;
+            }
+            return true;
         } else {
-            nextItemId = id + 1;
+            return false;
         }
     }
 
+    @Deprecated
     private ItemType createDefault(int id) {
-        Material material = Material.getMaterial(id);
-        if (material == null || id == 0) {
+        return createDefault(Material.getMaterial(id));
+    }
+
+    private ItemType createDefault(Material material) {
+        if (material == null || material == Material.AIR) {
             return null;
         }
 
@@ -551,28 +561,30 @@ public final class ItemTable {
     ////////////////////////////////////////////////////////////////////////////
     // Type access
 
+    @Deprecated
     public ItemType getItem(int id) {
-        ItemType type = idToType.get(id);
+        return getItem(Material.getMaterial(id));
+    }
+
+    public ItemType getItem(Material mat) {
+        ItemType type = materialToType.get(mat);
         if (type == null) {
-            type = createDefault(id);
+            type = createDefault(mat);
         }
         return type;
     }
 
-    public ItemType getItem(Material mat) {
-        return getItem(mat.getId());
+    @Deprecated
+    public BlockType getBlock(int id) {
+        return getBlock(Material.getMaterial(id));
     }
 
-    public BlockType getBlock(int id) {
-        ItemType itemType = getItem(id);
+    public BlockType getBlock(Material mat) {
+        ItemType itemType = getItem(mat);
         if (itemType instanceof BlockType) {
             return (BlockType) itemType;
         }
         return null;
-    }
-
-    public BlockType getBlock(Material mat) {
-        return getBlock(mat.getId());
     }
 
 }

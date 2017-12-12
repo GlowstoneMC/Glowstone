@@ -33,7 +33,7 @@ public class BucketDispenseBehavior extends DefaultDispenseBehavior {
 
     private boolean canPlace(GlowBlock target, BlockFace facing, ItemStack stack) {
         if (!target.isEmpty()) {
-            BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
+            BlockType targetType = ItemTable.instance().getBlock(target.getType());
             //noinspection ConstantConditions
             if (!targetType.canOverride(target, facing.getOppositeFace(), stack)) {
                 return false;
