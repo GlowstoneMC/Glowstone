@@ -182,7 +182,7 @@ public class ItemType {
 
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "{" + getId() + " -> " + getMaterial() + "}";
+        return getClass().getSimpleName() + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
     }
 
     /**
