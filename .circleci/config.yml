@@ -29,7 +29,7 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -B -s .circleci/maven.xml source:jar javadoc:jar deploy
+            - run: mvn -T 2 -B -s .circleci/maven.xml source:jar javadoc:jar deploy
 
             - store_test_results:
                 path: target/surefire-reports
@@ -76,7 +76,7 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -B package
+            - run: mvn -T 2 -B package
 
             - store_test_results:
                 path: target/surefire-reports
