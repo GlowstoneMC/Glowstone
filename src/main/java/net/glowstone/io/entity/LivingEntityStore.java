@@ -169,7 +169,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         if (compound.isList("Equipment", TagType.COMPOUND)) {
             List<CompoundTag> list = compound.getCompoundList("Equipment");
 
-            equip.setItemInHand(getItem(list, 0));
+            equip.setItemInMainHand(getItem(list, 0));
             equip.setBoots(getItem(list, 1));
             equip.setLeggings(getItem(list, 2));
             equip.setChestplate(getItem(list, 3));
@@ -179,7 +179,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         if (compound.isList("DropChances", TagType.FLOAT)) {
             List<Float> list = compound.getList("DropChances", TagType.FLOAT);
 
-            equip.setItemInHandDropChance(getOrDefault(list, 0, 1f));
+            equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
             equip.setBootsDropChance(getOrDefault(list, 1, 1f));
             equip.setLeggingsDropChance(getOrDefault(list, 2, 1f));
             equip.setChestplateDropChance(getOrDefault(list, 3, 1f));
@@ -206,7 +206,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             if (compound.isList("HandDropChances", TagType.FLOAT)) {
                 List<Float> list = compound.getList("HandDropChances", TagType.FLOAT);
 
-                equip.setItemInHandDropChance(getOrDefault(list, 0, 1f));
+                equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
                 equip.setItemInOffHandDropChance(getOrDefault(list, 1, 1f));
             }
             if (compound.isList("ArmorDropChances", TagType.FLOAT)) {
