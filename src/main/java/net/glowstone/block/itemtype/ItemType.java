@@ -48,12 +48,12 @@ public class ItemType {
         if (material != null && this.id != -1) {
             throw new IllegalStateException("ID is already set in " + this);
         }
-        material = Material.getMaterial(id);
+        Material mat = Material.getMaterial(id);
 
-        if (material == null) {
+        if (mat == null) {
             this.id = id;
         } else {
-            setMaterial(material);
+            setMaterial(mat);
         }
     }
 
