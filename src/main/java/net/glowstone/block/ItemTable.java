@@ -538,6 +538,11 @@ public final class ItemTable {
         }
     }
 
+    @Deprecated
+    private ItemType createDefault(int id) {
+        return createDefault(Material.getMaterial(id));
+    }
+
     private ItemType createDefault(Material material) {
         if (material == null || material == Material.AIR) {
             return null;

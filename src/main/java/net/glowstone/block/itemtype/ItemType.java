@@ -46,14 +46,13 @@ public class ItemType {
     @Deprecated
     public final void setId(int id) {
         if (material != null && this.id != -1) {
-            throw new IllegalStateException("ID is already set in " + this);
+            throw new IllegalStateException("Material is already set in " + this);
         }
-        Material mat = Material.getMaterial(id);
+        this.id = id;
+        material = Material.getMaterial(id);
 
-        if (mat == null) {
-            this.id = id;
-        } else {
-            setMaterial(mat);
+        if (material != null) {
+            maxStackSize = material.getMaxStackSize();
         }
     }
 
@@ -67,7 +66,7 @@ public class ItemType {
     }
 
     /**
-     * Assign a Material to this ItemType (for internal use only).
+     * Assign an material to this ItemType (for internal use only).
      *
      * @param material The internal material for this item.
      */
