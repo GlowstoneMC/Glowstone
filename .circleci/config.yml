@@ -46,7 +46,7 @@ jobs:
                 path: target/glowstone-sources.jar
                 destination: glowstone-sources.jar
 
-    build_other:
+    build:
         branches:
             ignore:
                 - dev
