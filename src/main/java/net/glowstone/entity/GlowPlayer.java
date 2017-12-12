@@ -3170,11 +3170,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         broadcastBlockBreakAnimation(digging, stage);
     }
 
-    @Override
-    public AttributeInstance getAttribute(Attribute attribute) {
-        return null;
-    }
-
     /**
      * Returns true if the player is inside a water block
      *

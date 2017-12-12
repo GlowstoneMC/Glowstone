@@ -7,8 +7,6 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -75,10 +73,5 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
     @Override
     public void setTarget(LivingEntity target) {
         this.target = target;
-    }
-
-    @Override
-    public AttributeInstance getAttribute(Attribute attribute) {
-        return null;
     }
 }
