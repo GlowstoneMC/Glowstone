@@ -12,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.inventory.EquipmentSlot;
 
 public final class PlayerSwingArmHandler implements
     MessageHandler<GlowSession, PlayerSwingArmMessage> {
