@@ -1,15 +1,6 @@
 version: 2
 jobs:
     build:
-        machine: true
-        steps:
-            - checkout
-
-    maven_build:
-        branches:
-            ignore:
-                - dev
-
         docker:
             - image: circleci/openjdk:8-jdk
 
@@ -19,6 +10,8 @@ jobs:
             MAVEN_OPTS: -Xmx3200m
 
         steps:
+            - checkout
+
             - restore_cache:
                 keys:
                 # Use cache for this pom
@@ -42,10 +35,7 @@ jobs:
                 path: target/glowstone.jar
                 destination: glowstone.jar
 
-    maven_build_deploy:
-        branches:
-            only:
-                - dev
+    build-deploy:
         docker:
             - image: circleci/openjdk:8-jdk
 
@@ -55,6 +45,8 @@ jobs:
             MAVEN_OPTS: -Xmx3200m
 
         steps:
+            - checkout
+
             - restore_cache:
                 keys:
                 # Use cache for this pom
@@ -85,3 +77,19 @@ jobs:
             - store_artifacts:
                 path: target/glowstone-sources.jar
                 destination: glowstone-sources.jar
+workflows:
+    version: 2
+
+    default-branch-build:
+        jobs:
+            - build-deploy:
+                filters:
+                    branches:
+                        only: dev
+
+    other-branch-build:
+        jobs:
+            - build:
+                filters:
+                    branches:
+                        ignore: dev
