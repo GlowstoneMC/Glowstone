@@ -150,7 +150,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, equipment.getItemInMainHand()));
         result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.OFF_HAND, equipment.getItemInOffHand()));
         for (int i = 0; i < 4; i++) {
-            result.add(new EntityEquipmentMessage(id, i + 2, equipment.getArmorContents()[i]));
+            result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT + i, equipment.getArmorContents()[i]));
         }
         return result;
     }
