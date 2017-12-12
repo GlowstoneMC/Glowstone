@@ -103,6 +103,8 @@ import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.io.ScoreboardIoService;
+import net.glowstone.io.WorldStorageProvider;
+import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.SessionRegistry;
@@ -377,6 +379,10 @@ public final class GlowServer implements Server {
             return config.getConfig();
         }
     };
+    /**
+     * The storage provider for the world.
+     */
+    private WorldStorageProvider storageProvider = null;
 
     /**
      * Creates a new server.
@@ -702,6 +708,10 @@ public final class GlowServer implements Server {
             } catch (NumberFormatException ex) {
                 seed = seedString.hashCode();
             }
+        }
+
+        if (storageProvider == null) {
+            storageProvider = new AnvilWorldStorageProvider(new File(getWorldContainer(), name));
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
@@ -1848,7 +1858,7 @@ public final class GlowServer implements Server {
         }
 
         // GlowWorld's constructor calls addWorld below.
-        return new GlowWorld(this, creator);
+        return new GlowWorld(this, creator, storageProvider);
     }
 
     /**
@@ -2324,5 +2334,26 @@ public final class GlowServer implements Server {
      */
     public boolean shouldPreventProxy() {
         return config.getBoolean(Key.PREVENT_PROXY);
+    }
+
+    /**
+     * Gets the current storage provider, or null if none has been set by a plugin and the server has not started yet.
+     *
+     * @return The current storage provider, or null.
+     */
+    public WorldStorageProvider getStorageProvider() {
+        return storageProvider;
+    }
+
+    /**
+     * If a storage provider has not yet been set, and the server has not fully started yet, this allows plugins to set
+     * a storage provider. Otherwise, this will throw an {@link IllegalStateException}.
+     * @param storageProvider The world storage provider that is attempting to be set.
+     */
+    public void setStorageProvider(WorldStorageProvider storageProvider) {
+        if (this.storageProvider != null) {
+            throw new IllegalStateException("Duplicate storage provider attempting to be set. Only one custom storage provider may be provided.");
+        }
+        this.storageProvider = storageProvider;
     }
 }
