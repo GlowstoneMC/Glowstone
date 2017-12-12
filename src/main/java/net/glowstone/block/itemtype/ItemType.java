@@ -66,7 +66,7 @@ public class ItemType {
     }
 
     /**
-     * Assign an material to this ItemType (for internal use only).
+     * Assign a Material to this ItemType (for internal use only).
      *
      * @param material The internal material for this item.
      */
