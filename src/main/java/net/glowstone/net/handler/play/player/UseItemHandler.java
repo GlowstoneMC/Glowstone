@@ -33,7 +33,7 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                     }
                 }
             }
-            
+
             //Empties the user's inventory when the item is used up
             if (holding.getAmount() <= 0) {
                 holding = InventoryUtil.createEmptyStack();
