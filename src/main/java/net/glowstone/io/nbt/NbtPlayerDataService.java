@@ -6,9 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -46,14 +49,14 @@ public class NbtPlayerDataService implements PlayerDataService {
     }
 
     @Override
-    public List<OfflinePlayer> getOfflinePlayers() {
+    public CompletableFuture<Collection<OfflinePlayer>> getOfflinePlayers() {
         // list files in directory
         File[] files = playerDir.listFiles();
         if (files == null) {
-            return Arrays.asList();
+            return CompletableFuture.completedFuture(Arrays.asList());
         }
 
-        List<OfflinePlayer> result = new ArrayList<>(files.length);
+        List<CompletableFuture<GlowOfflinePlayer>> futures = new ArrayList<>(files.length);
         for (File file : files) {
             // first, make sure it looks like a player file
             String name = file.getName();
@@ -70,10 +73,14 @@ public class NbtPlayerDataService implements PlayerDataService {
             }
 
             // creating the OfflinePlayer will read the data
-            result.add(new GlowOfflinePlayer(server, uuid));
+            futures.add(GlowOfflinePlayer.getOfflinePlayer(server, uuid));
         }
 
-        return result;
+        CompletableFuture<Void> gotAll = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+
+        return gotAll.thenApplyAsync((v) -> {
+            return futures.stream().map((f) -> f.join()).collect(Collectors.toList());
+        });
     }
 
     @Override

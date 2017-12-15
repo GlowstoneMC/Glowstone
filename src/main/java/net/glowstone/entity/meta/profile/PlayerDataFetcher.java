@@ -34,7 +34,7 @@ class PlayerDataFetcher {
      * Look up the PlayerProfile for a given UUID.
      *
      * @param uuid The UUID to look up.
-     * @return The resulting PlayerProfile, or null on failure.
+     * @return The resulting PlayerProfile, contains a null name on failure.
      */
     public static PlayerProfile getProfile(UUID uuid) {
         InputStream is;

@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -45,17 +46,16 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     /**
-     * Create a new offline player for the given UUID. If possible, the player's data (including name) will be loaded based on the UUID.
+     * Returns a Future for a GlowOfflinePlayer by UUID. If possible, the player's data (including name) will be loaded based on the UUID.
      *
      * @param server The server of the offline player. Must not be null.
      * @param uuid The UUID of the player. Must not be null.
+     * @return A {@link GlowOfflinePlayer} future.
      */
-    public GlowOfflinePlayer(GlowServer server, UUID uuid) {
+    public static CompletableFuture<GlowOfflinePlayer> getOfflinePlayer(GlowServer server, UUID uuid) {
         checkNotNull(server, "server must not be null");
         checkNotNull(uuid, "UUID must not be null");
-        this.server = server;
-        profile = ProfileCache.getProfile(uuid);
-        loadData();
+        return ProfileCache.getProfile(uuid).thenApplyAsync((profile) -> new GlowOfflinePlayer(server, profile));
     }
 
     @SuppressWarnings("UnusedDeclaration")

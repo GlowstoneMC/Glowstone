@@ -29,7 +29,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -1588,6 +1592,15 @@ public final class GlowServer implements Server {
 
     @Override
     public OfflinePlayer[] getOfflinePlayers() {
+        return getOfflinePlayersAsync().join();
+    }
+
+    /**
+     * Gets every player that has ever played on this server.
+     *
+     * @return An OfflinePlayer[] future.
+     */
+    public CompletableFuture<OfflinePlayer[]> getOfflinePlayersAsync() {
         Set<OfflinePlayer> result = new HashSet<>();
         Set<UUID> uuids = new HashSet<>();
 
@@ -1599,13 +1612,11 @@ public final class GlowServer implements Server {
             }
         }
 
-        // add all offline players that aren't already online
-        getPlayerDataService().getOfflinePlayers().stream().filter(offline -> !uuids.contains(offline.getUniqueId())).forEach(offline -> {
-            result.add(offline);
-            uuids.add(offline.getUniqueId());
-        });
-
-        return result.toArray(new OfflinePlayer[result.size()]);
+        return getPlayerDataService().getOfflinePlayers().thenAcceptAsync(offlinePlayers -> offlinePlayers.stream()
+                .filter(offline -> !uuids.contains(offline.getUniqueId())).forEach(offline -> {
+                    result.add(offline);
+                    uuids.add(offline.getUniqueId());
+                })).thenApply((v) -> result.toArray(new OfflinePlayer[result.size()]));
     }
 
     @Override
@@ -1675,24 +1686,65 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public OfflinePlayer getOfflinePlayer(String name) {
-        // probably blocking
-        PlayerProfile profile = PlayerProfile.getProfile(name);
-        if (profile == null) {
-            return getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
-        } else {
-            return getOfflinePlayer(profile);
+        try {
+            // probably blocking, limited to five seconds
+            return getOfflinePlayerAsync(name).get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(GlowServer.class.getName()).log(Level.SEVERE, "UUID lookup interrupted: ", ex);
+        } catch (TimeoutException ex) {
+            Logger.getLogger(GlowServer.class.getName()).log(Level.WARNING, "UUID lookup timeout: ", ex);
         }
+
+        return getOfflinePlayerFallback(name);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
+        try {
+            return getOfflinePlayerAsync(uuid).get(5, TimeUnit.SECONDS); // todo: should we timeout? If yes, how long?
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(GlowServer.class.getName()).log(Level.SEVERE, "Profile lookup interrupted: ", ex);
+        } catch (TimeoutException ex) {
+            Logger.getLogger(GlowServer.class.getName()).log(Level.WARNING, "Profile lookup timeout: ", ex);
+        }
+        return new GlowOfflinePlayer(this, new PlayerProfile(null, uuid));
+    }
+
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given name.
+     *
+     * @param name the player's name to look up.
+     * @return a {@link GlowOfflinePlayer} future for the given name.
+     */
+    public CompletableFuture<OfflinePlayer> getOfflinePlayerAsync(String name) {
+        return PlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
+            if (profile == null) {
+                return getOfflinePlayerFallback(name);
+            } else {
+                return getOfflinePlayer(profile);
+            }
+        });
+    }
+
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given uuid.
+     *
+     * @param uuid the player's uuid.
+     * @return a {@link GlowOfflinePlayer} future for the given name.
+     */
+    public CompletableFuture<OfflinePlayer> getOfflinePlayerAsync(UUID uuid) {
         Player onlinePlayer = getPlayer(uuid);
         if (onlinePlayer != null) {
-            return onlinePlayer;
-        } else {
-            return new GlowOfflinePlayer(this, uuid);
+            return CompletableFuture.completedFuture(onlinePlayer);
         }
+
+        return GlowOfflinePlayer.getOfflinePlayer(this, uuid).thenApply((player) -> (OfflinePlayer) player);
     }
+
+    private OfflinePlayer getOfflinePlayerFallback(String name) {
+        return getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+    }
+
 
     @Override
     public void savePlayers() {

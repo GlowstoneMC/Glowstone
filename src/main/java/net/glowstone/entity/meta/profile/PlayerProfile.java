@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import lombok.Data;
 import net.glowstone.GlowServer;
@@ -57,7 +58,7 @@ public class PlayerProfile {
         checkNotNull(properties, "properties must not be null");
 
         this.name = name;
-        uniqueId = uuid;
+        this.uniqueId = uuid;
         this.properties = properties;
     }
 
@@ -65,37 +66,40 @@ public class PlayerProfile {
      * Get the profile for a username.
      *
      * @param name The username to lookup.
-     * @return The profile. May be null if the name could not be resolved.
+     * @return A PlayerProfile future. May be null if the name could not be resolved.
      */
-    public static PlayerProfile getProfile(String name) {
+    public static CompletableFuture<PlayerProfile> getProfile(String name) {
         if (name == null || name.length() > MAX_USERNAME_LENGTH || name.isEmpty()) {
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
 
         Player player = Bukkit.getServer().getPlayerExact(name);
         if (player != null) {
-            return ((GlowPlayer) player).getProfile();
+            return CompletableFuture.completedFuture(((GlowPlayer) player).getProfile());
         }
 
         if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
-            UUID uuid = ProfileCache.getUUID(name);
-            if (uuid != null) {
-                return ProfileCache.getProfile(uuid);
-            }
+            return ProfileCache.getUUID(name).thenComposeAsync((uuid) -> {
+                if (uuid == null) {
+                    return CompletableFuture.completedFuture(null);
+                } else {
+                    return ProfileCache.getProfile(uuid);
+                }
+            });
         }
         GlowServer.logger.warning("Unable to get UUID for username: " + name);
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
-    public static PlayerProfile fromNBT(CompoundTag tag) {
+    /**
+     * Get the profile from a NBT tag (e.g. skulls).
+     *
+     * @param tag The NBT tag containing profile information.
+     * @return A PlayerProfile future. May contain a null name if the lookup failed.
+     */
+    public static CompletableFuture<PlayerProfile> fromNBT(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
-        String uuidStr = tag.getString("Id");
-        String name;
-        if (tag.containsKey("Name")) {
-            name = tag.getString("Name");
-        } else {
-            name = ProfileCache.getProfile(UUID.fromString(uuidStr)).getName();
-        }
+        UUID uuid = UUID.fromString(tag.getString("Id"));
 
         List<PlayerProperty> properties = new ArrayList<>();
         if (tag.containsKey("Properties")) {
@@ -107,7 +111,13 @@ public class PlayerProfile {
                 properties.add(new PlayerProperty("textures", texture.getString("Value")));
             }
         }
-        return new PlayerProfile(name, UUID.fromString(uuidStr), properties);
+
+        if (tag.containsKey("Name")) {
+            return CompletableFuture.completedFuture(new PlayerProfile(tag.getString("Name"), uuid, properties));
+        } else {
+            return ProfileCache.getProfile(uuid)
+                   .thenApplyAsync((profile) -> new PlayerProfile(profile.getName(), uuid, properties));
+        }
     }
 
     public static PlayerProfile fromJson(JSONObject json) {

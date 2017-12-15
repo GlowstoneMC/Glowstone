@@ -24,7 +24,7 @@ public final class UuidListFile extends JsonListFile {
         List<PlayerProfile> result = new ArrayList<>(entries.size());
         for (BaseEntry baseEntry : entries) {
             Entry entry = (Entry) baseEntry;
-            PlayerProfile profile = ProfileCache.getProfile(entry.uuid);
+            PlayerProfile profile = ProfileCache.getProfile(entry.uuid).join();
             if (profile.getName() == null) {
                 profile = new PlayerProfile(entry.fallbackName, entry.uuid);
             }
@@ -89,7 +89,7 @@ public final class UuidListFile extends JsonListFile {
 
         @Override
         public Map<String, String> write() {
-            PlayerProfile profile = ProfileCache.getProfile(uuid);
+            PlayerProfile profile = ProfileCache.getProfile(uuid).join();
             String name = profile.getName() != null ? profile.getName() : fallbackName;
             Map<String, String> result = new HashMap<>(2);
             result.put("uuid", uuid.toString());

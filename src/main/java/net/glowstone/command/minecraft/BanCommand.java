@@ -23,7 +23,7 @@ public class BanCommand extends VanillaCommand {
             return false;
         }
         if (args.length > 0) {
-            if (PlayerProfile.getProfile(args[0]) == null) {
+            if (PlayerProfile.getProfile(args[0]).join() == null) {
                 sender.sendMessage(ChatColor.RED + "Could not ban player " + args[0]);
                 return false;
             }

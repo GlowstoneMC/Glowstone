@@ -2,6 +2,7 @@ package net.glowstone.io;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -44,7 +45,7 @@ public interface PlayerDataService {
      *
      * @return All known offline players.
      */
-    Collection<OfflinePlayer> getOfflinePlayers();
+    CompletableFuture<Collection<OfflinePlayer>> getOfflinePlayers();
 
     /**
      * A piecewise reader for initializing new players. See {@link PlayerDataService#beginReadingData}.
