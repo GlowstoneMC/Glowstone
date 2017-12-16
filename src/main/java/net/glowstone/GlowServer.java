@@ -1690,9 +1690,9 @@ public final class GlowServer implements Server {
             // probably blocking, limited to five seconds
             return getOfflinePlayerAsync(name).get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(GlowServer.class.getName()).log(Level.SEVERE, "UUID lookup interrupted: ", ex);
+            GlowServer.logger.log(Level.SEVERE, "UUID lookup interrupted: ", ex);
         } catch (TimeoutException ex) {
-            Logger.getLogger(GlowServer.class.getName()).log(Level.WARNING, "UUID lookup timeout: ", ex);
+            GlowServer.logger.log(Level.WARNING, "UUID lookup timeout: ", ex);
         }
 
         return getOfflinePlayerFallback(name);
@@ -1703,9 +1703,9 @@ public final class GlowServer implements Server {
         try {
             return getOfflinePlayerAsync(uuid).get(5, TimeUnit.SECONDS); // todo: should we timeout? If yes, how long?
         } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(GlowServer.class.getName()).log(Level.SEVERE, "Profile lookup interrupted: ", ex);
+            GlowServer.logger.log(Level.SEVERE, "Profile lookup interrupted: ", ex);
         } catch (TimeoutException ex) {
-            Logger.getLogger(GlowServer.class.getName()).log(Level.WARNING, "Profile lookup timeout: ", ex);
+            GlowServer.logger.log(Level.WARNING, "Profile lookup timeout: ", ex);
         }
         return new GlowOfflinePlayer(this, new PlayerProfile(null, uuid));
     }
