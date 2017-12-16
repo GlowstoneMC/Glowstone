@@ -1,5 +1,6 @@
 package net.glowstone.block;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import net.glowstone.block.blocktype.BlockAnvil;
@@ -149,7 +150,7 @@ public final class ItemTable {
         INSTANCE.registerBuiltins();
     }
 
-    private final Map<Material, ItemType> materialToType = new HashMap<>(512);
+    private final EnumMap<Material, ItemType> materialToType = new EnumMap<>(Material.class);
     private final Map<String, ItemType> extraTypes = new HashMap<>();
     private int nextBlockId;
     private int nextItemId;
