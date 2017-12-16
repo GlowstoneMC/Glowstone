@@ -186,6 +186,7 @@ public final class GlowBlock implements Block {
         return getTypeIdNoCache();
     }
 
+    @Deprecated
     private int getTypeIdNoCache() {
         return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
     }
@@ -546,7 +547,7 @@ public final class GlowBlock implements Block {
                     blockFace = null;
                 }
 
-                BlockType notifyType = itemTable.getBlock(notify.getTypeId());
+                BlockType notifyType = itemTable.getBlock(notify.getType());
                 if (notifyType != null) {
                     notifyType.onNearBlockChanged(notify, blockFace, this, oldType, oldData, newType, newData);
                 }

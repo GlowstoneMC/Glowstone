@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import com.google.common.base.Preconditions;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -16,6 +17,7 @@ import org.bukkit.util.Vector;
 public class ItemType {
 
     private int id = -1;
+    private Material material;
 
     private BlockType placeAs;
 
@@ -28,26 +30,30 @@ public class ItemType {
      * Get the id assigned to this ItemType.
      *
      * @return The corresponding id.
+     * @deprecated Magic value
      */
+    @Deprecated
     public final int getId() {
-        return id;
+        return material == null ? id : material.getId();
     }
 
     /**
-     * Assign an id number to this ItemType (for internal use only).
+     * Assign an item ID to this ItemType (for internal use only).
      *
      * @param id The internal item id for this item.
+     * @deprecated Magic value
      */
+    @Deprecated
     public final void setId(int id) {
-        if (this.id != -1) {
-            throw new IllegalStateException("Id is already set in " + this);
+        if (material != null && this.id != -1) {
+            throw new IllegalStateException("ID is already set in " + this);
         }
-        this.id = id;
+        Material mat = Material.getMaterial(id);
 
-        // pull a few defaults from Material if possible
-        Material mat = getMaterial();
-        if (mat != null) {
-            maxStackSize = mat.getMaxStackSize();
+        if (mat == null) {
+            this.id = id;
+        } else {
+            setMaterial(mat);
         }
     }
 
@@ -57,7 +63,22 @@ public class ItemType {
      * @return The corresponding Material.
      */
     public final Material getMaterial() {
-        return Material.getMaterial(getId());
+        return material;
+    }
+
+    /**
+     * Assign a Material to this ItemType (for internal use only).
+     *
+     * @param material The internal material for this item.
+     */
+    public final void setMaterial(Material material) {
+        if (this.material != null && id != -1) {
+            throw new IllegalStateException("Material is already set in " + this);
+        }
+        Preconditions.checkNotNull(material);
+        this.material = material;
+        id = material.getId();
+        maxStackSize = material.getMaxStackSize();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -161,7 +182,7 @@ public class ItemType {
 
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "{" + getId() + " -> " + getMaterial() + "}";
+        return getClass().getSimpleName() + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
     }
 
     /**
