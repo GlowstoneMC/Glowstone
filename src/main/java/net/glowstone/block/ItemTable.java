@@ -151,7 +151,7 @@ public final class ItemTable {
     }
 
     private final EnumMap<Material, ItemType> materialToType = new EnumMap<>(Material.class);
-    private final Map<String, ItemType> extraTypes = new HashMap<>();
+    private final Map<NamespacedKey, ItemType> extraTypes = new HashMap<>();
     private int nextBlockId;
     private int nextItemId;
 
@@ -526,7 +526,7 @@ public final class ItemTable {
         } else {
             id = nextItemId;
         }
-        if (extraTypes.putIfAbsent(key.toString(), type) == null) {
+        if (extraTypes.putIfAbsent(key, type) == null) {
             type.setId(id);
             if (block) {
                 nextBlockId++;
