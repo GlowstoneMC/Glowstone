@@ -3,9 +3,10 @@ package net.glowstone.entity.projectile;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Monster;
 import org.bukkit.util.Vector;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
@@ -41,7 +42,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public void collide(LivingEntity entity) {
-        entity.damage(6);
+        entity.damage(getShooter() instanceof Dispenser ? 1 : 6);
         remove();
     }
 
@@ -73,8 +74,8 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Override public PickupStatus getPickupStatus() {
         PickupStatus customPickupStatus = this.customPickupStatus;
         return customPickupStatus != null ? customPickupStatus :
-                getShooter() instanceof Player ? PickupStatus.ALLOWED :
-                PickupStatus.DISALLOWED;
+                getShooter() instanceof Monster ? PickupStatus.DISALLOWED :
+                PickupStatus.ALLOWED;
     }
 
     @Override public void setPickupStatus(PickupStatus pickupStatus) {
