@@ -79,14 +79,92 @@ import net.glowstone.entity.projectile.GlowSplashPotion;
 import net.glowstone.entity.projectile.GlowThrownExpBottle;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.io.entity.EntityStorage;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.Blaze;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.CaveSpider;
+import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Donkey;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.ElderGuardian;
+import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Endermite;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Evoker;
+import org.bukkit.entity.EvokerFangs;
+import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Giant;
+import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Husk;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LeashHitch;
+import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.LingeringPotion;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.Mule;
+import org.bukkit.entity.MushroomCow;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Painting;
+import org.bukkit.entity.Parrot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.PolarBear;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Shulker;
+import org.bukkit.entity.Silverfish;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.SkeletonHorse;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Snowman;
+import org.bukkit.entity.SpectralArrow;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.SplashPotion;
+import org.bukkit.entity.Squid;
+import org.bukkit.entity.Stray;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.ThrownExpBottle;
+import org.bukkit.entity.TippedArrow;
+import org.bukkit.entity.Vex;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Vindicator;
+import org.bukkit.entity.Weather;
+import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wither;
+import org.bukkit.entity.WitherSkeleton;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
+import org.bukkit.entity.ZombieHorse;
+import org.bukkit.entity.ZombieVillager;
 
 public class EntityRegistry {
 
     private static final Map<String, CustomEntityDescriptor> CUSTOM_ENTITIES = new HashMap<>();
 
-    private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITIES =
-        ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
+    private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>>
+            ENTITIES = ImmutableBiMap
+            .<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
             .put(AbstractHorse.class, GlowAbstractHorse.class)
             .put(AreaEffectCloud.class, GlowAreaEffectCloud.class)
             .put(ArmorStand.class, GlowArmorStand.class)
@@ -189,6 +267,11 @@ public class EntityRegistry {
         return ENTITIES.get(clazz);
     }
 
+    /**
+     * Registers an entity type defined by a plugin.
+     *
+     * @param descriptor descriptor of the entity type
+     */
     public static void registerCustomEntity(
         CustomEntityDescriptor<? extends GlowEntity> descriptor) {
         if (descriptor == null || descriptor.getEntityClass() == null || descriptor.getId() == null
