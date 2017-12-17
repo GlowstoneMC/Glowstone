@@ -22,6 +22,12 @@ import net.glowstone.GlowServer;
 public final class LibraryManager {
 
     /**
+     * True if we've detected a system ClassLoader that's not a URLClassLoader, so that we only log
+     * the error once.
+     */
+    private static volatile boolean nonUrlClassLoader = false;
+
+    /**
      * The Maven repository to download from.
      */
     final String repository;
@@ -74,8 +80,14 @@ public final class LibraryManager {
 
         @Override
         public void run() {
+            if (nonUrlClassLoader) {
+                return;
+            }
             ClassLoader sysLoader = ClassLoader.getSystemClassLoader();
             if (!(sysLoader instanceof URLClassLoader)) {
+                nonUrlClassLoader = true;
+                GlowServer.logger.severe("This JVM isn't fully supported. Please use Oracle or"
+                        + " OpenJDK 8. (System class loader must be a URLClassLoader.)");
                 return;
             }
             // check if we already have it
