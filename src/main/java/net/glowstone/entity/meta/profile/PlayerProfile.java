@@ -87,7 +87,6 @@ public class PlayerProfile {
                 }
             });
         }
-        GlowServer.logger.warning("Unable to get UUID for username: " + name);
         return CompletableFuture.completedFuture(null);
     }
 
