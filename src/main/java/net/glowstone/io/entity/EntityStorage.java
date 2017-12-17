@@ -23,8 +23,15 @@ import net.glowstone.entity.passive.GlowMule;
 import net.glowstone.entity.passive.GlowPolarBear;
 import net.glowstone.entity.passive.GlowSkeletonHorse;
 import net.glowstone.entity.passive.GlowSquid;
-import net.glowstone.entity.projectile.*;
 import net.glowstone.entity.passive.GlowZombieHorse;
+import net.glowstone.entity.projectile.GlowArrow;
+import net.glowstone.entity.projectile.GlowEgg;
+import net.glowstone.entity.projectile.GlowEnderPearl;
+import net.glowstone.entity.projectile.GlowLingeringPotion;
+import net.glowstone.entity.projectile.GlowSnowball;
+import net.glowstone.entity.projectile.GlowSpectralArrow;
+import net.glowstone.entity.projectile.GlowSplashPotion;
+import net.glowstone.entity.projectile.GlowThrownExpBottle;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -32,18 +39,21 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 
 /**
- * The class responsible for mapping entity types to their storage methods and reading and writing entity data using those storage methods.
+ * The class responsible for mapping entity types to their storage methods and reading and writing
+ * entity data using those storage methods.
  */
 public final class EntityStorage {
 
     /**
-     * A table which maps entity ids to compound readers. This is generally used to map stored entities to actual entities.
+     * A table which maps entity ids to compound readers. This is generally used to map stored
+     * entities to actual entities.
      */
     private static final Map<String, EntityStore<?>> idTable = new HashMap<>();
     /**
      * A table which maps entities to stores. This is generally used to map entities being stored.
      */
-    private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable = new HashMap<>();
+    private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable
+            = new HashMap<>();
 
     /*
      * Populates the maps with stores.

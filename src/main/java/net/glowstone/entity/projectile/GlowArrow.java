@@ -27,15 +27,16 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     }
 
     @Override
-    public void collide(Block block) {
-    }
-
-    @Override
     public void setOnGround(boolean onGround) {
         super.setOnGround(onGround);
         if (onGround) {
             setVelocity(new Vector(0, 0, 0));
         }
+    }
+
+
+    @Override
+    public void collide(Block block) {
     }
 
     @Override

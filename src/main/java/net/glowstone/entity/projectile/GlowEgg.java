@@ -1,5 +1,7 @@
 package net.glowstone.entity.projectile;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.passive.GlowChicken;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -7,9 +9,6 @@ import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
-
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowEgg extends GlowProjectile implements Egg {
     public GlowEgg(Location location) {
@@ -47,7 +46,9 @@ public class GlowEgg extends GlowProjectile implements Egg {
                 count = 4;
             }
             for (int i = 0; i < count; i++) {
-                GlowChicken chicken = (GlowChicken) location.getWorld().spawnEntity(location.clone().add(0, 1, 0), EntityType.CHICKEN);
+                GlowChicken chicken = (GlowChicken)
+                        location.getWorld().spawnEntity(location.clone().add(0, 1, 0),
+                                EntityType.CHICKEN);
                 chicken.setAge(-24000);
             }
         }

@@ -1,5 +1,8 @@
 package net.glowstone.entity;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +28,9 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.entity.objects.GlowLeashHitch;
+import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
@@ -81,12 +84,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 /**
  * A GlowLivingEntity is a {@link Player} or {@link Monster}.
  *
@@ -115,14 +112,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     protected double maxHealth;
     /**
-     * The LivingEntity's number of ticks since death
+     * The LivingEntity's number of ticks since death.
      */
     @Getter
     protected int deathTicks;
     /**
-     * The entity's movement as a unit vector, applied each tick according to the entity's speed.
-     *
-     * The y value is not used. X is used for forward movement and z is used for sideways movement. These values are relative to the entity's current yaw.
+     * <p>The entity's movement as a unit vector, applied each tick according to the entity's speed.
+     * </p><p>
+     * The y value is not used. X is used for forward movement and z is used for sideways movement.
+     * These values are relative to the entity's current yaw.</p>
      */
     protected Vector movement = new Vector();
     /**
@@ -163,7 +161,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Getter
     private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
     /**
-     * Whether the entity can automatically glide when falling with an Elytra equipped. This value is ignored for players.
+     * Whether the entity can automatically glide when falling with an Elytra equipped. This value
+     * is ignored for players.
      */
     private boolean fallFlying;
     /**
@@ -183,7 +182,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     private boolean headRotated;
     /**
-     * The entity's current state;
+     * The entity's current state.
      */
     private MobState aiState = MobState.NO_AI;
     /**
@@ -571,7 +570,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * The volume of the sounds this entity makes
+     * The volume of the sounds this entity makes.
      *
      * @return the volume of the sounds
      */
@@ -580,7 +579,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * The pitch of the sounds this entity makes
+     * The pitch of the sounds this entity makes.
      *
      * @return the pitch of the sounds
      */
@@ -684,7 +683,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Projectiles
 
     /**
-     * Returns whether the entity's eye location is within a solid block
+     * Returns whether the entity's eye location is within a solid block.
      *
      * @return if the entity is in a solid block
      */
@@ -703,13 +702,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector) {
-        float offset = 0.0F, velocity = 1.5F;
+        float offset = 0.0F;
+        float velocity = 1.5F;
         if (Arrow.class.isAssignableFrom(clazz)) {
             velocity = 3.0F;
             if (this instanceof GlowPlayer) {
                 GlowPlayer player = (GlowPlayer) this;
-                if (player.getUsageItem() != null && player.getUsageItem().getType() == Material.BOW) {
-                    int timeUsed = (int) (20 - (player.getUsageTime() <= 0 ? 0 : player.getUsageTime()));
+                if (player.getUsageItem() != null
+                        && player.getUsageItem().getType() == Material.BOW) {
+                    int timeUsed = (int)
+                            (20 - (player.getUsageTime() <= 0 ? 0 : player.getUsageTime()));
                     velocity = 3.0F * ((float) timeUsed / 20.0F);
                 }
             }
@@ -721,7 +723,18 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return projectile;
     }
 
-    public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector, float offset, float velocity) {
+    /**
+     * Launches a projectile from this entity.
+     *
+     * @param clazz the projectile class
+     * @param vector TODO: document this parameter
+     * @param offset TODO: document this parameter
+     * @param velocity the velocity for the first flight tick
+     * @param <T> the projectile class
+     * @return the launched projectile
+     */
+    public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector,
+            float offset, float velocity) {
         if (vector == null) {
             vector = getVelocity();
         }
@@ -731,7 +744,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return projectile;
     }
 
-    protected <T extends Projectile> T throwProjectile(Class<? extends T> type, Location location, Vector originalVector, float offset, float velocity) {
+    protected <T extends Projectile> T throwProjectile(Class<? extends T> type, Location location,
+            Vector originalVector, float offset, float velocity) {
         double k = Math.toRadians(-1);
         double x = cos(k * location.getPitch()) * sin(k * location.getYaw());
         double y = sin(k * (location.getPitch() - offset));
@@ -741,8 +755,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return projectile;
     }
 
-    private <T extends Projectile> T throwProjectile(Class<? extends T> clazz, Location location, double x, double y, double z, float velocity) {
-        T projectile = ((GlowWorld) location.getWorld()).spawn(location, clazz);
+    private <T extends Projectile> T throwProjectile(Class<? extends T> clazz, Location location,
+            double x, double y, double z, float velocity) {
         double k = Math.sqrt(x * x + y * y + z * z);
         x += (x * (velocity - k)) / k;
         y += (y * (velocity - k)) / k;
@@ -752,6 +766,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         location.setPitch(0);
         location.setYaw(0);
 
+        T projectile = ((GlowWorld) location.getWorld()).spawn(location, clazz);
         projectile.setVelocity(new Vector(x, y, z));
         ((GlowProjectile) projectile).setRawLocation(location);
         return projectile;
@@ -826,11 +841,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                         // split experience
                         Integer[] values = ExperienceSplitter.cut(data.getExperience());
                         for (Integer exp : values) {
-                            double xMod = ThreadLocalRandom.current().nextDouble() - 0.5, zMod =
-                                ThreadLocalRandom.current().nextDouble() - 0.5;
+                            double xmod = ThreadLocalRandom.current().nextDouble() - 0.5;
+                            double zmod = ThreadLocalRandom.current().nextDouble() - 0.5;
                             Location xpLocation = new Location(world,
-                                location.getBlockX() + 0.5 + xMod, location.getY(),
-                                location.getBlockZ() + 0.5 + zMod);
+                                location.getBlockX() + 0.5 + xmod, location.getY(),
+                                location.getBlockZ() + 0.5 + zmod);
                             GlowExperienceOrb orb = (GlowExperienceOrb) world
                                 .spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
                             orb.setExperience(exp);
@@ -866,6 +881,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     case LAVA:
                         isFireDamage = true;
                         break;
+                    default:
+                        // do nothing
                 }
             }
             if (isFireDamage) {
@@ -1079,10 +1096,20 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING, gliding);
     }
 
+    /**
+     * Returns the AI state.
+     *
+     * @return the AI state
+     */
     public MobState getState() {
         return aiState;
     }
 
+    /**
+     * Sets the AI state.
+     *
+     * @param state the new AI state
+     */
     public void setState(MobState state) {
         if (aiState != state) {
             aiState = state;

@@ -1,6 +1,8 @@
 package net.glowstone.entity.projectile;
 
 import com.flowpowered.network.Message;
+import java.util.Arrays;
+import java.util.List;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
@@ -12,9 +14,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
@@ -81,16 +80,9 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     protected abstract int getObjectId();
 
-    public LivingEntity _INVALID_getShooter() {
-        return null;
-    }
-
     @Override
     public ProjectileSource getShooter() {
         return shooter;
-    }
-
-    public void _INVALID_setShooter(LivingEntity livingEntity) {
     }
 
     @Override

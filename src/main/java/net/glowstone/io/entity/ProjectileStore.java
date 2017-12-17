@@ -1,10 +1,9 @@
 package net.glowstone.io.entity;
 
+import java.lang.reflect.Constructor;
 import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
-
-import java.lang.reflect.Constructor;
 
 class ProjectileStore<T extends GlowProjectile> extends EntityStore<T> {
 

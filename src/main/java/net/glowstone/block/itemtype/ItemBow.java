@@ -1,7 +1,6 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Projectile;
