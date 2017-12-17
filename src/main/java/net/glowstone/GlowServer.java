@@ -1384,6 +1384,15 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.ANNOUNCE_ACHIEVEMENTS);
     }
 
+    /**
+     * Get the time after a profile lookup should be cancelled.
+     *
+     * @return The maximum lookup time in seconds or zero to never cancel the lookup.
+     */
+    public int getProfileLookupTimeout() {
+        return config.getInt(Key.PROFILE_LOOKUP_TIMEOUT);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Static server properties
 
@@ -1688,10 +1697,10 @@ public final class GlowServer implements Server {
     public OfflinePlayer getOfflinePlayer(String name) {
         try {
             // probably blocking, timeout depending on config setting
-            if (config.getInt(Key.PROFILE_LOOKUP_TIMEOUT) <= 0) {
+            if (getProfileLookupTimeout() <= 0) {
                 return getOfflinePlayerAsync(name).get();
             } else {
-                return getOfflinePlayerAsync(name).get(config.getInt(Key.PROFILE_LOOKUP_TIMEOUT), TimeUnit.SECONDS);
+                return getOfflinePlayerAsync(name).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException | ExecutionException ex) {
             GlowServer.logger.log(Level.SEVERE, "UUID lookup interrupted: ", ex);
@@ -1706,10 +1715,10 @@ public final class GlowServer implements Server {
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
         try {
             // probably blocking, timeout depending on config setting
-            if (config.getInt(Key.PROFILE_LOOKUP_TIMEOUT) <= 0) {
+            if (getProfileLookupTimeout() <= 0) {
                 return getOfflinePlayerAsync(uuid).get();
             } else {
-                return getOfflinePlayerAsync(uuid).get(config.getInt(Key.PROFILE_LOOKUP_TIMEOUT), TimeUnit.SECONDS);
+                return getOfflinePlayerAsync(uuid).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException | ExecutionException ex) {
             GlowServer.logger.log(Level.SEVERE, "Profile lookup interrupted: ", ex);

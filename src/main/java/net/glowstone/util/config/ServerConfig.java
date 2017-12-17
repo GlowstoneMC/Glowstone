@@ -117,7 +117,7 @@ public final class ServerConfig {
         }
         int integer = config.getInt(key.path, (Integer) key.def);
         parameters.put(key, integer);
-        return config.getInt(key.path, (Integer) key.def);
+        return integer;
     }
 
     public boolean getBoolean(Key key) {
