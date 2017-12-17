@@ -1,13 +1,12 @@
 package net.glowstone.entity.projectile;
 
+import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.SplashPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-
-import java.util.Collection;
 
 // TODO: stubs
 public class GlowSplashPotion extends GlowProjectile implements SplashPotion {

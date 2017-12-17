@@ -3,9 +3,8 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.UseItemMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.player.UseItemMessage;
 
 public class UseItemCodec implements Codec<UseItemMessage> {
 
