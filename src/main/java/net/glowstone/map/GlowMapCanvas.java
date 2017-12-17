@@ -20,6 +20,14 @@ public final class GlowMapCanvas implements MapCanvas {
     private MapCursorCollection cursors = new MapCursorCollection();
     private byte[] base;
 
+    /**
+     * Creates a new GlowMapCanvas for the given {@link MapView} and renders the contents seen by
+     * the given player according to all the MapView's renderers.
+     *
+     * @param mapView The {@link MapView} to associate with this canvas and render
+     * @param player The player to pass to {@link MapRenderer#render(MapView, MapCanvas, Player)}
+     * @return a new, rendered {@link GlowMapCanvas}
+     */
     public static GlowMapCanvas createAndRender(MapView mapView, Player player) {
         GlowMapCanvas out = new GlowMapCanvas(mapView);
         for (MapRenderer renderer : mapView.getRenderers()) {
@@ -93,6 +101,11 @@ public final class GlowMapCanvas implements MapCanvas {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Converts a snapshot of this canvas to a {@link Section} for transmission to the client.
+     *
+     * @return a {@link Section} holding a copy of this canvas's contents
+     */
     public Section toSection() {
         return new Section(MAP_SIZE, MAP_SIZE, mapView.getCenterX(), mapView.getCenterZ(), buffer.clone());
     }
