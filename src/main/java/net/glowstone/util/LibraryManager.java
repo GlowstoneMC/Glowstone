@@ -74,6 +74,10 @@ public final class LibraryManager {
 
         @Override
         public void run() {
+            ClassLoader sysLoader = ClassLoader.getSystemClassLoader();
+            if (!(sysLoader instanceof URLClassLoader)) {
+                return;
+            }
             // check if we already have it
             File file = new File(directory, getLibrary());
             if (!checksum(file, checksum)) {
@@ -96,7 +100,6 @@ public final class LibraryManager {
             }
 
             // hack it onto the classpath
-            URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
             try {
                 Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                 method.setAccessible(true);
