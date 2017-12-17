@@ -66,7 +66,7 @@ public class BlockDoor extends BlockType {
             return;
         }
 
-        BlockFace facing = player.getDirection();
+        BlockFace facing = player.getCardinalFacing();
         ((Door) data).setFacingDirection(facing.getOppositeFace());
 
         // modify facing for double-doors

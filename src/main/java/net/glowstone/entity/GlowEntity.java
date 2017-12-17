@@ -343,7 +343,7 @@ public abstract class GlowEntity implements Entity {
      *
      * @return The cardinal BlockFace of this entity.
      */
-    public BlockFace getDirection() {
+    public BlockFace getCardinalFacing() {
         double rot = getLocation().getYaw() % 360;
         if (rot < 0) {
             rot += 360.0;

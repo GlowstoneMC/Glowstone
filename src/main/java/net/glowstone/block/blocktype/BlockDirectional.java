@@ -82,6 +82,6 @@ public class BlockDirectional extends BlockType {
                 return DOWN;
             }
         }
-        return player.getDirection().getOppositeFace();
+        return player.getCardinalFacing().getOppositeFace();
     }
 }
