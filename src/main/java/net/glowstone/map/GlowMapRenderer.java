@@ -34,12 +34,14 @@ public final class GlowMapRenderer extends MapRenderer {
         Location playerLoc = player.getLocation();
         int playerX = playerLoc.getBlockX();
         int playerZ = playerLoc.getBlockZ();
+        int cornerX = map.getCenterX() - ((MAP_SIZE / 2) << scaleShift);
+        int cornerZ = map.getCenterZ() - ((MAP_SIZE / 2) << scaleShift);
         for (int pixelX = 0; pixelX < MAP_SIZE; pixelX++) {
             for (int pixelY = 0; pixelY < MAP_SIZE; pixelY++) {
-                int worldX = map.getCenterX() + (pixelX - MAP_SIZE/2) << scaleShift;
-                int worldZ = map.getCenterZ() + (pixelY - MAP_SIZE/2) << scaleShift;
-                if (((worldX - playerX)*(worldX - playerX) + (worldZ - playerZ)*(worldZ - playerZ)) <
-                        MAP_SIGHT_DISTANCE_SQUARED) {
+                int worldX = cornerX + (pixelX << scaleShift);
+                int worldZ = cornerZ + (pixelY << scaleShift);
+                if (((worldX - playerX) * (worldX - playerX)
+                        + (worldZ - playerZ) * (worldZ - playerZ)) < MAP_SIGHT_DISTANCE_SQUARED) {
                     // TODO: Should the highest block be skipped over if it's e.g. a flower or a
                     // technical block?
                     byte blockColor =
