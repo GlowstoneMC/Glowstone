@@ -62,6 +62,8 @@ public interface MaterialValueManager {
         /**
          * Returns the base map color for this value. Map pixels with this as the highest block can
          * be this value plus 0 to 3.
+         *
+         * @return the base map color for this material
          */
         byte getBaseMapColor();
     }
