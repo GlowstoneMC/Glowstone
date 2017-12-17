@@ -90,7 +90,8 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
             return 0.6;
         }
 
-        @Override public byte getBaseMapColor() {
+        @Override
+        public byte getBaseMapColor() {
             return ((Number) get("baseMapColor")).byteValue();
         }
     }
