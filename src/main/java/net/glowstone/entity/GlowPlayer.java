@@ -61,6 +61,7 @@ import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.map.GlowMapCanvas;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
@@ -73,6 +74,7 @@ import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
 import net.glowstone.net.message.play.game.JoinGameMessage;
+import net.glowstone.net.message.play.game.MapDataMessage;
 import net.glowstone.net.message.play.game.MultiBlockChangeMessage;
 import net.glowstone.net.message.play.game.NamedSoundEffectMessage;
 import net.glowstone.net.message.play.game.PlayEffectMessage;
@@ -2404,7 +2406,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendMap(MapView map) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        GlowMapCanvas mapCanvas = GlowMapCanvas.createAndRender(map, this);
+        session.send(new MapDataMessage(map.getId(), map.getScale().ordinal(), Collections.emptyList(),
+            mapCanvas.toSection()));
     }
 
     @Override
