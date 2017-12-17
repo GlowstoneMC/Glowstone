@@ -89,5 +89,9 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         public double getSlipperiness() {
             return 0.6;
         }
+
+        @Override public byte getBaseMapColor() {
+            return ((Number) get("baseMapColor")).byteValue();
+        }
     }
 }
