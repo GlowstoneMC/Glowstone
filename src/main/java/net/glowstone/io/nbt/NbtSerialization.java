@@ -1,8 +1,13 @@
 package net.glowstone.io.nbt;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
@@ -10,11 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Utility methods for transforming various objects to and from NBT.
@@ -25,7 +25,9 @@ public final class NbtSerialization {
     }
 
     /**
-     * Read an item stack in from an NBT tag. Returns null if no item exists.
+     * Read an item stack in from an NBT tag.
+     *
+     * <p>Returns null if no item exists.
      *
      * @param tag The tag to read from.
      * @return The resulting ItemStack, or null.
@@ -53,11 +55,12 @@ public final class NbtSerialization {
     }
 
     /**
-     * Write an item stack to an NBT tag. Null stacks produce an empty tag,
-     * and if slot is negative it is omitted from the result.
+     * Write an item stack to an NBT tag.
+     *
+     * <p>Null stacks produce an empty tag, and if slot is negative it is omitted from the result.
      *
      * @param stack The stack to write, or null.
-     * @param slot  The slot, or negative to omit.
+     * @param slot The slot, or negative to omit.
      * @return The resulting tag.
      */
     public static CompoundTag writeItem(ItemStack stack, int slot) {
@@ -68,9 +71,7 @@ public final class NbtSerialization {
         tag.putString("id", ItemIds.getName(stack.getType()));
         tag.putShort("Damage", stack.getDurability());
         tag.putByte("Count", stack.getAmount());
-        if (slot >= 0) {
-            tag.putByte("Slot", slot);
-        }
+        tag.putByte("Slot", slot);
         CompoundTag meta = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
         if (meta != null) {
             tag.putCompound("tag", meta);
@@ -82,14 +83,17 @@ public final class NbtSerialization {
      * Read a full inventory (players, chests, etc.) from a compound list.
      *
      * @param tagList The list of CompoundTags to read from.
-     * @param start   The slot number to consider the inventory's start.
-     * @param size    The desired size of the inventory.
+     * @param start The slot number to consider the inventory's start.
+     * @param size The desired size of the inventory.
      * @return An array with the contents of the inventory.
      */
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
         for (CompoundTag tag : tagList) {
-            byte slot = tag.isByte("Slot") ? tag.getByte("Slot") : 0;
+            if (!tag.isByte("Slot")) {
+                continue;
+            }
+            byte slot = tag.getByte("Slot");
             if (slot >= start && slot < start + size) {
                 items[slot - start] = readItem(tag);
             }
@@ -108,7 +112,7 @@ public final class NbtSerialization {
         List<CompoundTag> out = new ArrayList<>();
         for (int i = 0; i < items.length; i++) {
             ItemStack stack = items[i];
-            if (stack != null) {
+            if (!InventoryUtil.isEmpty(stack)) {
                 out.add(writeItem(stack, start + i));
             }
         }
@@ -118,7 +122,7 @@ public final class NbtSerialization {
     /**
      * Attempt to resolve a world based on the contents of a compound tag.
      *
-     * @param server   The server to look up worlds in.
+     * @param server The server to look up worlds in.
      * @param compound The tag to read the world from.
      * @return The world, or null if none could be found.
      */
@@ -145,10 +149,9 @@ public final class NbtSerialization {
     }
 
     /**
-     * Save world identifiers (UUID and dimension) to a compound tag for
-     * later lookup.
+     * Save world identifiers (UUID and dimension) to a compound tag for later lookup.
      *
-     * @param world    The world to identify.
+     * @param world The world to identify.
      * @param compound The tag to write to.
      */
     public static void writeWorld(World world, CompoundTag compound) {
@@ -161,12 +164,13 @@ public final class NbtSerialization {
     }
 
     /**
-     * Read a Location from the "Pos" and "Rotation" children of a tag. If
-     * "Pos" is absent or invalid, null is returned. If "Rotation" is absent
-     * or invalid, it is skipped and a location without rotation is returned.
+     * Read a Location from the "Pos" and "Rotation" children of a tag.
+     *
+     * <p>If "Pos" is absent or invalid, null is returned.
+     * <p>If "Rotation" is absent or invalid, it is skipped and a location without rotation is returned.
      *
      * @param world The world of the location (see readWorld).
-     * @param tag   The tag to read from.
+     * @param tag The tag to read from.
      * @return The location, or null.
      */
     public static Location listTagsToLocation(World world, CompoundTag tag) {
@@ -193,8 +197,9 @@ public final class NbtSerialization {
     }
 
     /**
-     * Write a Location to the "Pos" and "Rotation" children of a tag. Does
-     * not save world information, use writeWorld instead.
+     * Write a Location to the "Pos" and "Rotation" children of a tag.
+     *
+     * <p>Does not save world information, use writeWorld instead.
      *
      * @param loc The location to write.
      * @param tag The tag to write to.
@@ -205,8 +210,9 @@ public final class NbtSerialization {
     }
 
     /**
-     * Create a Vector from a list of doubles. If the list is invalid, a
-     * zero vector is returned.
+     * Create a Vector from a list of doubles.
+     *
+     * <p>If the list is invalid, a zero vector is returned.
      *
      * @param list The list to read from.
      * @return The Vector.

@@ -17,18 +17,24 @@ public class BlockTorch extends BlockNeedsAttached {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Torch) {
-            ((Torch) data).setFacingDirection(face);
+            if (canAttachTo(state.getBlock(), face)) {
+                ((Torch) data).setFacingDirection(face);
+            } else {
+                ((Torch) data).setFacingDirection(BlockFace.UP);
+            }
         } else {
             warnMaterialData(Torch.class, data);
         }
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 

@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 3,
+          "min": 1
+        },
+        "item": "ink_sack"
+      }
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}

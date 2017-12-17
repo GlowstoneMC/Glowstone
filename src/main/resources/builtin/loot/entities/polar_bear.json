@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "data": [
+          {
+            "chance": 0.25,
+            "value": 1
+          }
+        ],
+        "item": "raw_fish"
+      }
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}

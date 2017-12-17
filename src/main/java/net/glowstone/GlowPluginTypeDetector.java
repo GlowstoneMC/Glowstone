@@ -1,11 +1,6 @@
 package net.glowstone;
 
 import com.google.common.io.PatternFilenameFilter;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -16,6 +11,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
 public class GlowPluginTypeDetector {
 
@@ -43,12 +42,7 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        GlowServer.logger.info("PluginTypeDetector: found " +
-                bukkitPlugins.size() + " Bukkit, " +
-                spongePlugins.size() + " Sponge, " +
-                (forgefPlugins.size() + forgenPlugins.size()) + " Forge, " +
-                canaryPlugins.size() + " Canary, " +
-                unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
+        GlowServer.logger.info("PluginTypeDetector: found " + bukkitPlugins.size() + " Bukkit, " + spongePlugins.size() + " Sponge, " + (forgefPlugins.size() + forgenPlugins.size()) + " Forge, " + canaryPlugins.size() + " Canary, " + unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
@@ -109,16 +103,29 @@ public class GlowPluginTypeDetector {
             GlowServer.logger.log(Level.WARNING, "PluginTypeDetector: Error reading " + url, ex);
         }
 
-        if (isBukkit) bukkitPlugins.add(file);
-        if (isSponge) spongePlugins.add(file);
-        if (isCanary) canaryPlugins.add(file);
-        if (isForgeF) forgefPlugins.add(file);
-        if (isForgeN) forgenPlugins.add(file);
+        if (isBukkit) {
+            bukkitPlugins.add(file);
+        }
+        if (isSponge) {
+            spongePlugins.add(file);
+        }
+        if (isCanary) {
+            canaryPlugins.add(file);
+        }
+        if (isForgeF) {
+            forgefPlugins.add(file);
+        }
+        if (isForgeN) {
+            forgenPlugins.add(file);
+        }
 
-        if (!isBukkit && !isSponge && !isCanary && !isForgeF && !isForgeN) unrecognizedPlugins.add(file);
+        if (!isBukkit && !isSponge && !isCanary && !isForgeF && !isForgeN) {
+            unrecognizedPlugins.add(file);
+        }
     }
 
-    private class GlowVisitor extends ClassVisitor {
+    private static class GlowVisitor extends ClassVisitor {
+
         public boolean isSponge;
         public boolean isForgeF;
         public boolean isForgeN;

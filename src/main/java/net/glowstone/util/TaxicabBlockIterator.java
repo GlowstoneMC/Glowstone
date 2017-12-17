@@ -1,15 +1,17 @@
 package net.glowstone.util;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+import java.util.Set;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.*;
-
 public class TaxicabBlockIterator implements Iterator<Block> {
 
-    private static final BlockFace[] VALID_FACES = new BlockFace[]{
-            BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST
-    };
+    private static final BlockFace[] VALID_FACES = new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
 
     private final Queue<Object> pendingAnalysis = new LinkedList<>();
     private final Queue<Block> nextValidBlocks = new LinkedList<>();

@@ -5,31 +5,40 @@ import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.material.MaterialData;
 
 /**
  * An Inventory representing the items a player is holding.
  */
 public class GlowPlayerInventory extends GlowInventory implements PlayerInventory, EntityEquipment {
 
-    private static final int SIZE = 36;
+    private static final int SIZE = InventoryType.PLAYER.getDefaultSize();
 
-    private static final int OFF_HAND_SLOT = 40;
+    /*
+     * Armor slots
+     */
     private static final int BOOTS_SLOT = 36;
     private static final int LEGGINGS_SLOT = 37;
     private static final int CHESTPLATE_SLOT = 38;
     private static final int HELMET_SLOT = 39;
 
-    /**
-     * The armor contents.
+    /*
+     * Off hand slot
      */
-    private final ItemStack[] armor = new ItemStack[4];
+    private static final int OFF_HAND_SLOT = 40;
 
     /**
      * The crafting inventory.
@@ -44,18 +53,23 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      */
     private int heldSlot;
     /**
-     * Item in off-hand slot.
+     * The human entity for this inventory, stored for location.
      */
-    private ItemStack offHand;
+    private GlowHumanEntity owner;
 
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
         // 36 = 4 rows of 9
         // + 4 = armor, completed inventory
+        // + 1 = off hand slot
         super(owner, InventoryType.PLAYER, SIZE);
         crafting = new GlowCraftingInventory(owner, InventoryType.CRAFTING);
-        for (int i = 0; i < 9; i++) {
+        this.owner = owner;
+        for (int i = 0; i <= 8; i++) {
             getSlot(i).setType(SlotType.QUICKBAR);
+        }
+        for (int i = BOOTS_SLOT; i <= HELMET_SLOT; i++) {
+            getSlot(i).setType(SlotType.ARMOR);
         }
     }
 
@@ -63,7 +77,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     // Internals
 
     public static boolean canEquipInHelmetSlot(Material material) {
-        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN || material == Material.SKULL_ITEM;
+        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN
+            || material == Material.SKULL_ITEM;
     }
 
     /**
@@ -76,21 +91,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     public void setRawHeldItemSlot(int slot) {
-        if (slot < 0 || slot > 8)
+        if (slot < 0 || slot > 8) {
             throw new IllegalArgumentException(slot + " not in range 0..8");
-        heldSlot = slot;
-        setItemInHand(getItemInHand());  // send to player again just in case
-    }
-
-    @Override
-    public SlotType getSlotType(int slot) {
-        if (slot == OFF_HAND_SLOT) {
-            return SlotType.CONTAINER;
-        } else if (slot >= SIZE) {
-            return SlotType.ARMOR;
-        } else {
-            return super.getSlotType(slot);
         }
+        heldSlot = slot;
+        setItemInMainHand(getItemInMainHand());  // send to player again just in case
     }
 
     @Override
@@ -111,7 +116,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         GlowInventory top = (GlowInventory) view.getTopInventory();
 
         // If this is the default inventory try to equip the item as armor first
@@ -183,23 +189,46 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public ItemStack getItem(EquipmentSlot equipmentSlot) {
-        return null;
+    public ItemStack getItem(EquipmentSlot slot) {
+        switch (slot) {
+            case HAND:
+                return getItemInMainHand();
+            case OFF_HAND:
+                return getItemInOffHand();
+            case FEET:
+                return getBoots();
+            case LEGS:
+                return getLeggings();
+            case CHEST:
+                return getChestplate();
+            case HEAD:
+                return getHelmet();
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void setItem(EquipmentSlot equipmentSlot, ItemStack itemStack) {
-
-    }
-
-    @Override
-    public void setItem(int index, ItemStack item) {
-        if (index == OFF_HAND_SLOT) {
-            offHand = item;
-        } else if (index >= SIZE) {
-            armor[index - SIZE] = item;
-        } else {
-            super.setItem(index, item);
+    public void setItem(EquipmentSlot slot, ItemStack item) {
+        switch (slot) {
+            case HAND:
+                setItemInMainHand(item);
+                break;
+            case OFF_HAND:
+                setItemInOffHand(item);
+                break;
+            case FEET:
+                setBoots(item);
+                break;
+            case LEGS:
+                setLeggings(item);
+                break;
+            case CHEST:
+                setChestplate(item);
+                break;
+            case HEAD:
+                setHelmet(item);
+                break;
         }
     }
 
@@ -207,24 +236,32 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     // Interface implementation
 
     @Override
-    public ItemStack getItem(int index) {
-        if (index == OFF_HAND_SLOT) {
-            return offHand;
-        } else if (index >= SIZE) {
-            return armor[index - SIZE];
-        } else {
-            return super.getItem(index);
+    public ItemStack[] getStorageContents() {
+        ItemStack[] storage = new ItemStack[36];
+        for (int i = 0; i < 36; i++) {
+            storage[i] = getItem(i);
+        }
+        return storage;
+    }
+
+    @Override
+    public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
+        if (items.length != 36) {
+            throw new IllegalArgumentException("Length of player storage must be 36");
+        }
+
+        for (int i = 0; i < 36; i++) {
+            setItem(i, items[i]);
         }
     }
 
     @Override
     public ItemStack[] getArmorContents() {
+        ItemStack[] armor = new ItemStack[4];
+        for (int i = 0; i < 4; i++) {
+            armor[i] = getItem(BOOTS_SLOT + i);
+        }
         return armor;
-    }
-
-    @Override
-    public ItemStack[] getExtraContents() {
-        return new ItemStack[0];
     }
 
     @Override
@@ -232,14 +269,22 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         if (items.length != 4) {
             throw new IllegalArgumentException("Length of armor must be 4");
         }
-        for (int i = 0; i < 4; ++i) {
-            setItem(SIZE + i, items[i]);
+        for (int i = 0; i < 4; i++) {
+            setItem(BOOTS_SLOT + i, items[i]);
         }
     }
 
     @Override
-    public void setExtraContents(ItemStack[] itemStacks) {
+    public ItemStack[] getExtraContents() {
+        return new ItemStack[]{getItemInOffHand()};
+    }
 
+    @Override
+    public void setExtraContents(ItemStack[] items) {
+        if (items.length != 1) {
+            throw new IllegalArgumentException("Length of extra contents must be 1");
+        }
+        setItemInOffHand(items[0]);
     }
 
     @Override
@@ -284,32 +329,34 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public ItemStack getItemInMainHand() {
-        return getItemInHand();
+        return getItem(heldSlot).clone();
     }
 
     @Override
-    public void setItemInMainHand(ItemStack itemStack) {
-        setItemInHand(itemStack);
+    public void setItemInMainHand(ItemStack item) {
+        setItem(heldSlot, item);
     }
 
     @Override
     public ItemStack getItemInOffHand() {
-        return offHand;
+        return getItem(OFF_HAND_SLOT).clone();
     }
 
     @Override
-    public void setItemInOffHand(ItemStack itemStack) {
-        this.offHand = itemStack;
+    public void setItemInOffHand(ItemStack item) {
+        setItem(OFF_HAND_SLOT, item);
     }
 
     @Override
+    @Deprecated
     public ItemStack getItemInHand() {
-        return getItem(heldSlot) == null ? new ItemStack(Material.AIR, 0) : getItem(heldSlot);
+        return getItemInMainHand();
     }
 
     @Override
-    public void setItemInHand(ItemStack stack) {
-        setItem(heldSlot, stack);
+    @Deprecated
+    public void setItemInHand(ItemStack item) {
+        setItemInMainHand(item);
     }
 
     @Override
@@ -326,17 +373,37 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // EntityEquipment implementation
+    @Override
+    public Location getLocation() {
+        return owner.getLocation();
+    }
+
+    public int clear(Material type, MaterialData data) {
+        int numCleared = 0;
+        for (int i = 0; i < getSize(); ++i) {
+            ItemStack stack = getItem(i);
+            if (stack != null && (type == null || stack.getType() == type) && (data == null || stack
+                .getData().equals(data))) {
+                setItem(i, InventoryUtil.createEmptyStack());
+                if (!InventoryUtil.isEmpty(stack)) {
+                    // never report AIR as removed - else will report all empty slots cleared
+                    numCleared += stack.getAmount(); // report # items, not # stacks removed
+                }
+            }
+        }
+        return numCleared;
+    }
 
     @Override
+    @Deprecated
     public int clear(int id, int data) {
         int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
-            if (stack != null && (stack.getTypeId() == id || id == -1) && (stack.getDurability() == data || data == -1)) {
-                setItem(i, null);
-                if (stack.getType() != Material.AIR) {
+            if (stack != null && (id == -1 || stack.getTypeId() == id) && (data == -1
+                || stack.getData().getData() == data)) {
+                setItem(i, InventoryUtil.createEmptyStack());
+                if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared
                     numCleared += stack.getAmount(); // report # items, not # stacks removed
                 }
@@ -347,32 +414,32 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public float getItemInHandDropChance() {
-        return 1;
+        return getItemInMainHandDropChance();
     }
 
     @Override
     public void setItemInHandDropChance(float chance) {
-        throw new UnsupportedOperationException();
+        setItemInMainHandDropChance(chance);
     }
 
     @Override
     public float getItemInMainHandDropChance() {
-        return 0;
+        return 1;
     }
 
     @Override
     public void setItemInMainHandDropChance(float chance) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public float getItemInOffHandDropChance() {
-        return 0;
+        return 1;
     }
 
     @Override
     public void setItemInOffHandDropChance(float chance) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override

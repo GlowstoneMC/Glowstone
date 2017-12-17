@@ -1,14 +1,19 @@
 package net.glowstone.entity.meta;
 
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import org.bukkit.util.BlockVector;
 
 /**
  * A map for entity metadata.
@@ -47,10 +52,13 @@ public class MetadataMap {
                 }
             }
             if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
-                throw new IllegalArgumentException("Cannot assign " + value + " to " + index + ", expects " + index.getType());
+                throw new IllegalArgumentException(
+                    "Cannot assign " + value + " to " + index + ", expects " + index.getType());
             }
             if (!index.appliesTo(entityClass)) {
-                throw new IllegalArgumentException("Index " + index + " does not apply to " + entityClass.getSimpleName() + ", only " + index.getAppliesTo().getSimpleName());
+                throw new IllegalArgumentException(
+                    "Index " + index + " does not apply to " + entityClass.getSimpleName()
+                        + ", only " + index.getAppliesTo().getSimpleName());
             }
         }
 
@@ -62,6 +70,19 @@ public class MetadataMap {
 
     public Object get(MetadataIndex index) {
         return map.get(index);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T get(MetadataIndex index, MetadataType expected, T def) {
+        if (index.getType() != expected) {
+            throw new IllegalArgumentException(
+                "Cannot get " + index + ": is " + index.getType() + ", not " + expected);
+        }
+        T t = (T) map.get(index);
+        if (t == null) {
+            return def;
+        }
+        return t;
     }
 
     public boolean getBit(MetadataIndex index, int bit) {
@@ -82,7 +103,8 @@ public class MetadataMap {
         }
         Object o = get(index);
         if (!(o instanceof Number)) {
-            throw new IllegalArgumentException("Index " + index + " is of non-number type " + index.getType());
+            throw new IllegalArgumentException(
+                "Index " + index + " is of non-number type " + index.getType());
         }
         return (Number) o;
     }
@@ -111,21 +133,21 @@ public class MetadataMap {
         return get(index, MetadataType.ITEM, null);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T get(MetadataIndex index, MetadataType expected, T def) {
-        if (index.getType() != expected) {
-            throw new IllegalArgumentException("Cannot get " + index + ": is " + index.getType() + ", not " + expected);
-        }
-        T t = (T) map.get(index);
-        if (t == null) {
-            return def;
-        }
-        return t;
+    /**
+     * Gets the optional position value for the given MetadataIndex
+     *
+     * @param index the MetadataIndex of the optional position
+     * @return the position value as a BlockVector, null if the value is not present
+     */
+    public BlockVector getOptPosition(MetadataIndex index) {
+        return get(index, MetadataType.OPTPOSITION, null);
     }
 
     public List<Entry> getEntryList() {
         List<Entry> result = new ArrayList<>(map.size());
-        result.addAll(map.entrySet().stream().map(entry -> new Entry(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+        result.addAll(
+            map.entrySet().stream().map(entry -> new Entry(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList()));
         Collections.sort(result);
         return result;
     }
@@ -141,7 +163,8 @@ public class MetadataMap {
 
     @RequiredArgsConstructor
     @EqualsAndHashCode
-    public static final class Entry implements Comparable<Entry> {
+    public static class Entry implements Comparable<Entry> {
+
         public final MetadataIndex index;
         public final Object value;
 

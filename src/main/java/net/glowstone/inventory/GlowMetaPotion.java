@@ -1,8 +1,16 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -10,22 +18,17 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     PotionData potion;
     List<PotionEffect> effects = new ArrayList<>();
+    Color color = null;
 
     public GlowMetaPotion(GlowMetaItem meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaPotion)) return;
+        if (!(meta instanceof GlowMetaPotion)) {
+            return;
+        }
 
         GlowMetaPotion potion = (GlowMetaPotion) meta;
         effects.addAll(potion.effects);
@@ -56,7 +59,8 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.POTION || material == Material.SPLASH_POTION || material == Material.TIPPED_ARROW || material == Material.LINGERING_POTION;
+        return material == Material.POTION || material == Material.SPLASH_POTION
+            || material == Material.TIPPED_ARROW || material == Material.LINGERING_POTION;
     }
 
     @Override
@@ -81,10 +85,14 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         super.writeNbt(tag);
 
         if (hasCustomEffects()) {
-            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNBT).collect(Collectors.toList());
+            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNBT)
+                .collect(Collectors.toList());
             tag.putCompoundList("CustomEffects", customEffects);
         }
         tag.putString("Potion", dataToString());
+        if (this.color != null) {
+            tag.putInt("CustomPotionColor", this.color.asRGB());
+        }
     }
 
     @Override
@@ -100,16 +108,19 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (tag.isString("Potion")) {
             this.potion = dataFromString(tag.getString("Potion"));
         }
-    }
-
-    @Override
-    public void setBasePotionData(PotionData potionData) {
-        this.potion = potionData;
+        if (tag.isInt("CustomPotionColor")) {
+            this.color = Color.fromRGB(tag.getInt("CustomPotionColor"));
+        }
     }
 
     @Override
     public PotionData getBasePotionData() {
         return this.potion;
+    }
+
+    @Override
+    public void setBasePotionData(PotionData potionData) {
+        this.potion = potionData;
     }
 
     @Override
@@ -127,7 +138,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         checkNotNull(effect, "PotionEffect cannot be null.");
 
         for (PotionEffect eff : effects) {
-            if (eff.getType() == effect.getType() && !overwrite) return false;
+            if (eff.getType() == effect.getType() && !overwrite) {
+                return false;
+            }
         }
 
         effects.add(effect);
@@ -151,7 +164,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     @Override
     public boolean hasCustomEffect(PotionEffectType type) {
         for (PotionEffect effect : effects) {
-            if (effect.getType() == type) return true;
+            if (effect.getType() == type) {
+                return true;
+            }
         }
 
         return false;
@@ -162,13 +177,17 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         PotionEffect main = null;
         for (PotionEffect effect : effects) {
             if (effect.getType() == type) {
-                if (effects.indexOf(effect) == 0) return false;
+                if (effects.indexOf(effect) == 0) {
+                    return false;
+                }
                 main = effect;
                 effects.remove(effect);
                 break;
             }
         }
-        if (main == null) return false;
+        if (main == null) {
+            return false;
+        }
 
         effects.add(0, main);
         return true;
@@ -176,9 +195,26 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     @Override
     public boolean clearCustomEffects() {
-        if (effects.isEmpty()) return false;
+        if (effects.isEmpty()) {
+            return false;
+        }
         effects.clear();
         return true;
+    }
+
+    @Override
+    public boolean hasColor() {
+        return color != null;
+    }
+
+    @Override
+    public Color getColor() {
+        return color;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     /**
@@ -205,8 +241,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     private PotionData dataFromString(String string) {
         PotionType type;
         boolean extended = false, upgraded = false;
-        if (string.startsWith("minecraft:"))
+        if (string.startsWith("minecraft:")) {
             string = string.replace("minecraft:", "");
+        }
         if (string.startsWith("long_")) {
             string = string.replace("long_", "");
             extended = true;
@@ -245,8 +282,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
          */
         static PotionType fromName(String name) {
             for (PotionTypeTable table : values()) {
-                if (name.equalsIgnoreCase(table.name))
+                if (name.equalsIgnoreCase(table.name)) {
                     return table.type;
+                }
             }
             return PotionType.valueOf(name.toUpperCase());
         }
@@ -259,8 +297,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
          */
         static String toName(PotionType type) {
             for (PotionTypeTable table : values()) {
-                if (type == table.type)
+                if (type == table.type) {
                     return table.name;
+                }
             }
             return type.name().toLowerCase();
         }

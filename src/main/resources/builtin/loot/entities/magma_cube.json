@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "default": {
+        "item": "magma_cream",
+        "count": 0
+      },
+      "conditions": [
+        {
+          "condition": "net.glowstone.util.loot.LootingUtil.isNot($.getSize(), 0)",
+          "count": [
+            {
+              "chance": 0.25,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "experience": {
+    "count": 1,
+    "conditions": [
+      {
+        "condition": "net.glowstone.util.loot.LootingUtil.isNot($.getSize(), 0)",
+        "count": 2
+      },
+      {
+        "condition": "net.glowstone.util.loot.LootingUtil.isOver($.getSize(), 2)",
+        "count": 4
+      }
+    ]
+  }
+}

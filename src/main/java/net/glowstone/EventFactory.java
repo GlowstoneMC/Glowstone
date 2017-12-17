@@ -1,18 +1,5 @@
 package net.glowstone;
 
-import net.glowstone.entity.GlowPlayer;
-import org.bukkit.BanList;
-import org.bukkit.BanList.Type;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.*;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
@@ -22,6 +9,29 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
+import net.glowstone.entity.GlowPlayer;
+import org.bukkit.BanList;
+import org.bukkit.BanList.Type;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 /**
  * Central class for the calling of events.
@@ -96,17 +106,13 @@ public final class EventFactory {
         BanList ipBans = server.getBanList(Type.IP);
 
         if (nameBans.isBanned(player.getName())) {
-            event.disallow(Result.KICK_BANNED,
-                    "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
+            event.disallow(Result.KICK_BANNED, "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
         } else if (ipBans.isBanned(addressString)) {
-            event.disallow(Result.KICK_BANNED,
-                    "Banned: " + ipBans.getBanEntry(addressString).getReason());
+            event.disallow(Result.KICK_BANNED, "Banned: " + ipBans.getBanEntry(addressString).getReason());
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
-            event.disallow(Result.KICK_WHITELIST,
-                    "You are not whitelisted on this server.");
+            event.disallow(Result.KICK_WHITELIST, "You are not whitelisted on this server.");
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
-            event.disallow(Result.KICK_FULL,
-                    "The server is full (" + player.getServer().getMaxPlayers() + " players).");
+            event.disallow(Result.KICK_FULL, "The server is full (" + player.getServer().getMaxPlayers() + " players).");
         }
 
         return callEvent(event);
@@ -147,12 +153,24 @@ public final class EventFactory {
         return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game"));
     }
 
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action) {
-        return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), null, null));
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, EquipmentSlot hand) {
+        return callEvent(new PlayerInteractEvent(player, action,
+            hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand(), null, null, hand));
     }
 
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, Block clicked, BlockFace face) {
-        return callEvent(new PlayerInteractEvent(player, action, player.getItemInHand(), clicked, face));
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, EquipmentSlot hand, Block clicked, BlockFace face) {
+        return callEvent(new PlayerInteractEvent(player, action,
+            hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand(), clicked, face, hand));
     }
 
+    public static <T extends EntityDamageEvent> T onEntityDamage(T event) {
+        T result = callEvent(event);
+        if (!result.isCancelled()) {
+            result.getEntity().setLastDamageCause(result);
+            if (result.getEntity() instanceof LivingEntity) {
+                ((LivingEntity) result.getEntity()).setLastDamage(result.getDamage());
+            }
+        }
+        return result;
+    }
 }

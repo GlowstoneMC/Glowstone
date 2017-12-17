@@ -1,10 +1,17 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.*;
+import net.glowstone.net.message.play.entity.CollectItemMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.EntityTeleportMessage;
+import net.glowstone.net.message.play.entity.EntityVelocityMessage;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,36 +22,17 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 /**
  * Represents an item that is also an {@link GlowEntity} within the world.
  *
  * @author Graham Edgecombe
  */
-public final class GlowItem extends GlowEntity implements Item {
+public class GlowItem extends GlowEntity implements Item {
 
     /**
      * The number of ticks (equal to 5 minutes) that item entities should live for.
      */
     private static final int LIFETIME = 5 * 60 * 20;
-
-    /**
-     * Velocity reduction applied each tick.
-     */
-    private static final double AIR_DRAG = 0.99;
-
-    /**
-     * Velocity reduction applied each tick.
-     */
-    private static final double LIQUID_DRAG = 0.8;
-
-    /**
-     * Gravity acceleration applied each tick.
-     */
-    private static final Vector GRAVITY = new Vector(0, -0.05, 0);
 
     /**
      * The remaining delay until this item may be picked up.
@@ -60,12 +48,15 @@ public final class GlowItem extends GlowEntity implements Item {
      * Creates a new item entity.
      *
      * @param location The location of the entity.
-     * @param item     The item stack the entity is carrying.
+     * @param item The item stack the entity is carrying.
      */
     public GlowItem(Location location, ItemStack item) {
         super(location);
         setItemStack(item);
         setBoundingBox(0.25, 0.25);
+        setDrag(0.98, false);
+        setDrag(0.98, true);
+        setGravityAccel(new Vector(0, -0.02, 0));
         pickupDelay = 20;
     }
 
@@ -73,14 +64,17 @@ public final class GlowItem extends GlowEntity implements Item {
         // todo: fire PlayerPickupItemEvent in a way that allows for 'remaining' calculations
 
         HashMap<Integer, ItemStack> map = player.getInventory().addItem(getItemStack());
-        player.updateInventory(); // workaround for player editing slot & it immediately being filled again
+        player
+            .updateInventory(); // workaround for player editing slot & it immediately being filled again
         if (!map.isEmpty()) {
             setItemStack(map.values().iterator().next());
             return false;
         } else {
-            CollectItemMessage message = new CollectItemMessage(getEntityId(), player.getEntityId());
+            CollectItemMessage message = new CollectItemMessage(getEntityId(), player.getEntityId(),
+                getItemStack().getAmount());
             world.playSound(location, Sound.ENTITY_ITEM_PICKUP, 0.3f, (float) (1 + Math.random()));
-            world.getRawPlayers().stream().filter(other -> other.canSeeEntity(this)).forEach(other -> other.getSession().send(message));
+            world.getRawPlayers().stream().filter(other -> other.canSeeEntity(this))
+                .forEach(other -> other.getSession().send(message));
             remove();
             return true;
         }
@@ -99,31 +93,6 @@ public final class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
-    public void setGlowing(boolean b) {
-
-    }
-
-    @Override
-    public boolean isGlowing() {
-        return false;
-    }
-
-    @Override
-    public void setInvulnerable(boolean b) {
-
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return false;
-    }
-
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
     public void pulse() {
         super.pulse();
 
@@ -135,6 +104,9 @@ public final class GlowItem extends GlowEntity implements Item {
             if (pickupDelay < 20 && biasPlayer != null) {
                 // check for the bias player
                 for (Entity entity : getNearbyEntities(1, 0.5, 1)) {
+                    if (entity.isDead()) {
+                        continue;
+                    }
                     if (entity == biasPlayer && getPickedUp((GlowPlayer) entity)) {
                         break;
                     }
@@ -143,13 +115,18 @@ public final class GlowItem extends GlowEntity implements Item {
         } else {
             // check for nearby players
             for (Entity entity : getNearbyEntities(1, 0.5, 1)) {
+                if (entity.isDead()) {
+                    continue;
+                }
                 if (entity instanceof GlowPlayer && getPickedUp((GlowPlayer) entity)) {
                     break;
                 }
                 if (entity instanceof GlowItem) {
-                    if (entity != this && ((GlowItem) entity).getItemStack().isSimilar(getItemStack())) {
+                    if (entity != this && ((GlowItem) entity).getItemStack()
+                        .isSimilar(getItemStack())) {
                         ItemStack clone = getItemStack().clone();
-                        clone.setAmount(((GlowItem) entity).getItemStack().getAmount() + clone.getAmount());
+                        clone.setAmount(
+                            ((GlowItem) entity).getItemStack().getAmount() + clone.getAmount());
                         entity.remove();
                         setItemStack(clone);
                     }
@@ -165,19 +142,8 @@ public final class GlowItem extends GlowEntity implements Item {
 
     @Override
     protected void pulsePhysics() {
-        // simple temporary gravity - should eventually be improved to be real
-        // physics and moved up to GlowEntity
         if (location.getBlock().getType().isSolid()) {
             setRawLocation(location.clone().add(0, 0.2, 0), false);
-        }
-        if (!location.clone().add(getVelocity()).getBlock().getType().isSolid()) {
-            location.add(getVelocity());
-            if (location.getBlock().isLiquid()) {
-                velocity.multiply(LIQUID_DRAG);
-            } else {
-                velocity.multiply(AIR_DRAG);
-            }
-            velocity.add(GRAVITY);
         }
 
         super.pulsePhysics();
@@ -193,11 +159,11 @@ public final class GlowItem extends GlowEntity implements Item {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM, x, y, z, pitch, yaw),
-                new EntityMetadataMessage(id, metadata.getEntryList()),
-                // these keep the client from assigning a random velocity
-                new EntityTeleportMessage(id, x, y, z, yaw, pitch),
-                new EntityVelocityMessage(id, getVelocity())
+            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM, x, y, z, pitch, yaw),
+            new EntityMetadataMessage(id, metadata.getEntryList()),
+            // these keep the client from assigning a random velocity
+            new EntityTeleportMessage(id, x, y, z, yaw, pitch),
+            new EntityVelocityMessage(id, getVelocity())
         );
     }
 
@@ -215,6 +181,17 @@ public final class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
+    public boolean canMobPickup() {
+        // TODO: Implementation (1.12.1)
+        return true;
+    }
+
+    @Override
+    public void setCanMobPickup(boolean pickup) {
+        // TODO: Implementation (1.12.1)
+    }
+
+    @Override
     public ItemStack getItemStack() {
         return metadata.getItem(MetadataIndex.ITEM_ITEM);
     }
@@ -222,6 +199,7 @@ public final class GlowItem extends GlowEntity implements Item {
     @Override
     public void setItemStack(ItemStack stack) {
         // stone is the "default state" for the item stack according to the client
-        metadata.set(MetadataIndex.ITEM_ITEM, stack == null ? new ItemStack(Material.STONE) : stack.clone());
+        metadata.set(MetadataIndex.ITEM_ITEM,
+            stack == null ? new ItemStack(Material.STONE) : stack.clone());
     }
 }

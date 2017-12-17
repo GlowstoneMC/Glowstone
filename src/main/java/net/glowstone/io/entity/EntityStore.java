@@ -1,38 +1,48 @@
 package net.glowstone.io.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
-
-import java.util.UUID;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
 /**
  * The base for entity store classes.
  *
  * @param <T> The type of entity being stored.
  */
-abstract class EntityStore<T extends GlowEntity> {
-    protected final Class<T> clazz;
-    private final String id;
+public abstract class EntityStore<T extends GlowEntity> {
 
-    public EntityStore(Class<T> clazz, String id) {
-        this.id = id;
+    protected final Class<? extends T> clazz;
+    protected final String type;
+
+    public EntityStore(Class<? extends T> clazz, EntityType type) {
+        this.clazz = clazz;
+        this.type = type.getName();
+    }
+
+    public EntityStore(Class<? extends T> clazz, String name) {
+        this.type = name;
         this.clazz = clazz;
     }
 
-    public final String getId() {
-        return id;
+    public final String getEntityType() {
+        return type;
     }
 
-    public final Class<T> getType() {
+    public final Class<? extends T> getType() {
         return clazz;
     }
 
     /**
-     * Create a new entity of this store's type at the given location. The
-     * load method will be called separately.
+     * Create a new entity of this store's type at the given location. The load method will be called separately.
      *
      * @param location The location.
      * @param compound The entity's tag, if extra data is needed.
@@ -46,21 +56,20 @@ abstract class EntityStore<T extends GlowEntity> {
     // todo: the following tags
     // - bool "Invulnerable"
     // - int "PortalCooldown"
-    // - compound "Riding"
 
     /**
-     * Load data into an existing entity of the appropriate type from the
-     * given compound tag.
+     * Load data into an existing entity of the appropriate type from the given compound tag.
      *
      * @param entity The target entity.
-     * @param tag    The entity's tag.
+     * @param tag The entity's tag.
      */
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
         // base stuff for all entities is here:
 
         if (tag.isList("Motion", TagType.DOUBLE)) {
-            entity.setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
+            entity
+                .setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
         }
         if (tag.isFloat("FallDistance")) {
             entity.setFallDistance(tag.getFloat("FallDistance"));
@@ -77,6 +86,20 @@ abstract class EntityStore<T extends GlowEntity> {
         if (tag.isByte("Silent")) {
             entity.setSilent(tag.getBool("Silent"));
         }
+        if (tag.isByte("Glowing")) {
+            entity.setGlowing(tag.getBool("Glowing"));
+        }
+        if (tag.isByte("Invulnerable")) {
+            entity.setInvulnerable(tag.getBool("Invulnerable"));
+        }
+        if (tag.isList("Tags", TagType.STRING)) {
+            List<String> list = tag.getList("Tags", TagType.STRING);
+            entity.getCustomTags().clear();
+            entity.getCustomTags().addAll(list);
+        }
+        if (tag.isInt("PortalCooldown")) {
+            entity.setPortalCooldown(tag.getInt("PortalCooldown"));
+        }
 
         if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
             UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
@@ -86,16 +109,52 @@ abstract class EntityStore<T extends GlowEntity> {
             UUID uuid = UUID.fromString(tag.getString("UUID"));
             entity.setUniqueId(uuid);
         }
+
+        if (tag.isList("Passengers", TagType.COMPOUND)) {
+            for (CompoundTag entityTag : tag.getCompoundList("Passengers")) {
+                Entity passenger = loadPassenger(entity, entityTag);
+                if (passenger != null) {
+                    entity.addPassenger(passenger);
+                }
+            }
+        }
+    }
+
+    private Entity loadPassenger(T vehicle, CompoundTag compoundTag) {
+        Location location = NbtSerialization.listTagsToLocation(vehicle.getWorld(), compoundTag);
+
+        if (location == null) {
+            // We need a location to spawn the entity.
+            // since there is no position in the entities nbt,
+            // just spawn the passenger at the vehicle.
+            // Later on, Entity.addPassenger will make sure of the teleportation
+            // to the right coordinates.
+            NbtSerialization.locationToListTags(vehicle.getLocation(), compoundTag);
+        }
+
+        try {
+            // note that creating the entity is sufficient to add it to the world
+            return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
+        } catch (Exception e) {
+            String id = compoundTag.isString("id") ? compoundTag.getString("id") : "<missing>";
+            if (e.getMessage() != null && e.getMessage()
+                .startsWith("Unknown entity type to load:")) {
+                GlowServer.logger.warning("Skipping Entity with id " + id);
+            } else {
+                GlowServer.logger.log(Level.WARNING, "Error loading entity " + id, e);
+            }
+        }
+        return null;
     }
 
     /**
      * Save information about this entity to the given tag.
      *
      * @param entity The entity to save.
-     * @param tag    The target tag.
+     * @param tag The target tag.
      */
     public void save(T entity, CompoundTag tag) {
-        tag.putString("id", id);
+        tag.putString("id", "minecraft:" + type);
 
         // write world info, Pos, Rotation, and Motion
         Location loc = entity.getLocation();
@@ -112,8 +171,42 @@ abstract class EntityStore<T extends GlowEntity> {
 
         tag.putBool("NoGravity", !entity.hasGravity());
         tag.putBool("Silent", entity.isSilent());
+        tag.putBool("Invulnerable", entity.isInvulnerable());
+        tag.putBool("Glowing", entity.isGlowing());
+        tag.putInt("PortalCooldown", entity.getPortalCooldown());
+
+        if (!entity.getCustomTags().isEmpty()) {
+            tag.putList("Tags", TagType.STRING, entity.getCustomTags());
+        }
 
         // in case Vanilla or CraftBukkit expects non-living entities to have this tag
         tag.putInt("Air", 300);
+        savePassengers(entity, tag);
+    }
+
+    private void savePassengers(GlowEntity vehicle, CompoundTag tag) {
+        List<CompoundTag> passengers = new ArrayList<>();
+        for (Entity passenger : vehicle.getPassengers()) {
+            if (!(passenger instanceof GlowEntity)) {
+                continue;
+            }
+            GlowEntity glowEntity = (GlowEntity) passenger;
+            if (!glowEntity.shouldSave()) {
+                continue;
+            }
+            try {
+                CompoundTag compound = new CompoundTag();
+                EntityStorage.save(glowEntity, compound);
+                passengers.add(compound);
+                savePassengers(glowEntity, compound);
+            } catch (Exception e) {
+                GlowServer.logger
+                    .log(Level.WARNING, "Error saving " + passenger + " from vehicle " + vehicle,
+                        e);
+            }
+        }
+        if (!passengers.isEmpty()) {
+            tag.putCompoundList("Passengers", passengers);
+        }
     }
 }

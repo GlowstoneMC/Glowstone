@@ -1,30 +1,61 @@
 package net.glowstone.generator.biomegrid;
 
-import net.glowstone.constants.GlowBiome;
+import static org.bukkit.block.Biome.BIRCH_FOREST;
+import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
+import static org.bukkit.block.Biome.DEEP_OCEAN;
+import static org.bukkit.block.Biome.DESERT;
+import static org.bukkit.block.Biome.DESERT_HILLS;
+import static org.bukkit.block.Biome.EXTREME_HILLS;
+import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
+import static org.bukkit.block.Biome.FOREST;
+import static org.bukkit.block.Biome.FOREST_HILLS;
+import static org.bukkit.block.Biome.ICE_FLATS;
+import static org.bukkit.block.Biome.ICE_MOUNTAINS;
+import static org.bukkit.block.Biome.JUNGLE;
+import static org.bukkit.block.Biome.JUNGLE_HILLS;
+import static org.bukkit.block.Biome.MESA;
+import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MESA_ROCK;
+import static org.bukkit.block.Biome.OCEAN;
+import static org.bukkit.block.Biome.PLAINS;
+import static org.bukkit.block.Biome.REDWOOD_TAIGA;
+import static org.bukkit.block.Biome.REDWOOD_TAIGA_HILLS;
+import static org.bukkit.block.Biome.ROOFED_FOREST;
+import static org.bukkit.block.Biome.SAVANNA;
+import static org.bukkit.block.Biome.SAVANNA_ROCK;
+import static org.bukkit.block.Biome.TAIGA;
+import static org.bukkit.block.Biome.TAIGA_COLD;
+import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
+import static org.bukkit.block.Biome.TAIGA_HILLS;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.bukkit.block.Biome.*;
+import net.glowstone.constants.GlowBiome;
 
 public class BiomeVariationMapLayer extends MapLayer {
 
-    private static final int[] ISLANDS = new int[]{GlowBiome.getId(PLAINS), GlowBiome.getId(FOREST)};
+    private static final int[] ISLANDS = new int[]{GlowBiome.getId(PLAINS),
+        GlowBiome.getId(FOREST)};
     private static final Map<Integer, int[]> VARIATIONS = new HashMap<>();
 
     static {
         VARIATIONS.put(GlowBiome.getId(DESERT), new int[]{GlowBiome.getId(DESERT_HILLS)});
         VARIATIONS.put(GlowBiome.getId(FOREST), new int[]{GlowBiome.getId(FOREST_HILLS)});
-        VARIATIONS.put(GlowBiome.getId(BIRCH_FOREST), new int[]{GlowBiome.getId(BIRCH_FOREST_HILLS)});
+        VARIATIONS
+            .put(GlowBiome.getId(BIRCH_FOREST), new int[]{GlowBiome.getId(BIRCH_FOREST_HILLS)});
         VARIATIONS.put(GlowBiome.getId(ROOFED_FOREST), new int[]{GlowBiome.getId(PLAINS)});
         VARIATIONS.put(GlowBiome.getId(TAIGA), new int[]{GlowBiome.getId(TAIGA_HILLS)});
-        VARIATIONS.put(GlowBiome.getId(REDWOOD_TAIGA), new int[]{GlowBiome.getId(REDWOOD_TAIGA_HILLS)});
+        VARIATIONS
+            .put(GlowBiome.getId(REDWOOD_TAIGA), new int[]{GlowBiome.getId(REDWOOD_TAIGA_HILLS)});
         VARIATIONS.put(GlowBiome.getId(TAIGA_COLD), new int[]{GlowBiome.getId(TAIGA_COLD_HILLS)});
-        VARIATIONS.put(GlowBiome.getId(PLAINS), new int[]{GlowBiome.getId(FOREST), GlowBiome.getId(FOREST), GlowBiome.getId(FOREST_HILLS)});
+        VARIATIONS.put(GlowBiome.getId(PLAINS),
+            new int[]{GlowBiome.getId(FOREST), GlowBiome.getId(FOREST),
+                GlowBiome.getId(FOREST_HILLS)});
         VARIATIONS.put(GlowBiome.getId(ICE_FLATS), new int[]{GlowBiome.getId(ICE_MOUNTAINS)});
         VARIATIONS.put(GlowBiome.getId(JUNGLE), new int[]{GlowBiome.getId(JUNGLE_HILLS)});
         VARIATIONS.put(GlowBiome.getId(OCEAN), new int[]{GlowBiome.getId(DEEP_OCEAN)});
-        VARIATIONS.put(GlowBiome.getId(EXTREME_HILLS), new int[]{GlowBiome.getId(EXTREME_HILLS_WITH_TREES)});
+        VARIATIONS.put(GlowBiome.getId(EXTREME_HILLS),
+            new int[]{GlowBiome.getId(EXTREME_HILLS_WITH_TREES)});
         VARIATIONS.put(GlowBiome.getId(SAVANNA), new int[]{GlowBiome.getId(SAVANNA_ROCK)});
         VARIATIONS.put(GlowBiome.getId(MESA_ROCK), new int[]{GlowBiome.getId(MESA)});
         VARIATIONS.put(GlowBiome.getId(MESA_CLEAR_ROCK), new int[]{GlowBiome.getId(MESA)});
@@ -85,11 +116,14 @@ public class BiomeVariationMapLayer extends MapLayer {
                 int centerValue = values[j + 1 + (i + 1) * gridSizeX];
                 int variationValue = eValues[j + 1 + (i + 1) * gridSizeX];
                 if (centerValue != 0 && variationValue == 3 && centerValue < 128) {
-                    finalValues[j + i * sizeX] = GlowBiome.getBiome(centerValue + 128) != null ? centerValue + 128 : centerValue;
+                    finalValues[j + i * sizeX] =
+                        GlowBiome.getBiome(centerValue + 128) != null ? centerValue + 128
+                            : centerValue;
                 } else if (variationValue == 2 || nextInt(3) == 0) {
                     int val = centerValue;
                     if (VARIATIONS.containsKey(centerValue)) {
-                        val = VARIATIONS.get(centerValue)[nextInt(VARIATIONS.get(centerValue).length)];
+                        val = VARIATIONS.get(centerValue)[nextInt(
+                            VARIATIONS.get(centerValue).length)];
                     } else if (centerValue == GlowBiome.getId(DEEP_OCEAN) && nextInt(3) == 0) {
                         val = ISLANDS[nextInt(ISLANDS.length)];
                     }

@@ -1,6 +1,10 @@
 package net.glowstone.generator;
 
+import java.util.Map;
+import java.util.Random;
+import net.glowstone.GlowServer;
 import net.glowstone.generator.populators.TheEndPopulator;
+import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -8,25 +12,31 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.OctaveGenerator;
 
-import java.util.Map;
-import java.util.Random;
-
 public class TheEndGenerator extends GlowChunkGenerator {
 
-    private static final double HEIGHT_SCALE = 684.412D;       // heightScale
-    private static final double COORDINATE_SCALE = HEIGHT_SCALE * 2.0D; // coordinateScale
-    private static final double DETAIL_NOISE_SCALE_X = 80.0D;  // mainNoiseScaleX
-    private static final double DETAIL_NOISE_SCALE_Y = 160.0D; // mainNoiseScaleY
-    private static final double DETAIL_NOISE_SCALE_Z = 80.0D;  // mainNoiseScaleZ
+    private static double coordinateScale;
+    private static double heightScale;
+    private static double detailNoiseScaleX;  // mainNoiseScaleX
+    private static double detailNoiseScaleY; // mainNoiseScaleY
+    private static double detailNoiseScaleZ;  // mainNoiseScaleZ
 
     private final double[][][] density = new double[3][3][33];
 
     public TheEndGenerator() {
         super(new TheEndPopulator());
+
+        WorldConfig config = GlowServer.getWorldConfig();
+
+        coordinateScale = config.getDouble(WorldConfig.Key.END_COORDINATE_SCALE);
+        heightScale = config.getDouble(WorldConfig.Key.END_HEIGHT_SCALE);
+        detailNoiseScaleX = config.getDouble(WorldConfig.Key.END_DETAIL_NOISE_SCALE_X);
+        detailNoiseScaleY = config.getDouble(WorldConfig.Key.END_DETAIL_NOISE_SCALE_Y);
+        detailNoiseScaleZ = config.getDouble(WorldConfig.Key.END_DETAIL_NOISE_SCALE_Z);
     }
 
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ,
+        BiomeGrid biomes) {
         return generateRawTerrain(world, chunkX, chunkZ);
     }
 
@@ -41,26 +51,26 @@ public class TheEndGenerator extends GlowChunkGenerator {
         Random seed = new Random(world.getSeed());
 
         OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 3, 33, 3);
-        gen.setXScale(COORDINATE_SCALE);
-        gen.setYScale(HEIGHT_SCALE);
-        gen.setZScale(COORDINATE_SCALE);
+        gen.setXScale(coordinateScale);
+        gen.setYScale(heightScale);
+        gen.setZScale(coordinateScale);
         octaves.put("roughness", gen);
 
         gen = new PerlinOctaveGenerator(seed, 16, 3, 33, 3);
-        gen.setXScale(COORDINATE_SCALE);
-        gen.setYScale(HEIGHT_SCALE);
-        gen.setZScale(COORDINATE_SCALE);
+        gen.setXScale(coordinateScale);
+        gen.setYScale(heightScale);
+        gen.setZScale(coordinateScale);
         octaves.put("roughness2", gen);
 
         gen = new PerlinOctaveGenerator(seed, 8, 3, 33, 3);
-        gen.setXScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_X);
-        gen.setYScale(HEIGHT_SCALE / DETAIL_NOISE_SCALE_Y);
-        gen.setZScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_Z);
+        gen.setXScale(coordinateScale / detailNoiseScaleX);
+        gen.setYScale(heightScale / detailNoiseScaleY);
+        gen.setZScale(coordinateScale / detailNoiseScaleZ);
         octaves.put("detail", gen);
     }
 
     private ChunkData generateRawTerrain(World world, int chunkX, int chunkZ) {
-        generateTerrainDensity(world, chunkX * 2, chunkZ * 2);
+        generateTerrainDensity(world, chunkX << 1, chunkZ << 1);
 
         ChunkData chunkData = createChunkData(world);
 
@@ -84,7 +94,8 @@ public class TheEndGenerator extends GlowChunkGenerator {
                             for (int n = 0; n < 8; n++) {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air.
                                 if (dens > 0) {
-                                    chunkData.setBlock(m + (i << 3), l + (k << 2), n + (j << 3), Material.ENDER_STONE);
+                                    chunkData.setBlock(m + (i << 3), l + (k << 2), n + (j << 3),
+                                        Material.ENDER_STONE);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 8;
@@ -109,9 +120,12 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
     private void generateTerrainDensity(World world, int x, int z) {
         Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
-        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).fBm(x, 0, z, 0.5D, 2.0D);
-        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).fBm(x, 0, z, 0.5D, 2.0D);
-        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).fBm(x, 0, z, 0.5D, 2.0D);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
 
         int index = 0;
 
@@ -124,7 +138,8 @@ public class TheEndGenerator extends GlowChunkGenerator {
                     double noiseR2 = roughnessNoise2[index] / 512.0D;
                     double noiseD = (detailNoise[index] / 10.0D + 1.0D) / 2.0D;
                     // linear interpolation
-                    double dens = noiseD < 0 ? noiseR : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
+                    double dens = noiseD < 0 ? noiseR
+                        : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
                     dens = dens - 8.0D + nH;
                     index++;
                     if (k < 8) {

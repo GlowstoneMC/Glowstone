@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
  * @param <T> The type of structure piece being stored.
  */
 public abstract class StructurePieceStore<T extends GlowStructurePiece> {
+
     private final String id;
     private final Class<T> clazz;
 
@@ -28,8 +29,9 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
     }
 
     /**
-     * Create a structure piece of this store's type. The load method will
-     * be called separately.
+     * Create a structure piece of this store's type.
+     *
+     * <p>The load method will be called separately.
      *
      * @return The structure piece.
      */
@@ -39,7 +41,7 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      * Load structure piece data of the appropriate type from the given compound tag.
      *
      * @param structurePiece The target structure piece.
-     * @param compound       The structure piece's tag.
+     * @param compound The structure piece's tag.
      */
     public void load(T structurePiece, CompoundTag compound) {
         if (compound.isInt("GD")) {
@@ -51,7 +53,8 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
         if (compound.isIntArray("BB")) {
             int[] bb = compound.getIntArray("BB");
             if (bb.length == 6) {
-                StructureBoundingBox boundingBox = new StructureBoundingBox(new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
+                StructureBoundingBox boundingBox = new StructureBoundingBox(
+                    new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structurePiece.setBoundingBox(boundingBox);
             }
         }
@@ -61,7 +64,7 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      * Save information about this structure piece to the given tag.
      *
      * @param structurePiece The structure piece to save.
-     * @param compound       The target tag.
+     * @param compound The target tag.
      */
     public void save(T structurePiece, CompoundTag compound) {
         compound.putInt("GD", structurePiece.getGD());

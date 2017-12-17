@@ -4,10 +4,9 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.WorldBorderMessage;
 import net.glowstone.net.message.play.game.WorldBorderMessage.Action;
-
-import java.io.IOException;
 
 public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
 
@@ -22,7 +21,7 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
             case LERP_SIZE:
                 double oldRadius = buffer.readDouble();
                 double newRadius = buffer.readDouble();
-                long speed = buffer.readLong();
+                long speed = ByteBufUtils.readVarLong(buffer);
                 return new WorldBorderMessage(action, oldRadius, newRadius, speed);
             case SET_CENTER:
                 double x = buffer.readDouble();
@@ -37,13 +36,15 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
                 int portalTeleportBoundary = ByteBufUtils.readVarInt(buffer);
                 int warningTime = ByteBufUtils.readVarInt(buffer);
                 int warningBlocks = ByteBufUtils.readVarInt(buffer);
-                return new WorldBorderMessage(action, x, z, oldRadius, newRadius, speed, portalTeleportBoundary, warningTime, warningBlocks);
+                return new WorldBorderMessage(action, x, z, oldRadius, newRadius, speed,
+                    portalTeleportBoundary, warningTime, warningBlocks);
             case SET_WARNING_TIME:
             case SET_WARNING_BLOCKS:
                 warningTime = ByteBufUtils.readVarInt(buffer);
                 return new WorldBorderMessage(action, warningTime);
             default:
-                throw new DecoderException("Invalid WorldBorderMessage action " + actionId + "/" + action);
+                throw new DecoderException(
+                    "Invalid WorldBorderMessage action " + actionId + "/" + action);
         }
     }
 
@@ -57,7 +58,7 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
             case LERP_SIZE:
                 buf.writeDouble(message.getOldRadius());
                 buf.writeDouble(message.getNewRadius());
-                buf.writeLong(message.getSpeed());
+                ByteBufUtils.writeVarLong(buf, message.getSpeed());
                 break;
             case SET_CENTER:
                 buf.writeDouble(message.getX());

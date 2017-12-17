@@ -4,11 +4,12 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 class PlayerStore extends HumanEntityStore<GlowPlayer> {
 
     public PlayerStore() {
-        super(GlowPlayer.class, "Player");
+        super(GlowPlayer.class, EntityType.PLAYER);
     }
 
     @Override
@@ -87,6 +88,22 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
             }
         }
 
+        // shoulders (1.12)
+        if (tag.isCompound("ShoulderEntityLeft")) {
+            entity.setLeftShoulderTag(tag.getCompound("ShoulderEntityLeft"));
+        }
+        if (tag.isCompound("ShoulderEntityRight")) {
+            entity.setRightShoulderTag(tag.getCompound("ShoulderEntityRight"));
+        }
+
+        // seen credits
+        if (tag.containsKey("seenCredits")) {
+            entity.setSeenCredits(tag.getBool("seenCredits"));
+        }
+
+        // recipe book
+        entity.getRecipeMonitor().read(tag);
+
         // bukkit
         // cannot read firstPlayed, lastPlayed, or lastKnownName
     }
@@ -129,9 +146,23 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         abilities.putBool("instabuild", entity.getGameMode() == GameMode.CREATIVE);
         tag.putCompound("abilities", abilities);
 
+        // shoulders
+        if (!entity.getLeftShoulderTag().isEmpty()) {
+            tag.putCompound("ShoulderEntityLeft", entity.getLeftShoulderTag());
+        }
+        if (!entity.getRightShoulderTag().isEmpty()) {
+            tag.putCompound("ShoulderEntityRight", entity.getRightShoulderTag());
+        }
+
+        tag.putBool("seenCredits", entity.isSeenCredits());
+
+        // recipe book
+        entity.getRecipeMonitor().write(tag);
+
         // bukkit
         CompoundTag bukkit = new CompoundTag();
-        bukkit.putLong("firstPlayed", entity.getFirstPlayed() == 0 ? entity.getJoinTime() : entity.getFirstPlayed());
+        bukkit.putLong("firstPlayed",
+            entity.getFirstPlayed() == 0 ? entity.getJoinTime() : entity.getFirstPlayed());
         bukkit.putLong("lastPlayed", entity.getJoinTime());
         bukkit.putString("lastKnownName", entity.getName());
         tag.putCompound("bukkit", bukkit);

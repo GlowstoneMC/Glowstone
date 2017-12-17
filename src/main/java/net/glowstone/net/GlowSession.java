@@ -10,6 +10,14 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
+import java.net.InetSocketAddress;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.logging.Level;
+import javax.crypto.SecretKey;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -18,6 +26,8 @@ import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
+import net.glowstone.net.message.login.LoginSuccessMessage;
+import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
@@ -30,22 +40,18 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
+import org.bukkit.Statistic;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
-import javax.crypto.SecretKey;
-import java.net.InetSocketAddress;
-import java.util.*;
-import java.util.logging.Level;
-
 /**
- * A single connection to the server, which may or may not be associated with a
- * player.
+ * A single connection to the server, which may or may not be associated with a player.
  *
  * @author Graham Edgecombe
  */
-public final class GlowSession extends BasicSession {
+public class GlowSession extends BasicSession {
 
     /**
      * The server this session belongs to.
@@ -56,11 +62,6 @@ public final class GlowSession extends BasicSession {
      * The connection manager this session belongs to.
      */
     private final ConnectionManager connectionManager;
-
-    /**
-     * The Random for this session
-     */
-    private final Random random = new Random();
 
     /**
      * A queue of incoming and unprocessed messages.
@@ -87,11 +88,6 @@ public final class GlowSession extends BasicSession {
     private String verifyUsername;
 
     /**
-     * A message describing under what circumstances the connection ended.
-     */
-    private String quitReason;
-
-    /**
      * The hostname used to connect.
      */
     private String hostname;
@@ -103,9 +99,11 @@ public final class GlowSession extends BasicSession {
     private int version = -1;
 
     /**
-     * Data regarding a user who has connected through a proxy, used to
-     * provide online-mode UUID and properties and other data even if the
-     * server is running in offline mode. Null for non-proxied sessions.
+     * Data regarding a user who has connected through a proxy,
+     * used to provide online-mode UUID and properties and
+     * other data even if the server is running in offline mode.
+     *
+     * <p>Null for non-proxied sessions.
      */
     private ProxyData proxyData;
 
@@ -117,7 +115,7 @@ public final class GlowSession extends BasicSession {
     /**
      * The ID of the last ping message sent, used to ensure the client responded correctly.
      */
-    private int pingMessageId;
+    private long pingMessageId;
 
     /**
      * Stores the last block placement message sent, see BlockPlacementHandler.
@@ -142,7 +140,7 @@ public final class GlowSession extends BasicSession {
     /**
      * Creates a new session.
      *
-     * @param server  The server this session belongs to.
+     * @param server The server this session belongs to.
      * @param channel The channel associated with this session.
      * @param connectionManager The connection manager to manage connections for this session.
      */
@@ -231,7 +229,9 @@ public final class GlowSession extends BasicSession {
     }
 
     public void setVersion(int version) {
-        if (this.version != -1) throw new IllegalStateException("Cannot set version twice");
+        if (this.version != -1) {
+            throw new IllegalStateException("Cannot set version twice");
+        }
         this.version = version;
     }
 
@@ -240,10 +240,7 @@ public final class GlowSession extends BasicSession {
      */
     public void idle() {
         if (pingMessageId == 0 && getProtocol() instanceof PlayProtocol) {
-            pingMessageId = random.nextInt();
-            if (pingMessageId == 0) {
-                pingMessageId++;
-            }
+            pingMessageId = System.currentTimeMillis();
             send(new PingMessage(pingMessageId));
         } else {
             disconnect("Timed out");
@@ -310,8 +307,7 @@ public final class GlowSession extends BasicSession {
      * Sets the player associated with this session.
      *
      * @param profile The player's profile with name and UUID information.
-     * @throws IllegalStateException if there is already a player associated
-     *                               with this session.
+     * @throws IllegalStateException if there is already a player associated with this session.
      */
     public void setPlayer(PlayerProfile profile) {
         if (player != null) {
@@ -327,12 +323,22 @@ public final class GlowSession extends BasicSession {
         // initialize the player
         PlayerReader reader = server.getPlayerDataService().beginReadingData(profile.getUniqueId());
         player = new GlowPlayer(this, profile, reader);
+        finalizeLogin(profile);
 
         // isActive check here in case player disconnected after authentication,
         // but before the GlowPlayer initialization was completed
         if (!isActive()) {
+            reader.close();
             onDisconnect();
             return;
+        }
+
+        // Kick other players with the same UUID
+        for (GlowPlayer other : getServer().getRawOnlinePlayers()) {
+            if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
+                other.getSession().disconnect("You logged in from another location.", true);
+                break;
+            }
         }
 
         // login event
@@ -344,14 +350,6 @@ public final class GlowSession extends BasicSession {
 
         //joins the player
         player.join(this, reader);
-
-        // Kick other players with the same UUID
-        for (GlowPlayer other : getServer().getRawOnlinePlayers()) {
-            if (other != player && other.getUniqueId().equals(player.getUniqueId())) {
-                other.getSession().disconnect("You logged in from another location.", true);
-                break;
-            }
-        }
 
         player.getWorld().getRawPlayers().add(player);
 
@@ -376,6 +374,7 @@ public final class GlowSession extends BasicSession {
             }
         }
         send(new UserListItemMessage(Action.ADD_PLAYER, entries));
+        send(server.createAdvancementsMessage(false, Collections.emptyList(), player));
     }
 
     @Override
@@ -394,9 +393,9 @@ public final class GlowSession extends BasicSession {
     }
 
     /**
-     * Disconnects the session with the specified reason. This causes a
-     * KickMessage to be sent. When it has been delivered, the channel
-     * is closed.
+     * Disconnects the session with the specified reason.
+     *
+     * <p>This causes a KickMessage to be sent. When it has been delivered, the channel is closed.
      *
      * @param reason The reason for disconnection.
      */
@@ -405,11 +404,11 @@ public final class GlowSession extends BasicSession {
     }
 
     /**
-     * Disconnects the session with the specified reason. This causes a
-     * KickMessage to be sent. When it has been delivered, the channel
-     * is closed.
+     * Disconnects the session with the specified reason.
      *
-     * @param reason       The reason for disconnection.
+     * <p>This causes a KickMessage to be sent. When it has been delivered, the channel is closed.
+     *
+     * @param reason The reason for disconnection.
      * @param overrideKick Whether to skip the kick event.
      */
     public void disconnect(String reason, boolean overrideKick) {
@@ -433,14 +432,13 @@ public final class GlowSession extends BasicSession {
             GlowServer.logger.info("[" + address + "] kicked: " + reason);
         }
 
-        if (quitReason == null) {
-            quitReason = "kicked";
-        }
-
         // perform the kick, sending a kick message if possible
         if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
-            sendWithFuture(new KickMessage(reason)).addListener(ChannelFutureListener.CLOSE);
+            ChannelFuture future = sendWithFuture(new KickMessage(reason));
+            if (future != null) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
         } else {
             getChannel().close();
         }
@@ -491,13 +489,38 @@ public final class GlowSession extends BasicSession {
                 player.leaveBed(false);
             }
 
+            server.getBossBarManager().clearBossBars(player);
+
             String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);
             }
-
+            // statistics
+            player.incrementStatistic(Statistic.LEAVE_GAME);
+            for (Player p : server.getOnlinePlayers()) {
+                if (p.getUniqueId().equals(player.getUniqueId())) {
+                    continue;
+                }
+                GlowPlayer other = (GlowPlayer) p;
+                if (!other.canSee(player)) {
+                    continue;
+                }
+                other.getSession().send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+            }
             player = null; // in case we are disposed twice
         }
+    }
+
+    private void finalizeLogin(PlayerProfile profile) {
+        // enable compression if needed
+        int compression = getServer().getCompressionThreshold();
+        if (compression > 0) {
+            enableCompression(compression);
+        }
+
+        // send login response
+        send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
+        setProtocol(ProtocolType.PLAY);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -553,10 +576,7 @@ public final class GlowSession extends BasicSession {
             GlowServer.logger.log(Level.SEVERE, "Error in network input", t);
         } else {
             // probably a network-level error - consider the client gone
-            if (quitReason == null) {
-                quitReason = "read error: " + t;
-            }
-            getChannel().close();
+            disconnect("read error: " + t.getMessage(), true);
         }
     }
 
@@ -567,15 +587,13 @@ public final class GlowSession extends BasicSession {
             GlowServer.logger.log(Level.SEVERE, "Error in network output", t);
         } else {
             // probably a network-level error - consider the client gone
-            if (quitReason == null) {
-                quitReason = "write error: " + t;
-            }
-            getChannel().close();
+            disconnect("write error: " + t.getMessage(), true);
         }
     }
 
     @Override
     public void onHandlerThrowable(Message message, MessageHandler<?, ?> handle, Throwable t) {
+        //TODO disconnect on error
         // can be safely logged and the connection maintained
         GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
     }

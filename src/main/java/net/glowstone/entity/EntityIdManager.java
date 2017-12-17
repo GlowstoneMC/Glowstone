@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Manager responsible for allocating all entity ids on the server.
  */
-public final class EntityIdManager {
+public class EntityIdManager {
 
     /**
      * A set containing all used entity ids.
@@ -19,9 +19,7 @@ public final class EntityIdManager {
     private int lastId;
 
     /**
-     * Allocates the id for an entity.
-     * This method performs synchronization as it might be
-     * accessed by multiple world threads simultaneously.
+     * Allocates the id for an entity. This method performs synchronization as it might be accessed by multiple world threads simultaneously.
      *
      * @param entity The entity.
      * @return The id.
@@ -35,7 +33,9 @@ public final class EntityIdManager {
         // intentionally wraps around integer boundaries
         for (int id = lastId + 1; id != startedAt; ++id) {
             // skip special values
-            if (id == -1 || id == 0) continue;
+            if (id == -1 || id == 0) {
+                continue;
+            }
 
             if (usedIds.add(id)) {
                 entity.id = id;

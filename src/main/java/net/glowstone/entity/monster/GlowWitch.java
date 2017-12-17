@@ -30,4 +30,9 @@ public class GlowWitch extends GlowMonster implements Witch {
     protected Sound getDeathSound() {
         return Sound.ENTITY_WITCH_DEATH;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_WITCH_AMBIENT;
+    }
 }

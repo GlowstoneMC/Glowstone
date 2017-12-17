@@ -1,23 +1,22 @@
 package net.glowstone.block;
 
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.InputStreamReader;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class BuiltinMaterialValueManager implements MaterialValueManager {
+
     private final Map<Material, BuiltinValueCollection> values;
     private BuiltinValueCollection defaultValue;
 
     public BuiltinMaterialValueManager() {
         values = new EnumMap<>(Material.class);
 
-        YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(
-                new InputStreamReader(getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
+        YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
         defaultValue = new BuiltinValueCollection(builtinValues.getConfigurationSection("default"));
         registerBuiltins(builtinValues);
@@ -38,12 +37,14 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
 
     @Override
     public ValueCollection getValues(Material material) {
-        if (values.containsKey(material))
+        if (values.containsKey(material)) {
             return values.get(material);
+        }
         return defaultValue;
     }
 
     private final class BuiltinValueCollection implements ValueCollection {
+
         private final ConfigurationSection section;
 
         BuiltinValueCollection(ConfigurationSection section) {
@@ -52,8 +53,9 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
 
         private Object get(String name) {
             Object got = section.get(name);
-            if (got == null)
+            if (got == null) {
                 return defaultValue.get(name);
+            }
             return got;
         }
 
@@ -81,6 +83,15 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         @Override
         public int getFireResistance() {
             return ((Number) get("fireResistance")).intValue();
+        }
+
+        @Override
+        public double getSlipperiness() {
+            return 0.6;
+        }
+
+        @Override public byte getBaseMapColor() {
+            return ((Number) get("baseMapColor")).byteValue();
         }
     }
 }

@@ -1,19 +1,22 @@
 package net.glowstone.io.entity;
 
+import java.util.List;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
+import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.List;
-
 abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityStore<T> {
 
-    public HumanEntityStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public HumanEntityStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
     }
 
     // documented at http://minecraft.gamepedia.com/Player.dat_Format
@@ -28,9 +31,14 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         }
 
         if (tag.isInt("playerGameType")) {
-            GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
-            if (mode != null) {
-                entity.setGameMode(mode);
+            GlowServer server = (GlowServer) Bukkit.getServer();
+            if (!server.getConfig().getBoolean(ServerConfig.Key.FORCE_GAMEMODE)) {
+                GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
+                if (mode != null) {
+                    entity.setGameMode(mode);
+                }
+            } else {
+                entity.setGameMode(server.getDefaultGameMode());
             }
         }
         if (tag.isInt("SelectedItemSlot")) {
@@ -41,9 +49,10 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         if (tag.isList("Inventory", TagType.COMPOUND)) {
             PlayerInventory inventory = entity.getInventory();
             List<CompoundTag> items = tag.getCompoundList("Inventory");
-            inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize()));
+            inventory.setStorageContents(
+                NbtSerialization.readInventory(items, 0, inventory.getSize() - 5));
             inventory.setArmorContents(NbtSerialization.readInventory(items, 100, 4));
-            inventory.setItemInOffHand(NbtSerialization.readInventory(items, 106, 1)[0]);
+            inventory.setExtraContents(NbtSerialization.readInventory(items, -106, 1));
         }
         if (tag.isList("EnderItems", TagType.COMPOUND)) {
             Inventory inventory = entity.getEnderChest();
@@ -59,8 +68,10 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         // humans don't have these properties
         tag.remove("CustomName");
         tag.remove("CustomNameVisible");
-        tag.remove("Equipment");
-        tag.remove("DropChances");
+        tag.remove("HandItems");
+        tag.remove("ArmorItems");
+        tag.remove("HandDropChances");
+        tag.remove("ArmorDropChances");
         tag.remove("CanPickUpLoot");
         tag.remove("PersistenceRequired");
         tag.remove("Leashed");
@@ -74,9 +85,10 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
 
         // inventory
         List<CompoundTag> inventory;
-        inventory = NbtSerialization.writeInventory(entity.getInventory().getContents(), 0);
-        inventory.addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
-        inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), 106));
+        inventory = NbtSerialization.writeInventory(entity.getInventory().getStorageContents(), 0);
+        inventory
+            .addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
+        inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), -106));
         tag.putCompoundList("Inventory", inventory);
 
         // ender items

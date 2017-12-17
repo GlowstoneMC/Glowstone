@@ -41,21 +41,28 @@ public final class TitleMessage implements Message {
     }
 
     public static TitleMessage[] fromTitle(Title title) {
+        TextMessage titleMessage = asTextMessage(BaseComponent.toLegacyText(title.getTitle()));
+        TextMessage subTitleMessage = title.getSubtitle() != null ? asTextMessage(
+            BaseComponent.toLegacyText(title.getSubtitle())) : asTextMessage(null);
+
         return new TitleMessage[]{
-                new TitleMessage(Action.TITLE, asTextMessage(BaseComponent.toPlainText(title.getTitle()))),
-                new TitleMessage(Action.SUBTITLE, asTextMessage(BaseComponent.toPlainText(title.getSubtitle()))),
-                new TitleMessage(Action.TIMES, title.getFadeIn(), title.getStay(), title.getFadeOut())
+            new TitleMessage(Action.TITLE, titleMessage),
+            new TitleMessage(Action.SUBTITLE, subTitleMessage),
+            new TitleMessage(Action.TIMES, title.getFadeIn(), title.getStay(), title.getFadeOut())
         };
     }
 
     private static TextMessage asTextMessage(String rawString) {
-        if (rawString == null) rawString = "";
+        if (rawString == null) {
+            rawString = "";
+        }
         return new TextMessage(rawString);
     }
 
     public enum Action {
         TITLE,
         SUBTITLE,
+        ACTION,
         TIMES,
         CLEAR,
         RESET;
@@ -65,5 +72,4 @@ public final class TitleMessage implements Message {
             return id < 0 || id >= values.length ? null : values[id];
         }
     }
-
 }

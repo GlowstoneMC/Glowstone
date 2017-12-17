@@ -1,11 +1,9 @@
 package net.glowstone.inventory.crafting;
 
+import java.util.ArrayList;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
-
-import java.util.ArrayList;
 
 public class GlowBannerCopyMatcher extends ItemMatcher {
 
@@ -20,7 +18,9 @@ public class GlowBannerCopyMatcher extends ItemMatcher {
         ArrayList<ItemStack> banners = new ArrayList<>();
 
         for (ItemStack item : matrix) {
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
 
             if (item.getType() == Material.BANNER) {
                 banners.add(item);
@@ -29,9 +29,13 @@ public class GlowBannerCopyMatcher extends ItemMatcher {
             return null; // Non-banner item in matrix
         }
 
-        if (banners.size() != 2) return null; // Must have 2 banners only
+        if (banners.size() != 2) {
+            return null; // Must have 2 banners only
+        }
 
-        if (banners.get(0).getDurability() != banners.get(1).getDurability()) return null; // Not same color
+        if (banners.get(0).getDurability() != banners.get(1).getDurability()) {
+            return null; // Not same color
+        }
 
         ItemStack original = null;
         ItemStack blank = null;
@@ -51,7 +55,9 @@ public class GlowBannerCopyMatcher extends ItemMatcher {
             }
         }
 
-        if (original == null || blank == null) return null; // Haven't got both needed banners
+        if (original == null || blank == null) {
+            return null; // Haven't got both needed banners
+        }
 
         return original.clone();
     }

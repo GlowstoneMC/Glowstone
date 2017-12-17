@@ -1,36 +1,42 @@
 package net.glowstone.entity;
 
-import net.glowstone.GlowChunk;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.physics.BoundingBox;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A class which manages all of the entities within a world.
  *
  * @author Graham Edgecombe
  */
-public final class EntityManager implements Iterable<GlowEntity> {
+public class EntityManager implements Iterable<GlowEntity> {
 
     /**
      * A map of all the entity ids to the corresponding entities.
      */
-    private final Map<Integer, GlowEntity> entities = new HashMap<>();
+    private final Map<Integer, GlowEntity> entities = new ConcurrentHashMap<>();
 
     /**
      * A map of entity types to a set containing all entities of that type.
      */
-    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new HashMap<>();
+    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new ConcurrentHashMap<>();
 
     /**
      * Gets all entities with the specified type.
      *
      * @param type The {@link Class} for the type.
-     * @param <T>  The type of entity.
+     * @param <T> The type of entity.
      * @return A collection of entities with the specified type.
      */
     @SuppressWarnings("unchecked")
@@ -89,10 +95,9 @@ public final class EntityManager implements Iterable<GlowEntity> {
     }
 
     /**
-     * Notes that an entity has moved from one location to another for
-     * physics and storage purposes.
+     * Notes that an entity has moved from one location to another for physics and storage purposes.
      *
-     * @param entity      The entity.
+     * @param entity The entity.
      * @param newLocation The new location.
      */
     void move(GlowEntity entity, Location newLocation) {
@@ -111,6 +116,8 @@ public final class EntityManager implements Iterable<GlowEntity> {
 
     public List<Entity> getEntitiesInside(BoundingBox searchBox, GlowEntity except) {
         // todo: narrow search based on the box's corners
-        return entities.values().stream().filter(entity -> entity != except && entity.intersects(searchBox)).collect(Collectors.toCollection(LinkedList::new));
+        return entities.values().stream()
+            .filter(entity -> entity != except && entity.intersects(searchBox))
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 }

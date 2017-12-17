@@ -1,20 +1,38 @@
 package net.glowstone.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import net.glowstone.GlowServer;
 import org.bukkit.ChatColor;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.help.*;
-
-import java.util.*;
-import java.util.Map.Entry;
+import org.bukkit.help.GenericCommandHelpTopic;
+import org.bukkit.help.HelpMap;
+import org.bukkit.help.HelpTopic;
+import org.bukkit.help.HelpTopicComparator;
+import org.bukkit.help.HelpTopicFactory;
+import org.bukkit.help.IndexHelpTopic;
 
 /**
  * An implementation of {@link HelpMap}.
  *
- * See <a href="http://wiki.bukkit.org/Help.yml">http://wiki.bukkit.org/Help.yml</a>
+ * <p>See <a href="http://wiki.bukkit.org/Help.yml">http://wiki.bukkit.org/Help.yml</a>
  */
 public final class GlowHelpMap implements HelpMap {
 
@@ -168,15 +186,19 @@ public final class GlowHelpMap implements HelpMap {
             }
 
             // Register a topic
-            for (Class<?> c : topicFactoryMap.keySet()) {
-                if (c.isAssignableFrom(command.getClass())) {
-                    HelpTopic t = topicFactoryMap.get(c).createTopic(command);
-                    if (t != null) addCommandTopic(t);
+            for (Entry<Class, HelpTopicFactory<Command>> entry : topicFactoryMap.entrySet()) {
+                if (((Class<?>) entry.getKey()).isAssignableFrom(command.getClass())) {
+                    HelpTopic t = entry.getValue().createTopic(command);
+                    if (t != null) {
+                        addCommandTopic(t);
+                    }
                     continue outer;
                 }
-                if (command instanceof PluginCommand && c.isAssignableFrom(((PluginCommand) command).getExecutor().getClass())) {
-                    HelpTopic t = topicFactoryMap.get(c).createTopic(command);
-                    if (t != null) addCommandTopic(t);
+                if (command instanceof PluginCommand && ((Class<?>) entry.getKey()).isAssignableFrom(((PluginCommand) command).getExecutor().getClass())) {
+                    HelpTopic t = entry.getValue().createTopic(command);
+                    if (t != null) {
+                        addCommandTopic(t);
+                    }
                     continue outer;
                 }
             }
@@ -255,7 +277,7 @@ public final class GlowHelpMap implements HelpMap {
     }
 
     private String getCommandPluginName(Command command) {
-        if (command instanceof BukkitCommand || command instanceof VanillaCommand) {
+        if (command instanceof BukkitCommand) {
             return "Bukkit";
         }
         if (command instanceof PluginIdentifiableCommand) {
@@ -272,7 +294,8 @@ public final class GlowHelpMap implements HelpMap {
     ////////////////////////////////////////////////////////////////////////////
     // Help topic subclasses
 
-    private class GeneralHelpTopic extends HelpTopic {
+    private static class GeneralHelpTopic extends HelpTopic {
+
         public GeneralHelpTopic(String name, String shortText, String fullText, String permission) {
             this.name = name;
             this.shortText = shortText;
@@ -286,7 +309,29 @@ public final class GlowHelpMap implements HelpMap {
         }
     }
 
+    private static class AliasTopic extends HelpTopic {
+
+        private final HelpTopic original;
+
+        public AliasTopic(String name, HelpTopic original) {
+            this.name = name;
+            shortText = ChatColor.YELLOW + "Alias for " + ChatColor.WHITE + original.getName();
+            this.original = original;
+        }
+
+        @Override
+        public boolean canSee(CommandSender player) {
+            return original.canSee(player);
+        }
+
+        @Override
+        public String getFullText(CommandSender sender) {
+            return shortText + "\n" + original.getFullText(sender);
+        }
+    }
+
     private class LazyIndexTopic extends IndexHelpTopic {
+
         private Collection<String> topics;
 
         public LazyIndexTopic(String name, String shortText, String permission, Collection<String> topics, String preamble) {
@@ -308,26 +353,6 @@ public final class GlowHelpMap implements HelpMap {
                 topics = null;
             }
             return super.getFullText(sender);
-        }
-    }
-
-    private class AliasTopic extends HelpTopic {
-        private final HelpTopic original;
-
-        public AliasTopic(String name, HelpTopic original) {
-            this.name = name;
-            shortText = ChatColor.YELLOW + "Alias for " + ChatColor.WHITE + original.getName();
-            this.original = original;
-        }
-
-        @Override
-        public boolean canSee(CommandSender player) {
-            return original.canSee(player);
-        }
-
-        @Override
-        public String getFullText(CommandSender sender) {
-            return shortText + "\n" + original.getFullText(sender);
         }
     }
 }

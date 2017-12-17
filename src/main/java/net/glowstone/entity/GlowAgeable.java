@@ -1,10 +1,13 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.inventory.GlowMetaSpawn;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -13,9 +16,6 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SpawnMeta;
-
-import java.util.List;
 
 /**
  * Represents a creature that ages, such as a sheep.
@@ -35,8 +35,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     /**
      * Creates a new ageable creature.
      *
-     * @param location  The location of the creature.
-     * @param type      The type of monster.
+     * @param location The location of the creature.
+     * @param type The type of monster.
      * @param maxHealth The max health of the creature.
      */
     public GlowAgeable(Location location, EntityType type, double maxHealth) {
@@ -151,44 +151,47 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
-        ItemStack item = player.getItemInHand();
+        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            ItemStack item = InventoryUtil
+                .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
-        // Spawn eggs are used to spawn babies
-        if (item != null && item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
-            SpawnMeta meta = (SpawnMeta) item.getItemMeta();
-            if (meta.hasEntityType() && meta.getEntityType() == this.getType()) {
-                this.createBaby();
+            // Spawn eggs are used to spawn babies
+            if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
+                GlowMetaSpawn meta = (GlowMetaSpawn) item.getItemMeta();
+                if (meta.hasSpawnedType() && meta.getSpawnedType() == this.getType()) {
+                    this.createBaby();
 
-                if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-                    // Consume the egg
-                    if (item.getAmount() > 1) {
-                        item.setAmount(item.getAmount() - 1);
-                    } else {
-                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
+                    if (player.getGameMode() == GameMode.SURVIVAL
+                        || player.getGameMode() == GameMode.ADVENTURE) {
+                        // Consume the egg
+                        if (item.getAmount() > 1) {
+                            item.setAmount(item.getAmount() - 1);
+                        } else {
+                            player.getInventory()
+                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                        }
                     }
+                    return true;
                 }
-                return true;
             }
         }
         return false;
     }
 
-    @Override
     public Ageable createBaby() {
         Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(getType());
-        GlowAgeable ageable = (GlowAgeable) getWorld().spawn(getLocation(), spawn, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
+        GlowAgeable ageable = (GlowAgeable) getWorld()
+            .spawn(getLocation(), spawn, CreatureSpawnEvent.SpawnReason.SPAWNER_EGG);
         ageable.setBaby();
         ageable.setParent(this);
 
         return ageable;
     }
 
-    @Override
     public Ageable getParent() {
         return parent;
     }
 
-    @Override
     public void setParent(Ageable parent) {
         this.parent = (GlowAgeable) parent;
     }

@@ -7,7 +7,7 @@ import net.glowstone.net.message.play.game.ClientSettingsMessage;
  * Container for settings which the client communicates to the server.
  */
 @Data
-public final class ClientSettings {
+public class ClientSettings {
 
     public static final ClientSettings DEFAULT = new ClientSettings("en_US", 8, 0, true, 127, 0);
 
@@ -24,10 +24,11 @@ public final class ClientSettings {
     public static final int SKIN_HAT = 1 << 6;
 
     private final String locale;
-    private final int viewDistance, chatFlags;
+    private final int chatFlags;
     private final boolean chatColors;
     private final int skinFlags;
     private final int mainHand;
+    private int viewDistance;
 
     /**
      * Construct the ClientSettings from a ClientSettingsMessage.
@@ -35,20 +36,22 @@ public final class ClientSettings {
      * @param msg The message sent by the client.
      */
     public ClientSettings(ClientSettingsMessage msg) {
-        this(msg.getLocale(), msg.getViewDistance(), msg.getChatFlags(), msg.isChatColors(), msg.getSkinFlags(), msg.getHand());
+        this(msg.getLocale(), msg.getViewDistance(), msg.getChatFlags(), msg.isChatColors(),
+            msg.getSkinFlags(), msg.getHand());
     }
 
     /**
      * Construct a ClientSettings.
      *
-     * @param locale       The locale, in a form like "en_US".
+     * @param locale The locale, in a form like "en_US".
      * @param viewDistance The view distance, in chunks.
      * @param chatFlags The client's chat flags.
      * @param chatColors Whether the client has chat colors enabled.
      * @param skinFlags The client's skin flags.
      * @param mainHand The main hand of the player.
      */
-    public ClientSettings(String locale, int viewDistance, int chatFlags, boolean chatColors, int skinFlags, int mainHand) {
+    public ClientSettings(String locale, int viewDistance, int chatFlags, boolean chatColors,
+        int skinFlags, int mainHand) {
         this.locale = locale;
         this.viewDistance = viewDistance;
         this.chatFlags = chatFlags;

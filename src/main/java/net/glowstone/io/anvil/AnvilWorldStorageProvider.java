@@ -1,13 +1,20 @@
 package net.glowstone.io.anvil;
 
+import java.io.File;
 import net.glowstone.GlowWorld;
-import net.glowstone.io.*;
+import net.glowstone.io.ChunkIoService;
+import net.glowstone.io.FunctionIoService;
+import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.PlayerStatisticIoService;
+import net.glowstone.io.ScoreboardIoService;
+import net.glowstone.io.StructureDataService;
+import net.glowstone.io.WorldMetadataService;
+import net.glowstone.io.WorldStorageProvider;
+import net.glowstone.io.data.WorldFunctionIoService;
 import net.glowstone.io.nbt.NbtPlayerDataService;
 import net.glowstone.io.nbt.NbtScoreboardIoService;
 import net.glowstone.io.nbt.NbtStructureDataService;
 import net.glowstone.io.nbt.NbtWorldMetadataService;
-
-import java.io.File;
 
 /**
  * A {@link WorldStorageProvider} for the Anvil map format.
@@ -15,6 +22,7 @@ import java.io.File;
 public class AnvilWorldStorageProvider implements WorldStorageProvider {
 
     private final File dir;
+    private final File dataDir;
     private GlowWorld world;
     private AnvilChunkIoService service;
     private NbtWorldMetadataService meta;
@@ -22,19 +30,25 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     private PlayerDataService players;
     private ScoreboardIoService scoreboard;
     private PlayerStatisticIoService statistics;
+    private FunctionIoService functions;
 
     public AnvilWorldStorageProvider(File dir) {
         this.dir = dir;
+        this.dataDir = new File(dir, "data");
+        this.dataDir.mkdirs();
     }
 
     @Override
     public void setWorld(GlowWorld world) {
-        if (this.world != null)
+        if (this.world != null) {
             throw new IllegalArgumentException("World is already set");
+        }
         this.world = world;
         service = new AnvilChunkIoService(dir);
         meta = new NbtWorldMetadataService(world, dir);
-        structures = new NbtStructureDataService(world, new File(dir, "data"));
+        dataDir.mkdirs();
+        structures = new NbtStructureDataService(world, dataDir);
+        functions = new WorldFunctionIoService(world, dataDir);
     }
 
     @Override
@@ -79,5 +93,13 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
             statistics = new PlayerStatisticIoService(world.getServer(), new File(dir, "stats"));
         }
         return statistics;
+    }
+
+    @Override
+    public FunctionIoService getFunctionIoService() {
+        if (functions == null) {
+            functions = new WorldFunctionIoService(world, dataDir);
+        }
+        return functions;
     }
 }

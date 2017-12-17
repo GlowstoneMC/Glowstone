@@ -18,7 +18,8 @@ public final class PositionRotationMessage implements Message {
     }
 
     public PositionRotationMessage(Location location) {
-        this(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        this(location.getX(), location.getY(), location.getZ(), location.getYaw(),
+            location.getPitch());
     }
 
 }

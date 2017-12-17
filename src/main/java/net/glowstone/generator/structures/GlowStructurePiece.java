@@ -1,13 +1,12 @@
 package net.glowstone.generator.structures;
 
+import java.util.Random;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
-
-import java.util.Random;
 
 public abstract class GlowStructurePiece {
 
@@ -76,21 +75,22 @@ public abstract class GlowStructurePiece {
     protected final BlockFace getRelativeFacing(BlockFace face) {
         BlockFace f = getOrientationFromOrdinal(orientation.ordinal() + face.ordinal() & 0x3);
         if ((orientation == BlockFace.SOUTH || orientation == BlockFace.WEST) &&
-                (face == BlockFace.EAST || face == BlockFace.WEST)) {
+            (face == BlockFace.EAST || face == BlockFace.WEST)) {
             return f.getOppositeFace();
         }
         return f;
     }
 
-    public boolean generate(World world, Random random, StructureBoundingBox boundingBox, BlockStateDelegate delegate) {
+    public boolean generate(World world, Random random, StructureBoundingBox boundingBox,
+        BlockStateDelegate delegate) {
         return boundingBox != null;
     }
 
     private void createNewBoundingBox(Location location, Vector size) {
         Vector min = new Vector(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         Vector max = new Vector(location.getBlockX() + size.getBlockX() - 1,
-                location.getBlockY() + size.getBlockY() - 1,
-                location.getBlockZ() + size.getBlockZ() - 1);
+            location.getBlockY() + size.getBlockY() - 1,
+            location.getBlockZ() + size.getBlockZ() - 1);
         boundingBox = new StructureBoundingBox(min, max);
     }
 

@@ -1,5 +1,9 @@
 package net.glowstone.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticMessage;
@@ -8,11 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A container for achievement and statistic tracking.
@@ -29,11 +28,7 @@ public final class StatisticMap {
     // Helpers
 
     private int getValue(String key) {
-        if (values.containsKey(key)) {
-            return values.get(key);
-        } else {
-            return 0;
-        }
+        return values.getOrDefault(key, 0);
     }
 
     private void setValue(String key, int value) {

@@ -13,7 +13,8 @@ public final class RelativeEntityPositionRotationMessage implements Message {
     private final int rotation, pitch;
     private final boolean onGround;
 
-    public RelativeEntityPositionRotationMessage(int id, short deltaX, short deltaY, short deltaZ, int rotation, int pitch) {
+    public RelativeEntityPositionRotationMessage(int id, short deltaX, short deltaY, short deltaZ,
+        int rotation, int pitch) {
         this(id, deltaX, deltaY, deltaZ, rotation, pitch, true);
     }
 

@@ -1,11 +1,11 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEDispenser;
-import net.glowstone.block.entity.TileEntity;
-import net.glowstone.block.state.GlowDispenser;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.DispenserEntity;
+import net.glowstone.block.entity.state.GlowDispenser;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
@@ -39,12 +39,13 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TEDispenser(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new DispenserEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Dispenser) {
@@ -61,20 +62,22 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
     @Override
     public void updatePhysics(GlowBlock block) {
         GlowBlock up = block.getRelative(BlockFace.UP);
-        boolean powered = block.isBlockPowered() | block.isBlockIndirectlyPowered() |
-                up.isBlockPowered() | up.isBlockIndirectlyPowered();
+        boolean powered = block.isBlockPowered() || block.isBlockIndirectlyPowered() ||
+            up.isBlockPowered() || up.isBlockIndirectlyPowered();
 
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
@@ -101,11 +104,11 @@ public class BlockDispenser extends BlockContainer {
     }
 
     public void trigger(GlowBlock block) {
-        TileEntity te = block.getTileEntity();
-        if (!(te instanceof TEDispenser)) {
+        BlockEntity te = block.getBlockEntity();
+        if (!(te instanceof DispenserEntity)) {
             return;
         }
-        TEDispenser teDispenser = (TEDispenser) te;
+        DispenserEntity teDispenser = (DispenserEntity) te;
 
         GlowDispenser dispenser = (GlowDispenser) teDispenser.getState();
         dispenser.dispense();

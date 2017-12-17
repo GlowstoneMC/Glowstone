@@ -1,15 +1,20 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.EntityPropertyMessage;
 
-import java.util.*;
-
 public class AttributeManager {
+
     private static final List<Modifier> EMPTY_LIST = new ArrayList<>();
 
     private final GlowLivingEntity entity;
@@ -24,29 +29,30 @@ public class AttributeManager {
     }
 
     public void applyMessages(Collection<Message> messages) {
-        if (!needsUpdate)
+        if (!needsUpdate) {
             return;
+        }
         messages.add(new EntityPropertyMessage(entity.id, properties));
         needsUpdate = false;
     }
 
     public void sendMessages(GlowSession session) {
-        if (!needsUpdate)
+        if (!needsUpdate) {
             return;
-        session.send(new EntityPropertyMessage(entity.id, properties));
+        }
+        int id = entity.id;
+        if (entity instanceof GlowPlayer) {
+            GlowPlayer player = (GlowPlayer) entity;
+            if (player.getUniqueId().equals(session.getPlayer().getUniqueId())) {
+                id = 0;
+            }
+        }
+        session.send(new EntityPropertyMessage(id, properties));
         needsUpdate = false;
     }
 
     public void setProperty(Key key, double value) {
         setProperty(key.toString(), Math.max(0, Math.min(value, key.max)), null);
-    }
-
-    public double getPropertyValue(Key key) {
-        if (properties.containsKey(key.toString())) {
-            return properties.get(key.toString()).value;
-        }
-
-        return key.def;
     }
 
     public void setProperty(String key, double value, List<Modifier> modifiers) {
@@ -60,6 +66,14 @@ public class AttributeManager {
         needsUpdate = true;
     }
 
+    public double getPropertyValue(Key key) {
+        if (properties.containsKey(key.toString())) {
+            return properties.get(key.toString()).value;
+        }
+
+        return key.def;
+    }
+
     public Map<String, Property> getAllProperties() {
         return properties;
     }
@@ -71,7 +85,9 @@ public class AttributeManager {
         KEY_KNOCKBACK_RESISTANCE("generic.knockbackResistance", 0, 1),
         KEY_MOVEMENT_SPEED("generic.movementSpeed", 0.699999988079071, 1024.0),
         KEY_ATTACK_DAMAGE("generic.attackDamage", 2, 2048.0),
-        ATTACK_SPEED("generic.attackSpeed", 4.0, 1024.0),
+        KEY_ATTACK_SPEED("generic.attackSpeed", 4.0, 1024.0),
+        KEY_ARMOR("generic.armor", 0.0, 30.0),
+        KEY_ARMOR_TOUGHNESS("generic.armorToughness", 0.0, 20.0),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
 
@@ -86,7 +102,8 @@ public class AttributeManager {
         }
     }
 
-    public static final class Property {
+    public static class Property {
+
         @Getter
         private double value;
         @Getter
@@ -99,7 +116,8 @@ public class AttributeManager {
     }
 
     @Data
-    public static final class Modifier {
+    public static class Modifier {
+
         private final String name;
         private final UUID uuid;
         private final double amount;

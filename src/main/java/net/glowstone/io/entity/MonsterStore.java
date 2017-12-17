@@ -1,18 +1,27 @@
 package net.glowstone.io.entity;
 
+import java.lang.reflect.Constructor;
 import net.glowstone.entity.monster.GlowMonster;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
-import java.lang.reflect.Constructor;
+public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
-class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
+    private Constructor<? extends T> constructor;
 
-    private final Constructor<T> constructor;
+    public MonsterStore(Class<? extends T> clazz, EntityType type) {
+        super(clazz, type);
+        init(clazz);
+    }
 
-    public MonsterStore(Class<T> clazz, String id) {
-        super(clazz, id);
-        Constructor<T> ctor = null;
+    public MonsterStore(Class<? extends T> clazz, String type) {
+        super(clazz, type);
+        init(clazz);
+    }
+
+    private void init(Class<? extends T> clazz) {
+        Constructor<? extends T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);
         } catch (Exception e) {

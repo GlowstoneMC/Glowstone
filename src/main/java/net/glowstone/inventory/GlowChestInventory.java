@@ -1,6 +1,6 @@
 package net.glowstone.inventory;
 
-import net.glowstone.block.state.GlowChest;
+import net.glowstone.block.entity.state.GlowChest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 
@@ -19,12 +19,12 @@ public class GlowChestInventory extends GlowInventory {
     @Override
     public void addViewer(HumanEntity viewer) {
         super.addViewer(viewer);
-        chest.getTileEntity().addViewer();
+        chest.getBlockEntity().addViewer();
     }
 
     @Override
     public void removeViewer(HumanEntity viewer) {
         super.removeViewer(viewer);
-        chest.getTileEntity().removeViewer();
+        chest.getBlockEntity().removeViewer();
     }
 }

@@ -1,24 +1,25 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.DoubleTallPlant;
 import net.glowstone.generator.objects.trees.BirchTree;
 import net.glowstone.generator.objects.trees.GenericTree;
 import org.bukkit.Chunk;
-import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 public class ForestPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.FOREST, Biome.FOREST_HILLS};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree.class, 4), new TreeDecoration(BirchTree.class, 1)};
-    private static final DoublePlantSpecies[] DOUBLE_PLANTS = {DoublePlantSpecies.LILAC, DoublePlantSpecies.ROSE_BUSH, DoublePlantSpecies.PEONY};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree.class, 4),
+        new TreeDecoration(BirchTree.class, 1)};
+    private static final DoublePlantSpecies[] DOUBLE_PLANTS = {DoublePlantSpecies.LILAC,
+        DoublePlantSpecies.ROSE_BUSH, DoublePlantSpecies.PEONY};
 
     protected int doublePlantLoweringAmount = 3;
 

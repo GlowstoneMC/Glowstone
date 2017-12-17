@@ -1,11 +1,11 @@
 package net.glowstone.inventory;
 
-import net.glowstone.constants.ItemIds;
-import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.Arrays;
 import java.util.List;
+import net.glowstone.constants.ItemIds;
+import net.glowstone.util.InventoryUtil;
+import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.inventory.ItemStack;
 
 public class GlowInventorySlot {
 
@@ -19,7 +19,7 @@ public class GlowInventorySlot {
     }
 
     public GlowInventorySlot(SlotType type) {
-        this(null, type);
+        this(InventoryUtil.createEmptyStack(), type);
     }
 
     public GlowInventorySlot(ItemStack item) {
@@ -46,7 +46,7 @@ public class GlowInventorySlot {
     }
 
     public ItemStack getItem() {
-        return item;
+        return InventoryUtil.itemOrEmpty(item);
     }
 
     public void setItem(ItemStack item) {

@@ -11,12 +11,9 @@ import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * This class writes NBT, or Named Binary Tag, {@link Tag} objects to an
- * underlying {@link OutputStream}.
- * <p>
- * The NBT format was created by Markus Persson, and the specification may
- * be found at <a href="http://www.minecraft.net/docs/NBT.txt">
- * http://www.minecraft.net/docs/NBT.txt</a>.
+ * This class writes NBT, or Named Binary Tag, {@link Tag} objects to an underlying {@link OutputStream}.
+ *
+ * <p>The NBT format was created by Markus Persson, and the specification may be found at <a href="http://www.minecraft.net/docs/NBT.txt"> http://www.minecraft.net/docs/NBT.txt</a>.
  */
 public final class NBTOutputStream implements Closeable {
 
@@ -26,9 +23,7 @@ public final class NBTOutputStream implements Closeable {
     private final DataOutputStream os;
 
     /**
-     * Creates a new NBTOutputStream, which will write data to the
-     * specified underlying output stream. This assumes the output stream
-     * should be compressed with GZIP.
+     * Creates a new NBTOutputStream, which will write data to the specified underlying output stream. This assumes the output stream should be compressed with GZIP.
      *
      * @param os The output stream.
      * @throws IOException if an I/O error occurs.
@@ -38,11 +33,9 @@ public final class NBTOutputStream implements Closeable {
     }
 
     /**
-     * Creates a new NBTOutputStream, which will write data to the
-     * specified underlying output stream. A flag indicates if the output
-     * should be compressed with GZIP or not.
+     * Creates a new NBTOutputStream, which will write data to the specified underlying output stream. A flag indicates if the output should be compressed with GZIP or not.
      *
-     * @param os         The output stream.
+     * @param os The output stream.
      * @param compressed A flag that indicates if the output should be compressed.
      * @throws IOException if an I/O error occurs.
      */
@@ -65,7 +58,7 @@ public final class NBTOutputStream implements Closeable {
      * Write a tag with a name.
      *
      * @param name The name to give the written tag.
-     * @param tag  The tag to write.
+     * @param tag The tag to write.
      * @throws IOException if an I/O error occurs.
      */
     private void writeTag(String name, Tag tag) throws IOException {

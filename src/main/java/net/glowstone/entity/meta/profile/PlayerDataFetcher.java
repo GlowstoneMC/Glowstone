@@ -1,14 +1,6 @@
 package net.glowstone.entity.meta.profile;
 
-import net.glowstone.GlowServer;
-import net.glowstone.util.UuidUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import javax.net.ssl.HttpsURLConnection;
+import net.glowstone.GlowServer;
+import net.glowstone.util.UuidUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Methods for accessing Mojang servers to look up player profiles and UUIDs.
  */
-final class PlayerDataFetcher {
+class PlayerDataFetcher {
 
     private static final String PROFILE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
     private static final String PROFILE_URL_SUFFIX = "?unsigned=false";
@@ -49,10 +49,9 @@ final class PlayerDataFetcher {
         }
 
         JSONObject json;
-        try {
-            InputStreamReader isr = new InputStreamReader(is);
-            if (isr.ready()) {
-                json = (JSONObject) new JSONParser().parse(isr);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            if (br.ready()) {
+                json = (JSONObject) new JSONParser().parse(br);
             } else {
                 return new PlayerProfile(null, uuid);
             }

@@ -1,5 +1,6 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Random;
 import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -7,8 +8,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.Random;
 
 public class SnowPopulator extends BlockPopulator {
 

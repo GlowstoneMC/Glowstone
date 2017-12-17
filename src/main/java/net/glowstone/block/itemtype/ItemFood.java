@@ -22,6 +22,11 @@ public class ItemFood extends ItemTimedUsage {
         saturation = 0;
     }
 
+    @Override
+    public Context getContext() {
+        return Context.AIR;
+    }
+
     protected int getFoodLevel(ItemStack stack) {
         return foodLevel;
     }
@@ -30,13 +35,15 @@ public class ItemFood extends ItemTimedUsage {
         return saturation;
     }
 
-    public boolean eat(GlowPlayer player, ItemStack item) {
-
+    protected boolean handleEat(GlowPlayer player, ItemStack item) {
         PlayerItemConsumeEvent event1 = new PlayerItemConsumeEvent(player, item);
         EventFactory.callEvent(event1);
-        if (event1.isCancelled()) return false;
+        if (event1.isCancelled()) {
+            return false;
+        }
 
-        FoodLevelChangeEvent event2 = new FoodLevelChangeEvent(player, getFoodLevel(item) + player.getFoodLevel());
+        FoodLevelChangeEvent event2 = new FoodLevelChangeEvent(player,
+            getFoodLevel(item) + player.getFoodLevel());
         EventFactory.callEvent(event2);
 
         if (!event2.isCancelled()) {
@@ -45,6 +52,13 @@ public class ItemFood extends ItemTimedUsage {
 
         player.setUsageItem(null);
         player.setUsageTime(0);
+        return true;
+    }
+
+    public boolean eat(GlowPlayer player, ItemStack item) {
+        if (!handleEat(player, item)) {
+            return false;
+        }
         if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         } else {
@@ -55,7 +69,8 @@ public class ItemFood extends ItemTimedUsage {
 
     @Override
     public void startUse(GlowPlayer player, ItemStack item) {
-        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+        if (player.getGameMode() == GameMode.SURVIVAL
+            || player.getGameMode() == GameMode.ADVENTURE) {
             player.setUsageItem(item);
             player.setUsageTime(32);
         }
@@ -63,7 +78,8 @@ public class ItemFood extends ItemTimedUsage {
 
     @Override
     public void endUse(GlowPlayer player, ItemStack item) {
-        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+        if (player.getGameMode() == GameMode.SURVIVAL
+            || player.getGameMode() == GameMode.ADVENTURE) {
             player.setUsageItem(null);
             player.setUsageTime(0);
         }

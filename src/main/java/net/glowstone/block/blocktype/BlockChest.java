@@ -1,13 +1,16 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowChunk;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEChest;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.ChestEntity;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
@@ -15,14 +18,8 @@ import org.bukkit.material.Chest;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 public class BlockChest extends BlockContainer {
 
-    private static final BlockFace[] NEAR_CHESTS = new BlockFace[]{
-            BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
-    };
     private final boolean isTrapped;
 
     public BlockChest() {
@@ -33,7 +30,8 @@ public class BlockChest extends BlockContainer {
         this.isTrapped = isTrapped;
     }
 
-    private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing, BlockFace connection, GlowPlayer player) {
+    private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing,
+        BlockFace connection, GlowPlayer player) {
         if (connection != myFacing && connection != myFacing.getOppositeFace()) {
             return myFacing;
         }
@@ -53,18 +51,20 @@ public class BlockChest extends BlockContainer {
             case WEST:
                 return yaw > 90 && yaw < 270 ? BlockFace.SOUTH : BlockFace.NORTH;
             default:
-                GlowServer.logger.warning("Can only handle N/O/S/W BlockFaces, getting face: " + connection);
+                GlowServer.logger
+                    .warning("Can only handle N/O/S/W BlockFaces, getting face: " + connection);
                 return BlockFace.NORTH;
         }
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TEChest(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new ChestEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
@@ -98,7 +98,8 @@ public class BlockChest extends BlockContainer {
 
             if (otherPartData instanceof Chest) {
                 Chest otherChest = (Chest) otherPartData;
-                BlockFace facing = getFacingDirection(normalFacing, otherChest.getFacing(), otherPart, player);
+                BlockFace facing = getFacingDirection(normalFacing, otherChest.getFacing(),
+                    otherPart, player);
 
                 chest.setFacingDirection(facing);
                 state.setData(chest);
@@ -115,15 +116,18 @@ public class BlockChest extends BlockContainer {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         BlockState state = block.getState();
         if (state instanceof org.bukkit.block.Chest) {
             org.bukkit.block.Chest chest = (org.bukkit.block.Chest) state;
             player.openInventory(chest.getInventory());
+            player.incrementStatistic(Statistic.CHEST_OPENED);
             return true;
         }
 
-        GlowServer.logger.warning("Calling blockInteract on BlockChest, but BlockState is " + state);
+        GlowServer.logger
+            .warning("Calling blockInteract on BlockChest, but BlockState is " + state);
 
         return false;
     }
@@ -146,7 +150,7 @@ public class BlockChest extends BlockContainer {
     private Collection<BlockFace> searchChests(GlowBlock block) {
         Collection<BlockFace> chests = new ArrayList<>();
 
-        for (BlockFace face : NEAR_CHESTS) {
+        for (BlockFace face : SIDES) {
             GlowBlock possibleChest = block.getRelative(face);
             if (possibleChest.getType() == (isTrapped ? Material.TRAPPED_CHEST : Material.CHEST)) {
                 chests.add(face);
@@ -158,10 +162,13 @@ public class BlockChest extends BlockContainer {
 
     public BlockFace getAttachedChest(GlowBlock me) {
         Collection<BlockFace> attachedChests = searchChests(me);
-        if (attachedChests.isEmpty())
+        if (attachedChests.isEmpty()) {
             return null;
+        }
         if (attachedChests.size() > 1) {
-            GlowServer.logger.warning("Chest may only have one near other chest. Found '" + attachedChests + "' near " + me);
+            GlowServer.logger.warning(
+                "Chest may only have one near other chest. Found '" + attachedChests + "' near "
+                    + me);
             return null;
         }
 

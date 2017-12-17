@@ -1,10 +1,11 @@
 package net.glowstone.generator.populators.overworld;
 
-import org.bukkit.block.Biome;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import net.glowstone.generator.decorators.EntityDecorator;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.EntityType;
 
 public class DesertPopulator extends BiomePopulator {
 
@@ -16,6 +17,10 @@ public class DesertPopulator extends BiomePopulator {
         sugarCaneDecorator.setAmount(60);
         cactusDecorator.setAmount(10);
         desertWellDecorator.setAmount(1);
+        entityDecorators.clear();
+        EntityDecorator rabbitDecorator = new EntityDecorator(EntityType.RABBIT);
+        rabbitDecorator.setGroupSize(2, 3);
+        entityDecorators.add(rabbitDecorator);
     }
 
     @Override

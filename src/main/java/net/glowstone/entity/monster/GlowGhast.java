@@ -40,4 +40,9 @@ public class GlowGhast extends GlowMonster implements Ghast {
     protected Sound getHurtSound() {
         return Sound.ENTITY_GHAST_HURT;
     }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_GHAST_AMBIENT;
+    }
 }

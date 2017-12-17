@@ -8,6 +8,7 @@ import net.glowstone.net.message.play.player.UseItemMessage;
 import java.io.IOException;
 
 public class UseItemCodec implements Codec<UseItemMessage> {
+
     @Override
     public UseItemMessage decode(ByteBuf buffer) throws IOException {
         int hand = ByteBufUtils.readVarInt(buffer);

@@ -2,13 +2,13 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.DiggingMessage;
 import org.bukkit.util.BlockVector;
 
-import java.io.IOException;
-
 public final class DiggingCodec implements Codec<DiggingMessage> {
+
     @Override
     public DiggingMessage decode(ByteBuf buf) throws IOException {
         int state = buf.readByte();

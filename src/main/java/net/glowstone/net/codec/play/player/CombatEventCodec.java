@@ -3,12 +3,11 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.CombatEventMessage;
 import net.glowstone.net.message.play.player.CombatEventMessage.Event;
 import net.glowstone.util.TextMessage;
-
-import java.io.IOException;
 
 public final class CombatEventCodec implements Codec<CombatEventMessage> {
 

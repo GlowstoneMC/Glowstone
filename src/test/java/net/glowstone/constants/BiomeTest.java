@@ -1,15 +1,14 @@
 package net.glowstone.constants;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Collection;
 import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.block.Biome;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 /**
  * Tests for {@link GlowBiome}.
@@ -31,8 +30,8 @@ public class BiomeTest {
     @Test
     public void testIdMapping() {
         int id = GlowBiome.getId(biome);
-        assertFalse("No id specified for biome " + biome, id == -1);
-        assertEquals("Mapping for id " + id + " mismatch", biome, GlowBiome.getBiome(id));
+        assertThat("No id specified for biome " + biome, id == -1, is(false));
+        assertThat("Mapping for id " + id + " mismatch", GlowBiome.getBiome(id), is(biome));
     }
 
 }

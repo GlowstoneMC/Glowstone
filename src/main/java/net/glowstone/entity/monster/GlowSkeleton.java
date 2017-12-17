@@ -1,28 +1,30 @@
 package net.glowstone.entity.monster;
 
-import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Skeleton;
 
 public class GlowSkeleton extends GlowMonster implements Skeleton {
-    private SkeletonType skeletonType = SkeletonType.NORMAL;
 
     public GlowSkeleton(Location loc) {
-        super(loc, EntityType.SKELETON, 20);
+        this(loc, EntityType.SKELETON, 20);
+    }
+
+    public GlowSkeleton(Location loc, EntityType type, double maxHealth) {
+        super(loc, type, maxHealth);
         setBoundingBox(0.6, 1.99);
     }
 
     @Override
     public SkeletonType getSkeletonType() {
-        return skeletonType;
+        return SkeletonType.NORMAL;
     }
 
     @Override
     public void setSkeletonType(SkeletonType type) {
-        skeletonType = type;
-        metadata.set(MetadataIndex.SKELETON_TYPE, skeletonType.ordinal());
+        //TODO - 1.11 This field was removed since different types are different entities
+        //metadata.set(MetadataIndex.SKELETON_TYPE, conversionTime > 0);
     }
 
     @Override
@@ -33,5 +35,15 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     @Override
     protected Sound getHurtSound() {
         return Sound.ENTITY_SKELETON_HURT;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_SKELETON_AMBIENT;
+    }
+
+    @Override
+    public boolean isUndead() {
+        return true;
     }
 }

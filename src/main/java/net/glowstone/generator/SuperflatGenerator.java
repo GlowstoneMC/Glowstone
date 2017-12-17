@@ -1,19 +1,19 @@
 package net.glowstone.generator;
 
+import java.util.Random;
 import net.glowstone.generator.populators.StructurePopulator;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-import java.util.Random;
-
 public class SuperflatGenerator extends GlowChunkGenerator {
 
     public SuperflatGenerator() {
-        new StructurePopulator();
+        super(new StructurePopulator());
     }
 
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ,
+        BiomeGrid biomes) {
         ChunkData chunkData = createChunkData(world);
 
         int cx = chunkX << 4;
@@ -28,7 +28,8 @@ public class SuperflatGenerator extends GlowChunkGenerator {
         return chunkData;
     }
 
-    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z) {
+    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x,
+        int z) {
         x = x & 0xF;
         z = z & 0xF;
 

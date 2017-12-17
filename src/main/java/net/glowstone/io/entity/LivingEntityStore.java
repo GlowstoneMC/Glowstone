@@ -1,23 +1,40 @@
 package net.glowstone.io.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 import net.glowstone.entity.AttributeManager;
 import net.glowstone.entity.AttributeManager.Modifier;
 import net.glowstone.entity.AttributeManager.Property;
 import net.glowstone.entity.GlowLivingEntity;
+import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.io.nbt.NbtSerialization;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LeashHitch;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
-import java.util.Map.Entry;
+public abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
 
-abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
+    public LivingEntityStore(Class<T> clazz, String type) {
+        super(clazz, type);
+    }
 
-    public LivingEntityStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public LivingEntityStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
     }
 
     // these tags that apply to living entities only are documented as global:
@@ -31,8 +48,6 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
     // - int "HurtByTimestamp"
     // - short "DeathTime"
     // - bool "PersistenceRequired"
-    // - bool "Leashed"
-    // - compound "Leash"
     // on ActiveEffects, bool "ShowParticles"
 
     @Override
@@ -90,26 +105,7 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
 
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {
-            if (compound.isList("Equipment", TagType.COMPOUND)) {
-                List<CompoundTag> list = compound.getCompoundList("Equipment");
-                if (list.size() == 5) {
-                    equip.setItemInHand(NbtSerialization.readItem(list.get(0)));
-                    equip.setBoots(NbtSerialization.readItem(list.get(1)));
-                    equip.setLeggings(NbtSerialization.readItem(list.get(2)));
-                    equip.setChestplate(NbtSerialization.readItem(list.get(3)));
-                    equip.setHelmet(NbtSerialization.readItem(list.get(4)));
-                }
-            }
-            if (compound.isList("DropChances", TagType.FLOAT)) {
-                List<Float> list = compound.getList("DropChances", TagType.FLOAT);
-                if (list.size() == 5) {
-                    equip.setItemInHandDropChance(list.get(0));
-                    equip.setBootsDropChance(list.get(1));
-                    equip.setLeggingsDropChance(list.get(2));
-                    equip.setChestplateDropChance(list.get(3));
-                    equip.setHelmetDropChance(list.get(4));
-                }
-            }
+            loadEquipment(entity, equip, compound);
         }
         if (compound.isByte("CanPickUpLoot")) {
             entity.setCanPickupItems(compound.getBool("CanPickUpLoot"));
@@ -128,11 +124,14 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
                         List<CompoundTag> modifierTags = tag.getCompoundList("Modifiers");
                         for (CompoundTag modifierTag : modifierTags) {
                             if (modifierTag.isDouble("Amount") && modifierTag.isString("Name") &&
-                                    modifierTag.isInt("Operation") && modifierTag.isLong("UUIDLeast") &&
-                                    modifierTag.isLong("UUIDMost")) {
+                                modifierTag.isInt("Operation") && modifierTag.isLong("UUIDLeast") &&
+                                modifierTag.isLong("UUIDMost")) {
                                 modifiers.add(new Modifier(
-                                        modifierTag.getString("Name"), new UUID(modifierTag.getLong("UUIDLeast"), modifierTag.getLong("UUIDMost")),
-                                        modifierTag.getDouble("Amount"), (byte) modifierTag.getInt("Operation")));
+                                    modifierTag.getString("Name"),
+                                    new UUID(modifierTag.getLong("UUIDLeast"),
+                                        modifierTag.getLong("UUIDMost")),
+                                    modifierTag.getDouble("Amount"),
+                                    (byte) modifierTag.getInt("Operation")));
                             }
                         }
                     }
@@ -141,6 +140,108 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
                 }
             }
         }
+
+        if (compound.isByte("Leashed") && compound.getBool("Leashed") && !compound
+            .isCompound("Leash")) {
+            // We know that there was something leashed, but not what entity it was
+            // This can happen, when for example Minecart got leashed
+            // We still have to make sure that we drop a Leash Item
+            entity.setLeashHolderUniqueID(UUID.randomUUID());
+        } else if (compound.isCompound("Leash")) {
+            CompoundTag leash = compound.getCompound("Leash");
+            if (leash.isLong("UUIDMost") && leash.isLong("UUIDLeast")) {
+                UUID uuid = new UUID(leash.getLong("UUIDMost"), leash.getLong("UUIDLeast"));
+                entity.setLeashHolderUniqueID(uuid);
+            } else if (leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
+                int x = leash.getInt("X");
+                int y = leash.getInt("Y");
+                int z = leash.getInt("Z");
+
+                LeashHitch leashHitch = GlowLeashHitch
+                    .getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
+                entity.setLeashHolder(leashHitch);
+            }
+        }
+    }
+
+    private void loadEquipment(T entity, EntityEquipment equip, CompoundTag compound) {
+        // Deprecated since 15w31a, left here for compatibilty for now
+        if (compound.isList("Equipment", TagType.COMPOUND)) {
+            List<CompoundTag> list = compound.getCompoundList("Equipment");
+
+            equip.setItemInMainHand(getItem(list, 0));
+            equip.setBoots(getItem(list, 1));
+            equip.setLeggings(getItem(list, 2));
+            equip.setChestplate(getItem(list, 3));
+            equip.setHelmet(getItem(list, 4));
+        }
+        // Deprecated since 15w31a, left here for compatibilty for now
+        if (compound.isList("DropChances", TagType.FLOAT)) {
+            List<Float> list = compound.getList("DropChances", TagType.FLOAT);
+
+            equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
+            equip.setBootsDropChance(getOrDefault(list, 1, 1f));
+            equip.setLeggingsDropChance(getOrDefault(list, 2, 1f));
+            equip.setChestplateDropChance(getOrDefault(list, 3, 1f));
+            equip.setHelmetDropChance(getOrDefault(list, 4, 1f));
+        }
+
+        if (compound.isList("HandItems", TagType.COMPOUND)) {
+            List<CompoundTag> list = compound.getCompoundList("HandItems");
+
+            equip.setItemInMainHand(getItem(list, 0));
+            equip.setItemInOffHand(getItem(list, 1));
+        }
+        if (compound.isList("ArmorItems", TagType.COMPOUND)) {
+            List<CompoundTag> list = compound.getCompoundList("ArmorItems");
+
+            equip.setBoots(getItem(list, 0));
+            equip.setLeggings(getItem(list, 1));
+            equip.setChestplate(getItem(list, 2));
+            equip.setHelmet(getItem(list, 3));
+        }
+
+        // set of dropchances on a player throws an UnsupportedOperationException
+        if (!(entity instanceof Player)) {
+            if (compound.isList("HandDropChances", TagType.FLOAT)) {
+                List<Float> list = compound.getList("HandDropChances", TagType.FLOAT);
+
+                equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
+                equip.setItemInOffHandDropChance(getOrDefault(list, 1, 1f));
+            }
+            if (compound.isList("ArmorDropChances", TagType.FLOAT)) {
+                List<Float> list = compound.getList("ArmorDropChances", TagType.FLOAT);
+
+                equip.setBootsDropChance(getOrDefault(list, 0, 1f));
+                equip.setLeggingsDropChance(getOrDefault(list, 1, 1f));
+                equip.setChestplateDropChance(getOrDefault(list, 2, 1f));
+                equip.setHelmetDropChance(getOrDefault(list, 3, 1f));
+            }
+        }
+    }
+
+    private ItemStack getItem(List<CompoundTag> list, int index) {
+        if (list == null) {
+            return InventoryUtil.createEmptyStack();
+        }
+
+        if (index >= list.size()) {
+            return InventoryUtil.createEmptyStack();
+        }
+
+        return NbtSerialization.readItem(list.get(index));
+    }
+
+    private float getOrDefault(List<Float> list, int index, float defaultValue) {
+        if (list == null) {
+            return defaultValue;
+        }
+
+        if (index >= list.size()) {
+            return defaultValue;
+        }
+
+        return list.get(index);
     }
 
     @Override
@@ -176,8 +277,10 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
                         modifierTag.putDouble("Amount", modifier.getAmount());
                         modifierTag.putString("Name", modifier.getName());
                         modifierTag.putInt("Operation", modifier.getOperation());
-                        modifierTag.putLong("UUIDLeast", modifier.getUuid().getLeastSignificantBits());
-                        modifierTag.putLong("UUIDMost", modifier.getUuid().getMostSignificantBits());
+                        modifierTag
+                            .putLong("UUIDLeast", modifier.getUuid().getLeastSignificantBits());
+                        modifierTag
+                            .putLong("UUIDMost", modifier.getUuid().getMostSignificantBits());
                         modifiers.add(modifierTag);
                     }
                     attribute.putCompoundList("Modifiers", modifiers);
@@ -203,21 +306,49 @@ abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore
 
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {
-            tag.putCompoundList("Equipment", Arrays.asList(
-                    NbtSerialization.writeItem(equip.getItemInHand(), -1),
-                    NbtSerialization.writeItem(equip.getBoots(), -1),
-                    NbtSerialization.writeItem(equip.getLeggings(), -1),
-                    NbtSerialization.writeItem(equip.getChestplate(), -1),
-                    NbtSerialization.writeItem(equip.getHelmet(), -1)
+            tag.putCompoundList("HandItems", Arrays.asList(
+                NbtSerialization.writeItem(equip.getItemInMainHand(), -1),
+                NbtSerialization.writeItem(equip.getItemInOffHand(), -1)
             ));
-            tag.putList("DropChances", TagType.FLOAT, Arrays.asList(
-                    equip.getItemInHandDropChance(),
-                    equip.getBootsDropChance(),
-                    equip.getLeggingsDropChance(),
-                    equip.getChestplateDropChance(),
-                    equip.getHelmetDropChance()
+            tag.putCompoundList("ArmorItems", Arrays.asList(
+                NbtSerialization.writeItem(equip.getBoots(), -1),
+                NbtSerialization.writeItem(equip.getLeggings(), -1),
+                NbtSerialization.writeItem(equip.getChestplate(), -1),
+                NbtSerialization.writeItem(equip.getHelmet(), -1)
+            ));
+
+            tag.putList("HandDropChances", TagType.FLOAT, Arrays.asList(
+                equip.getItemInMainHandDropChance(),
+                equip.getItemInOffHandDropChance()
+            ));
+            tag.putList("ArmorDropChances", TagType.FLOAT, Arrays.asList(
+                equip.getBootsDropChance(),
+                equip.getLeggingsDropChance(),
+                equip.getChestplateDropChance(),
+                equip.getHelmetDropChance()
             ));
         }
         tag.putBool("CanPickUpLoot", entity.getCanPickupItems());
+
+        tag.putBool("Leashed", entity.isLeashed());
+
+        if (entity.isLeashed()) {
+            Entity leashHolder = entity.getLeashHolder();
+            CompoundTag leash = new CompoundTag();
+
+            // "Non-living entities excluding leashes will not persist as leash holders."
+            // The empty Leash tag is still persisted tough
+            if (leashHolder instanceof LeashHitch) {
+                Location location = leashHolder.getLocation();
+
+                leash.putInt("X", location.getBlockX());
+                leash.putInt("Y", location.getBlockY());
+                leash.putInt("Z", location.getBlockZ());
+            } else if (leashHolder instanceof LivingEntity) {
+                leash.putLong("UUIDMost", entity.getUniqueId().getMostSignificantBits());
+                leash.putLong("UUIDLeast", entity.getUniqueId().getLeastSignificantBits());
+            }
+            tag.putCompound("Leash", leash);
+        }
     }
 }

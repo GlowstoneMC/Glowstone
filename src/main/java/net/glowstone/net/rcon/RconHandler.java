@@ -3,14 +3,13 @@ package net.glowstone.net.rcon;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.event.server.RemoteServerCommandEvent;
-
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Handler for Rcon messages.
@@ -85,8 +84,11 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
 
         try {
-            RemoteServerCommandEvent event = new RemoteServerCommandEvent(commandSender, payload);
-            EventFactory.callEvent(event);
+            RemoteServerCommandEvent event = EventFactory
+                .callEvent(new RemoteServerCommandEvent(commandSender, payload));
+            if (event.isCancelled()) {
+                return;
+            }
             rconServer.getServer().dispatchCommand(commandSender, event.getCommand());
 
             String message = commandSender.flush();
@@ -96,7 +98,8 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
             sendLargeResponse(ctx, requestId, message);
         } catch (CommandException e) {
-            sendLargeResponse(ctx, requestId, String.format("Error executing: %s (%s)", payload, e.getMessage()));
+            sendLargeResponse(ctx, requestId,
+                String.format("Error executing: %s (%s)", payload, e.getMessage()));
         }
     }
 

@@ -14,12 +14,10 @@ public class GlowPolarBear extends GlowAnimal implements PolarBear {
         setBoundingBox(1.3, 1.4);
     }
 
-    @Override
     public boolean isStanding() {
         return metadata.getBoolean(MetadataIndex.POLARBEAR_STANDING);
     }
 
-    @Override
     public void setStanding(boolean standing) {
         metadata.set(MetadataIndex.POLARBEAR_STANDING, standing);
     }
@@ -32,5 +30,10 @@ public class GlowPolarBear extends GlowAnimal implements PolarBear {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_POLAR_BEAR_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_POLAR_BEAR_AMBIENT;
     }
 }

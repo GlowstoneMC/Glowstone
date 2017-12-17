@@ -1,2 +1,2 @@
-#!/bin/sh  
-java -Xms512M -Xmx1G -XX:+UseConcMarkSweepGC -jar glowstone.jar
+#!/bin/sh
+java -Xms768M -XX:+UseG1GC -jar glowstone.jar

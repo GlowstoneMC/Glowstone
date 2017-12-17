@@ -1,14 +1,13 @@
 package net.glowstone.util.bans;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.glowstone.util.bans.JsonListFile.BaseEntry;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Implementation of BanEntry.
@@ -17,10 +16,13 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
 
     private final GlowBanList list;
     private final String target;
-    private Date created, expires;
-    private String source, reason;
+    private Date created;
+    private Date expires;
+    private String source;
+    private String reason;
 
-    GlowBanEntry(GlowBanList list, String target, String reason, Date created, Date expires, String source) {
+    GlowBanEntry(GlowBanList list, String target, String reason, Date created, Date expires,
+        String source) {
         if (reason == null) {
             reason = "Banned";
         }
@@ -52,7 +54,8 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
         // other data
         result.put("created", GlowBanList.DATE_FORMAT.format(created));
         result.put("source", source);
-        result.put("expires", expires == null ? GlowBanList.FOREVER : GlowBanList.DATE_FORMAT.format(expires));
+        result.put("expires",
+            expires == null ? GlowBanList.FOREVER : GlowBanList.DATE_FORMAT.format(expires));
         result.put("reason", reason);
         return result;
     }
@@ -129,13 +132,13 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
 
     @Override
     public String toString() {
-        return "GlowBanEntry{" +
-                "type=" + list.type +
-                ", target='" + target + '\'' +
-                ", created=" + created +
-                ", expires=" + expires +
-                ", source='" + source + '\'' +
-                ", reason='" + reason + '\'' +
-                '}';
+        return "GlowBanEntry{"
+            + "type=" + list.type
+            + ", target='" + target + '\''
+            + ", created=" + created
+            + ", expires=" + expires
+            + ", source='" + source + '\''
+            + ", reason='" + reason + '\''
+            + '}';
     }
 }

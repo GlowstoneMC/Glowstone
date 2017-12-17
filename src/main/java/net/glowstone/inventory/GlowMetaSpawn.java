@@ -1,24 +1,29 @@
 package net.glowstone.inventory;
 
+import java.util.Map;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.meta.SpawnMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
-import java.util.Map;
+public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
 
-public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
     private EntityType type;
+    private CompoundTag entityTag;
 
     public GlowMetaSpawn(GlowMetaItem meta) {
         super(meta);
 
-        if (!(meta instanceof GlowMetaSpawn))
+        if (!(meta instanceof GlowMetaSpawn)) {
             return;
+        }
 
         GlowMetaSpawn spawn = (GlowMetaSpawn) meta;
-        if (spawn.hasEntityType()) {
-            this.type = spawn.getEntityType();
+        if (spawn.hasSpawnedType()) {
+            this.type = spawn.getSpawnedType();
+        }
+        if (spawn.getEntityTag() != null) {
+            this.entityTag = spawn.getEntityTag();
         }
     }
 
@@ -26,8 +31,8 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
     public Map<String, Object> serialize() {
         Map<String, Object> result = super.serialize();
         result.put("meta-type", "MONSTER_EGG");
-        if (hasEntityType()) {
-            result.put("entity-id", getEntityType().getName());
+        if (hasSpawnedType()) {
+            result.put("entity-id", "minecraft:" + getSpawnedType().getName());
         }
         return result;
     }
@@ -35,11 +40,11 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
     @Override
     void writeNbt(CompoundTag tag) {
         super.writeNbt(tag);
-        if (hasEntityType()) {
-            CompoundTag entity = new CompoundTag();
-            entity.putString("id", getEntityType().getName());
-            tag.putCompound("EntityTag", entity);
+        CompoundTag entityTag = getEntityTag() != null ? getEntityTag() : new CompoundTag();
+        if (hasSpawnedType()) {
+            entityTag.putString("id", "minecraft:" + getSpawnedType().getName());
         }
+        tag.putCompound("EntityTag", entityTag);
     }
 
     @Override
@@ -48,9 +53,22 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
         if (tag.isCompound("EntityTag")) {
             CompoundTag entity = tag.getCompound("EntityTag");
             if (entity.isString("id")) {
-                type = EntityType.fromName(entity.getString("id"));
+                String id = entity.getString("id");
+                if (id.startsWith("minecraft:")) {
+                    id = id.substring("minecraft:".length());
+                }
+                type = EntityType.fromName(id);
             }
+            this.entityTag = entity;
         }
+    }
+
+    public CompoundTag getEntityTag() {
+        return entityTag;
+    }
+
+    public void setEntityTag(CompoundTag tag) {
+        this.entityTag = tag;
     }
 
     @Override
@@ -58,18 +76,17 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnMeta {
         return material == Material.MONSTER_EGG;
     }
 
-    @Override
-    public boolean hasEntityType() {
+    public boolean hasSpawnedType() {
         return this.type != null;
     }
 
     @Override
-    public EntityType getEntityType() {
+    public EntityType getSpawnedType() {
         return this.type;
     }
 
     @Override
-    public void setEntityType(EntityType type) {
+    public void setSpawnedType(EntityType type) {
         this.type = type;
     }
 

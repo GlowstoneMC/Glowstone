@@ -1,6 +1,16 @@
 package net.glowstone.inventory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
+import java.util.Set;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -10,8 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.*;
 
 /**
  * A class which represents an inventory.
@@ -64,15 +72,18 @@ public class GlowInventory implements Inventory {
     }
 
     /**
-     * Initializes some key components of this inventory. This should be called in the constructor.
+     * Initializes some key components of this inventory.
      *
-     * @param slots   List of slots this inventory has.
+     * <p>This should be called in the constructor.
+     *
+     * @param slots List of slots this inventory has.
      * @param viewers Set for storage of current inventory viewers.
-     * @param owner   InventoryHolder which owns this Inventory.
-     * @param type    The inventory type.
-     * @param title   Inventory title, displayed in the client.
+     * @param owner InventoryHolder which owns this Inventory.
+     * @param type The inventory type.
+     * @param title Inventory title, displayed in the client.
      */
-    protected void initialize(List<GlowInventorySlot> slots, Set<HumanEntity> viewers, InventoryHolder owner, InventoryType type, String title) {
+    protected void initialize(List<GlowInventorySlot> slots, Set<HumanEntity> viewers,
+        InventoryHolder owner, InventoryType type, String title) {
         this.slots = slots;
         this.viewers = viewers;
         this.owner = owner;
@@ -121,6 +132,7 @@ public class GlowInventory implements Inventory {
      */
     public GlowInventorySlot getSlot(int slot) {
         if (slot < 0 || slot > slots.size()) {
+            GlowServer.logger.info("Out of bound slot: " + slot + " (max " + slots.size() + ")");
             return null;
         }
         return slots.get(slot);
@@ -133,17 +145,19 @@ public class GlowInventory implements Inventory {
      * @return The SlotType of the slot.
      */
     public SlotType getSlotType(int slot) {
-        if (slot < 0) return SlotType.OUTSIDE;
+        if (slot < 0) {
+            return SlotType.OUTSIDE;
+        }
         return slots.get(slot).getType();
     }
 
     /**
-     * Check whether it is allowed for a player to insert the given ItemStack
-     * at the slot, regardless of the slot's current contents. Should return
-     * false for crafting output slots or armor slots which cannot accept
-     * the given item.
+     * Check whether it is allowed for a player to insert the given ItemStack at the slot,
+     * regardless of the slot's current contents.
      *
-     * @param slot  The slot number.
+     * <p>Should return false for crafting output slots or armor slots which cannot accept the given item.
+     *
+     * @param slot The slot number.
      * @param stack The stack to add.
      * @return Whether the stack can be added there.
      */
@@ -152,10 +166,9 @@ public class GlowInventory implements Inventory {
     }
 
     /**
-     * Check whether, in a shift-click operation, an item of the specified type
-     * may be placed in the given slot.
+     * Check whether, in a shift-click operation, an item of the specified type may be placed in the given slot.
      *
-     * @param slot  The slot number.
+     * @param slot The slot number.
      * @param stack The stack to add.
      * @return Whether the stack can be added there.
      */
@@ -165,27 +178,28 @@ public class GlowInventory implements Inventory {
 
     /**
      * Handle a shift click in this inventory by the specified player.
-     * The default implementation distributes items from the right to the left
-     * and from the bottom to the top.
      *
-     * @param player      The player who clicked
-     * @param view        The inventory view in which was clicked
+     * <p>The default implementation distributes items from the right to the left and from the bottom to the top.
+     *
+     * @param player The player who clicked
+     * @param view The inventory view in which was clicked
      * @param clickedSlot The slot in the view
      * @param clickedItem The item at which was clicked
      */
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         view.setItem(clickedSlot, clickedItem);
     }
 
     /**
-     * Tries to put the given items into the specified slots of this inventory
-     * from the start slot (inclusive) to the end slot (exclusive).
-     * The slots are supplied in pairs, first the start then the end slots.
-     * This will first try to fill up all partial slots and if items are still
-     * left after doing so, it places them into the first empty slot.
-     * If no empty slot was found and there are still items left, their returned
-     * from this method.
+     * Tries to put the given items into the specified slots of this inventory from the start slot (inclusive) to the end slot (exclusive).
+     *
+     * <p>The slots are supplied in pairs, first the start then the end slots.
+     *
+     * <p>This will first try to fill up all partial slots and if items are still left after doing so, it places them into the first empty slot.
+     *
+     * <p>If no empty slot was found and there are still items left, they're returned from this method.
      *
      * @param stack The items to place down
      * @param slots Pairs of start/end slots
@@ -197,6 +211,7 @@ public class GlowInventory implements Inventory {
         }
         ItemStack maxStack = stack.clone();
         maxStack.setAmount(stack.getMaxStackSize());
+        int firstEmpty = -1;
         for (int s = 0; s < slots.length && stack.getAmount() > 0; s += 2) {
             // Iterate through all pairs of start and end slots
             int start = slots[s];
@@ -209,16 +224,11 @@ public class GlowInventory implements Inventory {
                 }
 
                 ItemStack currentStack = getItem(i);
-                if (currentStack == null) {
-                    if (stack.getAmount() > stack.getMaxStackSize()) {
-                        setItem(i, maxStack);
-                        stack.setAmount(stack.getAmount() - stack.getMaxStackSize());
-                    } else {
-                        ItemStack finalStack = stack.clone();
-                        setItem(i, finalStack);
-                        stack.setAmount(0);
-                    }
-                } else if (currentStack.isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
+                // Store the first empty slot
+                if (firstEmpty == -1 && InventoryUtil.isEmpty(currentStack)) {
+                    firstEmpty = i;
+                } else if (currentStack
+                    .isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
                     // Calculate the amount of transferable items
                     int amount = currentStack.getAmount();
                     int maxStackSize = Math.min(currentStack.getMaxStackSize(), getMaxStackSize());
@@ -233,15 +243,26 @@ public class GlowInventory implements Inventory {
 
             }
         }
+        if (firstEmpty != -1) { // Fill empty slot
+            if (stack.getAmount() > stack.getMaxStackSize()) {
+                setItem(firstEmpty, maxStack);
+                stack.setAmount(stack.getAmount() - stack.getMaxStackSize());
+            } else {
+                ItemStack finalStack = stack.clone();
+                setItem(firstEmpty, finalStack);
+                stack.setAmount(0);
+            }
+        }
         if (stack.getAmount() <= 0) {
-            stack = null;
+            stack = InventoryUtil.createEmptyStack();
         }
         return stack;
     }
 
     /**
      * Gets the number of slots in this inventory according to the protocol.
-     * Some inventories have 0 slots in the protocol, despite having slots.
+     *
+     * <p>Some inventories have 0 slots in the protocol, despite having slots.
      *
      * @return The numbers of slots
      */
@@ -343,6 +364,9 @@ public class GlowInventory implements Inventory {
 
     @Override
     public void setItem(int index, ItemStack item) {
+        if (index == -1) {
+            return;
+        }
         slots.get(index).setItem(item);
     }
 
@@ -351,9 +375,9 @@ public class GlowInventory implements Inventory {
         HashMap<Integer, ItemStack> result = new HashMap<>();
 
         for (int i = 0; i < items.length; ++i) {
-            ItemStack remaining = addItemStack(items[i], true);
+            ItemStack remaining = addItemStack(items[i], false);
 
-            if (remaining != null) {
+            if (!InventoryUtil.isEmpty(remaining)) {
                 result.put(i, remaining);
             }
         }
@@ -369,11 +393,15 @@ public class GlowInventory implements Inventory {
         while (toAdd > 0 && iterator.hasNext()) {
             GlowInventorySlot slot = iterator.next();
             // Look for existing stacks to add to
-            ItemStack slotItem = slot.getItem();
-            if (slotItem != null && compareItems(item, slotItem, ignoreMeta)) {
+            ItemStack slotItem = InventoryUtil.itemOrEmpty(slot.getItem());
+            if (!InventoryUtil.isEmpty(slotItem) && compareItems(item, slotItem, ignoreMeta)) {
                 int space = maxStackSize - slotItem.getAmount();
-                if (space < 0) continue;
-                if (space > toAdd) space = toAdd;
+                if (space < 0) {
+                    continue;
+                }
+                if (space > toAdd) {
+                    space = toAdd;
+                }
 
                 slotItem.setAmount(slotItem.getAmount() + space);
 
@@ -387,7 +415,7 @@ public class GlowInventory implements Inventory {
             while (toAdd > 0 && iterator.hasNext()) {
                 GlowInventorySlot slot = iterator.next();
                 ItemStack slotItem = slot.getItem();
-                if (slotItem == null) {
+                if (InventoryUtil.isEmpty(slotItem)) {
                     int num = toAdd > maxStackSize ? maxStackSize : toAdd;
 
                     slotItem = item.clone();
@@ -405,7 +433,7 @@ public class GlowInventory implements Inventory {
             return remaining;
         }
 
-        return null;
+        return InventoryUtil.createEmptyStack();
     }
 
     @Override
@@ -415,7 +443,7 @@ public class GlowInventory implements Inventory {
         for (int i = 0; i < items.length; ++i) {
             ItemStack remaining = removeItemStack(items[i], true);
 
-            if (remaining != null) {
+            if (!InventoryUtil.isEmpty(remaining)) {
                 result.put(i, remaining);
             }
         }
@@ -431,12 +459,12 @@ public class GlowInventory implements Inventory {
             GlowInventorySlot slot = iterator.next();
             ItemStack slotItem = slot.getItem();
             // Look for stacks to remove from.
-            if (slotItem != null && compareItems(item, slotItem, ignoreMeta)) {
+            if (!InventoryUtil.isEmpty(slotItem) && compareItems(item, slotItem, ignoreMeta)) {
                 if (slotItem.getAmount() > toRemove) {
                     slotItem.setAmount(slotItem.getAmount() - toRemove);
                 } else {
                     toRemove -= slotItem.getAmount();
-                    slot.setItem(null);
+                    slot.setItem(new ItemStack(Material.AIR, 0));
                 }
             }
         }
@@ -447,7 +475,7 @@ public class GlowInventory implements Inventory {
             return remaining;
         }
 
-        return null;
+        return InventoryUtil.createEmptyStack();
     }
 
     private boolean compareItems(ItemStack a, ItemStack b, boolean ignoreMeta) {
@@ -464,7 +492,7 @@ public class GlowInventory implements Inventory {
 
         int i = 0;
         for (ItemStack itemStack : this) {
-            contents[i] = itemStack;
+            contents[i] = InventoryUtil.itemOrEmpty(itemStack);
             i++;
         }
 
@@ -485,7 +513,7 @@ public class GlowInventory implements Inventory {
 
     @Override
     public ItemStack[] getStorageContents() {
-        return new ItemStack[0];
+        return InventoryUtil.NO_ITEMS;
     }
 
     @Override
@@ -545,8 +573,8 @@ public class GlowInventory implements Inventory {
 
         int i = 0;
         for (ItemStack slotItem : this) {
-            if (slotItem != null && slotItem.getTypeId() == materialId) {
-                result.put(i, slotItem);
+            if (!InventoryUtil.isEmpty(slotItem) && slotItem.getTypeId() == materialId) {
+                result.put(i, InventoryUtil.itemOrEmpty(slotItem));
             }
 
             i++;
@@ -653,7 +681,7 @@ public class GlowInventory implements Inventory {
     @Override
     public void clear() {
         for (GlowInventorySlot slot : slots) {
-            slot.setItem(null);
+            slot.setItem(InventoryUtil.createEmptyStack());
         }
     }
 

@@ -1,14 +1,15 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 public class BlockHugeMushroom extends BlockType {
+
     private final Material mushroomType;
     private final short data;
 
@@ -27,11 +28,12 @@ public class BlockHugeMushroom extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        int rnd = random.nextInt(100);
+        int rnd = ThreadLocalRandom.current().nextInt(100);
         if (rnd < 80) {
             return BlockDropless.EMPTY_STACK;
         } else {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(mushroomType, rnd > 90 ? 2 : 1, data)));
+            return Collections.unmodifiableList(
+                Arrays.asList(new ItemStack(mushroomType, rnd > 90 ? 2 : 1, data)));
         }
     }
 }

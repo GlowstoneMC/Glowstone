@@ -4,11 +4,12 @@ import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 class ItemStore extends EntityStore<GlowItem> {
 
     public ItemStore() {
-        super(GlowItem.class, "Item");
+        super(GlowItem.class, EntityType.DROPPED_ITEM);
     }
 
     @Override

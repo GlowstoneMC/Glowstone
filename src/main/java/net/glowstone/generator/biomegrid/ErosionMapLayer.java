@@ -37,9 +37,11 @@ public class ErosionMapLayer extends MapLayer {
                 int centerVal = values[j + 1 + (i + 1) * gridSizeX];
 
                 setCoordsSeed(x + j, z + i);
-                if (centerVal != 0 && (upperLeftVal == 0 || upperRightVal == 0 || lowerLeftVal == 0 || lowerRightVal == 0)) {
+                if (centerVal != 0 && (upperLeftVal == 0 || upperRightVal == 0 || lowerLeftVal == 0
+                    || lowerRightVal == 0)) {
                     finalValues[j + i * sizeX] = nextInt(5) == 0 ? 0 : centerVal;
-                } else if (centerVal == 0 && (upperLeftVal != 0 || upperRightVal != 0 || lowerLeftVal != 0 || lowerRightVal != 0)) {
+                } else if (centerVal == 0 && (upperLeftVal != 0 || upperRightVal != 0
+                    || lowerLeftVal != 0 || lowerRightVal != 0)) {
                     if (nextInt(3) == 0) {
                         finalValues[j + i * sizeX] = upperLeftVal;
                     } else {

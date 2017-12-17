@@ -1,13 +1,12 @@
 package net.glowstone.inventory;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import net.glowstone.constants.ItemIds;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Tracker for when items in an inventory are changed.
@@ -29,7 +28,13 @@ public final class InventoryMonitor {
     public InventoryMonitor(InventoryView view) {
         boolean isDefault = GlowInventoryView.isDefault(view);
         this.view = view;
-        size = view.countSlots() + (isDefault ? 4 : 0);
+        if (view.getTopInventory().getType() != InventoryType.CRAFTING
+            && view.getBottomInventory().getType() == InventoryType.PLAYER) {
+            // Don't send armor/shield slots when looking in an inventory
+            size = view.countSlots() - 5;
+        } else {
+            size = view.countSlots();
+        }
         slots = new ItemStack[size];
 
         // determine id and type id
@@ -102,7 +107,8 @@ public final class InventoryMonitor {
      */
     public List<Entry> getChanges() {
         List<Entry> result = new LinkedList<>();
-        for (int i = 0; i < size; ++i) {
+        // reverse to support crafting table.
+        for (int i = size - 1; i >= 0; --i) {
             if (!Objects.equals(slots[i], view.getItem(i))) {
                 updateItem(i);
                 result.add(new Entry(i, slots[i]));
@@ -151,6 +157,7 @@ public final class InventoryMonitor {
      * An entry which has been changed.
      */
     public static class Entry {
+
         public final int slot;
         public final ItemStack item;
 

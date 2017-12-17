@@ -3,11 +3,10 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.TitleMessage;
 import net.glowstone.net.message.play.game.TitleMessage.Action;
 import net.glowstone.util.TextMessage;
-
-import java.io.IOException;
 
 public final class TitleCodec implements Codec<TitleMessage> {
 
@@ -18,6 +17,7 @@ public final class TitleCodec implements Codec<TitleMessage> {
         switch (action) {
             case TITLE:
             case SUBTITLE:
+            case ACTION:
                 String text = ByteBufUtils.readUTF8(buffer);
                 return new TitleMessage(action, TextMessage.decode(text));
             case TIMES:
@@ -36,6 +36,7 @@ public final class TitleCodec implements Codec<TitleMessage> {
         switch (message.getAction()) {
             case TITLE:
             case SUBTITLE:
+            case ACTION:
                 ByteBufUtils.writeUTF8(buf, message.getText().encode());
                 break;
             case TIMES:

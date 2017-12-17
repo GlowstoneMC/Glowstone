@@ -1,0 +1,27 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": 1,
+        "item": "totem"
+      }
+    },
+    {
+      "default": {
+        "count": 0,
+        "item": "emerald"
+      },
+      "conditions": [
+        {
+          "condition": "ENTITY_KILLER_PLAYER",
+          "count": {
+            "max": 1
+          }
+        }
+      ]
+    }
+  ],
+  "experience": {
+    "count": 10
+  }
+}

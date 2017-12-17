@@ -1,14 +1,19 @@
 package net.glowstone.block;
 
-import net.glowstone.GlowChunk;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.MaterialValueManager.ValueCollection;
 import net.glowstone.block.blocktype.BlockRedstone;
 import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
-import net.glowstone.block.entity.TileEntity;
-import net.glowstone.entity.GlowPlayer;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,8 +31,6 @@ import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
-
 /**
  * Represents a single block in a world.
  */
@@ -36,10 +39,7 @@ public final class GlowBlock implements Block {
     /**
      * The BlockFaces of a single-layer 3x3 area.
      */
-    private static final BlockFace[] LAYER = new BlockFace[]{
-            BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST,
-            BlockFace.EAST, BlockFace.SELF, BlockFace.WEST,
-            BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
+    private static final BlockFace[] LAYER = new BlockFace[]{BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SELF, BlockFace.WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
 
     /**
      * The BlockFaces of all directly adjacent.
@@ -58,7 +58,7 @@ public final class GlowBlock implements Block {
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
         this.x = x;
-        this.y = y;
+        this.y = Math.min(256, Math.max(y, 0));
         this.z = z;
     }
 
@@ -106,13 +106,13 @@ public final class GlowBlock implements Block {
         return loc;
     }
 
-    public TileEntity getTileEntity() {
-        return ((GlowChunk) world.getChunkAt(this)).getEntity(x & 0xf, y, z & 0xf);
+    public BlockEntity getBlockEntity() {
+        return getChunk().getEntity(x & 0xf, y, z & 0xf);
     }
 
     @Override
     public GlowBlockState getState() {
-        TileEntity entity = getTileEntity();
+        BlockEntity entity = getBlockEntity();
         if (entity != null) {
             GlowBlockState state = entity.getState();
             if (state != null) {
@@ -120,6 +120,11 @@ public final class GlowBlock implements Block {
             }
         }
         return new GlowBlockState(this);
+    }
+
+    @Override
+    public GlowBlockState getState(boolean useSnapshot) {
+        return getState(); // TODO: disable use of snapshot
     }
 
     @Override
@@ -147,9 +152,7 @@ public final class GlowBlock implements Block {
     @Override
     public BlockFace getFace(Block block) {
         for (BlockFace face : BlockFace.values()) {
-            if (x + face.getModX() == block.getX()
-                    && y + face.getModY() == block.getY()
-                    && z + face.getModZ() == block.getZ()) {
+            if (x + face.getModX() == block.getX() && y + face.getModY() == block.getY() && z + face.getModZ() == block.getZ()) {
                 return face;
             }
         }
@@ -179,17 +182,18 @@ public final class GlowBlock implements Block {
     }
 
     @Override
-    public void setType(Material type) {
-        setTypeId(type.getId());
-    }
-
-    @Override
     public int getTypeId() {
         return getTypeIdNoCache();
     }
 
+    @Deprecated
     private int getTypeIdNoCache() {
         return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
+    }
+
+    @Override
+    public void setType(Material type) {
+        setTypeId(type.getId());
     }
 
     /**
@@ -201,8 +205,7 @@ public final class GlowBlock implements Block {
     }
 
     /**
-     * Set the Material type of a block with metadata? and optionally apply
-     * physics.
+     * Set the Material type of a block with data and optionally apply physics.
      *
      * @param type The type to set the block to.
      * @param data The raw data to set the block to.
@@ -227,26 +230,24 @@ public final class GlowBlock implements Block {
         Material oldTypeId = getType();
         byte oldData = getData();
 
-        ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y, type);
-        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
+        GlowChunk chunk = (GlowChunk) world.getChunkAt(this);
+        chunk.setType(x & 0xf, z & 0xf, y, type);
+        chunk.setMetaData(x & 0xf, z & 0xf, y, data);
 
         if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
-            ((GlowChunk) world.getChunkAt(this)).setType(x & 0xf, z & 0xf, y + 1, 0);
-            ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, 0);
+            world.getChunkAtAsync(this, c -> ((GlowChunk) c).setType(x & 0xf, z & 0xf, y + 1, 0));
+            GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
             BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
-            for (GlowPlayer p : getWorld().getRawPlayers()) {
-                p.sendBlockChange(bcmsg);
-            }
+            world.broadcastBlockChangeInRange(key, bcmsg);
         }
 
         if (applyPhysics) {
             applyPhysics(oldTypeId, type, oldData, data);
         }
 
+        GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, type, data);
-        for (GlowPlayer p : getWorld().getRawPlayers()) {
-            p.sendBlockChange(bcmsg);
-        }
+        world.broadcastBlockChangeInRange(key, bcmsg);
 
         return true;
     }
@@ -299,14 +300,14 @@ public final class GlowBlock implements Block {
     @Override
     public void setData(byte data, boolean applyPhysics) {
         byte oldData = getData();
-        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y & 0x7f, data);
+        ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
         if (applyPhysics) {
             applyPhysics(getType(), getTypeId(), oldData, data);
         }
+
+        GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
         BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
-        for (GlowPlayer p : getWorld().getRawPlayers()) {
-            p.sendBlockChange(bcmsg);
-        }
+        world.broadcastBlockChangeInRange(key, bcmsg);
     }
 
     @Override
@@ -338,8 +339,7 @@ public final class GlowBlock implements Block {
             return true;
         }
 
-        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON)
-                && ((Button) getState().getData()).isPowered()) {
+        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON) && ((Button) getState().getData()).isPowered()) {
             return true;
         }
 
@@ -450,15 +450,16 @@ public final class GlowBlock implements Block {
      * @return true if the block was destroyed
      */
     public boolean breakNaturally(float yield) {
-        Random r = new Random();
+        return breakNaturally(yield, ItemTable.instance().getBlock(getType()).getMinedDrops(this));
+    }
 
+    public boolean breakNaturally(float yield, Collection<ItemStack> drops) {
         if (getType() == Material.AIR) {
             return false;
         }
 
         Location location = getLocation();
-        Collection<ItemStack> toDrop = ItemTable.instance().getBlock(getType()).getMinedDrops(this);
-        toDrop.stream().filter(stack -> r.nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
+        drops.stream().filter(stack -> ThreadLocalRandom.current().nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
         setType(Material.AIR);
         return true;
@@ -471,8 +472,9 @@ public final class GlowBlock implements Block {
 
     @Override
     public boolean breakNaturally(ItemStack tool) {
-        if (!getDrops(tool).isEmpty()) {
-            return breakNaturally();
+        Collection<ItemStack> drops = getDrops(tool);
+        if (!drops.isEmpty()) {
+            return breakNaturally(1.0f, drops);
         } else {
             return setTypeId(Material.AIR.getId());
         }
@@ -514,13 +516,12 @@ public final class GlowBlock implements Block {
     // Physics
 
     /**
-     * Notify this block and its surrounding blocks that this block has changed
-     * type and data.
+     * Notify this block and its surrounding blocks that this block has changed type and data.
      *
-     * @param oldType   the old block type
+     * @param oldType the old block type
      * @param newTypeId the new block type
-     * @param oldData   the old data
-     * @param newData   the new data
+     * @param oldData the old data
+     * @param newData the new data
      */
     public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
         // notify the surrounding blocks that this block has changed
@@ -546,7 +547,7 @@ public final class GlowBlock implements Block {
                     blockFace = null;
                 }
 
-                BlockType notifyType = itemTable.getBlock(notify.getTypeId());
+                BlockType notifyType = itemTable.getBlock(notify.getType());
                 if (notifyType != null) {
                     notifyType.onNearBlockChanged(notify, blockFace, this, oldType, oldData, newType, newData);
                 }
@@ -589,12 +590,7 @@ public final class GlowBlock implements Block {
 
         long time = getWorld().getFullTime();
 
-        for (Iterator<Long> it = gameTicks.iterator(); it.hasNext(); ) {
-            long rate = it.next();
-            if (rate < time) {
-                it.remove();
-            }
-        }
+        gameTicks.removeIf(rate -> rate < time);
 
         counterMap.put(target, gameTicks);
         return gameTicks.size();

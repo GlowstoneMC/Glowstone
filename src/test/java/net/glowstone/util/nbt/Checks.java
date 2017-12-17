@@ -1,67 +1,77 @@
 package net.glowstone.util.nbt;
 
-import java.util.List;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.List;
+import net.glowstone.util.IsFloatCloseTo;
+import org.hamcrest.number.IsCloseTo;
 
 /**
  * Checks for the included example NBT files.
  */
 class Checks {
 
-    private Checks() {}
-
     public static final String BYTE_ARRAY_NAME = "byteArrayTest (the first 1000 values of (n*n*255+n*7)%100, starting with n=0 (0, 62, 34, 16, 8, ...))";
 
+    private Checks() {
+    }
+
     static void checkHelloWorld(CompoundTag compound) {
-        assertEquals("incorrect size", compound.getValue().size(), 1);
-        assertTrue("name is not string", compound.isString("name"));
-        assertEquals("name is incorrect", compound.getString("name"), "Bananrama");
+        assertThat("incorrect size", 1, is(compound.getValue().size()));
+        assertThat("name is not string", compound.isString("name"), is(true));
+        assertThat("name is incorrect", "Bananrama", is(compound.getString("name")));
     }
 
     static void checkBigTest(CompoundTag compound) {
-        assertEquals("incorrect size", 11, compound.getValue().size());
+        assertThat("incorrect size", compound.getValue().size(), is(11));
 
         // basic values
-        assertEquals("byteTest", 127, compound.getByte("byteTest"));
-        assertEquals("shortTest", 32767, compound.getShort("shortTest"));
-        assertEquals("intTest", 2147483647, compound.getInt("intTest"));
-        assertEquals("longTest", 9223372036854775807L, compound.getLong("longTest"));
-        assertEquals("floatTest", 0.49823147058486938, compound.getFloat("floatTest"), 1e-16);
-        assertEquals("doubleTest", 0.49312871321823148, compound.getDouble("doubleTest"), 1e-16);
-        assertEquals("stringTest", "HELLO WORLD THIS IS A TEST STRING \u00c5\u00c4\u00d6!", compound.getString("stringTest"));
+        assertThat("byteTest", compound.getByte("byteTest"), is((byte) 127));
+        assertThat("shortTest", compound.getShort("shortTest"), is((short) 32767));
+        assertThat("intTest", compound.getInt("intTest"), is(2147483647));
+        assertThat("longTest", compound.getLong("longTest"), is(9223372036854775807L));
+        assertThat("floatTest", compound.getFloat("floatTest"),
+            IsFloatCloseTo.closeTo(0.49823147058486938f, 1e-16f));
+        assertThat("doubleTest", compound.getDouble("doubleTest"),
+            IsCloseTo.closeTo(0.49312871321823148, 1e-16));
+        assertThat("stringTest", compound.getString("stringTest"),
+            is("HELLO WORLD THIS IS A TEST STRING \u00c5\u00c4\u00d6!"));
 
         // byte array
         byte[] array = compound.getByteArray(BYTE_ARRAY_NAME);
-        assertEquals("byteArray size", 1000, array.length);
+        assertThat("byteArray size", array.length, is(1000));
         for (int i = 0; i < 1000; ++i) {
-            assertEquals("byteArrayTest[" + i + "]", (i * i * 255 + i * 7) % 100, array[i]);
+            assertThat("byteArrayTest[" + i + "]", array[i],
+                is((byte) ((i * i * 255 + i * 7) % 100)));
         }
 
         // nested compound
         CompoundTag nested = compound.getCompound("nested compound test");
         CompoundTag egg = nested.getCompound("egg");
-        assertEquals("nested.egg.name", "Eggbert", egg.getString("name"));
-        assertEquals("nested.egg.value", 0.5, egg.getFloat("value"), 1e-10);
+        assertThat("nested.egg.name", egg.getString("name"), is("Eggbert"));
+        assertThat("nested.egg.value", egg.getFloat("value"), IsFloatCloseTo.closeTo(0.5f, 1e-10f));
         CompoundTag ham = nested.getCompound("ham");
-        assertEquals("nested.ham.name", "Hampus", ham.getString("name"));
-        assertEquals("nested.ham.value", 0.75, ham.getFloat("value"), 1e-10);
+        assertThat("nested.ham.name", ham.getString("name"), is("Hampus"));
+        assertThat("nested.ham.value", ham.getFloat("value"),
+            IsFloatCloseTo.closeTo(0.75f, 1e-10f));
 
         // simple list
         List<Long> longList = compound.getList("listTest (long)", TagType.LONG);
-        assertEquals("longList size", 5, longList.size());
+        assertThat("longList size", longList.size(), is(5));
         for (int i = 0; i < 5; ++i) {
-            assertEquals("longList[" + i + "]", 11 + i, (long) longList.get(i));
+            assertThat("longList[" + i + "]", longList.get(i), is((long) (11 + i)));
         }
 
         // compound list
         List<CompoundTag> compoundList = compound.getCompoundList("listTest (compound)");
-        assertEquals("compoundList size", 2, compoundList.size());
+        assertThat("compoundList size", compoundList.size(), is(2));
         for (int i = 0; i < 2; ++i) {
             CompoundTag child = compoundList.get(i);
-            assertEquals("compoundList[" + i + "].created-on", 1264099775885L, child.getLong("created-on"));
-            assertEquals("compoundList[" + i + "].name", "Compound tag #" + i, child.getString("name"));
+            assertThat("compoundList[" + i + "].created-on", child.getLong("created-on"),
+                is(1264099775885L));
+            assertThat("compoundList[" + i + "].name", child.getString("name"),
+                is("Compound tag #" + i));
         }
     }
 

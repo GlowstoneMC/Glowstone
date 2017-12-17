@@ -3,7 +3,6 @@ package net.glowstone.inventory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.scheduler.PulseTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Furnace;
@@ -31,7 +30,7 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         GlowBlock block = (GlowBlock) getHolder().getBlock();
-        new PulseTask(block, true, 1, false).startPulseTask();
+        block.getWorld().requestPulse(block);
     }
 
     @Override
@@ -70,7 +69,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
             // Place the items in the player's inventory (right to left)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
@@ -84,7 +84,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     @Override
     public boolean itemPlaceAllowed(int slot, ItemStack stack) {
         if (slot == FUEL_SLOT) {
-            return ((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(stack.getType()) || stack.getType().equals(Material.BUCKET);
+            return ((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(stack.getType())
+                || stack.getType().equals(Material.BUCKET);
         }
         return super.itemPlaceAllowed(slot, stack);
     }

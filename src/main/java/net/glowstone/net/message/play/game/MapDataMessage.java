@@ -1,14 +1,13 @@
 package net.glowstone.net.message.play.game;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.flowpowered.network.Message;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 @Data
 public final class MapDataMessage implements Message {
@@ -21,12 +20,14 @@ public final class MapDataMessage implements Message {
     @ToString
     @EqualsAndHashCode
     public static class Icon {
+
         public final int type, facing, x, y;
     }
 
     @ToString
     @EqualsAndHashCode
     public static class Section {
+
         public final int width, height, x, y;
         public final byte[] data;
 

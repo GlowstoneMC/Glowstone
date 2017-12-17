@@ -1,13 +1,17 @@
 package net.glowstone.util.noise;
 
+import java.util.Random;
+import lombok.Getter;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
 
-import java.util.Random;
-
 public class PerlinOctaveGenerator extends OctaveGenerator {
+
+    @Getter
     protected final int xSize;
+    @Getter
     protected final int ySize;
+    @Getter
     protected final int zSize;
     protected double[] noise;
 
@@ -19,7 +23,8 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
         this(createOctaves(rand, octaves), rand, xSize, ySize, zSize);
     }
 
-    public PerlinOctaveGenerator(NoiseGenerator[] octaves, Random rand, int xSize, int ySize, int zSize) {
+    public PerlinOctaveGenerator(NoiseGenerator[] octaves, Random rand, int xSize, int ySize,
+        int zSize) {
         super(octaves);
         this.xSize = xSize;
         this.ySize = ySize;
@@ -41,11 +46,11 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
         return x >= 0 ? (long) x : (long) x - 1;
     }
 
-    public double[] fBm(double x, double z, double lacunarity, double persistence) {
-        return fBm(x, 0, z, lacunarity, persistence);
+    public double[] getFractalBrownianMotion(double x, double z, double lacunarity, double persistence) {
+        return getFractalBrownianMotion(x, 0, z, lacunarity, persistence);
     }
 
-    public double[] fBm(double x, double y, double z, double lacunarity, double persistence) {
+    public double[] getFractalBrownianMotion(double x, double y, double z, double lacunarity, double persistence) {
         for (int i = 0; i < noise.length; i++) {
             noise[i] = 0;
         }
@@ -62,7 +67,6 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
         // leading to strange oddities in terrain generation like the old minecraft farland symptoms.
         for (NoiseGenerator octave : octaves) {
             double dX = x * freq;
-            double dY = y * freq;
             double dZ = z * freq;
             // compute integer part
             long lX = floor(dX);
@@ -77,7 +81,10 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
             dX += lX;
             dZ += lZ;
 
-            noise = ((PerlinNoise) octave).getNoise(noise, dX, dY, dZ, xSize, ySize, zSize, xScale * freq, yScale * freq, zScale * freq, amp);
+            double dY = y * freq;
+            noise = ((PerlinNoise) octave)
+                .getNoise(noise, dX, dY, dZ, xSize, ySize, zSize, xScale * freq, yScale * freq,
+                    zScale * freq, amp);
             freq *= lacunarity;
             amp *= persistence;
         }

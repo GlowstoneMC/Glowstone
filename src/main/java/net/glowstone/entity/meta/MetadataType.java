@@ -1,11 +1,11 @@
 package net.glowstone.entity.meta;
 
+import java.util.UUID;
 import net.glowstone.util.TextMessage;
+import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.EulerAngle;
-
-import java.util.UUID;
 
 /**
  * The types of values that entity metadata can contain.
@@ -23,7 +23,8 @@ public enum MetadataType {
     OPTPOSITION(BlockVector.class, true),
     DIRECTION(Integer.class, false),
     OPTUUID(UUID.class, true),
-    BLOCKID(Integer.class, false);
+    BLOCKID(Integer.class, false),
+    NBTTAG(CompoundTag.class, false),;
 
     private final Class<?> dataType;
     private final boolean optional;

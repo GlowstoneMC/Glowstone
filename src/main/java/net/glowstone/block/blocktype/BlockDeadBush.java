@@ -1,17 +1,17 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-
 public class BlockDeadBush extends BlockNeedsAttached {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        int typeIdBelow = block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
+        int typeIdBelow = block.getWorld()
+            .getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
         switch (Material.getMaterial(typeIdBelow)) {
             case SAND:
             case STAINED_CLAY:

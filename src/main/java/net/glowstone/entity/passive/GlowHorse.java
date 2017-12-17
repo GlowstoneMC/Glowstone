@@ -1,6 +1,8 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import java.util.List;
+import java.util.Random;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowHorseInventory;
@@ -8,38 +10,24 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.AnimalTamer;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.inventory.HorseInventory;
 
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-public class GlowHorse extends GlowTameable implements Horse {
+public class GlowHorse extends GlowAbstractHorse implements Horse {
 
     private Variant variant = Variant.values()[new Random().nextInt(2)];
     private Color horseColor = Color.values()[new Random().nextInt(6)];
     private Style horseStyle = Style.values()[new Random().nextInt(3)];
-    private boolean hasChest;
-    private int domestication;
-    private int maxDomestication;
-    private double jumpStrength;
     private boolean eatingHay;
     private boolean hasReproduced;
     private int temper;
-    private UUID ownerUUID;
     private HorseInventory inventory = new GlowHorseInventory(this);
 
     public GlowHorse(Location location) {
-        this(location, null);
+        super(location, EntityType.HORSE, 15);
         setSize(1.4F, 1.6F);
-    }
-
-    protected GlowHorse(Location location, AnimalTamer owner) {
-        super(location, EntityType.HORSE, 15, owner); // todo change health later
-        if (owner != null) ownerUUID = owner.getUniqueId();
     }
 
     @Override
@@ -60,6 +48,7 @@ public class GlowHorse extends GlowTameable implements Horse {
     @Override
     public void setColor(Color color) {
         horseColor = color;
+        metadata.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
     }
 
     @Override
@@ -70,49 +59,18 @@ public class GlowHorse extends GlowTameable implements Horse {
     @Override
     public void setStyle(Style style) {
         horseStyle = style;
+        metadata.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
     }
 
     @Override
     public boolean isCarryingChest() {
-        return hasChest;
+        // Field has been removed in 1.11
+        return false;
     }
 
     @Override
     public void setCarryingChest(boolean b) {
-        if (b) {
-            // TODO Manipulate the HorseInventory somehow
-        }
-        hasChest = b;
-    }
-
-    @Override
-    public int getDomestication() {
-        return domestication;
-    }
-
-    @Override
-    public void setDomestication(int i) {
-        domestication = i;
-    }
-
-    @Override
-    public int getMaxDomestication() {
-        return maxDomestication;
-    }
-
-    @Override
-    public void setMaxDomestication(int i) {
-        maxDomestication = i;
-    }
-
-    @Override
-    public double getJumpStrength() {
-        return jumpStrength;
-    }
-
-    @Override
-    public void setJumpStrength(double v) {
-        jumpStrength = v;
+        // Field has been removed in 1.11
     }
 
     @Override
@@ -148,44 +106,14 @@ public class GlowHorse extends GlowTameable implements Horse {
         this.temper = temper;
     }
 
-    public UUID getOwnerUUID() {
-        return ownerUUID;
-    }
-
-    public void setOwnerUUID(UUID ownerUUID) {
-        this.ownerUUID = ownerUUID;
-    }
-
     @Override
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
-        map.set(MetadataIndex.HORSE_TYPE, (byte) getVariant().ordinal());
-        map.set(MetadataIndex.HORSE_FLAGS, getHorseFlags());
         map.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
         map.set(MetadataIndex.HORSE_ARMOR, getHorseArmorData());
         messages.add(new EntityMetadataMessage(id, map.getEntryList()));
         return messages;
-    }
-
-    private int getHorseFlags() {
-        int value = 0;
-        if (isTamed()) {
-            value |= 0x02;
-        }
-        if (getInventory() != null && getInventory().getSaddle() != null) {
-            value |= 0x04;
-        }
-        if (hasChest) {
-            value |= 0x08;
-        }
-        if (hasReproduced) {
-            value |= 0x10;
-        }
-        if (isEatingHay()) {
-            value |= 0x20;
-        }
-        return value;
     }
 
     private int getHorseStyleData() {
@@ -213,5 +141,18 @@ public class GlowHorse extends GlowTameable implements Horse {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_HORSE_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_HORSE_AMBIENT;
+    }
+
+    @Override
+    public Ageable createBaby() {
+        GlowHorse baby = (GlowHorse) super.createBaby();
+        baby.setColor(getColor());
+        baby.setStyle(getStyle());
+        return baby;
     }
 }

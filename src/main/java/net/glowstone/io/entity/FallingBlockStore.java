@@ -4,11 +4,12 @@ import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 class FallingBlockStore extends EntityStore<GlowFallingBlock> {
 
     public FallingBlockStore() {
-        super(GlowFallingBlock.class, "FallingSand");
+        super(GlowFallingBlock.class, EntityType.FALLING_BLOCK);
     }
 
 
@@ -31,7 +32,7 @@ class FallingBlockStore extends EntityStore<GlowFallingBlock> {
         entity.setHurtEntities(tag.getBool("HurtEntities"));
         entity.setDropItem(tag.getBool("DropItem"));
         if (tag.isCompound("TileEntityData")) {
-            entity.setTileEntityCompoundTag(tag.getCompound("TileEntityData"));
+            entity.setBlockEntityCompoundTag(tag.getCompound("TileEntityData"));
         }
     }
 
@@ -43,8 +44,8 @@ class FallingBlockStore extends EntityStore<GlowFallingBlock> {
         tag.putByte("Data", entity.getBlockData());
         tag.putBool("DropItem", entity.getDropItem());
         tag.putBool("HurtEntities", entity.canHurtEntities());
-        if (entity.getTileEntityCompoundTag() != null) {
-            tag.putCompound("TileEntityData", entity.getTileEntityCompoundTag());
+        if (entity.getBlockEntityCompoundTag() != null) {
+            tag.putCompound("TileEntityData", entity.getBlockEntityCompoundTag());
         }
     }
 }

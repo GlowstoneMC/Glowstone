@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 3,
+          "min": 1
+        },
+        "item": "pork"
+      },
+      "conditions": [
+        {
+          "item": "grilled_pork",
+          "condition": "ENTITY_ONFIRE"
+        }
+      ]
+    },
+    {
+      "default": {
+        "count": 0,
+        "item": "saddle"
+      },
+      "conditions": [
+        {
+          "count": 1,
+          "condition": "$.hasSaddle()"
+        }
+      ]
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}

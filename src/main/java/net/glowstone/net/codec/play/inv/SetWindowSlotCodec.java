@@ -3,12 +3,12 @@ package net.glowstone.net.codec.play.inv;
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 
-import java.io.IOException;
-
 public final class SetWindowSlotCodec implements Codec<SetWindowSlotMessage> {
+
     @Override
     public SetWindowSlotMessage decode(ByteBuf buffer) throws IOException {
         throw new DecoderException("Cannot decode SetWindowSlotMessage");

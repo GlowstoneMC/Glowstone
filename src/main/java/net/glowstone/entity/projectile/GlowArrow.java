@@ -5,9 +5,12 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
+
+    private volatile PickupStatus customPickupStatus = null;
 
     public GlowArrow(Location location) {
         super(location);
@@ -64,6 +67,17 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Override
     public void setCritical(boolean critical) {
         metadata.setBit(MetadataIndex.ARROW_CRITICAL, 0x1, critical);
+    }
+
+    @Override public PickupStatus getPickupStatus() {
+        PickupStatus customPickupStatus = this.customPickupStatus;
+        return customPickupStatus != null ? customPickupStatus :
+                getShooter() instanceof Player ? PickupStatus.ALLOWED :
+                PickupStatus.DISALLOWED;
+    }
+
+    @Override public void setPickupStatus(PickupStatus pickupStatus) {
+        customPickupStatus = pickupStatus;
     }
 
     @Override

@@ -1,0 +1,27 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": 0,
+        "item": "net.glowstone.util.loot.LootingUtil.randomMusic()"
+      },
+      "conditions": [
+        {
+          "condition": "ENTITY_KILLER_SKELETON",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "default": {
+        "count": {
+          "max": 2
+        },
+        "item": "sulphur"
+      }
+    }
+  ],
+  "experience": {
+    "count": 5
+  }
+}

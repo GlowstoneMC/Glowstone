@@ -1,6 +1,8 @@
 package net.glowstone.net.rcon;
 
+import java.util.Set;
 import net.glowstone.GlowServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Server;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.permissions.PermissibleBase;
@@ -9,13 +11,22 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Set;
-
 public class RconCommandSender implements RemoteConsoleCommandSender {
 
     private final GlowServer server;
     private final StringBuffer buffer = new StringBuffer();
     private final PermissibleBase perm = new PermissibleBase(this);
+    private Spigot spigot = new Spigot() {
+        @Override
+        public void sendMessage(BaseComponent component) {
+            RconCommandSender.this.sendMessage(component);
+        }
+
+        @Override
+        public void sendMessage(BaseComponent... components) {
+            RconCommandSender.this.sendMessage(components);
+        }
+    };
 
     public RconCommandSender(GlowServer server) {
         this.server = server;
@@ -35,6 +46,11 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
     @Override
     public String getName() {
         return "Rcon";
+    }
+
+    @Override
+    public Spigot spigot() {
+        return spigot;
     }
 
     @Override
@@ -83,7 +99,8 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
+        int ticks) {
         return perm.addAttachment(plugin, name, value, ticks);
     }
 
@@ -114,6 +131,7 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
 
     @Override
     public void setOp(boolean value) {
-        throw new UnsupportedOperationException("Cannot change operator status of Rcon command sender");
+        throw new UnsupportedOperationException(
+            "Cannot change operator status of Rcon command sender");
     }
 }

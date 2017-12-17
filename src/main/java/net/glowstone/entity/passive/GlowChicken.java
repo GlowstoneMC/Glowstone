@@ -1,5 +1,6 @@
 package net.glowstone.entity.passive;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowAnimal;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -7,8 +8,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Random;
 
 public class GlowChicken extends GlowAnimal implements Chicken {
 
@@ -38,8 +37,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     }
 
     private void generateEggLayDelay() {
-        Random r = new Random();
-        setEggLayTime(r.nextInt(20 * 60 * 5) + 20 * 60 * 5);
+        setEggLayTime(ThreadLocalRandom.current().nextInt(20 * 60 * 5) + 20 * 60 * 5);
     }
 
     @Override
@@ -61,5 +59,10 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_CHICKEN_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_CHICKEN_AMBIENT;
     }
 }

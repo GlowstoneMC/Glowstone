@@ -29,7 +29,7 @@ public class GlowInventoryView extends InventoryView {
      * Create an inventory view for this player looking at a given top inventory.
      *
      * @param player The player.
-     * @param top    The top inventory.
+     * @param top The top inventory.
      */
     public GlowInventoryView(HumanEntity player, Inventory top) {
         this(player, top.getType(), top, player.getInventory());
@@ -39,11 +39,12 @@ public class GlowInventoryView extends InventoryView {
      * Create an inventory view for a player.
      *
      * @param player The player.
-     * @param type   The inventory type.
-     * @param top    The top inventory.
+     * @param type The inventory type.
+     * @param top The top inventory.
      * @param bottom The bottom inventory.
      */
-    public GlowInventoryView(HumanEntity player, InventoryType type, Inventory top, Inventory bottom) {
+    public GlowInventoryView(HumanEntity player, InventoryType type, Inventory top,
+        Inventory bottom) {
         this.player = player;
         this.type = type;
         this.top = top;
@@ -57,7 +58,9 @@ public class GlowInventoryView extends InventoryView {
      * @return Whether it is a player's default inventory view.
      */
     public static boolean isDefault(InventoryView view) {
-        return view.getBottomInventory() instanceof GlowPlayerInventory && view.getTopInventory() == ((GlowPlayerInventory) view.getBottomInventory()).getCraftingInventory();
+        return view.getBottomInventory() instanceof GlowPlayerInventory
+            && view.getTopInventory() == ((GlowPlayerInventory) view.getBottomInventory())
+            .getCraftingInventory();
     }
 
     @Override
@@ -78,10 +81,11 @@ public class GlowInventoryView extends InventoryView {
      * @param slot The slot to check.
      */
     private void checkSlot(int slot) {
-        if (slot == OUTSIDE) return;
+        if (slot == OUTSIDE) {
+            return;
+        }
 
         int size = countSlots();
-        if (isDefault(this)) size += 5; // armor slots
         if (slot < 0 || slot >= size) {
             throw new IllegalArgumentException("Slot out of range [0," + size + "): " + slot);
         }

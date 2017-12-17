@@ -1,12 +1,11 @@
 package net.glowstone.generator.structures;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
 
 public class GlowTemple extends GlowStructure {
 
@@ -33,13 +32,16 @@ public class GlowTemple extends GlowStructure {
         if (types.containsKey(biome)) {
             switch (types.get(biome)) {
                 case JUNGLE_TEMPLE:
-                    addPiece(new GlowJungleTemple(random, new Location(world, x, world.getSeaLevel(), z)));
+                    addPiece(new GlowJungleTemple(random,
+                        new Location(world, x, world.getSeaLevel(), z)));
                     break;
                 case WITCH_HUT:
-                    addPiece(new GlowWitchHut(random, new Location(world, x, world.getSeaLevel(), z)));
+                    addPiece(
+                        new GlowWitchHut(random, new Location(world, x, world.getSeaLevel(), z)));
                     break;
                 default:
-                    addPiece(new GlowDesertTemple(random, new Location(world, x, world.getSeaLevel(), z)));
+                    addPiece(new GlowDesertTemple(random,
+                        new Location(world, x, world.getSeaLevel(), z)));
             }
             wrapAllPieces();
         }

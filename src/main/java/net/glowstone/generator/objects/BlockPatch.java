@@ -1,6 +1,6 @@
 package net.glowstone.generator.objects;
 
-import org.bukkit.material.types.DoublePlantSpecies;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -8,14 +8,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
-
-import java.util.Random;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 public class BlockPatch {
 
     private static final int MIN_RADIUS = 2;
-    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
-            Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
+    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER,
+        Material.RED_ROSE,
+        Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
     private final Material type;
     private final int hRadius;
     private final int vRadius;
@@ -40,9 +40,12 @@ public class BlockPatch {
                                 Block blockAbove = block.getRelative(BlockFace.UP);
                                 for (Material mat : PLANT_TYPES) {
                                     if (blockAbove.getType() == mat) {
-                                        if (mat == Material.DOUBLE_PLANT && blockAbove.getState().getData() instanceof DoublePlant &&
-                                                ((DoublePlant) blockAbove.getState().getData()).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
-                                            blockAbove.getRelative(BlockFace.UP).setType(Material.AIR);
+                                        if (mat == Material.DOUBLE_PLANT && blockAbove.getState()
+                                            .getData() instanceof DoublePlant &&
+                                            ((DoublePlant) blockAbove.getState().getData())
+                                                .getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                                            blockAbove.getRelative(BlockFace.UP)
+                                                .setType(Material.AIR);
                                         }
                                         blockAbove.setType(Material.AIR);
                                         break;

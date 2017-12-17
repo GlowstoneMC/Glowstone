@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowGhast;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class GhastStore extends MonsterStore<GlowGhast> {
 
     public GhastStore() {
-        super(GlowGhast.class, "Ghast");
+        super(GlowGhast.class, EntityType.GHAST);
     }
 
     @Override

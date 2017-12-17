@@ -1,15 +1,17 @@
 package net.glowstone.scoreboard;
 
-import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.scoreboard.Criterias;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 
 /**
  * Scoreboard objective and associated data.
@@ -69,10 +71,12 @@ public final class GlowObjective implements Objective {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) throws IllegalStateException, IllegalArgumentException {
+    public void setDisplayName(String displayName)
+        throws IllegalStateException, IllegalArgumentException {
         checkValid();
         checkNotNull(displayName, "displayName cannot be null");
-        checkArgument(displayName.length() <= 32, "displayName cannot be longer than 32 characters");
+        checkArgument(displayName.length() <= 32,
+            "displayName cannot be longer than 32 characters");
 
         this.displayName = displayName;
         scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
@@ -95,13 +99,11 @@ public final class GlowObjective implements Objective {
         }
     }
 
-    @Override
     public RenderType getType() throws IllegalStateException {
         checkValid();
         return renderType;
     }
 
-    @Override
     public void setType(RenderType renderType) throws IllegalStateException {
         checkValid();
         checkNotNull(renderType, "RenderType cannot be null");
@@ -130,6 +132,13 @@ public final class GlowObjective implements Objective {
         return score;
     }
 
+    @Deprecated
+    public Score getScore(OfflinePlayer player)
+        throws IllegalArgumentException, IllegalStateException {
+        checkNotNull(player, "Player cannot be null");
+        return getScore(player.getName());
+    }
+
     /**
      * Deletes a score directly.
      *
@@ -137,12 +146,6 @@ public final class GlowObjective implements Objective {
      */
     void deleteScore(String entry) {
         scores.remove(entry);
-    }
-
-    @Deprecated
-    public Score getScore(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
-        checkNotNull(player, "Player cannot be null");
-        return getScore(player.getName());
     }
 
     public void setRenderType(String renderType) {

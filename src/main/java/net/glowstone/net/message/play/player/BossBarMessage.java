@@ -1,11 +1,12 @@
 package net.glowstone.net.message.play.player;
 
 import com.flowpowered.network.Message;
+import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.util.TextMessage;
-
-import java.util.UUID;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 
 @Data
 @RequiredArgsConstructor
@@ -82,6 +83,13 @@ public class BossBarMessage implements Message {
             }
             return values[i];
         }
+
+        public static Color fromBarColor(BarColor barColor) {
+            if (values == null) {
+                values = Color.values();
+            }
+            return values[barColor.ordinal()];
+        }
     }
 
     public enum Division {
@@ -99,6 +107,13 @@ public class BossBarMessage implements Message {
                 values = Division.values();
             }
             return values[i];
+        }
+
+        public static Division fromBarStyle(BarStyle barStyle) {
+            if (values == null) {
+                values = Division.values();
+            }
+            return values[barStyle.ordinal()];
         }
     }
 }

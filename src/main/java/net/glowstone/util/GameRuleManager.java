@@ -14,11 +14,11 @@ public final class GameRuleManager {
         setValue("commandBlockOutput", true);
         setValue("doDaylightCycle", true); // implemented
         setValue("doEntityDrops", true);
-        setValue("doFireTick", true);
-        setValue("doMobLoot", true);
-        setValue("doMobSpawning", true);
+        setValue("doFireTick", true); // implemented
+        setValue("doMobLoot", true); // implemented
+        setValue("doMobSpawning", true); // implemented (partial)
         setValue("doTileDrops", true); // implemented
-        setValue("keepInventory", false);
+        setValue("keepInventory", false); // implemented
         setValue("logAdminCommands", true);
         setValue("mobGriefing", true);
         setValue("naturalRegeneration", true);
@@ -26,10 +26,14 @@ public final class GameRuleManager {
         setValue("reducedDebugInfo", false); // implemented
         setValue("sendCommandFeedback", true);
         setValue("showDeathMessages", true);
+        setValue("announceAdvancements", true);
+        setValue("doLimitedCrafting", false);
+        setValue("gameLoopFunction", "");
+        setValue("maxCommandChainLength", 65536);
     }
 
     /**
-     * Gets all of the game rules defined
+     * Gets all of the game rules defined.
      *
      * @return the game rules defined, may be empty
      */
@@ -38,16 +42,13 @@ public final class GameRuleManager {
     }
 
     /**
-     * Sets the value of a game rule. The supplied value cannot be null. If the
-     * value is not a string, the string representation of the object will be
-     * used instead, which must also not return null. If the value is null, or
-     * is converted to null through toString(), then this will return false.
-     * <p>
-     * The actual object value is never stored, only the string value. The
-     * helper methods provided in this class may be used to retrieve the value,
-     * such as {@link #getBoolean(String)}.
+     * Sets the value of a game rule.
      *
-     * @param rule  the rule to set, cannot be null
+     * <p>The actual object value is never stored, only the string value.
+     *
+     * <p>The helper methods provided in this class may be used to retrieve the value, such as {@link #getBoolean(String)}.
+     *
+     * @param rule the rule to set, cannot be null
      * @param value the value to set, cannot be null or be represented as null
      * @return true if set, false otherwise
      */
@@ -60,7 +61,7 @@ public final class GameRuleManager {
     }
 
     /**
-     * Gets whether or not the supplied rule is defined
+     * Gets whether or not the supplied rule is defined.
      *
      * @param rule the rule to lookup
      * @return true if defined, false otherwise
@@ -70,8 +71,7 @@ public final class GameRuleManager {
     }
 
     /**
-     * Gets the game rule value as a string. If the value does not exist, then
-     * this will return null.
+     * Gets the game rule value as a string. If the value does not exist, then this will return null.
      *
      * @param rule the rule to look up
      * @return the string value, or null if not defined
@@ -84,8 +84,7 @@ public final class GameRuleManager {
     }
 
     /**
-     * Gets the game rule value as a boolean. If the value cannot be parsed or
-     * does not exist, then this will return false.
+     * Gets the game rule value as a boolean. If the value cannot be parsed or does not exist, then this will return false.
      *
      * @param rule the rule to look up
      * @return the boolean value, or false
@@ -101,11 +100,10 @@ public final class GameRuleManager {
     }
 
     /**
-     * Gets the game rule value as an integer. If the value cannot be parsed or
-     * does not exist then the default will be returned
+     * Gets the game rule value as an integer. If the value cannot be parsed or does not exist then the default will be returned.
      *
      * @param rule the rule to look up
-     * @param def  the default value
+     * @param def the default value
      * @return the integer value of the rule, or the default
      */
     public int getInteger(String rule, int def) {

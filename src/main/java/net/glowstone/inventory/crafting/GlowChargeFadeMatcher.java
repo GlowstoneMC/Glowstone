@@ -1,14 +1,12 @@
 package net.glowstone.inventory.crafting;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.material.Dye;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GlowChargeFadeMatcher extends ItemMatcher {
 
@@ -18,7 +16,9 @@ public class GlowChargeFadeMatcher extends ItemMatcher {
         List<Color> colors = new ArrayList<>();
 
         for (ItemStack item : matrix) {
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
 
             switch (item.getType()) {
                 case INK_SACK:
@@ -33,18 +33,24 @@ public class GlowChargeFadeMatcher extends ItemMatcher {
             }
         }
 
-        if (charge == null || colors.isEmpty()) return null; // No charge, or no colors
+        if (charge == null || colors.isEmpty()) {
+            return null; // No charge, or no colors
+        }
 
         FireworkEffectMeta meta = (FireworkEffectMeta) charge.getItemMeta();
         FireworkEffect old = meta.getEffect();
 
+        if (old == null) {
+            return null;
+        }
+
         FireworkEffect newEffect = FireworkEffect.builder()
-                .with(old.getType())
-                .withColor(old.getColors())
-                .flicker(old.hasFlicker())
-                .trail(old.hasTrail())
-                .withFade(colors)
-                .build();
+            .with(old.getType())
+            .withColor(old.getColors())
+            .flicker(old.hasFlicker())
+            .trail(old.hasTrail())
+            .withFade(colors)
+            .build();
 
         meta.setEffect(newEffect);
 

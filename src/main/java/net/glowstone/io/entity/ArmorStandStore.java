@@ -1,19 +1,18 @@
 package net.glowstone.io.entity;
 
+import java.util.Arrays;
+import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
-import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
-
-import java.util.Arrays;
-import java.util.List;
 
 class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
     public ArmorStandStore() {
-        super(GlowArmorStand.class, "ArmorStand");
+        super(GlowArmorStand.class, EntityType.ARMOR_STAND);
     }
 
     @Override
@@ -24,14 +23,6 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void load(GlowArmorStand entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isList("Equipment", TagType.COMPOUND)) {
-            List<CompoundTag> equip = tag.getCompoundList("Equipment");
-            entity.setItemInHand(NbtSerialization.readItem(equip.get(0)));
-            entity.setBoots(NbtSerialization.readItem(equip.get(1)));
-            entity.setLeggings(NbtSerialization.readItem(equip.get(2)));
-            entity.setChestplate(NbtSerialization.readItem(equip.get(3)));
-            entity.setHelmet(NbtSerialization.readItem(equip.get(4)));
-        }
         if (tag.containsKey("Marker")) {
             entity.setMarker(tag.getBool("Marker"));
         }
@@ -63,13 +54,6 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void save(GlowArmorStand entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putCompoundList("Equipment", Arrays.asList(
-                NbtSerialization.writeItem(entity.getItemInHand(), -1),
-                NbtSerialization.writeItem(entity.getBoots(), -1),
-                NbtSerialization.writeItem(entity.getLeggings(), -1),
-                NbtSerialization.writeItem(entity.getChestplate(), -1),
-                NbtSerialization.writeItem(entity.getHelmet(), -1)
-        ));
         tag.putBool("Marker", entity.isMarker());
         tag.putBool("Invisible", !entity.isVisible());
         tag.putBool("NoBasePlate", !entity.hasBasePlate());
@@ -88,16 +72,17 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
     private List<Float> toFloatList(EulerAngle angle) {
         return Arrays.asList(
-                (float) Math.toDegrees(angle.getX()),
-                (float) Math.toDegrees(angle.getY()),
-                (float) Math.toDegrees(angle.getZ())
+            (float) Math.toDegrees(angle.getX()),
+            (float) Math.toDegrees(angle.getY()),
+            (float) Math.toDegrees(angle.getZ())
         );
     }
 
     private EulerAngle readSafeAngle(CompoundTag tag, String key) {
         if (tag.isList(key, TagType.FLOAT)) {
             List<Float> list = tag.getList(key, TagType.FLOAT);
-            return new EulerAngle(Math.toRadians(list.get(0)), Math.toRadians(list.get(1)), Math.toRadians(list.get(2)));
+            return new EulerAngle(Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
+                Math.toRadians(list.get(2)));
         } else {
             return EulerAngle.ZERO;
         }

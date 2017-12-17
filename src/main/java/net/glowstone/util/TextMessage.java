@@ -1,22 +1,19 @@
 package net.glowstone.util;
 
-import lombok.EqualsAndHashCode;
-import org.bukkit.ChatColor;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.EqualsAndHashCode;
+import org.bukkit.ChatColor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
- * Simple container for chat message structures until more advanced chat
- * formatting is implemented.
+ * Simple container for chat message structures until more advanced chat formatting is implemented.
  */
 @EqualsAndHashCode
 public final class TextMessage {
@@ -24,9 +21,7 @@ public final class TextMessage {
     /**
      * The formatting ChatColors.
      */
-    private static final ChatColor[] FORMATTING = {
-            ChatColor.MAGIC, ChatColor.BOLD, ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC
-    };
+    private static final ChatColor[] FORMATTING = {ChatColor.MAGIC, ChatColor.BOLD, ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC};
 
     /**
      * The JSON structure of this text message.
@@ -34,8 +29,7 @@ public final class TextMessage {
     private final JSONObject object;
 
     /**
-     * Construct a new chat message from a simple text string. Handles style
-     * and colors in the original string, converting them to the new format.
+     * Construct a new chat message from a simple text string. Handles style and colors in the original string, converting them to the new format.
      *
      * @param text The text of the message.
      */
@@ -71,7 +65,7 @@ public final class TextMessage {
             dest.append(obj.get("text"));
         }
         if (obj.containsKey("extra")) {
-            JSONArray array = (JSONArray) obj.get("extra");
+            LinkedList<?> array = (LinkedList<?>) obj.get("extra");
             for (Object o : array) {
                 if (o instanceof JSONObject) {
                     flatten(dest, (JSONObject) o);
@@ -80,6 +74,17 @@ public final class TextMessage {
                 }
             }
         }
+    }
+
+    /**
+     * Flatten this message to an approximate old-style string representation.
+     *
+     * @return The best old-style string representation for this message.
+     */
+    public String flatten() {
+        StringBuilder builder = new StringBuilder();
+        flatten(builder, object);
+        return builder.toString();
     }
 
     /**
@@ -213,17 +218,6 @@ public final class TextMessage {
             }
         }
         return "";
-    }
-
-    /**
-     * Flatten this message to an approximate old-style string representation.
-     *
-     * @return The best old-style string representation for this message.
-     */
-    public String flatten() {
-        StringBuilder builder = new StringBuilder();
-        flatten(builder, object);
-        return builder.toString();
     }
 
     @Override

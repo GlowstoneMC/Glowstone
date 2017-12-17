@@ -1,15 +1,13 @@
 package net.glowstone.net.pipeline;
 
 import com.flowpowered.network.Message;
-import com.flowpowered.network.session.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
-import net.glowstone.net.GlowNetworkServer;
-import net.glowstone.net.GlowSession;
-
 import java.util.concurrent.atomic.AtomicReference;
+import net.glowstone.net.GameServer;
+import net.glowstone.net.GlowSession;
 
 /**
  * Experimental pipeline component, based on flow-net's MessageHandler.
@@ -20,14 +18,14 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
      * The associated session
      */
     private final AtomicReference<GlowSession> session = new AtomicReference<>(null);
-    private final GlowNetworkServer connectionManager;
+    private final GameServer connectionManager;
 
     /**
      * Creates a new network event handler.
      *
      * @param connectionManager The connection manager to manage connections for this message handler.
      */
-    public MessageHandler(GlowNetworkServer connectionManager) {
+    public MessageHandler(GameServer connectionManager) {
         this.connectionManager = connectionManager;
     }
 
@@ -43,8 +41,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        Session session = this.session.get();
-        session.onDisconnect();
+        session.get().onDisconnect();
     }
 
     @Override
@@ -64,4 +61,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
         session.get().onInboundThrowable(cause);
     }
 
+    public AtomicReference<GlowSession> getSession() {
+        return session;
+    }
 }

@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "default": {
+        "item": "leather",
+        "count": {
+          "max": 2
+        }
+      }
+    }
+  ],
+  "experience": {
+    "count": 0
+  }
+}

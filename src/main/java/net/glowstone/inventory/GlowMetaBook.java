@@ -1,15 +1,14 @@
 package net.glowstone.inventory;
 
 import com.google.common.collect.ImmutableList;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.BookMeta;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.TagType;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.BookMeta;
 
 /**
  * The ItemMeta for book and quill and written book items.
@@ -33,11 +32,19 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
             pages = new ArrayList<>(book.pages);
             filterPages();
         }
-        this.generation = book.getGeneration().ordinal();
+        if (hasGeneration()) {
+            this.generation = book.getGeneration().ordinal();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Internal stuff
+
+    @Override
+    public BookMeta.Spigot spigot() {
+        return new BookMeta.Spigot() {
+        };
+    }
 
     @Override
     public BookMeta clone() {
@@ -144,11 +151,18 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
     @Override
     public Generation getGeneration() {
+        if (generation == null) {
+            return null;
+        }
         return Generation.values()[generation];
     }
 
     @Override
     public void setGeneration(Generation generation) {
+        if (generation == null) {
+            this.generation = null;
+            return;
+        }
         this.generation = generation.ordinal();
     }
 

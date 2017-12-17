@@ -3,7 +3,6 @@ package net.glowstone.net.rcon;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
-
 import java.nio.ByteOrder;
 import java.util.List;
 
@@ -24,7 +23,8 @@ public class RconFramingHandler extends ByteToMessageCodec<ByteBuf> {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out)
+        throws Exception {
         if (in.readableBytes() < 4) {
             return;
         }
@@ -38,9 +38,6 @@ public class RconFramingHandler extends ByteToMessageCodec<ByteBuf> {
 
         ByteBuf buf = ctx.alloc().buffer(length);
         in.readBytes(buf, length);
-        out.add(buf);
-        if (buf.refCnt() > 0) {
-            buf.release(buf.refCnt());
-        }
+        out.add(buf.retain());
     }
 }

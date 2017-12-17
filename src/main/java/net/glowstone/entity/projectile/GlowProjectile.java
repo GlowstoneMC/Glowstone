@@ -81,7 +81,6 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     protected abstract int getObjectId();
 
-    @Override
     public LivingEntity _INVALID_getShooter() {
         return null;
     }
@@ -91,7 +90,6 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
         return shooter;
     }
 
-    @Override
     public void _INVALID_setShooter(LivingEntity livingEntity) {
     }
 

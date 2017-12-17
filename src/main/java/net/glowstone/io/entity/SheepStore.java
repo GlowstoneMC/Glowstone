@@ -4,6 +4,7 @@ import net.glowstone.entity.passive.GlowSheep;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 class SheepStore extends AgeableStore<GlowSheep> {
 
@@ -11,7 +12,7 @@ class SheepStore extends AgeableStore<GlowSheep> {
     public static final String COLOR_KEY = "Color";
 
     public SheepStore() {
-        super(GlowSheep.class, "Sheep");
+        super(GlowSheep.class, EntityType.SHEEP);
     }
 
     @Override

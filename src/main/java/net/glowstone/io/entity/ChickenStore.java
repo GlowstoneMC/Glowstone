@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.passive.GlowChicken;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class ChickenStore extends AgeableStore<GlowChicken> {
 
     public ChickenStore() {
-        super(GlowChicken.class, "Chicken");
+        super(GlowChicken.class, EntityType.CHICKEN);
     }
 
     @Override

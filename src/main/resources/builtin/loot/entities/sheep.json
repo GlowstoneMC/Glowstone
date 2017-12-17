@@ -1,0 +1,38 @@
+{
+  "items": [
+    {
+      "default": {
+        "count": {
+          "max": 2,
+          "min": 1
+        },
+        "item": "mutton"
+      },
+      "conditions": [
+        {
+          "item": "cooked_mutton",
+          "condition": "ENTITY_ONFIRE"
+        }
+      ]
+    },
+    {
+      "default": {
+        "count": 1,
+        "item": "wool",
+        "data": "$.getColor().getWoolData()"
+      },
+      "conditions": [
+        {
+          "count": 0,
+          "condition": "$.isSheared()"
+        }
+      ]
+    }
+  ],
+  "experience": {
+    "count": {
+      "max": 3,
+      "min": 1
+    }
+  }
+}

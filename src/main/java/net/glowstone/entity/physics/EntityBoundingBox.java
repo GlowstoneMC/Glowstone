@@ -5,27 +5,32 @@ import org.bukkit.util.Vector;
 /**
  * A BoundingBox which changes position over time as an entity moves.
  */
-public final class EntityBoundingBox extends BoundingBox {
+public class EntityBoundingBox extends BoundingBox {
 
-    private final double hSize, vSize;
+    private final double width, vSize, depth;
 
     public EntityBoundingBox(double hSize, double vSize) {
-        this.hSize = hSize;
+        this(hSize, vSize, hSize);
+    }
+
+    public EntityBoundingBox(double width, double vSize, double depth) {
+        this.width = width;
         this.vSize = vSize;
+        this.depth = depth;
     }
 
     @Override
     public Vector getSize() {
-        return new Vector(hSize, vSize, hSize);
+        return new Vector(width, vSize, depth);
     }
 
     public void setCenter(double x, double y, double z) {
-        minCorner.setX(x - hSize / 2);
+        minCorner.setX(x - width / 2);
         minCorner.setY(y);
-        minCorner.setZ(z - hSize / 2);
-        maxCorner.setX(x + hSize / 2);
+        minCorner.setZ(z - depth / 2);
+        maxCorner.setX(x + width / 2);
         maxCorner.setY(y + vSize);
-        maxCorner.setZ(z + hSize / 2);
+        maxCorner.setZ(z + depth / 2);
     }
 
 }

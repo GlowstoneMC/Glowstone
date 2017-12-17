@@ -13,18 +13,20 @@ import org.bukkit.util.Vector;
  * Helper for trapdoor blocks.
  */
 public class BlockTrapDoor {
+
     private BlockType parent;
 
     public BlockTrapDoor(BlockType parent) {
         this.parent = parent;
     }
 
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         MaterialData materialData = state.getData();
         if (materialData instanceof TrapDoor) {
             TrapDoor trapDoor = (TrapDoor) materialData;
             trapDoor.setFacingDirection(face);
-            if (clickedLoc.getY() >= 7.5) {
+            if (clickedLoc.getY() >= 0.5) {
                 trapDoor.setInverted(true);
             } else {
                 trapDoor.setInverted(false);

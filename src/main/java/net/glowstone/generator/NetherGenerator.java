@@ -1,6 +1,10 @@
 package net.glowstone.generator;
 
+import java.util.Map;
+import java.util.Random;
+import net.glowstone.GlowServer;
 import net.glowstone.generator.populators.NetherPopulator;
+import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,39 +13,52 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.OctaveGenerator;
 
-import java.util.Map;
-import java.util.Random;
-
 public class NetherGenerator extends GlowChunkGenerator {
 
-    private static final double COORDINATE_SCALE = 684.412D;   // coordinateScale
-    private static final double HEIGHT_SCALE = COORDINATE_SCALE * 3.0D; // heightScale
-    private static final double HEIGHT_NOISE_SCALE_X = 100.0D; // depthNoiseScaleX
-    private static final double HEIGHT_NOISE_SCALE_Z = 100.0D; // depthNoiseScaleZ
-    private static final double DETAIL_NOISE_SCALE_X = 80.0D;  // mainNoiseScaleX
-    private static final double DETAIL_NOISE_SCALE_Y = 60.0D;  // mainNoiseScaleY
-    private static final double DETAIL_NOISE_SCALE_Z = 80.0D;  // mainNoiseScaleZ
-    private static final double SURFACE_SCALE = 0.0625D;
+    private static double coordinateScale;
+    private static double heightScale;
+    private static double heightNoiseScaleX; // depthNoiseScaleX
+    private static double heightNoiseScaleZ; // depthNoiseScaleZ
+    private static double detailNoiseScaleX;  // mainNoiseScaleX
+    private static double detailNoiseScaleY;  // mainNoiseScaleY
+    private static double detailNoiseScaleZ;  // mainNoiseScaleZ
+    private static double surfaceScale;
 
     private final double[][][] density = new double[5][5][17];
 
     public NetherGenerator() {
         super(new NetherPopulator());
+
+        WorldConfig config = GlowServer.getWorldConfig();
+
+        coordinateScale = config.getDouble(WorldConfig.Key.NETHER_COORDINATE_SCALE);
+        heightScale = config.getDouble(WorldConfig.Key.NETHER_HEIGHT_SCALE);
+        heightNoiseScaleX = config.getDouble(WorldConfig.Key.NETHER_HEIGHT_NOISE_SCALE_X);
+        heightNoiseScaleZ = config.getDouble(WorldConfig.Key.NETHER_HEIGHT_NOISE_SCALE_Z);
+        detailNoiseScaleX = config.getDouble(WorldConfig.Key.NETHER_DETAIL_NOISE_SCALE_X);
+        detailNoiseScaleY = config.getDouble(WorldConfig.Key.NETHER_DETAIL_NOISE_SCALE_Y);
+        detailNoiseScaleZ = config.getDouble(WorldConfig.Key.NETHER_DETAIL_NOISE_SCALE_Z);
+        surfaceScale = config.getDouble(WorldConfig.Key.NETHER_SURFACE_SCALE);
     }
 
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ,
+        BiomeGrid biomes) {
         ChunkData chunkData = generateRawTerrain(world, chunkX, chunkZ);
 
         int cx = chunkX << 4;
         int cz = chunkZ << 4;
 
-        double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("surface")).fBm(cx, cz, 0, 0.5D, 2.0D);
-        double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("soulsand")).fBm(cx, cz, 0, 0.5D, 2.0D);
-        double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("gravel")).fBm(cx, 0, cz, 0.5D, 2.0D);
+        double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("surface"))
+            .getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
+        double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("soulsand"))
+            .getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
+        double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("gravel"))
+            .getFractalBrownianMotion(cx, 0, cz, 0.5D, 2.0D);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                generateTerrainColumn(chunkData, world, random, cx + x, cz + z, surfaceNoise[x | z << 4], soulsandNoise[x | z << 4], gravelNoise[x | z << 4]);
+                generateTerrainColumn(chunkData, world, random, cx + x, cz + z,
+                    surfaceNoise[x | z << 4], soulsandNoise[x | z << 4], gravelNoise[x | z << 4]);
             }
         }
 
@@ -75,45 +92,45 @@ public class NetherGenerator extends GlowChunkGenerator {
         Random seed = new Random(world.getSeed());
 
         OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
-        gen.setXScale(HEIGHT_NOISE_SCALE_X);
-        gen.setZScale(HEIGHT_NOISE_SCALE_Z);
+        gen.setXScale(heightNoiseScaleX);
+        gen.setZScale(heightNoiseScaleZ);
         octaves.put("height", gen);
 
         gen = new PerlinOctaveGenerator(seed, 16, 5, 17, 5);
-        gen.setXScale(COORDINATE_SCALE);
-        gen.setYScale(HEIGHT_SCALE);
-        gen.setZScale(COORDINATE_SCALE);
+        gen.setXScale(coordinateScale);
+        gen.setYScale(heightScale);
+        gen.setZScale(coordinateScale);
         octaves.put("roughness", gen);
 
         gen = new PerlinOctaveGenerator(seed, 16, 5, 17, 5);
-        gen.setXScale(COORDINATE_SCALE);
-        gen.setYScale(HEIGHT_SCALE);
-        gen.setZScale(COORDINATE_SCALE);
+        gen.setXScale(coordinateScale);
+        gen.setYScale(heightScale);
+        gen.setZScale(coordinateScale);
         octaves.put("roughness2", gen);
 
         gen = new PerlinOctaveGenerator(seed, 8, 5, 17, 5);
-        gen.setXScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_X);
-        gen.setYScale(HEIGHT_SCALE / DETAIL_NOISE_SCALE_Y);
-        gen.setZScale(COORDINATE_SCALE / DETAIL_NOISE_SCALE_Z);
+        gen.setXScale(coordinateScale / detailNoiseScaleX);
+        gen.setYScale(heightScale / detailNoiseScaleY);
+        gen.setZScale(coordinateScale / detailNoiseScaleZ);
         octaves.put("detail", gen);
 
         gen = new PerlinOctaveGenerator(seed, 4, 16, 16, 1);
-        gen.setScale(SURFACE_SCALE);
+        gen.setScale(surfaceScale);
         octaves.put("surface", gen);
 
         gen = new PerlinOctaveGenerator(seed, 4, 16, 16, 1);
-        gen.setXScale(SURFACE_SCALE / 2.0);
-        gen.setYScale(SURFACE_SCALE / 2.0);
+        gen.setXScale(surfaceScale / 2.0);
+        gen.setYScale(surfaceScale / 2.0);
         octaves.put("soulsand", gen);
 
         gen = new PerlinOctaveGenerator(seed, 4, 16, 1, 16);
-        gen.setXScale(SURFACE_SCALE / 2.0);
-        gen.setZScale(SURFACE_SCALE / 2.0);
+        gen.setXScale(surfaceScale / 2.0);
+        gen.setZScale(surfaceScale / 2.0);
         octaves.put("gravel", gen);
     }
 
     private ChunkData generateRawTerrain(World world, int chunkX, int chunkZ) {
-        generateTerrainDensity(world, chunkX * 4, chunkZ * 4);
+        generateTerrainDensity(world, chunkX << 2, chunkZ << 2);
 
         ChunkData chunkData = createChunkData(world);
 
@@ -138,9 +155,11 @@ public class NetherGenerator extends GlowChunkGenerator {
                                 // any density higher than 0 is ground, any density lower or equal to 0 is air
                                 // (or lava if under the lava level).
                                 if (dens > 0) {
-                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.NETHERRACK);
+                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2),
+                                        Material.NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
-                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2), Material.STATIONARY_LAVA);
+                                    chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2),
+                                        Material.STATIONARY_LAVA);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;
@@ -165,10 +184,14 @@ public class NetherGenerator extends GlowChunkGenerator {
 
     private void generateTerrainDensity(World world, int x, int z) {
         Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
-        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height")).fBm(x, z, 0.5D, 2.0D);
-        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness")).fBm(x, 0, z, 0.5D, 2.0D);
-        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2")).fBm(x, 0, z, 0.5D, 2.0D);
-        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail")).fBm(x, 0, z, 0.5D, 2.0D);
+        double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height"))
+            .getFractalBrownianMotion(x, z, 0.5D, 2.0D);
+        double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+        double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail"))
+            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
 
         double[] nV = new double[17];
         for (int i = 0; i < 17; i++) {
@@ -204,7 +227,8 @@ public class NetherGenerator extends GlowChunkGenerator {
                     double noiseD = (detailNoise[index] / 10.0D + 1.0D) / 2.0D;
                     double nH = nV[k];
                     // linear interpolation
-                    double dens = noiseD < 0 ? noiseR : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
+                    double dens = noiseD < 0 ? noiseR
+                        : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
                     dens -= nH;
                     index++;
                     if (k > 13) {
@@ -217,7 +241,8 @@ public class NetherGenerator extends GlowChunkGenerator {
         }
     }
 
-    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z, double surfaceNoise, double soulsandNoise, double gravelNoise) {
+    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z,
+        double surfaceNoise, double soulsandNoise, double gravelNoise) {
         Material topMat = Material.NETHERRACK;
         Material groundMat = Material.NETHERRACK;
 

@@ -4,16 +4,16 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import java.io.IOException;
+import java.util.List;
 import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
 import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
 
-import java.io.IOException;
-import java.util.List;
-
 public final class UserListItemCodec implements Codec<UserListItemMessage> {
+
     @Override
     public UserListItemMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode UserListItemMessage");
@@ -38,11 +38,9 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                     for (PlayerProperty property : entry.profile.getProperties()) {
                         ByteBufUtils.writeUTF8(buf, property.getName());
                         ByteBufUtils.writeUTF8(buf, property.getValue());
-                        if (property.getSignature() != null) {
-                            buf.writeBoolean(true);
+                        buf.writeBoolean(property.isSigned());
+                        if (property.isSigned()) {
                             ByteBufUtils.writeUTF8(buf, property.getSignature());
-                        } else {
-                            buf.writeBoolean(false);
                         }
                     }
                     ByteBufUtils.writeVarInt(buf, entry.gameMode);

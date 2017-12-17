@@ -1,2 +1,0 @@
-org/spongepowered/api/item/ItemTypes net/glowstone/shiny/item/ShinyItemTypes *
-org/spongepowered/api/text/translation/Translations org/spongepowered/api/text/translation/ShinyTranslationFactory

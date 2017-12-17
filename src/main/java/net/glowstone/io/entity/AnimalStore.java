@@ -1,17 +1,26 @@
 package net.glowstone.io.entity;
 
+import java.lang.reflect.Constructor;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
-import java.lang.reflect.Constructor;
+public class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
 
-class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
+    private Constructor<T> constructor;
 
-    private final Constructor<T> constructor;
+    public AnimalStore(Class<T> clazz, EntityType type) {
+        super(clazz, type);
+        init(clazz);
+    }
 
-    public AnimalStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public AnimalStore(Class<T> clazz, String type) {
+        super(clazz, type);
+        init(clazz);
+    }
+
+    private void init(Class<T> clazz) {
         Constructor<T> ctor = null;
         try {
             ctor = clazz.getConstructor(Location.class);

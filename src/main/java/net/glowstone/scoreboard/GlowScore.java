@@ -47,13 +47,14 @@ public final class GlowScore implements Score {
     public void setScore(int score) throws IllegalStateException {
         objective.checkValid();
         this.score = score;
-        objective.getScoreboard().broadcast(new ScoreboardScoreMessage(entry, objective.getName(), score));
+        objective.getScoreboard()
+            .broadcast(new ScoreboardScoreMessage(entry, objective.getName(), score));
     }
 
     @Override
     public boolean isScoreSet() throws IllegalStateException {
         objective.checkValid();
-        return objective.getScoreboard().getScores(entry).contains(score);
+        return objective.getScoreboard().getScores(entry).contains(this);
     }
 
     public boolean getLocked() {

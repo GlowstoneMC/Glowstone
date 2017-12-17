@@ -17,7 +17,9 @@ public class ItemMilk extends ItemFood {
     public boolean eat(GlowPlayer player, ItemStack item) {
         PlayerItemConsumeEvent event1 = new PlayerItemConsumeEvent(player, item);
         EventFactory.callEvent(event1);
-        if (event1.isCancelled()) return false;
+        if (event1.isCancelled()) {
+            return false;
+        }
 
         player.setUsageItem(null);
         player.setUsageTime(0);

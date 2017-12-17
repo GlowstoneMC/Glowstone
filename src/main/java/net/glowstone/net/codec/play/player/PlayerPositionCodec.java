@@ -2,11 +2,11 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.player.PlayerPositionMessage;
 
-import java.io.IOException;
-
 public final class PlayerPositionCodec implements Codec<PlayerPositionMessage> {
+
     @Override
     public PlayerPositionMessage decode(ByteBuf buffer) throws IOException {
         double x = buffer.readDouble();

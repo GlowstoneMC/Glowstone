@@ -1,6 +1,10 @@
 package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
+import java.util.List;
+import net.glowstone.entity.ai.EntityDirector;
+import net.glowstone.entity.ai.HostileMobState;
+import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.util.SoundUtil;
 import org.bukkit.Location;
@@ -9,13 +13,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Zombie;
 
-import java.util.List;
-
 public class GlowZombie extends GlowMonster implements Zombie {
 
-    private int conversionTime = -1;
     private boolean canBreakDoors;
-    private Profession villagerProfession = Profession.FARMER;
 
     public GlowZombie(Location loc) {
         this(loc, EntityType.ZOMBIE);
@@ -24,11 +24,18 @@ public class GlowZombie extends GlowMonster implements Zombie {
     public GlowZombie(Location loc, EntityType type) {
         super(loc, type, 20);
         setBoundingBox(0.6, 1.8);
+        if (type != null) {
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_around");
+            EntityDirector.registerEntityMobState(type, MobState.IDLE, "look_player");
+            EntityDirector.registerEntityMobState(type, HostileMobState.TARGETING, "follow_player");
+        }
+        setState(MobState.IDLE);
     }
 
     @Override
     public List<Message> createSpawnMessage() {
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
+        //TODO - 1.11 Move this to ZombieVillager
+        //metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
         return super.createSpawnMessage();
     }
 
@@ -44,32 +51,23 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public boolean isVillager() {
-        return !villagerProfession.isZombie();
+        return false;
     }
 
     @Override
     public void setVillager(boolean value) {
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, value ? villagerProfession.ordinal() + 1 : 0);
-    }
-
-    @Override
-    public void setVillagerProfession(Profession profession) {
-        this.villagerProfession = profession;
-        metadata.set(MetadataIndex.ZOMBIE_IS_VILLAGER, profession.ordinal() + 1);
+        //Field has been removed as of 1.11
     }
 
     @Override
     public Profession getVillagerProfession() {
-        return villagerProfession;
+        //Field has been removed as of 1.11
+        return Profession.NORMAL;
     }
 
-    public int getConversionTime() {
-        return conversionTime;
-    }
-
-    public void setConversionTime(int conversionTime) {
-        this.conversionTime = conversionTime;
-        metadata.set(MetadataIndex.ZOMBIE_IS_CONVERTING, conversionTime > 0);
+    @Override
+    public void setVillagerProfession(Profession profession) {
+        //Field has been removed as of 1.11
     }
 
     public boolean isCanBreakDoors() {
@@ -96,5 +94,15 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_ZOMBIE_DEATH;
+    }
+
+    @Override
+    protected Sound getAmbientSound() {
+        return Sound.ENTITY_ZOMBIE_AMBIENT;
+    }
+
+    @Override
+    public boolean isUndead() {
+        return true;
     }
 }

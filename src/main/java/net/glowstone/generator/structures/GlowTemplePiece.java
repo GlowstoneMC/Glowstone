@@ -1,13 +1,12 @@
 package net.glowstone.generator.structures;
 
+import java.util.Random;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
-
-import java.util.Random;
 
 public abstract class GlowTemplePiece extends GlowStructurePiece {
 
@@ -65,11 +64,12 @@ public abstract class GlowTemplePiece extends GlowStructurePiece {
 
         int sumY = 0, blockCount = 0;
         for (int x = boundingBox.getMin().getBlockX(); x <= boundingBox.getMax().getBlockX(); x++) {
-            for (int z = boundingBox.getMin().getBlockZ(); z <= boundingBox.getMax().getBlockZ(); z++) {
+            for (int z = boundingBox.getMin().getBlockZ(); z <= boundingBox.getMax().getBlockZ();
+                z++) {
                 int y = world.getHighestBlockYAt(x, z);
                 Material type = world.getBlockAt(x, y - 1, z).getType();
                 while ((type == Material.LEAVES || type == Material.LEAVES_2 ||
-                        type == Material.LOG || type == Material.LOG_2) && y > 1) {
+                    type == Material.LOG || type == Material.LOG_2) && y > 1) {
                     y--;
                     type = world.getBlockAt(x, y - 1, z).getType();
                 }

@@ -1,7 +1,6 @@
 package net.glowstone.inventory.crafting;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowBookCopyMatcher extends ItemMatcher {
@@ -12,11 +11,15 @@ public class GlowBookCopyMatcher extends ItemMatcher {
         int copies = 0;
 
         for (ItemStack item : matrix) {
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
 
             switch (item.getType()) {
                 case WRITTEN_BOOK:
-                    if (original != null) return null; // Only one original allowed
+                    if (original != null) {
+                        return null; // Only one original allowed
+                    }
                     original = item;
                     break;
                 case BOOK_AND_QUILL:
@@ -27,7 +30,9 @@ public class GlowBookCopyMatcher extends ItemMatcher {
             }
         }
 
-        if (original == null || copies == 0) return null;
+        if (original == null || copies == 0) {
+            return null;
+        }
 
         ItemStack ret = new ItemStack(Material.WRITTEN_BOOK, copies);
         ret.setItemMeta(original.getItemMeta());

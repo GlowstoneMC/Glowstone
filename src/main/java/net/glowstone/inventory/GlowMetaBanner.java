@@ -1,26 +1,24 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
     private List<Pattern> patterns = new ArrayList<>();
+    private DyeColor baseColor = null;
 
     public GlowMetaBanner(GlowMetaItem meta) {
         super(meta);
@@ -29,6 +27,7 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
         }
         GlowMetaBanner banner = (GlowMetaBanner) meta;
         patterns = banner.patterns;
+        baseColor = banner.baseColor;
     }
 
     @Override
@@ -44,12 +43,12 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
     @Override
     public DyeColor getBaseColor() {
-        return getPattern(0).getColor(); // TODO: multiple colors?
+        return baseColor;
     }
 
     @Override
     public void setBaseColor(DyeColor dyeColor) {
-        /// TODO: where does this go? each org.bukkit.block.banner.Pattern has a "color"
+        this.baseColor = dyeColor;
     }
 
     @Override
@@ -83,6 +82,9 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
         CompoundTag blockEntityTag = new CompoundTag();
 
         blockEntityTag.putCompoundList("Patterns", BlockBanner.toNBT(patterns));
+        if (baseColor != null) {
+            blockEntityTag.putInt("Base", baseColor.getWoolData());
+        }
         tag.putCompound("BlockEntityTag", blockEntityTag);
     }
 
@@ -95,27 +97,10 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
                 List<CompoundTag> patterns = blockEntityTag.getCompoundList("Patterns");
                 this.patterns = BlockBanner.fromNBT(patterns);
             }
+            if (blockEntityTag.isInt("Base")) {
+                this.baseColor = DyeColor.getByWoolData((byte) blockEntityTag.getInt("Base"));
+            }
         }
-    }
-
-    @Override
-    public void addItemFlags(ItemFlag... itemFlags) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void removeItemFlags(ItemFlag... itemFlags) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Set<ItemFlag> getItemFlags() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean hasItemFlag(ItemFlag itemFlag) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -134,9 +119,13 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
         result.put("meta-type", "BANNER");
         List<Map<String, String>> patternsList = new ArrayList<>();
         for (Pattern pattern : patterns) {
-            patternsList.add(ImmutableMap.of(pattern.getPattern().toString(), pattern.getColor().toString()));
+            patternsList.add(
+                ImmutableMap.of(pattern.getPattern().toString(), pattern.getColor().toString()));
         }
         result.put("pattern", patternsList);
+        if (baseColor != null) {
+            result.put("baseColor", baseColor);
+        }
         return result;
     }
 

@@ -1,22 +1,26 @@
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
 [![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-738bd7.svg?style=flat-square)](https://discord.gg/TFJqhsC)
-[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master.png)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master)
+[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev.svg?style=shield)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev)
+
+<img align="right" alt="Glowstone logo" width="100" src="etc/logo/logo.png">
 
 # Glowstone
 
-A fast, customizable and compatible open source Minecraft server.
+A fast, customizable and compatible open source server for Minecraft: Java Edition.
 
 ## Introduction
 
 Glowstone is a lightweight, from scratch, open source
 [Minecraft](http://minecraft.net) server written in Java that supports plugins
-written for the [Spigot](https://spigotmc.org) (and Bukkit) API.
+written for the Bukkit API and its major forks, Spigot and Paper.
 
 The main goals of the project are to provide a lightweight implementation
-of the Spigot API and Minecraft server where exact vanilla functionality is
+of the Bukkit API and Minecraft server where exact vanilla functionality is
 not needed or higher performance is desired than the official software can
 deliver. Glowstone makes use of a thread-per-world model and performs
-synchronization only when necessitated by the Spigot API.
+synchronization only when necessitated by the Bukkit API.
+
+Still have questions? Check out our [FAQ](https://github.com/GlowstoneMC/Glowstone/wiki/Frequently-Asked-Questions).
 
 ## Features
 
@@ -27,7 +31,7 @@ Glowstone has a few key advantages over CraftBukkit:
  * Because of this, it is easy to contribute to Glowstone's development. The
    barrier of entry to contributions is lower because there is no need to work
    around decompiled source or maintain a minimal diff.
- * Glowstone supports all plugins written for the Bukkit and Spigot API natively. In
+ * Glowstone supports all plugins written for the Bukkit, Spigot and Paper APIs natively. In
    practice, some plugins may try to make use of parts of the API which are not
    yet implemented, but in a completed state Glowstone would support all Bukkit plugins.
  * Glowstone's simplicity affords it a performance improvement over CraftBukkit
@@ -38,23 +42,18 @@ However, there are several drawbacks:
  * Glowstone **is not finished**. Nothing is guaranteed to work, though many things
    are likely to. If in doubt, file an issue.
  * Bukkit plugins which expect the presence of CraftBukkit-specific code
-   (that in the `org.bukkit.craftbukkit` or `net.minecraft.server` packages)
+   (that are in the `org.bukkit.craftbukkit` or `net.minecraft.server` packages)
    will not work on Glowstone unless they are designed to fail gracefully.
  * Glowstone is not produced by the Bukkit team, and while we do make an effort
    to produce quality work, Glowstone does not undergo the same rigorious testing
    as the Bukkit project.
    
-For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features)
+For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features).
 
 ## Downloads
+[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone)
 
-If you don't want to build from source, pre-built jar files are available to download from:
-
-* **[Direct gserv.me download](https://bamboo.gserv.me/browse/GSPP-SRV/latestSuccessful/artifact/shared/Server-JAR/glowstone%2B%2B-1.10.2-SNAPSHOT.jar)** - recommended, direct link to latest build
-
-* **[gserv.me](https://bamboo.gserv.me/browse/GSPP-SRV)** - all builds, no login required
-
-* [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg) **CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master) - click the latest build and then open the "Artifacts" tab (you must be logged in for this to show)
+If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**. The `glowstone.jar` artifact will be under `tmp/circle-artifacts.#######/`.
 
 ## Building
 
@@ -64,7 +63,7 @@ After installing [Oracle JDK](http://oracle.com/technetwork/java/javase/download
 [Maven](https://maven.apache.org), checkout the source:
 
 ```sh
-git clone --recursive https://github.com/GlowstoneMC/Glowstone
+git clone https://github.com/GlowstoneMC/Glowstone
 cd Glowstone
 ```
 
@@ -74,14 +73,14 @@ cd Glowstone
 ./setup.sh
 ```
 
-The final jar will be placed in `target/` named `glowstone-1.10.2-SNAPSHOT.jar`.
+The final jar will be placed in `target/` named `glowstone.jar`.
 
 ## Running
 
 Running Glowstone is simple because its dependencies are shaded into the output
-jar at compile time. Simply execute `java -jar glowstone-1.10.2-SNAPSHOT.jar` along with any
-extra JVM options desired. A variety of command-line options are also available -
-run `java -jar glowstone-1.10.2-SNAPSHOT.jar --help` for more information.
+jar at compile time. Simply execute `java -jar glowstone.jar` along with any
+extra JVM options desired (we recommend using `java -Xms1G -Xmx1G -XX:+UseG1GC -jar glowstone.jar`). A variety of command-line options are also available -
+run `java -jar glowstone.jar --help` for more information.
 
 By default, configuration is stored in the `config/` subdirectory and logs
 are stored in the `logs/` subdirectory. The main configuration file is
@@ -89,9 +88,12 @@ are stored in the `logs/` subdirectory. The main configuration file is
 `bukkit.yml`. Settings from these two files will be copied over to Glowstone's
 configuration during the default configuration generation process.
 
-Glowstone uses [JLine](http://jline.sf.net) for console input and colored
+Glowstone uses [JLine](http://jline.github.io/jline2/) for console input and colored
 console output. The JLine console can be disabled in the configuration if a
 flat console is desired.
+
+Need more help? Check out [our wiki](https://github.com/GlowstoneMC/Glowstone/wiki#using-glowstone) for some guides that will help you with running,
+maintaining and configuring your Glowstone server.
 
 ## Playing
 
@@ -104,15 +106,14 @@ The best place to receive support is on [GitHub issues](https://github.com/Glows
 When reporting bugs, please retest and include whether the problem reproduces on:
 
 * Earlier [builds](https://circleci.com/gh/GlowstoneMC/Glowstone) of Glowstone
-* [Glowstone Legacy](https://github.com/GlowstoneMC/Glowstone-Legacy), if applicable
 
-Javadocs can be generated by using the `mvn javadoc:javadoc` command and are
-placed in the `target/site/apidocs/` directory, but these are incomplete
--in some places and in general the code is the best reference.
+Javadocs for Glowstone can be found [here](https://glowstone.net/jd/glowstone/).
 
-For documentation on the Glowkit API (an updated Bukkit which is used to
-write plugins), see the Glowkit Javadocs
-or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
+For documentation on the Glowkit API (an updated Bukkit for Glowstone, based on the Paper API, compatible with Spigot's update to Bukkit), see the [Glowkit Javadocs](https://glowstone.net/jd/glowkit/).
+
+## Contributing
+
+First of all, thank you for your interest in advancing Glowstone! We always love to see new developers work on the project! You can find all of our resources on how to get started on our [wiki](https://github.com/GlowstoneMC/Glowstone/wiki#contributing).
 
 ## Credits
 
@@ -122,6 +123,7 @@ or visit Spigot's [Bukkit Javadocs](https://hub.spigotmc.org/javadocs/bukkit/).
    plugin API.
  * [The SpigotMC team](https://spigotmc.org/) for updating and enhancing
    the Bukkit plugin API.
+ * [AquiferMC](https://aquifermc.org/) for further enhancing the Bukkit API.
  * [The SpongePowered Team](https://www.spongepowered.org/) for
    creating the Sponge API.
  * [Trustin Lee](https://github.com/trustin) - author of the
@@ -141,4 +143,3 @@ the `LICENSE` file for details.
 
 Glowkit is open-source software released under the GPL license. Please see
 the `LICENSE.txt` file in the Glowkit repository for details.
-

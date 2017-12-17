@@ -75,6 +75,18 @@ public final class GlowItemFactory implements ItemFactory {
         return LEATHER_COLOR;
     }
 
+    @Override
+    public ItemStack ensureServerConversions(ItemStack itemStack) {
+        // TODO: Implementation (1.12.1)
+        return itemStack.clone();
+    }
+
+    @Override
+    public String getI18NDisplayName(ItemStack itemStack) {
+        // TODO: Implementation (1.12.1)
+        return null;
+    }
+
     public CompoundTag writeNbt(ItemMeta meta) {
         CompoundTag result = new CompoundTag();
         toGlowMeta(meta).writeNbt(result);
@@ -82,9 +94,13 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     public ItemMeta readNbt(Material material, CompoundTag tag) {
-        if (tag == null) return null;
+        if (tag == null) {
+            return null;
+        }
         GlowMetaItem meta = makeMeta(material, null);
-        if (meta == null) return null;
+        if (meta == null) {
+            return null;
+        }
         meta.readNbt(tag);
         return meta;
     }
@@ -99,7 +115,8 @@ public final class GlowItemFactory implements ItemFactory {
         if (meta instanceof GlowMetaItem) {
             return (GlowMetaItem) meta;
         }
-        throw new IllegalArgumentException("Item meta " + meta + " was not created by GlowItemFactory");
+        throw new IllegalArgumentException(
+            "Item meta " + meta + " was not created by GlowItemFactory");
     }
 
     /**
@@ -135,6 +152,8 @@ public final class GlowItemFactory implements ItemFactory {
                 return new GlowMetaPotion(meta);
             case MONSTER_EGG:
                 return new GlowMetaSpawn(meta);
+            case SHIELD:
+                return new GlowMetaShield(meta);
             default:
                 return new GlowMetaItem(meta);
         }

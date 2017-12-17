@@ -1,5 +1,12 @@
 package net.glowstone.generator;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,8 +16,6 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.OctaveGenerator;
 
-import java.util.*;
-
 /**
  * Base chunk generator class.
  */
@@ -19,7 +24,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     // distinct from GlowChunk.DEPTH, only used in the wgen
     protected static final int WORLD_DEPTH = 128;
 
-    private static final Set<Material> noSpawnFloors = new HashSet<>(Arrays.asList(Material.FIRE, Material.CACTUS));
+    private static final Set<Material> noSpawnFloors = EnumSet.of(Material.FIRE, Material.CACTUS);
     private final Map<String, Map<String, OctaveGenerator>> octaveCache = new HashMap<>();
     private final List<BlockPopulator> populators;
 
@@ -28,7 +33,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     }
 
     /**
-     * @param world   The world to create OctaveGenerators for
+     * @param world The world to create OctaveGenerators for
      * @param octaves The map to put the OctaveGenerators into
      */
     protected void createWorldOctaves(World world, Map<String, OctaveGenerator> octaves) {
@@ -61,7 +66,7 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
-        int spawnX = random.nextInt(128) - 64, spawnZ = random.nextInt(128) - 64;
+        int spawnX = random.nextInt(256) - 128, spawnZ = random.nextInt(256) - 128;
 
         for (int tries = 0; tries < 1000 && !canSpawn(world, spawnX, spawnZ); ++tries) {
             spawnX += random.nextInt(128) - 64;

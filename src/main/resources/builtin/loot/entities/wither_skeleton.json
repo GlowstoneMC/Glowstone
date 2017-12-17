@@ -1,0 +1,35 @@
+{
+  "items": [
+    {
+      "default": {
+        "item": "bone",
+        "count": {
+          "max": 2
+        }
+      }
+    },
+    {
+      "default": {
+        "item": "coal",
+        "count": {
+          "max": 1
+        }
+      }
+    },
+    {
+      "default": {
+        "item": "skull",
+        "count": [
+          {
+            "chance": "0.025",
+            "value": 1
+          }
+        ],
+        "data": 1
+      }
+    }
+  ],
+  "experience": {
+    "count": 5
+  }
+}

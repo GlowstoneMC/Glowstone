@@ -1,10 +1,10 @@
 package net.glowstone.block.blocktype;
 
-import net.glowstone.GlowChunk;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.TEFurnace;
-import net.glowstone.block.entity.TileEntity;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.FurnaceEntity;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
@@ -22,12 +22,13 @@ public class BlockFurnace extends BlockContainer {
     }
 
     @Override
-    public TileEntity createTileEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new TEFurnace(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new FurnaceEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Furnace) {
@@ -45,6 +46,16 @@ public class BlockFurnace extends BlockContainer {
 
     @Override
     public void receivePulse(GlowBlock block) {
-        ((TEFurnace) block.getTileEntity()).burn();
+        ((FurnaceEntity) block.getBlockEntity()).burn();
+    }
+
+    @Override
+    public int getPulseTickSpeed(GlowBlock block) {
+        return 1;
+    }
+
+    @Override
+    public boolean isPulseOnce(GlowBlock block) {
+        return false;
     }
 }

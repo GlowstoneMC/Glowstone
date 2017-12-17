@@ -1,6 +1,19 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
@@ -9,26 +22,58 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
+import net.glowstone.entity.ai.MobState;
+import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.projectile.GlowProjectile;
+import net.glowstone.entity.objects.GlowExperienceOrb;
+import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.inventory.EquipmentMonitor;
+import net.glowstone.net.GlowSession;
+import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.entity.EntityEffectMessage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
+import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.util.ExperienceSplitter;
+import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.Position;
+import net.glowstone.util.RayUtil;
 import net.glowstone.util.SoundUtil;
+import net.glowstone.util.loot.LootData;
+import net.glowstone.util.loot.LootingManager;
+import org.bukkit.EntityAnimation;
 import org.bukkit.EntityEffect;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.Statistic;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Criterias;
@@ -50,6 +95,10 @@ import static java.lang.Math.sin;
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
 
     /**
+     * The entity's AI task manager.
+     */
+    protected final TaskManager taskManager;
+    /**
      * Potion effects on the entity.
      */
     private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<>();
@@ -65,6 +114,21 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The entity's max health.
      */
     protected double maxHealth;
+    /**
+     * The LivingEntity's number of ticks since death
+     */
+    @Getter
+    protected int deathTicks;
+    /**
+     * The entity's movement as a unit vector, applied each tick according to the entity's speed.
+     *
+     * The y value is not used. X is used for forward movement and z is used for sideways movement. These values are relative to the entity's current yaw.
+     */
+    protected Vector movement = new Vector();
+    /**
+     * The speed multiplier of the entity.
+     */
+    protected double speed = 1;
     /**
      * The magnitude of the last damage the entity took.
      */
@@ -96,17 +160,36 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Monitor for the equipment of this entity.
      */
+    @Getter
     private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
     /**
-     * The LivingEntity's number of ticks since death
-     */
-    @Getter
-    protected int deathTicks;
-    /**
-     * Whether the entity can automatically glide when falling with an Elytra equipped.
-     * This value is ignored for players.
+     * Whether the entity can automatically glide when falling with an Elytra equipped. This value is ignored for players.
      */
     private boolean fallFlying;
+    /**
+     * Ticks until the next ambient sound roll.
+     */
+    private int nextAmbientTime = 1;
+    /**
+     * The last entity which damaged this living entity.
+     */
+    private Entity lastDamager;
+    /**
+     * The head rotation of the living entity, if applicable.
+     */
+    private float headYaw;
+    /**
+     * Whether the headYaw value should be updated.
+     */
+    private boolean headRotated;
+    /**
+     * The entity's current state;
+     */
+    private MobState aiState = MobState.NO_AI;
+    /**
+     * If this entity has swam in lava (for fire application).
+     */
+    private boolean swamInLava;
 
     /**
      * Creates a mob within the specified world.
@@ -120,7 +203,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Creates a mob within the specified world.
      *
-     * @param location  The location.
+     * @param location The location.
      * @param maxHealth The max health of this mob.
      */
     protected GlowLivingEntity(Location location, double maxHealth) {
@@ -129,6 +212,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         this.maxHealth = maxHealth;
         attributeManager.setProperty(Key.KEY_MAX_HEALTH, maxHealth);
         health = maxHealth;
+        taskManager = new TaskManager(this);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -171,8 +255,26 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(4, DamageCause.VOID);
         }
 
-        if (isWithinSolidBlock())
+        if (isWithinSolidBlock()) {
             damage(1, DamageCause.SUFFOCATION);
+        }
+
+        if (getLocation().getBlock().getType() == Material.LAVA
+            || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
+            damage(4, DamageCause.LAVA);
+            if (swamInLava) {
+                setFireTicks(getFireTicks() + 2);
+            } else {
+                setFireTicks(getFireTicks() + 300);
+                swamInLava = true;
+            }
+        } else {
+            swamInLava = false;
+            if (getLocation().getBlock().getType() == Material.WATER
+                || getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
+                setFireTicks(0);
+            }
+        }
 
         // potion effects
         List<PotionEffect> effects = new ArrayList<>(potionEffects.values());
@@ -186,11 +288,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
             if (effect.getDuration() > 0) {
                 // reduce duration and re-add
-                addPotionEffect(new PotionEffect(type, effect.getDuration() - 1, effect.getAmplifier(), effect.isAmbient()), true);
+                addPotionEffect(
+                    new PotionEffect(type, effect.getDuration() - 1, effect.getAmplifier(),
+                        effect.isAmbient()), true);
             } else {
                 // remove
                 removePotionEffect(type);
             }
+        }
+
+        if (getFireTicks() > 0 && getFireTicks() % 20 == 0) {
+            damage(1, DamageCause.FIRE_TICK);
         }
 
         GlowBlock under = (GlowBlock) getLocation().getBlock().getRelative(BlockFace.DOWN);
@@ -198,20 +306,115 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (type != null) {
             type.onEntityStep(under, this);
         }
+        nextAmbientTime--;
+        if (!isDead() && getAmbientSound() != null && nextAmbientTime == 0 && !isSilent()) {
+            double v = ThreadLocalRandom.current().nextDouble();
+            if (v <= 0.2) {
+                world
+                    .playSound(getLocation(), getAmbientSound(), getSoundVolume(), getSoundPitch());
+            }
+        }
+        if (nextAmbientTime == 0) {
+            nextAmbientTime = getAmbientDelay();
+        }
+    }
+
+    @Override
+    protected void pulsePhysics() {
+        // drag application
+        movement.multiply(airDrag);
+        // convert movement x/z to a velocity
+        Vector velMovement = getVelocityFromMovement();
+        velocity.add(velMovement);
+        super.pulsePhysics();
+    }
+
+    protected Vector getVelocityFromMovement() {
+        // ensure movement vector is in correct format
+        movement.setY(0);
+
+        double mag = movement.getX() * movement.getX() + movement.getZ() * movement.getZ();
+        // don't do insignificant movement
+        if (mag < 0.01) {
+            return new Vector();
+        }
+        // unit vector of movement
+        movement.setX(movement.getX() / mag);
+        movement.setZ(movement.getZ() / mag);
+
+        // scale to how fast the entity can go
+        mag *= speed;
+        Vector movement = this.movement.clone();
+        movement.multiply(mag);
+
+        // make velocity vector relative to where the entity is facing
+        double yaw = Math.toRadians(location.getYaw());
+        double z = Math.sin(yaw);
+        double x = Math.cos(yaw);
+        movement.setX(movement.getZ() * x - movement.getX() * z);
+        movement.setZ(movement.getX() * x + movement.getZ() * z);
+
+        // apply the movement multiplier
+        if (!isOnGround() || location.getBlock().isLiquid()) {
+            // constant multiplier in liquid or not on ground
+            movement.multiply(0.02);
+        } else {
+            this.slipMultiplier = ((GlowBlock) location.getBlock()).getMaterialValues()
+                .getSlipperiness();
+            double slipperiness = slipMultiplier * 0.91;
+            movement.multiply(0.1 * (0.1627714 / Math.pow(slipperiness, 3)));
+        }
+
+        return movement;
+    }
+
+    public Vector getMovement() {
+        return movement.clone();
+    }
+
+    public void setMovement(Vector movement) {
+        this.movement = movement;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    protected void jump() {
+        if (location.getBlock().isLiquid()) {
+            // jump out more when you breach the surface of the liquid
+            if (location.getBlock().getRelative(BlockFace.UP).isEmpty()) {
+                velocity.setY(velocity.getY() + 0.3);
+            }
+            // less jumping in liquid
+            velocity.setY(velocity.getY() + 0.04);
+        } else {
+            // jump normally
+            velocity.setY(velocity.getY() + 0.42);
+        }
     }
 
     @Override
     public void reset() {
         super.reset();
         equipmentMonitor.resetChanges();
+        headRotated = false;
     }
 
     @Override
-    public List<Message> createUpdateMessage() {
-        List<Message> messages = super.createUpdateMessage();
+    public List<Message> createUpdateMessage(GlowSession session) {
+        List<Message> messages = super.createUpdateMessage(session);
 
-        messages.addAll(equipmentMonitor.getChanges().stream().map(change -> new EntityEquipmentMessage(id, change.slot, change.item)).collect(Collectors.toList()));
-
+        messages.addAll(equipmentMonitor.getChanges().stream()
+            .map(change -> new EntityEquipmentMessage(id, change.slot, change.item))
+            .collect(Collectors.toList()));
+        if (headRotated) {
+            messages.add(new EntityHeadRotationMessage(id, Position.getIntHeadYaw(headYaw)));
+        }
         attributeManager.applyMessages(messages);
 
         return messages;
@@ -245,17 +448,31 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
+    public void setKiller(Player player) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
     public boolean hasLineOfSight(Entity other) {
         return false;
     }
+
+    public float getHeadYaw() {
+        return headYaw;
+    }
+
+    public void setHeadYaw(float headYaw) {
+        this.headYaw = headYaw;
+        this.headRotated = true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Properties
 
     @Override
     public EntityEquipment getEquipment() {
         return null;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Properties
 
     @Override
     public int getNoDamageTicks() {
@@ -336,6 +553,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
+     * Get the ambient sound this entity makes randomly, or null for silence.
+     *
+     * @return the ambient sound if available
+     */
+    protected Sound getAmbientSound() {
+        return null;
+    }
+
+    /**
+     * Get the minimal delay until the entity can produce an ambient sound.
+     *
+     * @return the minimal delay until the entity can produce an ambient sound
+     */
+    protected int getAmbientDelay() {
+        return 80;
+    }
+
+    /**
      * The volume of the sounds this entity makes
      *
      * @return the volume of the sounds
@@ -355,7 +590,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * Get whether this entity should take damage from the specified source.
-     * Usually used to check environmental sources such as drowning.
+     *
+     * <p>Usually used to check environmental sources such as drowning.
      *
      * @param damageCause the damage source to check
      * @return whether this entity can take damage from the source
@@ -364,8 +600,26 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return true;
     }
 
+    /**
+     * Get whether of not this entity is an arthropod.
+     *
+     * @return true if this entity is an arthropod, false otherwise
+     */
+    public boolean isArthropod() {
+        return false;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Line of Sight
+
+    /**
+     * Get whether or not this entity is undead.
+     *
+     * @return true if this entity is undead, false otherwise
+     */
+    public boolean isUndead() {
+        return false;
+    }
 
     private List<Block> getLineOfSight(Set<Material> transparent, int maxDistance, int maxLength) {
         // same limit as CraftBukkit
@@ -396,7 +650,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
-        Set<Material> materials = transparent.stream().map(Material::getMaterial).collect(Collectors.toSet());
+        Set<Material> materials = transparent.stream().map(Material::getMaterial)
+            .collect(Collectors.toSet());
         return getLineOfSight(materials, maxDistance, maxLength);
     }
 
@@ -406,16 +661,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Deprecated
-    @Override
-    public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 0);
-    }
-
-
-    @Deprecated
-    @Override
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance).get(0);
+        return getLineOfSight(transparent, maxDistance, 0).get(0);
     }
 
     @Override
@@ -424,7 +671,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Deprecated
-    @Override
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 2);
     }
@@ -433,6 +679,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public List<Block> getLastTwoTargetBlocks(Set<Material> materials, int maxDistance) {
         return getLineOfSight(materials, maxDistance, 2);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Projectiles
 
     /**
      * Returns whether the entity's eye location is within a solid block
@@ -443,13 +692,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return getEyeLocation().getBlock().getType().isOccluding();
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Projectiles
-
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
-        return launchProjectile(projectile, null);
+        return launchProjectile(projectile,
+            getLocation().getDirection());  // todo: multiply by some speed
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Health
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector) {
@@ -507,9 +757,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return projectile;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Health
-
     @Override
     public double getHealth() {
         return health;
@@ -517,52 +764,91 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void setHealth(double health) {
-        if (health < 0) health = 0;
-        if (health > getMaxHealth()) health = getMaxHealth();
+        if (health < 0) {
+            health = 0;
+        }
+        if (health > getMaxHealth()) {
+            health = getMaxHealth();
+        }
         this.health = health;
         metadata.set(MetadataIndex.HEALTH, (float) health);
 
-        for (Objective objective : getServer().getScoreboardManager().getMainScoreboard().getObjectivesByCriteria(Criterias.HEALTH)) {
+        for (Objective objective : getServer().getScoreboardManager().getMainScoreboard()
+            .getObjectivesByCriteria(Criterias.HEALTH)) {
             objective.getScore(getName()).setScore((int) health);
         }
 
         if (health <= 0) {
             active = false;
             Sound deathSound = getDeathSound();
-            if (deathSound != null) {
+            if (deathSound != null && !isSilent()) {
                 world.playSound(location, deathSound, getSoundVolume(), getSoundPitch());
             }
             playEffect(EntityEffect.DEATH);
             if (this instanceof GlowPlayer) {
-                PlayerDeathEvent event = new PlayerDeathEvent((GlowPlayer) this, new ArrayList<>(), 0, this.getName() + " died.");
+                GlowPlayer player = (GlowPlayer) this;
+                ItemStack mainHand = player.getInventory().getItemInMainHand();
+                ItemStack offHand = player.getInventory().getItemInOffHand();
+                if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
+                    player.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
+                    player.setHealth(1.0);
+                    active = true;
+                    return;
+                } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
+                    player.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
+                    player.setHealth(1.0);
+                    active = true;
+                    return;
+                }
+                List<ItemStack> items = new ArrayList<>();
+                if (!world.getGameRuleMap().getBoolean("keepInventory")) {
+                    items = Arrays.stream(player.getInventory().getContents())
+                        .filter(stack -> !InventoryUtil.isEmpty(stack))
+                        .collect(Collectors.toList());
+                    player.getInventory().clear();
+                }
+                PlayerDeathEvent event = new PlayerDeathEvent(player, items, 0,
+                    player.getDisplayName() + " died.");
                 EventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
+                for (ItemStack item : items) {
+                    world.dropItemNaturally(getLocation(), item);
+                }
+                player.setShoulderEntityRight(null);
+                player.setShoulderEntityLeft(null);
+                player.incrementStatistic(Statistic.DEATHS);
             } else {
-                EventFactory.callEvent(new EntityDeathEvent(this, new ArrayList<>()));
+                EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
+                if (world.getGameRuleMap().getBoolean("doMobLoot")) {
+                    LootData data = LootingManager.generate(this);
+                    deathEvent.getDrops().addAll(data.getItems());
+                    if (data.getExperience() > 0) {
+                        // split experience
+                        Integer[] values = ExperienceSplitter.cut(data.getExperience());
+                        for (Integer exp : values) {
+                            double xMod = ThreadLocalRandom.current().nextDouble() - 0.5, zMod =
+                                ThreadLocalRandom.current().nextDouble() - 0.5;
+                            Location xpLocation = new Location(world,
+                                location.getBlockX() + 0.5 + xMod, location.getY(),
+                                location.getBlockZ() + 0.5 + zMod);
+                            GlowExperienceOrb orb = (GlowExperienceOrb) world
+                                .spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
+                            orb.setExperience(exp);
+                        }
+                    }
+                }
+                deathEvent = EventFactory.callEvent(deathEvent);
+                for (ItemStack item : deathEvent.getDrops()) {
+                    world.dropItemNaturally(getLocation(), item);
+                }
             }
-            // todo: drop items
         }
-    }
-
-    @Override
-    public void damage(double amount) {
-        damage(amount, null, DamageCause.CUSTOM);
-    }
-
-    @Override
-    public void damage(double amount, Entity source) {
-        damage(amount, source, DamageCause.CUSTOM);
-    }
-
-    @Override
-    public void damage(double amount, DamageCause cause) {
-        damage(amount, null, cause);
     }
 
     @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         // invincibility timer
-        if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause)) {
+        if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause) || isInvulnerable()) {
             return;
         } else {
             noDamageTicks = maxNoDamageTicks;
@@ -570,33 +856,40 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         // fire resistance
         if (cause != null && hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
-            switch (cause) {
-                case PROJECTILE:
-                    if (!(source instanceof Fireball)) {
+            boolean isFireDamage = false;
+            if (source instanceof Fireball) {
+                isFireDamage = true;
+            } else {
+                switch (cause) {
+                    case FIRE:
+                    case FIRE_TICK:
+                    case LAVA:
+                        isFireDamage = true;
                         break;
-                    }
-                case FIRE:
-                case FIRE_TICK:
-                case LAVA:
-                    return;
+                }
+            }
+            if (isFireDamage) {
+                // TODO: apply protection
             }
         }
 
+        // armor damage protection
+        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
+        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
+        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
+        amount = amount * (1 - Math.min(20.0,
+            Math.max(defensePoints / 5.0, defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
+
         // fire event
-        // todo: use damage modifier system
         EntityDamageEvent event;
         if (source == null) {
-            event = new EntityDamageEvent(this, cause, amount);
+            event = EventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
         } else {
-            event = new EntityDamageByEntityEvent(source, this, cause, amount);
+            event = EventFactory
+                .onEntityDamage(new EntityDamageByEntityEvent(source, this, cause, amount));
         }
-        EventFactory.callEvent(event);
         if (event.isCancelled()) {
             return;
-        }
-
-        if (source instanceof GlowPlayer) {
-            ((GlowPlayer) source).addExhaustion(0.3f);
         }
 
         // apply damage
@@ -605,13 +898,25 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         setHealth(health - amount);
         playEffect(EntityEffect.HURT);
 
+        if (cause == DamageCause.ENTITY_ATTACK && source != null) {
+            Vector distance = RayUtil
+                .getRayBetween(getLocation(), ((LivingEntity) source).getEyeLocation());
+
+            Vector rayLength = RayUtil.getVelocityRay(distance).normalize();
+
+            Vector currentVelocity = getVelocity();
+            currentVelocity.add(rayLength.multiply(((amount + 1) / 2d)));
+            setVelocity(currentVelocity);
+        }
+
         // play sounds, handle death
         if (health > 0) {
             Sound hurtSound = getHurtSound();
-            if (hurtSound != null) {
+            if (hurtSound != null && !isSilent()) {
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }
+        setLastDamager(source);
     }
 
     @Override
@@ -639,47 +944,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         lastDamage = damage;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Invalid health methods
-
-    @Override
-    public void _INVALID_damage(int amount) {
-        damage(amount);
+    public Entity getLastDamager() {
+        return lastDamager;
     }
 
-    @Override
-    public int _INVALID_getLastDamage() {
-        return (int) getLastDamage();
-    }
-
-    @Override
-    public void _INVALID_setLastDamage(int damage) {
-        setLastDamage(damage);
-    }
-
-    @Override
-    public void _INVALID_setMaxHealth(int health) {
-        setMaxHealth(health);
-    }
-
-    @Override
-    public int _INVALID_getMaxHealth() {
-        return (int) getMaxHealth();
-    }
-
-    @Override
-    public void _INVALID_damage(int amount, Entity source) {
-        damage(amount, source);
-    }
-
-    @Override
-    public int _INVALID_getHealth() {
-        return (int) getHealth();
-    }
-
-    @Override
-    public void _INVALID_setHealth(int health) {
-        setHealth(health);
+    public void setLastDamager(Entity lastDamager) {
+        this.lastDamager = lastDamager;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -702,11 +972,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         potionEffects.put(effect.getType(), effect);
 
-        EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(), effect.getAmplifier(), effect.getDuration(), effect.isAmbient());
+        EntityEffectMessage msg = new EntityEffectMessage(getEntityId(), effect.getType().getId(),
+            effect.getAmplifier(), effect.getDuration(), effect.isAmbient());
         for (GlowPlayer player : world.getRawPlayers()) {
             if (player == this) {
                 // special handling for players having a different view of themselves
-                player.getSession().send(new EntityEffectMessage(0, effect.getType().getId(), effect.getAmplifier(), effect.getDuration(), effect.isAmbient()));
+                player.getSession().send(
+                    new EntityEffectMessage(0, effect.getType().getId(), effect.getAmplifier(),
+                        effect.getDuration(), effect.isAmbient()));
             } else if (player.canSeeEntity(this)) {
                 player.getSession().send(msg);
             }
@@ -731,8 +1004,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
+    public PotionEffect getPotionEffect(PotionEffectType potionEffectType) {
+        return null;
+    }
+
+    @Override
     public void removePotionEffect(PotionEffectType type) {
-        if (!hasPotionEffect(type)) return;
+        if (!hasPotionEffect(type)) {
+            return;
+        }
         potionEffects.remove(type);
 
         EntityRemoveEffectMessage msg = new EntityRemoveEffectMessage(getEntityId(), type.getId());
@@ -753,27 +1033,25 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void setOnGround(boolean onGround) {
-        super.setOnGround(onGround);
-        if (onGround && getFallDistance() > 3) {
-            if (getClass() == GlowPlayer.class && ((GlowPlayer) this).getAllowFlight()) {
-                return;
-            }
-            float damage = getFallDistance() - 3;
+        float fallDistance = getFallDistance();
+        if (onGround && fallDistance > 3f) {
+            float damage = fallDistance - 3f;
             damage = Math.round(damage);
-            if (damage == 0) {
-                setFallDistance(0);
-                return;
+            if (damage > 0f) {
+                Material standingType = location.getBlock().getRelative(BlockFace.DOWN).getType();
+                // todo: only when bouncing
+                if (standingType == Material.SLIME_BLOCK) {
+                    damage = 0f;
+                }
+
+                if (standingType == Material.HAY_BLOCK) {
+                    damage *= 0.2f;
+                }
+
+                damage(damage, DamageCause.FALL);
             }
-            EntityDamageEvent ev = new EntityDamageEvent(this, DamageCause.FALL, damage);
-            getServer().getPluginManager().callEvent(ev);
-            if (ev.isCancelled()) {
-                setFallDistance(0);
-                return;
-            }
-            setLastDamageCause(ev);
-            damage(ev.getDamage());
         }
-        setFallDistance(0);
+        super.setOnGround(onGround);
     }
 
     public boolean isFallFlying() {
@@ -788,17 +1066,128 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Leashes
 
     @Override
-    public boolean isLeashed() {
-        return false;
+    public boolean isGliding() {
+        return metadata.getBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING);
     }
 
     @Override
-    public Entity getLeashHolder() throws IllegalStateException {
+    public void setGliding(boolean gliding) {
+        if (EventFactory.callEvent(new EntityToggleGlideEvent(this, gliding)).isCancelled()) {
+            return;
+        }
+
+        metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING, gliding);
+    }
+
+    public MobState getState() {
+        return aiState;
+    }
+
+    public void setState(MobState state) {
+        if (aiState != state) {
+            aiState = state;
+            getTaskManager().updateState();
+        }
+    }
+
+    @Override
+    public void setAI(boolean ai) {
+        if (ai) {
+            if (aiState == MobState.NO_AI) {
+                setState(MobState.IDLE);
+            }
+        } else {
+            setState(MobState.NO_AI);
+        }
+    }
+
+    @Override
+    public boolean hasAI() {
+        return aiState != MobState.NO_AI;
+    }
+
+    @Override
+    public boolean isCollidable() {
+        // todo: 1.11
+        return true;
+    }
+
+    @Override
+    public void setCollidable(boolean collidable) {
+        // todo: 1.11
+    }
+
+    @Override
+    public int getArrowsStuck() {
+        // todo: 1.11
+        return 0;
+    }
+
+    @Override
+    public void setArrowsStuck(int arrowsStuck) {
+        // todo: 1.11
+    }
+
+    @Override
+    public void playAnimation(EntityAnimation animation) {
+        AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
+        getWorld().getRawPlayers().stream()
+            .filter(observer -> observer != this && observer.canSeeEntity(this))
+            .forEach(observer -> observer.getSession().send(message));
+    }
+
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
+        // todo: 1.11
         return null;
     }
 
+    public TaskManager getTaskManager() {
+        return taskManager;
+    }
+
     @Override
-    public boolean setLeashHolder(Entity holder) {
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        super.entityInteract(player, message);
+
+        if (message.getAction() != Action.INTERACT.ordinal()) {
+            return false;
+        }
+
+        ItemStack handItem = InventoryUtil
+            .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+        if (isLeashed() && player.equals(this.getLeashHolder())
+            && message.getHandSlot() == EquipmentSlot.HAND) {
+            if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
+                return false;
+            }
+
+            setLeashHolder(null);
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
+            }
+            return true;
+        } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEASH) {
+            if (!GlowLeashHitch.isAllowedLeashHolder(this.getType()) || this.isLeashed()
+                || EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player))
+                .isCancelled()) {
+                return false;
+            }
+
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                if (handItem.getAmount() > 1) {
+                    handItem.setAmount(handItem.getAmount() - 1);
+                } else {
+                    handItem = InventoryUtil.createEmptyStack();
+                }
+                player.getInventory().setItem(message.getHandSlot(), handItem);
+            }
+
+            setLeashHolder(player);
+            return true;
+        }
+
         return false;
     }
 }
+

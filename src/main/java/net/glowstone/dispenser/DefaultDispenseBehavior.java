@@ -1,5 +1,6 @@
 package net.glowstone.dispenser;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
@@ -11,11 +12,7 @@ import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Random;
-
 public class DefaultDispenseBehavior implements DispenseBehavior {
-
-    private final Random random = new Random();
 
     @Override
     public ItemStack dispense(GlowBlock block, ItemStack stack) {
@@ -37,7 +34,8 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
         return stack.getAmount() > 0 ? stack : null;
     }
 
-    private void doDispense(GlowBlock block, ItemStack items, int power, BlockFace facing, Vector target) {
+    private void doDispense(GlowBlock block, ItemStack items, int power, BlockFace facing,
+        Vector target) {
 
         double x = target.getX();
         double y = target.getY();
@@ -49,19 +47,20 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
             y -= 0.15625;
         }
 
-
-        double velocity = random.nextDouble() * 0.1 + 0.2;
+        double velocity = ThreadLocalRandom.current().nextDouble() * 0.1 + 0.2;
         double velocityX = facing.getModX() * velocity;
         double velocityY = 0.2;
         double velocityZ = facing.getModZ() * velocity;
-        velocityX += random.nextGaussian() * 0.0075 * power;
-        velocityY += random.nextGaussian() * 0.0075 * power;
-        velocityZ += random.nextGaussian() * 0.0075 * power;
+        velocityX += ThreadLocalRandom.current().nextGaussian() * 0.0075 * power;
+        velocityY += ThreadLocalRandom.current().nextGaussian() * 0.0075 * power;
+        velocityZ += ThreadLocalRandom.current().nextGaussian() * 0.0075 * power;
 
-        BlockDispenseEvent dispenseEvent = new BlockDispenseEvent(block, items, new Vector(velocityX, velocityY, velocityZ));
+        BlockDispenseEvent dispenseEvent = new BlockDispenseEvent(block, items,
+            new Vector(velocityX, velocityY, velocityZ));
         EventFactory.callEvent(dispenseEvent);
         if (!dispenseEvent.isCancelled()) {
-            GlowItem item = new GlowItem(new Location(block.getWorld(), x, y, z), dispenseEvent.getItem());
+            GlowItem item = new GlowItem(new Location(block.getWorld(), x, y, z),
+                dispenseEvent.getItem());
             item.setVelocity(dispenseEvent.getVelocity());
         }
     }
@@ -75,6 +74,7 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
     }
 
     protected void spawnDispenseParticles(GlowBlock block, BlockFace facing) {
-        block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, getParticleMetadataForFace(facing));
+        block.getWorld()
+            .playEffect(block.getLocation(), Effect.SMOKE, getParticleMetadataForFace(facing));
     }
 }

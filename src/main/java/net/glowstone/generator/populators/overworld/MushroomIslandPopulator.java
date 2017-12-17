@@ -1,5 +1,10 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+import net.glowstone.generator.decorators.EntityDecorator;
 import net.glowstone.generator.decorators.overworld.MushroomDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.BrownMushroomTree;
@@ -8,19 +13,18 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+import org.bukkit.entity.EntityType;
 
 public class MushroomIslandPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_ISLAND_SHORE};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree.class, 1), new TreeDecoration(BrownMushroomTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree.class, 1),
+        new TreeDecoration(BrownMushroomTree.class, 1)};
 
-    protected final MushroomDecorator islandBrownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
-    protected final MushroomDecorator islandRedMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
+    protected final MushroomDecorator islandBrownMushroomDecorator = new MushroomDecorator(
+        Material.BROWN_MUSHROOM);
+    protected final MushroomDecorator islandRedMushroomDecorator = new MushroomDecorator(
+        Material.RED_MUSHROOM);
 
     public MushroomIslandPopulator() {
         treeDecorator.setAmount(1);
@@ -32,6 +36,10 @@ public class MushroomIslandPopulator extends BiomePopulator {
         islandBrownMushroomDecorator.setDensity(0.25D);
         islandRedMushroomDecorator.setAmount(1);
         islandRedMushroomDecorator.setDensity(0.125D);
+        entityDecorators.clear();
+        EntityDecorator mushroomDecorator = new EntityDecorator(EntityType.MUSHROOM_COW);
+        mushroomDecorator.setGroupSize(4, 8);
+        entityDecorators.add(mushroomDecorator);
     }
 
     @Override

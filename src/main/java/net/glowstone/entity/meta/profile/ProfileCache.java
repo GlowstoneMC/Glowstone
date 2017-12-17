@@ -1,7 +1,5 @@
 package net.glowstone.entity.meta.profile;
 
-import net.glowstone.GlowServer;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,11 +8,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
 
 /**
  * Cached methods for accessing Mojang servers to find UUIDs and player profiles.
  */
-public final class ProfileCache {
+public class ProfileCache {
+
     private static Map<String, UUID> uuidCache = new HashMap<>();
     private static Map<UUID, PlayerProfile> profileCache = new HashMap<>();
 
@@ -43,7 +43,8 @@ public final class ProfileCache {
             return uuidCache.get(playerName);
         }
         UUID uuid = null;
-        CompletableFuture<UUID> uuidFuture = CompletableFuture.supplyAsync(() -> PlayerDataFetcher.getUUID(playerName));
+        CompletableFuture<UUID> uuidFuture = CompletableFuture
+            .supplyAsync(() -> PlayerDataFetcher.getUUID(playerName));
         uuidFuture.thenAcceptAsync(uid -> uuidCache.put(playerName, uid));
         try {
             uuid = uuidFuture.get(5, TimeUnit.SECONDS);

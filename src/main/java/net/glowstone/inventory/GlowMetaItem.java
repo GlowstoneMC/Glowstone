@@ -1,6 +1,15 @@
 package net.glowstone.inventory;
 
 import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
@@ -8,19 +17,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
  */
-class GlowMetaItem implements ItemMeta {
+public class GlowMetaItem implements ItemMeta {
 
     private String displayName;
     private List<String> lore;
     private Map<Enchantment, Integer> enchants;
     private int hideFlag;
+    private boolean unbreakable;
 
     /**
      * Create a GlowMetaItem, copying from another if possible.
@@ -44,7 +50,8 @@ class GlowMetaItem implements ItemMeta {
         hideFlag = meta.hideFlag;
     }
 
-    protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
+    protected static void serializeEnchants(String name, Map<String, Object> map,
+        Map<Enchantment, Integer> enchants) {
         Map<String, Object> enchantList = new HashMap<>();
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
@@ -54,7 +61,8 @@ class GlowMetaItem implements ItemMeta {
         map.put(name, enchantList);
     }
 
-    protected static void writeNbtEnchants(String name, CompoundTag to, Map<Enchantment, Integer> enchants) {
+    protected static void writeNbtEnchants(String name, CompoundTag to,
+        Map<Enchantment, Integer> enchants) {
         List<CompoundTag> ench = new ArrayList<>();
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
@@ -75,7 +83,9 @@ class GlowMetaItem implements ItemMeta {
             for (CompoundTag enchantmentTag : enchs) {
                 if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
                     Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
-                    if (result == null) result = new HashMap<>(4);
+                    if (result == null) {
+                        result = new HashMap<>(4);
+                    }
                     result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
                 }
             }
@@ -95,19 +105,25 @@ class GlowMetaItem implements ItemMeta {
     }
 
     @Override
-    public ItemMeta clone() {
-        return new GlowMetaItem(this);
-    }
-
-    @Override
     public Spigot spigot() {
-        return null;
+        return new Spigot() {
+            @Override
+            public boolean isUnbreakable() {
+                return GlowMetaItem.this.isUnbreakable();
+            }
+
+            @Override
+            public void setUnbreakable(boolean unbreakable) {
+                GlowMetaItem.this.setUnbreakable(unbreakable);
+            }
+        };
     }
 
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
         result.put("meta-type", "UNSPECIFIC");
+        result.put("unbreakable", isUnbreakable());
 
         if (hasDisplayName()) {
             result.put("display-name", getDisplayName());
@@ -121,7 +137,8 @@ class GlowMetaItem implements ItemMeta {
         }
 
         if (hideFlag != 0) {
-            Set<String> hideFlags = getItemFlags().stream().map(Enum::name).collect(Collectors.toSet());
+            Set<String> hideFlags = getItemFlags().stream().map(Enum::name)
+                .collect(Collectors.toSet());
             if (hideFlags.isEmpty()) {
                 result.put("ItemFlags", hideFlags);
             }
@@ -150,6 +167,7 @@ class GlowMetaItem implements ItemMeta {
         if (hideFlag != 0) {
             tag.putInt("HideFlags", hideFlag);
         }
+        tag.putBool("Unbreakable", isUnbreakable());
     }
 
     void readNbt(CompoundTag tag) {
@@ -166,14 +184,18 @@ class GlowMetaItem implements ItemMeta {
         //TODO currently ignoring level restriction, is that right?
         Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
         if (tagEnchants != null) {
-            if (enchants == null)
+            if (enchants == null) {
                 enchants = tagEnchants;
-            else
+            } else {
                 enchants.putAll(tagEnchants);
+            }
         }
 
         if (tag.isInt("HideFlags")) {
             hideFlag = tag.getInt("HideFlags");
+        }
+        if (tag.isByte("Unbreakable")) {
+            unbreakable = tag.getBool("Unbreakable");
         }
     }
 
@@ -201,6 +223,23 @@ class GlowMetaItem implements ItemMeta {
         displayName = name;
     }
 
+    // TODO: support localization
+
+    @Override
+    public boolean hasLocalizedName() {
+        return hasDisplayName();
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return getDisplayName();
+    }
+
+    @Override
+    public void setLocalizedName(String name) {
+        displayName = name;
+    }
+
     @Override
     public boolean hasLore() {
         return lore != null && !lore.isEmpty();
@@ -215,6 +254,16 @@ class GlowMetaItem implements ItemMeta {
     public void setLore(List<String> lore) {
         // todo: fancy validation things
         this.lore = lore;
+    }
+
+    @Override
+    public boolean isUnbreakable() {
+        return unbreakable;
+    }
+
+    @Override
+    public void setUnbreakable(boolean unbreakable) {
+        this.unbreakable = unbreakable;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -246,7 +295,8 @@ class GlowMetaItem implements ItemMeta {
             enchants = new HashMap<>(4);
         }
 
-        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench.getMaxLevel()) {
+        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench
+            .getMaxLevel()) {
             Integer old = enchants.put(ench, level);
             return old == null || old != level;
         }
@@ -260,14 +310,22 @@ class GlowMetaItem implements ItemMeta {
 
     @Override
     public boolean hasConflictingEnchant(Enchantment ench) {
-        if (!hasEnchants()) return false;
+        if (!hasEnchants()) {
+            return false;
+        }
 
         for (Enchantment e : enchants.keySet()) {
-            if (e.conflictsWith(ench))
+            if (e.conflictsWith(ench)) {
                 return true;
+            }
         }
 
         return false;
+    }
+
+    @Override
+    public ItemMeta clone() {
+        return new GlowMetaItem(this);
     }
 
     @Override

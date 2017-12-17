@@ -1,3 +1,3 @@
 #!/bin/sh
 # Setup script for Glowstone
-mvn package
+mvn -T 1C -B package

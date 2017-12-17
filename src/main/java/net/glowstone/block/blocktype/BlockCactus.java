@@ -10,8 +10,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 
 public class BlockCactus extends BlockType {
 
-    private static final BlockFace[] NEAR_BLOCKS = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
-
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         Material below = block.getRelative(BlockFace.DOWN).getType();
@@ -19,7 +17,8 @@ public class BlockCactus extends BlockType {
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
@@ -73,7 +72,7 @@ public class BlockCactus extends BlockType {
     }
 
     private boolean hasNearBlocks(GlowBlock block) {
-        for (BlockFace face : NEAR_BLOCKS) {
+        for (BlockFace face : SIDES) {
             if (!canPlaceNear(block.getRelative(face).getType())) {
                 return true;
             }

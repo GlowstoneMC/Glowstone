@@ -1,15 +1,13 @@
 package net.glowstone.inventory.crafting;
 
+import java.util.List;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.material.Dye;
-
-import java.util.List;
 
 /**
  * Recipe for adding patterns to a banner item.
@@ -25,7 +23,9 @@ public class GlowBannerMatcher extends ItemMatcher {
         ItemStack banner = null;
 
         for (ItemStack item : matrix) {
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
             if (item.getType() == Material.BANNER) {
                 if (banner != null) {
                     return null; // Multiple banners found
@@ -50,18 +50,27 @@ public class GlowBannerMatcher extends ItemMatcher {
             if (recipe.hasItem()) {
                 boolean foundDye = false;
                 for (ItemStack item : matrix) {
-                    if (item == null) continue; // Ignore blanks
+                    if (item == null) {
+                        continue; // Ignore blanks
+                    }
 
-                    if (item.getType() == Material.BANNER) continue; // Banner is already checked
+                    if (item.getType() == Material.BANNER) {
+                        continue; // Banner is already checked
+                    }
 
                     if (item.getType() == Material.INK_SACK) {
-                        if (foundDye) continue recipe; // Can't have multiple dyes
+                        if (foundDye) {
+                            continue recipe; // Can't have multiple dyes
+                        }
                         foundDye = true;
                         continue;
                     }
 
-                    if (item.getType() == recipe.getType() && item.getDurability() == recipe.getData()) {
-                        if (texture != null) return null; // Can't have multiple of same item
+                    if (item.getType() == recipe.getType() && item.getDurability() == recipe
+                        .getData()) {
+                        if (texture != null) {
+                            return null; // Can't have multiple of same item
+                        }
                         texture = recipe.getPattern(); // Matches texture type
                         continue;
                     }
@@ -75,7 +84,9 @@ public class GlowBannerMatcher extends ItemMatcher {
                 }
                 break; // Recipe matches
             } else {
-                if (matrix.length != 9) return null; // Non-item recipes only work on 3x3
+                if (matrix.length != 9) {
+                    return null; // Non-item recipes only work on 3x3
+                }
 
                 for (int i = 0; i < 9; i++) {
                     boolean hasValue = recipe.getValues()[i] == '#';
@@ -93,7 +104,9 @@ public class GlowBannerMatcher extends ItemMatcher {
             }
         }
 
-        if (texture == null) return null; // No texture found
+        if (texture == null) {
+            return null; // No texture found
+        }
 
         // Create result banner
         BannerMeta meta = (BannerMeta) banner.getItemMeta();

@@ -2,11 +2,12 @@ package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowCreeper;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.entity.EntityType;
 
 class CreeperStore extends MonsterStore<GlowCreeper> {
 
     public CreeperStore() {
-        super(GlowCreeper.class, "Creeper");
+        super(GlowCreeper.class, EntityType.CREEPER);
     }
 
     @Override
@@ -25,9 +26,9 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
         }
 
         if (compound.isInt("Fuse")) {
-            entity.setFuse(compound.getInt("Fuse"));
+            entity.setMaxFuseTicks(compound.getInt("Fuse"));
         } else {
-            entity.setFuse(30);
+            entity.setMaxFuseTicks(30);
         }
 
         if (compound.containsKey("ignited")) {
@@ -43,7 +44,7 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
         super.save(entity, tag);
         tag.putBool("powered", entity.isPowered());
         tag.putInt("ExplosionRadius", entity.getExplosionRadius());
-        tag.putInt("Fuse", entity.getFuse());
+        tag.putInt("Fuse", entity.getMaxFuseTicks());
         tag.putBool("ignited", entity.isIgnited());
     }
 

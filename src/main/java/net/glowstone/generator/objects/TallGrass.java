@@ -1,13 +1,12 @@
 package net.glowstone.generator.objects;
 
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.LongGrass;
-
-import java.util.Random;
 
 public class TallGrass {
 
@@ -19,8 +18,8 @@ public class TallGrass {
 
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         while ((world.getBlockAt(sourceX, sourceY, sourceZ).isEmpty() ||
-                world.getBlockAt(sourceX, sourceY, sourceZ).getType() == Material.LEAVES) &&
-                sourceY > 0) {
+            world.getBlockAt(sourceX, sourceY, sourceZ).getType() == Material.LEAVES) &&
+            sourceY > 0) {
             sourceY--;
         }
         for (int i = 0; i < 128; i++) {
@@ -29,7 +28,8 @@ public class TallGrass {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             Block block = world.getBlockAt(x, y, z);
-            if (y < 255 && block.getType() == Material.AIR && (block.getRelative(BlockFace.DOWN).getType() == Material.GRASS ||
+            if (y < 255 && block.getType() == Material.AIR && (
+                block.getRelative(BlockFace.DOWN).getType() == Material.GRASS ||
                     block.getRelative(BlockFace.DOWN).getType() == Material.DIRT)) {
                 BlockState state = block.getState();
                 state.setType(Material.LONG_GRASS);

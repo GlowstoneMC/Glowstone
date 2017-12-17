@@ -1,20 +1,25 @@
 package net.glowstone.util;
 
+import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-
-import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
+import org.bukkit.SoundCategory;
 
 public class SoundUtil {
 
     public static void playSoundAtLocationExcept(Location location, Sound sound, float volume, float pitch, GlowPlayer... exclude) {
-        if (location == null || sound == null) return;
+        if (location == null || sound == null) {
+            return;
+        }
         GlowWorld world = (GlowWorld) location.getWorld();
         double radiusSquared = volume * volume * 256;
-        world.getRawPlayers().parallelStream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).filter(player -> !Arrays.asList(exclude).contains(player)).forEach(player -> player.playSound(location, sound, volume, pitch));
+        world.getRawPlayers().stream().filter(player ->
+            player.getLocation().distanceSquared(location) <= radiusSquared
+                && !Arrays.asList(exclude).contains(player))
+            .forEach(player -> player.playSound(location, sound, volume, pitch));
     }
 
     public static void playSoundPitchRange(Location location, Sound sound, float volume, float pitchBase, float pitchRange, boolean allowNegative, GlowPlayer... exclude) {
@@ -35,5 +40,25 @@ public class SoundUtil {
     public static float randomReal(float range) {
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         return (rand.nextFloat() - rand.nextFloat()) * range;
+    }
+
+    /**
+     * Convert a string to a SoundCategory. The comparison is done on the name and is not case-sensitive.
+     *
+     * @param category The string name of the category
+     * @return The matching SoundCategory, null if none.
+     */
+    public static SoundCategory buildSoundCategory(final String category) {
+        if (category == null) {
+            return null;
+        }
+
+        for (final SoundCategory soundCategory : SoundCategory.values()) {
+            if (category.equalsIgnoreCase(soundCategory.name())) {
+                return soundCategory;
+            }
+        }
+
+        return null;
     }
 }

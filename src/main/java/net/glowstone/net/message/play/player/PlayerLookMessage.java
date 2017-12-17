@@ -25,10 +25,10 @@ public final class PlayerLookMessage extends PlayerUpdateMessage {
     @Override
     public String toString() {
         return "PlayerLookMessage(" +
-                "yaw=" + yaw +
-                ", pitch=" + pitch +
-                ", onGround=" + isOnGround() +
-                ')';
+            "yaw=" + yaw +
+            ", pitch=" + pitch +
+            ", onGround=" + isOnGround() +
+            ')';
     }
 
 }

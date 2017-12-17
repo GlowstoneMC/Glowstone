@@ -1,27 +1,28 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.scheduler.PulseTask;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.bukkit.material.Button;
+import org.bukkit.material.Diode;
+import org.bukkit.material.Lever;
+import org.bukkit.material.Stairs;
+import org.bukkit.material.Step;
 
 /**
  * @author Sam
  */
 public class BlockRedstone extends BlockNeedsAttached {
-
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     public BlockRedstone() {
         setDrops(new ItemStack(Material.REDSTONE));
@@ -48,14 +49,16 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case WOOD_BUTTON:
                 case STONE_BUTTON:
                 case LEVER:
+                case OBSERVER:
                     connections.add(face);
                     break;
                 default:
-                    if (target.getType().isSolid() && !block.getRelative(BlockFace.UP).getType().isSolid()
-                            && target.getRelative(BlockFace.UP).getType() == Material.REDSTONE_WIRE) {
+                    if (target.getType().isSolid() && !block.getRelative(BlockFace.UP).getType()
+                        .isSolid()
+                        && target.getRelative(BlockFace.UP).getType() == Material.REDSTONE_WIRE) {
                         connections.add(face);
                     } else if (!target.getType().isSolid()
-                            && target.getRelative(BlockFace.DOWN).getType() == Material.REDSTONE_WIRE) {
+                        && target.getRelative(BlockFace.DOWN).getType() == Material.REDSTONE_WIRE) {
                         connections.add(face);
                     }
                     break;
@@ -106,12 +109,14 @@ public class BlockRedstone extends BlockNeedsAttached {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
@@ -161,8 +166,21 @@ public class BlockRedstone extends BlockNeedsAttached {
                         extraUpdate(me);
                     }
                     return;
+                case OBSERVER:
+                    boolean powered = BlockObserver.isPowered(target);
+                    BlockFace outputFace = BlockObserver.getFace(target).getOppositeFace();
+                    if (powered && target.getRelative(outputFace).getLocation()
+                        .equals(me.getLocation())) {
+                        if (me.getData() != 15) {
+                            me.setData((byte) 15);
+                            extraUpdate(me);
+                        }
+                        return;
+                    }
+                    break;
                 default:
-                    if (target.getType().isSolid() && target.getRelative(BlockFace.DOWN).getType() == Material.REDSTONE_TORCH_ON) {
+                    if (target.getType().isSolid() && target.getRelative(BlockFace.DOWN).getType()
+                        == Material.REDSTONE_TORCH_ON) {
                         if (me.getData() != 15) {
                             me.setData((byte) 15);
                             extraUpdate(me);
@@ -173,16 +191,18 @@ public class BlockRedstone extends BlockNeedsAttached {
                         for (BlockFace face2 : ADJACENT) {
                             GlowBlock target2 = target.getRelative(face2);
                             if (target2.getType() == Material.DIODE_BLOCK_ON
-                                    && ((Diode) target2.getState().getData()).getFacing() == target2.getFace(target)) {
+                                && ((Diode) target2.getState().getData()).getFacing() == target2
+                                .getFace(target)) {
                                 if (me.getData() != 15) {
                                     me.setData((byte) 15);
                                     extraUpdate(me);
                                 }
                                 return;
                             } else if (target2.getType() == Material.STONE_BUTTON
-                                    || target2.getType() == Material.WOOD_BUTTON) {
+                                || target2.getType() == Material.WOOD_BUTTON) {
                                 Button button2 = (Button) target2.getState().getData();
-                                if (button2.isPowered() && button2.getAttachedFace() == target2.getFace(target)) {
+                                if (button2.isPowered() && button2.getAttachedFace() == target2
+                                    .getFace(target)) {
                                     if (me.getData() != 15) {
                                         me.setData((byte) 15);
                                         extraUpdate(me);
@@ -191,7 +211,8 @@ public class BlockRedstone extends BlockNeedsAttached {
                                 }
                             } else if (target2.getType() == Material.LEVER) {
                                 Lever lever2 = (Lever) target2.getState().getData();
-                                if (lever2.isPowered() && lever2.getAttachedFace() == target2.getFace(target)) {
+                                if (lever2.isPowered() && lever2.getAttachedFace() == target2
+                                    .getFace(target)) {
                                     if (me.getData() != 15) {
                                         me.setData((byte) 15);
                                         extraUpdate(me);
@@ -245,10 +266,12 @@ public class BlockRedstone extends BlockNeedsAttached {
             if (target.getType().isSolid()) {
                 for (BlockFace face2 : ADJACENT) {
                     GlowBlock target2 = target.getRelative(face2);
-                    BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                    BlockType notifyType = itemTable.getBlock(target2.getType());
                     if (notifyType != null) {
                         if (target2.getFace(block) == null) {
-                            notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                            notifyType
+                                .onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(),
+                                    block.getData(), block.getType(), block.getData());
                         }
                         notifyType.onRedstoneUpdate(target2);
                     }
@@ -259,9 +282,9 @@ public class BlockRedstone extends BlockNeedsAttached {
 
     @Override
     public void receivePulse(GlowBlock me) {
-        BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(), me.getTypeId(), me.getData());
-        for (GlowPlayer p : me.getWorld().getRawPlayers()) {
-            p.sendBlockChange(bcmsg);
-        }
+        GlowChunk.Key key = GlowChunk.Key.of(me.getX() >> 4, me.getZ() >> 4);
+        BlockChangeMessage bcmsg = new BlockChangeMessage(me.getX(), me.getY(), me.getZ(),
+            me.getTypeId(), me.getData());
+        me.getWorld().broadcastBlockChangeInRange(key, bcmsg);
     }
 }
