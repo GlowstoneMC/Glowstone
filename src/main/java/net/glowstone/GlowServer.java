@@ -1687,8 +1687,12 @@ public final class GlowServer implements Server {
     @Deprecated
     public OfflinePlayer getOfflinePlayer(String name) {
         try {
-            // probably blocking, limited to five seconds
-            return getOfflinePlayerAsync(name).get(5, TimeUnit.SECONDS);
+            // probably blocking, timeout depending on config setting
+            if (config.getInt(Key.PROFILE_LOOKUP_TIMEOUT) <= 0) {
+                return getOfflinePlayerAsync(name).get();
+            } else {
+                return getOfflinePlayerAsync(name).get(config.getInt(Key.PROFILE_LOOKUP_TIMEOUT), TimeUnit.SECONDS);
+            }
         } catch (InterruptedException | ExecutionException ex) {
             GlowServer.logger.log(Level.SEVERE, "UUID lookup interrupted: ", ex);
         } catch (TimeoutException ex) {
@@ -1701,7 +1705,12 @@ public final class GlowServer implements Server {
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
         try {
-            return getOfflinePlayerAsync(uuid).get(5, TimeUnit.SECONDS); // todo: should we timeout? If yes, how long?
+            // probably blocking, timeout depending on config setting
+            if (config.getInt(Key.PROFILE_LOOKUP_TIMEOUT) <= 0) {
+                return getOfflinePlayerAsync(uuid).get();
+            } else {
+                return getOfflinePlayerAsync(uuid).get(config.getInt(Key.PROFILE_LOOKUP_TIMEOUT), TimeUnit.SECONDS);
+            }
         } catch (InterruptedException | ExecutionException ex) {
             GlowServer.logger.log(Level.SEVERE, "Profile lookup interrupted: ", ex);
         } catch (TimeoutException ex) {
