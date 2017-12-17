@@ -9,9 +9,6 @@ import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * A bow. This class isn't thread-safe, since two players can't fire the same bow at the same time.
- */
 public class ItemBow extends ItemTimedUsage {
     private Class<? extends Projectile> currentArrowType;
 
@@ -35,7 +32,8 @@ public class ItemBow extends ItemTimedUsage {
             }
         }
         if (arrow != null) {
-            if (!item.containsEnchantment(Enchantment.ARROW_INFINITE)) {
+            if (currentArrowType != Arrow.class
+                    || !item.containsEnchantment(Enchantment.ARROW_INFINITE)) {
                 arrow.setAmount(arrow.getAmount() - 1);
                 // TODO: make atomic, delete if zero
             }
