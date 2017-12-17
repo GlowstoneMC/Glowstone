@@ -80,7 +80,7 @@ public class CloneCommand extends VanillaCommand {
                 "Clones a section of the world.", "/clone <x1> <y1> <z1>  <x2> <y2> <z2>  <x> <y> <z> [maskMode] [cloneMode] [tileName] [tileData]",
                 Collections.emptyList()
         );
-        setPermission("minecraft.command.seed");
+        setPermission("minecraft.command.clone");
     }
 
     @Override
@@ -216,7 +216,11 @@ public class CloneCommand extends VanillaCommand {
             }
         }
 
-        sender.sendMessage("Cloned " + blocksCloned + " blocks.");
+        if (blocksCloned == 0) {
+            sender.sendMessage(ChatColor.RED + "No blocks cloned.");
+        } else {
+            sender.sendMessage("Cloned " + blocksCloned + " blocks.");
+        }
         return true;
     }
 
