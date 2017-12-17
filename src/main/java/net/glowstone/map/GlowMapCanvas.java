@@ -21,8 +21,8 @@ public final class GlowMapCanvas implements MapCanvas {
     private byte[] base;
 
     /**
-     * Creates a new GlowMapCanvas for the given {@link MapView} and renders the contents seen by
-     * the given player according to all the MapView's renderers.
+     * Creates a new GlowMapCanvas for the given {@link MapView} and applies all updates seen by the
+     * given player.
      *
      * @param mapView The {@link MapView} to associate with this canvas and render
      * @param player The player to pass to {@link MapRenderer#render(MapView, MapCanvas, Player)}
@@ -30,15 +30,24 @@ public final class GlowMapCanvas implements MapCanvas {
      */
     public static GlowMapCanvas createAndRender(MapView mapView, Player player) {
         GlowMapCanvas out = new GlowMapCanvas(mapView);
-        for (MapRenderer renderer : mapView.getRenderers()) {
-            renderer.initialize(mapView);
-            renderer.render(mapView, out, player);
-        }
+        out.update(player);
         return out;
     }
 
     protected GlowMapCanvas(MapView mapView) {
         this.mapView = mapView;
+    }
+
+    /**
+     * Applies all updates seen by the given player according to the {@link MapView}'s renderers.
+     *
+     * @param player The player to pass to {@link MapRenderer#render(MapView, MapCanvas, Player)}
+     */
+    public void update(Player player) {
+        for (MapRenderer renderer : mapView.getRenderers()) {
+            renderer.initialize(mapView);
+            renderer.render(mapView, this, player);
+        }
     }
 
     @Override
