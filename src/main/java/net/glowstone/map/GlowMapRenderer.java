@@ -19,7 +19,7 @@ import org.bukkit.map.MapView;
  */
 public final class GlowMapRenderer extends MapRenderer {
 
-    private static final int MAP_SIGHT_DISTANCE_SQUARED = 64*64;
+    private static final int MAP_SIGHT_DISTANCE_SQUARED = 64 * 64;
     private final GlowMapView map;
 
     public GlowMapRenderer(GlowMapView map) {
