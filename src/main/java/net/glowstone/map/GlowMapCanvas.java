@@ -1,9 +1,13 @@
 package net.glowstone.map;
 
 import java.awt.Image;
+import net.glowstone.net.message.play.game.MapDataMessage.Section;
+import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapFont;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 
 /**
  * Represents a canvas for drawing to a map. Each canvas is associated with a specific {@link org.bukkit.map.MapRenderer} and represents that renderer's layer on the map.
@@ -12,16 +16,25 @@ public final class GlowMapCanvas implements MapCanvas {
 
     public static final int MAP_SIZE = 128;
     private final byte[] buffer = new byte[MAP_SIZE * MAP_SIZE];
-    private final GlowMapView mapView;
+    private final MapView mapView;
     private MapCursorCollection cursors = new MapCursorCollection();
     private byte[] base;
 
-    protected GlowMapCanvas(GlowMapView mapView) {
+    public static GlowMapCanvas createAndRender(MapView mapView, Player player) {
+        GlowMapCanvas out = new GlowMapCanvas(mapView);
+        for (MapRenderer renderer : mapView.getRenderers()) {
+            renderer.initialize(mapView);
+            renderer.render(mapView, out, player);
+        }
+        return out;
+    }
+
+    protected GlowMapCanvas(MapView mapView) {
         this.mapView = mapView;
     }
 
     @Override
-    public GlowMapView getMapView() {
+    public MapView getMapView() {
         return mapView;
     }
 
@@ -80,4 +93,7 @@ public final class GlowMapCanvas implements MapCanvas {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public Section toSection() {
+        return new Section(MAP_SIZE, MAP_SIZE, mapView.getCenterX(), mapView.getCenterZ(), buffer.clone());
+    }
 }

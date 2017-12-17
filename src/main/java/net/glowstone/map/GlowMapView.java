@@ -21,9 +21,9 @@ public final class GlowMapView implements MapView {
     private final short id;
     private Scale scale;
     private int x, z;
-    private GlowWorld world;
+    private World world;
 
-    protected GlowMapView(GlowWorld world, short id) {
+    protected GlowMapView(World world, short id) {
         this.world = world;
         this.id = id;
         x = world.getSpawnLocation().getBlockX();
@@ -76,13 +76,13 @@ public final class GlowMapView implements MapView {
     }
 
     @Override
-    public GlowWorld getWorld() {
+    public World getWorld() {
         return world;
     }
 
     @Override
     public void setWorld(World world) {
-        this.world = (GlowWorld) world;
+        this.world = world;
     }
 
     @Override

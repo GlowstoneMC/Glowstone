@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import javafx.scene.effect.Glow;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,6 +62,8 @@ import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.map.GlowMapCanvas;
+import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
@@ -73,6 +76,8 @@ import net.glowstone.net.message.play.game.ChatMessage;
 import net.glowstone.net.message.play.game.ExperienceMessage;
 import net.glowstone.net.message.play.game.HealthMessage;
 import net.glowstone.net.message.play.game.JoinGameMessage;
+import net.glowstone.net.message.play.game.MapDataMessage;
+import net.glowstone.net.message.play.game.MapDataMessage.Section;
 import net.glowstone.net.message.play.game.MultiBlockChangeMessage;
 import net.glowstone.net.message.play.game.NamedSoundEffectMessage;
 import net.glowstone.net.message.play.game.PlayEffectMessage;
@@ -173,6 +178,7 @@ import org.bukkit.inventory.MainHand;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
@@ -2404,7 +2410,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendMap(MapView map) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        GlowMapCanvas mapCanvas = GlowMapCanvas.createAndRender(map, this);
+        session.send(new MapDataMessage(map.getId(), map.getScale().ordinal(), Collections.emptyList(),
+            mapCanvas.toSection()));
     }
 
     @Override
