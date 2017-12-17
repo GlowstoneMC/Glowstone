@@ -1717,6 +1717,11 @@ public final class GlowServer implements Server {
      * @return a {@link GlowOfflinePlayer} future for the given name.
      */
     public CompletableFuture<OfflinePlayer> getOfflinePlayerAsync(String name) {
+        Player onlinePlayer = getPlayerExact(name);
+        if (onlinePlayer != null) {
+            return CompletableFuture.completedFuture(onlinePlayer);
+        }
+
         return PlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
             if (profile == null) {
                 return getOfflinePlayerFallback(name);

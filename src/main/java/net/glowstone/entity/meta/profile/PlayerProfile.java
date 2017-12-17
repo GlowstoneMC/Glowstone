@@ -11,11 +11,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import lombok.Data;
 import net.glowstone.GlowServer;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -71,11 +69,6 @@ public class PlayerProfile {
     public static CompletableFuture<PlayerProfile> getProfile(String name) {
         if (name == null || name.length() > MAX_USERNAME_LENGTH || name.isEmpty()) {
             return CompletableFuture.completedFuture(null);
-        }
-
-        Player player = Bukkit.getServer().getPlayerExact(name);
-        if (player != null) {
-            return CompletableFuture.completedFuture(((GlowPlayer) player).getProfile());
         }
 
         if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
