@@ -62,6 +62,7 @@ public final class GlowMapRenderer extends MapRenderer {
                 ((worldX * worldX * 0x4c1906) + (worldX * 0x5ac0db) + ((worldZ * worldZ) * 0x4307a7)
                 + (worldZ * 0x5f24f))) % 4);
     }
+    
     private static byte colorFor(Block block, int worldX, int worldZ) {
         // TODO: Some blocks vary in map color based on block states (e.g. wood species)
         ValueCollection materialValues;
