@@ -806,17 +806,23 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // update or remove entities
         List<Integer> destroyIds = new LinkedList<>();
-        for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
-            GlowEntity entity = it.next();
+        List<GlowEntity> destroyEntities = new LinkedList<>();
+        // Operate on a copy of the list to avoid ConcurrentModificationException
+        // if player spawns during this process
+        List<GlowEntity> knownEntitiesCopy = new LinkedList<>(knownEntities);
+        for (GlowEntity entity : knownEntitiesCopy) {
             if (!isWithinDistance(entity) || entity.isRemoved()) {
                 destroyIds.add(entity.getEntityId());
-                it.remove();
+                destroyEntities.add(entity);
             } else {
                 entity.createUpdateMessage(session).forEach(session::send);
             }
         }
         if (!destroyIds.isEmpty()) {
             session.send(new DestroyEntitiesMessage(destroyIds));
+            for (Entity entity : destroyEntities) {
+                knownEntitiesCopy.remove(entity);
+            }
         }
 
         // add entities
