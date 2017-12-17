@@ -1769,12 +1769,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 return false;
             }
             location = event.getTo();
+            closeInventory();
         }
 
         if (location.getWorld() != world) {
             spawnAt(location);
         } else {
-
             world.getEntityManager().move(this, location);
             //Position.copyLocation(location, this.previousLocation);
             //Position.copyLocation(location, this.location);
