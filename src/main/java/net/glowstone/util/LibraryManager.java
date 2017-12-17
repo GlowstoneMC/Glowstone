@@ -87,7 +87,7 @@ public final class LibraryManager {
             if (!(sysLoader instanceof URLClassLoader)) {
                 nonUrlClassLoader = true;
                 GlowServer.logger.severe("This JVM isn't fully supported. Please use Oracle or"
-                        + " OpenJDK 8. (System class loader must be a URLClassLoader.)");
+                        + " OpenJDK 8, not 9. (System class loader must be a URLClassLoader.)");
                 return;
             }
             // check if we already have it
