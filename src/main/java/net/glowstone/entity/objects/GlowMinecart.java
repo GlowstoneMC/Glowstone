@@ -1,6 +1,8 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
@@ -11,16 +13,19 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
-import org.bukkit.entity.minecart.*;
+import org.bukkit.entity.minecart.CommandMinecart;
+import org.bukkit.entity.minecart.ExplosiveMinecart;
+import org.bukkit.entity.minecart.HopperMinecart;
+import org.bukkit.entity.minecart.PoweredMinecart;
+import org.bukkit.entity.minecart.RideableMinecart;
+import org.bukkit.entity.minecart.SpawnerMinecart;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
-
-import java.util.Collections;
-import java.util.List;
 
 public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
@@ -41,7 +46,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
 
-        return Collections.singletonList(new SpawnObjectMessage(id, getUniqueId(), 10, x, y, z, pitch, yaw, type.ordinal()));
+        return Collections.singletonList(
+            new SpawnObjectMessage(id, getUniqueId(), 10, x, y, z, pitch, yaw, type.ordinal()));
     }
 
     @Override
@@ -52,7 +58,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
                 InventoryHolder inv = (InventoryHolder) this;
                 if (inv.getInventory() != null) {
                     for (ItemStack drop : inv.getInventory().getContents()) {
-                        if (drop == null || drop.getType() == Material.AIR || drop.getAmount() < 1) {
+                        if (drop == null || drop.getType() == Material.AIR
+                            || drop.getAmount() < 1) {
                             continue;
                         }
                         GlowItem item = world.dropItemNaturally(getLocation(), drop);
@@ -67,13 +74,13 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     @Override
-    public void setDamage(double v) {
-
+    public double getDamage() {
+        return 0;
     }
 
     @Override
-    public double getDamage() {
-        return 0;
+    public void setDamage(double v) {
+
     }
 
     @Override
@@ -117,17 +124,12 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     @Override
-    public void setDisplayBlock(MaterialData materialData) {
-
-    }
-
-    @Override
     public MaterialData getDisplayBlock() {
         return null;
     }
 
     @Override
-    public void setDisplayBlockOffset(int i) {
+    public void setDisplayBlock(MaterialData materialData) {
 
     }
 
@@ -137,8 +139,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
+    public void setDisplayBlockOffset(int i) {
+
     }
 
     public MinecartType getMinecartType() {
@@ -158,7 +160,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         private final EntityType type;
         private final Class<? extends Minecart> entityClass;
 
-        MinecartType(Class<? extends GlowMinecart> clazz, EntityType type, Class<? extends Minecart> entityClass) {
+        MinecartType(Class<? extends GlowMinecart> clazz, EntityType type,
+            Class<? extends Minecart> entityClass) {
             this.clazz = clazz;
             this.type = type;
             this.entityClass = entityClass;
@@ -178,6 +181,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     public static class Rideable extends GlowMinecart implements RideableMinecart {
+
         public Rideable(Location location) {
             super(location, MinecartType.RIDEABLE);
         }
@@ -206,7 +210,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Storage(Location location) {
             super(location, MinecartType.CHEST);
-            inventory = new GlowInventory(this, InventoryType.CHEST, InventoryType.CHEST.getDefaultSize(), "Minecart with Chest");
+            inventory = new GlowInventory(this, InventoryType.CHEST,
+                InventoryType.CHEST.getDefaultSize(), "Minecart with Chest");
         }
 
         @Override
@@ -229,12 +234,14 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     public static class Powered extends GlowMinecart implements PoweredMinecart {
+
         public Powered(Location location) {
             super(location, MinecartType.FURNACE);
         }
     }
 
     public static class Explosive extends GlowMinecart implements ExplosiveMinecart {
+
         public Explosive(Location location) {
             super(location, MinecartType.TNT);
         }
@@ -242,12 +249,13 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     public static class Hopper extends GlowMinecart implements HopperMinecart {
 
-        private boolean enabled = true;
         private final Inventory inventory;
+        private boolean enabled = true;
 
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
-            inventory = new GlowInventory(this, InventoryType.HOPPER, InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
+            inventory = new GlowInventory(this, InventoryType.HOPPER,
+                InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
         }
 
         @Override
@@ -280,6 +288,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     }
 
     public static class Spawner extends GlowMinecart implements SpawnerMinecart {
+
         public Spawner(Location location) {
             super(location, MinecartType.SPAWNER);
         }

@@ -1,6 +1,8 @@
 package net.glowstone.command.minecraft;
 
 import com.google.common.collect.AbstractIterator;
+import java.util.Collections;
+import java.util.Iterator;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
@@ -14,8 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.Iterator;
 
 public class CloneCommand extends VanillaCommand {
     public enum MaskMode {
@@ -142,10 +142,11 @@ public class CloneCommand extends VanillaCommand {
                 if (args.length >= 12) {
                     Material blockType = ItemIds.getItem(args[11]);
                     if (args.length >= 13) {
-                        Byte data = null;
+                        Byte data;
                         try {
                             data = Byte.parseByte(args[12]);
                         } catch (NumberFormatException ignored) {
+                            data = null;
                         }
                         if (data == null || 0 > data || data > 15) {
                             sender.sendMessage(ChatColor.RED + "Filtered block data not a number between 0 and 15, inclusive.");

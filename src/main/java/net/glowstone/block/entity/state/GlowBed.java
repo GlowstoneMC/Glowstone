@@ -7,6 +7,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.block.Bed;
 
 public class GlowBed extends GlowBlockState implements Bed {
+
     private DyeColor color;
 
     public GlowBed(GlowBlock block) {

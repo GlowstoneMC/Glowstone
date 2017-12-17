@@ -20,6 +20,7 @@ import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
 public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMoveMessage> {
+
     @Override
     public void handle(GlowSession session, VehicleMoveMessage message) {
         GlowPlayer player = session.getPlayer();
@@ -35,7 +36,8 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
         message.update(newLocation);
 
         // don't let players reach an illegal position
-        if (Math.abs(newLocation.getBlockX()) > 32000000 || Math.abs(newLocation.getBlockZ()) > 32000000) {
+        if (Math.abs(newLocation.getBlockX()) > 32000000
+            || Math.abs(newLocation.getBlockZ()) > 32000000) {
             session.getPlayer().kickPlayer("Illegal position");
             return;
         }
@@ -62,8 +64,10 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
         }
 
         // call move event if movement actually occurred and there are handlers registered
-        if (!oldLocation.equals(newLocation) && VehicleMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            EventFactory.callEvent(new VehicleMoveEvent((Vehicle) vehicle, oldLocation, newLocation.clone()));
+        if (!oldLocation.equals(newLocation)
+            && VehicleMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            EventFactory.callEvent(
+                new VehicleMoveEvent((Vehicle) vehicle, oldLocation, newLocation.clone()));
         }
 
         // simply update location
@@ -75,7 +79,9 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
         delta.setX(Math.abs(delta.getX()));
         delta.setY(Math.abs(delta.getY()));
         delta.setZ(Math.abs(delta.getZ()));
-        int flatDistance = (int) Math.round(Math.sqrt(NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ())) * 100.0);
+        int flatDistance = (int) Math.round(Math.sqrt(
+            NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ()))
+            * 100.0);
 
         if (vehicle instanceof Boat) {
             player.incrementStatistic(Statistic.BOAT_ONE_CM, flatDistance);

@@ -6,6 +6,33 @@ import com.google.common.collect.Iterators;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.KeyPair;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
@@ -14,22 +41,71 @@ import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
-import net.glowstone.client.GlowClient;
 import net.glowstone.command.glowstone.ColorCommand;
 import net.glowstone.command.glowstone.GlowstoneCommand;
-import net.glowstone.command.minecraft.*;
+import net.glowstone.command.minecraft.BanCommand;
+import net.glowstone.command.minecraft.BanIpCommand;
+import net.glowstone.command.minecraft.BanListCommand;
+import net.glowstone.command.minecraft.ClearCommand;
+import net.glowstone.command.minecraft.CloneCommand;
+import net.glowstone.command.minecraft.DefaultGameModeCommand;
+import net.glowstone.command.minecraft.DeopCommand;
+import net.glowstone.command.minecraft.DifficultyCommand;
+import net.glowstone.command.minecraft.EffectCommand;
+import net.glowstone.command.minecraft.EnchantCommand;
+import net.glowstone.command.minecraft.FunctionCommand;
+import net.glowstone.command.minecraft.GameModeCommand;
+import net.glowstone.command.minecraft.GameRuleCommand;
+import net.glowstone.command.minecraft.GiveCommand;
+import net.glowstone.command.minecraft.KickCommand;
+import net.glowstone.command.minecraft.KillCommand;
+import net.glowstone.command.minecraft.ListCommand;
+import net.glowstone.command.minecraft.MeCommand;
+import net.glowstone.command.minecraft.OpCommand;
+import net.glowstone.command.minecraft.PardonCommand;
+import net.glowstone.command.minecraft.PardonIpCommand;
+import net.glowstone.command.minecraft.PlaySoundCommand;
+import net.glowstone.command.minecraft.SaveAllCommand;
+import net.glowstone.command.minecraft.SaveToggleCommand;
+import net.glowstone.command.minecraft.SayCommand;
+import net.glowstone.command.minecraft.SeedCommand;
+import net.glowstone.command.minecraft.SetBlockCommand;
+import net.glowstone.command.minecraft.SetIdleTimeoutCommand;
+import net.glowstone.command.minecraft.SetWorldSpawnCommand;
+import net.glowstone.command.minecraft.SpawnPointCommand;
+import net.glowstone.command.minecraft.StopCommand;
+import net.glowstone.command.minecraft.SummonCommand;
+import net.glowstone.command.minecraft.TeleportCommand;
+import net.glowstone.command.minecraft.TellCommand;
+import net.glowstone.command.minecraft.TellrawCommand;
+import net.glowstone.command.minecraft.TestForBlockCommand;
+import net.glowstone.command.minecraft.TestForCommand;
+import net.glowstone.command.minecraft.TimeCommand;
+import net.glowstone.command.minecraft.TitleCommand;
+import net.glowstone.command.minecraft.ToggleDownfallCommand;
+import net.glowstone.command.minecraft.TpCommand;
+import net.glowstone.command.minecraft.WeatherCommand;
+import net.glowstone.command.minecraft.WhitelistCommand;
+import net.glowstone.command.minecraft.WorldBorderCommand;
+import net.glowstone.command.minecraft.XpCommand;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.generator.*;
+import net.glowstone.generator.GlowChunkData;
+import net.glowstone.generator.NetherGenerator;
+import net.glowstone.generator.OverworldGenerator;
+import net.glowstone.generator.SuperflatGenerator;
+import net.glowstone.generator.TheEndGenerator;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.io.ScoreboardIoService;
+import net.glowstone.io.WorldStorageProvider;
+import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.SessionRegistry;
@@ -39,7 +115,14 @@ import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.scoreboard.GlowScoreboardManager;
-import net.glowstone.util.*;
+import net.glowstone.util.GlowHelpMap;
+import net.glowstone.util.GlowServerIcon;
+import net.glowstone.util.GlowUnsafeValues;
+import net.glowstone.util.LibraryManager;
+import net.glowstone.util.OpenCompute;
+import net.glowstone.util.SecurityUtils;
+import net.glowstone.util.ShutdownMonitorThread;
+import net.glowstone.util.TextMessage;
 import net.glowstone.util.bans.GlowBanList;
 import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.config.ServerConfig;
@@ -47,16 +130,34 @@ import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.*;
+import org.bukkit.BanEntry;
+import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
+import org.bukkit.UnsafeValues;
 import org.bukkit.Warning.WarningState;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandException;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -66,29 +167,26 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.help.HelpMap;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFactory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.plugin.*;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginLoadOrder;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.ServicesManager;
+import org.bukkit.plugin.SimplePluginManager;
+import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.security.KeyPair;
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * The core class of the Glowstone server.
@@ -186,14 +284,9 @@ public final class GlowServer implements Server {
      */
     private final UnsafeValues unsafeAccess = new GlowUnsafeValues();
     /**
-     * A RSA key pair used for encryption and authentication
+     * A RSA key pair used for encryption and authentication.
      */
     private final KeyPair keyPair = SecurityUtils.generateKeyPair();
-    /**
-     * The network server used for network communication
-     */
-    @Getter
-    private GameServer networkServer;
     /**
      * A set of all online players.
      */
@@ -203,34 +296,46 @@ public final class GlowServer implements Server {
      */
     private final Set<GlowPlayer> onlineView = Collections.unmodifiableSet(onlinePlayers);
     /**
-     * The plugin type detector of thi server.
+     * The {@link GlowAdvancement}s of this server.
+     */
+    private final Map<NamespacedKey, Advancement> advancements;
+    /**
+     * Default root permissions.
+     */
+    public Permission permissionRoot;
+    /**
+     * Default root command permissions.
+     */
+    public Permission permissionRootCommand;
+    /**
+     * The network server used for network communication.
+     */
+    @Getter
+    private GameServer networkServer;
+    /**
+     * The plugin type detector of this server.
      */
     private GlowPluginTypeDetector pluginTypeDetector;
     /**
-     * The server's default game mode
+     * The server's default game mode.
      */
-    private GameMode defaultGameMode = GameMode.CREATIVE;
-
+    private GameMode defaultGameMode = GameMode.SURVIVAL;
     /**
      * The setting for verbose deprecation warnings.
      */
     private WarningState warnState = WarningState.DEFAULT;
-
     /**
-     * Whether the server is shutting down
+     * Whether the server is shutting down.
      */
     private boolean isShuttingDown;
-
     /**
      * Whether the whitelist is in effect.
      */
     private boolean whitelistEnabled;
-
     /**
      * The size of the area to keep protected around the spawn point.
      */
     private int spawnRadius;
-
     /**
      * The ticks until a player who has not played the game has been kicked, or 0.
      */
@@ -264,13 +369,21 @@ public final class GlowServer implements Server {
      */
     private BossBarManager bossBarManager;
     /**
-     * Default root permissions
+     * Whether OpenCL is to be used by the server on this run.
      */
-    public Permission permissionRoot, permissionCommand;
+    private boolean isGraphicsComputeAvailable = true;
     /**
-     * The {@link GlowAdvancement}s of this server.
+     * Additional Spigot APIs for the server.
      */
-    private final Map<NamespacedKey, Advancement> advancements;
+    private Spigot spigot = new Spigot() {
+        public org.bukkit.configuration.file.YamlConfiguration getConfig() {
+            return config.getConfig();
+        }
+    };
+    /**
+     * The storage provider for the world.
+     */
+    private WorldStorageProvider storageProvider = null;
 
     /**
      * Creates a new server.
@@ -284,8 +397,7 @@ public final class GlowServer implements Server {
         // test advancement
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
         advancement.addCriterion("minecraft:test/criterion");
-        advancement.setDisplay(new GlowAdvancementDisplay(new TextMessage("Advancements in Glowstone"),
-                new TextMessage("=)"), new ItemStack(Material.GLOWSTONE), GlowAdvancementDisplay.FrameType.GOAL, -10F, 0));
+        advancement.setDisplay(new GlowAdvancementDisplay(new TextMessage("Advancements in Glowstone"), new TextMessage("=)"), new ItemStack(Material.GLOWSTONE), GlowAdvancementDisplay.FrameType.GOAL, -10F, 0));
         addAdvancement(advancement);
 
         this.config = config;
@@ -300,13 +412,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * The client instance backed by this server.
-     */
-    public static GlowClient client;
-
-    /**
-     * Creates a new server on TCP port 25565 and starts listening for
-     * connections.
+     * Creates a new server on TCP port 25565 and starts listening for connections.
      *
      * @param args The command-line arguments.
      */
@@ -448,25 +554,14 @@ public final class GlowServer implements Server {
         return new ServerConfig(configDir, configFile, parameters);
     }
 
+    /**
+     * Starts the server starting sequence (starting, binding to port, etc.)
+     */
     public void run() {
         start();
         bind();
         logger.info("Ready for connections.");
-
-        if (doMetrics()) {
-            new Metrics(this, config.getString(Key.METRICS_UUID), false);
-        }
-
-        if (config.getBoolean(Key.RUN_CLIENT)) {
-            client = new GlowClient(this);
-            client.run();
-        }
     }
-
-    /**
-     * Whether OpenCL is to be used by the server on this run.
-     */
-    private boolean isCLApplicable = true;
 
     /**
      * Starts this server.
@@ -486,10 +581,10 @@ public final class GlowServer implements Server {
             logger.warning("The server is running in offline mode! Only do this if you know what you're doing.");
         }
 
-        int openCLMajor = 1;
-        int openCLMinor = 2;
+        int openClMajor = 1;
+        int openClMinor = 2;
 
-        if (doesUseGPGPU()) {
+        if (doesUseGraphicsCompute()) {
             int maxGpuFlops = 0;
             int maxIntelFlops = 0;
             int maxCpuFlops = 0;
@@ -498,7 +593,7 @@ public final class GlowServer implements Server {
             CLPlatform bestCpuPlatform = null;
             // gets the max flops device across platforms on the computer
             for (CLPlatform platform : CLPlatform.listCLPlatforms()) {
-                if (platform.isAtLeast(openCLMajor, openCLMinor) && platform.isExtensionAvailable("cl_khr_fp64")) {
+                if (platform.isAtLeast(openClMajor, openClMinor) && platform.isExtensionAvailable("cl_khr_fp64")) {
                     for (CLDevice device : platform.listCLDevices()) {
                         if (device.getType() == CLDevice.Type.GPU) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
@@ -547,7 +642,7 @@ public final class GlowServer implements Server {
                 }
             }
 
-            if (config.getBoolean(Key.GPGPU_ANY_DEVICE)) {
+            if (config.getBoolean(Key.GRAPHICS_COMPUTE_ANY_DEVICE)) {
                 if (maxGpuFlops - maxIntelFlops < 0 && maxCpuFlops - maxIntelFlops <= 0) {
                     bestPlatform = bestIntelPlatform;
                 } else if (maxGpuFlops - maxCpuFlops < 0 && maxIntelFlops - maxCpuFlops < 0) {
@@ -566,12 +661,12 @@ public final class GlowServer implements Server {
             }
 
             if (bestPlatform == null) {
-                isCLApplicable = false;
+                isGraphicsComputeAvailable = false;
                 logger.info("Your system does not meet the OpenCL requirements for Glowstone. See if driver updates are available.");
-                logger.info("Required version: " + openCLMajor + '.' + openCLMinor);
+                logger.info("Required version: " + openClMajor + '.' + openClMinor);
                 logger.info("Required extensions: [ cl_khr_fp64 ]");
             } else {
-                OpenCL.initContext(bestPlatform);
+                OpenCompute.initContext(bestPlatform);
             }
         }
 
@@ -614,6 +709,10 @@ public final class GlowServer implements Server {
             } catch (NumberFormatException ex) {
                 seed = seedString.hashCode();
             }
+        }
+
+        if (storageProvider == null) {
+            storageProvider = new AnvilWorldStorageProvider(new File(getWorldContainer(), name));
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
@@ -703,14 +802,6 @@ public final class GlowServer implements Server {
             logger.log(Level.SEVERE, "Bind interrupted! ", e);
             System.exit(1);
         }
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
     }
 
     /**
@@ -862,6 +953,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new EnchantCommand());
         commandMap.register("minecraft", new TestForCommand());
         commandMap.register("minecraft", new TestForBlockCommand());
+        commandMap.register("minecraft", new SetBlockCommand());
         commandMap.register("minecraft", new CloneCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
@@ -912,28 +1004,33 @@ public final class GlowServer implements Server {
             }
         }
 
-        if (!pluginTypeDetector.canaryPlugins.isEmpty() ||
-                !pluginTypeDetector.forgefPlugins.isEmpty() ||
-                !pluginTypeDetector.forgenPlugins.isEmpty() ||
-                !pluginTypeDetector.unrecognizedPlugins.isEmpty()) {
+        if (!pluginTypeDetector.canaryPlugins.isEmpty() || !pluginTypeDetector.forgefPlugins.isEmpty() || !pluginTypeDetector.forgenPlugins.isEmpty() || !pluginTypeDetector.unrecognizedPlugins.isEmpty()) {
             logger.log(Level.WARNING, "Unsupported plugin types found, will be ignored:");
 
-            for (File file : pluginTypeDetector.canaryPlugins)
+            for (File file : pluginTypeDetector.canaryPlugins) {
                 logger.log(Level.WARNING, "Canary plugin not supported: " + file.getPath());
+            }
 
-            for (File file : pluginTypeDetector.forgefPlugins)
+            for (File file : pluginTypeDetector.forgefPlugins) {
                 logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+            }
 
-            for (File file : pluginTypeDetector.forgenPlugins)
+            for (File file : pluginTypeDetector.forgenPlugins) {
                 logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+            }
 
-            for (File file : pluginTypeDetector.unrecognizedPlugins)
+            for (File file : pluginTypeDetector.unrecognizedPlugins) {
                 logger.log(Level.WARNING, "Unrecognized plugin not supported: " + file.getPath());
+            }
         }
 
     }
 
-    // API for Bukkit2Sponge
+    /**
+     * A list of detected files that are Sponge plugins.
+     *
+     * @return a list of {@link File Files} that are Sponge plugins.
+     */
     public List<File> getSpongePlugins() {
         return pluginTypeDetector.spongePlugins;
     }
@@ -976,9 +1073,9 @@ public final class GlowServer implements Server {
             DefaultPermissions.registerCorePermissions();
             // Default permissions
             this.permissionRoot = DefaultPermissions.registerPermission("minecraft", "Gives the user the ability to use all Minecraft utilities and commands");
-            this.permissionCommand = DefaultPermissions.registerPermission("minecraft.command", "Gives the user the ability to use all Minecraft commands", permissionRoot);
-            DefaultPermissions.registerPermission("minecraft.command.tell", "Allows the user to send a private message", PermissionDefault.TRUE, permissionCommand);
-            permissionCommand.recalculatePermissibles();
+            this.permissionRootCommand = DefaultPermissions.registerPermission("minecraft.command", "Gives the user the ability to use all Minecraft commands", permissionRoot);
+            DefaultPermissions.registerPermission("minecraft.command.tell", "Allows the user to send a private message", PermissionDefault.TRUE, permissionRootCommand);
+            permissionRootCommand.recalculatePermissibles();
             permissionRoot.recalculatePermissibles();
             helpMap.initializeCommands();
             helpMap.amendTopics(config.getConfigFile(Key.HELP_FILE));
@@ -1003,7 +1100,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Reloads the server, refreshing settings and plugin information
+     * Reloads the server, refreshing settings and plugin information.
      */
     @Override
     public void reload() {
@@ -1029,7 +1126,7 @@ public final class GlowServer implements Server {
 
     @Override
     public void reloadData() {
-
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -1059,14 +1156,38 @@ public final class GlowServer implements Server {
         return Iterators.cycle(advancements.values());
     }
 
+    /**
+     * Registers an advancement to the advancement registry.
+     *
+     * @param advancement the advancement to add.
+     */
     public void addAdvancement(Advancement advancement) {
         advancements.put(advancement.getKey(), advancement);
     }
 
+    /**
+     * Creates an {@link AdvancementsMessage} containing a list of advancements the server has, along with some extra actions.
+     *
+     * <p>This does not affect the server's advancement registry.
+     *
+     * @param clear  whether to clear the advancements on the player's perspective.
+     * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove from the player's perspective.
+     * @return a resulting {@link AdvancementsMessage} packet
+     */
     public AdvancementsMessage createAdvancementsMessage(boolean clear, List<NamespacedKey> remove, Player player) {
         return createAdvancementsMessage(advancements, clear, remove, player);
     }
 
+    /**
+     * Creates an {@link AdvancementsMessage} containing a given list of advancements, along with some extra actions.
+     *
+     * <p>This does not affect the server's advancement registry.
+     *
+     * @param advancements the advancements to add to the player's perspective.
+     * @param clear        whether to clear the advancements on the player's perspective.
+     * @param remove       a list of advancement {@link NamespacedKey NamespacedKeys} to remove from the player's perspective.
+     * @return a resulting {@link AdvancementsMessage} packet
+     */
     public AdvancementsMessage createAdvancementsMessage(Map<NamespacedKey, Advancement> advancements, boolean clear, List<NamespacedKey> remove, Player player) {
         return new AdvancementsMessage(clear, advancements, remove);
     }
@@ -1115,7 +1236,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Returns the folder where configuration files are stored
+     * Returns the folder where configuration files are stored.
      *
      * @return The server's configuration folder.
      */
@@ -1133,7 +1254,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * The key pair generated at server start up
+     * The key pair generated at server start up.
      *
      * @return The key pair generated at server start up
      */
@@ -1226,10 +1347,20 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.RCON_COLORS);
     }
 
+    /**
+     * Gets the {@link MaterialValueManager} for this server.
+     *
+     * @return the {@link MaterialValueManager} for this server.
+     */
     public MaterialValueManager getMaterialValueManager() {
         return materialValueManager;
     }
 
+    /**
+     * Gets the {@link BossBarManager} for this server.
+     *
+     * @return the {@link BossBarManager} for this server.
+     */
     public BossBarManager getBossBarManager() {
         return bossBarManager;
     }
@@ -1239,7 +1370,7 @@ public final class GlowServer implements Server {
      *
      * @return The url of the resource pack to use, or {@code null}
      */
-    public String getResourcePackURL() {
+    public String getResourcePackUrl() {
         return config.getString(Key.RESOURCE_PACK);
     }
 
@@ -1281,7 +1412,11 @@ public final class GlowServer implements Server {
 
     @Override
     public String getName() {
-        return GlowServer.class.getPackage().getImplementationTitle();
+        String title = GlowServer.class.getPackage().getImplementationTitle();
+        if (title == null) {
+            title = "Glowstone";
+        }
+        return title;
     }
 
     @Override
@@ -1348,24 +1483,14 @@ public final class GlowServer implements Server {
         return unsafeAccess;
     }
 
-    private Spigot spigot = new Spigot() {
-        public org.bukkit.configuration.file.YamlConfiguration getConfig() {
-            return config.getConfig();
-        }
-    };
-
     @Override
     public Spigot spigot() {
         return spigot;
     }
 
-    public static WorldConfig getWorldConfig() {
-        return worldConfig;
-    }
-
     @Override
     public void reloadPermissions() {
-
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -1392,9 +1517,6 @@ public final class GlowServer implements Server {
         return false;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Commands and console
-
     @Override
     public BanList getBanList(Type type) {
         switch (type) {
@@ -1411,6 +1533,9 @@ public final class GlowServer implements Server {
     public ConsoleCommandSender getConsoleSender() {
         return consoleManager.getSender();
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Commands and console
 
     @Override
     public PluginCommand getPluginCommand(String name) {
@@ -1436,9 +1561,6 @@ public final class GlowServer implements Server {
         return aliases;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Player management
-
     @Override
     public boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {
         if (commandMap.dispatch(sender, commandLine)) {
@@ -1459,11 +1581,19 @@ public final class GlowServer implements Server {
         return opsList.getUUIDs().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Player management
+
     @Override
     public Collection<? extends Player> getOnlinePlayers() {
         return onlineView;
     }
 
+    /**
+     * Gets the modifiable set of the server's online players
+     *
+     * @return the server's modifiable set of players.
+     */
     public Collection<GlowPlayer> getRawOnlinePlayers() {
         return onlinePlayers;
     }
@@ -1544,6 +1674,12 @@ public final class GlowServer implements Server {
         return result;
     }
 
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given {@link PlayerProfile}.
+     *
+     * @param profile the player's profile.
+     * @return a new {@link GlowOfflinePlayer} instance for the given profile.
+     */
     public OfflinePlayer getOfflinePlayer(PlayerProfile profile) {
         return new GlowOfflinePlayer(this, profile);
     }
@@ -1592,22 +1728,6 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public void broadcast(BaseComponent component) {
-
-    }
-
-    @Override
-    public void broadcast(BaseComponent... components) {
-
-    }
-
-    public void broadcastPacket(Message message) {
-        for (GlowPlayer player : getRawOnlinePlayers()) {
-            player.getSession().send(message);
-        }
-    }
-
-    @Override
     public int broadcast(String message, String permission) {
         int count = 0;
         for (Permissible permissible : getPluginManager().getPermissionSubscriptions(permission)) {
@@ -1617,6 +1737,27 @@ public final class GlowServer implements Server {
             }
         }
         return count;
+    }
+
+    @Override
+    public void broadcast(BaseComponent component) {
+
+    }
+
+    @Override
+    public void broadcast(BaseComponent... components) {
+
+    }
+
+    /**
+     * Broadcasts a packet for all online players.
+     *
+     * @param message the packet to broadcast.
+     */
+    public void broadcastPacket(Message message) {
+        for (GlowPlayer player : getRawOnlinePlayers()) {
+            player.getSession().send(message);
+        }
     }
 
     @Override
@@ -1644,9 +1785,6 @@ public final class GlowServer implements Server {
         ipBans.pardon(address);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // World management
-
     @Override
     public Set<OfflinePlayer> getBannedPlayers() {
         return nameBans.getBanEntries().stream().map(entry -> getOfflinePlayer(entry.getTarget())).collect(Collectors.toSet());
@@ -1656,6 +1794,9 @@ public final class GlowServer implements Server {
     public GlowWorld getWorld(String name) {
         return worlds.getWorld(name);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // World management
 
     @Override
     public GlowWorld getWorld(UUID uid) {
@@ -1719,7 +1860,7 @@ public final class GlowServer implements Server {
         }
 
         // GlowWorld's constructor calls addWorld below.
-        return new GlowWorld(this, creator);
+        return new GlowWorld(this, creator, storageProvider);
     }
 
     /**
@@ -1738,17 +1879,14 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public boolean unloadWorld(World bWorld, boolean save) {
-        if (!(bWorld instanceof GlowWorld)) {
-            return false;
-        }
-        GlowWorld world = (GlowWorld) bWorld;
+    public boolean unloadWorld(World world, boolean save) {
+        GlowWorld glowWorld = (GlowWorld) world;
         if (save) {
-            world.setAutoSave(false);
-            world.save(false);
+            glowWorld.setAutoSave(false);
+            glowWorld.save(false);
         }
-        if (worlds.removeWorld(world)) {
-            world.unload();
+        if (worlds.removeWorld(glowWorld)) {
+            glowWorld.unload();
             return true;
         }
         return false;
@@ -1759,9 +1897,6 @@ public final class GlowServer implements Server {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Inventory and crafting
-
     @Override
     public GlowMapView createMap(World world) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -1771,6 +1906,9 @@ public final class GlowServer implements Server {
     public List<Recipe> getRecipesFor(ItemStack result) {
         return craftingManager.getRecipesFor(result);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Inventory and crafting
 
     @Override
     public Iterator<Recipe> recipeIterator() {
@@ -1798,6 +1936,11 @@ public final class GlowServer implements Server {
     }
 
     @Override
+    public Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
+        return new GlowInventory(owner, type, type.getDefaultSize(), title);
+    }
+
+    @Override
     public Inventory createInventory(InventoryHolder owner, int size) {
         return new GlowInventory(owner, InventoryType.CHEST, size);
     }
@@ -1813,26 +1956,18 @@ public final class GlowServer implements Server {
         return null;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Server icons
-
-    @Override
-    public Inventory createInventory(InventoryHolder owner, InventoryType type, String title) {
-        return new GlowInventory(owner, type, type.getDefaultSize(), title);
-    }
-
     @Override
     public GlowServerIcon getServerIcon() {
         return defaultIcon;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Server icons
+
     @Override
     public CachedServerIcon loadServerIcon(File file) throws Exception {
         return new GlowServerIcon(file);
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Plugin messages
 
     @Override
     public CachedServerIcon loadServerIcon(BufferedImage image) throws Exception {
@@ -1848,7 +1983,7 @@ public final class GlowServer implements Server {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Configuration with special handling
+    // Plugin messages
 
     @Override
     public Set<String> getListeningPluginChannels() {
@@ -1863,6 +1998,9 @@ public final class GlowServer implements Server {
     public GameMode getDefaultGameMode() {
         return defaultGameMode;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Configuration with special handling
 
     @Override
     public void setDefaultGameMode(GameMode mode) {
@@ -1924,17 +2062,53 @@ public final class GlowServer implements Server {
     // Configuration
 
     @Override
-    public String getIp() {
-        return ip;
-    }
-
-    @Override
     public int getPort() {
         return port;
     }
 
+    /**
+     * Sets the port that the Query server will expose.
+     *
+     * <p>This does not change the port the server will run on.
+     *
+     * @param port the port number
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    @Override
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * Sets the IP address that the Query server will expose.
+     *
+     * <p>This does not change the IP address the server will run on.
+     *
+     * @param ip the IP address
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    /**
+     * Gets the server configuration.
+     *
+     * @return the server configuration.
+     */
     public ServerConfig getConfig() {
         return config;
+    }
+
+    /**
+     * Gets the world configuration for this server.
+     *
+     * @return the world configuration for this server.
+     */
+    public static WorldConfig getWorldConfig() {
+        return worldConfig;
     }
 
     @Override
@@ -2022,6 +2196,11 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.HARDCORE);
     }
 
+    /**
+     * Gets whether PVP is enabled on the server.
+     *
+     * @return true if PVP is enabled on the server, false otherwise.
+     */
     public boolean isPvpEnabled() {
         return config.getBoolean(Key.PVP_ENABLED);
     }
@@ -2056,52 +2235,127 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.ALLOW_FLIGHT);
     }
 
+    /**
+     * Gets the max building height of the server.
+     *
+     * @return the max building height of the server, in blocks.
+     */
     public int getMaxBuildHeight() {
-        return Math.max(64, Math.min(256, config.getInt(Key
-                .MAX_BUILD_HEIGHT)));
+        return Math.max(64, Math.min(256, config.getInt(Key.MAX_BUILD_HEIGHT)));
     }
 
+    /**
+     * Whether the server uses the classic water flowing algorithm.
+     *
+     * @return true if the server uses the classic water flowing algorithm, false otherwise.
+     */
     public boolean getClassicWater() {
         return config.getBoolean(Key.WATER_CLASSIC);
     }
 
+    /**
+     * Gets the server's console prompt.
+     *
+     * @return the server's console prompt.
+     */
     public String getConsolePrompt() {
         return config.getString(Key.CONSOLE_PROMPT);
     }
 
+    /**
+     * Gets the server console's date format.
+     *
+     * @return the server console's date format.
+     */
     public String getConsoleDateFormat() {
         return config.getString(Key.CONSOLE_DATE);
     }
 
+    /**
+     * Gets the server's console logs date format.
+     *
+     * @return the server's console logs date format.
+     */
     public String getConsoleLogDateFormat() {
         return config.getString(Key.CONSOLE_LOG_DATE);
     }
 
+    /**
+     * Gets the server type.
+     *
+     * <p>Currently, this value is set to {@code VANILLA}.
+     *
+     * @return the server type.
+     */
     public String getServerType() {
         return "VANILLA";
     }
 
-    public boolean doMetrics() {
-        return config.getBoolean(Key.METRICS);
-    }
-
+    /**
+     * Gets whether the server allows client mods.
+     *
+     * <p>This rule is not actually enforced, and is simply exposed to clients as a warning.
+     *
+     * @return true if client mods are allowed, false otherwise.
+     */
     public boolean getAllowClientMods() {
         return config.getBoolean(Key.ALLOW_CLIENT_MODS);
     }
 
+    /**
+     * Gets the maximum size of the player sample as shown on the client's server list when pinging the server.
+     *
+     * @return the maximum size of the player sample as shown on the client's server list.
+     */
     public int getPlayerSampleCount() {
         return config.getInt(Key.PLAYER_SAMPLE_COUNT);
     }
 
+    /**
+     * Gets whether world generation is disabled on the server.
+     *
+     * @return true if world generation is disabled on the server, false otherwise.
+     */
     public boolean isGenerationDisabled() {
         return config.getBoolean(Key.DISABLE_GENERATION);
     }
 
-    public boolean doesUseGPGPU() {
-        return isCLApplicable && config.getBoolean(Key.GPGPU);
+    /**
+     * Gets whether the server is OpenCL-capable and allowed to use graphics compute functionality.
+     *
+     * @return true if the server is capable and allowed to use graphics compute functionality, false otherwise.
+     */
+    public boolean doesUseGraphicsCompute() {
+        return isGraphicsComputeAvailable && config.getBoolean(Key.GRAPHICS_COMPUTE);
     }
 
+    /**
+     * Gets whether the server should prevent player proxy connections.
+     *
+     * @return true if the server should prevent player proxy connections, false otherwise.
+     */
     public boolean shouldPreventProxy() {
         return config.getBoolean(Key.PREVENT_PROXY);
+    }
+
+    /**
+     * Gets the current storage provider, or null if none has been set by a plugin and the server has not started yet.
+     *
+     * @return The current storage provider, or null.
+     */
+    public WorldStorageProvider getStorageProvider() {
+        return storageProvider;
+    }
+
+    /**
+     * If a storage provider has not yet been set, and the server has not fully started yet, this allows plugins to set
+     * a storage provider. Otherwise, this will throw an {@link IllegalStateException}.
+     * @param storageProvider The world storage provider that is attempting to be set.
+     */
+    public void setStorageProvider(WorldStorageProvider storageProvider) {
+        if (this.storageProvider != null) {
+            throw new IllegalStateException("Duplicate storage provider attempting to be set. Only one custom storage provider may be provided.");
+        }
+        this.storageProvider = storageProvider;
     }
 }

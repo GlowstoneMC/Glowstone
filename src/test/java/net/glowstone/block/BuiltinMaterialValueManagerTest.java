@@ -1,19 +1,21 @@
 package net.glowstone.block;
 
-import org.bukkit.Material;
-import org.junit.Test;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import org.bukkit.Material;
+import org.junit.Test;
+
 public class BuiltinMaterialValueManagerTest {
+
     @Test
     public void correctMaterialValues() {
         // throws exception if wrong file format
         MaterialValueManager bvm = new BuiltinMaterialValueManager();
 
         // test some 'features'
-        assertThat("Bedrock hardness not max value", bvm.getValues(Material.BEDROCK).getHardness(), is(Float.MAX_VALUE)); //in yml -1
+        assertThat("Bedrock hardness not max value", bvm.getValues(Material.BEDROCK).getHardness(),
+            is(Float.MAX_VALUE)); //in yml -1
 
         // test some fixed values
         assertThat(bvm.getValues(Material.OBSIDIAN).getBlastResistance(), is(6000f));
@@ -27,6 +29,7 @@ public class BuiltinMaterialValueManagerTest {
         assertThat(bvm.getValues(Material.TNT).getFireResistance(), is(100));
 
         // test defaults
-        assertThat("Nonexistent value defined", bvm.getValues(Material.CAULDRON_ITEM).getHardness(), is(1f)); // item doesn't exist at all
+        assertThat("Nonexistent value defined", bvm.getValues(Material.CAULDRON_ITEM).getHardness(),
+            is(1f)); // item doesn't exist at all
     }
 }

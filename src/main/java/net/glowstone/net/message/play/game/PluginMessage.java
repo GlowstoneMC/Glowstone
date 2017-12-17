@@ -4,11 +4,10 @@ import com.flowpowered.network.Message;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import lombok.Data;
-import net.glowstone.GlowServer;
-
 import java.io.IOException;
 import java.util.logging.Level;
+import lombok.Data;
+import net.glowstone.GlowServer;
 
 @Data
 public final class PluginMessage implements Message {
@@ -21,7 +20,8 @@ public final class PluginMessage implements Message {
         try {
             ByteBufUtils.writeUTF8(buf, text);
         } catch (IOException e) {
-            GlowServer.logger.log(Level.WARNING, "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
+            GlowServer.logger.log(Level.WARNING,
+                "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
         }
         byte[] array = buf.array();
         buf.release();

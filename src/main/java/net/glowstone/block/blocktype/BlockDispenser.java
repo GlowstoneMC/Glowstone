@@ -44,7 +44,8 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Dispenser) {
@@ -61,12 +62,14 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
@@ -74,7 +77,7 @@ public class BlockDispenser extends BlockContainer {
     public void updatePhysics(GlowBlock block) {
         GlowBlock up = block.getRelative(BlockFace.UP);
         boolean powered = block.isBlockPowered() || block.isBlockIndirectlyPowered() ||
-                up.isBlockPowered() || up.isBlockIndirectlyPowered();
+            up.isBlockPowered() || up.isBlockIndirectlyPowered();
 
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();

@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -16,8 +17,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.LongGrass;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockGrass extends BlockType implements IBlockGrowable {
 
@@ -58,13 +57,15 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         // would be better to call a method that choose a random
                         // flower depending on the biome
                         FlowerType[] flowers = FlowerForestPopulator.FLOWERS;
-                        Material flower = flowers[ThreadLocalRandom.current().nextInt(flowers.length)].getType();
+                        Material flower = flowers[ThreadLocalRandom.current()
+                            .nextInt(flowers.length)].getType();
                         if (ItemTable.instance().getBlock(flower).canPlaceAt(b, BlockFace.DOWN)) {
                             blockState.setType(flower);
                         }
                     } else {
                         Material tallGrass = Material.LONG_GRASS;
-                        if (ItemTable.instance().getBlock(tallGrass).canPlaceAt(b, BlockFace.DOWN)) {
+                        if (ItemTable.instance().getBlock(tallGrass)
+                            .canPlaceAt(b, BlockFace.DOWN)) {
                             // grow tall grass if possible
                             blockState.setType(tallGrass);
                             blockState.setData(new LongGrass(GrassSpecies.NORMAL));
@@ -80,7 +81,8 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                     int y = block.getY();
                     int z = block.getZ();
                     x += ThreadLocalRandom.current().nextInt(3) - 1;
-                    y += ThreadLocalRandom.current().nextInt(3) * ThreadLocalRandom.current().nextInt(3) / 2;
+                    y += ThreadLocalRandom.current().nextInt(3) * ThreadLocalRandom.current()
+                        .nextInt(3) / 2;
                     z += ThreadLocalRandom.current().nextInt(3) - 1;
                     if (world.getBlockAt(x, y, z).getType() == Material.GRASS) {
                         j++;
@@ -96,7 +98,8 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
     @Override
     public void updateBlock(GlowBlock block) {
         GlowBlock blockAbove = block.getRelative(BlockFace.UP);
-        if (blockAbove.getLightLevel() < 4 && blockAbove.getMaterialValues().getLightOpacity() > 2) {
+        if (blockAbove.getLightLevel() < 4
+            && blockAbove.getMaterialValues().getLightOpacity() > 2) {
             // grass block turns into dirt block
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
@@ -120,10 +123,10 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
                 if (targetBlock.getChunk().isLoaded() && targetAbove.getChunk().isLoaded() &&
-                        targetBlock.getType() == Material.DIRT &&
-                        targetBlock.getData() == 0 && // only spread on normal dirt
-                        targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
-                        targetAbove.getLightLevel() >= 4) {
+                    targetBlock.getType() == Material.DIRT &&
+                    targetBlock.getData() == 0 && // only spread on normal dirt
+                    targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
+                    targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.GRASS);
                     state.setRawData((byte) 0);

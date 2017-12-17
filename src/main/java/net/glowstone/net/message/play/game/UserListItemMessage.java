@@ -1,13 +1,12 @@
 package net.glowstone.net.message.play.game;
 
 import com.flowpowered.network.Message;
-import lombok.Data;
-import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.util.TextMessage;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import lombok.Data;
+import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.util.TextMessage;
 
 @Data
 public final class UserListItemMessage implements Message {
@@ -21,7 +20,8 @@ public final class UserListItemMessage implements Message {
 
         for (Entry entry : entries) {
             if (entry.action != action) {
-                throw new IllegalArgumentException("Entries must be " + action + ", not " + entry.action);
+                throw new IllegalArgumentException(
+                    "Entries must be " + action + ", not " + entry.action);
             }
         }
     }
@@ -36,9 +36,11 @@ public final class UserListItemMessage implements Message {
         return add(profile, 0, 0, null);
     }
 
-    public static Entry add(PlayerProfile profile, int gameMode, int ping, TextMessage displayName) {
+    public static Entry add(PlayerProfile profile, int gameMode, int ping,
+        TextMessage displayName) {
         // TODO measure ping
-        return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName, Action.ADD_PLAYER);
+        return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName,
+            Action.ADD_PLAYER);
     }
 
     public static UserListItemMessage addOne(PlayerProfile profile) {
@@ -97,6 +99,7 @@ public final class UserListItemMessage implements Message {
 
     @Data
     public static final class Entry {
+
         public final UUID uuid;
         public final PlayerProfile profile;
         public final int gameMode;

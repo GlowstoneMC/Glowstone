@@ -1,12 +1,11 @@
 package net.glowstone.entity.monster;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowSlime extends GlowMonster implements Slime {
 

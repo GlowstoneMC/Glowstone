@@ -1,5 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
@@ -12,10 +14,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.Collections;
-import java.util.List;
-
 public class KillCommand extends VanillaCommand {
+
     public KillCommand() {
         super("kill", "Destroy entities.", "/kill [target]", Collections.emptyList());
         setPermission("minecraft.command.kill");
@@ -41,7 +41,8 @@ public class KillCommand extends VanillaCommand {
                 }
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "Only entities can be killed. Use /kill <target> instead.");
+                sender.sendMessage(
+                    ChatColor.RED + "Only entities can be killed. Use /kill <target> instead.");
                 return false;
             }
         }
@@ -82,7 +83,8 @@ public class KillCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length > 1) {
             return Collections.emptyList();
         }

@@ -41,7 +41,8 @@ public class BoatStore extends EntityStore<GlowBoat> {
         if (species.equalsIgnoreCase("spruce")) {
             return TreeSpecies.REDWOOD;
         }
-        Optional<TreeSpecies> any = Arrays.stream(TreeSpecies.values()).filter(t -> t.name().equalsIgnoreCase(species)).findAny();
+        Optional<TreeSpecies> any = Arrays.stream(TreeSpecies.values())
+            .filter(t -> t.name().equalsIgnoreCase(species)).findAny();
         return any.orElse(TreeSpecies.GENERIC);
     }
 }

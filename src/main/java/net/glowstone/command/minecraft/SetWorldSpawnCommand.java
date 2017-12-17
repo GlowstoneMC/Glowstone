@@ -1,5 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -9,18 +11,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 
-import java.util.Collections;
-import java.util.List;
-
 public class SetWorldSpawnCommand extends VanillaCommand {
+
     public SetWorldSpawnCommand() {
-        super("setworldspawn", "Sets the world spawn.", "/setworldspawn OR /setworldspawn <x> <y> <z>", Collections.emptyList());
+        super("setworldspawn", "Sets the world spawn.",
+            "/setworldspawn OR /setworldspawn <x> <y> <z>", Collections.emptyList());
         setPermission("minecraft.command.setworldspawn");
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) return false;
+        if (!testPermission(sender)) {
+            return false;
+        }
 
         Location spawnLocation;
 
@@ -28,9 +31,11 @@ public class SetWorldSpawnCommand extends VanillaCommand {
 
         if (args.length == 0) { // Get the player current location
             if (CommandUtils.isPhysical(sender)) {
-                spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
+                spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
+                    : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
-                sender.sendMessage(ChatColor.RED + "Default coordinates can not be used without a physical user.");
+                sender.sendMessage(
+                    ChatColor.RED + "Default coordinates can not be used without a physical user.");
                 return false;
             }
         } else if (args.length >= 3) { // manage arguments
@@ -39,10 +44,12 @@ public class SetWorldSpawnCommand extends VanillaCommand {
             // Get the sender coordinates if relative is used
             if (args[0].startsWith("~") || args[1].startsWith("~") || args[2].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
-                    sender.sendMessage(ChatColor.RED + "Relative coordinates can not be used without a physical user.");
+                    sender.sendMessage(ChatColor.RED
+                        + "Relative coordinates can not be used without a physical user.");
                     return false;
                 } else {
-                    senderLocation = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
+                    senderLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
+                        : ((BlockCommandSender) sender).getBlock().getLocation();
                 }
             } else { // Otherwise, the current location can be set to 0/0/0 (since it's absolute)
                 senderLocation = new Location(world, 0, 0, 0);
@@ -55,21 +62,28 @@ public class SetWorldSpawnCommand extends VanillaCommand {
         }
 
         if (spawnLocation.getBlockY() < 0) {
-            sender.sendMessage(ChatColor.RED + "The y coordinate (" + spawnLocation.getBlockY() + ") is too small, it must be at least 0.");
+            sender.sendMessage(ChatColor.RED + "The y coordinate (" + spawnLocation.getBlockY()
+                + ") is too small, it must be at least 0.");
             return false;
         } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
-            sender.sendMessage(ChatColor.RED + "'" + spawnLocation.getBlockY() + "' is too high for the current world. Max value is '" + world.getMaxHeight() + "'.");
+            sender.sendMessage(ChatColor.RED + "'" + spawnLocation.getBlockY()
+                + "' is too high for the current world. Max value is '" + world.getMaxHeight()
+                + "'.");
             return false;
         }
 
-        world.setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ());
-        sender.sendMessage("Set world spawn point to " + spawnLocation.getBlockX() + ", " + spawnLocation.getBlockY() + ", " + spawnLocation.getBlockZ() + ".");
+        world.setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(),
+            spawnLocation.getBlockZ());
+        sender.sendMessage(
+            "Set world spawn point to " + spawnLocation.getBlockX() + ", " + spawnLocation
+                .getBlockY() + ", " + spawnLocation.getBlockZ() + ".");
 
         return true;
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         return Collections.emptyList();
     }
 }

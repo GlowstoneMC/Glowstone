@@ -9,12 +9,9 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 /**
- * This class reads NBT, or Named Binary Tag streams, and produces an object
- * graph of subclasses of the {@link Tag} object.
- * <p>
- * The NBT format was created by Markus Persson, and the specification may
- * be found at <a href="http://www.minecraft.net/docs/NBT.txt">
- * http://www.minecraft.net/docs/NBT.txt</a>.
+ * This class reads NBT, or Named Binary Tag streams, and produces an object graph of subclasses of the {@link Tag} object.
+ *
+ * <p>The NBT format was created by Markus Persson, and the specification may be found at <a href="http://www.minecraft.net/docs/NBT.txt"> http://www.minecraft.net/docs/NBT.txt</a>.
  */
 public final class NBTInputStream implements Closeable {
 
@@ -24,8 +21,9 @@ public final class NBTInputStream implements Closeable {
     private final DataInputStream is;
 
     /**
-     * Creates a new NBTInputStream, which will source its data
-     * from the specified input stream. This assumes the stream is compressed.
+     * Creates a new NBTInputStream, which will source its data from the specified input stream.
+     *
+     * <p>This assumes the stream is compressed.
      *
      * @param is The input stream.
      * @throws IOException if an I/O error occurs.
@@ -35,11 +33,11 @@ public final class NBTInputStream implements Closeable {
     }
 
     /**
-     * Creates a new NBTInputStream, which sources its data from the
-     * specified input stream. A flag must be passed which indicates if the
-     * stream is compressed with GZIP or not.
+     * Creates a new NBTInputStream, which sources its data from the specified input stream.
      *
-     * @param is         The input stream.
+     * <p>A flag must be passed which indicates if the stream is compressed with GZIP or not.
+     *
+     * @param is The input stream.
      * @param compressed A flag indicating if the stream is compressed.
      * @throws IOException if an I/O error occurs.
      */
@@ -106,16 +104,18 @@ public final class NBTInputStream implements Closeable {
     /**
      * Reads the payload of a {@link Tag}, given the name and type.
      *
-     * @param type  The type.
+     * @param type The type.
      * @param depth The depth.
      * @return The tag.
      * @throws IOException if an I/O error occurs.
      */
     @SuppressWarnings("unchecked")
-    private Tag readTagPayload(TagType type, int depth, NBTReadLimiter readLimiter) throws IOException {
+    private Tag readTagPayload(TagType type, int depth, NBTReadLimiter readLimiter)
+        throws IOException {
 
         if (depth > 512) {
-            throw new IllegalStateException("Tried to read NBT tag with too high complexity, depth > 512");
+            throw new IllegalStateException(
+                "Tried to read NBT tag with too high complexity, depth > 512");
         }
 
         switch (type) {

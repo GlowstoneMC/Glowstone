@@ -1,15 +1,13 @@
 package net.glowstone.util;
 
-import java.util.Arrays;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.util.Arrays;
+
 /**
- * An array of nibbles (4-bit values) stored efficiently as a byte array of
- * half the size. The even indices are stored in the least significant nibble
- * and the odd indices in the most significant bits.
- * <p>
- * For example, [1 5 8 15] is stored as [0x51 0xf8].
+ * An array of nibbles (4-bit values) stored efficiently as a byte array of half the size.
+ *
+ * <p>The even indices are stored in the least significant nibble and the odd indices in the most significant bits. For example, [1 5 8 15] is stored as [0x51 0xf8].
  */
 public final class NibbleArray {
 
@@ -26,8 +24,7 @@ public final class NibbleArray {
     }
 
     /**
-     * Construct a new NibbleArray with the given size in nibble, filled with
-     * the specified nibble value.
+     * Construct a new NibbleArray with the given size in nibble, filled with the specified nibble value.
      *
      * @param size The number of nibbles in the array.
      * @param value The value to fill the array with.
@@ -42,8 +39,7 @@ public final class NibbleArray {
     }
 
     /**
-     * Construct a new NibbleArray using the given underlying bytes. No copy
-     * is created.
+     * Construct a new NibbleArray using the given underlying bytes. No copy is created.
      *
      * @param data The raw data to use.
      */
@@ -112,8 +108,7 @@ public final class NibbleArray {
     }
 
     /**
-     * Get the raw bytes of this nibble array. Modifying the returned array
-     * will modify the internal representation of this nibble array.
+     * Get the raw bytes of this nibble array. Modifying the returned array will modify the internal representation of this nibble array.
      *
      * @return The raw bytes.
      */

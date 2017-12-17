@@ -1,17 +1,16 @@
 package net.glowstone.inventory;
 
 import com.google.common.primitives.Ints;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffectMeta {
 
@@ -20,7 +19,9 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     public GlowMetaFireworkEffect(GlowMetaItem meta) {
         super(meta);
 
-        if (!(meta instanceof GlowMetaFireworkEffect)) return;
+        if (!(meta instanceof GlowMetaFireworkEffect)) {
+            return;
+        }
 
         GlowMetaFireworkEffect effect = (GlowMetaFireworkEffect) meta;
         this.effect = effect.effect;
@@ -40,8 +41,12 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
 
         type = Type.values()[explosion.getByte("Type")];
 
-        if (explosion.isByte("Flicker")) flicker = explosion.getBool("Flicker");
-        if (explosion.isByte("Trail")) trail = explosion.getBool("Trail");
+        if (explosion.isByte("Flicker")) {
+            flicker = explosion.getBool("Flicker");
+        }
+        if (explosion.isByte("Trail")) {
+            trail = explosion.getBool("Trail");
+        }
 
         if (explosion.isIntArray("FadeColors")) {
             int[] fadeInts = explosion.getIntArray("FadeColors");
@@ -51,19 +56,23 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
         }
 
         return FireworkEffect.builder()
-                .flicker(flicker)
-                .trail(trail)
-                .with(type)
-                .withColor(colors)
-                .withFade(fadeColors)
-                .build();
+            .flicker(flicker)
+            .trail(trail)
+            .with(type)
+            .withColor(colors)
+            .withFade(fadeColors)
+            .build();
     }
 
     static CompoundTag toExplosion(FireworkEffect effect) {
         CompoundTag explosion = new CompoundTag();
 
-        if (effect.hasFlicker()) explosion.putBool("Flicker", true);
-        if (effect.hasTrail()) explosion.putBool("Trail", true);
+        if (effect.hasFlicker()) {
+            explosion.putBool("Flicker", true);
+        }
+        if (effect.hasTrail()) {
+            explosion.putBool("Trail", true);
+        }
 
         explosion.putByte("Type", effect.getType().ordinal());
 

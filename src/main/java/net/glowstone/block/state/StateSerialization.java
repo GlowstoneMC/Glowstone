@@ -1,18 +1,22 @@
 package net.glowstone.block.state;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.block.state.impl.WoolStateDataReader;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class StateSerialization {
 
     private static final Map<Material, BlockStateReader> READERS = new HashMap<>();
 
-    public static BlockStateData parse(Material material, String state) throws InvalidBlockStateException {
+    static {
+        READERS.put(Material.WOOL, new WoolStateDataReader());
+    }
+
+    public static BlockStateData parse(Material material, String state)
+        throws InvalidBlockStateException {
         if (state == null || state.trim().isEmpty() || state.trim().equals("*")) {
             return new BlockStateData();
         }
@@ -43,7 +47,8 @@ public class StateSerialization {
         return data;
     }
 
-    public static boolean matches(Material type, MaterialData data, BlockStateData state) throws InvalidBlockStateException {
+    public static boolean matches(Material type, MaterialData data, BlockStateData state)
+        throws InvalidBlockStateException {
         if (state == null || data == null || data.getItemType() != type) {
             return false;
         }
@@ -51,16 +56,21 @@ public class StateSerialization {
             return true;
         }
         BlockStateReader reader = getReader(type);
-        if (reader == null) return false;
+        if (reader == null) {
+            return false;
+        }
         return reader.matches(state, data);
     }
 
-    public static MaterialData parseData(Material type, BlockStateData state) throws InvalidBlockStateException {
+    public static MaterialData parseData(Material type, BlockStateData state)
+        throws InvalidBlockStateException {
         if (type == null || state == null) {
             return null;
         }
         BlockStateReader reader = getReader(type);
-        if (reader == null) throw new InvalidBlockStateException(type, state);
+        if (reader == null) {
+            throw new InvalidBlockStateException(type, state);
+        }
         return reader.read(type, state);
     }
 
@@ -80,9 +90,5 @@ public class StateSerialization {
         } catch (IllegalArgumentException ex) {
             return null;
         }
-    }
-
-    static {
-        READERS.put(Material.WOOL, new WoolStateDataReader());
     }
 }

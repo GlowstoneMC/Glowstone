@@ -14,7 +14,8 @@ public final class UnlockRecipesMessage implements Message {
     private final boolean bookOpen, filterOpen;
     private final int[] recipes, allRecipes; // allRecipes is only set when action = ACTION_INIT (0)
 
-    public UnlockRecipesMessage(int action, boolean bookOpen, boolean filterOpen, int[] recipes, int[] allRecipes) {
+    public UnlockRecipesMessage(int action, boolean bookOpen, boolean filterOpen, int[] recipes,
+        int[] allRecipes) {
         this.action = action;
         this.bookOpen = bookOpen;
         this.filterOpen = filterOpen;

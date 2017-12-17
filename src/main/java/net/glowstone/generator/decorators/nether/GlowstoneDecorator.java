@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators.nether;
 
+import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -8,11 +9,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
-import java.util.Random;
-
 public class GlowstoneDecorator extends BlockDecorator {
 
-    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN, BlockFace.UP, BlockFace.SOUTH, BlockFace.NORTH};
+    private static final BlockFace[] SIDES = new BlockFace[]{BlockFace.EAST, BlockFace.WEST,
+        BlockFace.DOWN, BlockFace.UP, BlockFace.SOUTH, BlockFace.NORTH};
 
     private boolean variableAmount;
 
@@ -34,7 +34,8 @@ public class GlowstoneDecorator extends BlockDecorator {
             int sourceY = 4 + random.nextInt(120);
 
             Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
-            if (block.isEmpty() && block.getRelative(BlockFace.UP).getType() == Material.NETHERRACK) {
+            if (block.isEmpty()
+                && block.getRelative(BlockFace.UP).getType() == Material.NETHERRACK) {
                 BlockState state = block.getState();
                 state.setType(Material.GLOWSTONE);
                 state.update(true);

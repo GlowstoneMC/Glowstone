@@ -46,7 +46,9 @@ public class GlowChest extends GlowContainer implements Chest {
                     return new GlowDoubleChestInventory(nearbyChest, this);
 
                 default:
-                    GlowServer.logger.warning("GlowChest#getInventory() can only handle N/O/S/W BlockFaces, got " + attachedChest);
+                    GlowServer.logger.warning(
+                        "GlowChest#getInventory() can only handle N/O/S/W BlockFaces, got "
+                            + attachedChest);
                     return getBlockInventory();
             }
         }

@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
  * Represents a block that falls down, when there's no block below it.
  */
 public class BlockFalling extends BlockType {
+
     private final Material drop;
 
     public BlockFalling(Material drop) {
@@ -19,12 +20,14 @@ public class BlockFalling extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock me, BlockFace face, GlowBlock other, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock me, BlockFace face, GlowBlock other, Material oldType,
+        byte oldData, Material newType, byte newData) {
         if (face == BlockFace.DOWN) {
             updatePhysics(me);
         }
@@ -36,7 +39,8 @@ public class BlockFalling extends BlockType {
         if (!supportingBlock(below.getType())) {
             //Simulates real Minecraft delay on block fall
             //If possible should be changed to 2.5 ticks
-            me.getWorld().getServer().getScheduler().runTaskLater(null, () -> transformToFallingEntity(me), 2);
+            me.getWorld().getServer().getScheduler()
+                .runTaskLater(null, () -> transformToFallingEntity(me), 2);
         }
     }
 

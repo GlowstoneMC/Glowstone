@@ -1,5 +1,9 @@
 package net.glowstone.boss;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.player.BossBarMessage;
 import net.glowstone.util.TextMessage;
@@ -9,20 +13,15 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
 public class GlowBossBar implements BossBar {
 
     private final UUID uniqueId;
+    private final List<BarFlag> flags = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
     private String title;
     private BarColor color;
     private BarStyle style;
-    private final List<BarFlag> flags = new ArrayList<>();
     private double progress = 1.0;
-    private final List<Player> players = new ArrayList<>();
     private boolean visible = true;
 
     public GlowBossBar(String title, BarColor color, BarStyle style, double progress, BarFlag... flags) {
@@ -103,16 +102,16 @@ public class GlowBossBar implements BossBar {
     }
 
     @Override
+    public double getProgress() {
+        return progress;
+    }
+
+    @Override
     public void setProgress(double progress) {
         this.progress = progress;
         if (isVisible()) {
             sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_HEALTH, (float) progress));
         }
-    }
-
-    @Override
-    public double getProgress() {
-        return progress;
     }
 
     @Override
@@ -149,6 +148,11 @@ public class GlowBossBar implements BossBar {
     }
 
     @Override
+    public boolean isVisible() {
+        return visible;
+    }
+
+    @Override
     public void setVisible(boolean visible) {
         if (this.visible != visible) {
             this.visible = visible;
@@ -158,11 +162,6 @@ public class GlowBossBar implements BossBar {
                 sendUpdate(createRemoveAction());
             }
         }
-    }
-
-    @Override
-    public boolean isVisible() {
-        return visible;
     }
 
     @Override

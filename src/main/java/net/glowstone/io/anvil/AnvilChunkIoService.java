@@ -1,5 +1,11 @@
 package net.glowstone.io.anvil;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -16,19 +22,12 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
 /**
- * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps,
- * an improvement on the McRegion file format.
+ * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps, an improvement on the McRegion file format.
  */
 public final class AnvilChunkIoService implements ChunkIoService {
 
@@ -72,11 +71,13 @@ public final class AnvilChunkIoService implements ChunkIoService {
         for (CompoundTag sectionTag : sectionList) {
             int y = sectionTag.getByte("Y");
             if (sections[y] != null) {
-                GlowServer.logger.log(Level.WARNING, "Multiple chunk sections at y " + y + " in " + chunk + "!");
+                GlowServer.logger
+                    .log(Level.WARNING, "Multiple chunk sections at y " + y + " in " + chunk + "!");
                 continue;
             }
             if (y < 0 || y > GlowChunk.SEC_COUNT) {
-                GlowServer.logger.log(Level.WARNING, "Out of bounds chunk section at y " + y + " in " + chunk + "!");
+                GlowServer.logger.log(Level.WARNING,
+                    "Out of bounds chunk section at y " + y + " in " + chunk + "!");
                 continue;
             }
             sections[y] = ChunkSection.fromNBT(sectionTag);
@@ -105,10 +106,12 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     EntityStorage.loadEntity(chunk.getWorld(), entityTag);
                 } catch (Exception e) {
                     String id = entityTag.isString("id") ? entityTag.getString("id") : "<missing>";
-                    if (e.getMessage() != null && e.getMessage().startsWith("Unknown entity type to load:")) {
+                    if (e.getMessage() != null && e.getMessage()
+                        .startsWith("Unknown entity type to load:")) {
                         GlowServer.logger.warning("Unknown entity in " + chunk + ": " + id);
                     } else {
-                        GlowServer.logger.log(Level.WARNING, "Error loading entity in " + chunk + ": " + id, e);
+                        GlowServer.logger
+                            .log(Level.WARNING, "Error loading entity in " + chunk + ": " + id, e);
                     }
                 }
             }
@@ -121,17 +124,23 @@ public final class AnvilChunkIoService implements ChunkIoService {
             int tx = blockEntityTag.getInt("x");
             int ty = blockEntityTag.getInt("y");
             int tz = blockEntityTag.getInt("z");
-            blockEntity = chunk.createEntity(tx & 0xf, ty, tz & 0xf, chunk.getType(tx & 0xf, tz & 0xf, ty));
+            blockEntity = chunk
+                .createEntity(tx & 0xf, ty, tz & 0xf, chunk.getType(tx & 0xf, tz & 0xf, ty));
             if (blockEntity != null) {
                 try {
                     blockEntity.loadNbt(blockEntityTag);
                 } catch (Exception ex) {
-                    String id = blockEntityTag.isString("id") ? blockEntityTag.getString("id") : "<missing>";
-                    GlowServer.logger.log(Level.SEVERE, "Error loading block entity at " + blockEntity.getBlock() + ": " + id, ex);
+                    String id = blockEntityTag.isString("id") ? blockEntityTag.getString("id")
+                        : "<missing>";
+                    GlowServer.logger.log(Level.SEVERE,
+                        "Error loading block entity at " + blockEntity.getBlock() + ": " + id, ex);
                 }
             } else {
-                String id = blockEntityTag.isString("id") ? blockEntityTag.getString("id") : "<missing>";
-                GlowServer.logger.warning("Unknown block entity at " + chunk.getWorld().getName() + "," + tx + "," + ty + "," + tz + ": " + id);
+                String id =
+                    blockEntityTag.isString("id") ? blockEntityTag.getString("id") : "<missing>";
+                GlowServer.logger.warning(
+                    "Unknown block entity at " + chunk.getWorld().getName() + "," + tx + "," + ty
+                        + "," + tz + ": " + id);
             }
         }
 
@@ -144,7 +153,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 String id = tileTick.getString("i");
                 Material material = ItemIds.getBlock(id);
                 if (material == null) {
-                    GlowServer.logger.warning("Unknown block '" + id + "' when loading chunk block ticks.");
+                    GlowServer.logger
+                        .warning("Unknown block '" + id + "' when loading chunk block ticks.");
                     continue;
                 }
                 GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
@@ -185,7 +195,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
         ChunkSection[] sections = snapshot.getRawSections();
         for (byte i = 0; i < sections.length; ++i) {
             ChunkSection sec = sections[i];
-            if (sec == null) continue;
+            if (sec == null) {
+                continue;
+            }
 
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i);
@@ -227,14 +239,16 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 entity.saveNbt(tag);
                 blockEntities.add(tag);
             } catch (Exception ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error saving block entity at " + entity.getBlock(), ex);
+                GlowServer.logger
+                    .log(Level.SEVERE, "Error saving block entity at " + entity.getBlock(), ex);
             }
         }
         levelTags.putCompoundList("TileEntities", blockEntities);
 
         List<CompoundTag> tileTicks = new ArrayList<>();
         for (Location location : chunk.getWorld().getTickMap()) {
-            if (location.getChunk().getX() == chunk.getX() && location.getChunk().getZ() == chunk.getZ()) {
+            Chunk locationChunk = location.getChunk();
+            if (locationChunk.getX() == chunk.getX() && locationChunk.getZ() == chunk.getZ()) {
                 int tileX = location.getBlockX();
                 int tileY = location.getBlockY();
                 int tileZ = location.getBlockZ();
@@ -252,7 +266,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
         CompoundTag levelOut = new CompoundTag();
         levelOut.putCompound("Level", levelTags);
 
-        try (NBTOutputStream nbt = new NBTOutputStream(region.getChunkDataOutputStream(regionX, regionZ), false)) {
+        try (NBTOutputStream nbt = new NBTOutputStream(
+            region.getChunkDataOutputStream(regionX, regionZ), false)) {
             nbt.writeTag(levelOut);
         }
     }

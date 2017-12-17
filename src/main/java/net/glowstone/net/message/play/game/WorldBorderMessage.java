@@ -32,8 +32,10 @@ public final class WorldBorderMessage implements Message {
     }
 
     // INITIALIZE
-    public WorldBorderMessage(Action action, double x, double z, double oldRadius, double newRadius, long speed, int portalTeleportBoundary, int warningTime, int warningBlocks) {
-        this(action, 0, oldRadius, newRadius, speed, x, z, portalTeleportBoundary, warningTime, warningBlocks);
+    public WorldBorderMessage(Action action, double x, double z, double oldRadius, double newRadius,
+        long speed, int portalTeleportBoundary, int warningTime, int warningBlocks) {
+        this(action, 0, oldRadius, newRadius, speed, x, z, portalTeleportBoundary, warningTime,
+            warningBlocks);
     }
 
     // SET_WARNING_TIME, SET_WARNING_BLOCKS

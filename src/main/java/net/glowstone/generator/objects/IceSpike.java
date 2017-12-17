@@ -1,15 +1,15 @@
 package net.glowstone.generator.objects;
 
+import java.util.Arrays;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.util.Arrays;
-import java.util.Random;
-
 public class IceSpike {
 
-    private static final Material[] MATERIALS = {Material.AIR, Material.DIRT, Material.SNOW, Material.SNOW_BLOCK, Material.ICE};
+    private static final Material[] MATERIALS = {Material.AIR, Material.DIRT, Material.SNOW,
+        Material.SNOW_BLOCK, Material.ICE};
     private static final int MAX_STEM_RADIUS = 1;
     private static final int MAX_STEM_HEIGHT = 50;
 
@@ -30,7 +30,8 @@ public class IceSpike {
                 }
                 for (int y = tipOffset - 1; y >= -3; y--) {
                     Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
-                    if (Arrays.asList(MATERIALS).contains(block.getType()) || block.getType() == Material.PACKED_ICE) {
+                    if (Arrays.asList(MATERIALS).contains(block.getType())
+                        || block.getType() == Material.PACKED_ICE) {
                         block.setType(Material.PACKED_ICE);
                         stackHeight--;
                         if (stackHeight <= 0) {
@@ -51,14 +52,18 @@ public class IceSpike {
                 float fx = -0.25F - x;
                 for (int z = -radius; z <= radius; z++) {
                     float fz = -0.25F - z;
-                    if (x == 0 && z == 0 || fx * fx + fz * fz <= f * f && (x != Math.abs(radius) && z != Math.abs(radius) || random.nextFloat() <= 0.75F)) {
+                    if (x == 0 && z == 0 || fx * fx + fz * fz <= f * f && (
+                        x != Math.abs(radius) && z != Math.abs(radius)
+                            || random.nextFloat() <= 0.75F)) {
                         // tip shape in top direction
-                        Block block = world.getBlockAt(sourceX + x, sourceY + tipOffset + y, sourceZ + z);
+                        Block block = world
+                            .getBlockAt(sourceX + x, sourceY + tipOffset + y, sourceZ + z);
                         if (Arrays.asList(MATERIALS).contains(block.getType())) {
                             block.setType(Material.PACKED_ICE);
                         }
                         if (radius > 1 && y != 0) { // same shape in bottom direction
-                            block = world.getBlockAt(sourceX + x, sourceY + tipOffset - y, sourceZ + z);
+                            block = world
+                                .getBlockAt(sourceX + x, sourceY + tipOffset - y, sourceZ + z);
                             if (Arrays.asList(MATERIALS).contains(block.getType())) {
                                 block.setType(Material.PACKED_ICE);
                             }

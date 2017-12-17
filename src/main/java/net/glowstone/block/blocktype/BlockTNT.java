@@ -16,24 +16,27 @@ public class BlockTNT extends BlockType {
     /**
      * Convert a TNT block into a primed TNT entity.
      *
-     * @param tntBlock           The block to ignite.
+     * @param tntBlock The block to ignite.
      * @param ignitedByExplosion True if another explosion caused this ignition.
      */
     public static void igniteBlock(GlowBlock tntBlock, boolean ignitedByExplosion) {
         tntBlock.setType(Material.AIR);
         World world = tntBlock.getWorld();
-        GlowTNTPrimed tnt = (GlowTNTPrimed) world.spawnEntity(tntBlock.getLocation().add(0.5, 0, 0.5), EntityType.PRIMED_TNT);
+        GlowTNTPrimed tnt = (GlowTNTPrimed) world
+            .spawnEntity(tntBlock.getLocation().add(0.5, 0, 0.5), EntityType.PRIMED_TNT);
         tnt.setIgnitedByExplosion(ignitedByExplosion);
         world.playSound(tntBlock.getLocation(), Sound.ENTITY_TNT_PRIMED, 1, 1);
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 

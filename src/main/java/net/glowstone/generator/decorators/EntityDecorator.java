@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators;
 
+import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,8 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.Random;
 
 public class EntityDecorator extends BlockPopulator {
 
@@ -62,7 +61,8 @@ public class EntityDecorator extends BlockPopulator {
         int sourceZ = chunk.getZ() << 4;
         EntityType type = entityTypes[random.nextInt(entityTypes.length)];
         int centerX = sourceX + random.nextInt(16), centerZ = sourceZ + random.nextInt(16);
-        int count = minGroup == maxGroup ? minGroup : random.nextInt(maxGroup - minGroup) + minGroup, range = 5;
+        int count = minGroup == maxGroup ? minGroup
+            : random.nextInt(maxGroup - minGroup) + minGroup, range = 5;
         int attempts = 5;
         for (int i = 0; i < count; i++) {
             if (attempts == 0) {
@@ -73,7 +73,9 @@ public class EntityDecorator extends BlockPopulator {
             double x = radius * Math.sin(angle) + centerX;
             double z = radius * Math.cos(angle) + centerZ;
             Block block = world.getHighestBlockAt(new Location(world, x, 0, z));
-            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
+            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER
+                || block.getType() == Material.LAVA
+                || block.getType() == Material.STATIONARY_LAVA) {
                 i--;
                 attempts--;
                 continue;

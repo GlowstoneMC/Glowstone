@@ -1,5 +1,8 @@
 package net.glowstone.generator.populators;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import net.glowstone.generator.decorators.nether.FireDecorator;
 import net.glowstone.generator.decorators.nether.GlowstoneDecorator;
 import net.glowstone.generator.decorators.nether.LavaDecorator;
@@ -9,10 +12,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class NetherPopulator extends BlockPopulator {
 
@@ -25,8 +24,10 @@ public class NetherPopulator extends BlockPopulator {
     private final FireDecorator fireDecorator = new FireDecorator();
     private final GlowstoneDecorator glowstoneDecorator1 = new GlowstoneDecorator(true);
     private final GlowstoneDecorator glowstoneDecorator2 = new GlowstoneDecorator();
-    private final MushroomDecorator brownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
-    private final MushroomDecorator redMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
+    private final MushroomDecorator brownMushroomDecorator = new MushroomDecorator(
+        Material.BROWN_MUSHROOM);
+    private final MushroomDecorator redMushroomDecorator = new MushroomDecorator(
+        Material.RED_MUSHROOM);
     private final LavaDecorator lavaDecorator = new LavaDecorator();
 
     public NetherPopulator() {

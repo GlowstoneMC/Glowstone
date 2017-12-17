@@ -13,7 +13,8 @@ public class GlowSign extends GlowBlockState implements Sign {
     public GlowSign(GlowBlock block) {
         super(block);
         if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
-            throw new IllegalArgumentException("GlowSign: expected WALL_SIGN or SIGN_POST, got " + block.getType());
+            throw new IllegalArgumentException(
+                "GlowSign: expected WALL_SIGN or SIGN_POST, got " + block.getType());
         }
         lines = getBlockEntity().getLines();
     }

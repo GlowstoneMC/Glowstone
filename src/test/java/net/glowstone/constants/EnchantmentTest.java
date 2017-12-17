@@ -1,21 +1,20 @@
 package net.glowstone.constants;
 
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentWrapper;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  * Tests for {@link GlowEnchantment}.
@@ -41,7 +40,8 @@ public class EnchantmentTest {
         Field[] fields = Enchantment.class.getFields();
         List<Object[]> result = new ArrayList<>(fields.length);
         for (Field field : Enchantment.class.getFields()) {
-            if (field.getType() == Enchantment.class && (field.getModifiers() & STATIC_FINAL) == STATIC_FINAL) {
+            if (field.getType() == Enchantment.class
+                && (field.getModifiers() & STATIC_FINAL) == STATIC_FINAL) {
                 result.add(new Object[]{field});
             }
         }
@@ -57,7 +57,8 @@ public class EnchantmentTest {
         assertThat("missing from byName", Enchantment.getByName(enchant.getName()), is(enchant));
         assertThat("missing from byId", Enchantment.getById(enchant.getId()), is(enchant));
         assertThat("wrong start level", enchant.getStartLevel(), is(1));
-        assertThat("weird max level: " + enchant.getMaxLevel(), enchant.getMaxLevel() >= 1 && enchant.getMaxLevel() <= 5, is(true));
+        assertThat("weird max level: " + enchant.getMaxLevel(),
+            enchant.getMaxLevel() >= 1 && enchant.getMaxLevel() <= 5, is(true));
         assertThat("missing item target", enchant.getItemTarget(), notNullValue());
     }
 

@@ -13,7 +13,11 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 
 /**
@@ -73,7 +77,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     // Internals
 
     public static boolean canEquipInHelmetSlot(Material material) {
-        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN || material == Material.SKULL_ITEM;
+        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN
+            || material == Material.SKULL_ITEM;
     }
 
     /**
@@ -111,7 +116,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         GlowInventory top = (GlowInventory) view.getTopInventory();
 
         // If this is the default inventory try to equip the item as armor first
@@ -376,7 +382,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
-            if (stack != null && (type == null || stack.getType() == type) && (data == null || stack.getData().equals(data))) {
+            if (stack != null && (type == null || stack.getType() == type) && (data == null || stack
+                .getData().equals(data))) {
                 setItem(i, InventoryUtil.createEmptyStack());
                 if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared
@@ -393,7 +400,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
-            if (stack != null && (id == -1 || stack.getTypeId() == id) && (data == -1 || stack.getData().getData() == data)) {
+            if (stack != null && (id == -1 || stack.getTypeId() == id) && (data == -1
+                || stack.getData().getData() == data)) {
                 setItem(i, InventoryUtil.createEmptyStack());
                 if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared

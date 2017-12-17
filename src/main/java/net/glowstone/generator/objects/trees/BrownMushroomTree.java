@@ -1,31 +1,33 @@
 package net.glowstone.generator.objects.trees;
 
+import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
-import java.util.Random;
-
 public class BrownMushroomTree extends GenericTree {
+
     protected Material type;
 
     public BrownMushroomTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         type = Material.HUGE_MUSHROOM_1;
         setOverridables(
-                Material.AIR,
-                Material.LEAVES,
-                Material.LEAVES_2
+            Material.AIR,
+            Material.LEAVES,
+            Material.LEAVES_2
         );
         setHeight(random.nextInt(3) + 4);
     }
 
     @Override
     public boolean canPlaceOn() {
-        BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
-        return state.getType() == Material.GRASS || state.getType() == Material.DIRT || state.getType() == Material.MYCEL;
+        BlockState state = delegate
+            .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+        return state.getType() == Material.GRASS || state.getType() == Material.DIRT
+            || state.getType() == Material.MYCEL;
     }
 
     @Override
@@ -47,7 +49,8 @@ public class BrownMushroomTree extends GenericTree {
                         // skip source block check
                         if (y != loc.getBlockY() || x != loc.getBlockX() || z != loc.getBlockZ()) {
                             // we can overlap leaves around
-                            Material type = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
+                            Material type = delegate.getBlockState(loc.getWorld(), x, y, z)
+                                .getType();
                             if (!overridables.contains(type)) {
                                 return false;
                             }
@@ -69,7 +72,8 @@ public class BrownMushroomTree extends GenericTree {
 
         // generate the stem
         for (int y = 0; y < height; y++) {
-            delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ(), type, 10); // stem texture
+            delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
+                loc.getBlockZ(), type, 10); // stem texture
         }
 
         // get the mushroom's cap Y start
@@ -110,26 +114,33 @@ public class BrownMushroomTree extends GenericTree {
 
                         // excludes the real corners of the cap structure
                         if ((x == loc.getBlockX() - radius || x == loc.getBlockX() + radius)
-                                && (z == loc.getBlockZ() - radius || z == loc.getBlockZ() + radius)) {
+                            && (z == loc.getBlockZ() - radius || z == loc.getBlockZ() + radius)) {
                             continue;
                         }
 
                         // mushroom's cap corners treatment
                         if (x == loc.getBlockX() - (radius - 1) && z == loc.getBlockZ() - radius) {
                             data = 1; // cap texture on top, west and north
-                        } else if (x == loc.getBlockX() - radius && z == loc.getBlockZ() - (radius - 1)) {
+                        } else if (x == loc.getBlockX() - radius && z == loc.getBlockZ() - (radius
+                            - 1)) {
                             data = 1; // cap texture on top, west and north
-                        } else if (x == loc.getBlockX() + radius - 1 && z == loc.getBlockZ() - radius) {
+                        } else if (x == loc.getBlockX() + radius - 1
+                            && z == loc.getBlockZ() - radius) {
                             data = 3; // cap texture on top, north and east
-                        } else if (x == loc.getBlockX() + radius && z == loc.getBlockZ() - (radius - 1)) {
+                        } else if (x == loc.getBlockX() + radius && z == loc.getBlockZ() - (radius
+                            - 1)) {
                             data = 3; // cap texture on top, north and east
-                        } else if (x == loc.getBlockX() - (radius - 1) && z == loc.getBlockZ() + radius) {
+                        } else if (x == loc.getBlockX() - (radius - 1)
+                            && z == loc.getBlockZ() + radius) {
                             data = 7; // cap texture on top, south and west
-                        } else if (x == loc.getBlockX() - radius && z == loc.getBlockZ() + radius - 1) {
+                        } else if (x == loc.getBlockX() - radius
+                            && z == loc.getBlockZ() + radius - 1) {
                             data = 7; // cap texture on top, south and west
-                        } else if (x == loc.getBlockX() + radius - 1 && z == loc.getBlockZ() + radius) {
+                        } else if (x == loc.getBlockX() + radius - 1
+                            && z == loc.getBlockZ() + radius) {
                             data = 9; // cap texture on top, east and south
-                        } else if (x == loc.getBlockX() + radius && z == loc.getBlockZ() + radius - 1) {
+                        } else if (x == loc.getBlockX() + radius
+                            && z == loc.getBlockZ() + radius - 1) {
                             data = 9; // cap texture on top, east and south
                         }
                     }

@@ -1,11 +1,10 @@
 package net.glowstone.generator.objects;
 
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
-
-import java.util.Random;
 
 public class OreVein {
 
@@ -46,10 +45,12 @@ public class OreVein {
                         double pY = (y + 0.5D - originY) / vRadius;
                         pY *= pY;
                         if (pX + pY < 1) {
-                            for (int z = (int) (originZ - hRadius); z <= (int) (originZ + hRadius); z++) {
+                            for (int z = (int) (originZ - hRadius); z <= (int) (originZ + hRadius);
+                                z++) {
                                 double pZ = (z + 0.5D - originZ) / hRadius;
                                 pZ *= pZ;
-                                if (pX + pY + pZ < 1 && world.getBlockAt(x, y, z).getType() == targetType) {
+                                if (pX + pY + pZ < 1
+                                    && world.getBlockAt(x, y, z).getType() == targetType) {
                                     BlockState state = world.getBlockAt(x, y, z).getState();
                                     state.setType(type);
                                     state.setData(data);

@@ -1,5 +1,6 @@
 package net.glowstone.block;
 
+import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Location;
@@ -9,8 +10,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-
-import java.util.List;
 
 /**
  * Represents a state a block could be in as well as any block entities.
@@ -212,25 +211,33 @@ public class GlowBlockState implements BlockState {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         GlowBlockState other = (GlowBlockState) obj;
         if (data == null) {
-            if (other.data != null)
+            if (other.data != null) {
                 return false;
-        } else if (!data.equals(other.data))
+            }
+        } else if (!data.equals(other.data)) {
             return false;
-        if (type != other.type)
+        }
+        if (type != other.type) {
             return false;
+        }
         if (world == null) {
-            if (other.world != null)
+            if (other.world != null) {
                 return false;
-        } else if (!world.equals(other.world))
+            }
+        } else if (!world.equals(other.world)) {
             return false;
+        }
         return x == other.x && y == other.y && z == other.z;
     }
 }

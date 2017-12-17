@@ -1,10 +1,10 @@
 package net.glowstone.entity.ai;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowLivingEntity;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public abstract class EntityTask implements Comparable<EntityTask> {
+
     private final String name;
     private boolean executing = false;
     private int duration = 0;
@@ -38,7 +38,9 @@ public abstract class EntityTask implements Comparable<EntityTask> {
             return;
         }
         if (!executing && shouldStart(entity)) {
-            duration = getDurationMin() == getDurationMax() ? getDurationMin() : ThreadLocalRandom.current().nextInt(getDurationMax() - getDurationMin()) + getDurationMin();
+            duration = getDurationMin() == getDurationMax() ? getDurationMin()
+                : ThreadLocalRandom.current().nextInt(getDurationMax() - getDurationMin())
+                    + getDurationMin();
             executing = true;
             start(entity);
         }
@@ -79,7 +81,9 @@ public abstract class EntityTask implements Comparable<EntityTask> {
      * @param entity the entity in question.
      */
     public final void resume(GlowLivingEntity entity) {
-        if (!isPaused()) return;
+        if (!isPaused()) {
+            return;
+        }
         paused = false;
     }
 
@@ -89,7 +93,9 @@ public abstract class EntityTask implements Comparable<EntityTask> {
      * @param entity the entity in question.
      */
     public final void pause(GlowLivingEntity entity) {
-        if (isPaused()) return;
+        if (isPaused()) {
+            return;
+        }
         reset(entity);
         paused = true;
     }
@@ -104,16 +110,14 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     }
 
     /**
-     * The minimum duration of this task.
-     * This value is ignored if this task is instant.
+     * The minimum duration of this task. This value is ignored if this task is instant.
      *
      * @return the minimum duration of this task, in ticks.
      */
     public abstract int getDurationMin();
 
     /**
-     * The maximum duration of this task.
-     * This value is ignored if this task is instant.
+     * The maximum duration of this task. This value is ignored if this task is instant.
      *
      * @return the maximum duration of this task, in ticks.
      */
@@ -149,8 +153,7 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     public abstract void execute(GlowLivingEntity entity);
 
     /**
-     * Whether this task is instant.
-     * An "instant" task will be executed every tick while the entity is alive.
+     * Whether this task is instant. An "instant" task will be executed every tick while the entity is alive.
      *
      * @return the entity in question.
      */

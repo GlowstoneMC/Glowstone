@@ -7,9 +7,9 @@ import org.json.simple.JSONObject;
 @Data
 public class EntityLootTable {
 
+    private static final LootItem[] NO_ITEMS = new LootItem[0];
     private final LootItem[] items;
     private final LootRandomValues experience;
-    private static final LootItem[] NO_ITEMS = new LootItem[0];
 
     public EntityLootTable(JSONObject object) {
         if (object.containsKey("experience")) {

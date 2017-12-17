@@ -1,5 +1,9 @@
 package net.glowstone.command.minecraft;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
@@ -11,15 +15,11 @@ import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 public class FunctionCommand extends VanillaCommand {
 
     public FunctionCommand() {
-        super("function", "Execute a function", "/function <name> [if <selector>|unless <selector>]", Collections.emptyList());
+        super("function", "Execute a function",
+            "/function <name> [if <selector>|unless <selector>]", Collections.emptyList());
         setPermission("minecraft.command.function");
     }
 
@@ -47,12 +47,14 @@ public class FunctionCommand extends VanillaCommand {
             Entity[] matched = target.getMatched(location);
             if (condition.equals("if")) {
                 if (matched.length == 0) {
-                    sender.sendMessage("Skipped execution of function '" + function.getFullName() + "'");
+                    sender.sendMessage(
+                        "Skipped execution of function '" + function.getFullName() + "'");
                     return false;
                 }
             } else if (condition.equals("unless")) {
                 if (matched.length > 0) {
-                    sender.sendMessage("Skipped execution of function '" + function.getFullName() + "'");
+                    sender.sendMessage(
+                        "Skipped execution of function '" + function.getFullName() + "'");
                     return false;
                 }
             } else {
@@ -65,10 +67,12 @@ public class FunctionCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
             GlowWorld world = CommandUtils.getWorld(sender);
-            return StringUtil.copyPartialMatches(args[0], world.getFunctions().keySet(), new ArrayList<>(world.getFunctions().size()));
+            return StringUtil.copyPartialMatches(args[0], world.getFunctions().keySet(),
+                new ArrayList<>(world.getFunctions().size()));
         }
         return super.tabComplete(sender, alias, args);
     }

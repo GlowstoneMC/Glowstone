@@ -1,24 +1,26 @@
 package net.glowstone.generator.objects;
 
+import java.util.Arrays;
+import java.util.Random;
 import net.glowstone.constants.GlowBiomeClimate;
-import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.DoublePlant;
-
-import java.util.Arrays;
-import java.util.Random;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 public class Lake {
+
     private static final double MAX_DIAMETER = 16.0D;
     private static final double MAX_HEIGHT = 8.0D;
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
-    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
-            Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
-    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_ISLAND_SHORE};
+    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER,
+        Material.RED_ROSE,
+        Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
+    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND,
+        Biome.MUSHROOM_ISLAND_SHORE};
     private final Material type;
 
     public Lake(Material type) {
@@ -57,7 +59,8 @@ public class Lake {
             return;
         }
 
-        Biome biome = world.getBiome(sourceX + 8 + (int) MAX_DIAMETER / 2, sourceZ + 8 + (int) MAX_DIAMETER / 2);
+        Biome biome = world
+            .getBiome(sourceX + 8 + (int) MAX_DIAMETER / 2, sourceZ + 8 + (int) MAX_DIAMETER / 2);
         boolean mycelBiome = Arrays.asList(MYCEL_BIOMES).contains(biome);
 
         for (int x = 0; x < (int) MAX_DIAMETER; x++) {
@@ -68,8 +71,9 @@ public class Lake {
                         Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
                         Block blockAbove = block.getRelative(BlockFace.UP);
                         if (block.getType() == Material.DIRT &&
-                                (blockAbove.getType() == Material.LOG || blockAbove.getType() == Material.LOG_2) ||
-                                block.getType() == Material.LOG || block.getType() == Material.LOG_2) {
+                            (blockAbove.getType() == Material.LOG
+                                || blockAbove.getType() == Material.LOG_2) ||
+                            block.getType() == Material.LOG || block.getType() == Material.LOG_2) {
                             continue;
                         }
                         if (y >= (int) MAX_HEIGHT / 2) {
@@ -77,9 +81,12 @@ public class Lake {
                             for (Material mat : PLANT_TYPES) {
                                 if (blockAbove.getType() == mat) {
                                     if (mat == Material.DOUBLE_PLANT) {
-                                        Block blockAboveBlock = blockAbove.getRelative(BlockFace.UP);
-                                        if (blockAboveBlock.getState().getData() instanceof DoublePlant &&
-                                                ((DoublePlant) blockAboveBlock.getState().getData()).getSpecies() == DoublePlantSpecies.PLANT_APEX) {
+                                        Block blockAboveBlock = blockAbove
+                                            .getRelative(BlockFace.UP);
+                                        if (blockAboveBlock.getState()
+                                            .getData() instanceof DoublePlant &&
+                                            ((DoublePlant) blockAboveBlock.getState().getData())
+                                                .getSpecies() == DoublePlantSpecies.PLANT_APEX) {
                                             blockAboveBlock.setType(Material.AIR);
                                         }
                                     }
@@ -87,11 +94,14 @@ public class Lake {
                                     break;
                                 }
                             }
-                            if (this.type == Material.STATIONARY_WATER && (block.getType() == Material.ICE || block.getType() == Material.PACKED_ICE)) {
+                            if (this.type == Material.STATIONARY_WATER && (
+                                block.getType() == Material.ICE
+                                    || block.getType() == Material.PACKED_ICE)) {
                                 type = block.getType();
                             }
                         } else if (y == MAX_HEIGHT / 2 - 1) {
-                            if (type == Material.STATIONARY_WATER && GlowBiomeClimate.isCold(world.getBiome(sourceX + x, sourceZ + z),
+                            if (type == Material.STATIONARY_WATER && GlowBiomeClimate
+                                .isCold(world.getBiome(sourceX + x, sourceZ + z),
                                     sourceX + x, y, sourceZ + z)) {
                                 type = Material.ICE;
                             }
@@ -107,8 +117,9 @@ public class Lake {
                 for (int y = (int) MAX_HEIGHT / 2; y < (int) MAX_HEIGHT; y++) {
                     if (isLakeBlock(lakeMap, x, y, z)) {
                         Block block = world.getBlockAt(sourceX + x, sourceY + y - 1, sourceZ + z);
-                        if (block.getType() == Material.DIRT && !block.getRelative(BlockFace.UP).getType().isOccluding() &&
-                                block.getRelative(BlockFace.UP).getLightLevel() > 0) {
+                        if (block.getType() == Material.DIRT && !block.getRelative(BlockFace.UP)
+                            .getType().isOccluding() &&
+                            block.getRelative(BlockFace.UP).getLightLevel() > 0) {
                             block.setType(mycelBiome ? Material.MYCEL : Material.GRASS);
                         }
                     }
@@ -122,16 +133,18 @@ public class Lake {
             for (int z = 0; z < MAX_DIAMETER; z++) {
                 for (int y = 0; y < MAX_HEIGHT; y++) {
                     if (!isLakeBlock(lakeMap, x, y, z) &&
-                            (x < MAX_DIAMETER - 1 && isLakeBlock(lakeMap, x + 1, y, z) ||
-                                    x > 0 && isLakeBlock(lakeMap, x - 1, y, z) ||
-                                    z < MAX_DIAMETER - 1 && isLakeBlock(lakeMap, x, y, z + 1) ||
-                                    z > 0 && isLakeBlock(lakeMap, x, y, z - 1) ||
-                                    z < MAX_HEIGHT - 1 && isLakeBlock(lakeMap, x, y + 1, z) ||
-                                    z > 0 && isLakeBlock(lakeMap, x, y - 1, z))) {
+                        (x < MAX_DIAMETER - 1 && isLakeBlock(lakeMap, x + 1, y, z) ||
+                            x > 0 && isLakeBlock(lakeMap, x - 1, y, z) ||
+                            z < MAX_DIAMETER - 1 && isLakeBlock(lakeMap, x, y, z + 1) ||
+                            z > 0 && isLakeBlock(lakeMap, x, y, z - 1) ||
+                            z < MAX_HEIGHT - 1 && isLakeBlock(lakeMap, x, y + 1, z) ||
+                            z > 0 && isLakeBlock(lakeMap, x, y - 1, z))) {
                         Block block = world.getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
-                        if (y >= MAX_HEIGHT / 2 && (block.isLiquid() || block.getType() == Material.ICE)) {
+                        if (y >= MAX_HEIGHT / 2 && (block.isLiquid()
+                            || block.getType() == Material.ICE)) {
                             return false; // there's already some liquids above
-                        } else if (y < MAX_HEIGHT / 2 && !block.getType().isSolid() && block.getType() != type) {
+                        } else if (y < MAX_HEIGHT / 2 && !block.getType().isSolid()
+                            && block.getType() != type) {
                             return false; // bottom must be solid and do not overlap with another liquid type
                         }
                     }

@@ -1,5 +1,10 @@
 package net.glowstone.command.minecraft;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
+
+import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
@@ -12,17 +17,10 @@ import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.util.Collections;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class, GlowServer.class, GlowWorld.class})
@@ -46,22 +44,26 @@ public class SetWorldSpawnCommandTest {
 
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opPlayer.getName()).thenReturn("ChuckNorris");
-        Mockito.when(((Entity)opPlayer).getLocation()).thenReturn(new Location(world, 10.5, 20.0, 30.5));
+        Mockito.when(((Entity) opPlayer).getLocation())
+            .thenReturn(new Location(world, 10.5, 20.0, 30.5));
 
         Mockito.when(world.getMaxHeight()).thenReturn(50);
 
-        PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class)).toReturn(world);
+        PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
+            .toReturn(world);
     }
 
     @Test
     public void testExecuteFailsWithoutPermission() {
         assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
+        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
+            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test
     public void testExecuteFailsWithoutWorld() {
-        PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class)).toReturn(null);
+        PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
+            .toReturn(null);
 
         assertThat(command.execute(sender, "label", new String[0]), is(false));
     }
@@ -69,38 +71,45 @@ public class SetWorldSpawnCommandTest {
     @Test
     public void testExecuteFailsWithOneParameter() {
         assertThat(command.execute(opSender, "label", new String[1]), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
+        Mockito.verify(opSender)
+            .sendMessage(eq(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
     }
 
     @Test
     public void testExecuteFailsWithTwoParameters() {
         assertThat(command.execute(opSender, "label", new String[2]), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
+        Mockito.verify(opSender)
+            .sendMessage(eq(ChatColor.RED + "Usage: /setworldspawn OR /setworldspawn <x> <y> <z>"));
     }
 
     @Test
     public void testExecuteFailsWithDefaultLocation() {
         assertThat(command.execute(opSender, "label", new String[0]), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Default coordinates can not be used without a physical user."));;
+        Mockito.verify(opSender).sendMessage(
+            eq(ChatColor.RED + "Default coordinates can not be used without a physical user."));
+        ;
     }
 
     @Test
     public void testExecuteFailsWithRelativeLocation() {
         assertThat(command.execute(opSender, "label", new String[]{"~2", "3", "4"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Relative coordinates can not be used without a physical user."));
+        Mockito.verify(opSender).sendMessage(
+            eq(ChatColor.RED + "Relative coordinates can not be used without a physical user."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooHigh() {
         assertThat(command.execute(opSender, "label", new String[]{"2", "10000", "4"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'10000' is too high for the current world. Max value is '50'."));
+        Mockito.verify(opSender).sendMessage(
+            eq(ChatColor.RED + "'10000' is too high for the current world. Max value is '50'."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooSmall() {
         assertThat(command.execute(opSender, "label", new String[]{"2", "-10000", "4"}), is(false));
         // -10001 because of the floor, it's not supposed to be negative
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The y coordinate (-10000) is too small, it must be at least 0."));
+        Mockito.verify(opSender).sendMessage(
+            eq(ChatColor.RED + "The y coordinate (-10000) is too small, it must be at least 0."));
     }
 
     @Test
@@ -123,8 +132,11 @@ public class SetWorldSpawnCommandTest {
 
     @Test
     public void testTabComplete() {
-        assertThat(command.tabComplete(opSender, "alias", new String[0]), is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{"test"}), is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{"test", "test"}), is(Collections.emptyList()));
+        assertThat(command.tabComplete(opSender, "alias", new String[0]),
+            is(Collections.emptyList()));
+        assertThat(command.tabComplete(opSender, "alias", new String[]{"test"}),
+            is(Collections.emptyList()));
+        assertThat(command.tabComplete(opSender, "alias", new String[]{"test", "test"}),
+            is(Collections.emptyList()));
     }
 }

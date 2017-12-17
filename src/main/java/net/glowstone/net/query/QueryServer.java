@@ -1,16 +1,15 @@
 package net.glowstone.net.query;
 
 import io.netty.channel.ChannelFuture;
-import net.glowstone.GlowServer;
-import net.glowstone.net.GlowDatagramServer;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.GlowServer;
+import net.glowstone.net.GlowDatagramServer;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Implementation of a server for the minecraft server query protocol.
@@ -18,6 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @see <a href="http://wiki.vg/Query">Protocol Specifications</a>
  */
 public class QueryServer extends GlowDatagramServer {
+
     /**
      * Maps each {@link InetSocketAddress} of a client to its challenge token.
      */
@@ -74,7 +74,7 @@ public class QueryServer extends GlowDatagramServer {
      * Verify that the request is using the correct challenge token.
      *
      * @param address The sender address.
-     * @param token   The token.
+     * @param token The token.
      * @return {@code true} if the token is valid.
      */
     public boolean verifyChallengeToken(InetSocketAddress address, int token) {
@@ -103,6 +103,7 @@ public class QueryServer extends GlowDatagramServer {
      * Inner class for resetting the challenge tokens every 30 seconds.
      */
     private class ChallengeTokenFlushTask extends BukkitRunnable {
+
         @Override
         public void run() {
             flushChallengeTokens();

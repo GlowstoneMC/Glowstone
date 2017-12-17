@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.ClientSettingsMessage;
 
-import java.io.IOException;
-
 public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
+
     @Override
     public ClientSettingsMessage decode(ByteBuf buf) throws IOException {
         String locale = ByteBufUtils.readUTF8(buf);

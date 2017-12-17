@@ -49,7 +49,8 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, x, y, z, pitch, yaw),
+            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, x, y, z,
+                pitch, yaw),
             new EntityMetadataMessage(id, metadata.getEntryList())
         );
     }
@@ -85,7 +86,8 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         }
 
         if (cause != DamageCause.ENTITY_EXPLOSION) {
-            ExplosionPrimeEvent event = EventFactory.callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
+            ExplosionPrimeEvent event = EventFactory
+                .callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
 
             if (!event.isCancelled()) {
                 Location location = getLocation();
@@ -120,9 +122,11 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         if (location == null) {
             metadata.set(MetadataIndex.ENDERCRYSTAL_BEAM_TARGET, (BlockVector) null);
         } else if (!location.getWorld().equals(getWorld())) {
-            throw new IllegalArgumentException("Cannot set beam target location to different world");
+            throw new IllegalArgumentException(
+                "Cannot set beam target location to different world");
         } else {
-            metadata.set(MetadataIndex.ENDERCRYSTAL_BEAM_TARGET, new BlockVector(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+            metadata.set(MetadataIndex.ENDERCRYSTAL_BEAM_TARGET,
+                new BlockVector(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
         }
     }
 }

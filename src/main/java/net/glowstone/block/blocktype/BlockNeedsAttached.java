@@ -11,7 +11,8 @@ import org.bukkit.material.SimpleAttachableMaterialData;
 public class BlockNeedsAttached extends BlockType {
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         if (face == getAttachedFace(block)) {
             updatePhysics(block);
         }
@@ -23,13 +24,15 @@ public class BlockNeedsAttached extends BlockType {
         if (attachedTo == null) {
             return;
         }
-        if (me.getRelative(attachedTo).getType() == Material.AIR || !canPlaceAt(me, attachedTo.getOppositeFace())) {
+        if (me.getRelative(attachedTo).getType() == Material.AIR || !canPlaceAt(me,
+            attachedTo.getOppositeFace())) {
             dropMe(me);
         }
     }
 
     public boolean canAttachTo(GlowBlock block, BlockFace against) {
-        return !(ItemTable.instance().getBlock(block.getRelative(against.getOppositeFace()).getType()) instanceof BlockNeedsAttached);
+        return !(ItemTable.instance().getBlock(
+            block.getRelative(against.getOppositeFace()).getType()) instanceof BlockNeedsAttached);
     }
 
     @Override

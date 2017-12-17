@@ -18,9 +18,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.StringUtil;
 
 public class EffectCommand extends VanillaCommand {
-    
+
     private static final List<String> VANILLA_IDS = GlowPotionEffect.getVanillaIds();
-    
+
     public EffectCommand() {
         super("effect",
             "Gives a player an effect",
@@ -28,21 +28,21 @@ public class EffectCommand extends VanillaCommand {
             Collections.emptyList());
         setPermission("minecraft.command.effect");
     }
-    
+
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
             return false;
         }
-        
+
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage:" + usageMessage);
             return false;
         }
-        
+
         String name = args[0];
         List<GlowPlayer> players;
-        
+
         if (name.startsWith("@") && name.length() >= 2) {
             CommandTarget target = new CommandTarget(sender, name);
             players = Arrays.stream(target.getMatched(CommandUtils.getLocation(sender)))
@@ -58,7 +58,7 @@ public class EffectCommand extends VanillaCommand {
                 players = Collections.singletonList(player);
             }
         }
-        
+
         if (args[1].equals("clear")) {
             for (GlowPlayer player : players) {
                 for (PotionEffect potionEffect : player.getActivePotionEffects()) {
@@ -73,7 +73,7 @@ public class EffectCommand extends VanillaCommand {
                 sender.sendMessage(ChatColor.RED + "Potion effect " + args[1] + " is unknown");
                 return false;
             }
-            
+
             int duration = 30 * 20;
             if (args.length >= 3 && args[2] != null) {
                 try {
@@ -83,7 +83,7 @@ public class EffectCommand extends VanillaCommand {
                     return false;
                 }
             }
-            
+
             int amplifier = 1;
             if (args.length >= 4 && args[3] != null) {
                 try {
@@ -93,12 +93,12 @@ public class EffectCommand extends VanillaCommand {
                     return false;
                 }
             }
-            
+
             boolean hideParticles = false;
             if (args.length >= 5 && args[4] != null) {
                 hideParticles = Boolean.parseBoolean(args[4]);
             }
-            
+
             for (GlowPlayer player : players) {
                 player.addPotionEffect(
                     new PotionEffect(effectType, duration, amplifier, false, hideParticles));
@@ -110,20 +110,23 @@ public class EffectCommand extends VanillaCommand {
             return true;
         }
     }
-    
+
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args == null) {
             return Collections.emptyList();
         } else if (args.length == 2) {
             String effectName = args[1];
-            
+
             if (!effectName.startsWith("minecraft:")) {
                 final int colonIndex = effectName.indexOf(':');
-                effectName = "minecraft:" + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
+                effectName =
+                    "minecraft:" + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
             }
-            
-            return StringUtil.copyPartialMatches(effectName, VANILLA_IDS, new ArrayList<>(VANILLA_IDS.size()));
+
+            return StringUtil
+                .copyPartialMatches(effectName, VANILLA_IDS, new ArrayList<>(VANILLA_IDS.size()));
         }
         return super.tabComplete(sender, alias, args);
     }

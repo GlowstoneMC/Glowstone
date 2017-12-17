@@ -1,5 +1,9 @@
 package net.glowstone.net;
 
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.util.UuidUtils;
@@ -7,11 +11,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Container for proxy (e.g. BungeeCord) player data spoofing.
@@ -37,7 +36,7 @@ public final class ProxyData {
     /**
      * Create a proxy data structure for a session from the given source text.
      *
-     * @param session    The session to create the data for.
+     * @param session The session to create the data for.
      * @param sourceText Contents of the hostname field of the handshake.
      * @throws Exception if an error occurs parsing the source text.
      */
@@ -149,13 +148,14 @@ public final class ProxyData {
     }
 
     /**
-     * Get a spoofed profile to use. Returns null if the proxy did not send a
-     * username as part of the payload.
+     * Get a spoofed profile to use. Returns null if the proxy did not send a username as part of the payload.
      *
      * @return The spoofed profile.
      */
     public PlayerProfile getProfile() {
-        if (name == null) return null;
+        if (name == null) {
+            return null;
+        }
         return new PlayerProfile(name, uuid, properties);
     }
 }

@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import java.util.Map;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
@@ -8,8 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import java.util.Map;
 
 public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 

@@ -1,15 +1,14 @@
 package net.glowstone.inventory;
 
 import com.google.common.collect.ImmutableList;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.BookMeta;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.TagType;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.BookMeta;
 
 /**
  * The ItemMeta for book and quill and written book items.
@@ -40,6 +39,12 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
     ////////////////////////////////////////////////////////////////////////////
     // Internal stuff
+
+    @Override
+    public BookMeta.Spigot spigot() {
+        return new BookMeta.Spigot() {
+        };
+    }
 
     @Override
     public BookMeta clone() {

@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.CraftingBookDataMessage;
 
-import java.io.IOException;
-
 public final class CraftingBookDataCodec implements Codec<CraftingBookDataMessage> {
+
     @Override
     public CraftingBookDataMessage decode(ByteBuf buf) throws IOException {
         int type = ByteBufUtils.readVarInt(buf);

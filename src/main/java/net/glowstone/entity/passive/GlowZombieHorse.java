@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ZombieHorse;
 
 public class GlowZombieHorse extends GlowUndeadHorse implements ZombieHorse {
+
     public GlowZombieHorse(Location location) {
         super(location, EntityType.ZOMBIE_HORSE, 15);
     }

@@ -1,13 +1,23 @@
 package net.glowstone.constants;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.bukkit.Color;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.potion.*;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionBrewer;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffectTypeWrapper;
+import org.bukkit.potion.PotionType;
 
 /**
  * Definitions of potion effect types.
@@ -17,11 +27,12 @@ public final class GlowPotionEffect extends PotionEffectType {
     private static final List<String> VANILLA_IDS = new ArrayList<>();
     private static final Map<String, PotionEffectType> BY_VANILLA_ID = new HashMap<>();
 
-    private final Impl impl;
-
     static {
-        VANILLA_IDS.addAll(Arrays.stream(Impl.values()).map(Impl::getVanillaId).collect(Collectors.toSet()));
+        VANILLA_IDS.addAll(
+            Arrays.stream(Impl.values()).map(Impl::getVanillaId).collect(Collectors.toSet()));
     }
+
+    private final Impl impl;
 
     private GlowPotionEffect(Impl impl) {
         super(impl.id);
@@ -98,6 +109,10 @@ public final class GlowPotionEffect extends PotionEffectType {
         return BY_VANILLA_ID.get(vanillaId);
     }
 
+    public static List<String> getVanillaIds() {
+        return VANILLA_IDS;
+    }
+
     @Override
     public String getName() {
         return impl.name();
@@ -110,10 +125,6 @@ public final class GlowPotionEffect extends PotionEffectType {
      */
     public String getVanillaId() {
         return impl.getVanillaId();
-    }
-
-    public static List<String> getVanillaIds() {
-        return VANILLA_IDS;
     }
 
     @Override
@@ -132,9 +143,9 @@ public final class GlowPotionEffect extends PotionEffectType {
     }
 
     /**
-     * Pulse this potion effect on a specified entity. If the potion effect
-     * is not applicable, nothing happens. For instant effects, will only
-     * have an effect if 'ticks' is 0.
+     * Pulse this potion effect on a specified entity.
+     *
+     * <p>If the potion effect is not applicable, nothing happens. For instant effects, will only have an effect if 'ticks' is 0.
      *
      * @param entity The entity to pulse on.
      * @param effect Information on the effect's state.
@@ -198,6 +209,7 @@ public final class GlowPotionEffect extends PotionEffectType {
     }
 
     private static class Brewer implements PotionBrewer {
+
         @Override
         public PotionEffect createEffect(PotionEffectType potion, int duration, int amplifier) {
             // todo: apply duration modifiers, etc.

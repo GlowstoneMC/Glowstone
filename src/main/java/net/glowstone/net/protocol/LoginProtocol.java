@@ -16,11 +16,13 @@ import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 
 public final class LoginProtocol extends GlowProtocol {
+
     public LoginProtocol() {
         super("LOGIN", 5);
 
         inbound(0x00, LoginStartMessage.class, LoginStartCodec.class, LoginStartHandler.class);
-        inbound(0x01, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class, EncryptionKeyResponseHandler.class);
+        inbound(0x01, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class,
+            EncryptionKeyResponseHandler.class);
 
         outbound(0x00, KickMessage.class, KickCodec.class);
         outbound(0x01, EncryptionKeyRequestMessage.class, EncryptionKeyRequestCodec.class);

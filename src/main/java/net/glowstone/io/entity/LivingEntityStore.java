@@ -1,5 +1,12 @@
 package net.glowstone.io.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 import net.glowstone.entity.AttributeManager;
 import net.glowstone.entity.AttributeManager.Modifier;
 import net.glowstone.entity.AttributeManager.Property;
@@ -10,14 +17,15 @@ import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LeashHitch;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
 
@@ -26,7 +34,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
     }
 
     public LivingEntityStore(Class<T> clazz, EntityType type) {
-        this(clazz, type.getName());
+        super(clazz, type);
     }
 
     // these tags that apply to living entities only are documented as global:
@@ -116,11 +124,14 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                         List<CompoundTag> modifierTags = tag.getCompoundList("Modifiers");
                         for (CompoundTag modifierTag : modifierTags) {
                             if (modifierTag.isDouble("Amount") && modifierTag.isString("Name") &&
-                                    modifierTag.isInt("Operation") && modifierTag.isLong("UUIDLeast") &&
-                                    modifierTag.isLong("UUIDMost")) {
+                                modifierTag.isInt("Operation") && modifierTag.isLong("UUIDLeast") &&
+                                modifierTag.isLong("UUIDMost")) {
                                 modifiers.add(new Modifier(
-                                        modifierTag.getString("Name"), new UUID(modifierTag.getLong("UUIDLeast"), modifierTag.getLong("UUIDMost")),
-                                        modifierTag.getDouble("Amount"), (byte) modifierTag.getInt("Operation")));
+                                    modifierTag.getString("Name"),
+                                    new UUID(modifierTag.getLong("UUIDLeast"),
+                                        modifierTag.getLong("UUIDMost")),
+                                    modifierTag.getDouble("Amount"),
+                                    (byte) modifierTag.getInt("Operation")));
                             }
                         }
                     }
@@ -130,7 +141,8 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             }
         }
 
-        if (compound.isByte("Leashed") && compound.getBool("Leashed") && !compound.isCompound("Leash")) {
+        if (compound.isByte("Leashed") && compound.getBool("Leashed") && !compound
+            .isCompound("Leash")) {
             // We know that there was something leashed, but not what entity it was
             // This can happen, when for example Minecart got leashed
             // We still have to make sure that we drop a Leash Item
@@ -145,7 +157,8 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                 int y = leash.getInt("Y");
                 int z = leash.getInt("Z");
 
-                LeashHitch leashHitch = GlowLeashHitch.getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
+                LeashHitch leashHitch = GlowLeashHitch
+                    .getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
                 entity.setLeashHolder(leashHitch);
             }
         }
@@ -156,7 +169,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         if (compound.isList("Equipment", TagType.COMPOUND)) {
             List<CompoundTag> list = compound.getCompoundList("Equipment");
 
-            equip.setItemInHand(getItem(list, 0));
+            equip.setItemInMainHand(getItem(list, 0));
             equip.setBoots(getItem(list, 1));
             equip.setLeggings(getItem(list, 2));
             equip.setChestplate(getItem(list, 3));
@@ -166,7 +179,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         if (compound.isList("DropChances", TagType.FLOAT)) {
             List<Float> list = compound.getList("DropChances", TagType.FLOAT);
 
-            equip.setItemInHandDropChance(getOrDefault(list, 0, 1f));
+            equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
             equip.setBootsDropChance(getOrDefault(list, 1, 1f));
             equip.setLeggingsDropChance(getOrDefault(list, 2, 1f));
             equip.setChestplateDropChance(getOrDefault(list, 3, 1f));
@@ -193,7 +206,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             if (compound.isList("HandDropChances", TagType.FLOAT)) {
                 List<Float> list = compound.getList("HandDropChances", TagType.FLOAT);
 
-                equip.setItemInHandDropChance(getOrDefault(list, 0, 1f));
+                equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
                 equip.setItemInOffHandDropChance(getOrDefault(list, 1, 1f));
             }
             if (compound.isList("ArmorDropChances", TagType.FLOAT)) {
@@ -264,8 +277,10 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                         modifierTag.putDouble("Amount", modifier.getAmount());
                         modifierTag.putString("Name", modifier.getName());
                         modifierTag.putInt("Operation", modifier.getOperation());
-                        modifierTag.putLong("UUIDLeast", modifier.getUuid().getLeastSignificantBits());
-                        modifierTag.putLong("UUIDMost", modifier.getUuid().getMostSignificantBits());
+                        modifierTag
+                            .putLong("UUIDLeast", modifier.getUuid().getLeastSignificantBits());
+                        modifierTag
+                            .putLong("UUIDMost", modifier.getUuid().getMostSignificantBits());
                         modifiers.add(modifierTag);
                     }
                     attribute.putCompoundList("Modifiers", modifiers);

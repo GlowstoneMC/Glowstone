@@ -28,11 +28,13 @@ public class ItemChorusFruit extends ItemFood {
             double deltaY = ThreadLocalRandom.current().nextDouble() * 16 - 8;
             double deltaZ = ThreadLocalRandom.current().nextDouble() * 16 - 8;
             attempt.setX(attempt.getX() + deltaX);
-            attempt.setY(Math.min(Math.max(attempt.getY() + deltaY, 0), player.getWorld().getMaxHeight() - 1));
+            attempt.setY(Math.min(Math.max(attempt.getY() + deltaY, 0),
+                player.getWorld().getMaxHeight() - 1));
             attempt.setZ(attempt.getZ() + deltaZ);
             attempt = getSafeLocation(attempt);
             if (attempt != null) {
-                player.getWorld().playSound(player.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1, 1);
+                player.getWorld().playSound(player.getLocation(), Sound.ITEM_CHORUS_FRUIT_TELEPORT,
+                    SoundCategory.PLAYERS, 1, 1);
                 player.teleport(attempt);
                 break;
             }
@@ -65,7 +67,8 @@ public class ItemChorusFruit extends ItemFood {
         }
         if (found) {
             loc.setY(yCoord);
-            loc.setX(loc.getBlockX() + 0.5); //TODO: Do a proper bounding box check instead of just centering the location
+            loc.setX(loc.getBlockX()
+                + 0.5); //TODO: Do a proper bounding box check instead of just centering the location
             loc.setZ(loc.getBlockZ() + 0.5);
             return loc;
         } else {

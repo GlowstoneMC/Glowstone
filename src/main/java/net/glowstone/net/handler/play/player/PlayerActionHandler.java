@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public final class PlayerActionHandler implements MessageHandler<GlowSession, PlayerActionMessage> {
+
     @Override
     public void handle(GlowSession session, PlayerActionMessage message) {
         GlowPlayer player = session.getPlayer();
@@ -38,8 +39,10 @@ public final class PlayerActionHandler implements MessageHandler<GlowSession, Pl
                 break;
             case 8: // start gliding
                 ItemStack chestplate = player.getInventory().getChestplate();
-                boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() < chestplate.getType().getMaxDurability();
-                if (!player.isOnGround() && !player.isGliding() && !player.isInWater() && hasElytra) {
+                boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA
+                    && chestplate.getDurability() < chestplate.getType().getMaxDurability();
+                if (!player.isOnGround() && !player.isGliding() && !player.isInWater()
+                    && hasElytra) {
                     player.setGliding(true);
                 }
         }

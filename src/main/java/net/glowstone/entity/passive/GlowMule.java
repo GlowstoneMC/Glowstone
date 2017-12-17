@@ -7,6 +7,7 @@ import org.bukkit.entity.Mule;
 import org.bukkit.inventory.Inventory;
 
 public class GlowMule extends GlowChestedHorse implements Mule {
+
     public GlowMule(Location location) {
         super(location, EntityType.MULE, 15);
     }

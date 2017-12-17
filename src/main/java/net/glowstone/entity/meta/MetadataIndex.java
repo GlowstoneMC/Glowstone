@@ -1,11 +1,66 @@
 package net.glowstone.entity.meta;
 
+import static net.glowstone.entity.meta.MetadataType.BLOCKID;
+import static net.glowstone.entity.meta.MetadataType.BOOLEAN;
+import static net.glowstone.entity.meta.MetadataType.BYTE;
+import static net.glowstone.entity.meta.MetadataType.DIRECTION;
+import static net.glowstone.entity.meta.MetadataType.FLOAT;
+import static net.glowstone.entity.meta.MetadataType.INT;
+import static net.glowstone.entity.meta.MetadataType.ITEM;
+import static net.glowstone.entity.meta.MetadataType.NBTTAG;
+import static net.glowstone.entity.meta.MetadataType.OPTPOSITION;
+import static net.glowstone.entity.meta.MetadataType.OPTUUID;
+import static net.glowstone.entity.meta.MetadataType.STRING;
+import static net.glowstone.entity.meta.MetadataType.VECTOR;
+
 import net.glowstone.entity.passive.GlowParrot;
 import net.glowstone.entity.passive.GlowTameable;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.Blaze;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Evoker;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.PolarBear;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Shulker;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Snowman;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Vex;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Vindicator;
+import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wither;
+import org.bukkit.entity.WitherSkull;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
+import org.bukkit.entity.ZombieVillager;
 import org.bukkit.entity.minecart.PoweredMinecart;
-
-import static net.glowstone.entity.meta.MetadataType.*;
 
 /**
  * Index constants for entity metadata.
@@ -174,8 +229,7 @@ public enum MetadataIndex {
     //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
-    TNT_PRIMED(6, INT, TNTPrimed.class),
-    ;
+    TNT_PRIMED(6, INT, TNTPrimed.class),;
 
 
     private final int index;
@@ -216,6 +270,7 @@ public enum MetadataIndex {
     }
 
     public interface StatusFlags {
+
         int ON_FIRE = 0x01;
         int SNEAKING = 0x02;
         int SPRINTING = 0x08;
@@ -226,6 +281,7 @@ public enum MetadataIndex {
     }
 
     public interface ArmorStandFlags {
+
         int IS_SMALL = 0x01;
         int HAS_GRAVITY = 0x02;
         int HAS_ARMS = 0x04;
@@ -234,6 +290,7 @@ public enum MetadataIndex {
     }
 
     public interface HorseFlags {
+
         int IS_TAME = 0x02;
         int HAS_SADDLE = 0x04;
         int HAS_CHEST = 0x08;
@@ -244,6 +301,7 @@ public enum MetadataIndex {
     }
 
     public interface TameableFlags {
+
         int IS_SITTING = 0x01;
         int WOLF_IS_ANGRY = 0x02;
         int IS_TAME = 0x04;

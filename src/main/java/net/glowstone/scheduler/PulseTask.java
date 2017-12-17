@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PulseTask extends BukkitRunnable {
+
     private final Location location;
     private final Material originalMaterial;
     private boolean async;

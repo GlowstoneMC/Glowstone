@@ -1,13 +1,18 @@
 package net.glowstone.generator.biomegrid;
 
-import net.glowstone.constants.GlowBiome;
+import static org.bukkit.block.Biome.DEEP_OCEAN;
+import static org.bukkit.block.Biome.FROZEN_RIVER;
+import static org.bukkit.block.Biome.ICE_FLATS;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
+import static org.bukkit.block.Biome.OCEAN;
+import static org.bukkit.block.Biome.RIVER;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static org.bukkit.block.Biome.*;
+import net.glowstone.constants.GlowBiome;
 
 public class RiverMapLayer extends MapLayer {
 
@@ -21,8 +26,10 @@ public class RiverMapLayer extends MapLayer {
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
 
         SPECIAL_RIVERS.put(GlowBiome.getId(ICE_FLATS), GlowBiome.getId(FROZEN_RIVER));
-        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
-        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND_SHORE), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
+        SPECIAL_RIVERS
+            .put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
+        SPECIAL_RIVERS
+            .put(GlowBiome.getId(MUSHROOM_ISLAND_SHORE), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
     }
 
     private final MapLayer belowLayer;
@@ -63,7 +70,8 @@ public class RiverMapLayer extends MapLayer {
                 int leftVal = values[j + (i + 1) * gridSizeX] & 1;
                 int rightVal = values[j + 2 + (i + 1) * gridSizeX] & 1;
                 int val = CLEAR_VALUE;
-                if (centerVal != upperVal || centerVal != lowerVal || centerVal != leftVal || centerVal != rightVal) {
+                if (centerVal != upperVal || centerVal != lowerVal || centerVal != leftVal
+                    || centerVal != rightVal) {
                     val = RIVER_VALUE;
                 }
                 finalValues[j + i * sizeX] = val;

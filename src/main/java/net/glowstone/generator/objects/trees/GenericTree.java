@@ -1,16 +1,15 @@
 package net.glowstone.generator.objects.trees;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.material.types.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Random;
+import org.bukkit.material.types.DirtType;
 
 public class GenericTree {
 
@@ -27,14 +26,14 @@ public class GenericTree {
         loc = location;
         this.delegate = delegate;
         setOverridables(
-                Material.AIR,
-                Material.LEAVES,
-                Material.GRASS,
-                Material.DIRT,
-                Material.LOG,
-                Material.LOG_2,
-                Material.SAPLING,
-                Material.VINE
+            Material.AIR,
+            Material.LEAVES,
+            Material.GRASS,
+            Material.DIRT,
+            Material.LOG,
+            Material.LOG_2,
+            Material.SAPLING,
+            Material.VINE
         );
         setHeight(random.nextInt(3) + 4);
         setTypes(0, 0);
@@ -58,8 +57,10 @@ public class GenericTree {
     }
 
     public boolean canPlaceOn() {
-        BlockState state = delegate.getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
-        return state.getType() == Material.GRASS || state.getType() == Material.DIRT || state.getType() == Material.SOIL;
+        BlockState state = delegate
+            .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+        return state.getType() == Material.GRASS || state.getType() == Material.DIRT
+            || state.getType() == Material.SOIL;
     }
 
     public boolean canPlace() {
@@ -100,10 +101,14 @@ public class GenericTree {
             int radius = 1 - n / 2;
             for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
-                    if (Math.abs(x - loc.getBlockX()) != radius || Math.abs(z - loc.getBlockZ()) != radius || random.nextBoolean() && n != 0) {
-                        Material material = delegate.getBlockState(loc.getWorld(), x, y, z).getType();
+                    if (Math.abs(x - loc.getBlockX()) != radius
+                        || Math.abs(z - loc.getBlockZ()) != radius
+                        || random.nextBoolean() && n != 0) {
+                        Material material = delegate.getBlockState(loc.getWorld(), x, y, z)
+                            .getType();
                         if (material == Material.AIR || material == Material.LEAVES) {
-                            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES, leavesType);
+                            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
+                                leavesType);
                         }
                     }
                 }
@@ -112,15 +117,20 @@ public class GenericTree {
 
         // generate the trunk
         for (int y = 0; y < height; y++) {
-            Material material = delegate.getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ()).getType();
+            Material material = delegate
+                .getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
+                    loc.getBlockZ()).getType();
             if (material == Material.AIR || material == Material.LEAVES) {
-                delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
+                delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
+                    loc.getBlockZ(), Material.LOG, logType);
             }
         }
 
         // block below trunk is always dirt
         Dirt dirt = new Dirt(DirtType.NORMAL);
-        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), Material.DIRT, dirt);
+        delegate
+            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(),
+                Material.DIRT, dirt);
 
         return true;
     }

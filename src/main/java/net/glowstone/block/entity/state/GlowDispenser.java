@@ -1,8 +1,17 @@
 package net.glowstone.block.entity.state;
 
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
-import net.glowstone.dispenser.*;
+import net.glowstone.dispenser.ArmorDispenseBehavior;
+import net.glowstone.dispenser.BucketDispenseBehavior;
+import net.glowstone.dispenser.DefaultDispenseBehavior;
+import net.glowstone.dispenser.DispenseBehavior;
+import net.glowstone.dispenser.DispenseBehaviorRegistry;
+import net.glowstone.dispenser.EmptyBucketDispenseBehavior;
+import net.glowstone.dispenser.FlintAndSteelDispenseBehavior;
+import net.glowstone.dispenser.TNTDispenseBehavior;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -12,9 +21,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.util.Vector;
-
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 
@@ -33,14 +39,17 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         DefaultDispenseBehavior bucketDispenseBehavior = new BucketDispenseBehavior();
         getDispenseBehaviorRegistry().putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
-        getDispenseBehaviorRegistry().putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
+        getDispenseBehaviorRegistry()
+            .putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
+        getDispenseBehaviorRegistry()
+            .putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
         getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
-        
+
         ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry()
+            .putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
@@ -51,12 +60,15 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         getDispenseBehaviorRegistry().putBehavior(Material.IRON_CHESTPLATE, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.IRON_HELMET, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_BOOTS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry()
+            .putBehavior(Material.CHAINMAIL_LEGGINGS, armorDispenseBehavior);
+        getDispenseBehaviorRegistry()
+            .putBehavior(Material.CHAINMAIL_CHESTPLATE, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_HELMET, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_BOOTS, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_CHESTPLATE, armorDispenseBehavior);
+        getDispenseBehaviorRegistry()
+            .putBehavior(Material.DIAMOND_CHESTPLATE, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_HELMET, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
         getDispenseBehaviorRegistry().putBehavior(Material.PUMPKIN, armorDispenseBehavior);
@@ -124,7 +136,8 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
     }
 
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
+    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile,
+        Vector velocity) {
         // todo: projectile launching
         return null;
     }

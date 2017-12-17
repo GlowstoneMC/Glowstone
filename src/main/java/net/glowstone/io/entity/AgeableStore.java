@@ -1,18 +1,17 @@
 package net.glowstone.io.entity;
 
+import java.lang.reflect.Constructor;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-
-import java.lang.reflect.Constructor;
 
 public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
 
     private Constructor<T> constructor;
 
     public AgeableStore(Class<T> clazz, EntityType type) {
-        super(clazz, type.getName());
+        super(clazz, type);
         init(clazz);
     }
 

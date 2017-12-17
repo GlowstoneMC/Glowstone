@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -10,8 +11,6 @@ import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.inventory.HorseInventory;
-
-import java.util.List;
 
 public abstract class GlowAbstractHorse extends GlowTameable implements AbstractHorse {
 

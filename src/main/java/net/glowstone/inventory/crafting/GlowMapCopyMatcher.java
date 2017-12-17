@@ -11,11 +11,15 @@ public class GlowMapCopyMatcher extends ItemMatcher {
         int copies = 1;
 
         for (ItemStack item : matrix) {
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
 
             switch (item.getType()) {
                 case MAP:
-                    if (original != null) return null; // More than one original
+                    if (original != null) {
+                        return null; // More than one original
+                    }
                     original = item;
                     break;
                 case EMPTY_MAP:
@@ -26,7 +30,9 @@ public class GlowMapCopyMatcher extends ItemMatcher {
             }
         }
 
-        if (original == null || copies == 1) return null; // Not copying
+        if (original == null || copies == 1) {
+            return null; // Not copying
+        }
 
         int mapId = original.getDurability();
 

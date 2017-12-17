@@ -9,12 +9,12 @@ import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import net.glowstone.GlowServer;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import net.glowstone.GlowServer;
 
 public abstract class GlowDatagramServer extends GlowNetworkServer {
+
     protected final EventLoopGroup group;
     protected final Bootstrap bootstrap;
 
@@ -25,9 +25,9 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
         bootstrap = new Bootstrap();
 
         bootstrap
-                .group(group)
-                .channel(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true);
+            .group(group)
+            .channel(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class)
+            .option(ChannelOption.SO_KEEPALIVE, true);
     }
 
     public ChannelFuture bind(InetSocketAddress address) {
@@ -41,6 +41,6 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
     }
 
     public void shutdown() {
-        bootstrap.group().shutdownGracefully();
+        bootstrap.config().group().shutdownGracefully();
     }
 }

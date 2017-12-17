@@ -1,5 +1,6 @@
 package net.glowstone.generator.objects;
 
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -7,11 +8,10 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 
-import java.util.Random;
-
 public class Cactus {
 
-    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
+        BlockFace.WEST};
 
     public void generate(World world, Random random, int x, int y, int z) {
         if (world.getBlockAt(x, y, z).isEmpty()) {
@@ -19,8 +19,8 @@ public class Cactus {
             for (int n = y; n < y + height; n++) {
                 Block block = world.getBlockAt(x, n, z);
                 if ((block.getRelative(BlockFace.DOWN).getType() == Material.SAND ||
-                        block.getRelative(BlockFace.DOWN).getType() == Material.CACTUS) &&
-                        block.getRelative(BlockFace.UP).isEmpty()) {
+                    block.getRelative(BlockFace.DOWN).getType() == Material.CACTUS) &&
+                    block.getRelative(BlockFace.UP).isEmpty()) {
                     for (BlockFace face : FACES) {
                         if (block.getRelative(face).getType().isSolid()) {
                             return;

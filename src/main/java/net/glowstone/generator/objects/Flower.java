@@ -1,11 +1,10 @@
 package net.glowstone.generator.objects;
 
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-
-import java.util.Random;
 
 public class Flower {
 
@@ -25,7 +24,7 @@ public class Flower {
 
             Block block = world.getBlockAt(x, y, z);
             if (y < 255 && block.getType() == Material.AIR &&
-                    block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
+                block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                 block.setType(type);
                 block.setData((byte) data);
             }

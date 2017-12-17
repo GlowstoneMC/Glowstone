@@ -1,5 +1,16 @@
 package net.glowstone.chunk;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -17,14 +28,6 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.material.MaterialData;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
 /**
  * A class which manages the {@link GlowChunk}s currently loaded in memory.
  *
@@ -38,8 +41,7 @@ public final class ChunkManager {
     private final GlowWorld world;
 
     /**
-     * The chunk I/O service used to read chunks from the disk and write them to
-     * the disk.
+     * The chunk I/O service used to read chunks from the disk and write them to the disk.
      */
     private final ChunkIoService service;
 
@@ -64,11 +66,10 @@ public final class ChunkManager {
     private final ConcurrentMap<Key, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
 
     /**
-     * Creates a new chunk manager with the specified I/O service and world
-     * generator.
+     * Creates a new chunk manager with the specified I/O service and world generator.
      *
      * @param world The chunk manager's world.
-     * @param service   The I/O service.
+     * @param service The I/O service.
      * @param generator The world generator.
      */
     public ChunkManager(GlowWorld world, ChunkIoService service, ChunkGenerator generator) {
@@ -88,15 +89,14 @@ public final class ChunkManager {
     }
 
     /**
-     * Gets a chunk object representing the specified coordinates, which might
-     * not yet be loaded.
+     * Gets a chunk object representing the specified coordinates, which might not yet be loaded.
      *
      * @param x The X coordinate.
      * @param z The Z coordinate.
      * @return The chunk.
      */
     public GlowChunk getChunk(int x, int z) {
-        Key key = GlowChunk.ChunkKeyStore.get(x, z);
+        Key key = GlowChunk.Key.of(x, z);
         if (chunks.containsKey(key)) {
             return chunks.get(key);
         } else {
@@ -115,7 +115,7 @@ public final class ChunkManager {
      * @return true if the chunk is loaded, otherwise false.
      */
     public boolean isChunkLoaded(int x, int z) {
-        Key key = GlowChunk.ChunkKeyStore.get(x, z);
+        Key key = GlowChunk.Key.of(x, z);
         return chunks.containsKey(key) && chunks.get(key).isLoaded();
     }
 
@@ -127,7 +127,7 @@ public final class ChunkManager {
      * @return Whether the chunk is in use.
      */
     public boolean isChunkInUse(int x, int z) {
-        Key key = GlowChunk.ChunkKeyStore.get(x, z);
+        Key key = GlowChunk.Key.of(x, z);
         Set<ChunkLock> lockSet = locks.get(key);
         return lockSet != null && !lockSet.isEmpty();
     }
@@ -135,8 +135,8 @@ public final class ChunkManager {
     /**
      * Call the ChunkIoService to load a chunk, optionally generating the chunk.
      *
-     * @param x        The X coordinate of the chunk to load.
-     * @param z        The Y coordinate of the chunk to load.
+     * @param x The X coordinate of the chunk to load.
+     * @param z The Y coordinate of the chunk to load.
      * @param generate Whether to generate the chunk if needed.
      * @return True on success, false on failure.
      */
@@ -239,8 +239,7 @@ public final class ChunkManager {
     }
 
     /**
-     * Force a chunk to be populated by loading the chunks in an area around it. Used when streaming chunks to players
-     * so that they do not have to watch chunks being populated.
+     * Force a chunk to be populated by loading the chunks in an area around it. Used when streaming chunks to players so that they do not have to watch chunks being populated.
      *
      * @param x The X coordinate.
      * @param z The Z coordinate.
@@ -442,6 +441,7 @@ public final class ChunkManager {
      * A group of locks on chunks to prevent them from being unloaded while in use.
      */
     public static class ChunkLock implements Iterable<Key> {
+
         private final ChunkManager cm;
         private final String desc;
         private final Set<Key> keys = new HashSet<>();
@@ -452,14 +452,18 @@ public final class ChunkManager {
         }
 
         public void acquire(Key key) {
-            if (keys.contains(key)) return;
+            if (keys.contains(key)) {
+                return;
+            }
             keys.add(key);
             cm.getLockSet(key).add(this);
             //GlowServer.logger.info(this + " acquires " + key);
         }
 
         public void release(Key key) {
-            if (!keys.contains(key)) return;
+            if (!keys.contains(key)) {
+                return;
+            }
             keys.remove(key);
             cm.getLockSet(key).remove(this);
             //GlowServer.logger.info(this + " releases " + key);
@@ -488,6 +492,7 @@ public final class ChunkManager {
      * A BiomeGrid implementation for chunk generation.
      */
     private static class BiomeGrid implements ChunkGenerator.BiomeGrid {
+
         private final byte[] biomes = new byte[256];
 
         @Override

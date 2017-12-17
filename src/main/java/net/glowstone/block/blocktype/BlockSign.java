@@ -24,7 +24,8 @@ public class BlockSign extends BlockNeedsAttached {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
         if (!(state.getData() instanceof Sign)) {
             warnMaterialData(Sign.class, state.getData());
@@ -35,7 +36,8 @@ public class BlockSign extends BlockNeedsAttached {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         player.openSignEditor(block.getLocation());
     }
 }

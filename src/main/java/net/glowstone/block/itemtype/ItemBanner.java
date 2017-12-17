@@ -13,7 +13,8 @@ import org.bukkit.util.Vector;
 public class ItemBanner extends ItemType {
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
+        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         BlockType placeAs;
         if (face == BlockFace.UP) {
             placeAs = ItemTable.instance().getBlock(Material.STANDING_BANNER);

@@ -1,8 +1,7 @@
 package net.glowstone.util.noise;
 
-import org.bukkit.util.noise.NoiseGenerator;
-
 import java.util.Random;
+import org.bukkit.util.noise.NoiseGenerator;
 
 public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
 
@@ -29,7 +28,7 @@ public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
     }
 
     @Override
-    public double[] fBm(double x, double y, double z, double lacunarity, double persistence) {
+    public double[] getFractalBrownianMotion(double x, double y, double z, double lacunarity, double persistence) {
         for (int i = 0; i < noise.length; i++) {
             noise[i] = 0;
         }
@@ -39,7 +38,9 @@ public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
 
         // fBm
         for (NoiseGenerator octave : octaves) {
-            noise = ((SimplexNoise) octave).getNoise(noise, x, y, z, xSize, ySize, zSize, xScale * freq, yScale * freq, zScale * freq, 0.55D / amp);
+            noise = ((SimplexNoise) octave)
+                .getNoise(noise, x, y, z, xSize, ySize, zSize, xScale * freq, yScale * freq,
+                    zScale * freq, 0.55D / amp);
             freq *= lacunarity;
             amp *= persistence;
         }

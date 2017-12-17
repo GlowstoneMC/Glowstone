@@ -1,14 +1,142 @@
 package net.glowstone.block;
 
-import net.glowstone.block.blocktype.*;
-import net.glowstone.block.itemtype.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import net.glowstone.block.blocktype.BlockAnvil;
+import net.glowstone.block.blocktype.BlockBanner;
+import net.glowstone.block.blocktype.BlockBeacon;
+import net.glowstone.block.blocktype.BlockBed;
+import net.glowstone.block.blocktype.BlockBrewingStand;
+import net.glowstone.block.blocktype.BlockButton;
+import net.glowstone.block.blocktype.BlockCactus;
+import net.glowstone.block.blocktype.BlockCarpet;
+import net.glowstone.block.blocktype.BlockCarrot;
+import net.glowstone.block.blocktype.BlockCauldron;
+import net.glowstone.block.blocktype.BlockChest;
+import net.glowstone.block.blocktype.BlockChorusFlower;
+import net.glowstone.block.blocktype.BlockChorusPlant;
+import net.glowstone.block.blocktype.BlockCocoa;
+import net.glowstone.block.blocktype.BlockConcretePowder;
+import net.glowstone.block.blocktype.BlockCrops;
+import net.glowstone.block.blocktype.BlockDaylightDetector;
+import net.glowstone.block.blocktype.BlockDeadBush;
+import net.glowstone.block.blocktype.BlockDirectDrops;
+import net.glowstone.block.blocktype.BlockDirt;
+import net.glowstone.block.blocktype.BlockDispenser;
+import net.glowstone.block.blocktype.BlockDoor;
+import net.glowstone.block.blocktype.BlockDoublePlant;
+import net.glowstone.block.blocktype.BlockDoubleSlab;
+import net.glowstone.block.blocktype.BlockDropless;
+import net.glowstone.block.blocktype.BlockDropper;
+import net.glowstone.block.blocktype.BlockEnchantmentTable;
+import net.glowstone.block.blocktype.BlockEndRod;
+import net.glowstone.block.blocktype.BlockEnderChest;
+import net.glowstone.block.blocktype.BlockEnderPortalFrame;
+import net.glowstone.block.blocktype.BlockFalling;
+import net.glowstone.block.blocktype.BlockFence;
+import net.glowstone.block.blocktype.BlockFenceGate;
+import net.glowstone.block.blocktype.BlockFire;
+import net.glowstone.block.blocktype.BlockFlowerPot;
+import net.glowstone.block.blocktype.BlockFurnace;
+import net.glowstone.block.blocktype.BlockGrass;
+import net.glowstone.block.blocktype.BlockGravel;
+import net.glowstone.block.blocktype.BlockHay;
+import net.glowstone.block.blocktype.BlockHopper;
+import net.glowstone.block.blocktype.BlockHugeMushroom;
+import net.glowstone.block.blocktype.BlockIce;
+import net.glowstone.block.blocktype.BlockIronTrapDoor;
+import net.glowstone.block.blocktype.BlockJukebox;
+import net.glowstone.block.blocktype.BlockLadder;
+import net.glowstone.block.blocktype.BlockLamp;
+import net.glowstone.block.blocktype.BlockLava;
+import net.glowstone.block.blocktype.BlockLeaves;
+import net.glowstone.block.blocktype.BlockLever;
+import net.glowstone.block.blocktype.BlockLitRedstoneOre;
+import net.glowstone.block.blocktype.BlockLog;
+import net.glowstone.block.blocktype.BlockLog2;
+import net.glowstone.block.blocktype.BlockMagma;
+import net.glowstone.block.blocktype.BlockMelon;
+import net.glowstone.block.blocktype.BlockMobSpawner;
+import net.glowstone.block.blocktype.BlockMonsterEgg;
+import net.glowstone.block.blocktype.BlockMushroom;
+import net.glowstone.block.blocktype.BlockMycel;
+import net.glowstone.block.blocktype.BlockNeedsAttached;
+import net.glowstone.block.blocktype.BlockNetherWart;
+import net.glowstone.block.blocktype.BlockNote;
+import net.glowstone.block.blocktype.BlockObserver;
+import net.glowstone.block.blocktype.BlockOre;
+import net.glowstone.block.blocktype.BlockPiston;
+import net.glowstone.block.blocktype.BlockPotato;
+import net.glowstone.block.blocktype.BlockPumpkin;
+import net.glowstone.block.blocktype.BlockPumpkinBase;
+import net.glowstone.block.blocktype.BlockPurpurPillar;
+import net.glowstone.block.blocktype.BlockQuartz;
+import net.glowstone.block.blocktype.BlockRails;
+import net.glowstone.block.blocktype.BlockRandomDrops;
+import net.glowstone.block.blocktype.BlockRedstone;
+import net.glowstone.block.blocktype.BlockRedstoneComparator;
+import net.glowstone.block.blocktype.BlockRedstoneOre;
+import net.glowstone.block.blocktype.BlockRedstoneRepeater;
+import net.glowstone.block.blocktype.BlockRedstoneTorch;
+import net.glowstone.block.blocktype.BlockSapling;
+import net.glowstone.block.blocktype.BlockSign;
+import net.glowstone.block.blocktype.BlockSkull;
+import net.glowstone.block.blocktype.BlockSlab;
+import net.glowstone.block.blocktype.BlockSnow;
+import net.glowstone.block.blocktype.BlockSnowBlock;
+import net.glowstone.block.blocktype.BlockSoil;
+import net.glowstone.block.blocktype.BlockSponge;
+import net.glowstone.block.blocktype.BlockStairs;
+import net.glowstone.block.blocktype.BlockStem;
+import net.glowstone.block.blocktype.BlockStone;
+import net.glowstone.block.blocktype.BlockSugarCane;
+import net.glowstone.block.blocktype.BlockTNT;
+import net.glowstone.block.blocktype.BlockTallGrass;
+import net.glowstone.block.blocktype.BlockTorch;
+import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.blocktype.BlockVine;
+import net.glowstone.block.blocktype.BlockWater;
+import net.glowstone.block.blocktype.BlockWeb;
+import net.glowstone.block.blocktype.BlockWoodenTrapDoor;
+import net.glowstone.block.blocktype.BlockWorkbench;
+import net.glowstone.block.itemtype.ItemArmorStand;
+import net.glowstone.block.itemtype.ItemBanner;
+import net.glowstone.block.itemtype.ItemBoat;
+import net.glowstone.block.itemtype.ItemBucket;
+import net.glowstone.block.itemtype.ItemChorusFruit;
+import net.glowstone.block.itemtype.ItemDye;
+import net.glowstone.block.itemtype.ItemEndCrystal;
+import net.glowstone.block.itemtype.ItemFilledBucket;
+import net.glowstone.block.itemtype.ItemFirework;
+import net.glowstone.block.itemtype.ItemFishCooked;
+import net.glowstone.block.itemtype.ItemFishRaw;
+import net.glowstone.block.itemtype.ItemFlintAndSteel;
+import net.glowstone.block.itemtype.ItemFood;
+import net.glowstone.block.itemtype.ItemFoodSeeds;
+import net.glowstone.block.itemtype.ItemGoldenApple;
+import net.glowstone.block.itemtype.ItemHoe;
+import net.glowstone.block.itemtype.ItemItemFrame;
+import net.glowstone.block.itemtype.ItemMilk;
+import net.glowstone.block.itemtype.ItemMinecart;
+import net.glowstone.block.itemtype.ItemPainting;
+import net.glowstone.block.itemtype.ItemPlaceAs;
+import net.glowstone.block.itemtype.ItemPoisonousPotato;
+import net.glowstone.block.itemtype.ItemRawChicken;
+import net.glowstone.block.itemtype.ItemRottenFlesh;
+import net.glowstone.block.itemtype.ItemSeeds;
+import net.glowstone.block.itemtype.ItemShovel;
+import net.glowstone.block.itemtype.ItemSign;
+import net.glowstone.block.itemtype.ItemSoup;
+import net.glowstone.block.itemtype.ItemSpawn;
+import net.glowstone.block.itemtype.ItemSpiderEye;
+import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.block.itemtype.ItemWrittenBook;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
-
-import java.util.HashMap;
-import java.util.Map;
 import org.bukkit.TreeSpecies;
 
 /**
@@ -22,8 +150,10 @@ public final class ItemTable {
         INSTANCE.registerBuiltins();
     }
 
-    private final Map<Integer, ItemType> idToType = new HashMap<>(512);
-    private int nextBlockId, nextItemId;
+    private final EnumMap<Material, ItemType> materialToType = new EnumMap<>(Material.class);
+    private final Map<NamespacedKey, ItemType> extraTypes = new HashMap<>();
+    private int nextBlockId;
+    private int nextItemId;
 
     ////////////////////////////////////////////////////////////////////////////
     // Data
@@ -110,7 +240,7 @@ public final class ItemTable {
         reg(Material.DIAMOND_BLOCK, new BlockDirectDrops(ToolType.IRON_PICKAXE));
         reg(Material.EMERALD_ORE, new BlockOre(Material.EMERALD, ToolType.IRON_PICKAXE));
         reg(Material.EMERALD_BLOCK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.LAPIS_ORE, new BlockOre(Material.INK_SACK,  ToolType.STONE_PICKAXE, 4, 4, 8));
+        reg(Material.LAPIS_ORE, new BlockOre(Material.INK_SACK, ToolType.STONE_PICKAXE, 4, 4, 8));
         reg(Material.LAPIS_BLOCK, new BlockDirectDrops(ToolType.STONE_PICKAXE));
         reg(Material.QUARTZ_ORE, new BlockOre(Material.QUARTZ, ToolType.PICKAXE));
         reg(Material.REDSTONE_ORE, new BlockRedstoneOre());
@@ -248,7 +378,6 @@ public final class ItemTable {
         reg(Material.CHORUS_FLOWER, new BlockChorusFlower());
         reg(Material.CHORUS_PLANT, new BlockChorusPlant());
 
-
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
@@ -343,13 +472,13 @@ public final class ItemTable {
             throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
         }
 
-        if (idToType.containsKey(material.getId())) {
-            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + idToType.get(material.getId()));
+        if (materialToType.containsKey(material)) {
+            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + materialToType
+                .get(material));
         }
 
-        idToType.put(material.getId(), type);
-        type.setId(material.getId());
-
+        materialToType.put(material, type);
+        type.setMaterial(material);
 
         if (material.isBlock()) {
             nextBlockId = Math.max(nextBlockId, material.getId() + 1);
@@ -366,13 +495,13 @@ public final class ItemTable {
             throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
         }
 
-        if (idToType.containsKey(material.getId())) {
-            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + idToType.get(material.getId()));
+        if (materialToType.containsKey(material)) {
+            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + materialToType
+                .get(material));
         }
 
-        idToType.put(material.getId(), type);
-        type.setId(material.getId());
-
+        materialToType.put(material, type);
+        type.setMaterial(material);
 
         if (material.isBlock()) {
             nextBlockId = Math.max(nextBlockId, material.getId() + 1);
@@ -385,33 +514,33 @@ public final class ItemTable {
     /**
      * Register a new, non-Vanilla ItemType. It will be assigned an ID automatically.
      *
+     * @param key the namespaced key of the ItemType
      * @param type the ItemType to register.
+     * @return if the registration was successful
      */
-    public void register(ItemType type) {
+    public boolean register(NamespacedKey key, ItemType type) {
         int id;
-        if (type instanceof BlockType) {
+        boolean block = type instanceof BlockType;
+        if (block) {
             id = nextBlockId;
         } else {
             id = nextItemId;
         }
-
-        while (idToType.containsKey(id)) {
-            ++id;
-        }
-
-        idToType.put(id, type);
-        type.setId(id);
-
-        if (type instanceof BlockType) {
-            nextBlockId = id + 1;
+        if (extraTypes.putIfAbsent(key, type) == null) {
+            type.setId(id);
+            if (block) {
+                nextBlockId++;
+            } else {
+                nextItemId++;
+            }
+            return true;
         } else {
-            nextItemId = id + 1;
+            return false;
         }
     }
 
-    private ItemType createDefault(int id) {
-        Material material = Material.getMaterial(id);
-        if (material == null || id == 0) {
+    private ItemType createDefault(Material material) {
+        if (material == null || material == Material.AIR) {
             return null;
         }
 
@@ -428,28 +557,30 @@ public final class ItemTable {
     ////////////////////////////////////////////////////////////////////////////
     // Type access
 
+    @Deprecated
     public ItemType getItem(int id) {
-        ItemType type = idToType.get(id);
+        return getItem(Material.getMaterial(id));
+    }
+
+    public ItemType getItem(Material mat) {
+        ItemType type = materialToType.get(mat);
         if (type == null) {
-            type = createDefault(id);
+            type = createDefault(mat);
         }
         return type;
     }
 
+    @Deprecated
     public BlockType getBlock(int id) {
-        ItemType itemType = getItem(id);
+        return getBlock(Material.getMaterial(id));
+    }
+
+    public BlockType getBlock(Material mat) {
+        ItemType itemType = getItem(mat);
         if (itemType instanceof BlockType) {
             return (BlockType) itemType;
         }
         return null;
-    }
-
-    public ItemType getItem(Material mat) {
-        return getItem(mat.getId());
-    }
-
-    public BlockType getBlock(Material mat) {
-        return getBlock(mat.getId());
     }
 
 }

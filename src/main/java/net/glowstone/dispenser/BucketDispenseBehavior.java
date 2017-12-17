@@ -11,6 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
 public class BucketDispenseBehavior extends DefaultDispenseBehavior {
+
     DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
 
     @Override
@@ -32,7 +33,7 @@ public class BucketDispenseBehavior extends DefaultDispenseBehavior {
 
     private boolean canPlace(GlowBlock target, BlockFace facing, ItemStack stack) {
         if (!target.isEmpty()) {
-            BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
+            BlockType targetType = ItemTable.instance().getBlock(target.getType());
             //noinspection ConstantConditions
             if (!targetType.canOverride(target, facing.getOppositeFace(), stack)) {
                 return false;

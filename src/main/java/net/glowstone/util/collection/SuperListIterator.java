@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
  * An Iterator which delegates in other iterators.
  */
 public class SuperListIterator<E> implements ListIterator<E> {
+
     private final ListIterator<List<E>> parentIterator;
     private ListIterator<E> childIterator;
     private int index;

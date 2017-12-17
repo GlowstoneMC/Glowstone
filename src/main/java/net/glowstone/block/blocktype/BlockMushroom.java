@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -7,7 +10,6 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.constants.GlowTree;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.material.types.DirtType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -17,10 +19,7 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.material.Dirt;
 import org.bukkit.material.MaterialData;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import org.bukkit.material.types.DirtType;
 
 public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -35,11 +34,14 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         GlowBlock belowBlock = block.getRelative(BlockFace.DOWN);
         Material type = belowBlock.getType();
         MaterialData data = belowBlock.getState().getData();
-        if (type == Material.GRASS || data instanceof Dirt && ((Dirt) data).getType() != DirtType.PODZOL) {
-            if (block.getLightLevel() < 13) { // checking light level for dirt, coarse dirt and grass
+        if (type == Material.GRASS
+            || data instanceof Dirt && ((Dirt) data).getType() != DirtType.PODZOL) {
+            if (block.getLightLevel()
+                < 13) { // checking light level for dirt, coarse dirt and grass
                 return true;
             }
-        } else if (type == Material.MYCEL || data instanceof Dirt && ((Dirt) data).getType() == DirtType.PODZOL) {
+        } else if (type == Material.MYCEL
+            || data instanceof Dirt && ((Dirt) data).getType() == DirtType.PODZOL) {
             // not checking light level if mycel or podzol
             return true;
         }
@@ -73,9 +75,11 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         }
         Location loc = block.getLocation();
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate).generate()) {
+        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate)
+            .generate()) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
-            StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player, blockStates);
+            StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player,
+                blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
@@ -105,7 +109,8 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
             int nX, nY, nZ;
             nX = block.getX() + ThreadLocalRandom.current().nextInt(3) - 1;
-            nY = block.getY() + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current().nextInt(2);
+            nY = block.getY() + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current()
+                .nextInt(2);
             nZ = block.getZ() + ThreadLocalRandom.current().nextInt(3) - 1;
 
             x = block.getX();
@@ -113,18 +118,19 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             z = block.getZ();
             for (i = 0; i < 4; i++) {
                 if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
-                        && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
+                    && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
                     x = nX;
                     y = nY;
                     z = nZ;
                 }
                 nX = x + ThreadLocalRandom.current().nextInt(3) - 1;
-                nY = y + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current().nextInt(2);
+                nY = y + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current()
+                    .nextInt(2);
                 nZ = z + ThreadLocalRandom.current().nextInt(3) - 1;
             }
 
             if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
-                    && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
+                && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
                 GlowBlockState state = world.getBlockAt(nX, nY, nZ).getState();
                 state.setType(mushroomType);
                 BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);

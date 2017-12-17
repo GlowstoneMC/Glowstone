@@ -1,5 +1,7 @@
 package net.glowstone.block.entity.state;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -14,8 +16,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.event.block.NotePlayEvent;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     private Note note;
@@ -23,7 +23,8 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
     public GlowNoteBlock(GlowBlock block) {
         super(block);
         if (block.getType() != Material.NOTE_BLOCK) {
-            throw new IllegalArgumentException("GlowNoteBlock: expected NOTE_BLOCK, got " + block.getType());
+            throw new IllegalArgumentException(
+                "GlowNoteBlock: expected NOTE_BLOCK, got " + block.getType());
         }
 
         note = getBlockEntity().getNote();
@@ -190,15 +191,17 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         if (getBlock().getType() != Material.NOTE_BLOCK) {
             return false;
         }
-        NotePlayEvent event = EventFactory.callEvent(new NotePlayEvent(getBlock(), instrument, note));
+        NotePlayEvent event = EventFactory
+            .callEvent(new NotePlayEvent(getBlock(), instrument, note));
         if (event.isCancelled()) {
             return false;
         }
 
         Location location = getBlock().getLocation();
 
-        Key key = GlowChunk.ChunkKeyStore.get(getX() >> 4, getZ() >> 4);
-        getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(player -> player.playNote(location, instrument, note));
+        Key key = GlowChunk.Key.of(getX() >> 4, getZ() >> 4);
+        getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key))
+            .forEach(player -> player.playNote(location, instrument, note));
 
         return true;
     }

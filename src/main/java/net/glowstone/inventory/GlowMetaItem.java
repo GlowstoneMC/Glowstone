@@ -1,16 +1,21 @@
 package net.glowstone.inventory;
 
 import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
@@ -45,7 +50,8 @@ public class GlowMetaItem implements ItemMeta {
         hideFlag = meta.hideFlag;
     }
 
-    protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
+    protected static void serializeEnchants(String name, Map<String, Object> map,
+        Map<Enchantment, Integer> enchants) {
         Map<String, Object> enchantList = new HashMap<>();
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
@@ -55,7 +61,8 @@ public class GlowMetaItem implements ItemMeta {
         map.put(name, enchantList);
     }
 
-    protected static void writeNbtEnchants(String name, CompoundTag to, Map<Enchantment, Integer> enchants) {
+    protected static void writeNbtEnchants(String name, CompoundTag to,
+        Map<Enchantment, Integer> enchants) {
         List<CompoundTag> ench = new ArrayList<>();
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
@@ -76,7 +83,9 @@ public class GlowMetaItem implements ItemMeta {
             for (CompoundTag enchantmentTag : enchs) {
                 if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
                     Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
-                    if (result == null) result = new HashMap<>(4);
+                    if (result == null) {
+                        result = new HashMap<>(4);
+                    }
                     result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
                 }
             }
@@ -128,7 +137,8 @@ public class GlowMetaItem implements ItemMeta {
         }
 
         if (hideFlag != 0) {
-            Set<String> hideFlags = getItemFlags().stream().map(Enum::name).collect(Collectors.toSet());
+            Set<String> hideFlags = getItemFlags().stream().map(Enum::name)
+                .collect(Collectors.toSet());
             if (hideFlags.isEmpty()) {
                 result.put("ItemFlags", hideFlags);
             }
@@ -174,10 +184,11 @@ public class GlowMetaItem implements ItemMeta {
         //TODO currently ignoring level restriction, is that right?
         Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
         if (tagEnchants != null) {
-            if (enchants == null)
+            if (enchants == null) {
                 enchants = tagEnchants;
-            else
+            } else {
                 enchants.putAll(tagEnchants);
+            }
         }
 
         if (tag.isInt("HideFlags")) {
@@ -284,7 +295,8 @@ public class GlowMetaItem implements ItemMeta {
             enchants = new HashMap<>(4);
         }
 
-        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench.getMaxLevel()) {
+        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench
+            .getMaxLevel()) {
             Integer old = enchants.put(ench, level);
             return old == null || old != level;
         }
@@ -298,11 +310,14 @@ public class GlowMetaItem implements ItemMeta {
 
     @Override
     public boolean hasConflictingEnchant(Enchantment ench) {
-        if (!hasEnchants()) return false;
+        if (!hasEnchants()) {
+            return false;
+        }
 
         for (Enchantment e : enchants.keySet()) {
-            if (e.conflictsWith(ench))
+            if (e.conflictsWith(ench)) {
                 return true;
+            }
         }
 
         return false;

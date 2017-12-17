@@ -1,5 +1,6 @@
 package net.glowstone.io.entity;
 
+import java.util.List;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
@@ -11,8 +12,6 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
-
-import java.util.List;
 
 abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityStore<T> {
 
@@ -50,7 +49,8 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         if (tag.isList("Inventory", TagType.COMPOUND)) {
             PlayerInventory inventory = entity.getInventory();
             List<CompoundTag> items = tag.getCompoundList("Inventory");
-            inventory.setStorageContents(NbtSerialization.readInventory(items, 0, inventory.getSize() - 5));
+            inventory.setStorageContents(
+                NbtSerialization.readInventory(items, 0, inventory.getSize() - 5));
             inventory.setArmorContents(NbtSerialization.readInventory(items, 100, 4));
             inventory.setExtraContents(NbtSerialization.readInventory(items, -106, 1));
         }
@@ -86,7 +86,8 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         // inventory
         List<CompoundTag> inventory;
         inventory = NbtSerialization.writeInventory(entity.getInventory().getStorageContents(), 0);
-        inventory.addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
+        inventory
+            .addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
         inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), -106));
         tag.putCompoundList("Inventory", inventory);
 

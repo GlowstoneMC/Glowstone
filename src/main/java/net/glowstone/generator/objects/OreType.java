@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
 public class OreType {
+
     private final Material type;
     private final MaterialData data;
     private final int minY;
@@ -23,7 +24,8 @@ public class OreType {
         this(type, data, minY, maxY, amount, Material.STONE);
     }
 
-    public OreType(Material type, MaterialData data, int minY, int maxY, int amount, Material targetType) {
+    public OreType(Material type, MaterialData data, int minY, int maxY, int amount,
+        Material targetType) {
         this.type = type;
         this.data = data;
         this.minY = minY;

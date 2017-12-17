@@ -1,11 +1,15 @@
 package net.glowstone.util.nbt;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -33,7 +37,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     protected void valueToString(StringBuilder builder) {
         builder.append(value.size()).append(" entries\n{\n");
         for (Entry<String, Tag> entry : value.entrySet()) {
-            builder.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
+            builder.append("    ").append(entry.getKey()).append(": ")
+                .append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
         }
         builder.append("}");
     }
@@ -61,8 +66,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     /**
      * Checks to see if this tag is a strict, deep submap of the given CompoundTag.
+     *
      * @param other The CompoundTag that should contain our values.
-     * @return
      */
     public boolean matches(CompoundTag other) {
         for (Entry<String, Tag> entry : value.entrySet()) {
@@ -83,11 +88,13 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
                         return false;
                     }
                 } else if (value instanceof IntArrayTag) {
-                    if (!Arrays.equals(((IntArrayTag) value).getValue(), ((IntArrayTag) otherValue).getValue())) {
+                    if (!Arrays.equals(((IntArrayTag) value).getValue(),
+                        ((IntArrayTag) otherValue).getValue())) {
                         return false;
                     }
                 } else if (value instanceof ByteArrayTag) {
-                    if (!Arrays.equals(((ByteArrayTag) value).getValue(), ((ByteArrayTag) otherValue).getValue())) {
+                    if (!Arrays.equals(((ByteArrayTag) value).getValue(),
+                        ((ByteArrayTag) otherValue).getValue())) {
                         return false;
                     }
                 } else if (!value.equals(otherValue)) {
@@ -97,6 +104,21 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             }
         }
         return true;
+    }
+
+    /**
+     * Merges the contents of this compound into the supplied compound.
+     *
+     * @param other the other compound to merge into.
+     * @param overwrite whether keys already set in the other compound should be overwritten.
+     */
+    public void mergeInto(CompoundTag other, boolean overwrite) {
+        for (String key : value.keySet()) {
+            if (!overwrite && other.containsKey(key)) {
+                continue;
+            }
+            other.put(key, value.get(key));
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -175,7 +197,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     public <V> List<V> getList(String key, TagType type) {
         List<? extends Tag> original = getTagList(key, type);
         List<V> result = new ArrayList<>(original.size());
-        result.addAll(original.stream().map(item -> (V) item.getValue()).collect(Collectors.toList()));
+        result.addAll(
+            original.stream().map(item -> (V) item.getValue()).collect(Collectors.toList()));
         return result;
     }
 
@@ -231,7 +254,9 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Fancy is
 
     public boolean isList(String key, TagType type) {
-        if (!is(key, ListTag.class)) return false;
+        if (!is(key, ListTag.class)) {
+            return false;
+        }
         ListTag tag = getTag(key, ListTag.class);
         return tag.getChildType() == type;
     }
@@ -312,7 +337,9 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Accessor helpers
 
     private <T extends Tag<?>> boolean is(String key, Class<T> clazz) {
-        if (!containsKey(key)) return false;
+        if (!containsKey(key)) {
+            return false;
+        }
         Tag tag = value.get(key);
         return tag != null && clazz == tag.getClass();
     }
@@ -330,7 +357,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     @SuppressWarnings("unchecked")
     private <T extends Tag<?>> T getTag(String key, Class<T> clazz) {
         if (!is(key, clazz)) {
-            throw new IllegalArgumentException("Compound does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
+            throw new IllegalArgumentException(
+                "Compound does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
         }
         return (T) value.get(key);
     }
@@ -342,7 +370,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             return Arrays.asList();
         }
         if (tag.getChildType() != type) {
-            throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
+            throw new IllegalArgumentException(
+                "List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
         }
         return tag.getValue();
     }

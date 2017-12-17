@@ -1,9 +1,8 @@
 package net.glowstone.util.loot;
 
+import java.util.Optional;
 import lombok.Data;
 import org.json.simple.JSONObject;
-
-import java.util.Optional;
 
 @Data
 public class DefaultLootItem {
@@ -18,10 +17,12 @@ public class DefaultLootItem {
         this.count = new LootRandomValues(object);
         if (object.containsKey("data")) {
             if (object.get("data") instanceof String) {
-                this.reflectiveData = Optional.of(new ReflectiveValue<Integer>((String) object.get("data")));
+                this.reflectiveData = Optional
+                    .of(new ReflectiveValue<Integer>((String) object.get("data")));
                 this.data = Optional.empty();
             } else if (object.get("data") instanceof Long) {
-                this.reflectiveData = Optional.of(new ReflectiveValue<>(((Long) object.get("data")).intValue()));
+                this.reflectiveData = Optional
+                    .of(new ReflectiveValue<>(((Long) object.get("data")).intValue()));
                 this.data = Optional.empty();
             } else {
                 this.reflectiveData = Optional.empty();

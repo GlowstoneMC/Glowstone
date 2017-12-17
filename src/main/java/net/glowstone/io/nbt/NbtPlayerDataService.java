@@ -1,5 +1,17 @@
 package net.glowstone.io.nbt;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -13,14 +25,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Standard NBT-based player data storage.
@@ -92,7 +96,8 @@ public class NbtPlayerDataService implements PlayerDataService {
         }
 
         // In online mode, find the Mojang UUID if possible
-        if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
+        if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer())
+            .getProxySupport()) {
             UUID uuid = ProfileCache.getUUID(name);
             if (uuid != null) {
                 return uuid;
@@ -117,7 +122,8 @@ public class NbtPlayerDataService implements PlayerDataService {
                 playerTag = in.readCompound();
             } catch (IOException e) {
                 player.kickPlayer("Failed to read player data!");
-                server.getLogger().log(Level.SEVERE, "Failed to read data for " + player.getName() + ": " + playerFile, e);
+                server.getLogger().log(Level.SEVERE,
+                    "Failed to read data for " + player.getName() + ": " + playerFile, e);
             }
         }
         readDataImpl(player, playerTag);
@@ -132,11 +138,13 @@ public class NbtPlayerDataService implements PlayerDataService {
             out.writeTag(tag);
         } catch (IOException e) {
             player.kickPlayer("Failed to save player data!");
-            server.getLogger().log(Level.SEVERE, "Failed to write data for " + player.getName() + ": " + playerFile, e);
+            server.getLogger().log(Level.SEVERE,
+                "Failed to write data for " + player.getName() + ": " + playerFile, e);
         }
     }
 
     private class NbtPlayerReader implements PlayerReader {
+
         private CompoundTag tag = new CompoundTag();
         private boolean hasPlayed;
 
@@ -146,7 +154,8 @@ public class NbtPlayerDataService implements PlayerDataService {
                     tag = in.readCompound();
                     hasPlayed = true;
                 } catch (IOException e) {
-                    server.getLogger().log(Level.SEVERE, "Failed to read data for player: " + playerFile, e);
+                    server.getLogger()
+                        .log(Level.SEVERE, "Failed to read data for player: " + playerFile, e);
                 }
             }
         }
@@ -176,7 +185,8 @@ public class NbtPlayerDataService implements PlayerDataService {
         public Location getBedSpawnLocation() {
             checkOpen();
             // check that all fields are present
-            if (!tag.isString("SpawnWorld") || !tag.isInt("SpawnX") || !tag.isInt("SpawnY") || !tag.isInt("SpawnZ")) {
+            if (!tag.isString("SpawnWorld") || !tag.isInt("SpawnX") || !tag.isInt("SpawnY") || !tag
+                .isInt("SpawnZ")) {
                 return null;
             }
             // look up world
@@ -185,7 +195,8 @@ public class NbtPlayerDataService implements PlayerDataService {
                 return null;
             }
             // return location
-            return new Location(world, tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"));
+            return new Location(world, tag.getInt("SpawnX"), tag.getInt("SpawnY"),
+                tag.getInt("SpawnZ"));
         }
 
         @Override

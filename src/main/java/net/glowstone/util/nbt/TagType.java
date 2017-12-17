@@ -37,12 +37,16 @@ public enum TagType {
     }
 
     public static TagType byId(int id) {
-        if (id < 0 || id >= values().length) return null;
+        if (id < 0 || id >= values().length) {
+            return null;
+        }
         return values()[id];
     }
 
     static TagType byIdOrError(int id) throws IOException {
-        if (id < 0 || id >= values().length) throw new IOException("Invalid tag type: " + id);
+        if (id < 0 || id >= values().length) {
+            throw new IOException("Invalid tag type: " + id);
+        }
         return values()[id];
     }
 

@@ -47,7 +47,8 @@ public class GlowWither extends GlowMonster implements Wither {
 
     public void setCenterTarget(Entity centerTarget) {
         this.centerTarget = centerTarget;
-        this.metadata.set(MetadataIndex.WITHER_TARGET_1, centerTarget == null ? 0 : centerTarget.getEntityId());
+        this.metadata.set(MetadataIndex.WITHER_TARGET_1,
+            centerTarget == null ? 0 : centerTarget.getEntityId());
     }
 
     public Entity getLeftTarget() {
@@ -56,7 +57,8 @@ public class GlowWither extends GlowMonster implements Wither {
 
     public void setLeftTarget(Entity leftTarget) {
         this.leftTarget = leftTarget;
-        this.metadata.set(MetadataIndex.WITHER_TARGET_2, leftTarget == null ? 0 : leftTarget.getEntityId());
+        this.metadata
+            .set(MetadataIndex.WITHER_TARGET_2, leftTarget == null ? 0 : leftTarget.getEntityId());
     }
 
     public Entity getRightTarget() {
@@ -65,7 +67,8 @@ public class GlowWither extends GlowMonster implements Wither {
 
     public void setRightTarget(Entity rightTarget) {
         this.rightTarget = rightTarget;
-        this.metadata.set(MetadataIndex.WITHER_TARGET_3, rightTarget == null ? 0 : rightTarget.getEntityId());
+        this.metadata.set(MetadataIndex.WITHER_TARGET_3,
+            rightTarget == null ? 0 : rightTarget.getEntityId());
     }
 
     @Override

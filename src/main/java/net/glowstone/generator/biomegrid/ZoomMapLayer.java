@@ -38,7 +38,8 @@ public class ZoomMapLayer extends MapLayer {
                 tmpValues[n] = upperLeftVal;
                 tmpValues[n + zoomSizeX] = nextInt(2) > 0 ? upperLeftVal : lowerLeftVal;
                 tmpValues[n + 1] = nextInt(2) > 0 ? upperLeftVal : upperRightVal;
-                tmpValues[n + 1 + zoomSizeX] = getNearest(upperLeftVal, upperRightVal, lowerLeftVal, lowerRightVal);
+                tmpValues[n + 1 + zoomSizeX] = getNearest(upperLeftVal, upperRightVal, lowerLeftVal,
+                    lowerRightVal);
                 upperLeftVal = upperRightVal;
                 lowerLeftVal = lowerRightVal;
                 n += 2;
@@ -54,7 +55,8 @@ public class ZoomMapLayer extends MapLayer {
         return finalValues;
     }
 
-    private int getNearest(int upperLeftVal, int upperRightVal, int lowerLeftVal, int lowerRightVal) {
+    private int getNearest(int upperLeftVal, int upperRightVal, int lowerLeftVal,
+        int lowerRightVal) {
         if (zoomType == ZoomType.NORMAL) {
             if (upperRightVal == lowerLeftVal && lowerLeftVal == lowerRightVal) {
                 return upperRightVal;

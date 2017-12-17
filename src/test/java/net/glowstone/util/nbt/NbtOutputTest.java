@@ -1,12 +1,11 @@
 package net.glowstone.util.nbt;
 
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
 
 /**
  * Tests for {@link NBTOutputStream} and constructing {@link CompoundTag}s.

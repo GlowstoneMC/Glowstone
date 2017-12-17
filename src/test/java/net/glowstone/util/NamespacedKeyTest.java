@@ -1,17 +1,18 @@
 package net.glowstone.util;
 
-import org.bukkit.NamespacedKey;
-import org.junit.Test;
-
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
+import org.bukkit.NamespacedKey;
+import org.junit.Test;
 
 public class NamespacedKeyTest {
 
     @Test
     public void testFromStringWithKey() {
         String keyRaw = "minecraft:abc";
-        NamespacedKey key = new NamespacedKey(keyRaw.substring(0, keyRaw.indexOf(':')), keyRaw.substring(keyRaw.indexOf(':') + 1, keyRaw.length()));
+        NamespacedKey key = new NamespacedKey(keyRaw.substring(0, keyRaw.indexOf(':')),
+            keyRaw.substring(keyRaw.indexOf(':') + 1, keyRaw.length()));
         assertThat(key.toString(), equalTo(keyRaw));
     }
 

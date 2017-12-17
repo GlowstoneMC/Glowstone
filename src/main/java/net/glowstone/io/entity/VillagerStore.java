@@ -1,5 +1,7 @@
 package net.glowstone.io.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -9,9 +11,6 @@ import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class VillagerStore extends AgeableStore<GlowVillager> {
 
@@ -55,7 +54,8 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                     boolean experienceReward = recipeTag.getBool("rewardExp");
                     int uses = recipeTag.getInt("uses");
                     int maxUses = recipeTag.getInt("maxUses");
-                    CompoundTag sellTag = recipeTag.getCompound("sell"), buy1tag = recipeTag.getCompound("buy"), buy2tag = null;
+                    CompoundTag sellTag = recipeTag.getCompound("sell"), buy1tag = recipeTag
+                        .getCompound("buy"), buy2tag = null;
                     if (recipeTag.isCompound("buyB")) {
                         buy2tag = recipeTag.getCompound("buyB");
                     }
@@ -66,7 +66,8 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                     if (buy2tag != null) {
                         ingredients.add(NbtSerialization.readItem(buy2tag));
                     }
-                    MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses, experienceReward);
+                    MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
+                        experienceReward);
                     recipe.setIngredients(ingredients);
                     entity.getRecipes().add(recipe);
                 }
@@ -95,9 +96,11 @@ class VillagerStore extends AgeableStore<GlowVillager> {
             recipeTag.putInt("uses", recipe.getUses());
             recipeTag.putInt("maxUses", recipe.getMaxUses());
             recipeTag.putCompound("sell", NbtSerialization.writeItem(recipe.getResult(), 0));
-            recipeTag.putCompound("buy", NbtSerialization.writeItem(recipe.getIngredients().get(0), 0));
+            recipeTag
+                .putCompound("buy", NbtSerialization.writeItem(recipe.getIngredients().get(0), 0));
             if (recipe.getIngredients().size() > 1) {
-                recipeTag.putCompound("buyB", NbtSerialization.writeItem(recipe.getIngredients().get(1), 0));
+                recipeTag.putCompound("buyB",
+                    NbtSerialization.writeItem(recipe.getIngredients().get(1), 0));
             }
             recipesList.add(recipeTag);
         }

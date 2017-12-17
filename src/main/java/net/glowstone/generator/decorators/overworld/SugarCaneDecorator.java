@@ -1,11 +1,10 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.SugarCane;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-
-import java.util.Random;
 
 public class SugarCaneDecorator extends BlockDecorator {
 

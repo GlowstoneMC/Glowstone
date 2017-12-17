@@ -1,23 +1,24 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class BlockRandomDrops extends BlockNeedsTool {
+
     private final Material dropType;
     private final short data;
     private final int minDrops;
     private final int maxDrops;
     private final MaterialMatcher neededTool;
 
-    public BlockRandomDrops(Material dropType, int data, int minDrops, int maxDrops, MaterialMatcher neededTool) {
+    public BlockRandomDrops(Material dropType, int data, int minDrops, int maxDrops,
+        MaterialMatcher neededTool) {
         this.dropType = dropType;
         this.neededTool = neededTool;
         this.data = (short) data;
@@ -39,7 +40,8 @@ public class BlockRandomDrops extends BlockNeedsTool {
 
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        return Collections.unmodifiableList(Arrays.asList(new ItemStack(dropType, ThreadLocalRandom.current().nextInt(maxDrops - minDrops + 1) + minDrops, data)));
+        return Collections.unmodifiableList(Arrays.asList(new ItemStack(dropType,
+            ThreadLocalRandom.current().nextInt(maxDrops - minDrops + 1) + minDrops, data)));
     }
 
     @Override

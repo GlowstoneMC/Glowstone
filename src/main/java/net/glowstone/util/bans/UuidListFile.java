@@ -1,12 +1,16 @@
 package net.glowstone.util.bans;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import org.bukkit.OfflinePlayer;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Common management for whitelist and ops list files.
@@ -19,7 +23,8 @@ public final class UuidListFile extends JsonListFile {
 
     public List<UUID> getUUIDs() {
         List<UUID> result = new ArrayList<>(entries.size());
-        result.addAll(entries.stream().map(baseEntry -> ((Entry) baseEntry).uuid).collect(Collectors.toList()));
+        result.addAll(entries.stream().map(baseEntry -> ((Entry) baseEntry).uuid)
+            .collect(Collectors.toList()));
         return result;
     }
 
@@ -81,6 +86,7 @@ public final class UuidListFile extends JsonListFile {
     }
 
     private static class Entry implements BaseEntry {
+
         private final UUID uuid;
         private final String fallbackName;
 
@@ -92,7 +98,9 @@ public final class UuidListFile extends JsonListFile {
         @Override
         public Map<String, String> write() {
             PlayerProfile profile = ProfileCache.getProfile(uuid);
-            String name = profile != null ? profile.getName() != null ? profile.getName() : fallbackName : fallbackName;
+            String name =
+                profile != null ? profile.getName() != null ? profile.getName() : fallbackName
+                    : fallbackName;
             Map<String, String> result = new HashMap<>(2);
             result.put("uuid", uuid.toString());
             result.put("name", name);

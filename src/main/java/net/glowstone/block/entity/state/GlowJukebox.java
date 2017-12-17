@@ -1,5 +1,6 @@
 package net.glowstone.block.entity.state;
 
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.JukeboxEntity;
@@ -9,8 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-
 public class GlowJukebox extends GlowBlockState implements Jukebox {
 
     private ItemStack playing;
@@ -18,7 +17,8 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     public GlowJukebox(GlowBlock block) {
         super(block);
         if (block.getType() != Material.JUKEBOX) {
-            throw new IllegalArgumentException("GlowNoteBlock: expected JUKEBOX, got " + block.getType());
+            throw new IllegalArgumentException(
+                "GlowNoteBlock: expected JUKEBOX, got " + block.getType());
         }
         playing = getBlockEntity().getPlaying();
     }

@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.OreType;
 import net.glowstone.generator.objects.OreVein;
@@ -7,8 +8,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.material.MonsterEggs;
-
-import java.util.Random;
 
 public class InfestedStoneDecorator extends BlockDecorator {
 
@@ -27,8 +26,8 @@ public class InfestedStoneDecorator extends BlockDecorator {
             int sourceX = cx + random.nextInt(16);
             int sourceZ = cz + random.nextInt(16);
             int sourceY = oreType.getMinY() == oreType.getMaxY() ?
-                    random.nextInt(oreType.getMinY()) + random.nextInt(oreType.getMinY()) :
-                    random.nextInt(oreType.getMaxY() - oreType.getMinY()) + oreType.getMinY();
+                random.nextInt(oreType.getMinY()) + random.nextInt(oreType.getMinY()) :
+                random.nextInt(oreType.getMaxY() - oreType.getMinY()) + oreType.getMinY();
 
             new OreVein(oreType).generate(world, random, sourceX, sourceY, sourceZ);
         }

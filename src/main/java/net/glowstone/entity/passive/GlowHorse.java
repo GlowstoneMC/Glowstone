@@ -1,6 +1,8 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import java.util.List;
+import java.util.Random;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowHorseInventory;
@@ -12,9 +14,6 @@ import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.inventory.HorseInventory;
-
-import java.util.List;
-import java.util.Random;
 
 public class GlowHorse extends GlowAbstractHorse implements Horse {
 

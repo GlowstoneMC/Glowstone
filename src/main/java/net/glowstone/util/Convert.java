@@ -1,6 +1,7 @@
 package net.glowstone.util;
 
 public class Convert {
+
     public static byte[] fromHex(String hex) {
         int len = hex.length();
         byte[] data = new byte[len / 2];

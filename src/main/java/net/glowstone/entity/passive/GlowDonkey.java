@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 
 public class GlowDonkey extends GlowChestedHorse implements Donkey {
+
     public GlowDonkey(Location location) {
         super(location, EntityType.DONKEY, 15);
     }

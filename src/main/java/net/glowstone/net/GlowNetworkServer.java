@@ -1,10 +1,9 @@
 package net.glowstone.net;
 
 import io.netty.channel.ChannelFuture;
-import net.glowstone.GlowServer;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import net.glowstone.GlowServer;
 
 /**
  * Represents a network server.
@@ -12,6 +11,7 @@ import java.util.concurrent.CountDownLatch;
  * Modified implementation of {@link com.flowpowered.network.NetworkServer}.
  */
 public abstract class GlowNetworkServer {
+
     private final GlowServer server;
     protected CountDownLatch latch;
 

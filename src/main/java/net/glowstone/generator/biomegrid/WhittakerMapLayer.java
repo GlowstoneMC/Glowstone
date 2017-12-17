@@ -48,7 +48,8 @@ public class WhittakerMapLayer extends MapLayer {
                     int leftVal = values[j + (i + 1) * gridSizeX];
                     int rightVal = values[j + 2 + (i + 1) * gridSizeX];
                     for (int type : climate.crossTypes) {
-                        if (upperVal == type || lowerVal == type || leftVal == type || rightVal == type) {
+                        if (upperVal == type || lowerVal == type || leftVal == type
+                            || rightVal == type) {
                             centerVal = climate.finalValue;
                             break;
                         }

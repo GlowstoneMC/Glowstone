@@ -1,11 +1,10 @@
 package net.glowstone.boss;
 
-import net.glowstone.GlowServer;
-import org.bukkit.entity.Player;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.glowstone.GlowServer;
+import org.bukkit.entity.Player;
 
 public class BossBarManager {
 
@@ -20,6 +19,10 @@ public class BossBarManager {
         }
         this.server = server;
         instance = this;
+    }
+
+    public static BossBarManager getInstance() {
+        return instance;
     }
 
     public List<GlowBossBar> getBossBars() {
@@ -51,9 +54,5 @@ public class BossBarManager {
             }
         }
         return null;
-    }
-
-    public static BossBarManager getInstance() {
-        return instance;
     }
 }

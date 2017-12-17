@@ -1,16 +1,18 @@
 package net.glowstone.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class InventoryUtil {
 
     public static final ItemStack[] NO_ITEMS = new ItemStack[0];
+    public static final Collection<ItemStack> NO_ITEMS_COLLECTION = Collections.emptyList();
     public static final ImmutableItemStack EMPTY_STACK = new ImmutableItemStack(Material.AIR, 0);
 
     /**
@@ -20,7 +22,7 @@ public class InventoryUtil {
      * @return whether the given ItemStack is empty
      */
     public static boolean isEmpty(ItemStack stack) {
-        return stack == null || stack.equals(EMPTY_STACK) || stack.getType() == Material.AIR || stack.getAmount() == 0;
+        return stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0;
     }
 
     /**
@@ -45,8 +47,8 @@ public class InventoryUtil {
     /**
      * Get a random slot index in an Inventory.
      *
-     * @param random      a Random instance
-     * @param inventory   the inventory
+     * @param random a Random instance
+     * @param inventory the inventory
      * @param ignoreEmpty whether to skip empty items in the inventory
      * @return the index of a random slot in the inventory, -1 if no possible slot was found
      */

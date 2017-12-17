@@ -7,6 +7,7 @@ import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 
 public class EnderDragonStore extends EntityStore<GlowEnderDragon> {
+
     public EnderDragonStore() {
         super(GlowEnderDragon.class, EntityType.ENDER_DRAGON);
     }

@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import java.util.Iterator;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -13,8 +14,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
-
-import java.util.Iterator;
 
 public class ItemBucket extends ItemType {
 
@@ -42,7 +41,8 @@ public class ItemBucket extends ItemType {
             target = itr.next();
             targetBlockType = ItemTable.instance().getBlock(target.getType());
             if (targetBlockType instanceof BlockLiquid) {
-                if (((BlockLiquid) targetBlockType).isCollectible((GlowBlockState) target.getState())) {
+                if (((BlockLiquid) targetBlockType)
+                    .isCollectible((GlowBlockState) target.getState())) {
                     validTarget = true;
                     break;
                 }
@@ -60,7 +60,8 @@ public class ItemBucket extends ItemType {
 
             Material replaceWith = ((BlockLiquid) targetBlockType).getBucketType();
 
-            PlayerBucketFillEvent event = EventFactory.callEvent(new PlayerBucketFillEvent(player, target, face, holding.getType(), holding));
+            PlayerBucketFillEvent event = EventFactory.callEvent(
+                new PlayerBucketFillEvent(player, target, face, holding.getType(), holding));
             if (event.isCancelled()) {
                 return;
             }

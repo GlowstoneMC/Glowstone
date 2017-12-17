@@ -69,7 +69,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
             // Place the items in the player's inventory (right to left)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
@@ -83,7 +84,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     @Override
     public boolean itemPlaceAllowed(int slot, ItemStack stack) {
         if (slot == FUEL_SLOT) {
-            return ((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(stack.getType()) || stack.getType().equals(Material.BUCKET);
+            return ((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(stack.getType())
+                || stack.getType().equals(Material.BUCKET);
         }
         return super.itemPlaceAllowed(slot, stack);
     }

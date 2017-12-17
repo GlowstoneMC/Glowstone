@@ -1,15 +1,14 @@
 package net.glowstone.io.data;
 
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-import net.glowstone.data.CommandFunction;
-import net.glowstone.io.FunctionIoService;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
+import net.glowstone.GlowWorld;
+import net.glowstone.data.CommandFunction;
+import net.glowstone.io.FunctionIoService;
 
 public class WorldFunctionIoService implements FunctionIoService {
 
@@ -36,18 +35,21 @@ public class WorldFunctionIoService implements FunctionIoService {
                 functions.addAll(namespaceFunctions);
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading functions for world '" + world.getName() + "'", ex);
+            GlowServer.logger.log(Level.SEVERE,
+                "Error while loading functions for world '" + world.getName() + "'", ex);
         }
         return functions;
     }
 
-    private List<CommandFunction> functionsInside(String namespace, String location, File parent) throws IOException {
+    private List<CommandFunction> functionsInside(String namespace, String location, File parent)
+        throws IOException {
         List<CommandFunction> functions = new ArrayList<>();
         for (File file : parent.listFiles()) {
             if (file.isDirectory()) {
                 functions.addAll(functionsInside(namespace, location + file.getName() + "/", file));
             } else if (file.getName().endsWith(".mcfunction")) {
-                functions.add(CommandFunction.read(namespace, location + file.getName().substring(0, file.getName().length() - ".mcfunction".length()), file));
+                functions.add(CommandFunction.read(namespace, location + file.getName()
+                    .substring(0, file.getName().length() - ".mcfunction".length()), file));
             }
         }
         return functions;

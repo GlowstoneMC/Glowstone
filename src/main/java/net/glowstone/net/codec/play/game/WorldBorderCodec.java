@@ -4,10 +4,9 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.WorldBorderMessage;
 import net.glowstone.net.message.play.game.WorldBorderMessage.Action;
-
-import java.io.IOException;
 
 public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
 
@@ -37,13 +36,15 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
                 int portalTeleportBoundary = ByteBufUtils.readVarInt(buffer);
                 int warningTime = ByteBufUtils.readVarInt(buffer);
                 int warningBlocks = ByteBufUtils.readVarInt(buffer);
-                return new WorldBorderMessage(action, x, z, oldRadius, newRadius, speed, portalTeleportBoundary, warningTime, warningBlocks);
+                return new WorldBorderMessage(action, x, z, oldRadius, newRadius, speed,
+                    portalTeleportBoundary, warningTime, warningBlocks);
             case SET_WARNING_TIME:
             case SET_WARNING_BLOCKS:
                 warningTime = ByteBufUtils.readVarInt(buffer);
                 return new WorldBorderMessage(action, warningTime);
             default:
-                throw new DecoderException("Invalid WorldBorderMessage action " + actionId + "/" + action);
+                throw new DecoderException(
+                    "Invalid WorldBorderMessage action " + actionId + "/" + action);
         }
     }
 

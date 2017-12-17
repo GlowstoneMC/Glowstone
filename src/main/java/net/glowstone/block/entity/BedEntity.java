@@ -10,6 +10,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 
 public class BedEntity extends BlockEntity {
+
     @Getter
     @Setter
     private int color;

@@ -1,14 +1,13 @@
 package net.glowstone.util.collection;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 /**
  * Tests for {@link SuperList}, {@link SuperIterator} and {@link SuperListIterator}.
@@ -41,7 +40,8 @@ public class SuperListAndIteratorTest {
     public void sizeTest() {
         SuperList<Integer> list = generateTestList();
         assertThat("Parent count test failed", PARENT_COUNT, is(list.getParents().size()));
-        assertThat("Populated size test failed", list.size(), is(PARENT_COUNT * ELEMENTS_PER_PARENT));
+        assertThat("Populated size test failed", list.size(),
+            is(PARENT_COUNT * ELEMENTS_PER_PARENT));
         list.clear();
         assertThat("List couldn't be cleared", list.size(), is(0));
     }
@@ -50,7 +50,8 @@ public class SuperListAndIteratorTest {
     public void iterationTest() {
         Iterator<Integer> it = generateTestList().iterator();
         for (int i = 0; i < PARENT_COUNT * ELEMENTS_PER_PARENT; i++) {
-            assertThat("Iterator hasNext returns false before reaching the end", it.hasNext(), is(true));
+            assertThat("Iterator hasNext returns false before reaching the end", it.hasNext(),
+                is(true));
             assertThat("Mismatch on position " + i, it.next(), is(i));
         }
         assertThat("Iterator hasNext returns true after reaching the end", it.hasNext(), is(false));
@@ -63,7 +64,8 @@ public class SuperListAndIteratorTest {
         for (int i = 0; i < PARENT_COUNT * ELEMENTS_PER_PARENT; i++) {
             it.next();
             it.remove();
-            assertThat("Item at index " + i + " wasn't properly removed", list.size(), is(PARENT_COUNT * ELEMENTS_PER_PARENT - i - 1));
+            assertThat("Item at index " + i + " wasn't properly removed", list.size(),
+                is(PARENT_COUNT * ELEMENTS_PER_PARENT - i - 1));
         }
     }
 

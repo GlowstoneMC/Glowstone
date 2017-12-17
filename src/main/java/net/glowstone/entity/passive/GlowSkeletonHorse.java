@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SkeletonHorse;
 
 public class GlowSkeletonHorse extends GlowUndeadHorse implements SkeletonHorse {
+
     public GlowSkeletonHorse(Location location) {
         super(location, EntityType.SKELETON_HORSE, 15);
     }

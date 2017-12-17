@@ -1,5 +1,8 @@
 package net.glowstone.block.entity.state;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BannerEntity;
@@ -7,15 +10,10 @@ import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class GlowBanner extends GlowBlockState implements Banner {
 
     private DyeColor base;
-    private List<Pattern> patterns = new ArrayList<>();
+    private List<Pattern> patterns;
 
     public GlowBanner(GlowBlock block) {
         super(block);
@@ -89,6 +87,6 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     @Override
     public boolean isPlaced() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

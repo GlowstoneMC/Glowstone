@@ -2,6 +2,9 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
@@ -12,10 +15,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
@@ -39,7 +38,9 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     @Override
     public List<Message> createSpawnMessage() {
         Location location = getLocation();
-        return Collections.singletonList(new SpawnXpOrbMessage(getEntityId(), location.getX(), location.getY(), location.getZ(), (short) getExperience()));
+        return Collections.singletonList(
+            new SpawnXpOrbMessage(getEntityId(), location.getX(), location.getY(), location.getZ(),
+                (short) getExperience()));
     }
 
     @Override
@@ -56,8 +57,8 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
             // find player to give experience
             // todo: drag self towards player
             Optional<Player> player = getWorld().getPlayers().stream()
-                    .filter(p -> p.getLocation().distanceSquared(location) <= 1)
-                    .findAny();
+                .filter(p -> p.getLocation().distanceSquared(location) <= 1)
+                .findAny();
             if (player.isPresent()) {
                 player.get().giveExp(experience);
                 world.playSound(location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
@@ -75,14 +76,15 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     }
 
     private void refresh() {
-        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
+        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
+            Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessages = this.createSpawnMessage();
         Message[] messages = new Message[]{destroyMessage, spawnMessages.get(0)};
         getWorld()
-                .getRawPlayers()
-                .stream()
-                .filter(p -> p.canSeeEntity(this))
-                .forEach(p -> p.getSession().sendAll(messages));
+            .getRawPlayers()
+            .stream()
+            .filter(p -> p.canSeeEntity(this))
+            .forEach(p -> p.getSession().sendAll(messages));
     }
 
     @Override
@@ -97,13 +99,13 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
         refresh();
     }
 
-    public void setFromBottle(boolean fromBottle) {
-        this.fromBottle = fromBottle;
-    }
-
     @Override
     public boolean isFromBottle() {
         return fromBottle;
+    }
+
+    public void setFromBottle(boolean fromBottle) {
+        this.fromBottle = fromBottle;
     }
 
     @Override

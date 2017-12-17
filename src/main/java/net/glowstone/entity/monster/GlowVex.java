@@ -1,13 +1,13 @@
 package net.glowstone.entity.monster;
 
+import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Vex;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class GlowVex extends GlowMonster implements Vex {
+
     private int lifeTicks;
 
     public GlowVex(Location loc) {

@@ -8,7 +8,8 @@ public abstract class BlockClimbable extends BlockType {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return against != BlockFace.DOWN && against != BlockFace.UP && isTargetOccluding(block, against.getOppositeFace());
+        return against != BlockFace.DOWN && against != BlockFace.UP && isTargetOccluding(block,
+            against.getOppositeFace());
     }
 
     protected boolean isTargetOccluding(GlowBlockState state, BlockFace face) {

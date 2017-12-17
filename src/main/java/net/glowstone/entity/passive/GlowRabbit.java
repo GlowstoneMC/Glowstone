@@ -1,6 +1,9 @@
 package net.glowstone.entity.passive;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableBiMap;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
@@ -8,28 +11,25 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
     private static final ImmutableBiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap.<Type, Integer>builder()
-            .put(Type.BROWN, 0)
-            .put(Type.WHITE, 1)
-            .put(Type.BLACK, 2)
-            .put(Type.BLACK_AND_WHITE, 3)
-            .put(Type.GOLD, 4)
-            .put(Type.SALT_AND_PEPPER, 5)
-            .put(Type.THE_KILLER_BUNNY, 99)
-            .build();
+        .put(Type.BROWN, 0)
+        .put(Type.WHITE, 1)
+        .put(Type.BLACK, 2)
+        .put(Type.BLACK_AND_WHITE, 3)
+        .put(Type.GOLD, 4)
+        .put(Type.SALT_AND_PEPPER, 5)
+        .put(Type.THE_KILLER_BUNNY, 99)
+        .build();
 
     private Type rabbitType;
 
     public GlowRabbit(Location location) {
         super(location, EntityType.RABBIT, 3);
         setSize(0.4F, 0.5F);
-        setRabbitType(Type.values()[ThreadLocalRandom.current().nextInt(rabbitTypeIntegerMap.size())]);
+        setRabbitType(
+            Type.values()[ThreadLocalRandom.current().nextInt(rabbitTypeIntegerMap.size())]);
     }
 
     @Override

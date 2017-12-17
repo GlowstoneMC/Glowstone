@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,11 +8,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
-import java.util.Collections;
-
 public class PardonCommand extends VanillaCommand {
+
     public PardonCommand() {
-        super("pardon", "Unbans a player from the server.", "/pardon <name>", Collections.emptyList());
+        super("pardon", "Unbans a player from the server.", "/pardon <name>",
+            Collections.emptyList());
         setPermission("minecraft.command.pardon");
     }
 

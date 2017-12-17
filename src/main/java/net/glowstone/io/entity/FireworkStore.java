@@ -32,7 +32,8 @@ public class FireworkStore extends EntityStore<GlowFirework> {
             entity.setFireworkItem(NbtSerialization.readItem(tag.getCompound("FireworksItem")));
         }
         if (tag.isLong("SpawningEntityMost") && tag.isLong("SpawningEntityLeast")) {
-            UUID uuid = new UUID(tag.getLong("SpawningEntityMost"), tag.getLong("SpawningEntityLeast"));
+            UUID uuid = new UUID(tag.getLong("SpawningEntityMost"),
+                tag.getLong("SpawningEntityLeast"));
             entity.setSpawningEntity(uuid);
         }
     }

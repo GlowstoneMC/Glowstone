@@ -1,12 +1,11 @@
 package net.glowstone.generator.populators.overworld;
 
-import net.glowstone.generator.decorators.EntityDecorator;
-import org.bukkit.block.Biome;
-import org.bukkit.entity.EntityType;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import net.glowstone.generator.decorators.EntityDecorator;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.EntityType;
 
 public class DesertPopulator extends BiomePopulator {
 

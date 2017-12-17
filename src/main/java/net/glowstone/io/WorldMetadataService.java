@@ -9,8 +9,7 @@ import java.util.UUID;
 public interface WorldMetadataService {
 
     /**
-     * Reads the world's metadata from storage, including final values such as
-     * seed and UUID that are only set on first load.
+     * Reads the world's metadata from storage, including final values such as seed and UUID that are only set on first load.
      *
      * @return A {@link WorldFinalValues} with the seed and UUID.
      */
@@ -24,10 +23,10 @@ public interface WorldMetadataService {
     void writeWorldData() throws IOException;
 
     /**
-     * A structure representing properties stored about a world that cannot be
-     * changed after its initialization, namely seed and UUID.
+     * A structure representing properties stored about a world that cannot be changed after its initialization, namely seed and UUID.
      */
     class WorldFinalValues {
+
         private final long seed;
         private final UUID uuid;
 

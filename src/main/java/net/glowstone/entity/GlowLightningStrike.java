@@ -1,6 +1,9 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -20,10 +23,6 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A GlowLightning strike is an entity produced during thunderstorms.
@@ -80,8 +79,10 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             GlowWorld world = (GlowWorld) location.getWorld();
             // Play Sound
             if (!isSilent) {
-                world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000, 0.8F + ThreadLocalRandom.current().nextFloat() * 0.2F);
-                world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2, 0.5F + ThreadLocalRandom.current().nextFloat() * 0.2F);
+                world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000,
+                    0.8F + ThreadLocalRandom.current().nextFloat() * 0.2F);
+                world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2,
+                    0.5F + ThreadLocalRandom.current().nextFloat() * 0.2F);
             }
 
             if (!effect) { // if it's not just a visual effect
@@ -105,7 +106,8 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
                     }
 
                     if (entity instanceof Damageable) {
-                        ((Damageable) entity).damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
+                        ((Damageable) entity)
+                            .damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }
@@ -133,7 +135,8 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         // (0, 0, 0) finds any entities whose bounding boxes intersect that of
         // this entity.
 
-        BoundingBox searchBox = BoundingBox.fromPositionAndSize(location.toVector(), new Vector(0, 0, 0));
+        BoundingBox searchBox = BoundingBox
+            .fromPositionAndSize(location.toVector(), new Vector(0, 0, 0));
         Vector vec = new Vector(x, y, z);
         Vector vec2 = new Vector(0, 0.5 * y, 0);
         searchBox.minCorner.subtract(vec).add(vec2);
@@ -156,10 +159,5 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
 
     public LightningStrike.Spigot spigot() {
         return spigot;
-    }
-
-    @Override
-    public Location getOrigin() {
-        return null;
     }
 }

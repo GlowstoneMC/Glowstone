@@ -1,5 +1,7 @@
 package net.glowstone.inventory;
 
+import static net.glowstone.util.Position.copyPosition;
+
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,9 +10,8 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.ItemStack;
 
-import static net.glowstone.util.Position.copyPosition;
-
 public class GlowEnchantingInventory extends GlowInventory implements EnchantingInventory {
+
     private static final int ITEM_SLOT = 0;
     private static final int LAPIS_SLOT = 1;
 
@@ -42,7 +43,9 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
         for (int y = 0; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
-                    if (z == 0 && x == 0) continue;
+                    if (z == 0 && x == 0) {
+                        continue;
+                    }
                     copyPosition(location, loc);
                     loc.add(x, 0, z);
                     if (loc.getBlock().isEmpty()) {
@@ -80,6 +83,11 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     }
 
     @Override
+    public void setItem(ItemStack item) {
+        setItem(ITEM_SLOT, item);
+    }
+
+    @Override
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         enchantmentManager.invalidate();
@@ -97,11 +105,6 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     @Override
     public ItemStack getItem() {
         return getItem(ITEM_SLOT);
-    }
-
-    @Override
-    public void setItem(ItemStack item) {
-        setItem(ITEM_SLOT, item);
     }
 
     @Override

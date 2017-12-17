@@ -1,9 +1,8 @@
 package net.glowstone.io.structure;
 
+import java.util.Random;
 import net.glowstone.GlowWorld;
 import net.glowstone.generator.structures.GlowTemple;
-
-import java.util.Random;
 
 public class TempleStore extends StructureStore<GlowTemple> {
 

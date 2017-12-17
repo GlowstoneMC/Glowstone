@@ -1,11 +1,10 @@
 package net.glowstone.net.message.play.scoreboard;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import lombok.Data;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
-
-import java.util.List;
 
 @Data
 public final class ScoreboardTeamMessage implements Message {
@@ -25,7 +24,10 @@ public final class ScoreboardTeamMessage implements Message {
     // CREATE, ADD_, and REMOVE_PLAYERS only
     private final List<String> entries;
 
-    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, Team.OptionStatus nametagVisibility, Team.OptionStatus collisionRule, ChatColor color, List<String> entries) {
+    private ScoreboardTeamMessage(String teamName, Action action, String displayName, String prefix,
+        String suffix, boolean friendlyFire, boolean seeInvisible,
+        Team.OptionStatus nametagVisibility, Team.OptionStatus collisionRule, ChatColor color,
+        List<String> entries) {
         this.teamName = teamName;
         this.action = action;
         this.displayName = displayName;
@@ -38,24 +40,34 @@ public final class ScoreboardTeamMessage implements Message {
         this.entries = entries;
     }
 
-    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, Team.OptionStatus nametagVisibility, Team.OptionStatus collisionRule, ChatColor color, List<String> players) {
-        return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, players);
+    public static ScoreboardTeamMessage create(String teamName, String displayName, String prefix,
+        String suffix, boolean friendlyFire, boolean seeInvisible,
+        Team.OptionStatus nametagVisibility, Team.OptionStatus collisionRule, ChatColor color,
+        List<String> players) {
+        return new ScoreboardTeamMessage(teamName, Action.CREATE, displayName, prefix, suffix,
+            friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, players);
     }
 
     public static ScoreboardTeamMessage remove(String teamName) {
-        return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false, null, null, ChatColor.RESET, null);
+        return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false,
+            null, null, ChatColor.RESET, null);
     }
 
-    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, Team.OptionStatus nametagVisibility, Team.OptionStatus collisionRule, ChatColor color) {
-        return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix, friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, null);
+    public static ScoreboardTeamMessage update(String teamName, String displayName, String prefix,
+        String suffix, boolean friendlyFire, boolean seeInvisible,
+        Team.OptionStatus nametagVisibility, Team.OptionStatus collisionRule, ChatColor color) {
+        return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix,
+            friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, null);
     }
 
     public static ScoreboardTeamMessage addPlayers(String teamName, List<String> entries) {
-        return new ScoreboardTeamMessage(teamName, Action.ADD_PLAYERS, null, null, null, false, false, null, null, ChatColor.RESET, entries);
+        return new ScoreboardTeamMessage(teamName, Action.ADD_PLAYERS, null, null, null, false,
+            false, null, null, ChatColor.RESET, entries);
     }
 
     public static ScoreboardTeamMessage removePlayers(String teamName, List<String> entries) {
-        return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false, false, null, null, ChatColor.RESET, entries);
+        return new ScoreboardTeamMessage(teamName, Action.REMOVE_PLAYERS, null, null, null, false,
+            false, null, null, ChatColor.RESET, entries);
     }
 
     public enum Action {

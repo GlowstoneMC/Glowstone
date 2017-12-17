@@ -1,18 +1,17 @@
 package net.glowstone.entity.ai;
 
+import java.util.List;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-import java.util.List;
-
 public class FollowPlayerTask extends EntityTask {
 
+    private static final double RANGE = 10;
     private GlowPlayer target;
     private int delay = 1;
-    private static final double RANGE = 10;
 
     public FollowPlayerTask() {
         super("follow_player");
@@ -70,7 +69,8 @@ public class FollowPlayerTask extends EntityTask {
             delay = 0;
             return;
         }
-        if (target == null || !target.isOnline() || entity.getLocation().distanceSquared(target.getLocation()) > (RANGE * RANGE)) {
+        if (target == null || !target.isOnline()
+            || entity.getLocation().distanceSquared(target.getLocation()) > (RANGE * RANGE)) {
             reset(entity);
             return;
         }

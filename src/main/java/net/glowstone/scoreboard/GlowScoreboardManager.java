@@ -1,9 +1,8 @@
 package net.glowstone.scoreboard;
 
+import java.io.IOException;
 import net.glowstone.GlowServer;
 import org.bukkit.scoreboard.ScoreboardManager;
-
-import java.io.IOException;
 
 /**
  * ScoreboardManager implementation.
