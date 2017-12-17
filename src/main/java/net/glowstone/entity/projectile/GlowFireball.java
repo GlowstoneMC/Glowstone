@@ -2,9 +2,11 @@ package net.glowstone.entity.projectile;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowFireball extends GlowProjectile implements Fireball {
@@ -13,6 +15,7 @@ public class GlowFireball extends GlowProjectile implements Fireball {
 
     public GlowFireball(Location location) {
         super(location);
+        setGravity(false); // Fireballs fly in a straight line
     }
 
     @Override
@@ -26,7 +29,9 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     }
 
     private void explode() {
-        world.createExplosion(location, yield, incendiary);
+        ProjectileSource source = getShooter();
+        world.createExplosion(source instanceof Entity ? (Entity) source : this,
+                location.getX(), location.getY(), location.getZ(), yield, incendiary, true);
         remove();
     }
 
@@ -37,13 +42,12 @@ public class GlowFireball extends GlowProjectile implements Fireball {
 
     @Override
     public void setDirection(Vector vector) {
-        // TODO
+        setVelocity(vector.normalize().multiply(velocity.length()));
     }
 
     @Override
     public Vector getDirection() {
-        // TODO
-        return null;
+        return velocity.normalize();
     }
 
     @Override
