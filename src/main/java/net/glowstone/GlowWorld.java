@@ -52,7 +52,6 @@ import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
-import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
@@ -338,7 +337,7 @@ public final class GlowWorld implements World {
      * @param server  The server for the world.
      * @param creator The WorldCreator to use.
      */
-    public GlowWorld(GlowServer server, WorldCreator creator) {
+    public GlowWorld(GlowServer server, WorldCreator creator, WorldStorageProvider worldStorageProvider) {
         this.server = server;
 
         // set up values from WorldCreator
@@ -349,7 +348,7 @@ public final class GlowWorld implements World {
 
         generator = creator.generator();
 
-        storageProvider = new AnvilWorldStorageProvider(new File(server.getWorldContainer(), name));
+        storageProvider = worldStorageProvider;
         storageProvider.setWorld(this);
         populators = generator.getDefaultPopulators(this);
 
