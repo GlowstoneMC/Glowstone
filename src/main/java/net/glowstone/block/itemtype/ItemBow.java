@@ -7,9 +7,16 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.List;
 
 public class ItemBow extends ItemTimedUsage {
     private Class<? extends Projectile> currentArrowType;
+    private PotionMeta currentTippedArrowMeta;
 
     @Override
     public void startUse(GlowPlayer player, ItemStack item) {
@@ -27,6 +34,10 @@ public class ItemBow extends ItemTimedUsage {
                 case TIPPED_ARROW:
                     arrow = itemStack;
                     currentArrowType = TippedArrow.class;
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    if (itemMeta instanceof PotionMeta) {
+                        currentTippedArrowMeta = (PotionMeta) itemMeta;
+                    }
                     break findArrow;
             }
         }
@@ -43,7 +54,16 @@ public class ItemBow extends ItemTimedUsage {
 
     @Override
     public void endUse(GlowPlayer player, ItemStack item) {
-        player.launchProjectile(currentArrowType);
+        Projectile launchedArrow = player.launchProjectile(currentArrowType);
+        if (currentArrowType == TippedArrow.class) {
+            TippedArrow launchedTippedArrow = (TippedArrow) launchedArrow;
+            launchedTippedArrow.setBasePotionData(currentTippedArrowMeta.getBasePotionData());
+            launchedTippedArrow.setColor(currentTippedArrowMeta.getColor());
+            for (PotionEffect effect : currentTippedArrowMeta.getCustomEffects()) {
+                launchedTippedArrow.addCustomEffect(effect, true);
+            }
+            currentTippedArrowMeta = null;
+        }
         player.setUsageItem(null);
         player.setUsageTime(0);
     }
