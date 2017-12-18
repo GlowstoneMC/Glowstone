@@ -6,6 +6,8 @@ import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LingeringPotion;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 
 public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPotion {
@@ -28,8 +30,14 @@ public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPo
     private void createEffectCloud() {
         AreaEffectCloud cloud = (AreaEffectCloud)
                 location.getWorld().spawnEntity(location, EntityType.AREA_EFFECT_CLOUD);
-        for (PotionEffect effect : getEffects()) {
-            cloud.addCustomEffect(effect, true);
+        ItemMeta meta = getItem().getItemMeta();
+        if (meta instanceof PotionMeta) {
+            PotionMeta potionMeta = (PotionMeta) meta;
+            cloud.setColor(potionMeta.getColor());
+            cloud.setBasePotionData(potionMeta.getBasePotionData());
+            for (PotionEffect effect : getEffects()) {
+                cloud.addCustomEffect(effect, true);
+            }
         }
         remove();
     }
