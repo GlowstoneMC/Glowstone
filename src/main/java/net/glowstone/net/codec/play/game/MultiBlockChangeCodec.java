@@ -26,9 +26,9 @@ public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessag
 
         for (BlockChangeMessage record : records) {
             // XZY
-            int pos = (record.getX() & 0xF) << 12 |
-                (record.getZ() & 0xF) << 8 |
-                record.getY() & 0xFF;
+            int pos = (record.getBlockX() & 0xF) << 12 |
+                (record.getBlockZ() & 0xF) << 8 |
+                record.getBlockY() & 0xFF;
             buf.writeShort(pos);
             ByteBufUtils.writeVarInt(buf, record.getType());
         }

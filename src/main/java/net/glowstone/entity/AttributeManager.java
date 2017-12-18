@@ -22,12 +22,23 @@ public class AttributeManager {
 
     private boolean needsUpdate;
 
+    /**
+     * Create an instance for the given entity.
+     *
+     * @param entity the entity whose attributes will be managed
+     */
     public AttributeManager(GlowLivingEntity entity) {
         this.entity = entity;
         properties = new HashMap<>();
         needsUpdate = false;
     }
 
+    /**
+     * Adds an {@link EntityPropertyMessage} with our entity's properties to the given collection of
+     * messages, if the client's snapshot is stale.
+     *
+     * @param messages the message collection to add to
+     */
     public void applyMessages(Collection<Message> messages) {
         if (!needsUpdate) {
             return;
@@ -36,6 +47,11 @@ public class AttributeManager {
         needsUpdate = false;
     }
 
+    /**
+     * Sends the managed entity's properties to the client, if the client's snapshot is stale.
+     *
+     * @param session the client's session
+     */
     public void sendMessages(GlowSession session) {
         if (!needsUpdate) {
             return;
@@ -51,10 +67,23 @@ public class AttributeManager {
         needsUpdate = false;
     }
 
+    /**
+     * Updates a property and removes all modifiers.
+     *
+     * @param key the property to update
+     * @param value the new value
+     */
     public void setProperty(Key key, double value) {
         setProperty(key.toString(), Math.max(0, Math.min(value, key.max)), null);
     }
 
+    /**
+     * Updates a property and its modifiers.
+     *
+     * @param key the property to update
+     * @param value the new base value
+     * @param modifiers the new and retained modifiers, or {@code null} to remove all modifiers
+     */
     public void setProperty(String key, double value, List<Modifier> modifiers) {
         if (properties.containsKey(key)) {
             properties.get(key).value = value;
@@ -66,6 +95,12 @@ public class AttributeManager {
         needsUpdate = true;
     }
 
+    /**
+     * Returns the base value of the given property.
+     *
+     * @param key the property to look up
+     * @return the property's base value, or its default value if it's not set
+     */
     public double getPropertyValue(Key key) {
         if (properties.containsKey(key.toString())) {
             return properties.get(key.toString()).value;
@@ -94,7 +129,9 @@ public class AttributeManager {
 
         private final String name;
         @Getter
-        private final double def, max;
+        private final double def;
+        @Getter
+        private final double max;
 
         @Override
         public String toString() {

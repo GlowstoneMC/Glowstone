@@ -6,6 +6,10 @@ import lombok.Data;
 @Data
 public class BlockBreakAnimationMessage implements Message {
 
-    private final int id, x, y, z, destroyStage;
+    private final int id;
+    private final int blockX;
+    private final int blockY;
+    private final int blockZ;
+    private final int destroyStage;
 
 }

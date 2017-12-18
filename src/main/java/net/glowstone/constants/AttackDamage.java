@@ -3,7 +3,8 @@ package net.glowstone.constants;
 import org.bukkit.Material;
 
 /**
- * Map of attack damage values and durability costs for various weapon types, until better item type support is available.
+ * Map of attack damage values and durability costs for various weapon types, until better item type
+ * support is available.
  */
 public final class AttackDamage {
 
@@ -11,7 +12,8 @@ public final class AttackDamage {
     }
 
     /**
-     * Gets the damage an item in-hand would cause without added benefits. This assumes a non-critical attack.
+     * Gets the damage an item in-hand would cause without added benefits. This assumes a
+     * non-critical attack.
      *
      * @param material the item type
      * @return the raw damage caused by that item

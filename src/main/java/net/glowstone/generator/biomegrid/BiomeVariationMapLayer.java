@@ -65,10 +65,23 @@ public class BiomeVariationMapLayer extends MapLayer {
     private final MapLayer belowLayer;
     private final MapLayer variationLayer;
 
+    /**
+     * Create a layer after the given layer, with no variation layer.
+     *
+     * @param seed the PRNG seed
+     * @param belowLayer the previous layer
+     */
     public BiomeVariationMapLayer(long seed, MapLayer belowLayer) {
         this(seed, belowLayer, null);
     }
 
+    /**
+     * Create a layer after the given layer, with the given variation layer.
+     *
+     * @param seed the PRNG seed
+     * @param belowLayer the previous layer
+     * @param variationLayer the variation layer, or null to use no variation layer
+     */
     public BiomeVariationMapLayer(long seed, MapLayer belowLayer, MapLayer variationLayer) {
         super(seed);
         this.belowLayer = belowLayer;
@@ -83,6 +96,16 @@ public class BiomeVariationMapLayer extends MapLayer {
         return mergeValues(x, z, sizeX, sizeZ);
     }
 
+    /**
+     * Generates a map rectangle by replacing all positive values from the previous layer with
+     * independent random numbers in the range 2 to 31, leaving zero and negative values unchanged.
+     *
+     * @param x the lowest x value
+     * @param z the lowest z value
+     * @param sizeX the range of x coordinates
+     * @param sizeZ the range of z coordinates
+     * @return the generated values
+     */
     public int[] generateRandomValues(int x, int z, int sizeX, int sizeZ) {
         int[] values = belowLayer.generateValues(x, z, sizeX, sizeZ);
 
@@ -100,6 +123,15 @@ public class BiomeVariationMapLayer extends MapLayer {
         return finalValues;
     }
 
+    /**
+     * Applies this layer, the previous layer and the variation layer to generate a map rectangle.
+     *
+     * @param x the lowest x value
+     * @param z the lowest z value
+     * @param sizeX the range of x coordinates
+     * @param sizeZ the range of z coordinates
+     * @return the generated values
+     */
     public int[] mergeValues(int x, int z, int sizeX, int sizeZ) {
         int gridX = x - 1;
         int gridZ = z - 1;
@@ -107,14 +139,14 @@ public class BiomeVariationMapLayer extends MapLayer {
         int gridSizeZ = sizeZ + 2;
 
         int[] values = belowLayer.generateValues(gridX, gridZ, gridSizeX, gridSizeZ);
-        int[] eValues = variationLayer.generateValues(gridX, gridZ, gridSizeX, gridSizeZ);
+        int[] variationValues = variationLayer.generateValues(gridX, gridZ, gridSizeX, gridSizeZ);
 
         int[] finalValues = new int[sizeX * sizeZ];
         for (int i = 0; i < sizeZ; i++) {
             for (int j = 0; j < sizeX; j++) {
                 setCoordsSeed(x + j, z + i);
                 int centerValue = values[j + 1 + (i + 1) * gridSizeX];
-                int variationValue = eValues[j + 1 + (i + 1) * gridSizeX];
+                int variationValue = variationValues[j + 1 + (i + 1) * gridSizeX];
                 if (centerValue != 0 && variationValue == 3 && centerValue < 128) {
                     finalValues[j + i * sizeX] =
                         GlowBiome.getBiome(centerValue + 128) != null ? centerValue + 128

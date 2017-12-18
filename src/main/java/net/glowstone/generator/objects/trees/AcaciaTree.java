@@ -11,6 +11,14 @@ import org.bukkit.material.types.DirtType;
 
 public class AcaciaTree extends GenericTree {
 
+    /**
+     * Sets a random height and prepares a tree to generate.
+     *
+     * @param random the PRNG to use for generation
+     * @param location the bottom of the trunk
+     * @param delegate the block-state delegate which will be used to check whether this tree can
+     *     grow, handle updating of blocks with wood and leaves if it does grow
+     */
     public AcaciaTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         setHeight(random.nextInt(3) + random.nextInt(3) + 5);
@@ -42,7 +50,8 @@ public class AcaciaTree extends GenericTree {
         }
         int twistHeight = height - 1 - random.nextInt(4);
         int twistCount = random.nextInt(3) + 1;
-        int centerX = loc.getBlockX(), centerZ = loc.getBlockZ();
+        int centerX = loc.getBlockX();
+        int centerZ = loc.getBlockZ();
         int trunkTopY = 0;
 
         // generates the trunk

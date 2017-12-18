@@ -160,6 +160,12 @@ public class BlockChest extends BlockContainer {
         return chests;
     }
 
+    /**
+     * Returns the direction to the other half of this chest, if this is part of a double chest.
+     * @param me the block where this chest is located
+     * @return the direction to the other half of this chest, or null if this isn't part of a double
+     *     chest
+     */
     public BlockFace getAttachedChest(GlowBlock me) {
         Collection<BlockFace> attachedChests = searchChests(me);
         if (attachedChests.isEmpty()) {
