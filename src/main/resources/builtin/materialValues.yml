@@ -6,7 +6,8 @@ default:
   fireResistance: -1
   baseMapColor: 44
 values:
-  # TODO: Define baseMapColor for all materials
+  # Incomplete:
+  # hardness, blastResistance, lightOpacity, flameResistance, fireResistance, baseMapColor
   AIR:
     lightOpacity: 0
     baseMapColor: 0
