@@ -819,9 +819,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         if (!destroyIds.isEmpty()) {
             session.send(new DestroyEntitiesMessage(destroyIds));
-            for (Entity entity : destroyEntities) {
-                knownEntitiesCopy.remove(entity);
-            }
+            knownEntities.removeAll(destroyEntities);
         }
 
         // add entities
