@@ -9,10 +9,7 @@ import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-
-import java.util.List;
 
 public class ItemBow extends ItemTimedUsage {
     private Class<? extends Projectile> currentArrowType;
@@ -39,6 +36,8 @@ public class ItemBow extends ItemTimedUsage {
                         currentTippedArrowMeta = (PotionMeta) itemMeta;
                     }
                     break findArrow;
+                default:
+                    // do nothing
             }
         }
         if (arrow != null) {
