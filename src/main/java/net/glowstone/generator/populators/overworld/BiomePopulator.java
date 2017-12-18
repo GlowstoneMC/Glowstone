@@ -70,6 +70,11 @@ public class BiomePopulator extends BlockPopulator {
     private final List<BlockPopulator> inGroundPopulators = new ArrayList<>();
     private final List<BlockPopulator> onGroundPopulators = new ArrayList<>();
 
+    /**
+     * Creates a populator that creates lakes, caves, dungeons, ore, and vegetation.
+     *
+     * @param biome ignored
+     */
     public BiomePopulator(Biome... biome) {
         inGroundPopulators.add(waterLakeDecorator);
         inGroundPopulators.add(lavaLakeDecorator);

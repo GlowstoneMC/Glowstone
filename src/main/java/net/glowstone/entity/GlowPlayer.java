@@ -862,10 +862,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
             for (BlockChangeMessage message : messages) {
                 if (message != null) {
-                    Key key = GlowChunk.Key.of(message.getX() >> 4, message.getZ() >> 4);
+                    Key key = GlowChunk.Key.of(message.getBlockX() >> 4, message.getBlockZ() >> 4);
                     if (canSeeChunk(key)) {
                         Map<BlockVector, BlockChangeMessage> map = chunks.computeIfAbsent(key, k -> new HashMap<>());
-                        map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
+                        map.put(new BlockVector(message.getBlockX(), message.getBlockY(), message.getBlockZ()), message);
                     }
                 }
             }
@@ -2344,7 +2344,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void sendBlockChange(BlockChangeMessage message) {
         // only send message if the chunk is within visible range
-        Key key = GlowChunk.Key.of(message.getX() >> 4, message.getZ() >> 4);
+        Key key = GlowChunk.Key.of(message.getBlockX() >> 4, message.getBlockZ() >> 4);
         if (canSeeChunk(key)) {
             blockChanges.add(message);
         }

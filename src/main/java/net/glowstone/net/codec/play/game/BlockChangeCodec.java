@@ -19,7 +19,8 @@ public final class BlockChangeCodec implements Codec<BlockChangeMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, BlockChangeMessage message) throws IOException {
-        GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
+        GlowBufUtils.writeBlockPosition(buf,
+                message.getBlockX(), message.getBlockY(), message.getBlockZ());
         ByteBufUtils.writeVarInt(buf, message.getType());
         return buf;
     }

@@ -142,7 +142,8 @@ public class BlockBed extends BlockType {
     }
 
     /**
-     * Returns an 'empty' block next to the bed used to put the player at when they exit a bed / respawn.
+     * Returns an 'empty' block next to the bed used to put the player at when they exit a bed or
+     * respawn.
      *
      * @param head head of the bed
      * @param foot foot of the bed

@@ -8,6 +8,12 @@ import org.bukkit.material.SimpleAttachableMaterialData;
 
 public class BlockAttachable extends BlockNeedsAttached {
 
+    /**
+     * Updates the block state by changing which face of the block is attached to an adjacent block.
+     *
+     * @param state the block state to update
+     * @param attachedFace the face to attach
+     */
     public void setAttachedFace(BlockState state, BlockFace attachedFace) {
         byte data = state.getRawData();
         switch (attachedFace) {
@@ -29,6 +35,8 @@ public class BlockAttachable extends BlockNeedsAttached {
             case DOWN:
                 data |= 5;
                 break;
+            default:
+                // do nothing
         }
         state.setRawData(data);
     }

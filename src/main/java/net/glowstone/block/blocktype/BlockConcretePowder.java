@@ -13,12 +13,13 @@ public class BlockConcretePowder extends BlockFalling {
     @Override
     public void onNearBlockChanged(GlowBlock me, BlockFace face, GlowBlock other, Material oldType,
         byte oldData, Material newType, byte newData) {
-        if ((face == BlockFace.NORTH ||
-            face == BlockFace.EAST ||
-            face == BlockFace.SOUTH ||
-            face == BlockFace.WEST ||
-            face == BlockFace.UP ||
-            face == BlockFace.DOWN) && other.isLiquid()) {
+        if ((face == BlockFace.NORTH
+                        || face == BlockFace.EAST
+                        || face == BlockFace.SOUTH
+                        || face == BlockFace.WEST
+                        || face == BlockFace.UP
+                        || face == BlockFace.DOWN)
+                && other.isLiquid()) {
             me.setType(Material.CONCRETE);
         } else {
             super.onNearBlockChanged(me, face, other, oldType, oldData, newType, newData);

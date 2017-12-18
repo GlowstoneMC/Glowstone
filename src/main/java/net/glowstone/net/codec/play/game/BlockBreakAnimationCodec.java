@@ -22,7 +22,8 @@ public class BlockBreakAnimationCodec implements Codec<BlockBreakAnimationMessag
     @Override
     public ByteBuf encode(ByteBuf buf, BlockBreakAnimationMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
-        GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
+        GlowBufUtils.writeBlockPosition(buf,
+                message.getBlockX(), message.getBlockY(), message.getBlockZ());
         buf.writeByte(message.getDestroyStage());
         return buf;
     }

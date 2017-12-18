@@ -5,6 +5,11 @@ import org.bukkit.util.Vector;
 
 public class BlockBoundingBox extends BoundingBox {
 
+    /**
+     * Creates the bounding box of a full block.
+     *
+     * @param block the block coinciding with this bounding box
+     */
     public BlockBoundingBox(Block block) {
         minCorner.setX(block.getX());
         minCorner.setY(block.getY());

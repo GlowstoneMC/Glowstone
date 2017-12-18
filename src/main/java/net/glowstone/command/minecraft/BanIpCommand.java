@@ -12,6 +12,9 @@ import org.bukkit.entity.Player;
 
 public class BanIpCommand extends VanillaCommand {
 
+    /**
+     * Creates an object to handle the {@code /ban-ip} command.
+     */
     public BanIpCommand() {
         super("ban-ip", "Bans an IP address from the server.", "/ban-ip <address|player> [reason]",
             Collections.emptyList());
