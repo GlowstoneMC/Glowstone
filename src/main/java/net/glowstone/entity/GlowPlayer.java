@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -806,17 +805,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // update or remove entities
         List<Integer> destroyIds = new LinkedList<>();
-        for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
-            GlowEntity entity = it.next();
+        List<GlowEntity> destroyEntities = new LinkedList<>();
+        // Operate on a copy of the list to avoid ConcurrentModificationException
+        // if player spawns during this process
+        List<GlowEntity> knownEntitiesCopy = new LinkedList<>(knownEntities);
+        for (GlowEntity entity : knownEntitiesCopy) {
             if (!isWithinDistance(entity) || entity.isRemoved()) {
                 destroyIds.add(entity.getEntityId());
-                it.remove();
+                destroyEntities.add(entity);
             } else {
                 entity.createUpdateMessage(session).forEach(session::send);
             }
         }
         if (!destroyIds.isEmpty()) {
             session.send(new DestroyEntitiesMessage(destroyIds));
+            knownEntities.removeAll(destroyEntities);
         }
 
         // add entities
