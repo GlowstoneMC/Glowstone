@@ -29,7 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-// TODO: Minecarts stop when there's an arrow in the way.
+// TODO: Implement movement and collision detection.
 public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     @Getter @Setter private volatile double damage;
