@@ -1,11 +1,8 @@
 package net.glowstone.dispenser;
 
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockDispenser;
 import net.glowstone.block.blocktype.BlockTNT;
-import net.glowstone.block.itemtype.ItemTool;
-import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
