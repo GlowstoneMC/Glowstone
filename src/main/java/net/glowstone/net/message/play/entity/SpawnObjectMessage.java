@@ -4,6 +4,8 @@ import com.flowpowered.network.Message;
 import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import net.glowstone.util.Position;
+import org.bukkit.Location;
 
 @Data
 @RequiredArgsConstructor
@@ -30,6 +32,11 @@ public final class SpawnObjectMessage implements Message {
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
         int yaw, int data) {
         this(id, uuid, type, x, y, z, pitch, yaw, data, 0, 0, 0);
+    }
+
+    public SpawnObjectMessage(int id, UUID uuid, int typeId, Location location) {
+        this(id, uuid, typeId, location.getX(), location.getY(), location.getZ(),
+                Position.getIntPitch(location), Position.getIntYaw(location));
     }
 
     public boolean hasFireball() {

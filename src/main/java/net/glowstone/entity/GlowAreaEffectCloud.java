@@ -3,12 +3,14 @@ package net.glowstone.entity;
 import com.flowpowered.network.Message;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -18,8 +20,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
-// TODO: stubs
+// TODO: Apply effects to entities
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
+
+    private static final int NETWORK_TYPE_ID = 3;
 
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
     @Getter @Setter private int duration;
@@ -45,7 +49,10 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return null;
+        LinkedList<Message> result = new LinkedList<>();
+        result.add(new SpawnObjectMessage(id, getUniqueId(), NETWORK_TYPE_ID,
+                location));
+        return result;
     }
 
     @Override
