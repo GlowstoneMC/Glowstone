@@ -15,7 +15,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -132,7 +134,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Lock to prevent concurrent modifications affected by switching worlds.
      */
-    protected final Lock worldLock = new ReentrantLock();
+    protected final ReadWriteLock worldLock = new ReentrantReadWriteLock();
     /**
      * A flag indicating if this entity is currently active.
      */
@@ -417,15 +419,14 @@ public abstract class GlowEntity implements Entity {
     public boolean teleport(Location location) {
         checkNotNull(location, "location cannot be null");
         checkNotNull(location.getWorld(), "location's world cannot be null");
-
         if (location.getWorld() != world) {
-            worldLock.lock();
+            worldLock.writeLock().lock();
             try {
                 world.getEntityManager().unregister(this);
                 world = (GlowWorld) location.getWorld();
                 world.getEntityManager().register(this);
             } finally {
-                worldLock.unlock();
+                worldLock.writeLock().unlock();
             }
         }
         setRawLocation(location, false);

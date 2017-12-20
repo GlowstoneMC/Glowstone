@@ -806,7 +806,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // Entity IDs are only unique per world, so we can't spawn or teleport between worlds while
         // updating them.
-        worldLock.lock();
+        worldLock.writeLock().lock();
         try {
             // update or remove entities
             List<GlowEntity> destroyEntities = new LinkedList<>();
@@ -840,7 +840,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                         entity.createAfterSpawnMessage(session).forEach(session::send);
                     })));
         } finally {
-            worldLock.unlock();
+            worldLock.writeLock().unlock();
         }
 
         if (passengerChanged) {
@@ -1067,12 +1067,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // fire event and perform spawn
         PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
         EventFactory.callEvent(event);
-        if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities.isEmpty()) {
-            // we need to manually reset all known entities if the player respawns in the same world
-            List<Integer> entityIds = new ArrayList<>(knownEntities.size());
-            entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
-            session.send(new DestroyEntitiesMessage(entityIds));
-            knownEntities.clear();
+        worldLock.writeLock().lock();
+        try {
+            if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities.isEmpty()) {
+                // we need to manually reset all known entities if the player respawns in the same world
+                List<Integer> entityIds = new ArrayList<>(knownEntities.size());
+                entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
+                session.send(new DestroyEntitiesMessage(entityIds));
+                knownEntities.clear();
+            }
+        } finally {
+            worldLock.writeLock().unlock();
         }
         active = true;
         deathTicks = 0;
@@ -1099,7 +1104,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @return If the entity is known to the player's client.
      */
     public boolean canSeeEntity(GlowEntity entity) {
-        return knownEntities.contains(entity);
+        worldLock.readLock().lock();
+        try {
+            return knownEntities.contains(entity);
+        } finally {
+            worldLock.readLock().unlock();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2954,8 +2964,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         hiddenEntities.add(player.getUniqueId());
-        if (knownEntities.remove(player)) {
-            session.send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+        worldLock.writeLock().lock();
+        try {
+            if (knownEntities.remove(player)) {
+                session.send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+            }
+        } finally {
+            worldLock.writeLock().unlock();
         }
         session.send(UserListItemMessage.removeOne(player.getUniqueId()));
     }
