@@ -996,14 +996,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private void spawnAt(Location location) {
         GlowWorld oldWorld;
         // switch worlds
-        worldLock.lock();
+        worldLock.writeLock().lock();
         try {
             oldWorld = world;
             world.getEntityManager().unregister(this);
             world = (GlowWorld) location.getWorld();
             world.getEntityManager().register(this);
         } finally {
-            worldLock.unlock();
+            worldLock.writeLock().unlock();
         }
 
         // switch chunk set
