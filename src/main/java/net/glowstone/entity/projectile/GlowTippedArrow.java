@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Color;
@@ -18,8 +17,12 @@ import org.bukkit.potion.PotionEffectType;
 // TODO: stubs
 public class GlowTippedArrow extends GlowArrow implements TippedArrow {
 
-    @Getter @Setter private Color color;
-    @Getter @Setter private PotionData basePotionData;
+    @Getter
+    @Setter
+    private Color color;
+    @Getter
+    @Setter
+    private PotionData basePotionData;
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
 
     public GlowTippedArrow(Location location) {

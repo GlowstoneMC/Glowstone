@@ -46,17 +46,39 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     }
 
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
-    @Getter @Setter private int duration;
-    @Getter @Setter private int waitTime;
-    @Getter @Setter private int reapplicationDelay;
-    @Getter @Setter private int durationOnUse;
-    @Getter @Setter private float radius;
-    @Getter @Setter private float radiusOnUse;
-    @Getter @Setter private float radiusPerTick;
-    @Getter @Setter private Particle particle;
-    @Getter @Setter private PotionData basePotionData;
-    @Getter @Setter private ProjectileSource source;
-    @Getter @Setter private Color color;
+    @Getter
+    @Setter
+    private int duration;
+    @Getter
+    @Setter
+    private int waitTime;
+    @Getter
+    @Setter
+    private int reapplicationDelay;
+    @Getter
+    @Setter
+    private int durationOnUse;
+    @Getter
+    @Setter
+    private float radius;
+    @Getter
+    @Setter
+    private float radiusOnUse;
+    @Getter
+    @Setter
+    private float radiusPerTick;
+    @Getter
+    @Setter
+    private Particle particle;
+    @Getter
+    @Setter
+    private PotionData basePotionData;
+    @Getter
+    @Setter
+    private ProjectileSource source;
+    @Getter
+    @Setter
+    private Color color;
 
     /**
      * Creates an entity and adds it to the specified world.

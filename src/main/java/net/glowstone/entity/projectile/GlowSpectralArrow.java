@@ -10,7 +10,9 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GlowSpectralArrow extends GlowArrow implements SpectralArrow {
 
-    @Getter @Setter private int glowingTicks;
+    @Getter
+    @Setter
+    private int glowingTicks;
 
     public GlowSpectralArrow(Location location) {
         super(location);

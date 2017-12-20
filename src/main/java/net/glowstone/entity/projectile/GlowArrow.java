@@ -19,7 +19,9 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     private volatile PickupStatus customPickupStatus = null;
     private final Arrow.Spigot spigot = new GlowArrow.Spigot();
-    @Getter @Setter private int knockbackStrength;
+    @Getter
+    @Setter
+    private int knockbackStrength;
     /**
      * How long an entity burns after being shot with a burning arrow.
      */
@@ -124,6 +126,8 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     }
 
     private class Spigot extends Arrow.Spigot {
-        @Getter @Setter private volatile double damage;
+        @Getter
+        @Setter
+        private volatile double damage;
     }
 }

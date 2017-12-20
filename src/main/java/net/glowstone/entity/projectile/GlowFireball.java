@@ -12,8 +12,11 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowFireball extends GlowProjectile implements Fireball {
-    @Getter private boolean incendiary;
-    @Getter @Setter private float yield;
+    @Getter
+    private boolean incendiary;
+    @Getter
+    @Setter
+    private float yield;
 
     public GlowFireball(Location location) {
         super(location);

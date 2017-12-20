@@ -3,7 +3,6 @@ package net.glowstone.entity.projectile;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
@@ -20,10 +19,17 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
-    @Getter @Setter private boolean glowing;
-    @Getter @Setter private boolean invulnerable;
-    @Getter @Setter private ProjectileSource shooter;
-    @Setter private boolean bounce;
+    @Getter
+    @Setter
+    private boolean glowing;
+    @Getter
+    @Setter
+    private boolean invulnerable;
+    @Getter
+    @Setter
+    private ProjectileSource shooter;
+    @Setter
+    private boolean bounce;
 
     public GlowProjectile(Location location) {
         super(location);
