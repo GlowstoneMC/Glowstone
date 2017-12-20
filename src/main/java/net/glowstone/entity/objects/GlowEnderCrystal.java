@@ -41,16 +41,8 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, x, y, z,
-                pitch, yaw),
+            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, location),
             new EntityMetadataMessage(id, metadata.getEntryList())
         );
     }

@@ -42,15 +42,8 @@ public class GlowBoat extends GlowEntity implements Boat {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.BOAT, x, y, z, pitch, yaw),
+            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.BOAT, location),
             new EntityMetadataMessage(id, metadata.getEntryList())
         );
     }

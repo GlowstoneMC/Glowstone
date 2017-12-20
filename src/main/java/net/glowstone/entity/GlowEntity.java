@@ -703,18 +703,20 @@ public abstract class GlowEntity implements Entity {
 
         boolean teleport = dx > Short.MAX_VALUE || dy > Short.MAX_VALUE || dz > Short.MAX_VALUE || dx < Short.MIN_VALUE || dy < Short.MIN_VALUE || dz < Short.MIN_VALUE;
 
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         List<Message> result = new LinkedList<>();
         if (teleported || moved && teleport) {
-            result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
-        } else if (moved && rotated) {
-            result.add(new RelativeEntityPositionRotationMessage(id, (short) dx, (short) dy, (short) dz, yaw, pitch));
+            result.add(new EntityTeleportMessage(id, location));
+        } else if (rotated) {
+            int yaw = Position.getIntYaw(location);
+            int pitch = Position.getIntPitch(location);
+            if (moved) {
+                result.add(new RelativeEntityPositionRotationMessage(id,
+                        (short) dx, (short) dy, (short) dz, yaw, pitch));
+            } else {
+                result.add(new EntityRotationMessage(id, yaw, pitch));
+            }
         } else if (moved) {
             result.add(new RelativeEntityPositionMessage(id, (short) dx, (short) dy, (short) dz));
-        } else if (rotated) {
-            result.add(new EntityRotationMessage(id, yaw, pitch));
         }
 
         // send changed metadata

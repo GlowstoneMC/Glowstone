@@ -2,6 +2,7 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
@@ -112,19 +113,13 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
 
         // Note the shift amount has changed previously,
         // if block data doesn't appear to work check this value.
         int blockIdData = getBlockId() | getBlockData() << 12;
 
-        return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), 70, x, y, z, pitch, yaw, blockIdData)
+        return Collections.singletonList(
+            new SpawnObjectMessage(id, getUniqueId(), 70, location, blockIdData)
         );
     }
 

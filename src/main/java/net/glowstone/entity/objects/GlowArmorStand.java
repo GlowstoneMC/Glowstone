@@ -349,15 +349,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw),
+            new SpawnObjectMessage(id, UUID.randomUUID(), 78, location),
             // TODO: once UUID is documented, actually use the appropriate ID here
             new EntityMetadataMessage(id, metadata.getEntryList()),
             new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
