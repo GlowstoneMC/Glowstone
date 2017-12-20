@@ -22,7 +22,6 @@ import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
-import net.glowstone.util.Position;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
