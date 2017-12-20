@@ -5,7 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.EventFactory;
+import net.glowstone.entity.GlowPlayer;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -66,5 +72,32 @@ public class InventoryUtil {
             return -1;
         }
         return notEmpty.get(random.nextInt(notEmpty.size()));
+    }
+
+    /**
+     * Inflicts damage to an item. Unbreaking enchantment is applied if present.
+     *
+     * @param player The player holding the item, or null if held by a dispenser
+     * @param holding The item
+     */
+    public static void damageItem(GlowPlayer player, ItemStack holding) {
+        if (player != null && player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+
+        // Apply unbreaking enchantment.
+        // TODO: Armor has a different formula for chance to avoid damage
+        int durability = holding.getEnchantmentLevel(Enchantment.DURABILITY);
+        if (durability > 0 && ThreadLocalRandom.current().nextDouble() < 1/(durability + 1)) {
+            return;
+        }
+
+        holding.setDurability((short) (holding.getDurability() + 1));
+        if (holding.getDurability() == holding.getType().getMaxDurability() + 1) {
+            if (player != null) {
+                EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
+            }
+            holding.setAmount(0);
+        }
     }
 }

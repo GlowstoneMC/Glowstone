@@ -94,6 +94,7 @@ public class ItemBow extends ItemTimedUsage {
         if (ThreadLocalRandom.current().nextDouble() < 0.2) {
             launchedArrow.setCritical(true);
         }
+        InventoryUtil.damageItem(player, item);
         player.setUsageItem(null);
         player.setUsageTime(0);
     }
