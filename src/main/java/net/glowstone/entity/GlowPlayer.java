@@ -809,21 +809,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         worldLock.lock();
         try {
             // update or remove entities
-            List<Integer> destroyIds = new LinkedList<>();
+            List<GlowEntity> destroyEntities = new LinkedList<>();
             for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
                 GlowEntity entity = it.next();
                 if (!isWithinDistance(entity) || entity.isRemoved()) {
-                    destroyIds.add(entity.getEntityId());
+                    destroyEntities.add(entity);
                     it.remove();
                 } else {
                     entity.createUpdateMessage(session).forEach(session::send);
                 }
             }
-            if (!destroyIds.isEmpty()) {
+            if (!destroyEntities.isEmpty()) {
+                List<Integer> destroyIds = new ArrayList(destroyEntities.size());
+                for (GlowEntity entity : destroyEntities) {
+                    destroyIds.add(entity.getEntityId());
+                }
                 session.send(new DestroyEntitiesMessage(destroyIds));
             }
             // add entities
-            knownChunks.forEach(key -> world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
+            knownChunks.forEach(key ->
+                            world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
                     .filter(entity -> this != entity
                             && isWithinDistance(entity)
                             && !entity.isDead()
