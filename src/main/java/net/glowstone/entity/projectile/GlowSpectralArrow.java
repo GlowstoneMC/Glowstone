@@ -1,5 +1,7 @@
 package net.glowstone.entity.projectile;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.SpectralArrow;
@@ -8,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GlowSpectralArrow extends GlowArrow implements SpectralArrow {
 
-    private int glowingTicks;
+    @Getter @Setter private int glowingTicks;
 
     public GlowSpectralArrow(Location location) {
         super(location);
@@ -22,17 +24,7 @@ public class GlowSpectralArrow extends GlowArrow implements SpectralArrow {
     }
 
     @Override
-    public int getGlowingTicks() {
-        return glowingTicks;
-    }
-
-    @Override
     protected int getObjectId() {
         return 91;
-    }
-
-    @Override
-    public void setGlowingTicks(int i) {
-        glowingTicks = i;
     }
 }

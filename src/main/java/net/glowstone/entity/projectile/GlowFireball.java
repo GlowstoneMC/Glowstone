@@ -1,5 +1,7 @@
 package net.glowstone.entity.projectile;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -10,8 +12,8 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowFireball extends GlowProjectile implements Fireball {
-    private boolean incendiary;
-    private float yield;
+    @Getter private boolean incendiary;
+    @Getter @Setter private float yield;
 
     public GlowFireball(Location location) {
         super(location);
@@ -51,22 +53,7 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     }
 
     @Override
-    public void setYield(float v) {
-        yield = v;
-    }
-
-    @Override
-    public float getYield() {
-        return yield;
-    }
-
-    @Override
     public void setIsIncendiary(boolean b) {
         incendiary = b;
-    }
-
-    @Override
-    public boolean isIncendiary() {
-        return incendiary;
     }
 }

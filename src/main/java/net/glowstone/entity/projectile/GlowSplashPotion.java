@@ -2,6 +2,9 @@ package net.glowstone.entity.projectile;
 
 import java.util.Collection;
 import java.util.Collections;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -14,7 +17,7 @@ import org.bukkit.potion.PotionEffect;
 public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
     private static final double MAX_VERTICAL_DISTANCE = 2.125;
     private static final double MAX_DISTANCE_SQUARED = 16.0;
-    private ItemStack item;
+    @Getter @Setter private ItemStack item;
 
     public GlowSplashPotion(Location location) {
         super(location);
@@ -61,15 +64,5 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
         ItemMeta meta = item.getItemMeta();
         return meta instanceof PotionMeta ? ((PotionMeta) meta).getCustomEffects()
                 : Collections.emptyList();
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return item;
-    }
-
-    @Override
-    public void setItem(ItemStack itemStack) {
-        item = itemStack;
     }
 }

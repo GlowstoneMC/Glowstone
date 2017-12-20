@@ -1,5 +1,7 @@
 package net.glowstone.entity.projectile;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -12,6 +14,7 @@ import org.bukkit.util.Vector;
 public class GlowArrow extends GlowProjectile implements Arrow {
 
     private volatile PickupStatus customPickupStatus = null;
+    private final Arrow.Spigot spigot = new GlowArrow.Spigot();
 
     public GlowArrow(Location location) {
         super(location);
@@ -38,6 +41,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public void collide(Block block) {
+        // No-op: arrows don't despawn on hitting a block
     }
 
     @Override
@@ -94,6 +98,10 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public Arrow.Spigot spigot() {
-        return null;
+        return spigot;
+    }
+
+    private class Spigot extends Arrow.Spigot {
+        @Getter @Setter private volatile double damage;
     }
 }

@@ -3,6 +3,9 @@ package net.glowstone.entity.projectile;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
@@ -17,7 +20,10 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
-    private ProjectileSource shooter;
+    @Getter @Setter private boolean glowing;
+    @Getter @Setter private boolean invulnerable;
+    @Getter @Setter private ProjectileSource shooter;
+    @Setter private boolean bounce;
 
     public GlowProjectile(Location location) {
         super(location);
@@ -53,50 +59,10 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     public abstract void collide(LivingEntity entity);
 
-    @Override
-    public void setGlowing(boolean b) {
-
-    }
-
-    @Override
-    public boolean isGlowing() {
-        return false;
-    }
-
-    @Override
-    public void setInvulnerable(boolean b) {
-
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return false;
-    }
-
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
-
     protected abstract int getObjectId();
 
     @Override
-    public ProjectileSource getShooter() {
-        return shooter;
-    }
-
-    @Override
-    public void setShooter(ProjectileSource source) {
-        this.shooter = source;
-    }
-
-    @Override
     public boolean doesBounce() {
-        return false;
-    }
-
-    @Override
-    public void setBounce(boolean b) {
-
+        return bounce;
     }
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -16,8 +18,8 @@ import org.bukkit.potion.PotionEffectType;
 // TODO: stubs
 public class GlowTippedArrow extends GlowArrow implements TippedArrow {
 
-    private Color color;
-    private PotionData basePotionData;
+    @Getter @Setter private Color color;
+    @Getter @Setter private PotionData basePotionData;
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
 
     public GlowTippedArrow(Location location) {
@@ -28,26 +30,6 @@ public class GlowTippedArrow extends GlowArrow implements TippedArrow {
     public void collide(LivingEntity entity) {
         super.collide(entity);
         entity.addPotionEffects(customEffects.values());
-    }
-
-    @Override
-    public void setBasePotionData(PotionData potionData) {
-        basePotionData = potionData;
-    }
-
-    @Override
-    public PotionData getBasePotionData() {
-        return basePotionData;
-    }
-
-    @Override
-    public Color getColor() {
-        return color;
-    }
-
-    @Override
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     @Override

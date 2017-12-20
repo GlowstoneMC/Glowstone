@@ -20,6 +20,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 // TODO: stubs
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
+
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
     @Getter @Setter private int duration;
     @Getter @Setter private int waitTime;
