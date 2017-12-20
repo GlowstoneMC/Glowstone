@@ -8,10 +8,8 @@ import org.bukkit.entity.LingeringPotion;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
 public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPotion {
     public GlowLingeringPotion(Location location) {
@@ -38,12 +36,11 @@ public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPo
         ItemMeta meta = getItem().getItemMeta();
         if (meta instanceof PotionMeta) {
             PotionMeta potionMeta = (PotionMeta) meta;
-            PotionData basePotionData = potionMeta.getBasePotionData();
             cloud.setColor(potionMeta.getColor());
-            cloud.setBasePotionData(basePotionData);
+            cloud.setBasePotionData(potionMeta.getBasePotionData());
             for (PotionEffect effect : getEffects()) {
                 // Cloud effects have only 1/4 the usual duration
-                PotionType type = basePotionData.getType();
+                PotionEffectType type = effect.getType();
                 if (!type.isInstant()) {
                    effect = new PotionEffect(effect.getType(), effect.getDuration() >> 2,
                             effect.getAmplifier());
