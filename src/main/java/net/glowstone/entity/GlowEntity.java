@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -127,6 +129,10 @@ public abstract class GlowEntity implements Entity {
      * The world this entity belongs to.
      */
     protected GlowWorld world;
+    /**
+     * Lock to prevent concurrent modifications affected by switching worlds.
+     */
+    protected final Lock worldLock = new ReentrantLock();
     /**
      * A flag indicating if this entity is currently active.
      */
@@ -413,9 +419,14 @@ public abstract class GlowEntity implements Entity {
         checkNotNull(location.getWorld(), "location's world cannot be null");
 
         if (location.getWorld() != world) {
-            world.getEntityManager().unregister(this);
-            world = (GlowWorld) location.getWorld();
-            world.getEntityManager().register(this);
+            worldLock.lock();
+            try {
+                world.getEntityManager().unregister(this);
+                world = (GlowWorld) location.getWorld();
+                world.getEntityManager().register(this);
+            } finally {
+                worldLock.unlock();
+            }
         }
         setRawLocation(location, false);
         teleported = true;

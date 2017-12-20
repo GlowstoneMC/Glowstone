@@ -804,33 +804,39 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(new EntityMetadataMessage(SELF_ID, changes));
         }
 
-        // update or remove entities
-        List<Integer> destroyIds = new LinkedList<>();
-        for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
-            GlowEntity entity = it.next();
-            if (!isWithinDistance(entity) || entity.isRemoved()) {
-                destroyIds.add(entity.getEntityId());
-                it.remove();
-            } else {
-                entity.createUpdateMessage(session).forEach(session::send);
+        // Entity IDs are only unique per world, so we can't spawn or teleport between worlds while
+        // updating them.
+        worldLock.lock();
+        try {
+            // update or remove entities
+            List<Integer> destroyIds = new LinkedList<>();
+            for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
+                GlowEntity entity = it.next();
+                if (!isWithinDistance(entity) || entity.isRemoved()) {
+                    destroyIds.add(entity.getEntityId());
+                    it.remove();
+                } else {
+                    entity.createUpdateMessage(session).forEach(session::send);
+                }
             }
+            if (!destroyIds.isEmpty()) {
+                session.send(new DestroyEntitiesMessage(destroyIds));
+            }
+            // add entities
+            knownChunks.forEach(key -> world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
+                    .filter(entity -> this != entity
+                            && isWithinDistance(entity)
+                            && !entity.isDead()
+                            && !knownEntities.contains(entity)
+                            && !hiddenEntities.contains(entity.getUniqueId()))
+                    .forEach((entity) -> Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
+                        knownEntities.add(entity);
+                        entity.createSpawnMessage().forEach(session::send);
+                        entity.createAfterSpawnMessage(session).forEach(session::send);
+                    })));
+        } finally {
+            worldLock.unlock();
         }
-        if (!destroyIds.isEmpty()) {
-            session.send(new DestroyEntitiesMessage(destroyIds));
-        }
-
-        // add entities
-        knownChunks.forEach(key -> world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
-                .filter(entity -> this != entity
-                    && isWithinDistance(entity)
-                    && !entity.isDead()
-                    && !knownEntities.contains(entity)
-                    && !hiddenEntities.contains(entity.getUniqueId()))
-                .forEach((entity) -> Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
-                    knownEntities.add(entity);
-                    entity.createSpawnMessage().forEach(session::send);
-                    entity.createAfterSpawnMessage(session).forEach(session::send);
-                })));
 
         if (passengerChanged) {
             session.send(new SetPassengerMessage(SELF_ID, getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
@@ -983,11 +989,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param location The location to place the player.
      */
     private void spawnAt(Location location) {
+        GlowWorld oldWorld;
         // switch worlds
-        GlowWorld oldWorld = world;
-        world.getEntityManager().unregister(this);
-        world = (GlowWorld) location.getWorld();
-        world.getEntityManager().register(this);
+        worldLock.lock();
+        try {
+            oldWorld = world;
+            world.getEntityManager().unregister(this);
+            world = (GlowWorld) location.getWorld();
+            world.getEntityManager().register(this);
+        } finally {
+            worldLock.unlock();
+        }
 
         // switch chunk set
         // no need to send chunk unload messages - respawn unloads all chunks
