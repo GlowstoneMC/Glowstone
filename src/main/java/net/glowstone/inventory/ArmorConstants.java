@@ -13,10 +13,7 @@ public enum ArmorConstants {
     DIAMOND_HELMET(3, 2), DIAMOND_CHESTPLATE(8, 2), DIAMOND_LEGGINGS(6, 2), DIAMOND_BOOTS(3, 2);
 
     @Getter
-    private final int defense;
-
-    @Getter
-    private final int toughness;
+    private final int defense, toughness;
 
     ArmorConstants(int defense, int toughness) {
         this.defense = defense;
@@ -27,12 +24,6 @@ public enum ArmorConstants {
         this(defense, 0);
     }
 
-    /**
-     * Calculate total defense of a suit of armor.
-     *
-     * @param armor all armor items worn
-     * @return the total defense
-     */
     public static int getDefense(ItemStack[] armor) {
         int defense = 0;
         for (ItemStack stack : armor) {
@@ -49,12 +40,6 @@ public enum ArmorConstants {
         return defense;
     }
 
-    /**
-     * Calculate total toughness of a suit of armor.
-     *
-     * @param armor all armor items worn
-     * @return the total toughness
-     */
     public static int getToughness(ItemStack[] armor) {
         int toughness = 0;
         for (ItemStack stack : armor) {
