@@ -30,7 +30,7 @@ public final class GlowMapRenderer extends MapRenderer {
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
         World world = map.getWorld();
-        int scaleShift = map.getScale().getValue();
+        int scaleShift = map.getScale().ordinal();
         Location playerLoc = player.getLocation();
         int playerX = playerLoc.getBlockX();
         int playerZ = playerLoc.getBlockZ();
