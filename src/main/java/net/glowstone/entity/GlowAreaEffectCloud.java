@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -19,6 +21,17 @@ import org.bukkit.projectiles.ProjectileSource;
 // TODO: stubs
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
+    @Getter @Setter private int duration;
+    @Getter @Setter private int waitTime;
+    @Getter @Setter private int reapplicationDelay;
+    @Getter @Setter private int durationOnUse;
+    @Getter @Setter private float radius;
+    @Getter @Setter private float radiusOnUse;
+    @Getter @Setter private float radiusPerTick;
+    @Getter @Setter private Particle particle;
+    @Getter @Setter private PotionData basePotionData;
+    @Getter @Setter private ProjectileSource source;
+    @Getter @Setter private Color color;
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -31,96 +44,6 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return null;
-    }
-
-    @Override
-    public int getDuration() {
-        return 0;
-    }
-
-    @Override
-    public void setDuration(int i) {
-
-    }
-
-    @Override
-    public int getWaitTime() {
-        return 0;
-    }
-
-    @Override
-    public void setWaitTime(int i) {
-
-    }
-
-    @Override
-    public int getReapplicationDelay() {
-        return 0;
-    }
-
-    @Override
-    public void setReapplicationDelay(int i) {
-
-    }
-
-    @Override
-    public int getDurationOnUse() {
-        return 0;
-    }
-
-    @Override
-    public void setDurationOnUse(int i) {
-
-    }
-
-    @Override
-    public float getRadius() {
-        return 0;
-    }
-
-    @Override
-    public void setRadius(float v) {
-
-    }
-
-    @Override
-    public float getRadiusOnUse() {
-        return 0;
-    }
-
-    @Override
-    public void setRadiusOnUse(float v) {
-
-    }
-
-    @Override
-    public float getRadiusPerTick() {
-        return 0;
-    }
-
-    @Override
-    public void setRadiusPerTick(float v) {
-
-    }
-
-    @Override
-    public Particle getParticle() {
-        return null;
-    }
-
-    @Override
-    public void setParticle(Particle particle) {
-
-    }
-
-    @Override
-    public void setBasePotionData(PotionData potionData) {
-
-    }
-
-    @Override
-    public PotionData getBasePotionData() {
         return null;
     }
 
@@ -158,25 +81,5 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     @Override
     public void clearCustomEffects() {
         customEffects.clear();
-    }
-
-    @Override
-    public Color getColor() {
-        return null;
-    }
-
-    @Override
-    public void setColor(Color color) {
-
-    }
-
-    @Override
-    public ProjectileSource getSource() {
-        return null;
-    }
-
-    @Override
-    public void setSource(ProjectileSource projectileSource) {
-
     }
 }
