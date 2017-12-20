@@ -1,22 +1,16 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-
-import com.google.common.collect.ImmutableMap;
-import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.entity.EntityPropertyMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Color;
 import org.bukkit.Location;
