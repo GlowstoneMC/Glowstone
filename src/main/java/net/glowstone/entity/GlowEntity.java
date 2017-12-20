@@ -417,15 +417,15 @@ public abstract class GlowEntity implements Entity {
     public boolean teleport(Location location) {
         checkNotNull(location, "location cannot be null");
         checkNotNull(location.getWorld(), "location's world cannot be null");
-        if (location.getWorld() != world) {
-            worldLock.writeLock().lock();
-            try {
+        worldLock.writeLock().lock();
+        try {
+            if (location.getWorld() != world) {
                 world.getEntityManager().unregister(this);
                 world = (GlowWorld) location.getWorld();
                 world.getEntityManager().register(this);
-            } finally {
-                worldLock.writeLock().unlock();
             }
+        } finally {
+            worldLock.writeLock().unlock();
         }
         setRawLocation(location, false);
         teleported = true;
