@@ -3,6 +3,8 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
@@ -28,6 +30,14 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public abstract class GlowMinecart extends GlowEntity implements Minecart {
+
+    @Getter @Setter private volatile double damage;
+    @Getter @Setter private volatile double maxSpeed;
+    @Getter @Setter private volatile boolean slowWhenEmpty;
+    @Getter @Setter private volatile Vector flyingVelocityMod;
+    @Getter @Setter private volatile Vector derailedVelocityMod;
+    @Getter @Setter private volatile MaterialData displayBlock;
+    @Getter @Setter private volatile int displayBlockOffset;
 
     private final MinecartType type;
 
@@ -71,76 +81,6 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
             remove();
         }
         return true;
-    }
-
-    @Override
-    public double getDamage() {
-        return 0;
-    }
-
-    @Override
-    public void setDamage(double v) {
-
-    }
-
-    @Override
-    public double getMaxSpeed() {
-        return 0;
-    }
-
-    @Override
-    public void setMaxSpeed(double v) {
-
-    }
-
-    @Override
-    public boolean isSlowWhenEmpty() {
-        return false;
-    }
-
-    @Override
-    public void setSlowWhenEmpty(boolean b) {
-
-    }
-
-    @Override
-    public Vector getFlyingVelocityMod() {
-        return null;
-    }
-
-    @Override
-    public void setFlyingVelocityMod(Vector vector) {
-
-    }
-
-    @Override
-    public Vector getDerailedVelocityMod() {
-        return null;
-    }
-
-    @Override
-    public void setDerailedVelocityMod(Vector vector) {
-
-    }
-
-    @Override
-    public MaterialData getDisplayBlock() {
-        return null;
-    }
-
-    @Override
-    public void setDisplayBlock(MaterialData materialData) {
-
-    }
-
-    @Override
-    public int getDisplayBlockOffset() {
-        return 0;
-    }
-
-    @Override
-    public void setDisplayBlockOffset(int i) {
-
     }
 
     public MinecartType getMinecartType() {
