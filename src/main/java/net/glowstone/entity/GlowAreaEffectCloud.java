@@ -2,7 +2,10 @@ package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
 
+import com.google.common.collect.ImmutableMap;
+import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.EntityPropertyMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -49,10 +56,13 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
     @Override
     public List<Message> createSpawnMessage() {
-        LinkedList<Message> result = new LinkedList<>();
-        result.add(new SpawnObjectMessage(id, getUniqueId(), NETWORK_TYPE_ID,
-                location));
-        return result;
+        MetadataMap metadataMap = new MetadataMap(GlowAreaEffectCloud.class);
+        metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_COLOR, color);
+        metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_RADIUS, radius);
+        metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLEID, particle.ordinal());
+        return Arrays.asList(
+                new SpawnObjectMessage(id, getUniqueId(), NETWORK_TYPE_ID, location),
+                new EntityMetadataMessage(id, metadataMap.getEntryList()));
     }
 
     @Override

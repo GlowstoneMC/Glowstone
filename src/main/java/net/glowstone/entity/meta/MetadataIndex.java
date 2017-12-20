@@ -75,13 +75,12 @@ public enum MetadataIndex {
     SILENT(4, BOOLEAN, Entity.class),
     NOGRAVITY(5, BOOLEAN, Entity.class),
 
-    //TODO 1.9-1.10 - Support this
-    //AREAEFFECTCLOUD_RADIUS(6, FLOAT, Entity.class),
-    //AREAEFFECTCLOUD_COLOR(7, INT, Entity.class),
-    //AREAEFFECTCLOUD_UNKNOWN(8, BOOLEAN, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLEID(9, INT, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, Entity.class),
+    AREAEFFECTCLOUD_RADIUS(6, FLOAT, Entity.class),
+    AREAEFFECTCLOUD_COLOR(7, INT, Entity.class),
+    AREAEFFECTCLOUD_UNKNOWN(8, BOOLEAN, Entity.class),
+    AREAEFFECTCLOUD_PARTICLEID(9, INT, Entity.class),
+    AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, Entity.class),
+    AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, Entity.class),
 
     ARROW_CRITICAL(6, BYTE, Arrow.class),
     TIPPEDARROW_COLOR(7, INT, Arrow.class), //TODO Proper arrow class
