@@ -2,6 +2,7 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -56,7 +57,10 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public void collide(Block block) {
-        setFireTicks(0); // Arrows stop burning when they land and don't ignite blocks
+        setFireTicks(0); // Arrows stop burning when they land, and ignite only TNT
+        if (block.getType() == Material.TNT) {
+            BlockTNT.igniteBlock(block, false);
+        }
         // Don't despawn
     }
 
