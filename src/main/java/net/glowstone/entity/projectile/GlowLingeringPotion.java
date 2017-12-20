@@ -42,7 +42,7 @@ public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPo
                 // Cloud effects have only 1/4 the usual duration
                 PotionEffectType type = effect.getType();
                 if (!type.isInstant()) {
-                   effect = new PotionEffect(effect.getType(), effect.getDuration() >> 2,
+                    effect = new PotionEffect(effect.getType(), effect.getDuration() >> 2,
                             effect.getAmplifier());
                 }
                 // TODO: else effect is 1/2 the usual
