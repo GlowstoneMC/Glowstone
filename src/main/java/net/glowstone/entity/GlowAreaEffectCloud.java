@@ -16,15 +16,34 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
-// TODO: Apply effects to entities
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
     private static final int NETWORK_TYPE_ID = 3;
+
+    @Override
+    public void pulse() {
+        super.pulse();
+        radius += radiusPerTick;
+        waitTime--;
+        duration--;
+        reapplicationDelay--;
+        if (duration <= 0 || radius <= 0) {
+            remove();
+        }
+        if (waitTime <= 0) {
+            for (LivingEntity entity : world.getLivingEntities()) {
+                if (location.distanceSquared(entity.getLocation()) < radius * radius) {
+                    entity.addPotionEffects(customEffects.values());
+                }
+            }
+        }
+    }
 
     private final Map<PotionEffectType, PotionEffect> customEffects = new ConcurrentHashMap<>();
     @Getter @Setter private int duration;
