@@ -32,6 +32,10 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     private PlayerStatisticIoService statistics;
     private FunctionIoService functions;
 
+    /**
+     * Create an instance for the given root folder.
+     * @param dir the root folder
+     */
     public AnvilWorldStorageProvider(File dir) {
         this.dir = dir;
         this.dataDir = new File(dir, "data");

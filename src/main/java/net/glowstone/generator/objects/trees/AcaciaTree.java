@@ -42,7 +42,8 @@ public class AcaciaTree extends GenericTree {
         }
         int twistHeight = height - 1 - random.nextInt(4);
         int twistCount = random.nextInt(3) + 1;
-        int centerX = loc.getBlockX(), centerZ = loc.getBlockZ();
+        int centerX = loc.getBlockX();
+        int centerZ = loc.getBlockZ();
         int trunkTopY = 0;
 
         // generates the trunk
