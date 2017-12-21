@@ -94,6 +94,16 @@ public class CommandUtils {
         return new Location(getDefaultWorld(), 0, 0, 0);
     }
 
+    public static Location getLocation(CommandSender sender, String x, String y, String z) {
+        Location currentLocation;
+        if (x.startsWith("~") || y.startsWith("~") || z.startsWith("~")) { // The coordinates are relative
+            currentLocation = getLocation(sender);
+        } else { // Otherwise, the current location can be set to 0/0/0 (since it's absolute)
+            currentLocation = new Location(getWorld(sender), 0, 0, 0);
+        }
+        return getLocation(currentLocation, x, y, z);
+    }
+
     /**
      * Gets the relative location based on the given axis values (x/y/z) based on tilda notation.
      *

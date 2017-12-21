@@ -51,6 +51,7 @@ import net.glowstone.command.minecraft.BanCommand;
 import net.glowstone.command.minecraft.BanIpCommand;
 import net.glowstone.command.minecraft.BanListCommand;
 import net.glowstone.command.minecraft.ClearCommand;
+import net.glowstone.command.minecraft.CloneCommand;
 import net.glowstone.command.minecraft.DefaultGameModeCommand;
 import net.glowstone.command.minecraft.DeopCommand;
 import net.glowstone.command.minecraft.DifficultyCommand;
@@ -957,6 +958,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new TestForCommand());
         commandMap.register("minecraft", new TestForBlockCommand());
         commandMap.register("minecraft", new SetBlockCommand());
+        commandMap.register("minecraft", new CloneCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
