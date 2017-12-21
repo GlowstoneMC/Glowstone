@@ -1784,7 +1784,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         checkNotNull(location, "location cannot be null");
         checkNotNull(location.getWorld(), "location's world cannot be null");
         checkNotNull(cause, "cause cannot be null");
-
         if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event = new PlayerTeleportEvent(this, this.location, location, cause);
             if (EventFactory.callEvent(event).isCancelled()) {
@@ -1793,15 +1792,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             location = event.getTo();
             closeInventory();
         }
-
-        if (location.getWorld() != world) {
-            spawnAt(location);
-        } else {
-            world.getEntityManager().move(this, location);
-            //Position.copyLocation(location, this.previousLocation);
-            //Position.copyLocation(location, this.location);
-            session.send(new PositionRotationMessage(location));
-            teleportedTo = location.clone();
+        worldLock.writeLock().lock();
+        try {
+            if (location.getWorld() != world) {
+                spawnAt(location);
+            } else {
+                world.getEntityManager().move(this, location);
+                //Position.copyLocation(location, this.previousLocation);
+                //Position.copyLocation(location, this.location);
+                session.send(new PositionRotationMessage(location));
+                teleportedTo = location.clone();
+            }
+        } finally {
+            worldLock.writeLock().unlock();
         }
 
         teleportedTo = location.clone();
