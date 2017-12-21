@@ -643,9 +643,10 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Creates a {@link Message} which can be sent to a client to spawn this entity.
+     * Creates a list of {@link Message}s which can be sent to a client to spawn this entity.
+     * Implementations in concrete subclasses may return an immutable list.
      *
-     * @return A message which can spawn this entity.
+     * @return A list of messages which can spawn this entity.
      */
     public abstract List<Message> createSpawnMessage();
 
