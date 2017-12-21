@@ -117,7 +117,7 @@ public final class ServerConfig {
         }
         int integer = config.getInt(key.path, (Integer) key.def);
         parameters.put(key, integer);
-        return config.getInt(key.path, (Integer) key.def);
+        return integer;
     }
 
     public boolean getBoolean(Key key) {
@@ -411,6 +411,7 @@ public final class ServerConfig {
         GRAPHICS_COMPUTE_ANY_DEVICE("advanced.graphics-compute.use-any-device", false),
         REGION_CACHE_SIZE("advanced.region-file.cache-size", 256),
         REGION_COMPRESSION("advanced.region-file.compression", true),
+        PROFILE_LOOKUP_TIMEOUT("advanced.profile-lookup-timeout", 5),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),

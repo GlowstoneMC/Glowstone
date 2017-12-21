@@ -30,6 +30,8 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
                 case ARMOR_STAND:
                     entities.add((LivingEntity) entity);
                     break;
+                default:
+                    // do nothing
             }
         }
 

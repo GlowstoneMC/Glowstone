@@ -58,7 +58,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
 
     @Override
     public boolean setOwner(String name) {
-        PlayerProfile owner = PlayerProfile.getProfile(name);
+        PlayerProfile owner = PlayerProfile.getProfile(name).join();
         if (owner == null) {
             return false;
         }
