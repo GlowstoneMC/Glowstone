@@ -27,7 +27,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 /**
- * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps, an improvement on the McRegion file format.
+ * An implementation of the {@link ChunkIoService} which reads and writes Anvil maps, an improvement
+ * on the McRegion file format.
  */
 public final class AnvilChunkIoService implements ChunkIoService {
 
@@ -49,7 +50,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
     @Override
     public boolean read(GlowChunk chunk) throws IOException {
-        int x = chunk.getX(), z = chunk.getZ();
+        int x = chunk.getX();
+        int z = chunk.getZ();
         RegionFile region = cache.getRegionFile(x, z);
         int regionX = x & REGION_SIZE - 1;
         int regionZ = z & REGION_SIZE - 1;
@@ -176,7 +178,8 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
     @Override
     public void write(GlowChunk chunk) throws IOException {
-        int x = chunk.getX(), z = chunk.getZ();
+        int x = chunk.getX();
+        int z = chunk.getZ();
         RegionFile region = cache.getRegionFile(x, z);
         int regionX = x & REGION_SIZE - 1;
         int regionZ = z & REGION_SIZE - 1;

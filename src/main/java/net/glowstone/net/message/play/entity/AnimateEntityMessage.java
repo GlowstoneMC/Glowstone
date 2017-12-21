@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public final class AnimateEntityMessage implements Message {
 
-    private final int id, animation;
+    private final int id;
+    private final int animation;
 
 }
