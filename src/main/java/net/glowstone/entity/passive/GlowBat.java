@@ -11,8 +11,6 @@ import net.glowstone.net.message.play.entity.SpawnMobMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
 
@@ -55,16 +53,6 @@ public class GlowBat extends GlowAmbient implements Bat {
     @Override
     public EntityType getType() {
         return EntityType.BAT;
-    }
-
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
-    public AttributeInstance getAttribute(Attribute attribute) {
-        return null;
     }
 
     @Override

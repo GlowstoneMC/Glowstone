@@ -16,7 +16,10 @@ public class SoundUtil {
         }
         GlowWorld world = (GlowWorld) location.getWorld();
         double radiusSquared = volume * volume * 256;
-        world.getRawPlayers().parallelStream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).filter(player -> !Arrays.asList(exclude).contains(player)).forEach(player -> player.playSound(location, sound, volume, pitch));
+        world.getRawPlayers().stream().filter(player ->
+            player.getLocation().distanceSquared(location) <= radiusSquared
+                && !Arrays.asList(exclude).contains(player))
+            .forEach(player -> player.playSound(location, sound, volume, pitch));
     }
 
     public static void playSoundPitchRange(Location location, Sound sound, float volume, float pitchBase, float pitchRange, boolean allowNegative, GlowPlayer... exclude) {

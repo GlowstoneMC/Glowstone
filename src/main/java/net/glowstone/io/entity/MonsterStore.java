@@ -11,7 +11,7 @@ public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
     private Constructor<? extends T> constructor;
 
     public MonsterStore(Class<? extends T> clazz, EntityType type) {
-        super(clazz, type.getName());
+        super(clazz, type);
         init(clazz);
     }
 

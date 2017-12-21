@@ -3,12 +3,14 @@ package net.glowstone.inventory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import net.glowstone.testutils.ServerShim;
 import net.glowstone.util.IsFloatCloseTo;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -27,6 +29,11 @@ public class PlayerInventoryTest {
     };
 
     private GlowPlayerInventory inventory;
+
+    @BeforeClass
+    public static void initShim() {
+        ServerShim.install();
+    }
 
     @Before
     public void setup() {

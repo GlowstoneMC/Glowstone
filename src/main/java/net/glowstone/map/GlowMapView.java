@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.World;
 import org.bukkit.map.MapRenderer;
@@ -21,9 +20,9 @@ public final class GlowMapView implements MapView {
     private final short id;
     private Scale scale;
     private int x, z;
-    private GlowWorld world;
+    private World world;
 
-    protected GlowMapView(GlowWorld world, short id) {
+    protected GlowMapView(World world, short id) {
         this.world = world;
         this.id = id;
         x = world.getSpawnLocation().getBlockX();
@@ -76,13 +75,13 @@ public final class GlowMapView implements MapView {
     }
 
     @Override
-    public GlowWorld getWorld() {
+    public World getWorld() {
         return world;
     }
 
     @Override
     public void setWorld(World world) {
-        this.world = (GlowWorld) world;
+        this.world = world;
     }
 
     @Override

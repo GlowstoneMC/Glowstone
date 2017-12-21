@@ -23,6 +23,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Painting;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.ItemStack;
@@ -94,8 +95,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (message.getAction() == Action.ATTACK.ordinal()) {
-            // TODO: use correct RemoveCause
-            if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.DEFAULT))
+            if (EventFactory.callEvent(new HangingBreakByEntityEvent(this, player))
                 .isCancelled()) {
                 return false;
             }
@@ -242,10 +242,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
                 .isCancelled()) {
                 return;
             }
-            if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
-                world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
-                remove();
-            }
+
+            world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
+            remove();
         }
     }
 
@@ -255,7 +254,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     /**
-     * Check if the painting can survive at the current location.
+     * Check if the painting is obstructed at the current location.
      *
      * <p>Survivability is defined as:
      * <ul>
@@ -264,7 +263,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
      *     <li>The painting is not inside another entity</li>
      * </ul>
      *
-     * @return true if the painting can survive, false otherwise
+     * @return true if the painting should drop, false otherwise
      */
     public boolean isObstructed() {
         Location current = getTopLeftCorner();

@@ -143,11 +143,6 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     }
 
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
-
     public MinecartType getMinecartType() {
         return type;
     }

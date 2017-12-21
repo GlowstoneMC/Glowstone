@@ -44,6 +44,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.25</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>net.glowstone</groupId>
       <artifactId>glowkit</artifactId>
       <version>${api.version}</version>
@@ -73,7 +79,7 @@
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.2.2-SNAPSHOT</version>
     </dependency>
     <!-- Kotlin -->
     <dependency>

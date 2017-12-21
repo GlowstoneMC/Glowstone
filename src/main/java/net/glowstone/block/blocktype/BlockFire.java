@@ -126,7 +126,7 @@ public class BlockFire extends BlockNeedsAttached {
                 // burn blocks around
                 boolean isWet = GlowBiomeClimate.isWet(block);
                 for (Entry<BlockFace, Integer> entry : BURNRESISTANCE_MAP.entrySet()) {
-                    burnBlock(block.getRelative(entry.getKey()),
+                    burnBlock(block.getRelative(entry.getKey()), block,
                         entry.getValue() - (isWet ? 50 : 0), age);
                 }
 
@@ -228,10 +228,10 @@ public class BlockFire extends BlockNeedsAttached {
         return false;
     }
 
-    private void burnBlock(GlowBlock block, int burnResistance, int fireAge) {
+    private void burnBlock(GlowBlock block, GlowBlock from, int burnResistance, int fireAge) {
         if (ThreadLocalRandom.current().nextInt(burnResistance) < block.getMaterialValues()
             .getFireResistance()) {
-            BlockBurnEvent burnEvent = new BlockBurnEvent(block);
+            BlockBurnEvent burnEvent = new BlockBurnEvent(block, from);
             EventFactory.callEvent(burnEvent);
             if (!burnEvent.isCancelled()) {
                 if (block.getType() == Material.TNT) {

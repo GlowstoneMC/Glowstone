@@ -272,8 +272,7 @@ public class EntityRegistry {
     }
 
     public static List<CustomEntityDescriptor> getRegisteredCustomEntities() {
-        List<CustomEntityDescriptor> entities = new ArrayList<>();
-        CUSTOM_ENTITIES.values().forEach(entities::add);
+        List<CustomEntityDescriptor> entities = new ArrayList<>(CUSTOM_ENTITIES.values());
         return Collections.unmodifiableList(entities);
     }
 }

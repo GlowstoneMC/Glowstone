@@ -11,7 +11,7 @@ public class AnimalStore<T extends GlowAnimal> extends EntityStore<T> {
     private Constructor<T> constructor;
 
     public AnimalStore(Class<T> clazz, EntityType type) {
-        super(clazz, type.getName());
+        super(clazz, type);
         init(clazz);
     }
 

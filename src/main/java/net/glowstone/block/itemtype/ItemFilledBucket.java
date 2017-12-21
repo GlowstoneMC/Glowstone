@@ -37,7 +37,7 @@ public class ItemFilledBucket extends ItemType {
         if (againstBlockType.canAbsorb(target, face, holding)) {
             target = against;
         } else if (!target.isEmpty()) {
-            BlockType targetType = ItemTable.instance().getBlock(target.getTypeId());
+            BlockType targetType = ItemTable.instance().getBlock(target.getType());
             if (!targetType.canOverride(target, face, holding)) {
                 return;
             }

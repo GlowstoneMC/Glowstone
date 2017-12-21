@@ -2,6 +2,7 @@ package net.glowstone.io;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -44,17 +45,7 @@ public interface PlayerDataService {
      *
      * @return All known offline players.
      */
-    Collection<OfflinePlayer> getOfflinePlayers();
-
-    /**
-     * Locally look up the UUID of an offline player based on their name.
-     *
-     * <p>If no local player with the name was found, an offline-mode UUID is returned.
-     *
-     * @param name The name to look up.
-     * @return The UUID of the player.
-     */
-    UUID lookupUUID(String name);
+    CompletableFuture<Collection<OfflinePlayer>> getOfflinePlayers();
 
     /**
      * A piecewise reader for initializing new players. See {@link PlayerDataService#beginReadingData}.

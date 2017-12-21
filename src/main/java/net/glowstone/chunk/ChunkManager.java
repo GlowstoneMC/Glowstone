@@ -1,5 +1,7 @@
 package net.glowstone.chunk;
 
+import com.google.common.collect.ConcurrentHashMultiset;
+import com.google.common.collect.Multiset;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,9 +63,9 @@ public final class ChunkManager {
     private final ConcurrentMap<Key, GlowChunk> chunks = new ConcurrentHashMap<>();
 
     /**
-     * A map of chunks which are being kept loaded by players or other factors.
+     * A set of chunks which are being kept loaded by players or other factors.
      */
-    private final ConcurrentMap<Key, Set<ChunkLock>> locks = new ConcurrentHashMap<>();
+    private final Multiset<Key> lockSet = ConcurrentHashMultiset.create();
 
     /**
      * Creates a new chunk manager with the specified I/O service and world generator.
@@ -128,8 +130,7 @@ public final class ChunkManager {
      */
     public boolean isChunkInUse(int x, int z) {
         Key key = GlowChunk.Key.of(x, z);
-        Set<ChunkLock> lockSet = locks.get(key);
-        return lockSet != null && !lockSet.isEmpty();
+        return lockSet.contains(key);
     }
 
     /**
@@ -186,17 +187,18 @@ public final class ChunkManager {
      * Unload chunks with no locks on them.
      */
     public void unloadOldChunks() {
-        for (Entry<Key, GlowChunk> entry : chunks.entrySet()) {
-            Set<ChunkLock> lockSet = locks.get(entry.getKey());
-            if (lockSet == null || lockSet.isEmpty()) {
+        Iterator<Entry<Key, GlowChunk>> chunksEntryIter = chunks.entrySet().iterator();
+        while (chunksEntryIter.hasNext()) {
+            Entry<Key, GlowChunk> entry = chunksEntryIter.next();
+            if (!lockSet.contains(entry.getKey())) {
                 if (!entry.getValue().unload(true, true)) {
                     GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
                 }
             }
             if (!entry.getValue().isLoaded()) {
                 //GlowServer.logger.info("Removing from cache " + entry.getKey());
-                chunks.entrySet().remove(entry);
-                locks.remove(entry.getKey());
+                chunksEntryIter.remove();
+                lockSet.setCount(entry.getKey(), 0);
             }
         }
     }
@@ -420,21 +422,21 @@ public final class ChunkManager {
     }
 
     /**
-     * Look up the set of locks on a given chunk.
-     *
-     * @param key The chunk key.
-     * @return The set of locks for that chunk.
+     * Indicates that a chunk should be locked. A chunk may be locked multiple times, and will only be unloaded when all
+     * instances of a lock has been released.
+     * @param key The chunk's key
      */
-    private Set<ChunkLock> getLockSet(Key key) {
-        if (locks.containsKey(key)) {
-            return locks.get(key);
-        } else {
-            // only create chunk if it's not in the map already
-            Set<ChunkLock> set = new HashSet<>();
-            Set<ChunkLock> prev = locks.putIfAbsent(key, set);
-            // if it was created in the intervening time, the earlier one wins
-            return prev == null ? set : prev;
-        }
+    private void acquireLock(Key key) {
+        lockSet.add(key);
+    }
+
+    /**
+     * Releases one instance of a chunk lock. A chunk may be locked multiple times, and will only be unloaded when all
+     * instances of a lock has been released.
+     * @param key The chunk's key
+     */
+    private void releaseLock(Key key) {
+        lockSet.remove(key);
     }
 
     /**
@@ -456,7 +458,7 @@ public final class ChunkManager {
                 return;
             }
             keys.add(key);
-            cm.getLockSet(key).add(this);
+            cm.acquireLock(key);
             //GlowServer.logger.info(this + " acquires " + key);
         }
 
@@ -465,13 +467,13 @@ public final class ChunkManager {
                 return;
             }
             keys.remove(key);
-            cm.getLockSet(key).remove(this);
+            cm.releaseLock(key);
             //GlowServer.logger.info(this + " releases " + key);
         }
 
         public void clear() {
             for (Key key : keys) {
-                cm.getLockSet(key).remove(this);
+                cm.releaseLock(key);
                 //GlowServer.logger.info(this + " clearing " + key);
             }
             keys.clear();

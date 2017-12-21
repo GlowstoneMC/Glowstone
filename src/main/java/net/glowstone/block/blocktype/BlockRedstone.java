@@ -266,7 +266,7 @@ public class BlockRedstone extends BlockNeedsAttached {
             if (target.getType().isSolid()) {
                 for (BlockFace face2 : ADJACENT) {
                     GlowBlock target2 = target.getRelative(face2);
-                    BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                    BlockType notifyType = itemTable.getBlock(target2.getType());
                     if (notifyType != null) {
                         if (target2.getFace(block) == null) {
                             notifyType

@@ -111,11 +111,13 @@ public final class BlockPlacementHandler implements
 
         boolean rightClickedAir = false;
         // check that a block-click wasn't against air
-        if (clicked == null || clicked.getType() == Material.AIR) {
+        if (clicked.getType() == Material.AIR) {
             action = Action.RIGHT_CLICK_AIR;
-            // inform the player their perception of reality is wrong
             if (holding.getType().isBlock()) {
+                // inform the player their perception of reality is wrong
                 player.sendBlockChange(clicked.getLocation(), Material.AIR, (byte) 0);
+                // revert newly placed block
+                revert(player, clicked.getRelative(face));
                 return;
             } else {
                 rightClickedAir = true;
@@ -124,7 +126,7 @@ public final class BlockPlacementHandler implements
 
         // call interact event
         PlayerInteractEvent event = EventFactory
-            .onPlayerInteract(player, action, rightClickedAir ? null : clicked, face);
+            .onPlayerInteract(player, action, message.getHandSlot(), rightClickedAir ? null : clicked, face);
         //GlowServer.logger.info("Interact: " + action + " " + clicked + " " + face);
 
         // attempt to use interacted block

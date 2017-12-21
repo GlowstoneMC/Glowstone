@@ -57,7 +57,7 @@ public final class EquipmentMonitor {
             return null;
         }
         if (slot == 0) {
-            return equipment.getItemInHand();
+            return equipment.getItemInMainHand();
         } else if (slot == 1) {
             return equipment.getItemInOffHand();
         } else {

@@ -21,8 +21,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsAddressResolverGroup;
-import io.netty.resolver.dns.DnsServerAddresses;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +33,7 @@ public class HttpClient {
 
     private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(
         Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class,
-        DnsServerAddresses.defaultAddresses());
+        DefaultDnsServerAddressStreamProvider.INSTANCE);
 
     public static void connect(String url, EventLoop eventLoop, HttpCallback callback) {
 

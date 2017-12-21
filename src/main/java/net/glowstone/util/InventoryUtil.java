@@ -22,7 +22,7 @@ public class InventoryUtil {
      * @return whether the given ItemStack is empty
      */
     public static boolean isEmpty(ItemStack stack) {
-        return stack == null || stack.equals(EMPTY_STACK) || stack.getType() == Material.AIR || stack.getAmount() == 0;
+        return stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0;
     }
 
     /**

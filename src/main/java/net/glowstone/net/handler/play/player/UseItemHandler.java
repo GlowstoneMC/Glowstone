@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
+import net.glowstone.EventFactory;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.block.itemtype.ItemType.Context;
@@ -11,6 +12,9 @@ import net.glowstone.util.InventoryUtil;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
@@ -18,7 +22,14 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
     @Override
     public void handle(GlowSession session, UseItemMessage message) {
         GlowPlayer player = session.getPlayer();
-        ItemStack holding = player.getInventory().getItem(message.getEquipmentSlot());
+        ItemStack holding = InventoryUtil
+                .itemOrEmpty(player.getInventory().getItem(message.getEquipmentSlot()));
+
+        PlayerInteractEvent event = EventFactory
+                .onPlayerInteract(player, Action.RIGHT_CLICK_AIR, message.getEquipmentSlot());
+        if (event.useItemInHand() == null || event.useItemInHand() == Event.Result.DENY) {
+            return;
+        }
 
         if (!InventoryUtil.isEmpty(holding)) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
@@ -34,7 +45,7 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                 }
             }
 
-            //Empties the user's inventory when the item is used up
+            // Empties the user's inventory when the item is used up
             if (holding.getAmount() <= 0) {
                 holding = InventoryUtil.createEmptyStack();
             }

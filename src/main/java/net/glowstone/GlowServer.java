@@ -29,7 +29,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -103,6 +107,8 @@ import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.io.ScoreboardIoService;
+import net.glowstone.io.WorldStorageProviderFactory;
+import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.SessionRegistry;
@@ -377,6 +383,10 @@ public final class GlowServer implements Server {
             return config.getConfig();
         }
     };
+    /**
+     * The storage provider for the world.
+     */
+    private WorldStorageProviderFactory storageProviderFactory = null;
 
     /**
      * Creates a new server.
@@ -547,14 +557,9 @@ public final class GlowServer implements Server {
         return new ServerConfig(configDir, configFile, parameters);
     }
 
-    public ServerConfig getServerConfig() {
-        return config;
-    }
-
-    public static WorldConfig getWorldConfig() {
-        return worldConfig;
-    }
-
+    /**
+     * Starts the server starting sequence (starting, binding to port, etc.)
+     */
     public void run() {
         start();
         bind();
@@ -707,6 +712,10 @@ public final class GlowServer implements Server {
             } catch (NumberFormatException ex) {
                 seed = seedString.hashCode();
             }
+        }
+
+        if (storageProviderFactory == null) {
+            storageProviderFactory = () -> new AnvilWorldStorageProvider(new File(getWorldContainer(), name));
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
@@ -1019,7 +1028,11 @@ public final class GlowServer implements Server {
 
     }
 
-    // API for Bukkit2Sponge
+    /**
+     * A list of detected files that are Sponge plugins.
+     *
+     * @return a list of {@link File Files} that are Sponge plugins.
+     */
     public List<File> getSpongePlugins() {
         return pluginTypeDetector.spongePlugins;
     }
@@ -1115,7 +1128,7 @@ public final class GlowServer implements Server {
 
     @Override
     public void reloadData() {
-
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -1145,14 +1158,38 @@ public final class GlowServer implements Server {
         return Iterators.cycle(advancements.values());
     }
 
+    /**
+     * Registers an advancement to the advancement registry.
+     *
+     * @param advancement the advancement to add.
+     */
     public void addAdvancement(Advancement advancement) {
         advancements.put(advancement.getKey(), advancement);
     }
 
+    /**
+     * Creates an {@link AdvancementsMessage} containing a list of advancements the server has, along with some extra actions.
+     *
+     * <p>This does not affect the server's advancement registry.
+     *
+     * @param clear  whether to clear the advancements on the player's perspective.
+     * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove from the player's perspective.
+     * @return a resulting {@link AdvancementsMessage} packet
+     */
     public AdvancementsMessage createAdvancementsMessage(boolean clear, List<NamespacedKey> remove, Player player) {
         return createAdvancementsMessage(advancements, clear, remove, player);
     }
 
+    /**
+     * Creates an {@link AdvancementsMessage} containing a given list of advancements, along with some extra actions.
+     *
+     * <p>This does not affect the server's advancement registry.
+     *
+     * @param advancements the advancements to add to the player's perspective.
+     * @param clear        whether to clear the advancements on the player's perspective.
+     * @param remove       a list of advancement {@link NamespacedKey NamespacedKeys} to remove from the player's perspective.
+     * @return a resulting {@link AdvancementsMessage} packet
+     */
     public AdvancementsMessage createAdvancementsMessage(Map<NamespacedKey, Advancement> advancements, boolean clear, List<NamespacedKey> remove, Player player) {
         return new AdvancementsMessage(clear, advancements, remove);
     }
@@ -1312,10 +1349,20 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.RCON_COLORS);
     }
 
+    /**
+     * Gets the {@link MaterialValueManager} for this server.
+     *
+     * @return the {@link MaterialValueManager} for this server.
+     */
     public MaterialValueManager getMaterialValueManager() {
         return materialValueManager;
     }
 
+    /**
+     * Gets the {@link BossBarManager} for this server.
+     *
+     * @return the {@link BossBarManager} for this server.
+     */
     public BossBarManager getBossBarManager() {
         return bossBarManager;
     }
@@ -1345,6 +1392,15 @@ public final class GlowServer implements Server {
      */
     public boolean getAnnounceAchievements() {
         return config.getBoolean(Key.ANNOUNCE_ACHIEVEMENTS);
+    }
+
+    /**
+     * Get the time after a profile lookup should be cancelled.
+     *
+     * @return The maximum lookup time in seconds or zero to never cancel the lookup.
+     */
+    public int getProfileLookupTimeout() {
+        return config.getInt(Key.PROFILE_LOOKUP_TIMEOUT);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1445,7 +1501,7 @@ public final class GlowServer implements Server {
 
     @Override
     public void reloadPermissions() {
-
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -1533,7 +1589,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<OfflinePlayer> getOperators() {
-        return opsList.getUUIDs().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
+        return opsList.getProfiles().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1544,12 +1600,26 @@ public final class GlowServer implements Server {
         return onlineView;
     }
 
+    /**
+     * Gets the modifiable set of the server's online players
+     *
+     * @return the server's modifiable set of players.
+     */
     public Collection<GlowPlayer> getRawOnlinePlayers() {
         return onlinePlayers;
     }
 
     @Override
     public OfflinePlayer[] getOfflinePlayers() {
+        return getOfflinePlayersAsync().join();
+    }
+
+    /**
+     * Gets every player that has ever played on this server.
+     *
+     * @return An OfflinePlayer[] future.
+     */
+    public CompletableFuture<OfflinePlayer[]> getOfflinePlayersAsync() {
         Set<OfflinePlayer> result = new HashSet<>();
         Set<UUID> uuids = new HashSet<>();
 
@@ -1561,13 +1631,11 @@ public final class GlowServer implements Server {
             }
         }
 
-        // add all offline players that aren't already online
-        getPlayerDataService().getOfflinePlayers().stream().filter(offline -> !uuids.contains(offline.getUniqueId())).forEach(offline -> {
-            result.add(offline);
-            uuids.add(offline.getUniqueId());
-        });
-
-        return result.toArray(new OfflinePlayer[result.size()]);
+        return getPlayerDataService().getOfflinePlayers().thenAcceptAsync(offlinePlayers -> offlinePlayers.stream()
+                .filter(offline -> !uuids.contains(offline.getUniqueId())).forEach(offline -> {
+                    result.add(offline);
+                    uuids.add(offline.getUniqueId());
+                })).thenApply((v) -> result.toArray(new OfflinePlayer[result.size()]));
     }
 
     @Override
@@ -1624,6 +1692,12 @@ public final class GlowServer implements Server {
         return result;
     }
 
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given {@link PlayerProfile}.
+     *
+     * @param profile the player's profile.
+     * @return a new {@link GlowOfflinePlayer} instance for the given profile.
+     */
     public OfflinePlayer getOfflinePlayer(PlayerProfile profile) {
         return new GlowOfflinePlayer(this, profile);
     }
@@ -1631,35 +1705,79 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public OfflinePlayer getOfflinePlayer(String name) {
-        Player onlinePlayer = getPlayerExact(name);
-        if (onlinePlayer != null) {
-            return onlinePlayer;
-        }
-        OfflinePlayer result = getPlayerExact(name);
-        if (result == null) {
-            //probably blocking (same player once per minute)
-            PlayerProfile profile = PlayerProfile.getProfile(name);
-            if (profile == null) {
-                result = getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+        try {
+            // probably blocking, timeout depending on config setting
+            if (getProfileLookupTimeout() <= 0) {
+                return getOfflinePlayerAsync(name).get();
             } else {
-                result = getOfflinePlayer(profile);
+                return getOfflinePlayerAsync(name).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
+        } catch (InterruptedException | ExecutionException ex) {
+            GlowServer.logger.log(Level.SEVERE, "UUID lookup interrupted: ", ex);
+        } catch (TimeoutException ex) {
+            GlowServer.logger.log(Level.WARNING, "UUID lookup timeout: ", ex);
         }
-        return result;
+
+        return getOfflinePlayerFallback(name);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
+        try {
+            // probably blocking, timeout depending on config setting
+            if (getProfileLookupTimeout() <= 0) {
+                return getOfflinePlayerAsync(uuid).get();
+            } else {
+                return getOfflinePlayerAsync(uuid).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
+            }
+        } catch (InterruptedException | ExecutionException ex) {
+            GlowServer.logger.log(Level.SEVERE, "Profile lookup interrupted: ", ex);
+        } catch (TimeoutException ex) {
+            GlowServer.logger.log(Level.WARNING, "Profile lookup timeout: ", ex);
+        }
+        return new GlowOfflinePlayer(this, new PlayerProfile(null, uuid));
+    }
+
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given name.
+     *
+     * @param name the player's name to look up.
+     * @return a {@link GlowOfflinePlayer} future for the given name.
+     */
+    public CompletableFuture<OfflinePlayer> getOfflinePlayerAsync(String name) {
+        Player onlinePlayer = getPlayerExact(name);
+        if (onlinePlayer != null) {
+            return CompletableFuture.completedFuture(onlinePlayer);
+        }
+
+        return PlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
+            if (profile == null) {
+                return getOfflinePlayerFallback(name);
+            } else {
+                return getOfflinePlayer(profile);
+            }
+        });
+    }
+
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given uuid.
+     *
+     * @param uuid the player's uuid.
+     * @return a {@link GlowOfflinePlayer} future for the given name.
+     */
+    public CompletableFuture<OfflinePlayer> getOfflinePlayerAsync(UUID uuid) {
         Player onlinePlayer = getPlayer(uuid);
         if (onlinePlayer != null) {
-            return onlinePlayer;
+            return CompletableFuture.completedFuture(onlinePlayer);
         }
-        OfflinePlayer result = getPlayer(uuid);
-        if (result == null) {
-            result = new GlowOfflinePlayer(this, uuid);
-        }
-        return result;
+
+        return GlowOfflinePlayer.getOfflinePlayer(this, uuid).thenApply((player) -> (OfflinePlayer) player);
     }
+
+    private OfflinePlayer getOfflinePlayerFallback(String name) {
+        return getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+    }
+
 
     @Override
     public void savePlayers() {
@@ -1693,6 +1811,11 @@ public final class GlowServer implements Server {
 
     }
 
+    /**
+     * Broadcasts a packet for all online players.
+     *
+     * @param message the packet to broadcast.
+     */
     public void broadcastPacket(Message message) {
         for (GlowPlayer player : getRawOnlinePlayers()) {
             player.getSession().send(message);
@@ -1799,7 +1922,7 @@ public final class GlowServer implements Server {
         }
 
         // GlowWorld's constructor calls addWorld below.
-        return new GlowWorld(this, creator);
+        return new GlowWorld(this, creator, storageProviderFactory.createWorldStorageProvider());
     }
 
     /**
@@ -1997,15 +2120,6 @@ public final class GlowServer implements Server {
         return new double[]{20, 20, 20}; // TODO: show TPS
     }
 
-    @Override
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Configuration
 
@@ -2014,12 +2128,49 @@ public final class GlowServer implements Server {
         return port;
     }
 
+    /**
+     * Sets the port that the Query server will expose.
+     *
+     * <p>This does not change the port the server will run on.
+     *
+     * @param port the port number
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    @Override
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * Sets the IP address that the Query server will expose.
+     *
+     * <p>This does not change the IP address the server will run on.
+     *
+     * @param ip the IP address
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    /**
+     * Gets the server configuration.
+     *
+     * @return the server configuration.
+     */
     public ServerConfig getConfig() {
         return config;
+    }
+
+    /**
+     * Gets the world configuration for this server.
+     *
+     * @return the world configuration for this server.
+     */
+    public static WorldConfig getWorldConfig() {
+        return worldConfig;
     }
 
     @Override
@@ -2107,6 +2258,11 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.HARDCORE);
     }
 
+    /**
+     * Gets whether PVP is enabled on the server.
+     *
+     * @return true if PVP is enabled on the server, false otherwise.
+     */
     public boolean isPvpEnabled() {
         return config.getBoolean(Key.PVP_ENABLED);
     }
@@ -2141,47 +2297,129 @@ public final class GlowServer implements Server {
         return config.getBoolean(Key.ALLOW_FLIGHT);
     }
 
+    /**
+     * Gets the max building height of the server.
+     *
+     * @return the max building height of the server, in blocks.
+     */
     public int getMaxBuildHeight() {
         return Math.max(64, Math.min(256, config.getInt(Key.MAX_BUILD_HEIGHT)));
     }
 
+    /**
+     * Whether the server uses the classic water flowing algorithm.
+     *
+     * @return true if the server uses the classic water flowing algorithm, false otherwise.
+     */
     public boolean getClassicWater() {
         return config.getBoolean(Key.WATER_CLASSIC);
     }
 
+    /**
+     * Gets the server's console prompt.
+     *
+     * @return the server's console prompt.
+     */
     public String getConsolePrompt() {
         return config.getString(Key.CONSOLE_PROMPT);
     }
 
+    /**
+     * Gets the server console's date format.
+     *
+     * @return the server console's date format.
+     */
     public String getConsoleDateFormat() {
         return config.getString(Key.CONSOLE_DATE);
     }
 
+    /**
+     * Gets the server's console logs date format.
+     *
+     * @return the server's console logs date format.
+     */
     public String getConsoleLogDateFormat() {
         return config.getString(Key.CONSOLE_LOG_DATE);
     }
 
+    /**
+     * Gets the server type.
+     *
+     * <p>Currently, this value is set to {@code VANILLA}.
+     *
+     * @return the server type.
+     */
     public String getServerType() {
         return "VANILLA";
     }
 
+    /**
+     * Gets whether the server allows client mods.
+     *
+     * <p>This rule is not actually enforced, and is simply exposed to clients as a warning.
+     *
+     * @return true if client mods are allowed, false otherwise.
+     */
     public boolean getAllowClientMods() {
         return config.getBoolean(Key.ALLOW_CLIENT_MODS);
     }
 
+    /**
+     * Gets the maximum size of the player sample as shown on the client's server list when pinging the server.
+     *
+     * @return the maximum size of the player sample as shown on the client's server list.
+     */
     public int getPlayerSampleCount() {
         return config.getInt(Key.PLAYER_SAMPLE_COUNT);
     }
 
+    /**
+     * Gets whether world generation is disabled on the server.
+     *
+     * @return true if world generation is disabled on the server, false otherwise.
+     */
     public boolean isGenerationDisabled() {
         return config.getBoolean(Key.DISABLE_GENERATION);
     }
 
+    /**
+     * Gets whether the server is OpenCL-capable and allowed to use graphics compute functionality.
+     *
+     * @return true if the server is capable and allowed to use graphics compute functionality, false otherwise.
+     */
     public boolean doesUseGraphicsCompute() {
         return isGraphicsComputeAvailable && config.getBoolean(Key.GRAPHICS_COMPUTE);
     }
 
+    /**
+     * Gets whether the server should prevent player proxy connections.
+     *
+     * @return true if the server should prevent player proxy connections, false otherwise.
+     */
     public boolean shouldPreventProxy() {
         return config.getBoolean(Key.PREVENT_PROXY);
+    }
+
+    /**
+     * Gets the current storage provider factory, or null if none has been set by a plugin and the server has not
+     * started yet. The storage provider factory will be used to initialize storage for each world.
+     *
+     * @return The current storage provider, or null.
+     */
+    public WorldStorageProviderFactory getStorageProviderFactory() {
+        return storageProviderFactory;
+    }
+
+    /**
+     * If a storage provider factory has not yet been set, and the server has not fully started yet, this allows plugins
+     * to set a storage provider factory, which will be used to create a storage provider for each world. Otherwise,
+     * this will throw an {@link IllegalStateException}.
+     * @param storageProviderFactory The world storage provider that is attempting to be set.
+     */
+    public void setStorageProvider(WorldStorageProviderFactory storageProviderFactory) {
+        if (this.storageProviderFactory != null) {
+            throw new IllegalStateException("Duplicate storage provider attempting to be set. Only one custom storage provider may be provided.");
+        }
+        this.storageProviderFactory = storageProviderFactory;
     }
 }

@@ -32,12 +32,12 @@ public class SkullEntity extends BlockEntity {
         }
         if (tag.containsKey("Owner")) {
             CompoundTag ownerTag = tag.getCompound("Owner");
-            owner = PlayerProfile.fromNBT(ownerTag);
+            owner = PlayerProfile.fromNBT(ownerTag).join();
         } else if (tag.containsKey("ExtraType")) {
             // Pre-1.8 uses just a name, instead of a profile object
             String name = tag.getString("ExtraType");
             if (name != null && !name.isEmpty()) {
-                owner = PlayerProfile.getProfile(name);
+                owner = PlayerProfile.getProfile(name).join();
             }
         }
     }

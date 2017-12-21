@@ -29,7 +29,7 @@ public final class PlayerSwingArmHandler implements
         }
 
         if (block == null || block.isEmpty()) {
-            if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR).useItemInHand()
+            if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR, message.getHandSlot()).useItemInHand()
                 == Result.DENY) {
                 return;
             }

@@ -29,8 +29,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -388,11 +386,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    @Override
     public ItemStack getItemInHand() {
         return equipment.getItemInHand();
     }
@@ -591,11 +584,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setCanMove(boolean move) {
 
-    }
-
-    @Override
-    public AttributeInstance getAttribute(Attribute attribute) {
-        return null;
     }
 
     @Override

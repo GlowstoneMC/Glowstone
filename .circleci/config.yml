@@ -1,21 +1,58 @@
 version: 2
 jobs:
     build:
-        branches:
-            only:
-                - dev
+        docker:
+            - image: circleci/openjdk:8-jdk
 
         working_directory: ~/glowstone
 
-        docker:
-            - image: circleci/openjdk:8-jdk-browsers
+        environment:
+            MAVEN_OPTS: -Xmx3200m
 
         steps:
-
             - checkout
 
             - restore_cache:
+                keys:
+                # Use cache for this pom
+                - glowstone-{{ checksum "pom.xml" }}
+                # Fallback to latest cache is an exact match is not found
+                - glowstone-
+
+            - run: mvn -T 2 -B dependency:go-offline
+
+            - save_cache:
+                paths:
+                    - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
+
+            - run: mvn -T 2 -B package
+
+            - store_test_results:
+                path: target/surefire-reports
+
+            - store_artifacts:
+                path: target/glowstone.jar
+                destination: glowstone.jar
+
+    build-deploy:
+        docker:
+            - image: circleci/openjdk:8-jdk
+
+        working_directory: ~/glowstone
+
+        environment:
+            MAVEN_OPTS: -Xmx3200m
+
+        steps:
+            - checkout
+
+            - restore_cache:
+                keys:
+                # Use cache for this pom
+                - glowstone-{{ checksum "pom.xml" }}
+                # Fallback to latest cache is an exact match is not found
+                - glowstone-
 
             - run: mvn -T 2 -B dependency:go-offline
 
@@ -40,36 +77,19 @@ jobs:
             - store_artifacts:
                 path: target/glowstone-sources.jar
                 destination: glowstone-sources.jar
+workflows:
+    version: 2
 
-    build_other:
-        branches:
-            ignore:
-                - dev
+    default-branch-build:
+        jobs:
+            - build-deploy:
+                filters:
+                    branches:
+                        only: dev
 
-        working_directory: ~/glowstone
-
-        docker:
-            - image: circleci/openjdk:8-jdk-browsers
-
-        steps:
-
-            - checkout
-
-            - restore_cache:
-                key: glowstone-{{ checksum "pom.xml" }}
-
-            - run: mvn -T 2 -B dependency:go-offline
-
-            - save_cache:
-                paths:
-                    - ~/.m2
-                key: glowstone-{{ checksum "pom.xml" }}
-
-            - run: mvn -T 2 -B package
-
-            - store_test_results:
-                path: target/surefire-reports
-
-            - store_artifacts:
-                path: target/glowstone.jar
-                destination: glowstone.jar
+    other-branch-build:
+        jobs:
+            - build:
+                filters:
+                    branches:
+                        ignore: dev

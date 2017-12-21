@@ -11,7 +11,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
     private Constructor<T> constructor;
 
     public AgeableStore(Class<T> clazz, EntityType type) {
-        super(clazz, type.getName());
+        super(clazz, type);
         init(clazz);
     }
 
@@ -40,6 +40,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         }
     }
 
+    @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.containsKey("Age")) {
@@ -56,6 +57,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         }
     }
 
+    @Override
     public void save(T entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putInt("Age", entity.getAge());

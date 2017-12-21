@@ -14,7 +14,7 @@ public class GlowEvoker extends GlowMonster implements Evoker {
 
     public GlowEvoker(Location loc) {
         super(loc, EntityType.EVOKER, 24);
-        metadata.set(MetadataIndex.EVOKER_SPELL, (byte) Spell.NONE.ordinal());
+        metadata.set(MetadataIndex.EVOKER_SPELL, (byte) Spellcaster.Spell.NONE.ordinal());
         setBoundingBox(0.6, 1.95);
     }
 

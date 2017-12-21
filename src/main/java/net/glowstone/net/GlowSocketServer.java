@@ -28,7 +28,11 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
         workerGroup = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         bootstrap = new ServerBootstrap();
 
-        bootstrap.group(bossGroup, workerGroup).channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class).childOption(ChannelOption.TCP_NODELAY, true).childOption(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap
+            .group(bossGroup, workerGroup)
+            .channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+            .childOption(ChannelOption.TCP_NODELAY, true)
+            .childOption(ChannelOption.SO_KEEPALIVE, true);
     }
 
     public Channel getChannel() {
@@ -49,7 +53,7 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
 
     public void shutdown() {
         channel.close();
-        bootstrap.childGroup().shutdownGracefully();
-        bootstrap.group().shutdownGracefully();
+        bootstrap.config().childGroup().shutdownGracefully();
+        bootstrap.config().group().shutdownGracefully();
     }
 }
