@@ -67,9 +67,9 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         super.readNbt(tag);
         if (tag.containsKey("SkullOwner")) {
             if (tag.isString("SkullOwner")) {
-                owner = PlayerProfile.getProfile(tag.getString("SkullOwner"));
+                owner = PlayerProfile.getProfile(tag.getString("SkullOwner")).join();
             } else if (tag.isCompound("SkullOwner")) {
-                owner = PlayerProfile.fromNBT(tag.getCompound("SkullOwner"));
+                owner = PlayerProfile.fromNBT(tag.getCompound("SkullOwner")).join();
             }
         }
     }
@@ -89,7 +89,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     @Override
     public boolean setOwner(String name) {
-        PlayerProfile owner = PlayerProfile.getProfile(name);
+        PlayerProfile owner = PlayerProfile.getProfile(name).join();
         if (owner == null) {
             return false;
         }

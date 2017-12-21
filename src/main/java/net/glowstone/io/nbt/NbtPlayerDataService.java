@@ -4,24 +4,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NBTInputStream;
 import net.glowstone.util.nbt.NBTOutputStream;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -33,7 +31,6 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private final GlowServer server;
     private final File playerDir;
-    private Map<String, UUID> uuidCache = new HashMap<>();
 
     public NbtPlayerDataService(GlowServer server, File playerDir) {
         this.server = server;
@@ -52,14 +49,14 @@ public class NbtPlayerDataService implements PlayerDataService {
     }
 
     @Override
-    public List<OfflinePlayer> getOfflinePlayers() {
+    public CompletableFuture<Collection<OfflinePlayer>> getOfflinePlayers() {
         // list files in directory
         File[] files = playerDir.listFiles();
         if (files == null) {
-            return Arrays.asList();
+            return CompletableFuture.completedFuture(Arrays.asList());
         }
 
-        List<OfflinePlayer> result = new ArrayList<>(files.length);
+        List<CompletableFuture<GlowOfflinePlayer>> futures = new ArrayList<>(files.length);
         for (File file : files) {
             // first, make sure it looks like a player file
             String name = file.getName();
@@ -76,36 +73,14 @@ public class NbtPlayerDataService implements PlayerDataService {
             }
 
             // creating the OfflinePlayer will read the data
-            result.add(new GlowOfflinePlayer(server, uuid));
+            futures.add(GlowOfflinePlayer.getOfflinePlayer(server, uuid));
         }
 
-        return result;
-    }
+        CompletableFuture<Void> gotAll = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
 
-    @Override
-    public UUID lookupUUID(String name) {
-        if (uuidCache.containsKey(name)) {
-            return uuidCache.get(name);
-        }
-
-        for (OfflinePlayer player : getOfflinePlayers()) {
-            if (name.equalsIgnoreCase(player.getName())) {
-                uuidCache.put(name, player.getUniqueId());
-                return player.getUniqueId();
-            }
-        }
-
-        // In online mode, find the Mojang UUID if possible
-        if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer())
-            .getProxySupport()) {
-            UUID uuid = ProfileCache.getUUID(name);
-            if (uuid != null) {
-                return uuid;
-            }
-        }
-
-        // Fall back to the offline-mode UUID
-        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
+        return gotAll.thenApplyAsync((v) -> {
+            return futures.stream().map((f) -> f.join()).collect(Collectors.toList());
+        });
     }
 
     @Override
