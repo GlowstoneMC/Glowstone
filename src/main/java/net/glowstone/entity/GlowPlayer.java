@@ -835,7 +835,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                             && !knownEntities.contains(entity)
                             && !hiddenEntities.contains(entity.getUniqueId()))
                     .forEach((entity) -> Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
-                        knownEntities.add(entity);
+                        worldLock.readLock().lock();
+                        try {
+                            knownEntities.add(entity);
+                        } finally {
+                            worldLock.readLock().unlock();
+                        }
                         entity.createSpawnMessage().forEach(session::send);
                         entity.createAfterSpawnMessage(session).forEach(session::send);
                     })));
