@@ -814,7 +814,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 GlowEntity entity = it.next();
                 if (!isWithinDistance(entity) || entity.isRemoved()) {
                     destroyEntities.add(entity);
-                    it.remove();
                 } else {
                     entity.createUpdateMessage(session).forEach(session::send);
                 }
@@ -822,6 +821,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             if (!destroyEntities.isEmpty()) {
                 List<Integer> destroyIds = new ArrayList(destroyEntities.size());
                 for (GlowEntity entity : destroyEntities) {
+                    knownEntities.remove(entity);
                     destroyIds.add(entity.getEntityId());
                 }
                 session.send(new DestroyEntitiesMessage(destroyIds));
