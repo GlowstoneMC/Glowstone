@@ -126,7 +126,7 @@ public abstract class GlowEntity implements Entity {
     @Getter
     private final List<String> customTags = Lists.newArrayList();
     /**
-     * The world this entity belongs to.
+     * The world this entity belongs to. Guarded by {@link #worldLock}.
      */
     protected GlowWorld world;
     /**

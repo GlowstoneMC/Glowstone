@@ -203,7 +203,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private final GlowSession session;
 
     /**
-     * The entities that the client knows about.
+     * The entities that the client knows about. Guarded by {@link #worldLock}.
      */
     private final Set<GlowEntity> knownEntities = new HashSet<>();
 
