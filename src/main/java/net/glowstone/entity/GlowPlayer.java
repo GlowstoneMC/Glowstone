@@ -1047,42 +1047,40 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // restore health
         setHealth(getMaxHealth());
         setFoodLevel(20);
-
-        // determine spawn destination
-        boolean spawnAtBed = true;
-        Location dest = getBedSpawnLocation();
-        if (dest == null) {
-            dest = world.getSpawnLocation();
-            spawnAtBed = false;
-            if (bedSpawn != null) {
-                setBedSpawnLocation(null);
-                sendMessage("Your home bed was missing or obstructed");
-            }
-        }
-
-        if (!spawnAtBed) {
-            dest = findSafeSpawnLocation(dest);
-        }
-
-        // fire event and perform spawn
-        PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
-        EventFactory.callEvent(event);
         worldLock.writeLock().lock();
         try {
-            if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities.isEmpty()) {
+            // determine spawn destination
+            boolean spawnAtBed = true;
+            Location dest = getBedSpawnLocation();
+            if (dest == null) {
+                dest = world.getSpawnLocation();
+                spawnAtBed = false;
+                if (bedSpawn != null) {
+                    setBedSpawnLocation(null);
+                    sendMessage("Your home bed was missing or obstructed");
+                }
+            }
+
+            if (!spawnAtBed) {
+                dest = findSafeSpawnLocation(dest);
+            }
+
+            // fire event and perform spawn
+            PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
+            EventFactory.callEvent(event);
+                if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities.isEmpty()) {
                 // we need to manually reset all known entities if the player respawns in the same world
                 List<Integer> entityIds = new ArrayList<>(knownEntities.size());
                 entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
                 session.send(new DestroyEntitiesMessage(entityIds));
                 knownEntities.clear();
             }
+            active = true;
+            deathTicks = 0;
+            spawnAt(event.getRespawnLocation());
         } finally {
             worldLock.writeLock().unlock();
         }
-        active = true;
-        deathTicks = 0;
-        spawnAt(event.getRespawnLocation());
-
         // just in case any items are left in their inventory after they respawn
         updateInventory();
     }
