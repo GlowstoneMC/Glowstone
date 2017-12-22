@@ -20,7 +20,7 @@ import org.bukkit.util.Vector;
 public class BlockDispenser extends BlockContainer {
 
     /**
-     * Returns the position where an item will emerge from the dispenser
+     * Returns the position where an item will emerge from the dispenser.
      * @param block a dispenser block
      * @return the position as a Vector
      */

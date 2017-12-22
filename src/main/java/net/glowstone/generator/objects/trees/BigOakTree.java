@@ -64,7 +64,8 @@ public class BigOakTree extends GenericTree {
                                     .getBlockState(loc.getWorld(), node.getX() + x, node.getY() + y,
                                             node.getZ() + z).getType())) {
                                 delegate.setTypeAndRawData(loc.getWorld(), node.getX() + x,
-                                        node.getY() + y, node.getZ() + z, Material.LEAVES, leavesType);
+                                        node.getY() + y, node.getZ() + z, Material.LEAVES,
+                                        leavesType);
                             }
                         }
                     }
@@ -90,15 +91,15 @@ public class BigOakTree extends GenericTree {
                 float dy = (float) branch.getY() / maxDistance;
                 float dz = (float) branch.getZ() / maxDistance;
                 for (int i = 0; i <= maxDistance; i++) {
-                    branch = base.clone()
-                            .add(new Vector((double) (0.5F + i * dx), 0.5F + i * dy, 0.5F + i * dz));
+                    branch = base.clone().add(
+                            new Vector(0.5 + i * dx, 0.5 + i * dy, 0.5 + i * dz));
                     int x = Math.abs(branch.getBlockX() - base.getBlockX());
                     int z = Math.abs(branch.getBlockZ() - base.getBlockZ());
                     int max = Math.max(x, z);
                     int direction = max > 0 ? max == x ? 4 : 8 : 0; // EAST / SOUTH
-                    delegate
-                            .setTypeAndRawData(loc.getWorld(), branch.getBlockX(), branch.getBlockY(),
-                                    branch.getBlockZ(), Material.LOG, logType | direction);
+                    delegate.setTypeAndRawData(loc.getWorld(),
+                            branch.getBlockX(), branch.getBlockY(), branch.getBlockZ(),
+                            Material.LOG, logType | direction);
                 }
             }
         }

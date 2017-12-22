@@ -77,6 +77,11 @@ public class BlockContainer extends BlockType {
         return drops;
     }
 
+    /**
+     * Returns the contents of a container.
+     * @param block a container block
+     * @return the container's contents as ItemStack instances
+     */
     public Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
         for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory()

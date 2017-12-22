@@ -98,11 +98,11 @@ public class BlockHopper extends BlockContainer {
     private void pullItems(GlowBlock block, HopperEntity hopper) {
         GlowBlock source = block.getRelative(BlockFace.UP);
         MaterialData data = source.getState().getData();
-        if (!source.getType().isSolid() ||
-            (data instanceof Step && !((Step) data).isInverted()) ||
-            (data instanceof WoodenStep && !((WoodenStep) data).isInverted()) ||
-            (data instanceof Sign) ||
-            (data instanceof Rails)) {
+        if (!source.getType().isSolid()
+                || (data instanceof Step && !((Step) data).isInverted())
+                || (data instanceof WoodenStep && !((WoodenStep) data).isInverted())
+                || (data instanceof Sign)
+                || (data instanceof Rails)) {
             GlowItem item = getFirstDroppedItem(source.getLocation());
             if (item == null) {
                 return;

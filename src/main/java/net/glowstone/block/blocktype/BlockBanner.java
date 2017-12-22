@@ -47,7 +47,7 @@ public class BlockBanner extends BlockType {
 
     /**
      * Converts NBT tags to banner patterns.
-     * @param banner a list of banner patterns as NBT tags
+     * @param tag a list of banner patterns as NBT tags
      * @return the patterns as Pattern instances
      */
     public static List<Pattern> fromNbt(List<CompoundTag> tag) {
