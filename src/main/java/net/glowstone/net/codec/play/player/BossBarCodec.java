@@ -42,10 +42,10 @@ public class BossBarCodec implements Codec<BossBarMessage> {
             case UPDATE_FLAGS:
                 flags = buffer.readByte();
                 return new BossBarMessage(uuid, action, flags);
+            default:
+                //INFO: This return is dead code. We would NPE before on the action line.
+                return null;
         }
-
-        //INFO: This return is dead code. We would NPE before on the action line.
-        return null;
     }
 
     @Override
@@ -74,6 +74,9 @@ public class BossBarCodec implements Codec<BossBarMessage> {
             case UPDATE_FLAGS:
                 buf.writeByte(message.getFlags());
                 break;
+            default:
+                // do nothing
+                // TODO: should this raise a warning?
         }
         return buf;
     }

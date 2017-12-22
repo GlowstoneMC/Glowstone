@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.blocktype.BlockTNT;
+import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
@@ -191,7 +191,7 @@ public final class Explosion {
         if (block.getType() == Material.AIR || block.getType() == Material.BARRIER || block.getType() == Material.BEDROCK) {
             return;
         } else if (block.getType() == Material.TNT) {
-            BlockTNT.igniteBlock(block, true);
+            BlockTnt.igniteBlock(block, true);
             return;
         }
 

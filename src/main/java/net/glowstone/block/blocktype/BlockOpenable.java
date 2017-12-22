@@ -9,7 +9,8 @@ import org.bukkit.material.Openable;
 import org.bukkit.util.Vector;
 
 /**
- * Represents blocks that can be opened through a right-click. A block can be opened if its {@link MaterialData} implements {@link Openable}.
+ * Represents blocks that can be opened through a right-click. A block can be opened if its
+ * {@link MaterialData} implements {@link Openable}.
  */
 public class BlockOpenable extends BlockType {
 

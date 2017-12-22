@@ -20,6 +20,11 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
         setDrops(new ItemStack(Material.REDSTONE_TORCH_ON));
     }
 
+    /**
+     * Calculates the face on which a redstone torch is attached to the adjacent block.
+     * @param block a redstone torch block
+     * @return the block face
+     */
     public static BlockFace getAttachedBlockFace(GlowBlock block) {
         MaterialData data = block.getState().getData();
         if (data instanceof SimpleAttachableMaterialData) {

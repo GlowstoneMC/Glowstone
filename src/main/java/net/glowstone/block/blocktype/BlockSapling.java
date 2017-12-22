@@ -143,6 +143,10 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         }
     }
 
+    private static boolean isMatchingSapling(GlowBlock block, int data) {
+        return block.getType() == Material.SAPLING && block.getData() == data;
+    }
+
     private GlowBlock searchSourceBlockForHugeTree(GlowBlock block) {
 
         GlowWorld world = block.getWorld();
@@ -153,14 +157,10 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         for (int x = -1; x <= 0; x++) {
             for (int z = -1; z <= 0; z++) {
                 GlowBlock b = world.getBlockAt(sourceX + x, sourceY, sourceZ + z);
-                if (b.getType() == Material.SAPLING && b.getData() == data &&
-                    b.getRelative(BlockFace.SOUTH).getType() == Material.SAPLING &&
-                    b.getRelative(BlockFace.SOUTH).getData() == data &&
-                    b.getRelative(BlockFace.EAST).getType() == Material.SAPLING &&
-                    b.getRelative(BlockFace.EAST).getData() == data &&
-                    b.getRelative(BlockFace.SOUTH_EAST).getType() == Material.SAPLING &&
-                    b.getRelative(BlockFace.SOUTH_EAST).getData() == data) {
-
+                if (isMatchingSapling(b, data)
+                        && isMatchingSapling(b.getRelative(BlockFace.SOUTH), data)
+                        && isMatchingSapling(b.getRelative(BlockFace.EAST), data)
+                        && isMatchingSapling(b.getRelative(BlockFace.SOUTH_EAST), data)) {
                     return b;
                 }
             }
@@ -202,6 +202,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
     private TreeType getTreeType(TreeSpecies species) {
         switch (species) {
             case GENERIC:
+            default:
                 return TreeType.TREE;
             case REDWOOD:
                 return TreeType.REDWOOD;
@@ -214,6 +215,5 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             case DARK_OAK:
                 return TreeType.DARK_OAK;
         }
-        return TreeType.TREE;
     }
 }

@@ -20,6 +20,7 @@ import org.bukkit.material.Stairs;
 import org.bukkit.material.Step;
 
 /**
+ * A redstone wire block.
  * @author Sam
  */
 public class BlockRedstone extends BlockNeedsAttached {
@@ -28,6 +29,12 @@ public class BlockRedstone extends BlockNeedsAttached {
         setDrops(new ItemStack(Material.REDSTONE));
     }
 
+    /**
+     * Calculates the block data value for a redstone wire block, based on the adjacent blocks, so
+     * that appropriate connections are formed.
+     * @param block a redstone wire block
+     * @return the block data value
+     */
     public static List<BlockFace> calculateConnections(GlowBlock block) {
         List<BlockFace> value = new ArrayList<>();
         List<BlockFace> connections = new ArrayList<>();
@@ -103,9 +110,9 @@ public class BlockRedstone extends BlockNeedsAttached {
                 return ((Step) target.getState().getData()).isInverted();
             case GLOWSTONE:
                 return true;
+            default:
+                return false;
         }
-
-        return false;
     }
 
     @Override

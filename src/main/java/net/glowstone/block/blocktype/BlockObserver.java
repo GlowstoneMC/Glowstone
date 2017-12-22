@@ -19,6 +19,11 @@ public class BlockObserver extends BlockDirectional {
         return block.getType() == Material.OBSERVER && ((block.getData() >> POWERED_MASK) & 1) == 1;
     }
 
+    /**
+     * Returns the direction the given block is facing, if it's an observer, or null otherwise.
+     * @param block a block
+     * @return the direction the block is facing, or null if the block isn't an observer
+     */
     public static BlockFace getFace(GlowBlock block) {
         if (block.getType() != Material.OBSERVER) {
             return null;

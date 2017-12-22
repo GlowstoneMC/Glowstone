@@ -137,16 +137,16 @@ public class BlockVine extends BlockClimbable {
                             BlockFace counterClockwiseFace = getCounterClockwiseFace(face);
                             GlowBlock clockwiseBlock = b.getRelative(clockwiseFace);
                             GlowBlock counterClockwiseBlock = b.getRelative(counterClockwiseFace);
-                            boolean isOnCWFace = vine.isOnFace(clockwiseFace);
-                            boolean isOnCCWFace = vine.isOnFace(counterClockwiseFace);
-                            if (isOnCWFace && clockwiseBlock.getType().isSolid()) {
+                            boolean isOnCwFace = vine.isOnFace(clockwiseFace);
+                            boolean isOnCcwFace = vine.isOnFace(counterClockwiseFace);
+                            if (isOnCwFace && clockwiseBlock.getType().isSolid()) {
                                 putVine(b, new Vine(clockwiseFace), block);
-                            } else if (isOnCCWFace && counterClockwiseBlock.getType().isSolid()) {
+                            } else if (isOnCcwFace && counterClockwiseBlock.getType().isSolid()) {
                                 putVine(b, new Vine(counterClockwiseFace), block);
-                            } else if (isOnCWFace && clockwiseBlock.isEmpty() && block
+                            } else if (isOnCwFace && clockwiseBlock.isEmpty() && block
                                 .getRelative(clockwiseFace).getType().isSolid()) {
                                 putVine(clockwiseBlock, new Vine(face.getOppositeFace()), block);
-                            } else if (isOnCCWFace && counterClockwiseBlock.isEmpty() && block
+                            } else if (isOnCcwFace && counterClockwiseBlock.isEmpty() && block
                                 .getRelative(counterClockwiseFace).getType().isSolid()) {
                                 putVine(counterClockwiseBlock, new Vine(face.getOppositeFace()),
                                     block);

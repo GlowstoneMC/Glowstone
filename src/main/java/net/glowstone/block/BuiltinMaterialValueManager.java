@@ -13,10 +13,15 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
     private final Map<Material, BuiltinValueCollection> values;
     private BuiltinValueCollection defaultValue;
 
+    /**
+     * Creates a MaterialValueManager using the data from the resource file
+     * {@code builtin/materialValues.yml} in the Glowstone jar.
+     */
     public BuiltinMaterialValueManager() {
         values = new EnumMap<>(Material.class);
 
-        YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
+        YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(new InputStreamReader(
+                getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
         defaultValue = new BuiltinValueCollection(builtinValues.getConfigurationSection("default"));
         registerBuiltins(builtinValues);
@@ -28,9 +33,12 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         for (String strMaterial : materials) {
             Material material = Material.matchMaterial(strMaterial);
             if (material == null) {
-                throw new RuntimeException("Invalid builtin/materialValues.yml: Couldn't found material: " + strMaterial);
+                throw new RuntimeException(
+                        "Invalid builtin/materialValues.yml: Couldn't find material: "
+                        + strMaterial);
             }
-            ConfigurationSection materialSection = valuesSection.getConfigurationSection(strMaterial);
+            ConfigurationSection materialSection
+                    = valuesSection.getConfigurationSection(strMaterial);
             values.put(material, new BuiltinValueCollection(materialSection));
         }
     }

@@ -21,10 +21,15 @@ public class BlockPiston extends BlockDirectional {
     private static final int PUSH_LIMIT = 12;
     private final boolean sticky;
 
+    /** Creates the basic (non-sticky) piston block type. */
     public BlockPiston() {
         this(false);
     }
 
+    /**
+     * Creates a piston block type.
+     * @param sticky true for the sticky-piston type; false for the basic piston type
+     */
     public BlockPiston(boolean sticky) {
         super(false);
         this.sticky = sticky;
@@ -37,7 +42,7 @@ public class BlockPiston extends BlockDirectional {
     }
 
     /**
-     * The piston is either non-sticky (default), or has a sticky behavior
+     * The piston is either non-sticky (default), or has a sticky behavior.
      *
      * @return true if the piston has a sticky base
      */
@@ -74,7 +79,8 @@ public class BlockPiston extends BlockDirectional {
             List<Block> blocks = new ArrayList<>();
 
             // get all blocks to be pushed by piston
-            // add 2 to push limit to compensate for i starting at 1 and also to get the block after the push limit
+            // add 2 to push limit to compensate for i starting at 1 and also to get the block after
+            // the push limit
             for (int i = 1; i < PUSH_LIMIT + 2; i++) {
                 Block block = me.getRelative(pistonBlockFace, i);
 
@@ -144,7 +150,8 @@ public class BlockPiston extends BlockDirectional {
     }
 
     private boolean isPistonExtended(Block block) {
-        // TODO: check direction of piston_extension to make sure that the extension is attached to piston
+        // TODO: check direction of piston_extension to make sure that the extension is attached to
+        // piston
         Block pistonHead = block
             .getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing());
         return pistonHead.getType() == Material.PISTON_EXTENSION;
