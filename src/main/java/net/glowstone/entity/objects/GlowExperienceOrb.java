@@ -37,10 +37,8 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
     @Override
     public List<Message> createSpawnMessage() {
-        Location location = getLocation();
         return Collections.singletonList(
-            new SpawnXpOrbMessage(getEntityId(), location.getX(), location.getY(), location.getZ(),
-                (short) getExperience()));
+            new SpawnXpOrbMessage(getEntityId(), getLocation(), (short) getExperience()));
     }
 
     @Override
