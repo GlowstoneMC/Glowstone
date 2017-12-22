@@ -12,7 +12,6 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
-import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
@@ -41,16 +40,8 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, x, y, z,
-                pitch, yaw),
+            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, location),
             new EntityMetadataMessage(id, metadata.getEntryList())
         );
     }

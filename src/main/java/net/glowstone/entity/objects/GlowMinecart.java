@@ -10,7 +10,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -64,15 +63,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Collections.singletonList(
-                new SpawnObjectMessage(id, getUniqueId(), 10, x, y, z, pitch, yaw, type.ordinal()));
+                new SpawnObjectMessage(id, getUniqueId(), 10, location, type.ordinal()));
     }
 
     @Override
