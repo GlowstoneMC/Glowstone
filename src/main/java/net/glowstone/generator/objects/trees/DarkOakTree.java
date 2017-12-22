@@ -60,7 +60,8 @@ public class DarkOakTree extends GenericTree {
         }
         int twistHeight = height - random.nextInt(4);
         int twistCount = random.nextInt(3);
-        int centerX = loc.getBlockX(), centerZ = loc.getBlockZ();
+        int centerX = loc.getBlockX();
+        int centerZ = loc.getBlockZ();
         int trunkTopY = 0;
 
         // generates the trunk

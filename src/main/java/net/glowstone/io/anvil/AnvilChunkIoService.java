@@ -82,7 +82,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     "Out of bounds chunk section at y " + y + " in " + chunk + "!");
                 continue;
             }
-            sections[y] = ChunkSection.fromNBT(sectionTag);
+            sections[y] = ChunkSection.fromNbt(sectionTag);
         }
 
         // initialize the chunk
@@ -205,7 +205,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i);
             sec.optimize();
-            sec.writeToNBT(sectionTag);
+            sec.writeToNbt(sectionTag);
             sectionTags.add(sectionTag);
         }
         levelTags.putCompoundList("Sections", sectionTags);
