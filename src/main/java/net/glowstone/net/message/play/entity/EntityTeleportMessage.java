@@ -3,6 +3,8 @@ package net.glowstone.net.message.play.entity;
 import com.flowpowered.network.Message;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import net.glowstone.util.Position;
+import org.bukkit.Location;
 
 @Data
 @RequiredArgsConstructor
@@ -17,4 +19,8 @@ public final class EntityTeleportMessage implements Message {
         this(id, x, y, z, rotation, pitch, true);
     }
 
+    public EntityTeleportMessage(int id, Location location) {
+        this(id, location.getX(), location.getY(), location.getZ(), Position.getIntYaw(location),
+                Position.getIntPitch(location));
+    }
 }
