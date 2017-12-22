@@ -141,8 +141,9 @@ public class EntityRegistry {
 
     private static final Map<String, CustomEntityDescriptor> CUSTOM_ENTITIES = new HashMap<>();
 
-    private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>> ENTITIES =
-        ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
+    private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>>
+            ENTITIES
+            = ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
             .put(AbstractHorse.class, GlowAbstractHorse.class)
             .put(ArmorStand.class, GlowArmorStand.class)
             //TODO: Arrow
@@ -242,6 +243,11 @@ public class EntityRegistry {
         return ENTITIES.get(clazz);
     }
 
+    /**
+     * Registers a custom entity type.
+     * @param descriptor the entity type to register; all fields except
+     *     {@link CustomEntityDescriptor#getStorage()} must be non-null
+     */
     public static void registerCustomEntity(
         CustomEntityDescriptor<? extends GlowEntity> descriptor) {
         if (descriptor == null || descriptor.getEntityClass() == null || descriptor.getId() == null

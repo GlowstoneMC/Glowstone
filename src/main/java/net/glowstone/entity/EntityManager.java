@@ -1,12 +1,15 @@
 package net.glowstone.entity;
 
+import static com.google.common.collect.Multimaps.newSetMultimap;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.glowstone.chunk.GlowChunk;
@@ -30,10 +33,13 @@ public class EntityManager implements Iterable<GlowEntity> {
     /**
      * A map of entity types to a set containing all entities of that type.
      */
-    private final Map<Class<? extends GlowEntity>, Set<? extends GlowEntity>> groupedEntities = new ConcurrentHashMap<>();
+    private final Multimap<Class<? extends GlowEntity>, GlowEntity> groupedEntities
+            = newSetMultimap(
+                    new ConcurrentHashMap<Class<? extends GlowEntity>, Collection<GlowEntity>>(),
+                    Sets::newConcurrentHashSet);
 
     /**
-     * Gets all entities with the specified type.
+     * Returns all entities with the specified type.
      *
      * @param type The {@link Class} for the type.
      * @param <T> The type of entity.
@@ -41,12 +47,11 @@ public class EntityManager implements Iterable<GlowEntity> {
      */
     @SuppressWarnings("unchecked")
     public <T extends GlowEntity> Collection<T> getAll(Class<T> type) {
-        Set<T> set = (Set<T>) groupedEntities.get(type);
-        if (set == null) {
-            set = new HashSet<>();
-            groupedEntities.put(type, set);
+        if (GlowEntity.class.isAssignableFrom(type)) {
+            return (Collection<T>) groupedEntities.get(type);
+        } else {
+            return Collections.emptyList();
         }
-        return set;
     }
 
     /**
@@ -114,6 +119,13 @@ public class EntityManager implements Iterable<GlowEntity> {
         return entities.values().iterator();
     }
 
+    /**
+     * Returns all entities that are inside or partly inside the given bounding box, with optionally
+     * one exception.
+     * @param searchBox the bounding box to search inside
+     * @param except the entity to exclude, or null to include all
+     * @return the entities contained in or touching {@code searchBox}, other than {@code except}
+     */
     public List<Entity> getEntitiesInside(BoundingBox searchBox, GlowEntity except) {
         // todo: narrow search based on the box's corners
         return entities.values().stream()

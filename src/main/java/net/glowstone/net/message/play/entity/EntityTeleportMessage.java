@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 public final class EntityTeleportMessage implements Message {
 
     private final int id;
-    private final double x, y, z;
-    private final int rotation, pitch;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final int rotation;
+    private final int pitch;
     private final boolean onGround;
 
     public EntityTeleportMessage(int id, double x, double y, double z, int rotation, int pitch) {

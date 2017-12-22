@@ -31,18 +31,21 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 
 /**
- * The class responsible for mapping entity types to their storage methods and reading and writing entity data using those storage methods.
+ * The class responsible for mapping entity types to their storage methods and reading and writing
+ * entity data using those storage methods.
  */
 public final class EntityStorage {
 
     /**
-     * A table which maps entity ids to compound readers. This is generally used to map stored entities to actual entities.
+     * A table which maps entity ids to compound readers. This is generally used to map stored
+     * entities to actual entities.
      */
     private static final Map<String, EntityStore<?>> idTable = new HashMap<>();
     /**
      * A table which maps entities to stores. This is generally used to map entities being stored.
      */
-    private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable = new HashMap<>();
+    private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable
+            = new HashMap<>();
 
     /*
      * Populates the maps with stores.

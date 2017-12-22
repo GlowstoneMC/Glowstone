@@ -22,6 +22,11 @@ public final class EncryptionHandler extends MessageToMessageCodec<ByteBuf, Byte
     private final CryptBuf encodeBuf;
     private final CryptBuf decodeBuf;
 
+    /**
+     * Creates an instance that applies symmetrical AES encryption.
+     *
+     * @param sharedSecret an AES key
+     */
     public EncryptionHandler(SecretKey sharedSecret) {
         try {
             encodeBuf = new CryptBuf(Cipher.ENCRYPT_MODE, sharedSecret);

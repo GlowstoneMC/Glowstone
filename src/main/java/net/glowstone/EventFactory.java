@@ -55,15 +55,19 @@ public final class EventFactory {
             server.getPluginManager().callEvent(event);
             return event;
         } else {
-            FutureTask<T> task = new FutureTask<>(() -> server.getPluginManager().callEvent(event), event);
+            FutureTask<T> task = new FutureTask<>(
+                () -> server.getPluginManager().callEvent(event), event);
             server.getScheduler().scheduleInTickExecution(task);
             try {
                 return task.get();
             } catch (InterruptedException e) {
-                GlowServer.logger.log(Level.WARNING, "Interrupted while handling " + event.getClass().getSimpleName());
+                GlowServer.logger.log(Level.WARNING,
+                        "Interrupted while handling " + event.getClass().getSimpleName());
                 return event;
             } catch (CancellationException e) {
-                GlowServer.logger.log(Level.WARNING, "Not handling event " + event.getClass().getSimpleName() + " due to shutdown");
+                GlowServer.logger.log(Level.WARNING,
+                        "Not handling event " + event.getClass().getSimpleName()
+                                + " due to shutdown");
                 return event;
             } catch (ExecutionException e) {
                 throw new RuntimeException(e); // No checked exceptions declared for callEvent
@@ -74,16 +78,27 @@ public final class EventFactory {
     ////////////////////////////////////////////////////////////////////////////
     // Player Events
 
+    /**
+     * Handles pre-hooks for a player login.
+     *
+     * @param name the name of the player who is logging in
+     * @param address the address of the player who is logging in
+     * @param uuid the UUID of the player who is logging in, provided by Mojang
+     * @return an AsyncPlayerPreLoginEvent
+     */
     @SuppressWarnings("deprecation")
-    public static AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address, UUID uuid) {
+    public static AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address,
+            UUID uuid) {
         // call async event
-        AsyncPlayerPreLoginEvent event = new AsyncPlayerPreLoginEvent(name, address.getAddress(), uuid);
+        AsyncPlayerPreLoginEvent event = new AsyncPlayerPreLoginEvent(name, address
+                .getAddress(), uuid);
         callEvent(event);
 
         // call sync event only if needed
         if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length > 0) {
             // initialize event to match current state from async event
-            PlayerPreLoginEvent syncEvent = new PlayerPreLoginEvent(name, address.getAddress(), uuid);
+            PlayerPreLoginEvent syncEvent = new PlayerPreLoginEvent(name, address
+                    .getAddress(), uuid);
             if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
                 syncEvent.disallow(event.getResult(), event.getKickMessage());
             }
@@ -96,6 +111,14 @@ public final class EventFactory {
         return event;
     }
 
+    /**
+     * Handles post-hooks for a player login, including the name and IP banlists, whitelist policy
+     * and occupancy limit.
+     *
+     * @param player the login
+     * @param hostname the hostname that was used to connect to the server
+     * @return the completed event
+     */
     public static PlayerLoginEvent onPlayerLogin(GlowPlayer player, String hostname) {
         GlowServer server = player.getServer();
         InetAddress address = player.getAddress().getAddress();
@@ -106,18 +129,29 @@ public final class EventFactory {
         BanList ipBans = server.getBanList(Type.IP);
 
         if (nameBans.isBanned(player.getName())) {
-            event.disallow(Result.KICK_BANNED, "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
+            event.disallow(Result.KICK_BANNED,
+                    "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
         } else if (ipBans.isBanned(addressString)) {
-            event.disallow(Result.KICK_BANNED, "Banned: " + ipBans.getBanEntry(addressString).getReason());
+            event.disallow(Result.KICK_BANNED,
+                    "Banned: " + ipBans.getBanEntry(addressString).getReason());
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
             event.disallow(Result.KICK_WHITELIST, "You are not whitelisted on this server.");
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
-            event.disallow(Result.KICK_FULL, "The server is full (" + player.getServer().getMaxPlayers() + " players).");
+            event.disallow(Result.KICK_FULL,
+                    "The server is full (" + player.getServer().getMaxPlayers() + " players).");
         }
 
         return callEvent(event);
     }
 
+    /**
+     * Handles an incoming chat message.
+     *
+     * @param async This changes the event to a synchronous state.
+     * @param player the sending player
+     * @param message the message
+     * @return the completed event
+     */
     @SuppressWarnings("deprecation")
     public static AsyncPlayerChatEvent onPlayerChat(boolean async, Player player, String message) {
         // call async event
@@ -128,7 +162,8 @@ public final class EventFactory {
         // call sync event only if needed
         if (PlayerChatEvent.getHandlerList().getRegisteredListeners().length > 0) {
             // initialize event to match current state from async event
-            PlayerChatEvent syncEvent = new PlayerChatEvent(player, event.getMessage(), event.getFormat(), recipients);
+            PlayerChatEvent syncEvent = new PlayerChatEvent(player, event.getMessage(), event
+                    .getFormat(), recipients);
             syncEvent.setCancelled(event.isCancelled());
 
             // call event synchronously and copy data back to original event
@@ -142,7 +177,8 @@ public final class EventFactory {
     }
 
     public static PlayerJoinEvent onPlayerJoin(Player player) {
-        return callEvent(new PlayerJoinEvent(player, ChatColor.YELLOW + player.getName() + " joined the game"));
+        return callEvent(new PlayerJoinEvent(player,
+                ChatColor.YELLOW + player.getName() + " joined the game"));
     }
 
     public static PlayerKickEvent onPlayerKick(Player player, String reason) {
@@ -150,19 +186,50 @@ public final class EventFactory {
     }
 
     public static PlayerQuitEvent onPlayerQuit(Player player) {
-        return callEvent(new PlayerQuitEvent(player, ChatColor.YELLOW + player.getName() + " left the game"));
+        return callEvent(new PlayerQuitEvent(player,
+                ChatColor.YELLOW + player.getName() + " left the game"));
     }
 
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, EquipmentSlot hand) {
+    /**
+     * Handles a click in the air.
+     *
+     * @param player the player
+     * @param action the click action
+     * @param hand the active hand
+     * @return the completed event
+     */
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action,
+            EquipmentSlot hand) {
         return callEvent(new PlayerInteractEvent(player, action,
-            hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand(), null, null, hand));
+                hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand()
+                        : player.getInventory().getItemInMainHand(), null, null, hand));
     }
 
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action, EquipmentSlot hand, Block clicked, BlockFace face) {
+    /**
+     * Handles a click on a block.
+     *
+     * @param player the player
+     * @param action the click action
+     * @param hand the active hand
+     * @param clicked the block clicked
+     * @param face the side of the block clicked
+     * @return the completed event
+     */
+    public static PlayerInteractEvent onPlayerInteract(Player player, Action action,
+            EquipmentSlot hand, Block clicked, BlockFace face) {
         return callEvent(new PlayerInteractEvent(player, action,
-            hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand(), clicked, face, hand));
+                hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand()
+                        : player.getInventory().getItemInMainHand(), clicked, face, hand));
     }
 
+    /**
+     * Runs an EntityDamageEvent and updates {@link org.bukkit.entity.Entity#setLastDamageCause} and
+     * {@link org.bukkit.entity.Entity#setLastDamage}.
+     *
+     * @param event the event to run
+     * @param <T> the event's type
+     * @return the completed event
+     */
     public static <T extends EntityDamageEvent> T onEntityDamage(T event) {
         T result = callEvent(event);
         if (!result.isCancelled()) {

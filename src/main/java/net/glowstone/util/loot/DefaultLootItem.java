@@ -12,6 +12,11 @@ public class DefaultLootItem {
     private final Optional<ProbableValue<Integer>> data;
     private final Optional<ReflectiveValue<Integer>> reflectiveData;
 
+    /**
+     * Parses a loot-table entry from JSON.
+     *
+     * @param object a loot-table entry in JSON format.
+     */
     public DefaultLootItem(JSONObject object) {
         this.type = new ProbableValue<>(object, "item");
         this.count = new LootRandomValues(object);

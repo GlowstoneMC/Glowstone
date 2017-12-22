@@ -13,6 +13,9 @@ import org.bukkit.util.StringUtil;
 
 public class DeopCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public DeopCommand() {
         super("deop", "Removes server operator status from a player.", "/deop <player>",
             Collections.emptyList());
@@ -47,7 +50,8 @@ public class DeopCommand extends VanillaCommand {
             Bukkit.getOperators().stream().map(OfflinePlayer::getName)
                     .filter(Objects::nonNull)
                     .forEach(player -> operators.add(player));
-            return StringUtil.copyPartialMatches(args[0], operators, new ArrayList<>(operators.size()));
+            return StringUtil.copyPartialMatches(args[0], operators,
+                    new ArrayList<>(operators.size()));
         } else if (args.length > 1) {
             return Collections.emptyList();
         }
