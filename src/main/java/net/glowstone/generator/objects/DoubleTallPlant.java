@@ -17,6 +17,16 @@ public class DoubleTallPlant {
         this.species = species;
     }
 
+    /**
+     * Generates up to 64 plants around the given point.
+     *
+     * @param world the world to generate in
+     * @param random the PRNG
+     * @param sourceX the center X coordinate
+     * @param sourceY the center Y coordinate
+     * @param sourceZ the center Z coordinate
+     * @return true if at least one plant was successfully generated
+     */
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         boolean placed = false;
         for (int i = 0; i < 64; i++) {
@@ -25,13 +35,14 @@ public class DoubleTallPlant {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             Block block = world.getBlockAt(x, y, z);
-            if (y < 255 && block.isEmpty() && block.getRelative(BlockFace.UP).isEmpty() &&
-                block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
+            Block topBlock = block.getRelative(BlockFace.UP);
+            if (y < 255 && block.isEmpty() && topBlock.isEmpty()
+                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                 BlockState state = block.getState();
                 state.setType(Material.DOUBLE_PLANT);
                 state.setData(new DoublePlant(species));
                 state.update(true);
-                state = block.getRelative(BlockFace.UP).getState();
+                state = topBlock.getState();
                 state.setType(Material.DOUBLE_PLANT);
                 state.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
                 state.update(true);

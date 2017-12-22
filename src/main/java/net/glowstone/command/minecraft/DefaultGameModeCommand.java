@@ -13,9 +13,13 @@ import org.bukkit.util.StringUtil;
 
 public class DefaultGameModeCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public DefaultGameModeCommand() {
         super("defaultgamemode",
-            "Sets the default game mode (creative, survival, etc.) for new players entering a multiplayer server.",
+            "Sets the default game mode (creative, survival, etc.) for new players entering a "
+                    + "multiplayer server.",
             "/defaultgamemode <mode>", Collections.emptyList());
         setPermission("minecraft.command.defaultgamemode");
     }

@@ -14,7 +14,8 @@ public final class EntityEquipmentMessage implements Message {
     public static final int CHESTPLATE_SLOT = 4;
     public static final int HELMET_SLOT = 5;
 
-    private final int id, slot;
+    private final int id;
+    private final int slot;
     private final ItemStack stack;
 
 }

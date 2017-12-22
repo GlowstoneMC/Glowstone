@@ -21,10 +21,14 @@ public class EffectCommand extends VanillaCommand {
 
     private static final List<String> VANILLA_IDS = GlowPotionEffect.getVanillaIds();
 
+    /**
+     * Creates the instance for this command.
+     */
     public EffectCommand() {
         super("effect",
             "Gives a player an effect",
-            "/effect <player> clear OR /effect <player> <effect> [seconds] [amplifier] [hideParticles]",
+            "/effect <player> clear "
+                    + "OR /effect <player> <effect> [seconds] [amplifier] [hideParticles]",
             Collections.emptyList());
         setPermission("minecraft.command.effect");
     }
