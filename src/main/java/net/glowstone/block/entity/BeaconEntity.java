@@ -6,7 +6,9 @@ import net.glowstone.util.nbt.CompoundTag;
 public class BeaconEntity extends BlockEntity {
 
     private String lock = null; // todo: support item locks
-    private int levels = 0, primaryId = 0, secondaryId = 0;
+    private int levels = 0;
+    private int primaryId = 0;
+    private int secondaryId = 0;
 
     public BeaconEntity(GlowBlock block) {
         super(block);

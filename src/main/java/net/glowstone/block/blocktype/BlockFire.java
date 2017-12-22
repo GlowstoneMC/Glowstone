@@ -26,7 +26,8 @@ public class BlockFire extends BlockNeedsAttached {
         BlockFace.EAST, BlockFace.WEST};
     private static final int TICK_RATE = 20;
     private static final int MAX_FIRE_AGE = 15;
-    private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP = new LinkedHashMap<>();
+    private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP
+            = new LinkedHashMap<>();
 
     static {
         BURNRESISTANCE_MAP.put(BlockFace.EAST, 300);

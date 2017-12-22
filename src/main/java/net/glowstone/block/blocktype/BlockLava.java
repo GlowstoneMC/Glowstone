@@ -34,13 +34,13 @@ public class BlockLava extends BlockLiquid {
                 GlowBlock b = (GlowBlock) block.getLocation()
                     .add(-1 + ThreadLocalRandom.current().nextInt(3), 0,
                         -1 + ThreadLocalRandom.current().nextInt(3)).getBlock();
-                GlowBlock bAbove = b.getRelative(BlockFace.UP);
-                if (bAbove.isEmpty() && b.isFlammable()) {
-                    BlockIgniteEvent igniteEvent = new BlockIgniteEvent(bAbove, IgniteCause.LAVA,
+                GlowBlock aboveB = b.getRelative(BlockFace.UP);
+                if (aboveB.isEmpty() && b.isFlammable()) {
+                    BlockIgniteEvent igniteEvent = new BlockIgniteEvent(aboveB, IgniteCause.LAVA,
                         block);
                     EventFactory.callEvent(igniteEvent);
                     if (!igniteEvent.isCancelled()) {
-                        GlowBlockState state = bAbove.getState();
+                        GlowBlockState state = aboveB.getState();
                         state.setType(Material.FIRE);
                         state.update(true);
                     }

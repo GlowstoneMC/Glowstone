@@ -29,6 +29,11 @@ import org.bukkit.util.Vector;
 
 public class BlockHopper extends BlockContainer {
 
+    /**
+     * Sets a hopper to face a given direction.
+     * @param bs the hopper's BlockState
+     * @param face the direction to face
+     */
     public void setFacingDirection(BlockState bs, BlockFace face) {
         byte data;
         switch (face) {
@@ -141,7 +146,8 @@ public class BlockHopper extends BlockContainer {
         if (target.getType() != null && target.getBlockEntity() instanceof ContainerEntity) {
             if (target.getState() instanceof GlowHopper) {
                 if (((Hopper) block.getState().getData()).getFacing() == BlockFace.DOWN) {
-                    // If the hopper is facing downwards, the target hopper can do the pulling task itself
+                    // If the hopper is facing downwards, the target hopper can do the pulling task
+                    // itself
                     return false;
                 }
             }

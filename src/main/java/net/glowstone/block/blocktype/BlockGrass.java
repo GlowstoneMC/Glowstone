@@ -122,11 +122,11 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
 
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
-                if (targetBlock.getChunk().isLoaded() && targetAbove.getChunk().isLoaded() &&
-                    targetBlock.getType() == Material.DIRT &&
-                    targetBlock.getData() == 0 && // only spread on normal dirt
-                    targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
-                    targetAbove.getLightLevel() >= 4) {
+                if (targetBlock.getChunk().isLoaded() && targetAbove.getChunk().isLoaded()
+                        && targetBlock.getType() == Material.DIRT
+                        && targetBlock.getData() == 0 // only spread on normal dirt
+                        && targetAbove.getMaterialValues().getLightOpacity() <= 2
+                        && targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.GRASS);
                     state.setRawData((byte) 0);

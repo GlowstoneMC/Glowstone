@@ -19,6 +19,9 @@ public class BanListCommand extends VanillaCommand {
 
     private static final List<String> BAN_TYPES = Arrays.asList("ips", "players");
 
+    /**
+     * Creates the instance for this command.
+     */
     public BanListCommand() {
         super("banlist", "Displays the server's blacklist.", "/banlist [ips|players]",
             Collections.emptyList());
