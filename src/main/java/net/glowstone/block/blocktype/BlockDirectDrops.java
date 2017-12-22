@@ -17,11 +17,11 @@ public class BlockDirectDrops extends BlockNeedsTool {
     private final MaterialMatcher neededTool;
 
     /**
-     * Creates an instance.
-     * @param dropType the type of item to drop when broken
+     * Creates a block type that drops an item directly when broken.
+     * @param dropType the type of item to drop when broken, or null to drop nothing
      * @param data the damage or block-data value of the dropped item
      * @param amount the amount to drop
-     * @param neededTool the tool(s) that can break this block
+     * @param neededTool the tool(s) that can break this block, or null if breakable without a tool
      */
     public BlockDirectDrops(Material dropType, int data, int amount, MaterialMatcher neededTool) {
         this.dropType = dropType;
@@ -31,7 +31,7 @@ public class BlockDirectDrops extends BlockNeedsTool {
     }
 
     /**
-     * Creates an instance that drops nothing when broken.
+     * Creates a block type that drops nothing when broken.
      * @param neededTool the tool(s) that can break this block
      */
     public BlockDirectDrops(MaterialMatcher neededTool) {
@@ -39,7 +39,8 @@ public class BlockDirectDrops extends BlockNeedsTool {
     }
 
     /**
-     * Creates an instance that can be broken without a tool.
+     * Creates a block type that drops an item directly when broken, and can be broken without a
+     * tool.
      * @param dropType the type of item to drop when broken
      * @param data the damage or block-data value of the dropped item
      * @param amount the amount to drop
@@ -49,7 +50,8 @@ public class BlockDirectDrops extends BlockNeedsTool {
     }
 
     /**
-     * Creates an instance that drops 1 item with damage or block data 0 when broken.
+     * Creates a block type that directly drops 1 copy of an item with damage or block data 0 when
+     * broken.
      * @param dropType the type of item to drop when broken
      * @param neededTool the tool(s) that can break this block
      */
@@ -58,8 +60,8 @@ public class BlockDirectDrops extends BlockNeedsTool {
     }
 
     /**
-     * Creates an instance that can be broken without a tool, and that drops items with damage or
-     * block data 0 when broken.
+     * Creates a block type that directly drops an item with damage or block data 0 when broken, and
+     * can be broken without a tool.
      * @param dropType the type of item to drop when broken
      * @param amount the amount to drop
      */
@@ -69,8 +71,8 @@ public class BlockDirectDrops extends BlockNeedsTool {
 
 
     /**
-     * Creates an instance that can be broken without a tool, and that drops 1 item with damage or
-     * block data 0 when broken.
+     * Creates a block type that directly drops 1 copy of an item with damage or block data 0 when
+     * broken, and can be broken without a tool.
      * @param dropType the type of item to drop when broken
      */
     public BlockDirectDrops(Material dropType) {
