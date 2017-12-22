@@ -12,7 +12,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 
 /**
- * A small utility class that allow to maintain a {@link BlockState}'s list in order to capture a chain of modified blocks and update all the states in once, or never (ie: event cancelled).
+ * A small utility class that allow to maintain a {@link BlockState}'s list in order to capture a
+ * chain of modified blocks and update all the states in once, or never (ie: event cancelled).
  */
 public class BlockStateDelegate {
 

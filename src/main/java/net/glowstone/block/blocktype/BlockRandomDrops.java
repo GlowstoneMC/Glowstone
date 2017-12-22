@@ -9,6 +9,10 @@ import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * A block type that drops a random number of items when broken, and isn't affected by the Fortune
+ * enchantment (unlike {@link BlockOre}).
+ */
 public class BlockRandomDrops extends BlockNeedsTool {
 
     private final Material dropType;
@@ -17,8 +21,16 @@ public class BlockRandomDrops extends BlockNeedsTool {
     private final int maxDrops;
     private final MaterialMatcher neededTool;
 
+    /**
+     * Creates a block type that drops a random number of items when broken.
+     * @param dropType the item to drop when broken
+     * @param data the block-data or damage value for the dropped item
+     * @param minDrops the minimum number of items to drop when broken
+     * @param maxDrops the maximum number of items to drop when broken
+     * @param neededTool the tool(s) that can break this block, or null if no tool is needed
+     */
     public BlockRandomDrops(Material dropType, int data, int minDrops, int maxDrops,
-        MaterialMatcher neededTool) {
+            MaterialMatcher neededTool) {
         this.dropType = dropType;
         this.neededTool = neededTool;
         this.data = (short) data;
@@ -26,14 +38,35 @@ public class BlockRandomDrops extends BlockNeedsTool {
         this.maxDrops = maxDrops;
     }
 
+    /**
+     * Creates a block type that drops a random number of items when broken, and can be broken with
+     * no tool.
+     * @param dropType the item to drop when broken
+     * @param data the block-data or damage value for the dropped item
+     * @param minDrops the minimum number of items to drop when broken
+     * @param maxDrops the maximum number of items to drop when broken
+     */
     public BlockRandomDrops(Material dropType, int data, int minDrops, int maxDrops) {
         this(dropType, data, minDrops, maxDrops, null);
     }
 
+    /**
+     * Creates a block type that drops a random number of items with block-data or damage value 0
+     * when broken, and can be broken with no tool.
+     * @param dropType the item to drop when broken
+     * @param minDrops the minimum number of items to drop when broken
+     * @param maxDrops the maximum number of items to drop when broken
+     */
     public BlockRandomDrops(Material dropType, int minDrops, int maxDrops) {
         this(dropType, 0, minDrops, maxDrops, null);
     }
 
+    /**
+     * Creates a block type that drops a random number of items that's at least 1, with block-data
+     * or damage value 0, and can be broken with no tool.
+     * @param dropType the item to drop when broken
+     * @param maxDrops the maximum number of items to drop when broken
+     */
     public BlockRandomDrops(Material dropType, int maxDrops) {
         this(dropType, 1, maxDrops);
     }

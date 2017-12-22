@@ -39,6 +39,11 @@ public class BlockSkull extends BlockType {
         setDrops(new ItemStack(Material.SKULL_ITEM));
     }
 
+    /**
+     * Returns the SkullType with the given ID.
+     * @param id the ID to look up
+     * @return the skull type
+     */
     public static SkullType getType(int id) {
         if (id < 0 || id >= SkullType.values().length) {
             throw new IllegalArgumentException("ID not a Skull type: " + id);

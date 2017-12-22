@@ -13,14 +13,22 @@ public class Cactus {
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
         BlockFace.WEST};
 
+    /**
+     * Generates or extends a cactus, if there is space.
+     * @param world the world
+     * @param random the PRNG that will determine the height
+     * @param x the x coordinate
+     * @param y the y coordinate of the bottom new block
+     * @param z the z coordinate
+     */
     public void generate(World world, Random random, int x, int y, int z) {
         if (world.getBlockAt(x, y, z).isEmpty()) {
             int height = random.nextInt(random.nextInt(3) + 1) + 1;
             for (int n = y; n < y + height; n++) {
                 Block block = world.getBlockAt(x, n, z);
-                if ((block.getRelative(BlockFace.DOWN).getType() == Material.SAND ||
-                    block.getRelative(BlockFace.DOWN).getType() == Material.CACTUS) &&
-                    block.getRelative(BlockFace.UP).isEmpty()) {
+                Material typeBelow = block.getRelative(BlockFace.DOWN).getType();
+                if ((typeBelow == Material.SAND || typeBelow == Material.CACTUS)
+                        && block.getRelative(BlockFace.UP).isEmpty()) {
                     for (BlockFace face : FACES) {
                         if (block.getRelative(face).getType().isSolid()) {
                             return;
