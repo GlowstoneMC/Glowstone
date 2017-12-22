@@ -47,8 +47,8 @@ public class CocoaTree extends JungleTree {
 
     protected void addVinesOnLeaves() {
         for (int y = loc.getBlockY() - 3 + height; y <= loc.getBlockY() + height; y++) {
-            int nY = y - (loc.getBlockY() + height);
-            int radius = 2 - nY / 2;
+            int ny = y - (loc.getBlockY() + height);
+            int radius = 2 - ny / 2;
             for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (delegate.getBlockState(loc.getWorld(), x, y, z).getType()
