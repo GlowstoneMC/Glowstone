@@ -37,6 +37,9 @@ public class BlockPurpurPillar extends BlockNeedsTool {
             case WEST:
                 data = AXIS_X;
                 break;
+            default:
+                // do nothing
+                // TODO: should this raise a warning?
         }
         state.setRawData(data);
     }

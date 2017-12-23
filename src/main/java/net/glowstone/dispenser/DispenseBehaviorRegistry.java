@@ -16,6 +16,12 @@ public class DispenseBehaviorRegistry {
         dispenseBehaviorMap.remove(material);
     }
 
+    /**
+     * Returns the dispense behavior for the given item type.
+     *
+     * @param material the item type to look up
+     * @return the dispense behavior
+     */
     public DispenseBehavior getBehavior(Material material) {
         if (material == null) {
             return new DefaultDispenseBehavior();

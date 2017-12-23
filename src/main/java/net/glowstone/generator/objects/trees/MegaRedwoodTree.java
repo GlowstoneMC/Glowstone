@@ -8,6 +8,14 @@ public class MegaRedwoodTree extends MegaJungleTree {
 
     protected int leavesHeight;
 
+    /**
+     * Initializes this tree with a random height, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     *     blocks
+     */
     public MegaRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         setHeight(random.nextInt(15) + random.nextInt(3) + 13);

@@ -11,6 +11,14 @@ import org.bukkit.material.types.DirtType;
 
 public class DarkOakTree extends GenericTree {
 
+    /**
+     * Initializes this tree with a random height, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     *     blocks
+     */
     public DarkOakTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         setOverridables(
@@ -52,7 +60,8 @@ public class DarkOakTree extends GenericTree {
         }
         int twistHeight = height - random.nextInt(4);
         int twistCount = random.nextInt(3);
-        int centerX = loc.getBlockX(), centerZ = loc.getBlockZ();
+        int centerX = loc.getBlockX();
+        int centerZ = loc.getBlockZ();
         int trunkTopY = 0;
 
         // generates the trunk

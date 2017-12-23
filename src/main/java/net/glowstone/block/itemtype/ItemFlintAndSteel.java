@@ -3,7 +3,7 @@ package net.glowstone.block.itemtype;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
-import net.glowstone.block.blocktype.BlockTNT;
+import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -50,7 +50,7 @@ public class ItemFlintAndSteel extends ItemTool {
     }
 
     private void fireTnt(GlowBlock tnt) {
-        BlockTNT.igniteBlock(tnt, false);
+        BlockTnt.igniteBlock(tnt, false);
     }
 
     private boolean setBlockOnFire(GlowPlayer player, GlowBlock clicked, BlockFace face,

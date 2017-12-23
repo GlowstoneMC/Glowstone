@@ -11,6 +11,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class BanCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public BanCommand() {
         super("ban", "Bans a player from the server.", "/ban <player> [reason]",
             Collections.emptyList());

@@ -16,6 +16,15 @@ public class Flower {
         data = plantType.getData();
     }
 
+    /**
+     * Generates up to 64 flowers around the given point.
+     *
+     * @param world the affected world
+     * @param random the PRNG
+     * @param sourceX the center X coordinate
+     * @param sourceY the center Y coordinate
+     * @param sourceZ the center Z coordinate
+     */
     public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         for (int i = 0; i < 64; i++) {
             int x = sourceX + random.nextInt(8) - random.nextInt(8);
@@ -23,8 +32,8 @@ public class Flower {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             Block block = world.getBlockAt(x, y, z);
-            if (y < 255 && block.getType() == Material.AIR &&
-                block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
+            if (y < 255 && block.getType() == Material.AIR
+                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                 block.setType(type);
                 block.setData((byte) data);
             }

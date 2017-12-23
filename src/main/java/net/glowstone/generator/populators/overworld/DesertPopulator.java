@@ -11,6 +11,9 @@ public class DesertPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.DESERT, Biome.DESERT_HILLS};
 
+    /**
+     * Creates a {@link BiomePopulator} adjusted for the desert.
+     */
     public DesertPopulator() {
         waterLakeDecorator.setAmount(0);
         deadBushDecorator.setAmount(2);

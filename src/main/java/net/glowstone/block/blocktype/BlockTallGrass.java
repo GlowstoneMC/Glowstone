@@ -73,8 +73,8 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
             if (species == GrassSpecies.NORMAL || species == GrassSpecies.FERN_LIKE) {
                 GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
                 if (headBlockState.getType() == Material.AIR) {
-                    DoublePlantSpecies doublePlantSpecies = species == GrassSpecies.FERN_LIKE ?
-                        DoublePlantSpecies.LARGE_FERN : DoublePlantSpecies.DOUBLE_TALLGRASS;
+                    DoublePlantSpecies doublePlantSpecies = species == GrassSpecies.FERN_LIKE
+                            ? DoublePlantSpecies.LARGE_FERN : DoublePlantSpecies.DOUBLE_TALLGRASS;
                     GlowBlockState blockState = block.getState();
                     blockState.setType(Material.DOUBLE_PLANT);
                     blockState.setData(new DoublePlant(doublePlantSpecies));

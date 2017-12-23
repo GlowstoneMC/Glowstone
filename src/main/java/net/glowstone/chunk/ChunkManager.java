@@ -78,7 +78,8 @@ public final class ChunkManager {
         this.world = world;
         this.service = service;
         this.generator = generator;
-        biomeGrid = MapLayer.initialize(world.getSeed(), world.getEnvironment(), world.getWorldType());
+        biomeGrid = MapLayer.initialize(
+                world.getSeed(), world.getEnvironment(), world.getWorldType());
     }
 
     /**
@@ -145,6 +146,12 @@ public final class ChunkManager {
         return loadChunk(getChunk(x, z), generate);
     }
 
+    /**
+     * Attempts to load a chunk; handles exceptions.
+     * @param chunk the chunk address
+     * @param generate if true, generate the chunk if it's new or the saved copy is corrupted
+     * @return true if the chunk was loaded or generated successfully, false otherwise
+     */
     public boolean loadChunk(GlowChunk chunk, boolean generate) {
         // try to load chunk
         try {
@@ -153,7 +160,9 @@ public final class ChunkManager {
                 return true;
             }
         } catch (Exception e) {
-            GlowServer.logger.log(Level.SEVERE, "Error while loading chunk (" + chunk.getX() + "," + chunk.getZ() + ")", e);
+            GlowServer.logger.log(Level.SEVERE,
+                    "Error while loading chunk (" + chunk.getX() + "," + chunk.getZ() + ")",
+                    e);
             // an error in chunk reading may have left the chunk in an invalid state
             // (i.e. double initialization errors), so it's forcibly unloaded here
             chunk.unload(false, false);
@@ -168,7 +177,9 @@ public final class ChunkManager {
         try {
             generateChunk(chunk, chunk.getX(), chunk.getZ());
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while generating chunk (" + chunk.getX() + "," + chunk.getZ() + ")", ex);
+            GlowServer.logger.log(Level.SEVERE,
+                    "Error while generating chunk (" + chunk.getX() + "," + chunk.getZ() + ")",
+                    ex);
             return false;
         }
 
@@ -192,7 +203,8 @@ public final class ChunkManager {
             Entry<Key, GlowChunk> entry = chunksEntryIter.next();
             if (!lockSet.contains(entry.getKey())) {
                 if (!entry.getValue().unload(true, true)) {
-                    GlowServer.logger.warning("Failed to unload chunk " + world.getName() + ":" + entry.getKey());
+                    GlowServer.logger.warning(
+                            "Failed to unload chunk " + world.getName() + ":" + entry.getKey());
                 }
             }
             if (!entry.getValue().isLoaded()) {
@@ -229,9 +241,9 @@ public final class ChunkManager {
         chunk.setPopulated(true);
 
         Random random = new Random(world.getSeed());
-        long xRand = (random.nextLong() / 2 << 1) + 1;
-        long zRand = (random.nextLong() / 2 << 1) + 1;
-        random.setSeed(x * xRand + z * zRand ^ world.getSeed());
+        long xrand = (random.nextLong() / 2 << 1) + 1;
+        long zrand = (random.nextLong() / 2 << 1) + 1;
+        random.setSeed(x * xrand + z * zrand ^ world.getSeed());
 
         for (BlockPopulator p : world.getPopulators()) {
             p.populate(world, random, chunk);
@@ -241,7 +253,8 @@ public final class ChunkManager {
     }
 
     /**
-     * Force a chunk to be populated by loading the chunks in an area around it. Used when streaming chunks to players so that they do not have to watch chunks being populated.
+     * Force a chunk to be populated by loading the chunks in an area around it. Used when streaming
+     * chunks to players so that they do not have to watch chunks being populated.
      *
      * @param x The X coordinate.
      * @param z The Z coordinate.
@@ -250,7 +263,8 @@ public final class ChunkManager {
         try {
             populateChunk(x, z, true);
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while populating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE,
+                    "Error while populating chunk (" + x + "," + z + ")", ex);
         }
     }
 
@@ -261,7 +275,8 @@ public final class ChunkManager {
         Random random = new Random(x * 341873128712L + z * 132897987541L);
         BiomeGrid biomes = new BiomeGrid();
 
-        int[] biomeValues = biomeGrid[0].generateValues(x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
+        int[] biomeValues = biomeGrid[0].generateValues(
+                x * GlowChunk.WIDTH, z * GlowChunk.HEIGHT, GlowChunk.WIDTH, GlowChunk.HEIGHT);
         for (int i = 0; i < biomeValues.length; i++) {
             biomes.biomes[i] = (byte) biomeValues[i];
         }
@@ -269,9 +284,11 @@ public final class ChunkManager {
         // extended sections with data
         GlowChunkData glowChunkData = null;
         if (generator instanceof GlowChunkGenerator) {
-            glowChunkData = (GlowChunkData) generator.generateChunkData(world, random, x, z, biomes);
+            glowChunkData = (GlowChunkData)
+                    generator.generateChunkData(world, random, x, z, biomes);
         } else {
-            ChunkGenerator.ChunkData chunkData = generator.generateChunkData(world, random, x, z, biomes);
+            ChunkGenerator.ChunkData chunkData =
+                    generator.generateChunkData(world, random, x, z, biomes);
             if (chunkData != null) {
                 glowChunkData = new GlowChunkData(world);
                 for (int i = 0; i < 16; ++i) {
@@ -378,7 +395,8 @@ public final class ChunkManager {
             generateChunk(chunk, x, z);
             populateChunk(x, z, false);  // should this be forced?
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE, "Error while regenerating chunk (" + x + "," + z + ")", ex);
+            GlowServer.logger.log(Level.SEVERE,
+                    "Error while regenerating chunk (" + x + "," + z + ")", ex);
             return false;
         }
         return true;
@@ -390,7 +408,8 @@ public final class ChunkManager {
      * @return The currently loaded chunks.
      */
     public GlowChunk[] getLoadedChunks() {
-        ArrayList<GlowChunk> result = chunks.values().stream().filter(GlowChunk::isLoaded).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<GlowChunk> result = chunks.values().stream().filter(GlowChunk::isLoaded)
+                .collect(Collectors.toCollection(ArrayList::new));
         return result.toArray(new GlowChunk[result.size()]);
     }
 
@@ -422,8 +441,8 @@ public final class ChunkManager {
     }
 
     /**
-     * Indicates that a chunk should be locked. A chunk may be locked multiple times, and will only be unloaded when all
-     * instances of a lock has been released.
+     * Indicates that a chunk should be locked. A chunk may be locked multiple times, and will only
+     * be unloaded when all instances of a lock has been released.
      * @param key The chunk's key
      */
     private void acquireLock(Key key) {
@@ -431,8 +450,8 @@ public final class ChunkManager {
     }
 
     /**
-     * Releases one instance of a chunk lock. A chunk may be locked multiple times, and will only be unloaded when all
-     * instances of a lock has been released.
+     * Releases one instance of a chunk lock. A chunk may be locked multiple times, and will only be
+     * unloaded when all instances of a lock has been released.
      * @param key The chunk's key
      */
     private void releaseLock(Key key) {
@@ -453,6 +472,10 @@ public final class ChunkManager {
             this.desc = desc;
         }
 
+        /**
+         * Acquires a lock on the given chunk key, if it's not already held.
+         * @param key the key to lock
+         */
         public void acquire(Key key) {
             if (keys.contains(key)) {
                 return;
@@ -462,6 +485,10 @@ public final class ChunkManager {
             //GlowServer.logger.info(this + " acquires " + key);
         }
 
+        /**
+         * Releases a lock on the given chunk key, if it's not already held.
+         * @param key the key to lock
+         */
         public void release(Key key) {
             if (!keys.contains(key)) {
                 return;
@@ -471,6 +498,9 @@ public final class ChunkManager {
             //GlowServer.logger.info(this + " releases " + key);
         }
 
+        /**
+         * Release all locks.
+         */
         public void clear() {
             for (Key key : keys) {
                 cm.releaseLock(key);
@@ -499,7 +529,8 @@ public final class ChunkManager {
 
         @Override
         public Biome getBiome(int x, int z) {
-            return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF); // upcasting is very important to get extended biomes
+            // upcasting is very important to get extended biomes
+            return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF);
         }
 
         @Override

@@ -82,7 +82,7 @@ public class GlowMetaShield extends GlowMetaItem implements BannerMeta {
         if (baseColor != null) {
             tag.putInt("Base", baseColor.getWoolData());
         }
-        tag.putCompoundList("Patterns", BlockBanner.toNBT(patterns));
+        tag.putCompoundList("Patterns", BlockBanner.toNbt(patterns));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class GlowMetaShield extends GlowMetaItem implements BannerMeta {
         super.readNbt(tag);
         if (tag.isList("Patterns", TagType.COMPOUND)) {
             List<CompoundTag> patterns = tag.getCompoundList("Patterns");
-            this.patterns = BlockBanner.fromNBT(patterns);
+            this.patterns = BlockBanner.fromNbt(patterns);
         }
         if (tag.isInt("Base")) {
             this.baseColor = DyeColor.getByWoolData((byte) tag.getInt("Base"));

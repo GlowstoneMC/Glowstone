@@ -36,7 +36,8 @@ import org.json.simple.parser.ParseException;
 public final class EncryptionKeyResponseHandler implements
     MessageHandler<GlowSession, EncryptionKeyResponseMessage> {
 
-    private static final String BASE_URL = "https://sessionserver.mojang.com/session/minecraft/hasJoined";
+    private static final String BASE_URL =
+            "https://sessionserver.mojang.com/session/minecraft/hasJoined";
     private static final JSONParser PARSER = new JSONParser();
 
     @Override
@@ -103,12 +104,14 @@ public final class EncryptionKeyResponseHandler implements
         String url = BASE_URL + "?username=" + session.getVerifyUsername() + "&serverId=" + hash;
         if (session.getServer().shouldPreventProxy()) {
             try {
-                //in case we are dealing with an IPv6 address rather than an IPv4 we have to encode it properly
+                // in case we are dealing with an IPv6 address rather than an IPv4 we have to encode
+                // it properly
                 url += "&ip=" + URLEncoder
                     .encode(session.getAddress().getAddress().getHostAddress(), "UTF-8");
             } catch (UnsupportedEncodingException encodingEx) {
-                //unlikely to happen, because UTF-8 is part of the StandardCharset in Java
-                //but if it happens, the client will still able to login, because we won't add the IP parameter
+                // unlikely to happen, because UTF-8 is part of the StandardCharset in Java
+                // but if it happens, the client will still able to login, because we won't add the
+                // IP parameter
                 GlowServer.logger
                     .log(Level.WARNING, "Cannot encode ip address for proxy check", encodingEx);
             }

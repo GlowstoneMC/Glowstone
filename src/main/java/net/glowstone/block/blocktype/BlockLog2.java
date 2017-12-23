@@ -27,6 +27,12 @@ public class BlockLog2 extends BlockType {
         state.setData(data);
     }
 
+    /**
+     * Returns {@link data} updated to face the given direction.
+     * @param dir the direction to face
+     * @param data a data value that specifies species but not direction
+     * @return the data value with facing direction specified
+     */
     public byte setTree(BlockFace dir, byte data) {
         switch (dir) {
             case UP:

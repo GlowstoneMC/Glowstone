@@ -3,6 +3,7 @@ package net.glowstone.command.minecraft;
 import com.google.common.collect.AbstractIterator;
 import java.util.Collections;
 import java.util.Iterator;
+import lombok.Getter;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
@@ -33,6 +34,12 @@ public class CloneCommand extends VanillaCommand {
             return commandName;
         }
 
+        /**
+         * Returns the MaskMode with a given subcommand name, or null if none match.
+         *
+         * @param commandName the subcommand name to look up.
+         * @return the mask mode.
+         */
         public static MaskMode fromCommandName(String commandName) {
             for (MaskMode maskMode : values()) {
                 if (maskMode.getCommandName().equals(commandName)) {
@@ -48,7 +55,9 @@ public class CloneCommand extends VanillaCommand {
         FORCE("force", true),
         MOVE("move", false);
 
+        @Getter
         private final String commandName;
+        @Getter
         private final boolean allowedToOverlap;
 
         CloneMode(String commandName, boolean allowedToOverlap) {
@@ -56,14 +65,12 @@ public class CloneCommand extends VanillaCommand {
             this.allowedToOverlap = allowedToOverlap;
         }
 
-        public String getCommandName() {
-            return commandName;
-        }
-
-        public boolean isAllowedToOverlap() {
-            return allowedToOverlap;
-        }
-
+        /**
+         * Returns the CloneMode with a given subcommand name, or null if none match.
+         *
+         * @param commandName the subcommand name to look up.
+         * @return the clone mode.
+         */
         public static CloneMode fromCommandName(String commandName) {
             for (CloneMode cloneMode : values()) {
                 if (cloneMode.getCommandName().equals(commandName)) {
@@ -74,10 +81,15 @@ public class CloneCommand extends VanillaCommand {
         }
     }
 
+    /**
+     * Creates the instance for this command.
+     */
     public CloneCommand() {
         super(
                 "clone",
-                "Clones a section of the world.", "/clone <x1> <y1> <z1>  <x2> <y2> <z2>  <x> <y> <z> [maskMode] [cloneMode] [tileName] [tileData]",
+                "Clones a section of the world.",
+                "/clone <x1> <y1> <z1>  <x2> <y2> <z2>  <x> <y> <z> "
+                        + "[maskMode] [cloneMode] [tileName] [tileData]",
                 Collections.emptyList()
         );
         setPermission("minecraft.command.clone");
@@ -118,8 +130,10 @@ public class CloneCommand extends VanillaCommand {
                 Double.max(parsedFrom1.getZ(), parsedFrom2.getZ())
         );
 
-        MaskMode maskMode = args.length >= 10 ? MaskMode.fromCommandName(args[9]) : MaskMode.REPLACE;
-        CloneMode cloneMode = args.length >= 11 ? CloneMode.fromCommandName(args[10]) : CloneMode.NORMAL;
+        MaskMode maskMode = args.length >= 10
+                ? MaskMode.fromCommandName(args[9]) : MaskMode.REPLACE;
+        CloneMode cloneMode = args.length >= 11
+                ? CloneMode.fromCommandName(args[10]) : CloneMode.NORMAL;
 
         // TODO: Investigate what happens when maskMode or cloneMode are invalid (thus, null).
         if (maskMode == null || cloneMode == null) {
@@ -149,7 +163,9 @@ public class CloneCommand extends VanillaCommand {
                             data = null;
                         }
                         if (data == null || 0 > data || data > 15) {
-                            sender.sendMessage(ChatColor.RED + "Filtered block data not a number between 0 and 15, inclusive.");
+                            sender.sendMessage(ChatColor.RED
+                                    + "Filtered block data not a number between 0 and 15, "
+                                    + "inclusive.");
                             return false;
                         } else {
                             blockFilter = new FilteredWithDataBlockFilter(blockType, data);
@@ -158,7 +174,9 @@ public class CloneCommand extends VanillaCommand {
                         blockFilter = new FilteredBlockFilter(blockType);
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "You must specify a block type and, optionally, block data when using the filtered mask mode.");
+                    sender.sendMessage(ChatColor.RED
+                            + "You must specify a block type and, optionally, block data when "
+                            + "using the filtered mask mode.");
                     return false;
                 }
                 break;
@@ -168,9 +186,9 @@ public class CloneCommand extends VanillaCommand {
                 return false;
         }
 
-        boolean overlaps = between(lowCorner.getBlockX(), highCorner.getBlockX(), to.getBlockX()) ||
-                           between(lowCorner.getBlockY(), highCorner.getBlockY(), to.getBlockY()) ||
-                           between(lowCorner.getBlockZ(), highCorner.getBlockZ(), to.getBlockZ());
+        boolean overlaps = between(lowCorner.getBlockX(), highCorner.getBlockX(), to.getBlockX())
+                || between(lowCorner.getBlockY(), highCorner.getBlockY(), to.getBlockY())
+                || between(lowCorner.getBlockZ(), highCorner.getBlockZ(), to.getBlockZ());
 
         if (overlaps && !cloneMode.isAllowedToOverlap()) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
@@ -183,22 +201,30 @@ public class CloneCommand extends VanillaCommand {
         int widthY = highCorner.getBlockY() - lowCorner.getBlockY() + 1;
         int widthZ = highCorner.getBlockZ() - lowCorner.getBlockZ() + 1;
 
-        Iterable<Integer> xIter = to.getBlockX() < lowCorner.getBlockX() ? new ForwardsAxisIterable(widthX) : new BackwardsAxisIterable(widthX);
-        Iterable<Integer> yIter = to.getBlockY() < lowCorner.getBlockY() ? new ForwardsAxisIterable(widthY) : new BackwardsAxisIterable(widthY);
-        Iterable<Integer> zIter = to.getBlockZ() < lowCorner.getBlockZ() ? new ForwardsAxisIterable(widthZ) : new BackwardsAxisIterable(widthZ);
+        Iterable<Integer> iterX = to.getBlockX() < lowCorner
+                .getBlockX() ? new ForwardsAxisIterable(widthX) : new BackwardsAxisIterable(widthX);
+        Iterable<Integer> iterY = to.getBlockY() < lowCorner
+                .getBlockY() ? new ForwardsAxisIterable(widthY) : new BackwardsAxisIterable(widthY);
+        Iterable<Integer> iterZ = to.getBlockZ() < lowCorner
+                .getBlockZ() ? new ForwardsAxisIterable(widthZ) : new BackwardsAxisIterable(widthZ);
 
-        for (int x : xIter) {
-            for (int y : yIter) {
-                for (int z : zIter) {
-                    GlowBlock fromBlock = world.getBlockAt(lowCorner.getBlockX() + x, lowCorner.getBlockY() + y, lowCorner.getBlockZ() + z);
+        for (int x : iterX) {
+            for (int y : iterY) {
+                for (int z : iterZ) {
+                    GlowBlock fromBlock = world.getBlockAt(lowCorner.getBlockX() + x, lowCorner
+                            .getBlockY() + y, lowCorner.getBlockZ() + z);
 
                     if (blockFilter.shouldClone(fromBlock)) {
-                        GlowBlock toBlock = world.getBlockAt(to.getBlockX() + x, to.getBlockY() + y, to.getBlockZ() + z);
+                        GlowBlock toBlock = world
+                                .getBlockAt(to.getBlockX() + x, to.getBlockY() + y, to
+                                        .getBlockZ() + z);
                         toBlock.setTypeIdAndData(fromBlock.getTypeId(), fromBlock.getData(), false);
 
                         BlockEntity fromEntity = fromBlock.getBlockEntity();
                         if (fromEntity != null) {
-                            BlockEntity toEntity = toBlock.getChunk().createEntity(toBlock.getX(), toBlock.getY(), toBlock.getZ(), toBlock.getTypeId());
+                            BlockEntity toEntity = toBlock.getChunk()
+                                    .createEntity(toBlock.getX(), toBlock.getY(), toBlock
+                                            .getZ(), toBlock.getTypeId());
                             if (toEntity != null) {
                                 CompoundTag entityTag = new CompoundTag();
                                 fromEntity.saveNbt(entityTag);
@@ -254,7 +280,8 @@ public class CloneCommand extends VanillaCommand {
         @Override
         protected Integer computeNext() {
             if (current <= max) {
-                // Could use a post-increment operator here, but this is a bit more clear in getting the meaning across.
+                // Could use a post-increment operator here, but this is a bit more clear in
+                // getting the meaning across.
                 int retval = current;
                 current++;
                 return retval;
@@ -287,7 +314,8 @@ public class CloneCommand extends VanillaCommand {
         @Override
         protected Integer computeNext() {
             if (current >= 0) {
-                // Could use a post-decrement operator here, but this is a bit more clear in getting the meaning across.
+                // Could use a post-decrement operator here, but this is a bit more clear in
+                // getting the meaning across.
                 int retval = current;
                 current--;
                 return retval;

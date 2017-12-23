@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,8 @@ public class CommandTarget {
     private final HashMap<String, SelectorValue> arguments;
 
     /**
-     * Parses the target of the command with the given argument. For example, a target could be "@r[c=5]", which would get 5 random players
+     * Parses the target of the command with the given argument. For example, a target could be
+     * "@r[c=5]", which would get 5 random players.
      *
      * @param sender the sender that used this target selector
      * @param target the un-parsed command target
@@ -46,7 +48,7 @@ public class CommandTarget {
     }
 
     /**
-     * The type of selector (target)
+     * The type of selector (target).
      *
      * @return the type of selector of this target
      */
@@ -55,7 +57,7 @@ public class CommandTarget {
     }
 
     /**
-     * The arguments of the selector (target)
+     * The arguments of the selector (target).
      *
      * @return the arguments of the selector of this target
      */
@@ -169,7 +171,7 @@ public class CommandTarget {
     }
 
     /**
-     * Gets all the matched entities from the target
+     * Gets all the matched entities from the target.
      *
      * @param source the location from which the targets should be found
      * @return the entities matching the query
@@ -261,7 +263,8 @@ public class CommandTarget {
     }
 
     /**
-     * Types of selectors, namely @p (closest player), @r (random player), @a (all players), @e (all entities)
+     * Types of selectors, namely @p (closest player), @r (random player), @a (all players), @e
+     * (all entities).
      */
     enum SelectorType {
         NEAREST_PLAYER('p'),
@@ -291,15 +294,19 @@ public class CommandTarget {
     }
 
     /**
-     * Represents the value of a selector argument
+     * Represents the value of a selector argument.
      */
     public static class SelectorValue {
 
+        /** The value of the argument. */
+        @Getter
         private String value;
+        /** Whether the argument is inverted (functionality should be done in reverse). */
+        @Getter
         private boolean inverted = false;
 
         /**
-         * Parses the arguments value from the given string
+         * Parses the arguments value from the given string.
          *
          * @param value the un-parsed value
          */
@@ -310,28 +317,10 @@ public class CommandTarget {
             }
             this.value = value;
         }
-
-        /**
-         * The value of the argument
-         *
-         * @return the value of the argument
-         */
-        public String getValue() {
-            return value;
-        }
-
-        /**
-         * Whether the argument is inverted (functionality should be done in reverse)
-         *
-         * @return true if the argument is inverted, false otherwise
-         */
-        public boolean isInverted() {
-            return inverted;
-        }
     }
 
     /**
-     * Compares the distance of two entities, in order to sort them
+     * Compares the distance of two entities, in order to sort them.
      */
     private class EntityDistanceComparator implements Comparator<Entity> {
 

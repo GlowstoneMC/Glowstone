@@ -64,7 +64,8 @@ public class BlockFalling extends BlockType {
             case LAVA:
             case STATIONARY_LAVA:
                 return false;
+            default:
+                return true;
         }
-        return true;
     }
 }

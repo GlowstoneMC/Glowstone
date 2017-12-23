@@ -8,6 +8,11 @@ import org.bukkit.material.SimpleAttachableMaterialData;
 
 public class BlockAttachable extends BlockNeedsAttached {
 
+    /**
+     * Sets which face is attached to the adjacent block.
+     * @param state this block's BlockState
+     * @param attachedFace the face to attach
+     */
     public void setAttachedFace(BlockState state, BlockFace attachedFace) {
         byte data = state.getRawData();
         switch (attachedFace) {
@@ -29,6 +34,9 @@ public class BlockAttachable extends BlockNeedsAttached {
             case DOWN:
                 data |= 5;
                 break;
+            default:
+                // TODO: Invalid face choice -- should this raise a warning?
+                return;
         }
         state.setRawData(data);
     }

@@ -19,6 +19,11 @@ public abstract class EntityTask implements Comparable<EntityTask> {
         return 0; // TODO: AI task priority
     }
 
+    /**
+     * Advances this task by a tick on the given entity.
+     *
+     * @param entity the entity to run on
+     */
     public final void pulse(GlowLivingEntity entity) {
         if (paused || entity.isDead() || !entity.hasAI()) {
             return;
@@ -153,7 +158,8 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     public abstract void execute(GlowLivingEntity entity);
 
     /**
-     * Whether this task is instant. An "instant" task will be executed every tick while the entity is alive.
+     * Whether this task is instant. An "instant" task will be executed every tick while the entity
+     * is alive.
      *
      * @return the entity in question.
      */

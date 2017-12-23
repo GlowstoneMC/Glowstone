@@ -46,20 +46,19 @@ public class BlockRails extends BlockNeedsAttached {
     }
 
     private static RailDirection getRailDirection(GlowBlock rail) {
-        // north - 0, south - 1, east - 2, west - 3, ascending_north - 4, ascending_south - 5, ascending_east - 6, ascending_west - 7
+        // north - 0, south - 1, east - 2, west - 3, ascending_north - 4, ascending_south - 5,
+        // ascending_east - 6, ascending_west - 7
         boolean[] unstableRails = new boolean[8];
-
         GlowBlock north = rail.getRelative(BlockFace.NORTH);
-        GlowBlock south = rail.getRelative(BlockFace.SOUTH);
-        GlowBlock east = rail.getRelative(BlockFace.EAST);
-        GlowBlock west = rail.getRelative(BlockFace.WEST);
-
         unstableRails[NORTH] =
             isUnstable(north, rail) || isUnstable(north.getRelative(BlockFace.DOWN), rail);
+        GlowBlock south = rail.getRelative(BlockFace.SOUTH);
         unstableRails[SOUTH] =
             isUnstable(south, rail) || isUnstable(south.getRelative(BlockFace.DOWN), rail);
+        GlowBlock east = rail.getRelative(BlockFace.EAST);
         unstableRails[EAST] =
             isUnstable(east, rail) || isUnstable(east.getRelative(BlockFace.DOWN), rail);
+        GlowBlock west = rail.getRelative(BlockFace.WEST);
         unstableRails[WEST] =
             isUnstable(west, rail) || isUnstable(west.getRelative(BlockFace.DOWN), rail);
         unstableRails[ASCENDING_NORTH] = isUnstable(north.getRelative(BlockFace.UP), rail);
@@ -67,7 +66,8 @@ public class BlockRails extends BlockNeedsAttached {
         unstableRails[ASCENDING_WEST] = isUnstable(east.getRelative(BlockFace.UP), rail);
         unstableRails[ASCENDING_EAST] = isUnstable(west.getRelative(BlockFace.UP), rail);
 
-        // north && east || ascending_north && ascending_east || north && ascending_east || ascending_north && east
+        // north && east || ascending_north && ascending_east || north && ascending_east
+        //         || ascending_north && east
         if (unstableRails[NORTH] && unstableRails[EAST]
             || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_EAST]
             || unstableRails[NORTH] && unstableRails[ASCENDING_EAST]
@@ -75,7 +75,8 @@ public class BlockRails extends BlockNeedsAttached {
             return RailDirection.NORTH_EAST;
         }
 
-        // north && west || ascending_north && ascending_west || north && ascending_west || ascending_north && west
+        // north && west || ascending_north && ascending_west || north && ascending_west
+        //         || ascending_north && west
         if (unstableRails[NORTH] && unstableRails[WEST]
             || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_WEST]
             || unstableRails[NORTH] && unstableRails[ASCENDING_WEST]
@@ -83,7 +84,8 @@ public class BlockRails extends BlockNeedsAttached {
             return RailDirection.NORTH_WEST;
         }
 
-        // south && west || ascending_south && ascending_west || south && ascending_west || ascending_south && west
+        // south && west || ascending_south && ascending_west || south && ascending_west
+        //         || ascending_south && west
         if (unstableRails[SOUTH] && unstableRails[WEST]
             || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_WEST]
             || unstableRails[SOUTH] && unstableRails[ASCENDING_WEST]
@@ -91,7 +93,8 @@ public class BlockRails extends BlockNeedsAttached {
             return RailDirection.SOUTH_WEST;
         }
 
-        // south && east || ascending_south && ascending_east || south && ascending_east || ascending_south && east
+        // south && east || ascending_south && ascending_east || south && ascending_east
+        //         || ascending_south && east
         if (unstableRails[SOUTH] && unstableRails[EAST]
             || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_EAST]
             || unstableRails[SOUTH] && unstableRails[ASCENDING_EAST]
