@@ -22,7 +22,7 @@ public class BlockPumpkinBase extends BlockDirectDrops {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Pumpkin) {
-            ((Pumpkin) data).setFacingDirection(player.getDirection());
+            ((Pumpkin) data).setFacingDirection(player.getCardinalFacing());
             state.setData(data);
         } else {
             warnMaterialData(Pumpkin.class, data);
