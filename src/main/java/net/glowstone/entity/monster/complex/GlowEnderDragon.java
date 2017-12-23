@@ -5,19 +5,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.monster.GlowMonster;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 
-public class GlowEnderDragon extends GlowMonster implements EnderDragon {
+public class GlowEnderDragon extends GlowBoss implements EnderDragon {
 
     private Map<String, GlowEnderDragonPart> parts = new HashMap<>();
 
     public GlowEnderDragon(Location loc, EntityType type, double maxHealth) {
-        super(loc, type, maxHealth);
+        super(loc, type, maxHealth, BarColor.PURPLE, BarStyle.SOLID);
         if (type == EntityType.ENDER_DRAGON) {
             parts.put("mouth", new GlowEnderDragonPart(this));
             parts.put("head", new GlowEnderDragonPart(this));
