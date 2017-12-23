@@ -1356,15 +1356,6 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Gets the {@link BossBarManager} for this server.
-     *
-     * @return the {@link BossBarManager} for this server.
-     */
-    public BossBarManager getBossBarManager() {
-        return bossBarManager;
-    }
-
-    /**
      * Get the resource pack url for this server, or {@code null} if not set.
      *
      * @return The url of the resource pack to use, or {@code null}
