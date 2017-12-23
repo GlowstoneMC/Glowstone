@@ -468,7 +468,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private String resourcePackHash;
     private PlayerResourcePackStatusEvent.Status resourcePackStatus;
     private List<Conversation> conversations = new ArrayList<>();
-    private Set<BossBar> bossBars = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private Set<BossBar> bossBars = ConcurrentHashMap.newKeySet();
     /**
      * The player's previous chunk x coordinate.
      */
