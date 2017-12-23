@@ -5,8 +5,11 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-public enum BossBarManager {
-    ;
+public class BossBarManager {
+
+    /** Utility class; should not be instantiated. */
+    private BossBarManager() {}
+
     /**
      * Adds a boss bar for all of its associated players.
      * @param bossBar the boss bar to add
