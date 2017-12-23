@@ -12,11 +12,20 @@ import org.bukkit.inventory.ItemStack;
 @Data
 public class GlowAdvancementDisplay {
 
-    private final TextMessage title, description;
+    private final TextMessage title;
+    private final TextMessage description;
     private final ItemStack icon;
     private final FrameType type;
-    private final float x, y;
+    private final float x;
+    private final float y;
 
+    /**
+     * Writes this notification to the given {@link ByteBuf}.
+     *
+     * @param buf the buffer to write to
+     * @return {@code buf}, with this notification written to it
+     * @throws IOException if a string is too long
+     */
     public ByteBuf encode(ByteBuf buf) throws IOException {
         GlowBufUtils.writeChat(buf, title);
         GlowBufUtils.writeChat(buf, description);

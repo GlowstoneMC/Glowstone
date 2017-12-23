@@ -15,6 +15,11 @@ public class GlowBanner extends GlowBlockState implements Banner {
     private DyeColor base;
     private List<Pattern> patterns;
 
+    /**
+     * Creates an entity for the given banner block.
+     *
+     * @param block the block this banner occupies
+     */
     public GlowBanner(GlowBlock block) {
         super(block);
         base = getBlockEntity().getBase();

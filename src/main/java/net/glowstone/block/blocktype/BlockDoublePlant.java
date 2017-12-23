@@ -19,8 +19,8 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         Material type = block.getRelative(BlockFace.DOWN).getType();
-        return (type == Material.GRASS || type == Material.DIRT || type == Material.SOIL) &&
-            block.getRelative(BlockFace.UP).getType() == Material.AIR;
+        return (type == Material.GRASS || type == Material.DIRT || type == Material.SOIL)
+                && block.getRelative(BlockFace.UP).getType() == Material.AIR;
     }
 
     @Override

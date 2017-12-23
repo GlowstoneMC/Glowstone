@@ -33,6 +33,9 @@ public class BlockQuartz extends BlockNeedsTool {
                 case DOWN:
                     state.setRawData((byte) 2);
                     break;
+                default:
+                    // do nothing
+                    // TODO: should this raise a warning?
             }
         }
     }

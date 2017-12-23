@@ -21,6 +21,9 @@ public class FlowerForestPopulator extends ForestPopulator {
         FlowerType.OXEYE_DAISY};
     private final OctaveGenerator noiseGen;
 
+    /**
+     * Creates a populator for flower forests.
+     */
     public FlowerForestPopulator() {
         treeDecorator.setAmount(6);
         flowerDecorator.setAmount(0);

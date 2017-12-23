@@ -9,7 +9,8 @@ import net.glowstone.util.nbt.CompoundTag;
 @Data
 public final class ChunkDataMessage implements Message {
 
-    private final int x, z;
+    private final int x;
+    private final int z;
     private final boolean continuous;
     private final int primaryMask;
     private final ByteBuf data;

@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -22,7 +23,7 @@ import org.bukkit.entity.Player;
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
-    private PlayerProfile profile;
+    private final PlayerProfile profile;
 
     private boolean hasPlayed;
     private long firstPlayed;
@@ -31,7 +32,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private Location bedSpawn;
 
     /**
-     * Create a new offline player for the given name. If possible, the player's UUID will be found and then their data.
+     * Create a new offline player for the given name. If possible, the player's data will be loaded.
      *
      * @param server The server of the offline player. Must not be null.
      * @param profile The profile associated with the player. Must not be null.
@@ -45,31 +46,16 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     /**
-     * Create a new offline player for the given UUID. If possible, the player's data (including name) will be loaded based on the UUID.
-     *
-     * @param server The server of the offline player. Must not be null.
-     * @param name The name of the player. Must not be null.
-     */
-    public GlowOfflinePlayer(GlowServer server, String name) {
-        checkNotNull(server, "server must not be null");
-        checkNotNull(name, "name cannot be null");
-        this.server = server;
-        profile = PlayerProfile.getProfile(name);
-        loadData();
-    }
-
-    /**
-     * Create a new offline player for the given UUID. If possible, the player's data (including name) will be loaded based on the UUID.
+     * Returns a Future for a GlowOfflinePlayer by UUID. If possible, the player's data (including name) will be loaded based on the UUID.
      *
      * @param server The server of the offline player. Must not be null.
      * @param uuid The UUID of the player. Must not be null.
+     * @return A {@link GlowOfflinePlayer} future.
      */
-    public GlowOfflinePlayer(GlowServer server, UUID uuid) {
+    public static CompletableFuture<GlowOfflinePlayer> getOfflinePlayer(GlowServer server, UUID uuid) {
         checkNotNull(server, "server must not be null");
         checkNotNull(uuid, "UUID must not be null");
-        this.server = server;
-        profile = ProfileCache.getProfile(uuid);
-        loadData();
+        return ProfileCache.getProfile(uuid).thenApplyAsync((profile) -> new GlowOfflinePlayer(server, profile));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -132,11 +118,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public Player getPlayer() {
-        if (getUniqueId() != null) {
-            return server.getPlayer(getUniqueId());
-        } else {
-            return server.getPlayerExact(getName());
-        }
+        return server.getPlayer(getUniqueId());
     }
 
     @Override

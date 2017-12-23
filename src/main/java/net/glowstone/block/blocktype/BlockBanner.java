@@ -29,7 +29,12 @@ public class BlockBanner extends BlockType {
         setDrops(new ItemStack(Material.BANNER));
     }
 
-    public static List<CompoundTag> toNBT(List<Pattern> banner) {
+    /**
+     * Converts banner patterns to NBT tags.
+     * @param banner a list of banner patterns
+     * @return the patterns as NBT tags
+     */
+    public static List<CompoundTag> toNbt(List<Pattern> banner) {
         List<CompoundTag> patterns = new ArrayList<>();
         for (Pattern pattern : banner) {
             CompoundTag layerTag = new CompoundTag();
@@ -40,7 +45,12 @@ public class BlockBanner extends BlockType {
         return patterns;
     }
 
-    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
+    /**
+     * Converts NBT tags to banner patterns.
+     * @param tag a list of banner patterns as NBT tags
+     * @return the patterns as Pattern instances
+     */
+    public static List<Pattern> fromNbt(List<CompoundTag> tag) {
         List<Pattern> banner = new ArrayList<>();
         for (CompoundTag layer : tag) {
             PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));

@@ -17,6 +17,11 @@ public class FlowingLiquidDecorator extends BlockDecorator {
         BlockFace.SOUTH, BlockFace.WEST};
     private final Material type;
 
+    /**
+     * Creates a decorator that carves out waterfalls or lavafalls in stone walls.
+     *
+     * @param type {@link Material#WATER} or {@link Material#LAVA}
+     */
     public FlowingLiquidDecorator(Material type) {
         this.type = type;
         if (type != Material.WATER && type != Material.LAVA) {
@@ -32,9 +37,9 @@ public class FlowingLiquidDecorator extends BlockDecorator {
             .nextInt(random.nextInt(type == Material.LAVA ? random.nextInt(240) + 8 : 248) + 8);
 
         Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
-        if ((block.getType() == Material.STONE || block.getType() == Material.AIR) &&
-            block.getRelative(BlockFace.DOWN).getType() == Material.STONE &&
-            block.getRelative(BlockFace.UP).getType() == Material.STONE) {
+        if ((block.getType() == Material.STONE || block.getType() == Material.AIR)
+            && block.getRelative(BlockFace.DOWN).getType() == Material.STONE
+            && block.getRelative(BlockFace.UP).getType() == Material.STONE) {
             int stoneBlockCount = 0;
             for (BlockFace face : SIDES) {
                 if (block.getRelative(face).getType() == Material.STONE) {

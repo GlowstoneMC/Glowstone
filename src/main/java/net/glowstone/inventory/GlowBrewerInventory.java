@@ -10,6 +10,11 @@ public class GlowBrewerInventory extends GlowInventory implements BrewerInventor
 
     private static final int INGREDIENT_SLOT = 0;
 
+    /**
+     * Creates the inventory for the given brewing stand.
+     *
+     * @param holder the brewing stand
+     */
     public GlowBrewerInventory(BrewingStand holder) {
         super(holder, InventoryType.BREWING);
 

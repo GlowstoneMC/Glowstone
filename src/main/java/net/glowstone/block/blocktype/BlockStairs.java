@@ -22,7 +22,7 @@ public class BlockStairs extends BlockType {
 
         MaterialData data = state.getData();
         if (data instanceof Stairs) {
-            ((Stairs) data).setFacingDirection(player.getDirection());
+            ((Stairs) data).setFacingDirection(player.getCardinalFacing());
 
             if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 0.5) {
                 ((Stairs) data).setInverted(true);
@@ -36,8 +36,8 @@ public class BlockStairs extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (isWoodenStair(block.getType()) ||
-            tool != null && ToolType.PICKAXE.matches(tool.getType())) {
+        if (isWoodenStair(block.getType())
+            || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;

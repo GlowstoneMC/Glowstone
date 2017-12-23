@@ -26,6 +26,10 @@ public class ChestEntity extends ContainerEntity {
         return new GlowChest(block);
     }
 
+    /**
+     * Increments the count of viewing players, and plays the opening sound if this chest isn't
+     * already open.
+     */
     public void addViewer() {
         viewers++;
         if (viewers == 1) {
@@ -35,6 +39,10 @@ public class ChestEntity extends ContainerEntity {
         }
     }
 
+    /**
+     * Decrements the count of viewing players, and plays the chest closing sound if nobody else is
+     * holding the chest open.
+     */
     public void removeViewer() {
         viewers--;
         if (viewers == 0) {

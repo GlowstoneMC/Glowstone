@@ -31,6 +31,9 @@ public class BlockHay extends BlockType {
             case DOWN:
                 state.setRawData((byte) 0);
                 break;
+            default:
+                // do nothing
+                // TODO: should this raise a warning?
         }
     }
 }

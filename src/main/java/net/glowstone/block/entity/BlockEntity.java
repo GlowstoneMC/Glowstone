@@ -9,7 +9,8 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.block.Block;
 
 /**
- * Base class for block entities (blocks with NBT data) in the world. Most access to block entities should occur through the Bukkit BlockState API.
+ * Base class for block entities (blocks with NBT data) in the world. Most access to block entities
+ * should occur through the Bukkit BlockState API.
  */
 public abstract class BlockEntity {
 
@@ -50,7 +51,8 @@ public abstract class BlockEntity {
     // World I/O
 
     /**
-     * Set the text ID this block entity is saved to disk with. If this is not set, then load and save of the "id" tag must be performed manually.
+     * Set the text ID this block entity is saved to disk with. If this is not set, then load and
+     * save of the "id" tag must be performed manually.
      *
      * @param saveId The ID.
      */
@@ -80,7 +82,9 @@ public abstract class BlockEntity {
             int x = tag.getInt("x");
             int y = tag.getInt("y");
             int z = tag.getInt("z");
-            int rx = block.getX(), ry = block.getY(), rz = block.getZ();
+            int rx = block.getX();
+            int ry = block.getY();
+            int rz = block.getZ();
             if (x != rx || y != ry || z != rz) {
                 throw new IllegalArgumentException(
                     "Tried to load block entity with coords (" + x + "," + y + "," + z + ") into ("

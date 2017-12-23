@@ -34,7 +34,7 @@ class PlayerDataFetcher {
      * Look up the PlayerProfile for a given UUID.
      *
      * @param uuid The UUID to look up.
-     * @return The resulting PlayerProfile, or null on failure.
+     * @return The resulting PlayerProfile, contains a null name on failure.
      */
     public static PlayerProfile getProfile(UUID uuid) {
         InputStream is;
@@ -45,7 +45,7 @@ class PlayerDataFetcher {
             is = conn.getInputStream();
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
-            return null;
+            return new PlayerProfile(null, uuid);
         }
 
         JSONObject json;
@@ -57,10 +57,10 @@ class PlayerDataFetcher {
             }
         } catch (ParseException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to parse profile response", e);
-            return null;
+            return new PlayerProfile(null, uuid);
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
-            return null;
+            return new PlayerProfile(null, uuid);
         }
         return PlayerProfile.fromJson(json);
     }

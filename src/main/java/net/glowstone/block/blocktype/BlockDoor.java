@@ -66,41 +66,36 @@ public class BlockDoor extends BlockType {
             return;
         }
 
-        BlockFace facing = player.getDirection();
+        BlockFace facing = player.getCardinalFacing();
         ((Door) data).setFacingDirection(facing.getOppositeFace());
 
         // modify facing for double-doors
         GlowBlock leftBlock = null;
+        byte newDirectionData = 0;
         switch (facing) {
             case NORTH:
                 leftBlock = state.getBlock().getRelative(BlockFace.WEST);
+                newDirectionData = 6;
                 break;
             case WEST:
                 leftBlock = state.getBlock().getRelative(BlockFace.SOUTH);
+                newDirectionData = 5;
                 break;
             case SOUTH:
                 leftBlock = state.getBlock().getRelative(BlockFace.EAST);
+                newDirectionData = 4;
                 break;
             case EAST:
                 leftBlock = state.getBlock().getRelative(BlockFace.NORTH);
+                newDirectionData = 7;
                 break;
+            default:
+                // do nothing
+                // TODO: Does this lead to the correct behavior when player is facing up or down?
         }
 
         if (leftBlock != null && leftBlock.getState().getData() instanceof Door) {
-            switch (facing) {
-                case NORTH:
-                    data.setData((byte) 6);
-                    break;
-                case WEST:
-                    data.setData((byte) 5);
-                    break;
-                case SOUTH:
-                    data.setData((byte) 4);
-                    break;
-                case EAST:
-                    data.setData((byte) 7);
-                    break;
-            }
+            data.setData(newDirectionData);
         }
 
         // place top half of door

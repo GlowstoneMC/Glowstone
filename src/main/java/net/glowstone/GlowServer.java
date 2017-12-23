@@ -29,7 +29,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -47,6 +51,7 @@ import net.glowstone.command.minecraft.BanCommand;
 import net.glowstone.command.minecraft.BanIpCommand;
 import net.glowstone.command.minecraft.BanListCommand;
 import net.glowstone.command.minecraft.ClearCommand;
+import net.glowstone.command.minecraft.CloneCommand;
 import net.glowstone.command.minecraft.DefaultGameModeCommand;
 import net.glowstone.command.minecraft.DeopCommand;
 import net.glowstone.command.minecraft.DifficultyCommand;
@@ -364,10 +369,6 @@ public final class GlowServer implements Server {
      */
     private MaterialValueManager materialValueManager;
     /**
-     * The {@link BossBarManager} of this server.
-     */
-    private BossBarManager bossBarManager;
-    /**
      * Whether OpenCL is to be used by the server on this run.
      */
     private boolean isGraphicsComputeAvailable = true;
@@ -391,7 +392,6 @@ public final class GlowServer implements Server {
      */
     public GlowServer(ServerConfig config) {
         materialValueManager = new BuiltinMaterialValueManager();
-        bossBarManager = new BossBarManager(this);
         advancements = new HashMap<>();
         // test advancement
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
@@ -711,7 +711,7 @@ public final class GlowServer implements Server {
         }
 
         if (storageProviderFactory == null) {
-            storageProviderFactory = () -> new AnvilWorldStorageProvider(new File(getWorldContainer(), name));
+            storageProviderFactory = (worldName) -> new AnvilWorldStorageProvider(new File(getWorldContainer(), worldName));
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
@@ -953,6 +953,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new TestForCommand());
         commandMap.register("minecraft", new TestForBlockCommand());
         commandMap.register("minecraft", new SetBlockCommand());
+        commandMap.register("minecraft", new CloneCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -1279,7 +1280,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Returns the player statitics I/O service attached to the first world.
+     * Returns the player statistics I/O service attached to the first world.
      *
      * @return the server's statistics I/O service
      */
@@ -1355,15 +1356,6 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Gets the {@link BossBarManager} for this server.
-     *
-     * @return the {@link BossBarManager} for this server.
-     */
-    public BossBarManager getBossBarManager() {
-        return bossBarManager;
-    }
-
-    /**
      * Get the resource pack url for this server, or {@code null} if not set.
      *
      * @return The url of the resource pack to use, or {@code null}
@@ -1388,6 +1380,15 @@ public final class GlowServer implements Server {
      */
     public boolean getAnnounceAchievements() {
         return config.getBoolean(Key.ANNOUNCE_ACHIEVEMENTS);
+    }
+
+    /**
+     * Get the time after a profile lookup should be cancelled.
+     *
+     * @return The maximum lookup time in seconds or zero to never cancel the lookup.
+     */
+    public int getProfileLookupTimeout() {
+        return config.getInt(Key.PROFILE_LOOKUP_TIMEOUT);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1576,7 +1577,7 @@ public final class GlowServer implements Server {
 
     @Override
     public Set<OfflinePlayer> getOperators() {
-        return opsList.getUUIDs().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
+        return opsList.getProfiles().stream().map(this::getOfflinePlayer).collect(Collectors.toSet());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1598,6 +1599,15 @@ public final class GlowServer implements Server {
 
     @Override
     public OfflinePlayer[] getOfflinePlayers() {
+        return getOfflinePlayersAsync().join();
+    }
+
+    /**
+     * Gets every player that has ever played on this server.
+     *
+     * @return An OfflinePlayer[] future.
+     */
+    public CompletableFuture<OfflinePlayer[]> getOfflinePlayersAsync() {
         Set<OfflinePlayer> result = new HashSet<>();
         Set<UUID> uuids = new HashSet<>();
 
@@ -1609,13 +1619,11 @@ public final class GlowServer implements Server {
             }
         }
 
-        // add all offline players that aren't already online
-        getPlayerDataService().getOfflinePlayers().stream().filter(offline -> !uuids.contains(offline.getUniqueId())).forEach(offline -> {
-            result.add(offline);
-            uuids.add(offline.getUniqueId());
-        });
-
-        return result.toArray(new OfflinePlayer[result.size()]);
+        return getPlayerDataService().getOfflinePlayers().thenAcceptAsync(offlinePlayers -> offlinePlayers.stream()
+                .filter(offline -> !uuids.contains(offline.getUniqueId())).forEach(offline -> {
+                    result.add(offline);
+                    uuids.add(offline.getUniqueId());
+                })).thenApply((v) -> result.toArray(new OfflinePlayer[result.size()]));
     }
 
     @Override
@@ -1685,35 +1693,79 @@ public final class GlowServer implements Server {
     @Override
     @Deprecated
     public OfflinePlayer getOfflinePlayer(String name) {
-        Player onlinePlayer = getPlayerExact(name);
-        if (onlinePlayer != null) {
-            return onlinePlayer;
-        }
-        OfflinePlayer result = getPlayerExact(name);
-        if (result == null) {
-            //probably blocking (same player once per minute)
-            PlayerProfile profile = PlayerProfile.getProfile(name);
-            if (profile == null) {
-                result = getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+        try {
+            // probably blocking, timeout depending on config setting
+            if (getProfileLookupTimeout() <= 0) {
+                return getOfflinePlayerAsync(name).get();
             } else {
-                result = getOfflinePlayer(profile);
+                return getOfflinePlayerAsync(name).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
+        } catch (InterruptedException | ExecutionException ex) {
+            GlowServer.logger.log(Level.SEVERE, "UUID lookup interrupted: ", ex);
+        } catch (TimeoutException ex) {
+            GlowServer.logger.log(Level.WARNING, "UUID lookup timeout: ", ex);
         }
-        return result;
+
+        return getOfflinePlayerFallback(name);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
+        try {
+            // probably blocking, timeout depending on config setting
+            if (getProfileLookupTimeout() <= 0) {
+                return getOfflinePlayerAsync(uuid).get();
+            } else {
+                return getOfflinePlayerAsync(uuid).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
+            }
+        } catch (InterruptedException | ExecutionException ex) {
+            GlowServer.logger.log(Level.SEVERE, "Profile lookup interrupted: ", ex);
+        } catch (TimeoutException ex) {
+            GlowServer.logger.log(Level.WARNING, "Profile lookup timeout: ", ex);
+        }
+        return new GlowOfflinePlayer(this, new PlayerProfile(null, uuid));
+    }
+
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given name.
+     *
+     * @param name the player's name to look up.
+     * @return a {@link GlowOfflinePlayer} future for the given name.
+     */
+    public CompletableFuture<OfflinePlayer> getOfflinePlayerAsync(String name) {
+        Player onlinePlayer = getPlayerExact(name);
+        if (onlinePlayer != null) {
+            return CompletableFuture.completedFuture(onlinePlayer);
+        }
+
+        return PlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
+            if (profile == null) {
+                return getOfflinePlayerFallback(name);
+            } else {
+                return getOfflinePlayer(profile);
+            }
+        });
+    }
+
+    /**
+     * Creates a new {@link GlowOfflinePlayer} instance for the given uuid.
+     *
+     * @param uuid the player's uuid.
+     * @return a {@link GlowOfflinePlayer} future for the given name.
+     */
+    public CompletableFuture<OfflinePlayer> getOfflinePlayerAsync(UUID uuid) {
         Player onlinePlayer = getPlayer(uuid);
         if (onlinePlayer != null) {
-            return onlinePlayer;
+            return CompletableFuture.completedFuture(onlinePlayer);
         }
-        OfflinePlayer result = getPlayer(uuid);
-        if (result == null) {
-            result = new GlowOfflinePlayer(this, uuid);
-        }
-        return result;
+
+        return GlowOfflinePlayer.getOfflinePlayer(this, uuid).thenApply((player) -> (OfflinePlayer) player);
     }
+
+    private OfflinePlayer getOfflinePlayerFallback(String name) {
+        return getOfflinePlayer(new PlayerProfile(name, UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+    }
+
 
     @Override
     public void savePlayers() {
@@ -1858,7 +1910,7 @@ public final class GlowServer implements Server {
         }
 
         // GlowWorld's constructor calls addWorld below.
-        return new GlowWorld(this, creator, storageProviderFactory.createWorldStorageProvider());
+        return new GlowWorld(this, creator, storageProviderFactory.createWorldStorageProvider(creator.name()));
     }
 
     /**
@@ -2047,7 +2099,7 @@ public final class GlowServer implements Server {
     @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
         GlowBossBar bossBar = new GlowBossBar(title, color, style, flags);
-        bossBarManager.register(bossBar);
+        BossBarManager.register(bossBar);
         return bossBar;
     }
 

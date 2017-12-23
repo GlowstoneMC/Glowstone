@@ -17,6 +17,14 @@ public class CocoaTree extends JungleTree {
     private static final CocoaPlantSize[] COCOA_SIZE = {CocoaPlantSize.SMALL, CocoaPlantSize.MEDIUM,
         CocoaPlantSize.LARGE};
 
+    /**
+     * Initializes this tree, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     *     blocks
+     */
     public CocoaTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
     }
@@ -39,8 +47,8 @@ public class CocoaTree extends JungleTree {
 
     protected void addVinesOnLeaves() {
         for (int y = loc.getBlockY() - 3 + height; y <= loc.getBlockY() + height; y++) {
-            int nY = y - (loc.getBlockY() + height);
-            int radius = 2 - nY / 2;
+            int ny = y - (loc.getBlockY() + height);
+            int radius = 2 - ny / 2;
             for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (delegate.getBlockState(loc.getWorld(), x, y, z).getType()

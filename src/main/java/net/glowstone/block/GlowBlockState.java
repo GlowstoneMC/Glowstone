@@ -28,6 +28,11 @@ public class GlowBlockState implements BlockState {
     ////////////////////////////////////////////////////////////////////////////
     // Basics
 
+    /**
+     * Creates a BlockState object to track the given block's state.
+     *
+     * @param block the block
+     */
     public GlowBlockState(GlowBlock block) {
         world = block.getWorld();
         x = block.getX();
@@ -150,7 +155,8 @@ public class GlowBlockState implements BlockState {
     public boolean update(boolean force, boolean applyPhysics) {
         Block block = getBlock();
 
-        return (block.getTypeId() == type || force) && block.setTypeIdAndData(type, getRawData(), applyPhysics);
+        return (block.getTypeId() == type || force)
+                && block.setTypeIdAndData(type, getRawData(), applyPhysics);
     }
 
     public boolean getFlowed() {

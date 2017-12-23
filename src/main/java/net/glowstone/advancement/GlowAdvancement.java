@@ -18,11 +18,23 @@ public class GlowAdvancement implements Advancement {
     private final List<List<String>> requirements = new ArrayList<>();
     private GlowAdvancementDisplay display = null;
 
+    /**
+     * Creates an advancement with the default notification.
+     * @param key the namespace and name of the advancement
+     * @param parent the prerequisite advancement, or null
+     */
     public GlowAdvancement(NamespacedKey key, GlowAdvancement parent) {
         this.key = key;
         this.parent = parent;
     }
 
+    /**
+     * Creates an advancement.
+     * @param key the namespace and name of the advancement
+     * @param parent the prerequisite advancement, or null for no prerequisite
+     * @param display the parameters for the notification when this advancement is earned, or null
+     *     for the default notification
+     */
     public GlowAdvancement(NamespacedKey key, GlowAdvancement parent,
         GlowAdvancementDisplay display) {
         this.key = key;
@@ -30,6 +42,10 @@ public class GlowAdvancement implements Advancement {
         this.display = display;
     }
 
+    /**
+     * Adds a criterion.
+     * @param criterion TODO: document where this ID comes from
+     */
     public void addCriterion(String criterion) {
         if (!criteriaIds.contains(criterion)) {
             criteriaIds.add(criterion);
@@ -44,6 +60,12 @@ public class GlowAdvancement implements Advancement {
         return criteriaIds;
     }
 
+    /**
+     * Writes a notification of earning this advancement to a byte buffer.
+     * @param buf a {@link ByteBuf}
+     * @return {@code buf} with this advancement written to it
+     * @throws IOException if a string is too long
+     */
     public ByteBuf encode(ByteBuf buf) throws IOException {
         buf.writeBoolean(parent != null);
         if (parent != null) {

@@ -42,7 +42,8 @@ public abstract class EntityStore<T extends GlowEntity> {
     }
 
     /**
-     * Create a new entity of this store's type at the given location. The load method will be called separately.
+     * Create a new entity of this store's type at the given location. The load method will be
+     * called separately.
      *
      * @param location The location.
      * @param compound The entity's tag, if extra data is needed.

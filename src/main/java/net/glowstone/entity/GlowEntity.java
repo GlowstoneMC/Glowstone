@@ -343,7 +343,7 @@ public abstract class GlowEntity implements Entity {
      *
      * @return The cardinal BlockFace of this entity.
      */
-    public BlockFace getDirection() {
+    public BlockFace getCardinalFacing() {
         double rot = getLocation().getYaw() % 360;
         if (rot < 0) {
             rot += 360.0;
@@ -643,9 +643,10 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Creates a {@link Message} which can be sent to a client to spawn this entity.
+     * Creates a list of {@link Message}s which can be sent to a client to spawn this entity.
+     * Implementations in concrete subclasses may return a shallowly immutable list.
      *
-     * @return A message which can spawn this entity.
+     * @return A list of messages which can spawn this entity.
      */
     public abstract List<Message> createSpawnMessage();
 
@@ -703,18 +704,20 @@ public abstract class GlowEntity implements Entity {
 
         boolean teleport = dx > Short.MAX_VALUE || dy > Short.MAX_VALUE || dz > Short.MAX_VALUE || dx < Short.MIN_VALUE || dy < Short.MIN_VALUE || dz < Short.MIN_VALUE;
 
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         List<Message> result = new LinkedList<>();
         if (teleported || moved && teleport) {
-            result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
-        } else if (moved && rotated) {
-            result.add(new RelativeEntityPositionRotationMessage(id, (short) dx, (short) dy, (short) dz, yaw, pitch));
+            result.add(new EntityTeleportMessage(id, location));
+        } else if (rotated) {
+            int yaw = Position.getIntYaw(location);
+            int pitch = Position.getIntPitch(location);
+            if (moved) {
+                result.add(new RelativeEntityPositionRotationMessage(id,
+                        (short) dx, (short) dy, (short) dz, yaw, pitch));
+            } else {
+                result.add(new EntityRotationMessage(id, yaw, pitch));
+            }
         } else if (moved) {
             result.add(new RelativeEntityPositionMessage(id, (short) dx, (short) dy, (short) dz));
-        } else if (rotated) {
-            result.add(new EntityRotationMessage(id, yaw, pitch));
         }
 
         // send changed metadata

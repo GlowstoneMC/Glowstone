@@ -68,12 +68,12 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     public void updateBlock(GlowBlock block) {
         GlowBlockState state = block.getState();
         int cropState = block.getData();
-        // we check light level on the above block, meaning crops needs at least one free block above it
-        // in order to grow naturally (vanilla behavior)
+        // we check light level on the above block, meaning the crops need at least one free block
+        // above them in order to grow naturally (vanilla behavior)
         if (cropState < CropState.RIPE.ordinal()
-            && block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
-            ThreadLocalRandom.current().nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1)
-                == 0) {
+                && block.getRelative(BlockFace.UP).getLightLevel() >= 9
+                && ThreadLocalRandom.current()
+                        .nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
             cropState++;
             if (cropState > CropState.RIPE.ordinal()) {
                 cropState = CropState.RIPE.ordinal();

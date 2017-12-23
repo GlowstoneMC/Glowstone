@@ -22,6 +22,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class ClearCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public ClearCommand() {
         super("clear", "Clears the content of a player's inventory.",
             "/clear [player] [item] [data] [maxCount]", Collections.emptyList());

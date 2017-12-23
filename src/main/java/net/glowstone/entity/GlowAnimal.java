@@ -7,7 +7,7 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
 
 /**
- * Represents an Animal, such as a Cow
+ * Represents an Animal, such as a Cow.
  */
 public class GlowAnimal extends GlowAgeable implements Animals {
 

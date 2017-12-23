@@ -11,6 +11,14 @@ public class BrownMushroomTree extends GenericTree {
 
     protected Material type;
 
+    /**
+     * Initializes this mushroom with a random height, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     *     blocks
+     */
     public BrownMushroomTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         type = Material.HUGE_MUSHROOM_1;

@@ -1,58 +1,52 @@
 package net.glowstone.boss;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import net.glowstone.GlowServer;
+import java.util.Collection;
+import net.glowstone.entity.GlowPlayer;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 public class BossBarManager {
 
-    private static BossBarManager instance;
+    /** Utility class; should not be instantiated. */
+    private BossBarManager() {}
 
-    private final List<GlowBossBar> bossBars = new ArrayList<>();
-    private final GlowServer server;
-
-    public BossBarManager(GlowServer server) {
-        if (instance != null) {
-            throw new RuntimeException("BossBar Manager has already been initialized.");
-        }
-        this.server = server;
-        instance = this;
-    }
-
-    public static BossBarManager getInstance() {
-        return instance;
-    }
-
-    public List<GlowBossBar> getBossBars() {
-        return bossBars;
-    }
-
-    public void register(GlowBossBar bossBar) {
-        if (bossBars.contains(bossBar)) {
-            return;
-        }
-        bossBars.add(bossBar);
-    }
-
-    public void unregister(GlowBossBar bossBar) {
-        bossBar.removeAll();
-        bossBars.remove(bossBar);
-    }
-
-    public void clearBossBars(Player player) {
-        for (GlowBossBar bossBar : bossBars) {
-            bossBar.removePlayer(player);
-        }
-    }
-
-    public GlowBossBar getBossBar(UUID uuid) {
-        for (GlowBossBar bossBar : bossBars) {
-            if (bossBar.getUniqueId().equals(uuid)) {
-                return bossBar;
+    /**
+     * Adds a boss bar for all of its associated players.
+     * @param bossBar the boss bar to add
+     */
+    public static void register(GlowBossBar bossBar) {
+        for (Player player : bossBar.getPlayers()) {
+            if (player instanceof GlowPlayer) {
+                ((GlowPlayer) player).addBossBar(bossBar);
             }
         }
-        return null;
+    }
+
+    /**
+     * Removes a boss bar from all of its associated players.
+     * @param bossBar the boss bar to remove
+     */
+    public static void unregister(GlowBossBar bossBar) {
+        for (Player player : bossBar.getPlayers()) {
+            if (player instanceof GlowPlayer) {
+                ((GlowPlayer) player).removeBossBar(bossBar);
+            }
+        }
+    }
+
+    /**
+     * Stop all boss bars from sending updates to the given player.
+     * @param player the player to unsubscribe
+     */
+    public static void clearBossBars(GlowPlayer player) {
+        // This implementation is a little complicated for concurrency reasons.
+        Collection<BossBar> bars;
+        do {
+            bars = player.getBossBars();
+            for (BossBar bar : bars) {
+                bar.removePlayer(player);
+                player.removeBossBar(bar);
+            }
+        } while (!bars.isEmpty());
     }
 }

@@ -3,7 +3,7 @@ package net.glowstone.dispenser;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockDispenser;
-import net.glowstone.block.blocktype.BlockTNT;
+import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.block.itemtype.ItemTool;
 import net.glowstone.block.itemtype.ItemType;
 import org.bukkit.Effect;
@@ -31,7 +31,7 @@ public class FlintAndSteelDispenseBehavior extends DefaultDispenseBehavior {
                 stack.setAmount(0);
             }
         } else if (target.getType() == Material.TNT) {
-            BlockTNT.igniteBlock(target, false);
+            BlockTnt.igniteBlock(target, false);
         } else {
             successful = false;
         }

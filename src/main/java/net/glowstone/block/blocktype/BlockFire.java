@@ -26,7 +26,8 @@ public class BlockFire extends BlockNeedsAttached {
         BlockFace.EAST, BlockFace.WEST};
     private static final int TICK_RATE = 20;
     private static final int MAX_FIRE_AGE = 15;
-    private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP = new LinkedHashMap<>();
+    private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP
+            = new LinkedHashMap<>();
 
     static {
         BURNRESISTANCE_MAP.put(BlockFace.EAST, 300);
@@ -169,7 +170,7 @@ public class BlockFire extends BlockNeedsAttached {
                                         EventFactory.callEvent(igniteEvent);
                                         if (!igniteEvent.isCancelled()) {
                                             if (propagationBlock.getType() == Material.TNT) {
-                                                BlockTNT.igniteBlock(propagationBlock, false);
+                                                BlockTnt.igniteBlock(propagationBlock, false);
                                             } else {
                                                 int increasedAge = increaseFireAge(age);
                                                 state = propagationBlock.getState();
@@ -235,7 +236,7 @@ public class BlockFire extends BlockNeedsAttached {
             EventFactory.callEvent(burnEvent);
             if (!burnEvent.isCancelled()) {
                 if (block.getType() == Material.TNT) {
-                    BlockTNT.igniteBlock(block, false);
+                    BlockTnt.igniteBlock(block, false);
                 } else {
                     GlowBlockState state = block.getState();
                     if (ThreadLocalRandom.current().nextInt(10 + fireAge) < 5 && !GlowBiomeClimate

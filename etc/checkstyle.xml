@@ -202,7 +202,7 @@
     </module>
     <module name="MemberName">
       <property name="severity" value="warning"/> <!-- TODO: fix naming capitalization -->
-      <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+      <property name="format" value="^([a-z][a-z0-9][a-zA-Z0-9]*|[xyz])$"/>
       <message key="name.invalidPattern" value="Member name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="ParameterName">

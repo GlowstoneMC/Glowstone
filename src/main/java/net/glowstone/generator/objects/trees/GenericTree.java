@@ -11,6 +11,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
 import org.bukkit.material.types.DirtType;
 
+/** Oak tree, and superclass for other types. */
 public class GenericTree {
 
     protected final Random random;
@@ -21,6 +22,14 @@ public class GenericTree {
     protected int leavesType;
     protected Collection<Material> overridables;
 
+    /**
+     * Initializes this tree with a random height, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     *     blocks
+     */
     public GenericTree(Random random, Location location, BlockStateDelegate delegate) {
         this.random = random;
         loc = location;
@@ -47,15 +56,29 @@ public class GenericTree {
         this.height = height;
     }
 
+    /**
+     * Sets the block data values for this tree's blocks.
+     *
+     * @param logType the species portion of the data value for wood blocks.
+     * @param leavesType the species portion of the data value for leaf blocks.
+     */
     protected final void setTypes(int logType, int leavesType) {
         this.logType = logType;
         this.leavesType = leavesType;
     }
 
+    /**
+     * Checks whether this tree fits under the upper world limit.
+     * @return true if this tree can grow without exceeding block height 255; false otherwise.
+     */
     public boolean canHeightFit() {
         return loc.getBlockY() >= 1 && loc.getBlockY() + height + 1 <= 255;
     }
 
+    /**
+     * Checks whether this tree is on fertile ground.
+     * @return true if this tree can grow on the type of block below it; false otherwise
+     */
     public boolean canPlaceOn() {
         BlockState state = delegate
             .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
@@ -63,6 +86,10 @@ public class GenericTree {
             || state.getType() == Material.SOIL;
     }
 
+    /**
+     * Checks whether this tree has enough space to grow.
+     * @return true if this tree has space to grow; false otherwise
+     */
     public boolean canPlace() {
         for (int y = loc.getBlockY(); y <= loc.getBlockY() + 1 + height; y++) {
             // Space requirement
@@ -90,6 +117,12 @@ public class GenericTree {
         return true;
     }
 
+    /**
+     * Attempts to grow this tree at its current location. If successful, the associated {@link
+     * BlockStateDelegate} is instructed to set blocks to wood and leaves.
+     *
+     * @return true if successfully grown; false otherwise
+     */
     public boolean generate() {
         if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
             return false;

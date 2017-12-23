@@ -18,15 +18,17 @@ public class ExplosionMessage implements Message {
 
     @Override
     public String toString() {
-        return "ExplosionMessage{x=" + x + ",y=" + y + ",z=" + z +
-            ",radius=" + radius +
-            ",motX=" + playerMotionX + ",motY=" + playerMotionY + ",motZ=" + playerMotionZ +
-            ",recordCount=" + records.size() + "}";
+        return "ExplosionMessage{x=" + x + ",y=" + y + ",z=" + z
+            + ",radius=" + radius
+            + ",motX=" + playerMotionX + ",motY=" + playerMotionY + ",motZ=" + playerMotionZ
+            + ",recordCount=" + records.size() + "}";
     }
 
     @Data
     public static class Record {
 
-        private final byte x, y, z;
+        private final byte x;
+        private final byte y;
+        private final byte z;
     }
 }

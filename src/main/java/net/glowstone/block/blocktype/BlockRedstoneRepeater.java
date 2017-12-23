@@ -44,7 +44,7 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Diode) {
-            ((Diode) data).setFacingDirection(player.getDirection());
+            ((Diode) data).setFacingDirection(player.getCardinalFacing());
             state.setData(data);
         } else {
             warnMaterialData(Diode.class, data);

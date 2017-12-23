@@ -27,9 +27,9 @@ public class ErosionMapLayer extends MapLayer {
                 // X0X
                 // the grid center value decides how we are proceeding:
                 // - if it's land and it's surrounded by at least 1 ocean cell there are 4/5 chances
-                // to proceed to land weathering, and 1/5 chance to spread some land,                
-                // - if it's ocean and it's surrounded by at least 1 land cell, there are 2/3 chances
-                // to proceed to land weathering, and 1/3 chance to spread some land.
+                // to proceed to land weathering, and 1/5 chance to spread some land.
+                // - if it's ocean and it's surrounded by at least 1 land cell, there are 2/3
+                // chances to proceed to land weathering, and 1/3 chance to spread some land.
                 int upperLeftVal = values[j + i * gridSizeX];
                 int lowerLeftVal = values[j + (i + 2) * gridSizeX];
                 int upperRightVal = values[j + 2 + i * gridSizeX];

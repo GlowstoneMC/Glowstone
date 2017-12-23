@@ -22,6 +22,11 @@ public final class CompressionHandler extends MessageToMessageCodec<ByteBuf, Byt
     private final Inflater inflater;
     private final Deflater deflater;
 
+    /**
+     * Creates an instance that compresses messages using an {@link Inflater} and {@link Deflater}.
+     *
+     * @param threshold the smallest message length, in bytes, to compress
+     */
     public CompressionHandler(int threshold) {
         this.threshold = threshold;
         inflater = new Inflater();

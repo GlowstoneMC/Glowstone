@@ -19,6 +19,11 @@ import org.bukkit.util.Vector;
 
 public class BlockDispenser extends BlockContainer {
 
+    /**
+     * Returns the position where an item will emerge from the dispenser.
+     * @param block a dispenser block
+     * @return the position as a Vector
+     */
     public static Vector getDispensePosition(GlowBlock block) {
         BlockFace facing = getFacing(block);
         double x = block.getX() + 0.7 * facing.getModX();
@@ -27,6 +32,11 @@ public class BlockDispenser extends BlockContainer {
         return new Vector(x, y, z);
     }
 
+    /**
+     * Returns the direction a dispenser is facing.
+     * @param block a dispenser block
+     * @return the facing direction
+     */
     public static BlockFace getFacing(GlowBlock block) {
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
@@ -76,8 +86,8 @@ public class BlockDispenser extends BlockContainer {
     @Override
     public void updatePhysics(GlowBlock block) {
         GlowBlock up = block.getRelative(BlockFace.UP);
-        boolean powered = block.isBlockPowered() || block.isBlockIndirectlyPowered() ||
-            up.isBlockPowered() || up.isBlockIndirectlyPowered();
+        boolean powered = block.isBlockPowered() || block.isBlockIndirectlyPowered()
+                || up.isBlockPowered() || up.isBlockIndirectlyPowered();
 
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
@@ -94,7 +104,8 @@ public class BlockDispenser extends BlockContainer {
                 }
             }.runTaskLater(null, 4);
 
-            // TODO replace this with dispenser materialdata class (as soon as it provides access to this property)
+            // TODO replace this with dispenser materialdata class (as soon as it provides access to
+            // this property)
             data.setData((byte) (data.getData() | 0x8));
             state.update();
         } else if (!powered && isTriggered) {
@@ -103,6 +114,10 @@ public class BlockDispenser extends BlockContainer {
         }
     }
 
+    /**
+     * Dispense an item from the given block if it's a dispenser.
+     * @param block the dispenser block
+     */
     public void trigger(GlowBlock block) {
         BlockEntity te = block.getBlockEntity();
         if (!(te instanceof DispenserEntity)) {

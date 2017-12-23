@@ -10,8 +10,8 @@ public final class CameraCodec implements Codec<CameraMessage> {
 
     @Override
     public CameraMessage decode(ByteBuf buffer) throws IOException {
-        int cameraID = ByteBufUtils.readVarInt(buffer);
-        return new CameraMessage(cameraID);
+        int cameraId = ByteBufUtils.readVarInt(buffer);
+        return new CameraMessage(cameraId);
     }
 
     @Override

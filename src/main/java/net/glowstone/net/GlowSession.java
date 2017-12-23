@@ -21,6 +21,7 @@ import javax.crypto.SecretKey;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.boss.BossBarManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -489,7 +490,7 @@ public class GlowSession extends BasicSession {
                 player.leaveBed(false);
             }
 
-            server.getBossBarManager().clearBossBars(player);
+            BossBarManager.clearBossBars(player);
 
             String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {

@@ -20,6 +20,14 @@ public class BlockTrapDoor {
         this.parent = parent;
     }
 
+    /**
+     * Places a trapdoor.
+     * @param player ignored
+     * @param state the block to update
+     * @param face the face on which to hinge the trapdoor
+     * @param holding ignored
+     * @param clickedLoc the clicked point within the block
+     */
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
         ItemStack holding, Vector clickedLoc) {
         MaterialData materialData = state.getData();
@@ -37,6 +45,10 @@ public class BlockTrapDoor {
         }
     }
 
+    /**
+     * Opens or shuts a trapdoor if triggered by redstone.
+     * @param block a trapdoor block
+     */
     public void onRedstoneUpdate(GlowBlock block) {
         GlowBlockState state = block.getState();
         TrapDoor trapdoor = (TrapDoor) state.getData();

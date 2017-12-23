@@ -61,10 +61,11 @@ public class BigOakTree extends GenericTree {
                         double sizeZ = Math.abs(z) + 0.5D;
                         if (sizeX * sizeX + sizeZ * sizeZ <= size * size) {
                             if (overridables.contains(delegate
-                                .getBlockState(loc.getWorld(), node.getX() + x, node.getY() + y,
-                                    node.getZ() + z).getType())) {
+                                    .getBlockState(loc.getWorld(), node.getX() + x, node.getY() + y,
+                                            node.getZ() + z).getType())) {
                                 delegate.setTypeAndRawData(loc.getWorld(), node.getX() + x,
-                                    node.getY() + y, node.getZ() + z, Material.LEAVES, leavesType);
+                                        node.getY() + y, node.getZ() + z, Material.LEAVES,
+                                        leavesType);
                             }
                         }
                     }
@@ -75,7 +76,7 @@ public class BigOakTree extends GenericTree {
         // generate the trunk
         for (int y = 0; y < trunkHeight; y++) {
             delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
-                loc.getBlockZ(), Material.LOG, logType);
+                    loc.getBlockZ(), Material.LOG, logType);
         }
 
         // generate the branches
@@ -85,20 +86,20 @@ public class BigOakTree extends GenericTree {
                 Vector leafNode = new Vector(node.getX(), node.getY(), node.getZ());
                 Vector branch = leafNode.subtract(base);
                 int maxDistance = Math.max(Math.abs(branch.getBlockY()),
-                    Math.max(Math.abs(branch.getBlockX()), Math.abs(branch.getBlockZ())));
-                float dX = (float) branch.getX() / maxDistance;
-                float dY = (float) branch.getY() / maxDistance;
-                float dZ = (float) branch.getZ() / maxDistance;
+                        Math.max(Math.abs(branch.getBlockX()), Math.abs(branch.getBlockZ())));
+                float dx = (float) branch.getX() / maxDistance;
+                float dy = (float) branch.getY() / maxDistance;
+                float dz = (float) branch.getZ() / maxDistance;
                 for (int i = 0; i <= maxDistance; i++) {
-                    branch = base.clone()
-                        .add(new Vector((double) (0.5F + i * dX), 0.5F + i * dY, 0.5F + i * dZ));
+                    branch = base.clone().add(
+                            new Vector(0.5 + i * dx, 0.5 + i * dy, 0.5 + i * dz));
                     int x = Math.abs(branch.getBlockX() - base.getBlockX());
                     int z = Math.abs(branch.getBlockZ() - base.getBlockZ());
                     int max = Math.max(x, z);
                     int direction = max > 0 ? max == x ? 4 : 8 : 0; // EAST / SOUTH
-                    delegate
-                        .setTypeAndRawData(loc.getWorld(), branch.getBlockX(), branch.getBlockY(),
-                            branch.getBlockZ(), Material.LOG, logType | direction);
+                    delegate.setTypeAndRawData(loc.getWorld(),
+                            branch.getBlockX(), branch.getBlockY(), branch.getBlockZ(),
+                            Material.LOG, logType | direction);
                 }
             }
         }
@@ -110,17 +111,18 @@ public class BigOakTree extends GenericTree {
         int n = 0;
         Vector target = to.subtract(from);
         int maxDistance = Math.max(Math.abs(target.getBlockY()),
-            Math.max(Math.abs(target.getBlockX()), Math.abs(target.getBlockZ())));
-        float dX = (float) target.getX() / maxDistance;
-        float dY = (float) target.getY() / maxDistance;
-        float dZ = (float) target.getZ() / maxDistance;
+                Math.max(Math.abs(target.getBlockX()), Math.abs(target.getBlockZ())));
+        float dx = (float) target.getX() / maxDistance;
+        float dy = (float) target.getY() / maxDistance;
+        float dz = (float) target.getZ() / maxDistance;
         for (int i = 0; i <= maxDistance; i++, n++) {
             target = from.clone()
-                .add(new Vector((double) (0.5F + i * dX), 0.5F + i * dY, 0.5F + i * dZ));
-            if (target.getBlockY() < 0 || target.getBlockY() > 255 ||
-                !overridables.contains(delegate
-                    .getBlockState(loc.getWorld(), target.getBlockX(), target.getBlockY(),
-                        target.getBlockZ()).getType())) {
+                    .add(new Vector((double) (0.5F + i * dx), 0.5F + i * dy, 0.5F + i * dz));
+            if (target.getBlockY() < 0 || target.getBlockY() > 255
+                    || !overridables.contains(delegate.getBlockState(
+                                    loc.getWorld(), target.getBlockX(), target.getBlockY(),
+                                    target.getBlockZ())
+                            .getType())) {
                 return n;
             }
         }
@@ -140,8 +142,8 @@ public class BigOakTree extends GenericTree {
             float h = height / 2.0F;
             float v = h - l;
             float f = l < (float) height * 0.3D ? -1.0F :
-                v == h ? h * 0.5F
-                    : h <= Math.abs(v) ? 0.0F : (float) Math.sqrt(h * h - v * v) * 0.5F;
+                    v == h ? h * 0.5F
+                            : h <= Math.abs(v) ? 0.0F : (float) Math.sqrt(h * h - v * v) * 0.5F;
             if (f >= 0.0F) {
                 for (int i = 0; i < nodeCount; i++) {
                     double d1 = f * (random.nextFloat() + 0.328D);
@@ -149,13 +151,13 @@ public class BigOakTree extends GenericTree {
                     int x = (int) (d1 * Math.sin(d2) + loc.getBlockX() + 0.5D);
                     int z = (int) (d1 * Math.cos(d2) + loc.getBlockZ() + 0.5D);
                     if (countAvailableBlocks(new Vector(x, y, z),
-                        new Vector(x, y + maxLeafDistance, z)) == -1) {
+                            new Vector(x, y + maxLeafDistance, z)) == -1) {
                         int offX = loc.getBlockX() - x;
                         int offZ = loc.getBlockZ() - z;
                         double distance = 0.381D * Math.sqrt(offX * offX + offZ * offZ);
                         int branchBaseY = Math.min(trunkTopY, (int) (y - distance));
                         if (countAvailableBlocks(new Vector(x, branchBaseY, z), new Vector(x, y, z))
-                            == -1) {
+                                == -1) {
                             leafNodes.add(new LeafNode(x, y, z, branchBaseY));
                         }
                     }
