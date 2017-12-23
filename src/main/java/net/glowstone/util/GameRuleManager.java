@@ -10,6 +10,9 @@ public final class GameRuleManager {
 
     private final Map<String, String> gameRules = new HashMap<>();
 
+    /**
+     * Creates an instance with the vanilla game rules.
+     */
     public GameRuleManager() {
         setValue("commandBlockOutput", true);
         setValue("doDaylightCycle", true); // implemented
@@ -42,11 +45,12 @@ public final class GameRuleManager {
     }
 
     /**
-     * Sets the value of a game rule.
+     * <p>Sets the value of a game rule.</p>
      *
-     * <p>The actual object value is never stored, only the string value.
+     * <p>The actual object value is never stored, only the string value.</p>
      *
-     * <p>The helper methods provided in this class may be used to retrieve the value, such as {@link #getBoolean(String)}.
+     * <p>The helper methods provided in this class may be used to retrieve the value, such as
+     * {@link #getBoolean(String)}.</p>
      *
      * @param rule the rule to set, cannot be null
      * @param value the value to set, cannot be null or be represented as null
@@ -71,7 +75,8 @@ public final class GameRuleManager {
     }
 
     /**
-     * Gets the game rule value as a string. If the value does not exist, then this will return null.
+     * Gets the game rule value as a string. If the value does not exist, then this will return
+     * null.
      *
      * @param rule the rule to look up
      * @return the string value, or null if not defined
@@ -84,7 +89,8 @@ public final class GameRuleManager {
     }
 
     /**
-     * Gets the game rule value as a boolean. If the value cannot be parsed or does not exist, then this will return false.
+     * Gets the game rule value as a boolean. If the value cannot be parsed or does not exist, then
+     * this will return false.
      *
      * @param rule the rule to look up
      * @return the boolean value, or false
@@ -100,7 +106,8 @@ public final class GameRuleManager {
     }
 
     /**
-     * Gets the game rule value as an integer. If the value cannot be parsed or does not exist then the default will be returned.
+     * Gets the game rule value as an integer. If the value cannot be parsed or does not exist then
+     * the default will be returned.
      *
      * @param rule the rule to look up
      * @param def the default value

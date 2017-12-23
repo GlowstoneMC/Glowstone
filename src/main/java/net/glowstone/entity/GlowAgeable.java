@@ -25,7 +25,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     private static final int AGE_BABY = -24000;
     private static final int AGE_ADULT = 0;
     private static final int BREEDING_AGE = 6000;
-    protected float width, height;
+    protected float width;
+    protected float height;
     private int age;
     private boolean ageLocked;
     private int forcedAge;
@@ -178,6 +179,11 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         return false;
     }
 
+    /**
+     * Creates a baby clone of this creature, as when right-clicking it with a spawn egg.
+     *
+     * @return a baby clone of this creature
+     */
     public Ageable createBaby() {
         Class<? extends GlowEntity> spawn = EntityRegistry.getEntity(getType());
         GlowAgeable ageable = (GlowAgeable) getWorld()

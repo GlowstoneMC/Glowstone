@@ -18,6 +18,9 @@ import org.bukkit.util.StringUtil;
 
 public class GameModeCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public GameModeCommand() {
         super("gamemode", "Change the game mode of a player.", "/gamemode <mode> [player]",
             Collections.emptyList());
