@@ -93,6 +93,8 @@ public final class GlowBufUtils {
                 case NBTTAG:
                     entries.add(new Entry(index, readCompound(buf)));
                     break;
+                default:
+                    // do nothing
             }
         }
         return entries;
@@ -170,6 +172,8 @@ public final class GlowBufUtils {
                 case NBTTAG:
                     writeCompound(buf, (CompoundTag) value);
                     break;
+                default:
+                    // do nothing
             }
         }
 
@@ -194,7 +198,8 @@ public final class GlowBufUtils {
 
         buf.readerIndex(idx);
         try (NBTInputStream str = new NBTInputStream(new ByteBufInputStream(buf), false)) {
-            return str.readCompound(network ? new NBTReadLimiter(2097152L) : NBTReadLimiter.UNLIMITED);
+            return str.readCompound(
+                    network ? new NBTReadLimiter(2097152L) : NBTReadLimiter.UNLIMITED);
         } catch (IOException e) {
             return null;
         }
