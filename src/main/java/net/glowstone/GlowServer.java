@@ -369,10 +369,6 @@ public final class GlowServer implements Server {
      */
     private MaterialValueManager materialValueManager;
     /**
-     * The {@link BossBarManager} of this server.
-     */
-    private BossBarManager bossBarManager;
-    /**
      * Whether OpenCL is to be used by the server on this run.
      */
     private boolean isGraphicsComputeAvailable = true;
@@ -396,7 +392,6 @@ public final class GlowServer implements Server {
      */
     public GlowServer(ServerConfig config) {
         materialValueManager = new BuiltinMaterialValueManager();
-        bossBarManager = new BossBarManager(this);
         advancements = new HashMap<>();
         // test advancement
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
@@ -2113,7 +2108,7 @@ public final class GlowServer implements Server {
     @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
         GlowBossBar bossBar = new GlowBossBar(title, color, style, flags);
-        bossBarManager.register(bossBar);
+        BossBarManager.register(bossBar);
         return bossBar;
     }
 

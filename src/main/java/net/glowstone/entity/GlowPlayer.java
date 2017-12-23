@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -138,6 +140,7 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -466,6 +469,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private String resourcePackHash;
     private PlayerResourcePackStatusEvent.Status resourcePackStatus;
     private List<Conversation> conversations = new ArrayList<>();
+    private SortedSet<BossBar> bossBars = new ConcurrentSkipListSet<>();
     /**
      * The player's previous chunk x coordinate.
      */
@@ -3186,5 +3190,29 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void playAnimationToSelf(EntityAnimation animation) {
         AnimateEntityMessage message = new AnimateEntityMessage(SELF_ID, animation.ordinal());
         getSession().send(message);
+    }
+
+    /**
+     * Add a boss bar.
+     * @param bar the boss bar to add
+     */
+    public void addBossBar(BossBar bar) {
+        bossBars.add(bar);
+    }
+
+    /**
+     * Remove a boss bar.
+     * @param bar the boss bar to remove
+     */
+    public void removeBossBar(BossBar bar) {
+        bossBars.remove(bar);
+    }
+
+    /**
+     * Returns a collection of the boss bars this player sees.
+     * @return the boss bars this player sees
+     */
+    public Collection<BossBar> getBossBars() {
+        return new ArrayList<>(bossBars);
     }
 }
