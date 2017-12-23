@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.monster.GlowBoss;
-import net.glowstone.entity.monster.GlowMonster;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
