@@ -513,7 +513,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         //creates InventoryMonitor to avoid NullPointerException
         invMonitor = new InventoryMonitor(getOpenInventory());
-        server.getPlayerStatisticIoService().readStats(this);
+        server.getPlayerStatisticIoService().readStatistics(this);
         recipeMonitor = new PlayerRecipeMonitor(this);
     }
 
@@ -2121,18 +2121,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
                 server.getPlayerDataService().writeData(GlowPlayer.this);
-                server.getPlayerStatisticIoService().writeStats(GlowPlayer.this);
+                server.getPlayerStatisticIoService().writeStatistics(GlowPlayer.this);
             });
         } else {
             server.getPlayerDataService().writeData(this);
-            server.getPlayerStatisticIoService().writeStats(this);
+            server.getPlayerStatisticIoService().writeStatistics(this);
         }
     }
 
     @Override
     public void loadData() {
         server.getPlayerDataService().readData(this);
-        server.getPlayerStatisticIoService().readStats(this);
+        server.getPlayerStatisticIoService().readStatistics(this);
     }
 
     @Override

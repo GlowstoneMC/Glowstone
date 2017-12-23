@@ -1280,7 +1280,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Returns the player statitics I/O service attached to the first world.
+     * Returns the player statistics I/O service attached to the first world.
      *
      * @return the server's statistics I/O service
      */
