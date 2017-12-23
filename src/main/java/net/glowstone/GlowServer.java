@@ -43,7 +43,6 @@ import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.entity.state.GlowDispenser;
-import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.command.glowstone.ColorCommand;
 import net.glowstone.command.glowstone.GlowstoneCommand;
@@ -2099,7 +2098,6 @@ public final class GlowServer implements Server {
     @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
         GlowBossBar bossBar = new GlowBossBar(title, color, style, flags);
-        BossBarManager.register(bossBar);
         return bossBar;
     }
 

@@ -13,6 +13,7 @@ import io.netty.handler.codec.CodecException;
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
@@ -21,7 +22,6 @@ import javax.crypto.SecretKey;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.boss.BossBarManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -42,6 +42,7 @@ import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.Statistic;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -490,7 +491,14 @@ public class GlowSession extends BasicSession {
                 player.leaveBed(false);
             }
 
-            BossBarManager.clearBossBars(player);
+            Collection<BossBar> bars;
+            do {
+                bars = player.getBossBars();
+                for (BossBar bar : bars) {
+                    bar.removePlayer(player);
+                    player.removeBossBar(bar);
+                }
+            } while (!bars.isEmpty());
 
             String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {
