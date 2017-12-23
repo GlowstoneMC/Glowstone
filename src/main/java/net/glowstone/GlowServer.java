@@ -711,7 +711,7 @@ public final class GlowServer implements Server {
         }
 
         if (storageProviderFactory == null) {
-            storageProviderFactory = () -> new AnvilWorldStorageProvider(new File(getWorldContainer(), name));
+            storageProviderFactory = (worldName) -> new AnvilWorldStorageProvider(new File(getWorldContainer(), worldName));
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
@@ -1910,7 +1910,7 @@ public final class GlowServer implements Server {
         }
 
         // GlowWorld's constructor calls addWorld below.
-        return new GlowWorld(this, creator, storageProviderFactory.createWorldStorageProvider());
+        return new GlowWorld(this, creator, storageProviderFactory.createWorldStorageProvider(creator.name()));
     }
 
     /**

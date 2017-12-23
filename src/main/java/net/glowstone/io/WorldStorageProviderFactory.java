@@ -1,5 +1,5 @@
 package net.glowstone.io;
 
 public interface WorldStorageProviderFactory {
-    WorldStorageProvider createWorldStorageProvider();
+    WorldStorageProvider createWorldStorageProvider(String worldName);
 }
