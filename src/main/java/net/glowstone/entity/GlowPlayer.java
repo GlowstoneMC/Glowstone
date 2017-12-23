@@ -469,7 +469,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private String resourcePackHash;
     private PlayerResourcePackStatusEvent.Status resourcePackStatus;
     private List<Conversation> conversations = new ArrayList<>();
-    private SortedSet<BossBar> bossBars = new ConcurrentSkipListSet<>();
+    private Set<BossBar> bossBars = new ConcurrentSkipListSet<>();
     /**
      * The player's previous chunk x coordinate.
      */
