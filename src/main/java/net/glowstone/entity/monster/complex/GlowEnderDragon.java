@@ -19,7 +19,7 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
     private Map<String, GlowEnderDragonPart> parts = new HashMap<>();
 
     public GlowEnderDragon(Location loc, EntityType type, double maxHealth) {
-        super(loc, type, maxHealth, BarColor.PURPLE, BarStyle.SOLID);
+        super(loc, type, maxHealth, "Ender Dragon", BarColor.PURPLE, BarStyle.SOLID);
         if (type == EntityType.ENDER_DRAGON) {
             parts.put("mouth", new GlowEnderDragonPart(this));
             parts.put("head", new GlowEnderDragonPart(this));

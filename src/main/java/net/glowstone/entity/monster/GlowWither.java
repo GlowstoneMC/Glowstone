@@ -18,7 +18,7 @@ public class GlowWither extends GlowBoss implements Wither {
     private Entity centerTarget, leftTarget, rightTarget;
 
     public GlowWither(Location loc) {
-        super(loc, EntityType.WITHER, 300, BarColor.BLUE, BarStyle.SOLID);
+        super(loc, EntityType.WITHER, 300, "Wither", BarColor.BLUE, BarStyle.SOLID);
         setInvulnerableTicks(220);
         setCenterTarget(null);
         setLeftTarget(null);

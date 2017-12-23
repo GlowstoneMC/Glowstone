@@ -19,7 +19,7 @@ public class GlowBoss extends GlowMonster {
      * @param loc The location of the non-passive mob.
      * @param type The type of mob.
      * @param maxHealth The max health for this mob.
-     * @param title The boss bar title.
+     * @param title The boss bar title. TODO: i18n
      * @param color The boss bar color.
      * @param style The boss bar style.
      * @param barFlags Flags controlling the boss bar.
