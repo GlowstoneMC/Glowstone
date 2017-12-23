@@ -15,6 +15,11 @@ public class GlowBeacon extends GlowContainer implements Beacon {
     private PotionEffect primaryEffect;
     private PotionEffect secondaryEffect;
 
+    /**
+     * Creates an entity for the given beacon block.
+     *
+     * @param block the block this beacon occupies
+     */
     public GlowBeacon(GlowBlock block) {
         super(block);
         if (getBlockEntity().getPrimaryId() > 0) {

@@ -28,6 +28,11 @@ public class GlowBoat extends GlowEntity implements Boat {
     private TreeSpecies woodType;
     private boolean workOnLand;
 
+    /**
+     * Creates a boat.
+     *
+     * @param location the boat's location
+     */
     public GlowBoat(Location location) {
         super(location);
         setSize(1.375f, 0.5625f);

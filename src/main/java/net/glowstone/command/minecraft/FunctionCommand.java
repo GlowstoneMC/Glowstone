@@ -17,6 +17,9 @@ import org.bukkit.util.StringUtil;
 
 public class FunctionCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public FunctionCommand() {
         super("function", "Execute a function",
             "/function <name> [if <selector>|unless <selector>]", Collections.emptyList());

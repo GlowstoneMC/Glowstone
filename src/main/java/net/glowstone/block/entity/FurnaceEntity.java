@@ -75,6 +75,9 @@ public class FurnaceEntity extends ContainerEntity {
         this.cookTime = cookTime;
     }
 
+    /**
+     * Advances the cooking process for the tick.
+     */
     // TODO: Change block on burning
     public void burn() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
