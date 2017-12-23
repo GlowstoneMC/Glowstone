@@ -23,6 +23,9 @@ public class ForestPopulator extends BiomePopulator {
 
     protected int doublePlantLoweringAmount = 3;
 
+    /**
+     * Creates a populator adapted for a basic forest (oaks and birches).
+     */
     public ForestPopulator() {
         doublePlantDecorator.setAmount(0);
         treeDecorator.setAmount(10);

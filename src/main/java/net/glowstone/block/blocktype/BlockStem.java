@@ -20,6 +20,10 @@ public class BlockStem extends BlockCrops {
     private Material fruitType;
     private Material seedsType;
 
+    /**
+     * Creates a block type for a stem whose fruit is horizontally adjacent (pumpkin or melon).
+     * @param plantType the plant type.
+     */
     public BlockStem(Material plantType) {
         if (plantType == Material.MELON_STEM) {
             fruitType = Material.MELON_BLOCK;
@@ -79,10 +83,11 @@ public class BlockStem extends BlockCrops {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        // we check light level on the above block, meaning stems needs at least one free block above it
-        // in order to grow naturally (vanilla behavior)
-        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
-            ThreadLocalRandom.current().nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1)
+        // we check light level on the above block, meaning a stem needs at least one free block
+        // above it in order to grow naturally (vanilla behavior)
+        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9
+                && ThreadLocalRandom.current().nextInt(
+                        (int) (25.0F / getGrowthRateModifier(block)) + 1)
                 == 0) {
 
             int cropState = block.getData();

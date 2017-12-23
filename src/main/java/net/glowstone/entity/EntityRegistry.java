@@ -163,8 +163,8 @@ public class EntityRegistry {
     private static final Map<String, CustomEntityDescriptor> CUSTOM_ENTITIES = new HashMap<>();
 
     private static final ImmutableBiMap<Class<? extends Entity>, Class<? extends GlowEntity>>
-            ENTITIES = ImmutableBiMap
-            .<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
+            ENTITIES
+            = ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
             .put(AbstractHorse.class, GlowAbstractHorse.class)
             .put(AreaEffectCloud.class, GlowAreaEffectCloud.class)
             .put(ArmorStand.class, GlowArmorStand.class)
@@ -268,9 +268,9 @@ public class EntityRegistry {
     }
 
     /**
-     * Registers an entity type defined by a plugin.
-     *
-     * @param descriptor descriptor of the entity type
+     * Registers a custom entity type.
+     * @param descriptor the entity type to register; all fields except
+     *     {@link CustomEntityDescriptor#getStorage()} must be non-null
      */
     public static void registerCustomEntity(
         CustomEntityDescriptor<? extends GlowEntity> descriptor) {

@@ -22,6 +22,10 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
     private String rename = "";
     private int repairCost;
 
+    /**
+     * Creates an instance for the given player.
+     * @param holder the player
+     */
     public GlowAnvilInventory(InventoryHolder holder) {
         super(holder, InventoryType.ANVIL);
 
@@ -63,7 +67,8 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
             // Place the item in the player's inventory (right to left)
             player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         } else {
-            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            // Clicked in the crafting grid, no special handling required (just place them left to
+            // right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
             view.setItem(clickedSlot, clickedItem);
         }
@@ -88,6 +93,14 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         }
     }
 
+    /**
+     * Returns the item that will result when this anvil is applied to the currently loaded items,
+     * combining them, provided that two items which can be combined are loaded. A return of null
+     * doesn't imply that the anvil cannot be activated, since it may still be able to repair/name a
+     * single item.
+     *
+     * @return the resulting item, or null if two items that can be combined are not loaded
+     */
     public ItemStack getForged() {
         if (InventoryUtil.isEmpty(getFirstItem()) || InventoryUtil.isEmpty(getSecondItem())) {
             return null;
@@ -116,6 +129,11 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         return rename;
     }
 
+    /**
+     * Sets the name of the next item to be modified on this anvil.
+     *
+     * @param name the item name
+     */
     public void setRenameText(String name) {
         rename = name;
         if (rename.isEmpty()) {

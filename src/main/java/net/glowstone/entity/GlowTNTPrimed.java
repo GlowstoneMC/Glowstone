@@ -1,13 +1,12 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
-import net.glowstone.util.Position;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -74,15 +73,7 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-        int pitch = Position.getIntPitch(location);
-        int yaw = Position.getIntYaw(location);
-
-        LinkedList<Message> result = new LinkedList<>();
-        result.add(new SpawnObjectMessage(id, getUniqueId(), 50, x, y, z, pitch, yaw));
-        return result;
+        return Collections.singletonList(new SpawnObjectMessage(id, getUniqueId(), 50, location));
     }
 
     @Override

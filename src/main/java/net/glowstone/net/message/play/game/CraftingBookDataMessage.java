@@ -10,12 +10,16 @@ public final class CraftingBookDataMessage implements Message {
     public static final int TYPE_STATUS = 1;
 
     private final int type;
-    // type: displayed recipe (0)
     private final int recipeId;
-    // type: status (1)
     private final boolean bookOpen;
     private final boolean filter;
 
+    /**
+     * Creates a message about the given recipe.
+     *
+     * @param type {@link #TYPE_DISPLAYED_RECIPE} or {@link #TYPE_STATUS}
+     * @param recipeId the ID of a crafting recipe
+     */
     public CraftingBookDataMessage(int type, int recipeId) {
         this.type = type;
         this.recipeId = recipeId;
@@ -23,6 +27,13 @@ public final class CraftingBookDataMessage implements Message {
         this.filter = false;
     }
 
+    /**
+     * Creates a message about the whole crafting book.
+     *
+     * @param type {@link #TYPE_DISPLAYED_RECIPE} or {@link #TYPE_STATUS}
+     * @param bookOpen TODO: document this parameter
+     * @param filter TODO: document this parameter
+     */
     public CraftingBookDataMessage(int type, boolean bookOpen, boolean filter) {
         this.type = type;
         this.bookOpen = bookOpen;

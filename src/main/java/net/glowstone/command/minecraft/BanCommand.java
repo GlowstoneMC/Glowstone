@@ -11,6 +11,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class BanCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public BanCommand() {
         super("ban", "Bans a player from the server.", "/ban <player> [reason]",
             Collections.emptyList());
@@ -23,7 +26,7 @@ public class BanCommand extends VanillaCommand {
             return false;
         }
         if (args.length > 0) {
-            if (PlayerProfile.getProfile(args[0]) == null) {
+            if (PlayerProfile.getProfile(args[0]).join() == null) {
                 sender.sendMessage(ChatColor.RED + "Could not ban player " + args[0]);
                 return false;
             }

@@ -2,7 +2,7 @@ package net.glowstone.dispenser;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
-import net.glowstone.block.blocktype.BlockTNT;
+import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -21,7 +21,7 @@ public class FlintAndSteelDispenseBehavior extends DefaultDispenseBehavior {
             target.setType(Material.FIRE);
             InventoryUtil.damageItem(null, stack);
         } else if (target.getType() == Material.TNT) {
-            BlockTNT.igniteBlock(target, false);
+            BlockTnt.igniteBlock(target, false);
         } else {
             successful = false;
         }

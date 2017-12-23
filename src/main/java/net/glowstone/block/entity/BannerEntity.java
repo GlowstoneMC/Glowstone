@@ -28,7 +28,7 @@ public class BannerEntity extends BlockEntity {
         super.loadNbt(tag);
         if (tag.isList("Patterns", TagType.COMPOUND)) {
             List<CompoundTag> pattern = tag.getCompoundList("Patterns");
-            patterns = BlockBanner.fromNBT(pattern);
+            patterns = BlockBanner.fromNbt(pattern);
         }
 
         if (tag.isInt("Base")) {
@@ -39,7 +39,7 @@ public class BannerEntity extends BlockEntity {
     @Override
     public void saveNbt(CompoundTag tag) {
         super.saveNbt(tag);
-        tag.putCompoundList("Patterns", BlockBanner.toNBT(patterns));
+        tag.putCompoundList("Patterns", BlockBanner.toNbt(patterns));
         tag.putInt("Base", base.getDyeData());
     }
 

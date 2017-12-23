@@ -46,6 +46,8 @@ public class BlockContainer extends BlockType {
                 case ENDER_CHEST:
                     player.incrementStatistic(Statistic.ENDERCHEST_OPENED);
                     break;
+                default:
+                    // No statistic to update
             }
             // todo: animation?
             player.openInventory(((ContainerEntity) te).getInventory());
@@ -59,8 +61,8 @@ public class BlockContainer extends BlockType {
         Collection<ItemStack> drops = getContentDrops(block);
 
         MaterialMatcher neededTool = getNeededMiningTool(block);
-        if (neededTool == null ||
-            !InventoryUtil.isEmpty(tool) && neededTool
+        if (neededTool == null
+                || !InventoryUtil.isEmpty(tool) && neededTool
                 .matches(InventoryUtil.itemOrEmpty(tool).getType())) {
             drops.addAll(getBlockDrops(block));
         }
@@ -75,6 +77,11 @@ public class BlockContainer extends BlockType {
         return drops;
     }
 
+    /**
+     * Returns the contents of a container.
+     * @param block a container block
+     * @return the container's contents as ItemStack instances
+     */
     public Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
         for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory()

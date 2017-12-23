@@ -22,7 +22,6 @@ import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
-import net.glowstone.util.Position;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -50,13 +49,13 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     private static final EulerAngle[] defaultPose = new EulerAngle[6];
 
     static {
-        double ten = 0.17453292519943295; // Math.toRadians(10)
-        double fifteen = 0.2617993877991494; // Math.toRadians(15)
-        double one = 0.017453292519943295; // Math.toRadians(1)
         defaultPose[0] = EulerAngle.ZERO;
         defaultPose[1] = EulerAngle.ZERO;
+        double ten = 0.17453292519943295; // Math.toRadians(10)
         defaultPose[2] = new EulerAngle(-ten, 0, -ten);
+        double fifteen = 0.2617993877991494; // Math.toRadians(15)
         defaultPose[3] = new EulerAngle(-fifteen, 0, ten);
+        double one = 0.017453292519943295; // Math.toRadians(1)
         defaultPose[4] = new EulerAngle(-one, 0, -one);
         defaultPose[5] = new EulerAngle(one, 0, one);
     }
@@ -74,6 +73,11 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     private boolean needsKill;
 
+    /**
+     * Creates an armor stand.
+     *
+     * @param location the location of the armor stand
+     */
     public GlowArmorStand(Location location) {
         super(location, 2);
 
@@ -343,21 +347,16 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             case VOID:
             case CUSTOM:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, UUID.randomUUID(), 78, x, y, z, pitch, yaw),
+            new SpawnObjectMessage(id, UUID.randomUUID(), 78, location),
             // TODO: once UUID is documented, actually use the appropriate ID here
             new EntityMetadataMessage(id, metadata.getEntryList()),
             new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),

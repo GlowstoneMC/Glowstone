@@ -13,6 +13,10 @@ public class ConditionalLootItem {
     private final Optional<ProbableValue<Integer>> data;
     private final Optional<ReflectiveValue<Integer>> reflectiveData;
 
+    /**
+     * Parses a conditional loot item from its JSONObject form.
+     * @param object a JSON object describing the loot item
+     */
     public ConditionalLootItem(JSONObject object) {
         if (object.containsKey("item")) {
             type = Optional.of(new ProbableValue<>(object, "item"));

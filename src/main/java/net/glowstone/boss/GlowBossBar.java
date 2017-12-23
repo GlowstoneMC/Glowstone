@@ -24,7 +24,17 @@ public class GlowBossBar implements BossBar {
     private double progress = 1.0;
     private boolean visible = true;
 
-    public GlowBossBar(String title, BarColor color, BarStyle style, double progress, BarFlag... flags) {
+    /**
+     * Creates a boss bar.
+     *
+     * @param title the bar's title
+     * @param color the bar's color
+     * @param style the bar's style
+     * @param progress the initial progress
+     * @param flags the flags
+     */
+    public GlowBossBar(String title, BarColor color, BarStyle style, double progress,
+            BarFlag... flags) {
         this.uniqueId = UUID.randomUUID();
         this.title = title;
         this.color = color;
@@ -46,7 +56,8 @@ public class GlowBossBar implements BossBar {
     public void setTitle(String title) {
         this.title = title;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_TITLE, new TextMessage(title)));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_TITLE, new
+                    TextMessage(title)));
         }
     }
 
@@ -59,7 +70,9 @@ public class GlowBossBar implements BossBar {
     public void setColor(BarColor color) {
         this.color = color;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE, BossBarMessage.Color.fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE,
+                    BossBarMessage.Color
+                    .fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
         }
     }
 
@@ -72,7 +85,9 @@ public class GlowBossBar implements BossBar {
     public void setStyle(BarStyle style) {
         this.style = style;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE, BossBarMessage.Color.fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE,
+                    BossBarMessage.Color
+                    .fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
         }
     }
 
@@ -81,7 +96,8 @@ public class GlowBossBar implements BossBar {
         if (flags.contains(flag)) {
             flags.remove(flag);
             if (isVisible()) {
-                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS, flagsToByte()));
+                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS,
+                        flagsToByte()));
             }
         }
     }
@@ -91,7 +107,8 @@ public class GlowBossBar implements BossBar {
         if (!flags.contains(flag) && flag != null) {
             flags.add(flag);
             if (isVisible()) {
-                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS, flagsToByte()));
+                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS,
+                        flagsToByte()));
             }
         }
     }
@@ -110,7 +127,8 @@ public class GlowBossBar implements BossBar {
     public void setProgress(double progress) {
         this.progress = progress;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_HEALTH, (float) progress));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_HEALTH,
+                    (float) progress));
         }
     }
 
@@ -193,7 +211,9 @@ public class GlowBossBar implements BossBar {
     }
 
     private BossBarMessage createAddAction() {
-        return new BossBarMessage(getUniqueId(), BossBarMessage.Action.ADD, new TextMessage(title), (float) progress, BossBarMessage.Color.fromBarColor(color), BossBarMessage.Division.fromBarStyle(style), flagsToByte());
+        return new BossBarMessage(getUniqueId(), BossBarMessage.Action.ADD, new TextMessage(title),
+                (float) progress, BossBarMessage.Color.fromBarColor(color),
+                BossBarMessage.Division.fromBarStyle(style), flagsToByte());
     }
 
     private BossBarMessage createRemoveAction() {
@@ -216,6 +236,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public boolean equals(Object obj) {
-        return obj.getClass() == GlowBossBar.class && ((GlowBossBar) obj).getUniqueId() == this.getUniqueId();
+        return obj.getClass() == GlowBossBar.class && ((GlowBossBar) obj).getUniqueId() == this
+                .getUniqueId();
     }
 }

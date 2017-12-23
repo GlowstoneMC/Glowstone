@@ -18,6 +18,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class GiveCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public GiveCommand() {
         super("give", "Gives an item to a player.", "/give <player> <item> [amount]",
             Collections.emptyList());
@@ -33,7 +36,7 @@ public class GiveCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
-        String name = args[0], itemName = args[1];
+        String itemName = args[1];
         if (!itemName.startsWith("minecraft:")) {
             itemName = "minecraft:" + itemName;
         }
@@ -62,6 +65,7 @@ public class GiveCommand extends VanillaCommand {
                 return false;
             }
         }
+        String name = args[0];
         if (name.startsWith("@") && name.length() >= 2 && CommandUtils.isPhysical(sender)) {
             Location location = sender instanceof Entity ? ((Entity) sender).getLocation()
                 : ((BlockCommandSender) sender).getBlock().getLocation();

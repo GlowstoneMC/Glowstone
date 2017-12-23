@@ -14,6 +14,9 @@ import org.bukkit.util.StringUtil;
 
 public class GameRuleCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public GameRuleCommand() {
         super("gamerule", "Changes the rules of the server.", "/gamerule [rule] [new value]",
             Collections.emptyList());

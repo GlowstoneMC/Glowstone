@@ -56,7 +56,12 @@ public class BossBarMessage implements Message {
 
         private static Action[] values;
 
-        //Since values() is expensive, let's cache it.
+        /**
+         * Since values() is expensive, we cache it.
+         * @param i the ordinal to look up
+         * @return the Action with ordinal {@code i}
+         * @throws ArrayIndexOutOfBoundsException if {@code values()[i]} doesn't exist
+         */
         public static Action fromInt(int i) {
             if (values == null) {
                 values = Action.values();
@@ -76,7 +81,12 @@ public class BossBarMessage implements Message {
 
         private static Color[] values;
 
-        //Since values() is expensive, let's cache it.
+        /**
+         * Since values() is expensive, we cache it.
+         * @param i the ordinal to look up
+         * @return the Color with ordinal {@code i}
+         * @throws ArrayIndexOutOfBoundsException if {@code values()[i]} doesn't exist
+         */
         public static Color fromInt(int i) {
             if (values == null) {
                 values = Color.values();
@@ -84,6 +94,11 @@ public class BossBarMessage implements Message {
             return values[i];
         }
 
+        /**
+         * Converts a {@link BarColor} to an instance of this enum.
+         * @param barColor the bar color to convert
+         * @return the bar color as a Color
+         */
         public static Color fromBarColor(BarColor barColor) {
             if (values == null) {
                 values = Color.values();
@@ -101,7 +116,12 @@ public class BossBarMessage implements Message {
 
         private static Division[] values;
 
-        //Since values() is expensive, let's cache it.
+        /**
+         * Since values() is expensive, we cache it.
+         * @param i the ordinal to look up
+         * @return the Action with ordinal {@code i}
+         * @throws ArrayIndexOutOfBoundsException if {@code values()[i]} doesn't exist
+         */
         public static Division fromInt(int i) {
             if (values == null) {
                 values = Division.values();
@@ -109,6 +129,11 @@ public class BossBarMessage implements Message {
             return values[i];
         }
 
+        /**
+         * Converts a {@link BarStyle} to an instance of this enum.
+         * @param barStyle the bar style to convert
+         * @return the bar style as a Division
+         */
         public static Division fromBarStyle(BarStyle barStyle) {
             if (values == null) {
                 values = Division.values();

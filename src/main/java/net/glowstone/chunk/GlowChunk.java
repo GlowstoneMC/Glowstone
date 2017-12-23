@@ -38,9 +38,17 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 public final class GlowChunk implements Chunk {
 
     /**
-     * The dimensions of a chunk (width: x, height: z, depth: y).
+     * The width of a chunk (x axis).
      */
-    public static final int WIDTH = 16, HEIGHT = 16, DEPTH = 256;
+    public static final int WIDTH = 16;
+    /**
+     * The height of a chunk (z axis).
+     */
+    public static final int HEIGHT = 16;
+    /**
+     * The depth of a chunk (y axis).
+     */
+    public static final int DEPTH = 256;
     /**
      * The Y depth of a single chunk section.
      */
@@ -54,9 +62,13 @@ public final class GlowChunk implements Chunk {
      */
     private final GlowWorld world;
     /**
-     * The coordinates of this chunk.
+     * The x-coordinate of this chunk.
      */
-    private final int x, z;
+    private final int x;
+    /**
+     * The z-coordinate of this chunk.
+     */
+    private final int z;
     /**
      * The block entities that reside in this chunk.
      */
@@ -74,7 +86,8 @@ public final class GlowChunk implements Chunk {
      */
     private byte[] biomes;
     /**
-     * The height map values values of each column, or null if it is unloaded. The height for a column is one plus the y-index of the highest non-air block in the column.
+     * The height map values values of each column, or null if it is unloaded. The height for a
+     * column is one plus the y-index of the highest non-air block in the column.
      */
     private byte[] heightMap;
     /**
@@ -136,6 +149,11 @@ public final class GlowChunk implements Chunk {
         return getBlockEntities();
     }
 
+    /**
+     * Returns the states of the block entities (e.g. container blocks) in this chunk.
+     *
+     * @return the states of the block entities in this chunk
+     */
     public GlowBlockState[] getBlockEntities() {
         List<GlowBlockState> states = new ArrayList<>(blockEntities.size());
         for (BlockEntity blockEntity : blockEntities.values()) {
@@ -163,8 +181,11 @@ public final class GlowChunk implements Chunk {
     }
 
     @Override
-    public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome, boolean includeBiomeTempRain) {
-        return new GlowChunkSnapshot(x, z, world, sections, includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null, includeBiomeTempRain);
+    public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome,
+            boolean includeBiomeTempRain) {
+        return new GlowChunkSnapshot(x, z, world, sections,
+                includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null,
+                includeBiomeTempRain);
     }
 
     /**
@@ -246,15 +267,21 @@ public final class GlowChunk implements Chunk {
     /**
      * Initialize this chunk from the given sections.
      *
-     * @param initSections The {@link ChunkSection}s to use.  Should have a length of {@value #SEC_COUNT}.
+     * @param initSections The {@link ChunkSection}s to use. Should have a length of {@value
+     *         #SEC_COUNT}.
      */
     public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
-            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
+            GlowServer.logger.log(Level.SEVERE,
+                    "Tried to initialize already loaded chunk (" + x + "," + z + ")",
+                    new Throwable());
             return;
         }
         if (initSections.length != SEC_COUNT) {
-            GlowServer.logger.log(Level.WARNING, "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was " + initSections.length, new Throwable());
+            GlowServer.logger.log(Level.WARNING,
+                    "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was "
+                            + initSections.length,
+                    new Throwable());
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
@@ -348,11 +375,13 @@ public final class GlowChunk implements Chunk {
                     blockEntities.put(coordinateToIndex(cx, cz, cy), entity);
                     return entity;
                 } catch (Exception ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
+                    GlowServer.logger
+                            .log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
+                    return null;
                 }
+            default:
+                return null;
         }
-
-        return null;
     }
 
     // ======== Data access ========
@@ -591,7 +620,7 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Sets the biome of a column within this chunk,
+     * Sets the biome of a column within this chunk.
      *
      * @param x The X coordinate.
      * @param z The Z coordinate.
@@ -681,14 +710,16 @@ public final class GlowChunk implements Chunk {
      */
     private int coordinateToIndex(int x, int z, int y) {
         if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH) {
-            throw new IndexOutOfBoundsException("Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
+            throw new IndexOutOfBoundsException(
+                    "Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
         }
 
         return (y * HEIGHT + z) * WIDTH + x;
     }
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire chunk to them.
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire
+     * chunk to them.
      *
      * @return The {@link ChunkDataMessage}.
      */
@@ -699,7 +730,8 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire chunk to them.
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire
+     * chunk to them.
      *
      * @param skylight Whether to include skylight data.
      * @return The {@link ChunkDataMessage}.
@@ -709,7 +741,8 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream parts of this chunk to them.
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream parts of this
+     * chunk to them.
      *
      * @param skylight Whether to include skylight data.
      * @param entireChunk Whether to send all chunk sections.
@@ -764,18 +797,28 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * A chunk key represents the X and Z coordinates of a chunk in a manner suitable for use as a key in a hash table or set.
+     * A chunk key represents the X and Z coordinates of a chunk in a manner suitable for use as a
+     * key in a hash table or set.
      */
     @Data
     public static final class Key {
 
         // Key cache storage
-        private static final Long2ObjectOpenHashMap<Key> keys = new Long2ObjectOpenHashMap<>(512, 0.5F);
+        private static final Long2ObjectOpenHashMap<Key> keys
+                = new Long2ObjectOpenHashMap<>(512, 0.5F);
 
         /**
-         * The coordinates.
+         * The x-coordinate.
          */
-        private final int x, z, hashCode;
+        private final int x;
+        /**
+         * The z-coordinate.
+         */
+        private final int z;
+        /**
+         * A pre-computed hash code based on the coordinates.
+         */
+        private final int hashCode;
 
         private Key(int x, int z) {
             this.x = x;

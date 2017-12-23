@@ -19,7 +19,8 @@ public class EntityIdManager {
     private int lastId;
 
     /**
-     * Allocates the id for an entity. This method performs synchronization as it might be accessed by multiple world threads simultaneously.
+     * Allocates the id for an entity. This method performs synchronization as it might be accessed
+     * by multiple world threads simultaneously.
      *
      * @param entity The entity.
      * @return The id.

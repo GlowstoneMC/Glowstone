@@ -91,8 +91,8 @@ import net.glowstone.block.blocktype.BlockStairs;
 import net.glowstone.block.blocktype.BlockStem;
 import net.glowstone.block.blocktype.BlockStone;
 import net.glowstone.block.blocktype.BlockSugarCane;
-import net.glowstone.block.blocktype.BlockTNT;
 import net.glowstone.block.blocktype.BlockTallGrass;
+import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.block.blocktype.BlockTorch;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.blocktype.BlockVine;
@@ -337,7 +337,7 @@ public final class ItemTable {
         reg(Material.STANDING_BANNER, new BlockBanner());
         reg(Material.WALL_BANNER, new BlockBanner());
         reg(Material.SPONGE, new BlockSponge());
-        reg(Material.TNT, new BlockTNT());
+        reg(Material.TNT, new BlockTnt());
         reg(Material.DOUBLE_PLANT, new BlockDoublePlant());
         reg(Material.PUMPKIN, new BlockPumpkin());
         reg(Material.JACK_O_LANTERN, new BlockPumpkinBase(Material.JACK_O_LANTERN));

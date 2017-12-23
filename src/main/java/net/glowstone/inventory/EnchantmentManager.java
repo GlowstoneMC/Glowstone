@@ -37,6 +37,12 @@ public class EnchantmentManager {
     private final int[] enchLevel = new int[3];
     private int xpSeed;
 
+    /**
+     * Creates an instance to manage the given enchanting table for the given player.
+     *
+     * @param inventory the enchanting table
+     * @param player the user
+     */
     public EnchantmentManager(GlowEnchantingInventory inventory, GlowPlayer player) {
         this.player = player;
         this.inventory = inventory;
@@ -52,13 +58,12 @@ public class EnchantmentManager {
             return -1;
         }
 
-        float randomValue = 1 + (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
-
         modifier /= 4;
         modifier += 1;
         modifier = random.nextInt(modifier) + random.nextInt(modifier);
         modifier += 1 + cost;
 
+        float randomValue = 1 + (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
         modifier = Math.round(modifier * randomValue);
         modifier = Math.max(1, modifier);
 
@@ -74,31 +79,31 @@ public class EnchantmentManager {
             case BOW:
             case FISHING_ROD:
                 return 1;
-        }
+            default:
+                if (ClothType.CHAINMAIL.matches(type)) {
+                    return 12;
+                } else if (ClothType.IRON.matches(type)) {
+                    return 9;
+                } else if (ClothType.DIAMOND.matches(type)) {
+                    return 10;
+                } else if (ClothType.LEATHER.matches(type)) {
+                    return 15;
+                } else if (ClothType.GOLD.matches(type)) {
+                    return 25;
+                } else if (MaterialToolType.WOOD.matches(type)) {
+                    return 15;
+                } else if (MaterialToolType.STONE.matches(type)) {
+                    return 5;
+                } else if (MaterialToolType.DIAMOND.matches(type)) {
+                    return 10;
+                } else if (MaterialToolType.IRON.matches(type)) {
+                    return 14;
+                } else if (MaterialToolType.GOLD.matches(type)) {
+                    return 22;
+                }
 
-        if (ClothType.CHAINMAIL.matches(type)) {
-            return 12;
-        } else if (ClothType.IRON.matches(type)) {
-            return 9;
-        } else if (ClothType.DIAMOND.matches(type)) {
-            return 10;
-        } else if (ClothType.LEATHER.matches(type)) {
-            return 15;
-        } else if (ClothType.GOLD.matches(type)) {
-            return 25;
-        } else if (MaterialToolType.WOOD.matches(type)) {
-            return 15;
-        } else if (MaterialToolType.STONE.matches(type)) {
-            return 5;
-        } else if (MaterialToolType.DIAMOND.matches(type)) {
-            return 10;
-        } else if (MaterialToolType.IRON.matches(type)) {
-            return 14;
-        } else if (MaterialToolType.GOLD.matches(type)) {
-            return 22;
+                return 0;
         }
-
-        return 0;
     }
 
     /////////////////////////////
@@ -196,6 +201,9 @@ public class EnchantmentManager {
         }
     }
 
+    /**
+     * Resets the enchantments.
+     */
     public void invalidate() {
         ItemStack item = inventory.getItem();
         ItemStack resource = inventory.getSecondary();
@@ -209,6 +217,11 @@ public class EnchantmentManager {
         }
     }
 
+    /**
+     * Handles a click on an enchantment button.
+     *
+     * @param clicked The button that was clicked
+     */
     public void onPlayerEnchant(int clicked) {
         if (enchLevelCosts[clicked] <= 0 || isMaliciousClicked(clicked)) {
             return;
@@ -415,8 +428,8 @@ public class EnchantmentManager {
         if (player.getGameMode() != GameMode.CREATIVE) {
             if (player.getLevel() < level || inventory.getSecondary() == null
                 || inventory.getSecondary().getAmount() < clicked) {
-                GlowServer.logger.info(
-                    "Malicious client, player has not enough levels / enough resources to enchant item!");
+                GlowServer.logger.info("Malicious client, player has not "
+                        + "enough levels / enough resources to enchant item!");
                 update();
                 return true;
             }

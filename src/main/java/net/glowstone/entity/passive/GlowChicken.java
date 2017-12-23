@@ -14,6 +14,11 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     private boolean chickenJockey;
     private int eggLayTime;
 
+    /**
+     * Creates a chicken.
+     *
+     * @param location the chicken's location
+     */
     public GlowChicken(Location location) {
         super(location, EntityType.CHICKEN, 4);
         setSize(0.4F, 0.7F);

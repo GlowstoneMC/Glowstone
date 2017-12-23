@@ -49,10 +49,10 @@ public class BlockMycel extends BlockType {
 
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
-                if (targetBlock.getType() == Material.DIRT &&
-                    targetBlock.getData() == 0 && // only spread on normal dirt
-                    targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
-                    targetAbove.getLightLevel() >= 4) {
+                if (targetBlock.getType() == Material.DIRT
+                    && targetBlock.getData() == 0 // only spread on normal dirt
+                    && targetAbove.getMaterialValues().getLightOpacity() <= 2
+                    && targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.MYCEL);
                     state.setRawData((byte) 0);

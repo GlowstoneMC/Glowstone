@@ -16,32 +16,45 @@ import net.glowstone.util.nbt.CompoundTag;
 public final class ChunkSection {
 
     /**
-     * The number of blocks in a chunk section, and thus the number of elements in all arrays used for it.
+     * The number of blocks in a chunk section, and thus the number of elements in all arrays used
+     * for it.
      */
     public static final int ARRAY_SIZE = GlowChunk.WIDTH * GlowChunk.HEIGHT * GlowChunk.SEC_DEPTH;
     /**
-     * Block and sky light levels to use for empty chunk sections.
+     * Block light level to use for empty chunk sections.
      */
-    public static final byte EMPTY_BLOCK_LIGHT = 0, EMPTY_SKYLIGHT = 0;
+    public static final byte EMPTY_BLOCK_LIGHT = 0;
     /**
-     * The default values for block and sky light, used on new chunk sections.
+     * Sky light level to use for empty chunk sections.
      */
-    public static final byte DEFAULT_BLOCK_LIGHT = 0, DEFAULT_SKYLIGHT = 0xF;
+    public static final byte EMPTY_SKYLIGHT = 0;
+    /**
+     * The default value for block light, used on new chunk sections.
+     */
+    public static final byte DEFAULT_BLOCK_LIGHT = 0;
+    /**
+     * The default value for sky light, used on new chunk sections.
+     */
+    public static final byte DEFAULT_SKYLIGHT = 0xF;
     /**
      * The number of bits per block used in the global palette.
      */
     public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 13;
 
     /**
-     * The palette
+     * The palette.
      */
     @Nullable
     private IntList palette;
     private VariableValueArray data;
     /**
-     * The block light and sky light arrays. These arrays are always set, even in dimensions without skylight.
+     * The sky light array. This array is always set, even in dimensions without skylight.
      */
-    private NibbleArray skyLight, blockLight;
+    private NibbleArray skyLight;
+    /**
+     * The block light array.
+     */
+    private NibbleArray blockLight;
     /**
      * The number of non-air blocks in this section, used to determine whether it is empty.
      */
@@ -55,28 +68,35 @@ public final class ChunkSection {
     }
 
     /**
-     * Create a new, unlit chunk section with the specified chunk data.
+     * <p>Create a new, unlit chunk section with the specified chunk data.</p>
      *
-     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be further modified.
+     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be
+     * further modified.</p>
      *
-     * @param types An array of block state IDs for this chunk section (containing type and metadata)
+     * @param types An array of block state IDs for this chunk section (containing type and
+     *         metadata)
      */
     public ChunkSection(char[] types) {
-        this(types, new NibbleArray(ARRAY_SIZE, DEFAULT_SKYLIGHT), new NibbleArray(ARRAY_SIZE, DEFAULT_BLOCK_LIGHT));
+        this(types, new NibbleArray(ARRAY_SIZE, DEFAULT_SKYLIGHT),
+                new NibbleArray(ARRAY_SIZE, DEFAULT_BLOCK_LIGHT));
     }
 
     /**
-     * Create a ChunkSection with the specified chunk data.
+     * <p>Create a ChunkSection with the specified chunk data.</p>
      *
-     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be further modified.
+     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be
+     * further modified.</p>
      *
      * @param types An array of block types for this chunk section.
      * @param skyLight An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
     public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
-        if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
-            throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + types.length + " " + skyLight.size() + " " + blockLight.size());
+        if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE
+                || blockLight.size() != ARRAY_SIZE) {
+            throw new IllegalArgumentException(
+                    "An array length was not " + ARRAY_SIZE + ": "
+                            + types.length + " " + skyLight.size() + " " + blockLight.size());
         }
         this.skyLight = skyLight;
         this.blockLight = blockLight;
@@ -85,26 +105,35 @@ public final class ChunkSection {
     }
 
     /**
-     * Create a ChunkSection with the specified chunk data.
+     * <p>Create a ChunkSection with the specified chunk data.</p>
      *
-     * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be further modified.
+     * <p>This ChunkSection assumes
+     * ownership of the arrays passed in, and they should not be further modified.</p>
      *
      * @param data An array of blocks in this section.
-     * @param palette The palette that is associated with that data.  If null, the global palette is used.
+     * @param palette The palette that is associated with that data. If null, the global
+     *         palette is used.
      * @param skyLight An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
-    public ChunkSection(VariableValueArray data, @Nullable IntList palette, NibbleArray skyLight, NibbleArray blockLight) {
-        if (data.getCapacity() != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight.size() != ARRAY_SIZE) {
-            throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + data.getCapacity() + " " + skyLight.size() + " " + blockLight.size());
+    public ChunkSection(VariableValueArray data, @Nullable IntList palette, NibbleArray skyLight,
+            NibbleArray blockLight) {
+        if (data.getCapacity() != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight
+                .size() != ARRAY_SIZE) {
+            throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + data
+                    .getCapacity() + " " + skyLight.size() + " " + blockLight.size());
         }
         if (palette == null) {
             if (data.getBitsPerValue() != GLOBAL_PALETTE_BITS_PER_BLOCK) {
-                throw new IllegalArgumentException("Must use " + GLOBAL_PALETTE_BITS_PER_BLOCK + " bits per block when palette is null (using global palette); got " + data.getBitsPerValue());
+                throw new IllegalArgumentException("Must use " + GLOBAL_PALETTE_BITS_PER_BLOCK
+                        + " bits per block when palette is null (using global palette); got "
+                        + data.getBitsPerValue());
             }
         } else {
             if (data.getBitsPerValue() < 4 || data.getBitsPerValue() > 8) {
-                throw new IllegalArgumentException("Bits per block must be between 4 and 8 (inclusive) when using a section palette; got " + data.getBitsPerValue());
+                throw new IllegalArgumentException("Bits per block must be between 4 and 8 "
+                        + "(inclusive) when using a section palette; got "
+                        + data.getBitsPerValue());
             }
         }
         this.data = data;
@@ -121,7 +150,8 @@ public final class ChunkSection {
      */
     public static ChunkSection fromStateArray(short[] types) {
         if (types.length != ARRAY_SIZE) {
-            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": " + types.length);
+            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
+                    + types.length);
         }
         char[] charTypes = new char[ARRAY_SIZE];
         for (int i = 0; i < ARRAY_SIZE; i++) {
@@ -138,7 +168,8 @@ public final class ChunkSection {
      */
     public static ChunkSection fromIdArray(short[] types) {
         if (types.length != ARRAY_SIZE) {
-            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": " + types.length);
+            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
+                    + types.length);
         }
         char[] charTypes = new char[ARRAY_SIZE];
         for (int i = 0; i < ARRAY_SIZE; i++) {
@@ -155,7 +186,8 @@ public final class ChunkSection {
      */
     public static ChunkSection fromIdArray(byte[] types) {
         if (types.length != ARRAY_SIZE) {
-            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": " + types.length);
+            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
+                    + types.length);
         }
         char[] charTypes = new char[ARRAY_SIZE];
         for (int i = 0; i < ARRAY_SIZE; i++) {
@@ -170,16 +202,18 @@ public final class ChunkSection {
      * @param sectionTag The tag to read from
      * @return The section
      */
-    public static ChunkSection fromNBT(CompoundTag sectionTag) {
+    public static ChunkSection fromNbt(CompoundTag sectionTag) {
         byte[] rawTypes = sectionTag.getByteArray("Blocks");
-        NibbleArray extTypes = sectionTag.containsKey("Add") ? new NibbleArray(sectionTag.getByteArray("Add")) : null;
+        NibbleArray extTypes = sectionTag.containsKey("Add") ? new NibbleArray(sectionTag
+                .getByteArray("Add")) : null;
         NibbleArray data = new NibbleArray(sectionTag.getByteArray("Data"));
         NibbleArray blockLight = new NibbleArray(sectionTag.getByteArray("BlockLight"));
         NibbleArray skyLight = new NibbleArray(sectionTag.getByteArray("SkyLight"));
 
         char[] types = new char[rawTypes.length];
         for (int i = 0; i < rawTypes.length; i++) {
-            types[i] = (char) ((extTypes == null ? 0 : extTypes.get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
+            types[i] = (char) ((extTypes == null ? 0 : extTypes
+                    .get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
         }
 
         return new ChunkSection(types, skyLight, blockLight);
@@ -195,19 +229,22 @@ public final class ChunkSection {
      */
     public int index(int x, int y, int z) {
         if (x < 0 || z < 0 || x >= GlowChunk.WIDTH || z >= GlowChunk.HEIGHT) {
-            throw new IndexOutOfBoundsException("Coords (x=" + x + ",z=" + z + ") out of section bounds");
+            throw new IndexOutOfBoundsException(
+                    "Coords (x=" + x + ",z=" + z + ") out of section bounds");
         }
         return (y & 0xf) << 8 | z << 4 | x;
     }
 
     /**
-     * Loads the contents of this chunk section from the given type array, initializing the palette.
+     * Loads the contents of this chunk section from the given type array, initializing the
+     * palette.
      *
      * @param types The type array.
      */
     public void loadTypeArray(char[] types) {
         if (types.length != ARRAY_SIZE) {
-            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": " + types.length);
+            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
+                    + types.length);
         }
 
         // Build the palette, and the count
@@ -241,9 +278,11 @@ public final class ChunkSection {
     }
 
     /**
-     * Optimizes this chunk section, removing unneeded palette entries and recounting non-air blocks.
+     * <p>Optimizes this chunk section, removing unneeded palette entries and recounting non-air
+     * blocks.</p>
      *
-     * <p>This is an expensive operation, but occasionally performing it will improve sending the section.
+     * <p>This is an expensive operation, but occasionally performing it will improve
+     * sending the section.
      */
     public void optimize() {
         loadTypeArray(getTypes());
@@ -271,7 +310,9 @@ public final class ChunkSection {
      * @return The snapshot for this section.
      */
     public ChunkSection snapshot() {
-        return new ChunkSection(data.clone(), palette == null ? null : new IntArrayList(palette), skyLight.snapshot(), blockLight.snapshot());
+        return new ChunkSection(data
+                .clone(), palette == null ? null : new IntArrayList(palette), skyLight
+                .snapshot(), blockLight.snapshot());
     }
 
     /**
@@ -392,7 +433,8 @@ public final class ChunkSection {
     /**
      * Gets the sky light array.
      *
-     * @return The sky light array. If the dimension of this chunk section's chunk's world is not the overworld, this array contains only maximum light levels.
+     * @return The sky light array. If the dimension of this chunk section's chunk's world is not
+     *         the overworld, this array contains only maximum light levels.
      */
     public NibbleArray getSkyLight() {
         return skyLight;
@@ -423,13 +465,14 @@ public final class ChunkSection {
     }
 
     /**
-     * Is this chunk section empty, IE doesn't need to be sent or saved?
+     * <p>Checks whether this chunk section is empty, IE doesn't need to be sent or saved.</p>
      *
-     * <p>This implementation has the same issue that causes <a href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>:
+     * <p>This implementation has the same issue that causes
+     * <a href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>:</p>
      *
      * <p>It assumes that a chunk section with only air blocks has no meaningful data.
      * This assumption is incorrect for sections near light sources, which can create lighting bugs.
-     * However, it is more expensive to send additional sections with just light data.
+     * However, it is more expensive to send additional sections with just light data.</p>
      *
      * @return True if this chunk section is empty and can be removed.
      */
@@ -462,7 +505,8 @@ public final class ChunkSection {
         }
         long[] backing = data.getBacking();
         ByteBufUtils.writeVarInt(buf, backing.length);
-        buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight.byteSize() : 0));
+        buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight
+                .byteSize() : 0));
         for (long value : backing) {
             buf.writeLong(value);
         }
@@ -478,7 +522,7 @@ public final class ChunkSection {
      *
      * @param sectionTag The tag to write to
      */
-    public void writeToNBT(CompoundTag sectionTag) {
+    public void writeToNbt(CompoundTag sectionTag) {
         char[] types = this.getTypes();
         byte[] rawTypes = new byte[ChunkSection.ARRAY_SIZE];
         NibbleArray extTypes = null;

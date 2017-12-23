@@ -39,12 +39,16 @@ public final class GlowBlock implements Block {
     /**
      * The BlockFaces of a single-layer 3x3 area.
      */
-    private static final BlockFace[] LAYER = new BlockFace[]{BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SELF, BlockFace.WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
+    private static final BlockFace[] LAYER = new BlockFace[]{
+        BlockFace.NORTH_WEST, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SELF,
+        BlockFace.WEST, BlockFace.SOUTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST};
 
     /**
      * The BlockFaces of all directly adjacent.
      */
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+    private static final BlockFace[] ADJACENT = new BlockFace[]{
+        BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP,
+        BlockFace.DOWN};
     /**
      * The metadata store for blocks.
      */
@@ -55,6 +59,14 @@ public final class GlowBlock implements Block {
     private final int z;
     private GlowWorld world;
 
+    /**
+     * Creates an object to refer to a block.
+     *
+     * @param chunk the chunk
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     */
     public GlowBlock(GlowChunk chunk, int x, int y, int z) {
         world = chunk.getWorld();
         this.x = x;
@@ -152,7 +164,8 @@ public final class GlowBlock implements Block {
     @Override
     public BlockFace getFace(Block block) {
         for (BlockFace face : BlockFace.values()) {
-            if (x + face.getModX() == block.getX() && y + face.getModY() == block.getY() && z + face.getModZ() == block.getZ()) {
+            if (x + face.getModX() == block.getX() && y + face.getModY() == block.getY()
+                    && z + face.getModZ() == block.getZ()) {
                 return face;
             }
         }
@@ -171,7 +184,8 @@ public final class GlowBlock implements Block {
 
     @Override
     public GlowBlock getRelative(BlockFace face, int distance) {
-        return getRelative(face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
+        return getRelative(
+                face.getModX() * distance, face.getModY() * distance, face.getModZ() * distance);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -234,7 +248,8 @@ public final class GlowBlock implements Block {
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
 
-        if (oldTypeId == Material.DOUBLE_PLANT && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
+        if (oldTypeId == Material.DOUBLE_PLANT
+                && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
             world.getChunkAtAsync(this, c -> ((GlowChunk) c).setType(x & 0xf, z & 0xf, y + 1, 0));
             GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
             BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
@@ -260,7 +275,8 @@ public final class GlowBlock implements Block {
     @Override
     public boolean isLiquid() {
         Material mat = getType();
-        return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA || mat == Material.STATIONARY_LAVA;
+        return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA
+                || mat == Material.STATIONARY_LAVA;
     }
 
     /**
@@ -339,7 +355,8 @@ public final class GlowBlock implements Block {
             return true;
         }
 
-        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON) && ((Button) getState().getData()).isPowered()) {
+        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON)
+                && ((Button) getState().getData()).isPowered()) {
             return true;
         }
 
@@ -375,10 +392,14 @@ public final class GlowBlock implements Block {
                     }
                     break;
                 case REDSTONE_WIRE:
-                    if (target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(target.getFace(this))) {
+                    if (target.getData() > 0
+                            && BlockRedstone.calculateConnections(target)
+                            .contains(target.getFace(this))) {
                         return true;
                     }
                     break;
+                default:
+                    // do nothing
             }
         }
 
@@ -401,10 +422,13 @@ public final class GlowBlock implements Block {
                     }
                     break;
                 case REDSTONE_WIRE:
-                    if (block.getData() > 0 && BlockRedstone.calculateConnections(block).contains(block.getFace(this))) {
+                    if (block.getData() > 0 && BlockRedstone.calculateConnections(block)
+                            .contains(block.getFace(this))) {
                         return true;
                     }
                     break;
+                default:
+                    // do nothing
             }
         }
         return false;
@@ -437,7 +461,8 @@ public final class GlowBlock implements Block {
 
     @Override
     public String toString() {
-        return "GlowBlock{chunk=" + getChunk() + ",x=" + x + ",y=" + y + ",z=" + z + ",type=" + getType() + ",data=" + getData() + "}";
+        return "GlowBlock{chunk=" + getChunk() + ",x=" + x + ",y=" + y + ",z=" + z + ",type="
+                + getType() + ",data=" + getData() + "}";
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -453,13 +478,21 @@ public final class GlowBlock implements Block {
         return breakNaturally(yield, ItemTable.instance().getBlock(getType()).getMinedDrops(this));
     }
 
+    /**
+     * Breaks this block and drops items.
+     *
+     * @param yield the probability to drop each item
+     * @param drops the items to potentially drop
+     * @return true if broken; false if this block is already air
+     */
     public boolean breakNaturally(float yield, Collection<ItemStack> drops) {
         if (getType() == Material.AIR) {
             return false;
         }
 
         Location location = getLocation();
-        drops.stream().filter(stack -> ThreadLocalRandom.current().nextFloat() < yield).forEach(stack -> getWorld().dropItemNaturally(location, stack));
+        drops.stream().filter(stack -> ThreadLocalRandom.current().nextFloat() < yield)
+                .forEach(stack -> getWorld().dropItemNaturally(location, stack));
 
         setType(Material.AIR);
         return true;
@@ -549,7 +582,9 @@ public final class GlowBlock implements Block {
 
                 BlockType notifyType = itemTable.getBlock(notify.getType());
                 if (notifyType != null) {
-                    notifyType.onNearBlockChanged(notify, blockFace, this, oldType, oldData, newType, newData);
+                    notifyType
+                            .onNearBlockChanged(notify, blockFace, this, oldType, oldData,
+                                    newType, newData);
                 }
             }
         }
@@ -560,6 +595,12 @@ public final class GlowBlock implements Block {
         }
     }
 
+    /**
+     * Increments the count of recent state changes. Used to implement redstone-torch burnout.
+     *
+     * @param timeout the number of game ticks before this state change is no longer considered
+     *     recent
+     */
     public void count(int timeout) {
         GlowBlock target = this;
         List<Long> gameTicks = new ArrayList<>();
@@ -577,6 +618,12 @@ public final class GlowBlock implements Block {
         counterMap.put(target, gameTicks);
     }
 
+    /**
+     * Returns the number of recent state changes, as defined by {@link #count(int)}. Used to
+     * implement redstone-torch burnout.
+     *
+     * @return the number of recent state changes
+     */
     public int getCounter() {
         GlowBlock target = this;
         List<Long> gameTicks = new ArrayList<>();
@@ -601,6 +648,7 @@ public final class GlowBlock implements Block {
         return y << 24 ^ x ^ z ^ getWorld().hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
@@ -612,11 +660,13 @@ public final class GlowBlock implements Block {
     /**
      * The metadata store class for blocks.
      */
-    private static final class BlockMetadataStore extends MetadataStoreBase<Block> implements MetadataStore<Block> {
+    private static final class BlockMetadataStore extends MetadataStoreBase<Block> implements
+            MetadataStore<Block> {
 
         @Override
         protected String disambiguate(Block subject, String metadataKey) {
-            return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject.getZ() + ":" + metadataKey;
+            return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject
+                    .getZ() + ":" + metadataKey;
         }
     }
 }

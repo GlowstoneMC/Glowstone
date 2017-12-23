@@ -11,7 +11,6 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
-import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +28,11 @@ public class GlowBoat extends GlowEntity implements Boat {
     private TreeSpecies woodType;
     private boolean workOnLand;
 
+    /**
+     * Creates a boat.
+     *
+     * @param location the boat's location
+     */
     public GlowBoat(Location location) {
         super(location);
         setSize(1.375f, 0.5625f);
@@ -42,15 +46,8 @@ public class GlowBoat extends GlowEntity implements Boat {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.BOAT, x, y, z, pitch, yaw),
+            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.BOAT, location),
             new EntityMetadataMessage(id, metadata.getEntryList())
         );
     }

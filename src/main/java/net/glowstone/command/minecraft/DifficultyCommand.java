@@ -17,6 +17,9 @@ public class DifficultyCommand extends VanillaCommand {
     private static final List<String> DIFFICULTIES = Arrays
         .asList("peaceful", "easy", "normal", "hard");
 
+    /**
+     * Creates the instance for this command.
+     */
     public DifficultyCommand() {
         super("difficulty", "Sets the difficulty level.", "/difficulty <difficulty>",
             Collections.emptyList());
@@ -56,10 +59,9 @@ public class DifficultyCommand extends VanillaCommand {
             case "3":
                 difficulty = Difficulty.HARD;
                 break;
-        }
-        if (difficulty == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown difficulty: '" + difficultyId + "'");
-            return false;
+            default:
+                sender.sendMessage(ChatColor.RED + "Unknown difficulty: '" + difficultyId + "'");
+                return false;
         }
         world.setDifficulty(difficulty);
         sender.sendMessage("Set difficulty of world '" + world.getName() + "' to " + DIFFICULTIES

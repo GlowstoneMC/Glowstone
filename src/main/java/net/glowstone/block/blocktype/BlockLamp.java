@@ -8,6 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
 /**
+ * A redstone lamp.
  * @author Sam
  */
 public class BlockLamp extends BlockType {

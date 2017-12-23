@@ -93,7 +93,9 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
     public void updateBlock(GlowBlock block) {
         if (ThreadLocalRandom.current().nextInt(25) == 0) {
             GlowWorld world = block.getWorld();
-            int x, y, z;
+            int x;
+            int y;
+            int z;
             int i = 0;
             for (x = block.getX() - 4; x <= block.getX() + 4; x++) {
                 for (z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
@@ -107,31 +109,33 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                 }
             }
 
-            int nX, nY, nZ;
-            nX = block.getX() + ThreadLocalRandom.current().nextInt(3) - 1;
-            nY = block.getY() + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current()
-                .nextInt(2);
-            nZ = block.getZ() + ThreadLocalRandom.current().nextInt(3) - 1;
+            int nx;
+            int ny;
+            int nz;
+            nx = block.getX() + ThreadLocalRandom.current().nextInt(3) - 1;
+            ny = block.getY() + ThreadLocalRandom.current().nextInt(2)
+                    - ThreadLocalRandom.current().nextInt(2);
+            nz = block.getZ() + ThreadLocalRandom.current().nextInt(3) - 1;
 
             x = block.getX();
             y = block.getY();
             z = block.getZ();
             for (i = 0; i < 4; i++) {
-                if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
-                    && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
-                    x = nX;
-                    y = nY;
-                    z = nZ;
+                if (world.getBlockAt(nx, ny, nz).getType() == Material.AIR
+                    && canPlaceAt(world.getBlockAt(nx, ny, nz), BlockFace.DOWN)) {
+                    x = nx;
+                    y = ny;
+                    z = nz;
                 }
-                nX = x + ThreadLocalRandom.current().nextInt(3) - 1;
-                nY = y + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current()
+                nx = x + ThreadLocalRandom.current().nextInt(3) - 1;
+                ny = y + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current()
                     .nextInt(2);
-                nZ = z + ThreadLocalRandom.current().nextInt(3) - 1;
+                nz = z + ThreadLocalRandom.current().nextInt(3) - 1;
             }
 
-            if (world.getBlockAt(nX, nY, nZ).getType() == Material.AIR
-                && canPlaceAt(world.getBlockAt(nX, nY, nZ), BlockFace.DOWN)) {
-                GlowBlockState state = world.getBlockAt(nX, nY, nZ).getState();
+            if (world.getBlockAt(nx, ny, nz).getType() == Material.AIR
+                && canPlaceAt(world.getBlockAt(nx, ny, nz), BlockFace.DOWN)) {
+                GlowBlockState state = world.getBlockAt(nx, ny, nz).getState();
                 state.setType(mushroomType);
                 BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
                 EventFactory.callEvent(spreadEvent);

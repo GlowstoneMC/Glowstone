@@ -22,6 +22,9 @@ public class EnchantCommand extends VanillaCommand {
 
     private static List<String> VANILLA_IDS = GlowEnchantment.getVanillaIds();
 
+    /**
+     * Creates the instance for this command.
+     */
     public EnchantCommand() {
         super("enchant",
             "Adds an enchantment to the currently by a player held item",

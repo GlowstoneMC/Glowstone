@@ -12,7 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-public class BlockTNT extends BlockType {
+public class BlockTnt extends BlockType {
 
     /**
      * Convert a TNT block into a primed TNT entity.

@@ -49,7 +49,8 @@ public class BlockType extends ItemType {
     // Setters for subclass use
 
     /**
-     * Gets the BlockFace opposite of the direction the location is facing. Usually used to set the way container blocks face when being placed.
+     * Gets the BlockFace opposite of the direction the location is facing. Usually used to set the
+     * way container blocks face when being placed.
      *
      * @param location Location to get opposite of
      * @param inverted If up/down should be used
@@ -58,7 +59,8 @@ public class BlockType extends ItemType {
     protected static BlockFace getOppositeBlockFace(Location location, boolean inverted) {
         double rot = location.getYaw() % 360;
         if (inverted) {
-            // todo: Check the 67.5 pitch in source. This is based off of WorldEdit's number for this.
+            // todo: Check the 67.5 pitch in source. This is based off of WorldEdit's number for
+            // this.
             double pitch = location.getPitch();
             if (pitch < -67.5D) {
                 return BlockFace.DOWN;
@@ -129,7 +131,8 @@ public class BlockType extends ItemType {
     // Actions
 
     /**
-     * Get the items that will be dropped as if the block would be successfully mined. This is used f.e. to calculate TNT drops.
+     * Get the items that would be dropped if the block was successfully mined. This is used f.e. to
+     * calculate TNT drops.
      *
      * @param block The block.
      * @return The drops from that block.
@@ -192,7 +195,8 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Called when a player attempts to interact with (right-click) a block of this type already in the world.
+     * Called when a player attempts to interact with (right-click) a block of this type already in
+     * the world.
      *
      * @param player the player interacting
      * @param block the block interacted with
@@ -233,14 +237,16 @@ public class BlockType extends ItemType {
     /**
      * Called when the BlockType gets pulsed as requested.
      *
-     * @param block The block that was pulsed pulsed
+     * @param block The block that was pulsed
      */
     public void receivePulse(GlowBlock block) {
         block.getWorld().cancelPulse(block);
     }
 
     /**
-     * Called when a player attempts to place a block on an existing block of this type. Used to determine if the placement should occur into the air adjacent to the block (normal behavior), or absorbed into the block clicked on.
+     * Called when a player attempts to place a block on an existing block of this type. Used to
+     * determine if the placement should occur into the air adjacent to the block (normal behavior),
+     * or absorbed into the block clicked on.
      *
      * @param block The block the player right-clicked
      * @param face The face on which the click occurred
@@ -264,7 +270,8 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Called when a neighboring block (within a 3x3x3 cube) has changed its type or data and physics checks should occur.
+     * Called when a neighboring block (within a 3x3x3 cube) has changed its type or data and
+     * physics checks should occur.
      *
      * @param block The block to perform physics checks for
      * @param face The BlockFace to the changed block, or null if unavailable
@@ -353,7 +360,8 @@ public class BlockType extends ItemType {
         }
 
         // grab states and update block
-        GlowBlockState oldState = target.getState(), newState = target.getState();
+        GlowBlockState oldState = target.getState();
+        GlowBlockState newState = target.getState();
         ItemType itemType = ItemTable.instance().getItem(holding.getType());
         if (itemType.getPlaceAs() == null) {
             placeBlock(player, newState, face, holding, clickedLoc);
@@ -408,7 +416,7 @@ public class BlockType extends ItemType {
     // Helper methods
 
     /**
-     * Called when a player left clicks a block
+     * Called when a player left clicks a block.
      *
      * @param player the player who clicked the block
      * @param block the block that was clicked
@@ -435,7 +443,7 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Called when an entity gets updated on top of the block
+     * Called when an entity gets updated on top of the block.
      *
      * @param block the block that was stepped on
      * @param entity the entity

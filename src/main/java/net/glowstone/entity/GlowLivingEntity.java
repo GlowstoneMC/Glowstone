@@ -878,6 +878,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 switch (cause) {
                     case FIRE:
                     case FIRE_TICK:
+                    case HOT_FLOOR:
                     case LAVA:
                         isFireDamage = true;
                         break;
@@ -886,7 +887,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 }
             }
             if (isFireDamage) {
-                // TODO: apply protection
+                return;
             }
         }
 

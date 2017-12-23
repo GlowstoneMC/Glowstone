@@ -5,9 +5,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 /**
- * Represents a dynamic recipe. These are recipes that have can have different results, depending on the inputs used, rather than a simple matching algorithm.
+ * <p>Represents a dynamic recipe. These are recipes that have can have different results, depending
+ * on the inputs used, rather than a simple matching algorithm.</p>
  *
- * <p>Used for recipes such as banners, which require item metadata to be copied to an item, along with having a semi-shaped recipe.</p>
+ * <p>Used for recipes such as banners, which require item metadata to be copied to an item, along
+ * with having a semi-shaped recipe.</p>
  */
 public class DynamicRecipe implements Recipe {
 
@@ -33,7 +35,8 @@ public class DynamicRecipe implements Recipe {
     }
 
     /**
-     * Checks to see if the recipe will match a crafting matrix. This method also prepares {@link #getResult()} to return the correct item (including all metadata) for the input.
+     * Checks to see if the recipe will match a crafting matrix. This method also prepares
+     * {@link #getResult()} to return the correct item (including all metadata) for the input.
      *
      * @param matrix Items on the crafting grid
      * @return Whether the recipe matches the inputs
