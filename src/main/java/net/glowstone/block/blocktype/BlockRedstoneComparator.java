@@ -42,7 +42,7 @@ public class BlockRedstoneComparator extends BlockNeedsAttached {
         ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         Comparator comparator = (Comparator) state.getData();
-        comparator.setFacingDirection(player.getDirection());
+        comparator.setFacingDirection(player.getCardinalFacing());
         comparator.setSubtractionMode(false);
         state.getBlock().setData(comparator.getData());
         state.getWorld().requestPulse(state.getBlock());
