@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -124,9 +126,13 @@ public abstract class GlowEntity implements Entity {
     @Getter
     private final List<String> customTags = Lists.newArrayList();
     /**
-     * The world this entity belongs to.
+     * The world this entity belongs to. Guarded by {@link #worldLock}.
      */
     protected GlowWorld world;
+    /**
+     * Lock to prevent concurrent modifications affected by switching worlds.
+     */
+    protected final ReadWriteLock worldLock = new ReentrantReadWriteLock();
     /**
      * A flag indicating if this entity is currently active.
      */
@@ -411,11 +417,15 @@ public abstract class GlowEntity implements Entity {
     public boolean teleport(Location location) {
         checkNotNull(location, "location cannot be null");
         checkNotNull(location.getWorld(), "location's world cannot be null");
-
-        if (location.getWorld() != world) {
-            world.getEntityManager().unregister(this);
-            world = (GlowWorld) location.getWorld();
-            world.getEntityManager().register(this);
+        worldLock.writeLock().lock();
+        try {
+            if (location.getWorld() != world) {
+                world.getEntityManager().unregister(this);
+                world = (GlowWorld) location.getWorld();
+                world.getEntityManager().register(this);
+            }
+        } finally {
+            worldLock.writeLock().unlock();
         }
         setRawLocation(location, false);
         teleported = true;
