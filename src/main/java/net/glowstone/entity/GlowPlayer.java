@@ -205,7 +205,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private final GlowSession session;
 
     /**
-     * The entities that the client knows about.
+     * The entities that the client knows about. Guarded by {@link #worldLock}.
      */
     private final Set<GlowEntity> knownEntities = new HashSet<>();
 
@@ -807,33 +807,49 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             session.send(new EntityMetadataMessage(SELF_ID, changes));
         }
 
-        // update or remove entities
-        List<Integer> destroyIds = new LinkedList<>();
-        for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
-            GlowEntity entity = it.next();
-            if (!isWithinDistance(entity) || entity.isRemoved()) {
-                destroyIds.add(entity.getEntityId());
-                it.remove();
-            } else {
-                entity.createUpdateMessage(session).forEach(session::send);
+        // Entity IDs are only unique per world, so we can't spawn or teleport between worlds while
+        // updating them.
+        worldLock.writeLock().lock();
+        try {
+            // update or remove entities
+            List<GlowEntity> destroyEntities = new LinkedList<>();
+            for (Iterator<GlowEntity> it = knownEntities.iterator(); it.hasNext(); ) {
+                GlowEntity entity = it.next();
+                if (!isWithinDistance(entity) || entity.isRemoved()) {
+                    destroyEntities.add(entity);
+                } else {
+                    entity.createUpdateMessage(session).forEach(session::send);
+                }
             }
+            if (!destroyEntities.isEmpty()) {
+                List<Integer> destroyIds = new ArrayList(destroyEntities.size());
+                for (GlowEntity entity : destroyEntities) {
+                    knownEntities.remove(entity);
+                    destroyIds.add(entity.getEntityId());
+                }
+                session.send(new DestroyEntitiesMessage(destroyIds));
+            }
+            // add entities
+            knownChunks.forEach(key ->
+                            world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
+                    .filter(entity -> this != entity
+                            && isWithinDistance(entity)
+                            && !entity.isDead()
+                            && !knownEntities.contains(entity)
+                            && !hiddenEntities.contains(entity.getUniqueId()))
+                    .forEach((entity) -> Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
+                        worldLock.readLock().lock();
+                        try {
+                            knownEntities.add(entity);
+                        } finally {
+                            worldLock.readLock().unlock();
+                        }
+                        entity.createSpawnMessage().forEach(session::send);
+                        entity.createAfterSpawnMessage(session).forEach(session::send);
+                    })));
+        } finally {
+            worldLock.writeLock().unlock();
         }
-        if (!destroyIds.isEmpty()) {
-            session.send(new DestroyEntitiesMessage(destroyIds));
-        }
-
-        // add entities
-        knownChunks.forEach(key -> world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
-                .filter(entity -> this != entity
-                    && isWithinDistance(entity)
-                    && !entity.isDead()
-                    && !knownEntities.contains(entity)
-                    && !hiddenEntities.contains(entity.getUniqueId()))
-                .forEach((entity) -> Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
-                    knownEntities.add(entity);
-                    entity.createSpawnMessage().forEach(session::send);
-                    entity.createAfterSpawnMessage(session).forEach(session::send);
-                })));
 
         if (passengerChanged) {
             session.send(new SetPassengerMessage(SELF_ID, getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
@@ -986,11 +1002,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param location The location to place the player.
      */
     private void spawnAt(Location location) {
+        GlowWorld oldWorld;
         // switch worlds
-        GlowWorld oldWorld = world;
-        world.getEntityManager().unregister(this);
-        world = (GlowWorld) location.getWorld();
-        world.getEntityManager().register(this);
+        worldLock.writeLock().lock();
+        try {
+            oldWorld = world;
+            world.getEntityManager().unregister(this);
+            world = (GlowWorld) location.getWorld();
+            world.getEntityManager().register(this);
+        } finally {
+            worldLock.writeLock().unlock();
+        }
 
         // switch chunk set
         // no need to send chunk unload messages - respawn unloads all chunks
@@ -1033,37 +1055,40 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // restore health
         setHealth(getMaxHealth());
         setFoodLevel(20);
-
-        // determine spawn destination
-        boolean spawnAtBed = true;
-        Location dest = getBedSpawnLocation();
-        if (dest == null) {
-            dest = world.getSpawnLocation();
-            spawnAtBed = false;
-            if (bedSpawn != null) {
-                setBedSpawnLocation(null);
-                sendMessage("Your home bed was missing or obstructed");
+        worldLock.writeLock().lock();
+        try {
+            // determine spawn destination
+            boolean spawnAtBed = true;
+            Location dest = getBedSpawnLocation();
+            if (dest == null) {
+                dest = world.getSpawnLocation();
+                spawnAtBed = false;
+                if (bedSpawn != null) {
+                    setBedSpawnLocation(null);
+                    sendMessage("Your home bed was missing or obstructed");
+                }
             }
-        }
 
-        if (!spawnAtBed) {
-            dest = findSafeSpawnLocation(dest);
-        }
+            if (!spawnAtBed) {
+                dest = findSafeSpawnLocation(dest);
+            }
 
-        // fire event and perform spawn
-        PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
-        EventFactory.callEvent(event);
-        if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities.isEmpty()) {
-            // we need to manually reset all known entities if the player respawns in the same world
-            List<Integer> entityIds = new ArrayList<>(knownEntities.size());
-            entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
-            session.send(new DestroyEntitiesMessage(entityIds));
-            knownEntities.clear();
+            // fire event and perform spawn
+            PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
+            EventFactory.callEvent(event);
+            if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities.isEmpty()) {
+                // we need to manually reset all known entities if the player respawns in the same world
+                List<Integer> entityIds = new ArrayList<>(knownEntities.size());
+                entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
+                session.send(new DestroyEntitiesMessage(entityIds));
+                knownEntities.clear();
+            }
+            active = true;
+            deathTicks = 0;
+            spawnAt(event.getRespawnLocation());
+        } finally {
+            worldLock.writeLock().unlock();
         }
-        active = true;
-        deathTicks = 0;
-        spawnAt(event.getRespawnLocation());
-
         // just in case any items are left in their inventory after they respawn
         updateInventory();
     }
@@ -1085,7 +1110,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @return If the entity is known to the player's client.
      */
     public boolean canSeeEntity(GlowEntity entity) {
-        return knownEntities.contains(entity);
+        worldLock.readLock().lock();
+        try {
+            return knownEntities.contains(entity);
+        } finally {
+            worldLock.readLock().unlock();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1762,7 +1792,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         checkNotNull(location, "location cannot be null");
         checkNotNull(location.getWorld(), "location's world cannot be null");
         checkNotNull(cause, "cause cannot be null");
-
         if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event = new PlayerTeleportEvent(this, this.location, location, cause);
             if (EventFactory.callEvent(event).isCancelled()) {
@@ -1771,15 +1800,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             location = event.getTo();
             closeInventory();
         }
-
-        if (location.getWorld() != world) {
-            spawnAt(location);
-        } else {
-            world.getEntityManager().move(this, location);
-            //Position.copyLocation(location, this.previousLocation);
-            //Position.copyLocation(location, this.location);
-            session.send(new PositionRotationMessage(location));
-            teleportedTo = location.clone();
+        worldLock.writeLock().lock();
+        try {
+            if (location.getWorld() != world) {
+                spawnAt(location);
+            } else {
+                world.getEntityManager().move(this, location);
+                //Position.copyLocation(location, this.previousLocation);
+                //Position.copyLocation(location, this.location);
+                session.send(new PositionRotationMessage(location));
+                teleportedTo = location.clone();
+            }
+        } finally {
+            worldLock.writeLock().unlock();
         }
 
         teleportedTo = location.clone();
@@ -2940,8 +2973,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         hiddenEntities.add(player.getUniqueId());
-        if (knownEntities.remove(player)) {
-            session.send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+        worldLock.writeLock().lock();
+        try {
+            if (knownEntities.remove(player)) {
+                session.send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+            }
+        } finally {
+            worldLock.writeLock().unlock();
         }
         session.send(UserListItemMessage.removeOne(player.getUniqueId()));
     }
