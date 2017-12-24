@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -468,7 +468,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private String resourcePackHash;
     private PlayerResourcePackStatusEvent.Status resourcePackStatus;
     private List<Conversation> conversations = new ArrayList<>();
-    private Set<BossBar> bossBars = new ConcurrentSkipListSet<>();
+    private Set<BossBar> bossBars = ConcurrentHashMap.newKeySet();
     /**
      * The player's previous chunk x coordinate.
      */
