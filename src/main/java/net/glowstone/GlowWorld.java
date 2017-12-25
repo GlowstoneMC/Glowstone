@@ -1425,12 +1425,12 @@ public final class GlowWorld implements World {
                 } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
                     spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
                 }
-                if (spawnEvent != null && !spawnEvent.isCancelled()) {
-                    List<Message> spawnMessage = entity.createSpawnMessage();
-                    getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
-                } else {
+                if (spawnEvent != null && spawnEvent.isCancelled()) {
                     // TODO: separate spawning and construction for better event cancellation
                     entity.remove();
+                } else {
+                    List<Message> spawnMessage = entity.createSpawnMessage();
+                    getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
                 }
             } catch (NoSuchMethodException e) {
                 GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
