@@ -51,12 +51,8 @@ public class GlowBoss extends GlowMonster {
     }
 
     @Override
-    public void setHealth(double health) {
-        super.setHealth(health);
-        if (health <= 0) {
-            bar.removeAll();
-        } else {
-            bar.setProgress(getHealth() / getMaxHealth());
-        }
+    public void remove() {
+        bar.removeAll();
+        super.remove();
     }
 }
