@@ -82,6 +82,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -89,6 +90,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -1417,13 +1419,13 @@ public final class GlowWorld implements World {
                 entity = constructor.newInstance(location);
                 GlowEntity impl = entity;
                 // function.accept(entity); TODO: work on type mismatches
-                EntitySpawnEvent spawnEvent;
+                EntitySpawnEvent spawnEvent = null;
                 if (entity instanceof LivingEntity) {
                     spawnEvent = EventFactory.callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
-                } else {
+                } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
                     spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
                 }
-                if (!spawnEvent.isCancelled()) {
+                if (spawnEvent != null && !spawnEvent.isCancelled()) {
                     List<Message> spawnMessage = entity.createSpawnMessage();
                     getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
                 } else {
@@ -1476,7 +1478,12 @@ public final class GlowWorld implements World {
 
     @Override
     public GlowItem dropItem(Location location, ItemStack item) {
-        return new GlowItem(location, item);
+        GlowItem entity = new GlowItem(location, item);
+        ItemSpawnEvent event = EventFactory.callEvent(new ItemSpawnEvent(entity));
+        if (event.isCancelled()) {
+            entity.remove();
+        }
+        return entity;
     }
 
     @Override
@@ -1485,7 +1492,7 @@ public final class GlowWorld implements World {
         double ys = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double zs = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         location = location.clone().add(xs, ys, zs);
-        GlowItem dropItem = new GlowItem(location, item);
+        GlowItem dropItem = dropItem(location, item);
         dropItem.setVelocity(new Vector(0, 0.01F, 0));
         return dropItem;
     }
