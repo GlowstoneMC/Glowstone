@@ -854,9 +854,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         // play sounds, handle death
-        Sound hurtSound = health > 0 ? getHurtSound() : getDeathSound();
-        if (hurtSound != null && !isSilent()) {
-            world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
+        if (health > 0) {
+            Sound hurtSound = getHurtSound();
+            if (hurtSound != null && !isSilent()) {
+                world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
+            }
         }
         setLastDamager(source);
     }
@@ -1132,4 +1134,3 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return false;
     }
 }
-
