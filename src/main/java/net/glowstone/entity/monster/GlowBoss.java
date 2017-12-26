@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 /**
  * A monster with a boss bar.
- */'
+ */
 // TODO: Periodically check for players entering and leaving the dimension.
 public class GlowBoss extends GlowMonster {
     protected BossBar bar;
