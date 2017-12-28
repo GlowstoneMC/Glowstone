@@ -9,6 +9,8 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.UseItemMessage;
 import net.glowstone.util.InventoryUtil;
+
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
@@ -35,12 +37,15 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                 if (type.getContext() == Context.AIR || type.getContext() == Context.ANY) {
                     type.rightClickAir(player, holding);
                 } else {
-                    if (holding.getType() == Material.WATER_BUCKET || holding.getType() == Material.LAVA_BUCKET) {
+                    if ((holding.getType() == Material.WATER_BUCKET
+                        || holding.getType() == Material.LAVA_BUCKET) 
+                            && player.getGameMode() != GameMode.CREATIVE) {
                         holding.setType(Material.BUCKET);
                     }
                 }
             }
 
+            // Empties the user's inventory when the item is used up
             if (holding.getAmount() <= 0) {
                 holding = InventoryUtil.createEmptyStack();
             }
