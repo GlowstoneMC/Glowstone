@@ -10,6 +10,11 @@ import org.bukkit.util.Vector;
 public class ItemTimedUsage extends ItemType {
 
     @Override
+    public Context getContext() {
+        return Context.ANY;
+    }
+
+    @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
         startUse(player, holding);
     }

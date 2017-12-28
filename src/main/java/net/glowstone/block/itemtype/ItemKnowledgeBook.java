@@ -1,16 +1,38 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.GlowServer;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.KnowledgeBookMeta;
+import org.bukkit.util.Vector;
 
 public class ItemKnowledgeBook extends ItemType {
 
+    public ItemKnowledgeBook() {
+        setMaxStackSize(1);
+    }
+
+    @Override
+    public Context getContext() {
+        return Context.ANY;
+    }
+
+    @Override
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+        rightClickBook(player, holding);
+    }
+
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
+        rightClickBook(player, holding);
+    }
+
+    private void rightClickBook(GlowPlayer player, ItemStack holding) {
         if (holding.getItemMeta() instanceof KnowledgeBookMeta) {
             KnowledgeBookMeta recipes = (KnowledgeBookMeta) holding.getItemMeta();
             if (recipes.hasRecipes()) {
@@ -19,6 +41,8 @@ public class ItemKnowledgeBook extends ItemType {
                         .getRecipeByKey(recipe), true);
                 }
             }
+
+            holding.setAmount(0);
         }
     }
 }
