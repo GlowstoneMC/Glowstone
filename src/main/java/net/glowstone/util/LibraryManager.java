@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.Channels;
@@ -12,6 +11,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 import javax.net.ssl.HttpsURLConnection;
 import net.glowstone.GlowServer;
@@ -20,12 +20,6 @@ import net.glowstone.GlowServer;
  * Simple library manager which downloads external dependencies.
  */
 public final class LibraryManager {
-
-    /**
-     * True if we've detected a system ClassLoader that's not a URLClassLoader, so that we only log
-     * the error once.
-     */
-    private static volatile boolean nonUrlClassLoader = false;
 
     /**
      * The Maven repository to download from.
@@ -80,16 +74,6 @@ public final class LibraryManager {
 
         @Override
         public void run() {
-            if (nonUrlClassLoader) {
-                return;
-            }
-            ClassLoader sysLoader = ClassLoader.getSystemClassLoader();
-            if (!(sysLoader instanceof URLClassLoader)) {
-                nonUrlClassLoader = true;
-                GlowServer.logger.severe("This JVM isn't fully supported. Please use Oracle or"
-                        + " OpenJDK 8, not 9. (System class loader must be a URLClassLoader.)");
-                return;
-            }
             // check if we already have it
             File file = new File(directory, getLibrary());
             if (!checksum(file, checksum)) {
@@ -113,10 +97,15 @@ public final class LibraryManager {
 
             // hack it onto the classpath
             try {
-                Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-                method.setAccessible(true);
-                method.invoke(sysLoader, file.toURI().toURL());
-            } catch (ReflectiveOperationException | MalformedURLException e) {
+                String[] javaVersion = System.getProperty("java.version").split("\\.");
+                if (Integer.parseInt(javaVersion[0]) >= 9) {
+                    ClassPathAgent.addJarFile(new JarFile(file));
+                } else {
+                    Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                    method.setAccessible(true);
+                    method.invoke(ClassLoader.getSystemClassLoader(), file.toURI().toURL());
+                }
+            } catch (ReflectiveOperationException | IOException e) {
                 GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + " " + version, e);
             }
         }
