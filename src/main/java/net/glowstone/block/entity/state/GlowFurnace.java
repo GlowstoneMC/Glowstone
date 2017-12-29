@@ -10,12 +10,26 @@ public class GlowFurnace extends GlowContainer implements Furnace {
     private short burnTime;
     private short cookTime;
 
+    /**
+     /**
+     * Creates an instance for the given block.
+     *
+     * @param block the furnace block
+     */
     public GlowFurnace(GlowBlock block) {
         super(block);
         burnTime = getBlockEntity().getBurnTime();
         cookTime = getBlockEntity().getCookTime();
     }
 
+    /**
+     * Creates an instance for the given block.
+     *
+     * @param block the furnace block
+     * @param burnTime the number of ticks before this furnace must consume more fuel, or 0 if not
+     *         burning
+     * @param cookTime the number of ticks the current item has been cooking
+     */
     public GlowFurnace(GlowBlock block, short burnTime, short cookTime) {
         super(block);
         this.burnTime = burnTime;
