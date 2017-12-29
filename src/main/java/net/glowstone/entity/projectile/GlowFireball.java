@@ -21,6 +21,7 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     public GlowFireball(Location location) {
         super(location);
         setGravity(false); // Fireballs fly in a straight line
+        setFriction(false);
     }
 
     @Override

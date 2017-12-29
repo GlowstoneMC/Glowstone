@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -207,6 +208,11 @@ public abstract class GlowEntity implements Entity {
      * Whether gravity applies to the entity.
      */
     private boolean gravity = true;
+    /**
+     * Whether friction applies to the entity.
+     */
+    @Setter
+    private boolean friction = true;
     /**
      * Whether this entity is invulnerable.
      */
@@ -911,21 +917,32 @@ public abstract class GlowEntity implements Entity {
                 velocity.setZ(0);
             }
         } else {
-            // apply friction and gravity
-            if (location.getBlock().getType() == Material.WATER) {
-                velocity.multiply(liquidDrag);
-                velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
-            } else if (location.getBlock().getType() == Material.LAVA) {
-                velocity.multiply(liquidDrag - 0.3);
-                velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
-            } else {
-                velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
-                if (isOnGround()) {
-                    velocity.setX(velocity.getX() * slipMultiplier);
-                    velocity.setZ(velocity.getZ() * slipMultiplier);
+            if (hasFriction()) {
+                // apply friction and gravity
+                if (location.getBlock().getType() == Material.WATER) {
+                    velocity.multiply(liquidDrag);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                } else if (location.getBlock().getType() == Material.LAVA) {
+                    velocity.multiply(liquidDrag - 0.3);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
                 } else {
-                    velocity.setX(velocity.getX() * 0.91);
-                    velocity.setZ(velocity.getZ() * 0.91);
+                    velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
+                    if (isOnGround()) {
+                        velocity.setX(velocity.getX() * slipMultiplier);
+                        velocity.setZ(velocity.getZ() * slipMultiplier);
+                    } else {
+                        velocity.setX(velocity.getX() * 0.91);
+                        velocity.setZ(velocity.getZ() * 0.91);
+                    }
+                }
+            } else if (hasGravity() && !isOnGround()) {
+                switch (location.getBlock().getType()) {
+                    case WATER:
+                    case LAVA:
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                        break;
+                    default:
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
                 }
             }
             setRawLocation(velLoc);
@@ -1235,6 +1252,10 @@ public abstract class GlowEntity implements Entity {
     @Override
     public boolean eject() {
         return !isEmpty() && setPassenger(null);
+    }
+
+    public boolean hasFriction() {
+        return friction;
     }
 
     @Override
