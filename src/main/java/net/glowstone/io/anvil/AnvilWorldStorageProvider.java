@@ -11,6 +11,7 @@ import net.glowstone.io.StructureDataService;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.data.WorldFunctionIoService;
+import net.glowstone.io.json.JsonPlayerStatisticIoService;
 import net.glowstone.io.nbt.NbtPlayerDataService;
 import net.glowstone.io.nbt.NbtScoreboardIoService;
 import net.glowstone.io.nbt.NbtStructureDataService;
@@ -29,7 +30,7 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     private StructureDataService structures;
     private PlayerDataService players;
     private ScoreboardIoService scoreboard;
-    private PlayerStatisticIoService statistics;
+    private JsonPlayerStatisticIoService statistics;
     private FunctionIoService functions;
 
     /**
@@ -94,7 +95,7 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     @Override
     public PlayerStatisticIoService getPlayerStatisticIoService() {
         if (statistics == null) {
-            statistics = new PlayerStatisticIoService(world.getServer(), new File(dir, "stats"));
+            statistics = new JsonPlayerStatisticIoService(world.getServer(), new File(dir, "stats"));
         }
         return statistics;
     }

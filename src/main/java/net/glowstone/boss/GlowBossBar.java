@@ -138,6 +138,9 @@ public class GlowBossBar implements BossBar {
             players.add(player);
             if (isVisible()) {
                 sendUpdate(player, createAddAction());
+                if (player instanceof GlowPlayer) {
+                    ((GlowPlayer) player).addBossBar(this);
+                }
             }
         }
     }
@@ -147,6 +150,9 @@ public class GlowBossBar implements BossBar {
         if (players.contains(player)) {
             if (isVisible()) {
                 sendUpdate(player, createRemoveAction());
+                if (player instanceof GlowPlayer) {
+                    ((GlowPlayer) player).removeBossBar(this);
+                }
             }
             players.remove(player);
         }
@@ -156,6 +162,11 @@ public class GlowBossBar implements BossBar {
     public void removeAll() {
         if (isVisible()) {
             sendUpdate(createRemoveAction());
+        }
+        for (Player player : players) {
+            if (player instanceof GlowPlayer) {
+                ((GlowPlayer) player).removeBossBar(this);
+            }
         }
         players.clear();
     }

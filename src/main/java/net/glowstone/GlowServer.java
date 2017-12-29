@@ -43,7 +43,6 @@ import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.entity.state.GlowDispenser;
-import net.glowstone.boss.BossBarManager;
 import net.glowstone.boss.GlowBossBar;
 import net.glowstone.command.glowstone.ColorCommand;
 import net.glowstone.command.glowstone.GlowstoneCommand;
@@ -369,10 +368,6 @@ public final class GlowServer implements Server {
      */
     private MaterialValueManager materialValueManager;
     /**
-     * The {@link BossBarManager} of this server.
-     */
-    private BossBarManager bossBarManager;
-    /**
      * Whether OpenCL is to be used by the server on this run.
      */
     private boolean isGraphicsComputeAvailable = true;
@@ -396,7 +391,6 @@ public final class GlowServer implements Server {
      */
     public GlowServer(ServerConfig config) {
         materialValueManager = new BuiltinMaterialValueManager();
-        bossBarManager = new BossBarManager(this);
         advancements = new HashMap<>();
         // test advancement
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
@@ -716,7 +710,7 @@ public final class GlowServer implements Server {
         }
 
         if (storageProviderFactory == null) {
-            storageProviderFactory = () -> new AnvilWorldStorageProvider(new File(getWorldContainer(), name));
+            storageProviderFactory = (worldName) -> new AnvilWorldStorageProvider(new File(getWorldContainer(), worldName));
         }
 
         createWorld(WorldCreator.name(name).environment(Environment.NORMAL).seed(seed).type(type).generateStructures(structs));
@@ -1285,7 +1279,7 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Returns the player statitics I/O service attached to the first world.
+     * Returns the player statistics I/O service attached to the first world.
      *
      * @return the server's statistics I/O service
      */
@@ -1358,15 +1352,6 @@ public final class GlowServer implements Server {
      */
     public MaterialValueManager getMaterialValueManager() {
         return materialValueManager;
-    }
-
-    /**
-     * Gets the {@link BossBarManager} for this server.
-     *
-     * @return the {@link BossBarManager} for this server.
-     */
-    public BossBarManager getBossBarManager() {
-        return bossBarManager;
     }
 
     /**
@@ -1924,7 +1909,7 @@ public final class GlowServer implements Server {
         }
 
         // GlowWorld's constructor calls addWorld below.
-        return new GlowWorld(this, creator, storageProviderFactory.createWorldStorageProvider());
+        return new GlowWorld(this, creator, storageProviderFactory.createWorldStorageProvider(creator.name()));
     }
 
     /**
@@ -2113,7 +2098,6 @@ public final class GlowServer implements Server {
     @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
         GlowBossBar bossBar = new GlowBossBar(title, color, style, flags);
-        bossBarManager.register(bossBar);
         return bossBar;
     }
 
