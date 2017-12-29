@@ -1218,4 +1218,3 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return false;
     }
 }
-

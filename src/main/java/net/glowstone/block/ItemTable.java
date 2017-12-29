@@ -109,6 +109,7 @@ import net.glowstone.block.itemtype.ItemChorusFruit;
 import net.glowstone.block.itemtype.ItemDye;
 import net.glowstone.block.itemtype.ItemEgg;
 import net.glowstone.block.itemtype.ItemEndCrystal;
+import net.glowstone.block.itemtype.ItemEnderPearl;
 import net.glowstone.block.itemtype.ItemFilledBucket;
 import net.glowstone.block.itemtype.ItemFirework;
 import net.glowstone.block.itemtype.ItemFishCooked;
@@ -470,6 +471,7 @@ public final class ItemTable {
         reg(Material.BOAT_DARK_OAK, new ItemBoat(TreeSpecies.DARK_OAK));
         reg(Material.PAINTING, new ItemPainting());
         reg(Material.FIREWORK, new ItemFirework());
+        reg(Material.ENDER_PEARL, new ItemEnderPearl());
     }
 
     private void reg(Material material, ItemType type) {

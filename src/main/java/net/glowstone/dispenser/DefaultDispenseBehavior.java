@@ -59,7 +59,7 @@ public class DefaultDispenseBehavior implements DispenseBehavior {
             new Vector(velocityX, velocityY, velocityZ));
         EventFactory.callEvent(dispenseEvent);
         if (!dispenseEvent.isCancelled()) {
-            GlowItem item = new GlowItem(new Location(block.getWorld(), x, y, z),
+            GlowItem item = block.getWorld().dropItem(new Location(block.getWorld(), x, y, z),
                 dispenseEvent.getItem());
             item.setVelocity(dispenseEvent.getVelocity());
         }

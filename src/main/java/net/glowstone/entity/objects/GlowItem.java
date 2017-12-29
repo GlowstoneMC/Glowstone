@@ -4,6 +4,8 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -19,6 +21,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -136,6 +139,12 @@ public class GlowItem extends GlowEntity implements Item {
 
         // disappear if we've lived too long
         if (getTicksLived() >= LIFETIME) {
+            ItemDespawnEvent event = EventFactory.callEvent(new ItemDespawnEvent(this, getLocation()));
+            if (event.isCancelled()) {
+                // Allow it to live for 5 more minutes, according to docs
+                ticksLived -= LIFETIME;
+                return;
+            }
             remove();
         }
     }

@@ -4,19 +4,21 @@ import net.glowstone.Explosion;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-public class GlowWither extends GlowMonster implements Wither {
+public class GlowWither extends GlowBoss implements Wither {
 
     private int invulnerableTicks;
     private Entity centerTarget, leftTarget, rightTarget;
 
     public GlowWither(Location loc) {
-        super(loc, EntityType.WITHER, 300);
+        super(loc, EntityType.WITHER, 300, "Wither", BarColor.BLUE, BarStyle.SOLID);
         setInvulnerableTicks(220);
         setCenterTarget(null);
         setLeftTarget(null);
