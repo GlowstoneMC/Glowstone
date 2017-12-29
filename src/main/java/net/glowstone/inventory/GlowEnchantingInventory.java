@@ -18,6 +18,12 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     private final Location location;
     private final EnchantmentManager enchantmentManager;
 
+    /**
+     * Creates an instance for an enchanting table.
+     *
+     * @param location the enchanting table's location
+     * @param player the enchanting player
+     */
     public GlowEnchantingInventory(Location location, GlowPlayer player) {
         super(player, InventoryType.ENCHANTING);
 
@@ -35,6 +41,11 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
         enchantmentManager.onPlayerEnchant(clicked);
     }
 
+    /**
+     * Returns the number of bookshelf blocks that are raising this enchanting table's level.
+     *
+     * @return the number of bookshelf blocks affecting this table
+     */
     public int getBookshelfCount() {
         int count = 0;
 
