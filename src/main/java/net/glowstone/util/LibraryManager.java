@@ -97,7 +97,7 @@ public final class LibraryManager {
 
             // hack it onto the classpath
             try {
-                String[] javaVersion = System.getProperty("java.version").split("\\.");
+                String[] javaVersion = System.getProperty("java.version").split("-")[0].split("\\.");
                 if (Integer.parseInt(javaVersion[0]) >= 9) {
                     ClassPathAgent.addJarFile(new JarFile(file));
                 } else {
