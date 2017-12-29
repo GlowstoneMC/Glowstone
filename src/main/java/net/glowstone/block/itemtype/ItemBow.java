@@ -56,7 +56,7 @@ public class ItemBow extends ItemTimedUsage {
                 // Consume the arrow
                 int amount = arrow.getAmount();
                 if (amount > 1) {
-                    arrow.setAmount(arrow.getAmount() - 1);
+                    arrow.setAmount(amount - 1);
                 } else {
                     arrowSlot.setItem(InventoryUtil.createEmptyStack());
                 }
@@ -82,7 +82,7 @@ public class ItemBow extends ItemTimedUsage {
                 1.0 - (TICKS_TO_FULLY_CHARGE - player.getUsageTime()) / TICKS_TO_FULLY_CHARGE);
         double damage = MAX_BASE_DAMAGE * chargeFraction
                 * (1 + 0.25 * item.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
-        launchedArrow.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(
+        launchedArrow.setVelocity(launchedArrow.getVelocity().normalize().multiply(
                 chargeFraction * MAX_SPEED));
         launchedArrow.spigot().setDamage(damage);
         if (item.containsEnchantment(Enchantment.ARROW_FIRE)) {
@@ -97,5 +97,6 @@ public class ItemBow extends ItemTimedUsage {
         InventoryUtil.damageItem(player, item);
         player.setUsageItem(null);
         player.setUsageTime(0);
+        currentArrowType = null;
     }
 }
