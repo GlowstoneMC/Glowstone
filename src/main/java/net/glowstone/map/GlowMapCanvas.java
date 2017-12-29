@@ -10,7 +10,8 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 /**
- * Represents a canvas for drawing to a map. Each canvas is associated with a specific {@link org.bukkit.map.MapRenderer} and represents that renderer's layer on the map.
+ * Represents a canvas for drawing to a map. Each canvas is associated with a specific
+ * {@link org.bukkit.map.MapRenderer} and represents that renderer's layer on the map.
  */
 public final class GlowMapCanvas implements MapCanvas {
 
@@ -116,6 +117,7 @@ public final class GlowMapCanvas implements MapCanvas {
      * @return a {@link Section} holding a copy of this canvas's contents
      */
     public Section toSection() {
-        return new Section(MAP_SIZE, MAP_SIZE, mapView.getCenterX(), mapView.getCenterZ(), buffer.clone());
+        return new Section(
+                MAP_SIZE, MAP_SIZE, mapView.getCenterX(), mapView.getCenterZ(), buffer.clone());
     }
 }
