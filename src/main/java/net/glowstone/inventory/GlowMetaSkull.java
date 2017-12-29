@@ -43,6 +43,13 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     ////////////////////////////////////////////////////////////////////////////
     // Internal stuff
 
+    /**
+     * Deserializes an instance as specified in {@link
+     * org.bukkit.configuration.serialization.ConfigurationSerializable}.
+     *
+     * @param data a serialized instance
+     * @return the instance as a GlowMetaSkull
+     */
     public static GlowMetaSkull deserialize(Map<String, Object> data) {
         GlowMetaSkull result = new GlowMetaSkull(null);
         if (data.containsKey("owner")) {
