@@ -12,8 +12,6 @@ import org.bukkit.entity.Player;
 
 /**
  * A monster with a boss bar.
- *
- * @author Chris Hennick
  */
 public class GlowBoss extends GlowMonster {
     protected BossBar bar;
