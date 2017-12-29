@@ -1,6 +1,8 @@
 package net.glowstone.entity.monster;
 
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -10,10 +12,33 @@ import org.bukkit.entity.Player;
 
 /**
  * A monster with a boss bar.
+ *
+ * @author Chris Hennick
  */
-// TODO: Periodically check for players entering and leaving the dimension.
 public class GlowBoss extends GlowMonster {
     protected BossBar bar;
+
+    @Override
+    public boolean teleport(Location location) {
+        World oldWorld = world;
+        boolean result = super.teleport(location);
+        worldLock.readLock().lock();
+        try {
+            if (world != oldWorld) {
+                for (Player player : bar.getPlayers()) {
+                    if (player instanceof GlowPlayer) {
+                        ((GlowPlayer) player).removeBossBar(bar);
+                    }
+                }
+                for (GlowPlayer player : world.getRawPlayers()) {
+                    player.addBossBar(bar);
+                }
+            }
+        } finally {
+            worldLock.readLock().unlock();
+        }
+        return result;
+    }
 
     /**
      * Creates a new boss.
@@ -31,7 +56,7 @@ public class GlowBoss extends GlowMonster {
         super(loc, type, maxHealth);
         bar = getServer().createBossBar(title, color, style, barFlags);
         bar.setProgress(1);
-        for (Player player : loc.getWorld().getPlayers()) {
+        for (Player player : world.getPlayers()) {
             // TODO: Check facing direction
             bar.addPlayer(player);
         }
@@ -55,5 +80,14 @@ public class GlowBoss extends GlowMonster {
     public void remove() {
         bar.removeAll();
         super.remove();
+    }
+
+    /**
+     * Adds this boss's bar for the given player.
+     *
+     * @param player the player who should see this bar
+     */
+    public void addBarToPlayer(Player player) {
+        bar.addPlayer(player);
     }
 }

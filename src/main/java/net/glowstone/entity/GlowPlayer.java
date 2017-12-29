@@ -56,6 +56,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
@@ -515,6 +516,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         invMonitor = new InventoryMonitor(getOpenInventory());
         server.getPlayerStatisticIoService().readStatistics(this);
         recipeMonitor = new PlayerRecipeMonitor(this);
+
+        updateBossBars();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -707,7 +710,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             scoreboard.unsubscribe(this);
             scoreboard = null;
         }
+        clearBossBars();
         super.remove();
+    }
+
+    private void clearBossBars() {
+        for (BossBar bar : bossBars) {
+            removeBossBar(bar);
+        }
     }
 
     public void remove(boolean async) {
@@ -723,6 +733,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             scoreboard.unsubscribe(this);
             scoreboard = null;
         }
+        clearBossBars();
         super.remove();
     }
 
@@ -1010,6 +1021,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             world.getEntityManager().unregister(this);
             world = (GlowWorld) location.getWorld();
             world.getEntityManager().register(this);
+            updateBossBars();
         } finally {
             worldLock.writeLock().unlock();
         }
@@ -1041,6 +1053,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (oldWorld != world) {
             session.send(((GlowWorldBorder) world.getWorldBorder()).createMessage());
             EventFactory.callEvent(new PlayerChangedWorldEvent(this, oldWorld));
+        }
+    }
+
+    /**
+     * Remove all boss bars, then add back the ones whose world we're in.
+     */
+    private void updateBossBars() {
+        clearBossBars();
+        worldLock.readLock().lock();
+        try {
+            for (GlowBoss boss : world.getEntitiesByClass(GlowBoss.class)) {
+                boss.addBarToPlayer(this);
+            }
+        } finally {
+            worldLock.readLock().unlock();
         }
     }
 
