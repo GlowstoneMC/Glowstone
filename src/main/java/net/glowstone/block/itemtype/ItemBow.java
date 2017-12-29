@@ -2,7 +2,6 @@ package net.glowstone.block.itemtype;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.inventory.GlowInventorySlot;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;

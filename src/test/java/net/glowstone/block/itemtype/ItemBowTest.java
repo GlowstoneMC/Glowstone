@@ -44,7 +44,6 @@ public class ItemBowTest {
         bow.startUse(player, bowItemStack);
         verify(player, times(1)).setUsageItem(bowItemStack);
         verify(player, times(1)).setUsageTime(anyLong());
-        // FIXME: assertEquals(1, arrows.getAmount());
 
         when(player.getUsageTime()).thenReturn(10L);
         World world = mock(World.class, RETURNS_SMART_NULLS);
@@ -62,6 +61,7 @@ public class ItemBowTest {
         verify(player, times(1)).setUsageItem(null);
         verify(player, times(1)).setUsageTime(0);
         assertEquals(1, bowItemStack.getDurability()); // shooting should damage the bow
+        // FIXME: assertEquals(1, arrows.getAmount()); // one arrow should be consumed
     }
 
 }
