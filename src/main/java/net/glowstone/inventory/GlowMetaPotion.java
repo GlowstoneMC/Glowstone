@@ -8,10 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -20,19 +23,32 @@ import org.bukkit.potion.PotionType;
 
 public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
-    PotionData potion;
+    @Getter
+    @Setter
+    PotionData basePotionData;
     List<PotionEffect> effects = new ArrayList<>();
+    @Getter
+    @Setter
     Color color = null;
 
-    public GlowMetaPotion(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link PotionMeta}, its color, {@link PotionData} and {@link PotionEffect}s are copied;
+     * otherwise, the new potion has no effects.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaPotion(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaPotion)) {
+        if (!(meta instanceof PotionMeta)) {
             return;
         }
 
-        GlowMetaPotion potion = (GlowMetaPotion) meta;
-        effects.addAll(potion.effects);
-        this.potion = potion.potion;
+        PotionMeta potion = (PotionMeta) meta;
+        if (potion.hasCustomEffects()) {
+            effects.addAll(potion instanceof GlowMetaPotion
+                    ? ((GlowMetaPotion) potion).effects : potion.getCustomEffects());
+        }
+        this.basePotionData = potion.getBasePotionData();
     }
 
     public static PotionEffect fromNBT(CompoundTag tag) {
@@ -106,21 +122,11 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
             }
         }
         if (tag.isString("Potion")) {
-            this.potion = dataFromString(tag.getString("Potion"));
+            this.basePotionData = dataFromString(tag.getString("Potion"));
         }
         if (tag.isInt("CustomPotionColor")) {
             this.color = Color.fromRGB(tag.getInt("CustomPotionColor"));
         }
-    }
-
-    @Override
-    public PotionData getBasePotionData() {
-        return this.potion;
-    }
-
-    @Override
-    public void setBasePotionData(PotionData potionData) {
-        this.potion = potionData;
     }
 
     @Override
@@ -207,16 +213,6 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         return color != null;
     }
 
-    @Override
-    public Color getColor() {
-        return color;
-    }
-
-    @Override
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     /**
      * Converts the PotionData of this item meta to a Potion ID string
      *
@@ -224,12 +220,12 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
      */
     private String dataToString() {
         String name = "minecraft:";
-        if (potion.isExtended()) {
+        if (basePotionData.isExtended()) {
             name += "long_";
-        } else if (potion.isUpgraded()) {
+        } else if (basePotionData.isUpgraded()) {
             name += "strong_";
         }
-        return name + PotionTypeTable.toName(potion.getType());
+        return name + PotionTypeTable.toName(basePotionData.getType());
     }
 
     /**

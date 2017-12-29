@@ -2,10 +2,13 @@ package net.glowstone.inventory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
@@ -15,65 +18,15 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class GlowMetaShield extends GlowMetaItem implements BannerMeta {
+public class GlowMetaShield extends GlowMetaBanner {
 
-    private List<Pattern> patterns = new ArrayList<>();
-    private DyeColor baseColor = null;
-
-    public GlowMetaShield(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link BannerMeta}, the banner is copied; otherwise, the new shield has no banner.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaShield(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaShield)) {
-            return;
-        }
-        GlowMetaShield banner = (GlowMetaShield) meta;
-        patterns = banner.patterns;
-        baseColor = banner.baseColor;
-    }
-
-    @Override
-    public List<Pattern> getPatterns() {
-        return patterns;
-    }
-
-    @Override
-    public void setPatterns(List<Pattern> patterns) {
-        checkNotNull(patterns, "Pattern cannot be null!");
-        this.patterns = patterns;
-    }
-
-    @Override
-    public DyeColor getBaseColor() {
-        return baseColor;
-    }
-
-    @Override
-    public void setBaseColor(DyeColor dyeColor) {
-        this.baseColor = dyeColor;
-    }
-
-    @Override
-    public void addPattern(Pattern pattern) {
-        patterns.add(pattern);
-    }
-
-    @Override
-    public Pattern getPattern(int i) {
-        return patterns.get(i);
-    }
-
-    @Override
-    public Pattern removePattern(int i) {
-        return patterns.remove(i);
-    }
-
-    @Override
-    public void setPattern(int i, Pattern pattern) {
-        patterns.set(i, pattern);
-    }
-
-    @Override
-    public int numberOfPatterns() {
-        return patterns.size();
     }
 
     @Override

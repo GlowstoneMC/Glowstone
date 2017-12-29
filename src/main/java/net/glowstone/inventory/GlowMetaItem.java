@@ -33,21 +33,26 @@ public class GlowMetaItem implements ItemMeta {
      *
      * @param meta The meta to copy from, or null.
      */
-    public GlowMetaItem(GlowMetaItem meta) {
+    public GlowMetaItem(ItemMeta meta) {
         if (meta == null) {
             return;
         }
 
-        displayName = meta.displayName;
+        displayName = meta.getDisplayName();
 
         if (meta.hasLore()) {
-            lore = new ArrayList<>(meta.lore);
+            lore = new ArrayList<>(meta.getLore());
         }
         if (meta.hasEnchants()) {
-            enchants = new HashMap<>(meta.enchants);
+            enchants = new HashMap<>(meta.getEnchants());
         }
-
-        hideFlag = meta.hideFlag;
+        if (meta instanceof GlowMetaItem) {
+            hideFlag = ((GlowMetaItem) meta).hideFlag;
+        } else {
+            for (ItemFlag flag : meta.getItemFlags()) {
+                addItemFlags(flag);
+            }
+        }
     }
 
     protected static void serializeEnchants(String name, Map<String, Object> map,

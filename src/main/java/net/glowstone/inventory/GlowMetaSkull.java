@@ -1,26 +1,44 @@
 package net.glowstone.inventory;
 
 import java.util.Map;
+import java.util.UUID;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
+    private static final PlayerProfile UNKNOWN_PLAYER = new PlayerProfile("MHF_Steve",
+            new UUID(0xc06f89064c8a4911L, 0x9c29ea1dbd1aab82L));
     PlayerProfile owner;
 
-    public GlowMetaSkull(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link SkullMeta} with an owner, attempts to copy the owning player.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaSkull(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaSkull)) {
+        if (!(meta instanceof SkullMeta)) {
             return;
         }
-        GlowMetaSkull skull = (GlowMetaSkull) meta;
-        owner = skull.owner;
+        SkullMeta skull = (SkullMeta) meta;
+        if (skull.hasOwner()) {
+            if (skull instanceof GlowMetaSkull) {
+                owner = ((GlowMetaSkull) skull).owner;
+            } else {
+                if (!setOwningPlayerInternal(skull.getOwningPlayer())) {
+                    owner = UNKNOWN_PLAYER; // necessary to preserve the return value of hasOwner()
+                }
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -107,10 +125,21 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         if (hasOwner()) {
             return false;
         }
+        return setOwningPlayerInternal(owningPlayer);
+    }
+
+    private boolean setOwningPlayerInternal(OfflinePlayer owningPlayer) {
         if (owningPlayer instanceof GlowOfflinePlayer) {
             GlowOfflinePlayer impl = (GlowOfflinePlayer) owningPlayer;
             this.owner = impl.getProfile();
+            return true;
+        } else {
+            PlayerProfile profile = PlayerProfile.getProfile(owningPlayer.getName()).getNow(null);
+            if (profile != null) {
+                this.owner = profile;
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 }
