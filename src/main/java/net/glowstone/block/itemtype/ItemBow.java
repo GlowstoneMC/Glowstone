@@ -25,7 +25,7 @@ public class ItemBow extends ItemTimedUsage {
         ItemStack arrow = null;
         GlowInventorySlot arrowSlot = null;
         findArrow: for (GlowInventorySlot slot : player.getInventory().getSlots()) {
-            ItemStack itemStack = arrowSlot.getItem();
+            ItemStack itemStack = slot.getItem();
             switch (itemStack.getType()) {
                 case ARROW:
                     arrow = itemStack;
