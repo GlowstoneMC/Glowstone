@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
@@ -23,12 +24,13 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
     @Override
     public void handle(GlowSession session, UseItemMessage message) {
         GlowPlayer player = session.getPlayer();
-        ItemStack holding = InventoryUtil
-                .itemOrEmpty(player.getInventory().getItem(message.getEquipmentSlot()));
+        EquipmentSlot slot = message.getEquipmentSlot();
+        ItemStack holding = InventoryUtil.itemOrEmpty(player.getInventory().getItem(slot));
 
         PlayerInteractEvent event = EventFactory
-                .onPlayerInteract(player, Action.RIGHT_CLICK_AIR, message.getEquipmentSlot());
-        if (event.useItemInHand() == null || event.useItemInHand() == Event.Result.DENY) {
+                .onPlayerInteract(player, Action.RIGHT_CLICK_AIR, slot);
+        Event.Result result = event.useItemInHand();
+        if (result == null || result == Event.Result.DENY) {
             return;
         }
 
@@ -43,9 +45,9 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
                             && player.getGameMode() != GameMode.CREATIVE) {
                         holding.setType(Material.BUCKET);
                     } else if (type instanceof ItemTimedUsage) {
-                        ((ItemTimedUsage) type).startUse(session.getPlayer(), holding);
+                        ((ItemTimedUsage) type).startUse(player, holding);
                     } else if (type instanceof ItemProjectile) {
-                        ((ItemProjectile) type).use(session.getPlayer(), holding);
+                        ((ItemProjectile) type).use(player, holding);
                     }
                 }
             }
@@ -54,7 +56,7 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
             if (holding.getAmount() <= 0) {
                 holding = InventoryUtil.createEmptyStack();
             }
-            player.getInventory().setItem(message.getEquipmentSlot(), holding);
+            player.getInventory().setItem(slot, holding);
         }
     }
 }
