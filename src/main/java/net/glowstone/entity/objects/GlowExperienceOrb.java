@@ -28,6 +28,12 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
         this(location, 1);
     }
 
+    /**
+     * Creates an experience orb.
+     *
+     * @param location the location
+     * @param experience the amount of experience contained
+     */
     public GlowExperienceOrb(Location location, int experience) {
         super(location);
         setBoundingBox(0.5, 0.5);

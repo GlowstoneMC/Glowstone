@@ -18,7 +18,7 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     /**
-     * Returns the ItemStack found in the slot at the given EquipmentSlot
+     * Returns the ItemStack found in the slot at the given EquipmentSlot.
      *
      * @param slot The EquipmentSlot of the Slot's ItemStack to return
      * @return The ItemStack in the slot
