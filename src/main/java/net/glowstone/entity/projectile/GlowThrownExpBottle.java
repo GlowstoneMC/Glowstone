@@ -1,6 +1,7 @@
 package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.entity.objects.GlowExperienceOrb;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -8,7 +9,6 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ThrownExpBottle;
 
-// TODO: stubs
 public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBottle {
     public GlowThrownExpBottle(Location location) {
         super(location);
@@ -26,7 +26,11 @@ public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBott
 
     private void spawnOrb() {
         int xp = ThreadLocalRandom.current().nextInt(9) + 3;
-        ((ExperienceOrb) world.spawnEntity(location, EntityType.EXPERIENCE_ORB)).setExperience(xp);
+        ExperienceOrb orb = (ExperienceOrb) world.spawnEntity(location, EntityType.EXPERIENCE_ORB);
+        orb.setExperience(xp);
+        if (orb instanceof GlowExperienceOrb) {
+            ((GlowExperienceOrb) orb).setFromBottle(true);
+        }
         remove();
     }
 
