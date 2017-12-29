@@ -714,12 +714,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         super.remove();
     }
 
-    private void clearBossBars() {
-        for (BossBar bar : bossBars) {
-            removeBossBar(bar);
-        }
-    }
-
     public void remove(boolean async) {
         knownChunks.clear();
         chunkLock.clear();
@@ -1068,6 +1062,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
         } finally {
             worldLock.readLock().unlock();
+        }
+    }
+
+    private void clearBossBars() {
+        for (BossBar bar : bossBars) {
+            removeBossBar(bar);
         }
     }
 
