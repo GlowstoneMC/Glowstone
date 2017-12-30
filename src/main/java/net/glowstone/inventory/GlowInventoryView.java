@@ -14,7 +14,8 @@ public class GlowInventoryView extends InventoryView {
 
     private final HumanEntity player;
     private final InventoryType type;
-    private final Inventory top, bottom;
+    private final Inventory top;
+    private final Inventory bottom;
 
     /**
      * Create the default inventory view for this player.

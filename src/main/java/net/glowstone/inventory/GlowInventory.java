@@ -83,7 +83,7 @@ public class GlowInventory implements Inventory {
      * @param title Inventory title, displayed in the client.
      */
     protected void initialize(List<GlowInventorySlot> slots, Set<HumanEntity> viewers,
-        InventoryHolder owner, InventoryType type, String title) {
+            InventoryHolder owner, InventoryType type, String title) {
         this.slots = slots;
         this.viewers = viewers;
         this.owner = owner;
@@ -155,7 +155,8 @@ public class GlowInventory implements Inventory {
      * Check whether it is allowed for a player to insert the given ItemStack at the slot,
      * regardless of the slot's current contents.
      *
-     * <p>Should return false for crafting output slots or armor slots which cannot accept the given item.
+     * <p>Should return false for crafting output slots or armor slots which cannot accept the given
+     * item.
      *
      * @param slot The slot number.
      * @param stack The stack to add.
@@ -166,7 +167,8 @@ public class GlowInventory implements Inventory {
     }
 
     /**
-     * Check whether, in a shift-click operation, an item of the specified type may be placed in the given slot.
+     * Check whether, in a shift-click operation, an item of the specified type may be placed in the
+     * given slot.
      *
      * @param slot The slot number.
      * @param stack The stack to add.
@@ -179,7 +181,8 @@ public class GlowInventory implements Inventory {
     /**
      * Handle a shift click in this inventory by the specified player.
      *
-     * <p>The default implementation distributes items from the right to the left and from the bottom to the top.
+     * <p>The default implementation distributes items from the right to the left and from the
+     * bottom to the top.
      *
      * @param player The player who clicked
      * @param view The inventory view in which was clicked
@@ -187,19 +190,22 @@ public class GlowInventory implements Inventory {
      * @param clickedItem The item at which was clicked
      */
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
-        ItemStack clickedItem) {
+            ItemStack clickedItem) {
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         view.setItem(clickedSlot, clickedItem);
     }
 
     /**
-     * Tries to put the given items into the specified slots of this inventory from the start slot (inclusive) to the end slot (exclusive).
+     * Tries to put the given items into the specified slots of this inventory from the start slot
+     * (inclusive) to the end slot (exclusive).
      *
      * <p>The slots are supplied in pairs, first the start then the end slots.
      *
-     * <p>This will first try to fill up all partial slots and if items are still left after doing so, it places them into the first empty slot.
+     * <p>This will first try to fill up all partial slots and if items are still left after doing
+     * so, it places them into the first empty slot.
      *
-     * <p>If no empty slot was found and there are still items left, they're returned from this method.
+     * <p>If no empty slot was found and there are still items left, they're returned from this
+     * method.
      *
      * @param stack The items to place down
      * @param slots Pairs of start/end slots
@@ -228,7 +234,7 @@ public class GlowInventory implements Inventory {
                 if (firstEmpty == -1 && InventoryUtil.isEmpty(currentStack)) {
                     firstEmpty = i;
                 } else if (currentStack
-                    .isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
+                        .isSimilar(stack)) { // Non empty slot of similar items, try to fill stack
                     // Calculate the amount of transferable items
                     int amount = currentStack.getAmount();
                     int maxStackSize = Math.min(currentStack.getMaxStackSize(), getMaxStackSize());
@@ -385,6 +391,14 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    /**
+     * Adds the contents of the given ItemStack to the inventory.
+     *
+     * @param item the ItemStack to add
+     * @param ignoreMeta if true, can convert to items with different NBT data in order to stack
+     *         with existing copies of those items, provided the material and damage value match
+     * @return the items that couldn't be added, or an empty stack if all were added
+     */
     public ItemStack addItemStack(ItemStack item, boolean ignoreMeta) {
         int maxStackSize = item.getType() == null ? 64 : item.getType().getMaxStackSize();
         int toAdd = item.getAmount();
@@ -451,6 +465,14 @@ public class GlowInventory implements Inventory {
         return result;
     }
 
+    /**
+     * Removes the given ItemStack from the inventory.
+     *
+     * @param item the ItemStack to remove
+     * @param ignoreMeta if true, can choose an item with different NBT data, provided the material
+     *         and damage value match
+     * @return the items that couldn't be removed, or an empty stack if all were removed
+     */
     public ItemStack removeItemStack(ItemStack item, boolean ignoreMeta) {
         int toRemove = item.getAmount();
 

@@ -31,6 +31,13 @@ public class GlowInventorySlot {
         this.type = type;
     }
 
+    /**
+     * Returns an array of new container-type slots.
+     *
+     * @param len the length of the array
+     * @return an array, each of whose elements is a new {@link SlotType#CONTAINER}
+     *         {@link GlowInventorySlot}
+     */
     public static GlowInventorySlot[] createArray(int len) {
         GlowInventorySlot[] result = new GlowInventorySlot[len];
 

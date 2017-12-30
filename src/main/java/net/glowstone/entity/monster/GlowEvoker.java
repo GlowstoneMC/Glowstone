@@ -12,6 +12,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class GlowEvoker extends GlowMonster implements Evoker {
 
+    /**
+     * Creates an evoker.
+     *
+     * @param loc the evoker's location
+     */
     public GlowEvoker(Location loc) {
         super(loc, EntityType.EVOKER, 24);
         metadata.set(MetadataIndex.EVOKER_SPELL, (byte) Spellcaster.Spell.NONE.ordinal());
@@ -44,6 +49,11 @@ public class GlowEvoker extends GlowMonster implements Evoker {
         castSpell(Spellcaster.Spell.SUMMON_VEX); // todo: remove this, demo purposes
     }
 
+    /**
+     * Casts the given spell.
+     *
+     * @param spell the spell to cast
+     */
     public void castSpell(Spellcaster.Spell spell) {
         setSpell(spell);
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -68,6 +78,8 @@ public class GlowEvoker extends GlowMonster implements Evoker {
             case WOLOLO:
                 // todo
                 break;
+            default:
+                // TODO: Should this raise a warning?
         }
     }
 

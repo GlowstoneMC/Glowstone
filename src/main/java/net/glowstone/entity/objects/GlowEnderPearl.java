@@ -18,7 +18,13 @@ public class GlowEnderPearl extends GlowEntity implements EnderPearl {
 
     private ProjectileSource shooter;
     private float speed;
-    
+
+    /**
+     * Creates a thrown ender pearl.
+     *
+     * @param location the position and facing of the thrower
+     * @param speed the initial speed
+     */
     public GlowEnderPearl(Location location, float speed) {
         super(location);
         setDrag(0.99, false);
@@ -50,16 +56,16 @@ public class GlowEnderPearl extends GlowEntity implements EnderPearl {
 
     @Override
     protected void pulsePhysics() {
-        Location velLoc = location.clone().add(velocity);
         velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
 
         velocity.setX(velocity.getX() * 0.95);
         velocity.setZ(velocity.getZ() * 0.95);
 
-        setRawLocation(velLoc);
+        setRawLocation(location.clone().add(velocity));
 
         // If the EnderPearl collides with anything except air/fluids
-        if (!location.getBlock().isLiquid() && !location.getBlock().isEmpty() && shooter instanceof  Entity) {
+        if (!location.getBlock().isLiquid() && !location.getBlock().isEmpty()
+                && shooter instanceof Entity) {
             ((Entity) shooter).teleport(location);
             this.remove();
         }
@@ -68,7 +74,8 @@ public class GlowEnderPearl extends GlowEntity implements EnderPearl {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
+                new SpawnObjectMessage(
+                        id, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
                 new EntityMetadataMessage(id, metadata.getEntryList()),
                 // These keep the client from assigning a random velocity
                 new EntityTeleportMessage(id, location),
