@@ -14,7 +14,6 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
-import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -160,13 +159,6 @@ public class GlowItem extends GlowEntity implements Item {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Arrays.asList(
             new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM, location),
             new EntityMetadataMessage(id, metadata.getEntryList()),
