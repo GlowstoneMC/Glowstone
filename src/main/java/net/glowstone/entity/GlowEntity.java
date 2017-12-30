@@ -702,7 +702,7 @@ public abstract class GlowEntity implements Entity {
 
         GlowPlayer player = session.getPlayer();
         if (player == null) {
-            // No update messages are needed
+            // Player disconnected while this task was pending
             return result;
         }
         boolean visible = player.canSeeEntity(this);
