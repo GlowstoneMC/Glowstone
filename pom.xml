@@ -249,6 +249,7 @@
           <forceCreation>true</forceCreation>
           <archive>
             <manifestEntries>
+              <Launcher-Agent-Class>net.glowstone.util.ClassPathAgent</Launcher-Agent-Class>
               <Main-Class>net.glowstone.GlowServer</Main-Class>
               <Implementation-Title>${project.name}</Implementation-Title>
               <Implementation-Version>${project.version}.${describe}</Implementation-Version>
