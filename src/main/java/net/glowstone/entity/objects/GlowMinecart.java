@@ -124,7 +124,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         @Getter
         private final Class<? extends Minecart> entityClass;
         @Getter
-        private final Function<Location, ? extends GlowMinecart> creator;
+        private final Function<? super Location, ? extends GlowMinecart> creator;
 
         MinecartType(Class<? extends GlowMinecart> minecartClass, EntityType entityType,
                 Class<? extends Minecart> entityClass,
