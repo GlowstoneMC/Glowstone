@@ -146,12 +146,12 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             // We know that there was something leashed, but not what entity it was
             // This can happen, when for example Minecart got leashed
             // We still have to make sure that we drop a Leash Item
-            entity.setLeashHolderUniqueID(UUID.randomUUID());
+            entity.setLeashHolderUniqueId(UUID.randomUUID());
         } else if (compound.isCompound("Leash")) {
             CompoundTag leash = compound.getCompound("Leash");
             if (leash.isLong("UUIDMost") && leash.isLong("UUIDLeast")) {
                 UUID uuid = new UUID(leash.getLong("UUIDMost"), leash.getLong("UUIDLeast"));
-                entity.setLeashHolderUniqueID(uuid);
+                entity.setLeashHolderUniqueId(uuid);
             } else if (leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
                 int y = leash.getInt("Y");

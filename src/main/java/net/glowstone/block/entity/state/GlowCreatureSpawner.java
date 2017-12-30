@@ -11,6 +11,11 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
     private EntityType spawned;
     private int delay;
 
+    /**
+     * Creates a mob spawner.
+     *
+     * @param block the spawner block
+     */
     public GlowCreatureSpawner(GlowBlock block) {
         super(block);
 

@@ -28,11 +28,15 @@ public class GlowDungeon extends GlowStructurePiece {
     private final int sizeX;
     private final int sizeZ;
     private final EntityType[] mobTypes = new EntityType[]{
-        EntityType.SKELETON, EntityType.ZOMBIE,
-        EntityType.ZOMBIE, EntityType.SPIDER
-    };
+        EntityType.SKELETON, EntityType.ZOMBIE, EntityType.ZOMBIE, EntityType.SPIDER};
     private final Location loc;
 
+    /**
+     * Creates an instance with a random size.
+     *
+     * @param random the PRNG that will generate the size
+     * @param location the location to generate in
+     */
     public GlowDungeon(Random random, Location location) {
         super(location, new Vector(9, HEIGHT, 9));
         // inner dungeon shape is 5x5, 5x7 or 7x7
@@ -43,6 +47,14 @@ public class GlowDungeon extends GlowStructurePiece {
         loc = location;
     }
 
+    /**
+     * Returns whether a given {@link StructureBuilder} can place this dungeon in its chosen
+     * location.
+     *
+     * @param builder a StructureBuilder for this and for the world and {@link BlockStateDelegate}
+     *         that would be used to generate this
+     * @return true if this dungeon can be placed; false otherwise
+     */
     public boolean canPlace(StructureBuilder builder) {
         if (boundingBox.getMin().getBlockY() < 1) {
             return false;
@@ -60,11 +72,12 @@ public class GlowDungeon extends GlowStructurePiece {
                     // checks a few blocks at bottom of walls are opened to air
                     // in order to have a natural door like access
                     if ((x == 0 || x == sizeX - 1 || z == 0 || z == sizeZ - 1)
-                        && y == 1 && type == Material.AIR
-                        && builder.getBlockState(new Vector(x, y + 1, z)).getType()
-                        == Material.AIR) {
+                            && y == 1 && type == Material.AIR
+                            && builder.getBlockState(new Vector(x, y + 1, z)).getType()
+                            == Material.AIR) {
                         i++;
-                        // TODO change min to 1 when caves will be generated ! this will be required so that dungeons are minimally exposed to air
+                        // TODO change min to 1 when caves will be generated ! this will be required
+                        // so that dungeons are minimally exposed to air
                         if (i < 0 || i > 5) {
                             return false;
                         }
@@ -78,7 +91,7 @@ public class GlowDungeon extends GlowStructurePiece {
 
     @Override
     public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox,
-        BlockStateDelegate delegate) {
+            BlockStateDelegate delegate) {
         if (!super.generate(world, random, boundingBox, delegate)) {
             return false;
         }
@@ -100,11 +113,11 @@ public class GlowDungeon extends GlowStructurePiece {
                 for (int y = HEIGHT - 1; y >= 0; y--) {
                     BlockState state = builder.getBlockState(new Vector(x, y, z));
                     if (y > 0 && x > 0 && z > 0 && x < sizeX - 1 && y < HEIGHT - 1
-                        && z < sizeZ - 1) {
+                            && z < sizeZ - 1) {
                         // empty space inside
                         builder.setBlock(new Vector(x, y, z), Material.AIR);
                     } else if (!builder.getBlockState(new Vector(x, y - 1, z)).getType()
-                        .isSolid()) {
+                            .isSolid()) {
                         // cleaning walls from non solid materials (because of air gaps below)
                         builder.setBlock(new Vector(x, y, z), Material.AIR);
                     } else if (state.getType().isSolid()) {
@@ -145,29 +158,30 @@ public class GlowDungeon extends GlowStructurePiece {
                     BlockFace face = null;
                     int solidBlocksCount = 0;
                     if (builder.getBlockState(new Vector(x - 1, 1, z)).getType()
-                        == Material.COBBLESTONE) {
+                            == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.EAST;
                     }
                     if (builder.getBlockState(new Vector(x + 1, 1, z)).getType()
-                        == Material.COBBLESTONE) {
+                            == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.WEST;
                     }
                     if (builder.getBlockState(new Vector(x, 1, z - 1)).getType()
-                        == Material.COBBLESTONE) {
+                            == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.SOUTH;
                     }
                     if (builder.getBlockState(new Vector(x, 1, z + 1)).getType()
-                        == Material.COBBLESTONE) {
+                            == Material.COBBLESTONE) {
                         solidBlocksCount++;
                         face = BlockFace.NORTH;
                     }
                     if (solidBlocksCount == 1) {
                         builder
-                            .createRandomItemsContainer(new Vector(x, 1, z), random, chestContent,
-                                new Chest(face), 8);
+                                .createRandomItemsContainer(new Vector(x, 1, z), random,
+                                        chestContent,
+                                        new Chest(face), 8);
                         break;
                     }
                 }
@@ -175,11 +189,11 @@ public class GlowDungeon extends GlowStructurePiece {
         }
 
         builder.createMobSpawner(new Vector(radiusX, 1, radiusZ),
-            mobTypes[random.nextInt(mobTypes.length)]);
+                mobTypes[random.nextInt(mobTypes.length)]);
 
         GlowServer.logger.finer(
-            "dungeon generated: " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc
-                .getBlockZ());
+                "dungeon generated: " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc
+                        .getBlockZ());
 
         return true;
     }
