@@ -19,7 +19,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     private static final PlayerProfile UNKNOWN_PLAYER = new PlayerProfile("MHF_Steve",
             new UUID(0xc06f89064c8a4911L, 0x9c29ea1dbd1aab82L));
 
-    final AtomicReference<PlayerProfile> owner = new AtomicReference<PlayerProfile>();
+    final AtomicReference<PlayerProfile> owner = new AtomicReference<>();
 
     /**
      * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
@@ -34,7 +34,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         SkullMeta skull = (SkullMeta) meta;
         if (skull.hasOwner()) {
             if (skull instanceof GlowMetaSkull) {
-                owner = ((GlowMetaSkull) skull).owner;
+                owner.set(((GlowMetaSkull) skull).owner.get());
             } else {
                 if (!setOwningPlayerInternal(skull.getOwningPlayer())) {
                     owner.set(UNKNOWN_PLAYER); // necessary to preserve the return value of hasOwner()
