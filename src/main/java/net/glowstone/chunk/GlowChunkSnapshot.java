@@ -12,8 +12,10 @@ import org.bukkit.block.Biome;
  */
 public class GlowChunkSnapshot implements ChunkSnapshot {
 
-    @Getter private final int x;
-    @Getter private final int z;
+    @Getter
+    private final int x;
+    @Getter
+    private final int z;
     private final String world;
     private final long time;
 
