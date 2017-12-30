@@ -39,6 +39,13 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         this(location, BlockFace.SOUTH);
     }
 
+    /**
+     * Creates a leash hitch entity, for when a leash is hitched to a block such as a fencepost.
+     *
+     * @param location the location
+     * @param clickedface the side of the block that was clicked
+     *         (TODO: what difference does this make?)
+     */
     public GlowLeashHitch(Location location, BlockFace clickedface) {
         super(location, clickedface);
         setSize(0.375f, 0.5f);
@@ -46,7 +53,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
     }
 
     /**
-     * Get all LeashHitch Entities in the specified block
+     * Get all LeashHitch Entities in the specified block.
      *
      * @param block the Block to search LeashHitch Entities in
      * @return a Stream of all found LeashHitch Entities
@@ -63,7 +70,8 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
     }
 
     /**
-     * Get the Leash Hitch to witch entities should be attached at the block Useful if multiple Leash Hitches could exists
+     * Get the Leash Hitch to which entities should be attached at the block. Useful if multiple
+     * Leash Hitches could exist.
      *
      * @param block the Block to get the relevant Leash Hitch for
      * @return either an already existing Leash Hitch, or a newly spawned one
@@ -82,7 +90,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
     }
 
     /**
-     * Checks if an Entity of the specified type is allowed to be a leash holder
+     * Checks if an Entity of the specified type is allowed to be a leash holder.
      *
      * @param type type of the entity which wishes to become a leash holder
      * @return if the type is allowed as a leash holder true, otherwise false

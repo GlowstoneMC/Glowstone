@@ -39,6 +39,14 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         this(location, material, blockData, null);
     }
 
+    /**
+     * Creates an instance for the given entity.
+     *
+     * @param location the falling block's location
+     * @param material the falling block's material
+     * @param blockData the falling block's data value
+     * @param blockEntity the entity
+     */
     public GlowFallingBlock(Location location, Material material, byte blockData,
         BlockEntity blockEntity) {
         super(location);
@@ -161,9 +169,9 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             } else {
                 placeFallingBlock();
                 if (material == Material.ANVIL) {
-                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F +
-                        (ThreadLocalRandom.current().nextFloat() - ThreadLocalRandom.current()
-                            .nextFloat()) * 0.2F) * 0.7F);
+                    ThreadLocalRandom random = ThreadLocalRandom.current();
+                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F
+                            + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
                 }
                 remove();
             }
@@ -200,8 +208,9 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             case LAVA:
             case STATIONARY_LAVA:
                 return false;
+            default:
+                return true;
         }
-        return true;
     }
 
 }

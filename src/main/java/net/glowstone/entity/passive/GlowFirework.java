@@ -49,6 +49,14 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         setSize(0.25f, 0.25f);
     }
 
+    /**
+     * Creates an instance.
+     *
+     * @param location the location
+     * @param spawningEntity TODO: document this parameter
+     * @param boostedEntity TODO: document this parameter
+     * @param item the firework rocket as an item
+     */
     public GlowFirework(Location location, UUID spawningEntity, LivingEntity boostedEntity,
         ItemStack item) {
         super(location);
@@ -113,7 +121,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     }
 
     /**
-     * Set the firework item of this firework entity. If an empty ItemStack, or none of the type {{@link Material#FIREWORK}} was given, a new Firework ItemStack will be created.
+     * Set the firework item of this firework entity. If an empty ItemStack, or none of the type
+     * {{@link Material#FIREWORK}} was given, a new Firework ItemStack will be created.
      *
      * @param item FireWork Item this entity should use
      */
@@ -170,7 +179,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
                         continue;
                     }
 
-                    // "The explosion of firework rockets deals 2.5 hearts of damage, per firework star."
+                    // "The explosion of firework rockets deals 2.5 hearts of damage, per firework
+                    // star."
                     ((LivingEntity) nearbyEntity)
                         .damage((effectsSize * 5), DamageCause.ENTITY_EXPLOSION);
                 }

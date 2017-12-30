@@ -69,7 +69,7 @@ public final class GlowMapRenderer extends MapRenderer {
         materialValues = block instanceof GlowBlock ? ((GlowBlock) block).getMaterialValues()
             : ((GlowServer) Bukkit.getServer()).getMaterialValueManager()
                 .getValues(block.getType());
-        byte base_color = materialValues.getBaseMapColor();
-        return (byte) (base_color | pseudoRandomShade(worldX, worldZ));
+        byte baseColor = materialValues.getBaseMapColor();
+        return (byte) (baseColor | pseudoRandomShade(worldX, worldZ));
     }
 }
