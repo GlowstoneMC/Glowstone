@@ -107,7 +107,7 @@ public abstract class GlowEntity implements Entity {
      */
     protected final Vector velocity = new Vector();
     /**
-     * Passengers.
+     * A list of entities currently riding this entity.
      */
     private final List<Entity> passengers = new ArrayList<>();
     /**
@@ -154,7 +154,7 @@ public abstract class GlowEntity implements Entity {
      */
     protected int ticksLived;
     /**
-     * Vehicle.
+     * The entity this entity is currently riding.
      */
     protected GlowEntity vehicle;
     /**
@@ -393,6 +393,7 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Returns the change in velocity per physics tick due to gravity.
+     *
      * @return the change in velocity per physics tick due to gravity
      */
     public Vector getGravityAccel() {
@@ -1507,9 +1508,10 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * <p>Sets the leash on this entity to be held by the supplied entity.</p>
+     * <p>Sets the leash on this entity to be held by the supplied entity.
+     *
      * <p>This method has no effect on EnderDragons, Withers, Players, or Bats. Non-living entities
-     * excluding leashes will not persist as leash holders.</p>
+     * excluding leashes will not persist as leash holders.
      *
      * @param holder the entity to leash this entity to
      * @return whether the operation was successful
