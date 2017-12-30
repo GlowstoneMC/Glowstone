@@ -2,6 +2,8 @@ package net.glowstone.inventory;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
@@ -16,7 +18,8 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     private static final PlayerProfile UNKNOWN_PLAYER = new PlayerProfile("MHF_Steve",
             new UUID(0xc06f89064c8a4911L, 0x9c29ea1dbd1aab82L));
-    PlayerProfile owner;
+
+    final AtomicReference<PlayerProfile> owner = new AtomicReference<PlayerProfile>();
 
     /**
      * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
@@ -34,7 +37,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
                 owner = ((GlowMetaSkull) skull).owner;
             } else {
                 if (!setOwningPlayerInternal(skull.getOwningPlayer())) {
-                    owner = UNKNOWN_PLAYER; // necessary to preserve the return value of hasOwner()
+                    owner.set(UNKNOWN_PLAYER); // necessary to preserve the return value of hasOwner()
                 }
             }
         }
@@ -53,7 +56,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     public static GlowMetaSkull deserialize(Map<String, Object> data) {
         GlowMetaSkull result = new GlowMetaSkull(null);
         if (data.containsKey("owner")) {
-            result.owner = (PlayerProfile) data.get("owner");
+            result.owner.set((PlayerProfile) data.get("owner"));
         }
         return result;
     }
@@ -82,7 +85,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     void writeNbt(CompoundTag tag) {
         super.writeNbt(tag);
         if (hasOwner()) {
-            tag.putCompound("SkullOwner", owner.toNBT());
+            tag.putCompound("SkullOwner", owner.get().toNBT());
         }
     }
 
@@ -91,9 +94,9 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         super.readNbt(tag);
         if (tag.containsKey("SkullOwner")) {
             if (tag.isString("SkullOwner")) {
-                owner = PlayerProfile.getProfile(tag.getString("SkullOwner")).join();
+                owner.set(PlayerProfile.getProfile(tag.getString("SkullOwner")).join());
             } else if (tag.isCompound("SkullOwner")) {
-                owner = PlayerProfile.fromNBT(tag.getCompound("SkullOwner")).join();
+                owner.set(PlayerProfile.fromNBT(tag.getCompound("SkullOwner")).join());
             }
         }
     }
@@ -103,12 +106,12 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     @Override
     public String getOwner() {
-        return hasOwner() ? owner.getName() : null;
+        return hasOwner() ? owner.get().getName() : null;
     }
 
     @Override
     public boolean hasOwner() {
-        return owner != null;
+        return owner.get() != null;
     }
 
     @Override
@@ -117,13 +120,13 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         if (owner == null) {
             return false;
         }
-        this.owner = owner;
+        this.owner.set(owner);
         return true;
     }
 
     @Override
     public OfflinePlayer getOwningPlayer() {
-        return ((GlowServer) Bukkit.getServer()).getOfflinePlayer(owner);
+        return ((GlowServer) Bukkit.getServer()).getOfflinePlayer(owner.get());
     }
 
     @Override
@@ -137,15 +140,19 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     private boolean setOwningPlayerInternal(OfflinePlayer owningPlayer) {
         if (owningPlayer instanceof GlowOfflinePlayer) {
             GlowOfflinePlayer impl = (GlowOfflinePlayer) owningPlayer;
-            this.owner = impl.getProfile();
+            this.owner.set(impl.getProfile());
             return true;
         } else {
-            PlayerProfile profile = PlayerProfile.getProfile(owningPlayer.getName()).getNow(null);
+            CompletableFuture<PlayerProfile> profileFuture = PlayerProfile
+                    .getProfile(owningPlayer.getName());
+            PlayerProfile profile = profileFuture.getNow(null);
             if (profile != null) {
-                this.owner = profile;
+                this.owner.set(profile);
                 return true;
+            } else {
+                profileFuture.thenAcceptAsync(this.owner::set);
+                return false;
             }
-            return false;
         }
     }
 }
