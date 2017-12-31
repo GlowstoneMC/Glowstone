@@ -4,6 +4,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
@@ -42,7 +43,9 @@ public class ItemKnowledgeBook extends ItemType {
                 }
             }
 
-            holding.setAmount(0);
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                holding.setAmount(0);
+            }
         }
     }
 }

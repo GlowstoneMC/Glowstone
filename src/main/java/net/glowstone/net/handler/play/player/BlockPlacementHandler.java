@@ -122,7 +122,7 @@ public final class BlockPlacementHandler implements
 
         // attempt to use item in hand
         // follows ALLOW/DENY: default to if no block was interacted with
-        if (selectResult(event.useItemInHand(), !useInteractedBlock) && holding != null) {
+        if (selectResult(event.useItemInHand(), !useInteractedBlock)) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
             if (holding.getType() != Material.AIR && (
                 type.getContext() == Context.BLOCK || type.getContext() == Context.ANY)) {
@@ -136,16 +136,16 @@ public final class BlockPlacementHandler implements
         revert(player, clicked.getRelative(face));
 
         // if there's been a change in the held item, make it valid again
-        if (!InventoryUtil.isEmpty(holding)) {
-            if (holding.getType().getMaxDurability() > 0 && holding.getDurability() > holding
-                .getType().getMaxDurability()) {
-                holding.setAmount(holding.getAmount() - 1);
-                holding.setDurability((short) 0);
-            }
-            if (holding.getAmount() <= 0) {
-                holding = InventoryUtil.createEmptyStack();
-            }
+        if (!InventoryUtil.isEmpty(holding) && holding.getType().getMaxDurability() > 0
+            && holding.getDurability() > holding.getType().getMaxDurability()) {
+            holding.setAmount(holding.getAmount() - 1);
+            holding.setDurability((short) 0);
         }
+
+        if (holding.getAmount() <= 0) {
+            holding = InventoryUtil.createEmptyStack();
+        }
+
         player.getInventory().setItem(slot, holding);
     }
 }
