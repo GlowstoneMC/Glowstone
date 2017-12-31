@@ -9,14 +9,14 @@ import java.util.Random;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.glowstone.generator.objects.TerrainFeature;
+import net.glowstone.generator.objects.TerrainObject;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
 @RequiredArgsConstructor
-public abstract class GlowStructure implements TerrainFeature {
+public abstract class GlowStructure implements TerrainObject {
 
     /** The world to generate the structure in. */
     @Getter

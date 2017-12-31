@@ -8,7 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 
-public class Cactus implements TerrainFeature {
+public class Cactus implements TerrainObject {
 
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
         BlockFace.WEST};

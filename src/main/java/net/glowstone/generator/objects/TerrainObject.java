@@ -10,7 +10,7 @@ import org.bukkit.World;
  * A terrain feature that can randomly generate itself at specified locations, replacing blocks.
  */
 @FunctionalInterface
-public interface TerrainFeature {
+public interface TerrainObject {
     /**
      * Generates this feature.
      *

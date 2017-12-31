@@ -10,7 +10,7 @@ import org.bukkit.material.Dirt;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.types.DirtType;
 
-public class SugarCane implements TerrainFeature {
+public class SugarCane implements TerrainObject {
 
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
         BlockFace.WEST};

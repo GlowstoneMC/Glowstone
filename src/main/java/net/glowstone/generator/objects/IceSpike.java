@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-public class IceSpike implements TerrainFeature {
+public class IceSpike implements TerrainObject {
 
     private static final Material[] MATERIALS = {Material.AIR, Material.DIRT, Material.SNOW,
         Material.SNOW_BLOCK, Material.ICE};

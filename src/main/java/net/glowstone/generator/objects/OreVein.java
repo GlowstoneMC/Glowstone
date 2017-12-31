@@ -6,7 +6,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 
-public class OreVein implements TerrainFeature {
+public class OreVein implements TerrainObject {
 
     private final Material type;
     private final MaterialData data;

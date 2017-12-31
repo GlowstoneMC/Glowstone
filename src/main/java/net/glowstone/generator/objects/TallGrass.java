@@ -8,7 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.LongGrass;
 
-public class TallGrass implements TerrainFeature {
+public class TallGrass implements TerrainObject {
 
     private final LongGrass grassType;
 

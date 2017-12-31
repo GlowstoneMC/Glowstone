@@ -9,7 +9,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.types.DoublePlantSpecies;
 
-public class DoubleTallPlant implements TerrainFeature {
+public class DoubleTallPlant implements TerrainObject {
 
     private final DoublePlantSpecies species;
 

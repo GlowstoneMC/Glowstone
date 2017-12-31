@@ -17,7 +17,7 @@ import org.bukkit.material.types.DoublePlantSpecies;
  * A patch replaces specified blocks within a cylinder. It will delete flowers, tall grass and
  * mushrooms (but not crops, trees or desert vegetation) above it.
  */
-public class BlockPatch implements TerrainFeature {
+public class BlockPatch implements TerrainObject {
 
     private static final int MIN_RADIUS = 2;
     private static final List<Material> PLANT_TYPES = ImmutableList.of(

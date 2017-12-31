@@ -6,7 +6,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-public class Flower implements TerrainFeature {
+public class Flower implements TerrainObject {
 
     private final Material type;
     private final int data;

@@ -14,7 +14,7 @@ import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.types.DoublePlantSpecies;
 
-public class Lake implements TerrainFeature {
+public class Lake implements TerrainObject {
 
     private static final double MAX_DIAMETER = 16.0D;
     private static final double MAX_HEIGHT = 8.0D;

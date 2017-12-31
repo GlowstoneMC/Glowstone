@@ -10,7 +10,7 @@ import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.types.DoublePlantSpecies;
 
-public class StoneBoulder implements TerrainFeature {
+public class StoneBoulder implements TerrainObject {
 
     private static final Material[] GROUND_TYPES = {Material.GRASS, Material.DIRT, Material.STONE};
     private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER,
