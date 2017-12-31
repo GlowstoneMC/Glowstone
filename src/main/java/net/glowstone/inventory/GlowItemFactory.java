@@ -169,6 +169,8 @@ public final class GlowItemFactory implements ItemFactory {
                 return new GlowMetaSpawn(meta);
             case SHIELD:
                 return new GlowMetaShield(meta);
+            case KNOWLEDGE_BOOK:
+                return new GlowMetaKnowledgeBook(meta);
             default:
                 return new GlowMetaItem(meta);
         }

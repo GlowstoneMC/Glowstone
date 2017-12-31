@@ -33,7 +33,6 @@ import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
 import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
-import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
@@ -118,11 +117,6 @@ public class GlowSession extends BasicSession {
      * The ID of the last ping message sent, used to ensure the client responded correctly.
      */
     private long pingMessageId;
-
-    /**
-     * Stores the last block placement message sent, see BlockPlacementHandler.
-     */
-    private BlockPlacementMessage previousPlacement;
 
     /**
      * The number of ticks until previousPlacement must be cleared.
@@ -258,25 +252,6 @@ public class GlowSession extends BasicSession {
         if (pingId == pingMessageId) {
             pingMessageId = 0;
         }
-    }
-
-    /**
-     * Get the saved previous BlockPlacementMessage for this session.
-     *
-     * @return The message.
-     */
-    public BlockPlacementMessage getPreviousPlacement() {
-        return previousPlacement;
-    }
-
-    /**
-     * Set the previous BlockPlacementMessage for this session.
-     *
-     * @param message The message.
-     */
-    public void setPreviousPlacement(BlockPlacementMessage message) {
-        previousPlacement = message;
-        previousPlacementTicks = 2;
     }
 
     @Override
@@ -450,10 +425,6 @@ public class GlowSession extends BasicSession {
      * Pulse this session, performing any updates needed.
      */
     void pulse() {
-        // drop the previous placement if needed
-        if (previousPlacementTicks > 0 && --previousPlacementTicks == 0) {
-            previousPlacement = null;
-        }
 
         // process messages
         Message message;
