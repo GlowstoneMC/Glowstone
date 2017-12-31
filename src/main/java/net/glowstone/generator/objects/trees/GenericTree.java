@@ -167,4 +167,10 @@ public class GenericTree {
 
         return true;
     }
+
+    protected Material blockAt(int x, int y, int z) {
+        return delegate.getBlockState(
+                loc.getWorld(), x, y,
+                z).getType();
+    }
 }

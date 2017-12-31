@@ -60,9 +60,8 @@ public class BigOakTree extends GenericTree {
                         double sizeX = Math.abs(x) + 0.5D;
                         double sizeZ = Math.abs(z) + 0.5D;
                         if (sizeX * sizeX + sizeZ * sizeZ <= size * size) {
-                            if (overridables.contains(delegate
-                                    .getBlockState(loc.getWorld(), node.getX() + x, node.getY() + y,
-                                            node.getZ() + z).getType())) {
+                            if (overridables.contains(blockAt(
+                                    node.getX() + x, node.getY() + y, node.getZ() + z))) {
                                 delegate.setTypeAndRawData(loc.getWorld(), node.getX() + x,
                                         node.getY() + y, node.getZ() + z, Material.LEAVES,
                                         leavesType);
@@ -119,10 +118,7 @@ public class BigOakTree extends GenericTree {
             target = from.clone()
                     .add(new Vector((double) (0.5F + i * dx), 0.5F + i * dy, 0.5F + i * dz));
             if (target.getBlockY() < 0 || target.getBlockY() > 255
-                    || !overridables.contains(delegate.getBlockState(
-                                    loc.getWorld(), target.getBlockX(), target.getBlockY(),
-                                    target.getBlockZ())
-                            .getType())) {
+                    || !overridables.contains(blockAt(target.getBlockX(), target.getBlockY(), target.getBlockZ()))) {
                 return n;
             }
         }
