@@ -2,7 +2,6 @@ package net.glowstone.testutils;
 
 import static org.mockito.Mockito.when;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import net.glowstone.block.GlowBlock;
@@ -11,13 +10,13 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Mockito;
 
 public class InMemoryBlockStorage {
     private Map<Location, GlowBlock> mockBlocks = new HashMap<>();
 
     private GlowBlock createMockBlock(Location location, Material type, byte data) {
-        GlowBlock mockBlock = PowerMockito.mock(GlowBlock.class);
+        GlowBlock mockBlock = Mockito.mock(GlowBlock.class);
         when(mockBlock.getLocation()).thenReturn(location);
         when(mockBlock.getType()).thenReturn(type);
         when(mockBlock.getTypeId()).thenReturn(type.getId());
