@@ -83,11 +83,7 @@ public class SwampTree extends CocoaTree {
                     if (Math.abs(x - loc.getBlockX()) != radius
                         || Math.abs(z - loc.getBlockZ()) != radius
                         || random.nextBoolean() && n != 0) {
-                        Material material = blockAt(x, y, z);
-                        if (material == Material.AIR || material == Material.LEAVES) {
-                            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
-                                leavesType);
-                        }
+                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType);
                     }
                 }
             }

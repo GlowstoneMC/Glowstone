@@ -127,11 +127,7 @@ public class MegaJungleTree extends GenericTree {
 
                 if (sqX + sqZ <= sqR || sqXb + sqZb <= sqR || sqX + sqZb <= sqR
                         || sqXb + sqZ <= sqR) {
-                    Material type = blockAt(x, sourceY, z);
-                    if (type == Material.AIR || type == Material.LEAVES) {
-                        delegate.setTypeAndRawData(loc.getWorld(), x, sourceY, z, Material.LEAVES,
-                                leavesType);
-                    }
+                    replaceIfAirOrLeaves(x, sourceY, z, Material.LEAVES, leavesType);
                 }
             }
         }

@@ -137,12 +137,7 @@ public class GenericTree {
                     if (Math.abs(x - loc.getBlockX()) != radius
                         || Math.abs(z - loc.getBlockZ()) != radius
                         || random.nextBoolean() && n != 0) {
-                        Material material = delegate.getBlockState(loc.getWorld(), x, y, z)
-                            .getType();
-                        if (material == Material.AIR || material == Material.LEAVES) {
-                            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
-                                leavesType);
-                        }
+                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType);
                     }
                 }
             }
@@ -168,6 +163,29 @@ public class GenericTree {
         return true;
     }
 
+    /**
+     * Replaces the block at a location with the given new one, if it is air or leaves.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @param newMaterial the new block type
+     * @param data the new block data
+     */
+    protected void replaceIfAirOrLeaves(int x, int y, int z, Material newMaterial, int data) {
+        Material oldMaterial = blockAt(x, y, z);
+        if (oldMaterial == Material.AIR || oldMaterial == Material.LEAVES) {
+            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, newMaterial, data);
+        }
+    }
+
+    /**
+     * Returns the block type at the given coordinates.
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return the block type
+     */
     protected Material blockAt(int x, int y, int z) {
         return delegate.getBlockState(
                 loc.getWorld(), x, y,
