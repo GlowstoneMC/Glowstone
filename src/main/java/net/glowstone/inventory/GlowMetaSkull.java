@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
@@ -147,6 +148,8 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
             GlowOfflinePlayer impl = (GlowOfflinePlayer) owningPlayer;
             this.owner.set(impl.getProfile());
             return true;
+        } else if (owningPlayer instanceof GlowPlayer) {
+            this.owner.set(((GlowPlayer) owningPlayer).getProfile());
         } else {
             CompletableFuture<PlayerProfile> profileFuture = PlayerProfile
                     .getProfile(owningPlayer.getName());
