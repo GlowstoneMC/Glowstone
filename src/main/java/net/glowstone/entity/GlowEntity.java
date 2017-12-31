@@ -701,6 +701,10 @@ public abstract class GlowEntity implements Entity {
         List<Message> result = Lists.newArrayList();
 
         GlowPlayer player = session.getPlayer();
+        if (player == null) {
+            // Player disconnected while this task was pending
+            return result;
+        }
         boolean visible = player.canSeeEntity(this);
         for (GlowEntity leashedEntity : leashedEntities) {
             if (visible && player.canSeeEntity(leashedEntity)) {

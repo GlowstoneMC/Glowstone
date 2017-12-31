@@ -25,7 +25,7 @@ In short, please follow these points:
   maintainer.
 
 If you need to find these points again at a later date, you can find them at the following location:
-https://github.com/GlowstoneMC/Glowstone/blob/master/.github/PULL_REQUEST_TEMPLATE.md
+https://github.com/GlowstoneMC/Glowstone/blob/dev/.github/PULL_REQUEST_TEMPLATE.md
 
 When you're ready, please delete this text from your initial PR comment and replace it with your own info. Thanks for
 contributing to Glowstone!

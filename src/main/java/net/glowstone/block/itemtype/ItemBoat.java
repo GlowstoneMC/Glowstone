@@ -1,8 +1,7 @@
 package net.glowstone.block.itemtype;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,7 +9,9 @@ import org.bukkit.TreeSpecies;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Boat;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class ItemBoat extends ItemType {
 
@@ -22,24 +23,31 @@ public class ItemBoat extends ItemType {
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        List<Block> lastTwoTargetBlocks = player
-            .getLastTwoTargetBlocks((HashSet<Material>) null, 5);
-        Optional<Block> first = lastTwoTargetBlocks.stream()
-            .filter(b -> b.getType() != Material.AIR).findFirst();
+        // Executed when the player clicks on water that doesn't have a block beneath
+        placeBoat(player);
+    }
 
-        if (first.isPresent()) {
-            Block block = first.get();
-            Location location = block.getRelative(BlockFace.UP).getLocation();
+    @Override
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+        // Two cases are handled here: Either the player clicked on a block on the land or beneath water
+        placeBoat(player);
+    }
+
+    private void placeBoat(GlowPlayer player) {
+        Block targetBlock = player.getTargetBlock((Set<Material>) null, 5);
+
+        if (targetBlock != null && !targetBlock.isEmpty() && targetBlock.getRelative(BlockFace.UP).isEmpty()) {
+            Location location = targetBlock.getRelative(BlockFace.UP).getLocation();
             // center boat on cursor location
             location.add(0.6875f, 0, 0.6875f);
             location.setYaw(player.getLocation().getYaw());
-            Boat boat = block.getWorld().spawn(location, Boat.class);
+            Boat boat = targetBlock.getWorld().spawn(location, Boat.class);
             boat.setWoodType(woodType);
         }
     }
 
     @Override
     public Context getContext() {
-        return Context.AIR;
+        return Context.ANY;
     }
 }
