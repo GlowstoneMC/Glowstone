@@ -17,10 +17,6 @@ import org.bukkit.util.Vector;
 
 @RequiredArgsConstructor
 public abstract class GlowStructure implements TerrainFeature {
-    @Override
-    public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
-        return generate(random, sourceX, sourceZ, new BlockStateDelegate());
-    }
 
     /** The world to generate the structure in. */
     @Getter
@@ -63,6 +59,11 @@ public abstract class GlowStructure implements TerrainFeature {
                 new Vector(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE));
         children.stream().filter(Objects::nonNull)
                 .forEach(piece -> boundingBox.expandTo(piece.getBoundingBox()));
+    }
+
+    @Override
+    public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+        return generate(random, sourceX, sourceZ, new BlockStateDelegate());
     }
 
     /**
