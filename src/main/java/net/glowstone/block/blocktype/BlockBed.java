@@ -6,7 +6,6 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BedEntity;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.state.GlowBed;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -200,8 +199,8 @@ public class BlockBed extends BlockType {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new BedEntity(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowBlock block) {
+        return new BedEntity(block);
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.BrewingStandEntity;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
@@ -14,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 public class BlockBrewingStand extends BlockContainer {
 
     @Override
-    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new BrewingStandEntity(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowBlock block) {
+        return new BrewingStandEntity(block);
     }
 
     @Override

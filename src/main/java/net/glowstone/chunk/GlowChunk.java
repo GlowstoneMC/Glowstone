@@ -367,7 +367,7 @@ public final class GlowChunk implements Chunk {
                 }
 
                 try {
-                    BlockEntity entity = blockType.createBlockEntity(this, cx, cy, cz);
+                    BlockEntity entity = blockType.createBlockEntity(getBlock(cx, cy, cz));
                     if (entity == null) {
                         return null;
                     }

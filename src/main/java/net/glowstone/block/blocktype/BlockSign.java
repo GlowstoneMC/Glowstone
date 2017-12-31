@@ -4,7 +4,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.SignEntity;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -19,8 +18,8 @@ public class BlockSign extends BlockNeedsAttached {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new SignEntity(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowBlock block) {
+        return new SignEntity(block);
     }
 
     @Override

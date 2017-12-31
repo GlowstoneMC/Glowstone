@@ -34,7 +34,7 @@ import org.bukkit.plugin.Plugin;
 /**
  * Represents a single block in a world.
  */
-public final class GlowBlock implements Block {
+public class GlowBlock implements Block {
 
     /**
      * The BlockFaces of a single-layer 3x3 area.

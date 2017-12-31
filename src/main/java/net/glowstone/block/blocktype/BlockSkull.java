@@ -10,7 +10,6 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.SkullEntity;
 import net.glowstone.block.entity.state.GlowSkull;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.pattern.BlockPattern;
 import org.bukkit.Material;
@@ -78,8 +77,8 @@ public class BlockSkull extends BlockType {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new SkullEntity(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowBlock block) {
+        return new SkullEntity(block);
     }
 
     @Override

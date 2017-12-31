@@ -11,7 +11,6 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.BlockBoundingBox;
 import net.glowstone.util.SoundInfo;
@@ -144,13 +143,10 @@ public class BlockType extends ItemType {
     /**
      * Create a new block entity at the given location.
      *
-     * @param chunk The chunk to create the block entity at.
-     * @param cx The x coordinate in the chunk.
-     * @param cy The y coordinate in the chunk.
-     * @param cz The z coordinate in the chunk.
+     * @param block The block to create the entity at.
      * @return The new BlockEntity, or null if no block entity is used.
      */
-    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+    public BlockEntity createBlockEntity(GlowBlock block) {
         return null;
     }
 

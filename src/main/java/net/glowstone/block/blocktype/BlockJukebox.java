@@ -6,7 +6,6 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.JukeboxEntity;
 import net.glowstone.block.entity.state.GlowJukebox;
-import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.block.BlockFace;
@@ -17,8 +16,8 @@ import org.bukkit.util.Vector;
 public class BlockJukebox extends BlockType {
 
     @Override
-    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
-        return new JukeboxEntity(chunk.getBlock(cx, cy, cz));
+    public BlockEntity createBlockEntity(GlowBlock block) {
+        return new JukeboxEntity(block);
     }
 
     @Override
