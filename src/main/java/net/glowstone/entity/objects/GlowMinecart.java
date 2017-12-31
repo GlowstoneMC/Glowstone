@@ -3,6 +3,7 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
@@ -52,19 +53,35 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     @Getter
     @Setter
     private volatile int displayBlockOffset;
+    @Getter
+    private final MinecartType minecartType;
 
-    private final MinecartType type;
-
-    public GlowMinecart(Location location, MinecartType type) {
+    /**
+     * Creates a minecart.
+     *
+     * @param location the location
+     * @param minecartType the minecart type (i.e. the type of block carried, if any)
+     */
+    public GlowMinecart(Location location, MinecartType minecartType) {
         super(location);
         setSize(0.98f, 0.7f);
-        this.type = type;
+        this.minecartType = minecartType;
+    }
+
+    /**
+     * Factory method that creates a minecart.
+     *
+     * @param location the location
+     * @param minecartType the minecart type (i.e. the type of block carried, if any)
+     */
+    public static GlowMinecart create(Location location, MinecartType minecartType) {
+        return minecartType.getCreator().apply(location);
     }
 
     @Override
     public List<Message> createSpawnMessage() {
         return Collections.singletonList(
-                new SpawnObjectMessage(id, getUniqueId(), 10, location, type.ordinal()));
+                new SpawnObjectMessage(id, getUniqueId(), 10, location, minecartType.ordinal()));
     }
 
     @Override
@@ -90,40 +107,32 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         return true;
     }
 
-    public MinecartType getMinecartType() {
-        return type;
-    }
-
     public enum MinecartType {
-        RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class),
-        CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class),
-        FURNACE(Powered.class, EntityType.MINECART_FURNACE, PoweredMinecart.class),
-        TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class),
-        SPAWNER(Spawner.class, EntityType.MINECART_MOB_SPAWNER, SpawnerMinecart.class),
-        HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class),
-        COMMAND(null, EntityType.MINECART_COMMAND, CommandMinecart.class); // todo
+        RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class, Rideable::new),
+        CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class, Storage::new),
+        FURNACE(Powered.class, EntityType.MINECART_FURNACE, PoweredMinecart.class, Powered
+                ::new),
+        TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class, Explosive::new),
+        SPAWNER(Spawner.class, EntityType.MINECART_MOB_SPAWNER, SpawnerMinecart.class, Spawner::new),
+        HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class, Hopper::new),
+        COMMAND(Command.class, EntityType.MINECART_COMMAND, CommandMinecart.class, Command::new); // todo
 
-        private final Class<? extends GlowMinecart> clazz;
-        private final EntityType type;
+        @Getter
+        private final Class<? extends GlowMinecart> minecartClass;
+        @Getter
+        private final EntityType entityType;
+        @Getter
         private final Class<? extends Minecart> entityClass;
+        @Getter
+        private final Function<? super Location, ? extends GlowMinecart> creator;
 
-        MinecartType(Class<? extends GlowMinecart> clazz, EntityType type,
-                     Class<? extends Minecart> entityClass) {
-            this.clazz = clazz;
-            this.type = type;
+        MinecartType(Class<? extends GlowMinecart> minecartClass, EntityType entityType,
+                Class<? extends Minecart> entityClass,
+                Function<Location, ? extends GlowMinecart> creator) {
+            this.minecartClass = minecartClass;
+            this.entityType = entityType;
             this.entityClass = entityClass;
-        }
-
-        public Class<? extends GlowMinecart> getMinecartClass() {
-            return clazz;
-        }
-
-        public EntityType getEntityType() {
-            return type;
-        }
-
-        public Class<? extends Minecart> getEntityClass() {
-            return entityClass;
+            this.creator = creator;
         }
     }
 
@@ -196,28 +205,16 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     public static class Hopper extends GlowMinecart implements HopperMinecart {
 
+        @Getter
         private final Inventory inventory;
+        @Getter
+        @Setter
         private boolean enabled = true;
 
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
             inventory = new GlowInventory(this, InventoryType.HOPPER,
                     InventoryType.HOPPER.getDefaultSize(), "Minecart with Hopper");
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        @Override
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        @Override
-        public Inventory getInventory() {
-            return inventory;
         }
 
         @Override
@@ -238,6 +235,21 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         public Spawner(Location location) {
             super(location, MinecartType.SPAWNER);
+        }
+    }
+
+    public static class Command extends GlowMinecart implements CommandMinecart {
+        // TODO: Behavior not implemented
+
+        @Getter
+        @Setter
+        private String command;
+        @Getter
+        @Setter
+        private String name;
+
+        public Command(Location location) {
+            super(location, MinecartType.COMMAND);
         }
     }
 }
