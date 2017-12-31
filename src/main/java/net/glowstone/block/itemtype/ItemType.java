@@ -143,7 +143,7 @@ public class ItemType {
     // Actions
 
     /**
-     * Called when a player right-clicks in midair while holding this item. Also called by default if rightClickBlock is not overridden.
+     * Called when a player right-clicks in midair while holding this item.
      *
      * @param player The player
      * @param holding The ItemStack the player was holding
@@ -172,7 +172,7 @@ public class ItemType {
      */
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        if (placeAs != null) {
+        if (placeAs != null && (placeAs.getContext() == Context.ANY || placeAs.getContext() == Context.BLOCK)) {
             placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
         }
     }

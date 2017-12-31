@@ -200,9 +200,7 @@ public final class EventFactory {
      */
     public static PlayerInteractEvent onPlayerInteract(Player player, Action action,
             EquipmentSlot hand) {
-        return callEvent(new PlayerInteractEvent(player, action,
-                hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand()
-                        : player.getInventory().getItemInMainHand(), null, null, hand));
+        return onPlayerInteract(player, action, hand, null, BlockFace.SELF);
     }
 
     /**
