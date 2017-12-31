@@ -17,7 +17,7 @@ import org.bukkit.material.types.DoublePlantSpecies;
  * A patch replaces specified blocks within a cylinder. It will delete flowers, tall grass and
  * mushrooms (but not crops, trees or desert vegetation) above it.
  */
-public class BlockPatch {
+public class BlockPatch implements TerrainFeature {
 
     private static final int MIN_RADIUS = 2;
     private static final List<Material> PLANT_TYPES = ImmutableList.of(
@@ -42,15 +42,9 @@ public class BlockPatch {
         this.overridables = Arrays.asList(overridables);
     }
 
-    /**
-     * Applies this patch.
-     * @param world the affected world
-     * @param random the PRNG that generates the actual radius
-     * @param sourceX the center x coordinate
-     * @param sourceY the center y coordinate
-     * @param sourceZ the center z coordinate
-     */
-    public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+    @Override
+    public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+        boolean succeeded = false;
         int n = random.nextInt(horizRadius - MIN_RADIUS) + MIN_RADIUS;
         for (int x = sourceX - n; x <= sourceX + n; x++) {
             for (int z = sourceZ - n; z <= sourceZ + n; z++) {
@@ -76,11 +70,13 @@ public class BlockPatch {
                             state.setType(type);
                             state.setData(new MaterialData(type));
                             state.update(true);
+                            succeeded = true;
                             break;
                         }
                     }
                 }
             }
         }
+        return succeeded;
     }
 }
