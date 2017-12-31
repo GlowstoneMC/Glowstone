@@ -173,7 +173,7 @@ public class GenericTree {
      * @param data the new block data
      */
     protected void replaceIfAirOrLeaves(int x, int y, int z, Material newMaterial, int data) {
-        Material oldMaterial = blockAt(x, y, z);
+        Material oldMaterial = blockTypeAt(x, y, z);
         if (oldMaterial == Material.AIR || oldMaterial == Material.LEAVES) {
             delegate.setTypeAndRawData(loc.getWorld(), x, y, z, newMaterial, data);
         }
@@ -186,7 +186,7 @@ public class GenericTree {
      * @param z the z coordinate
      * @return the block type
      */
-    protected Material blockAt(int x, int y, int z) {
+    protected Material blockTypeAt(int x, int y, int z) {
         return delegate.getBlockState(
                 loc.getWorld(), x, y,
                 z).getType();

@@ -48,7 +48,7 @@ public class MegaJungleTree extends GenericTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        Material type = blockAt(x, y, z);
+                        Material type = blockTypeAt(x, y, z);
                         if (!overridables.contains(type)) {
                             return false;
                         }
@@ -200,7 +200,7 @@ public class MegaJungleTree extends GenericTree {
         int absoluteY = loc.getBlockY() + y;
         int absoluteZ = loc.getBlockZ() + z;
         if (random.nextInt(3) != 0
-                && blockAt(absoluteX, absoluteY, absoluteZ) == Material.AIR) {
+                && blockTypeAt(absoluteX, absoluteY, absoluteZ) == Material.AIR) {
             delegate.setTypeAndData(loc.getWorld(), absoluteX, absoluteY,
                     absoluteZ, Material.VINE, new Vine(east));
         }

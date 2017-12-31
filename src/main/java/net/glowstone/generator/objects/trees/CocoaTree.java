@@ -51,25 +51,25 @@ public class CocoaTree extends JungleTree {
             int radius = 2 - ny / 2;
             for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
-                    if (blockAt(x, y, z)
+                    if (blockTypeAt(x, y, z)
                         == Material.LEAVES) {
                         if (random.nextInt(4) == 0
-                            && blockAt(x - 1, y, z)
+                            && blockTypeAt(x - 1, y, z)
                             == Material.AIR) {
                             addHangingVine(x - 1, y, z, BlockFace.EAST);
                         }
                         if (random.nextInt(4) == 0
-                            && blockAt(x + 1, y, z)
+                            && blockTypeAt(x + 1, y, z)
                             == Material.AIR) {
                             addHangingVine(x + 1, y, z, BlockFace.WEST);
                         }
                         if (random.nextInt(4) == 0
-                            && blockAt(x, y, z - 1)
+                            && blockTypeAt(x, y, z - 1)
                             == Material.AIR) {
                             addHangingVine(x, y, z - 1, BlockFace.SOUTH);
                         }
                         if (random.nextInt(4) == 0
-                            && blockAt(x, y, z + 1)
+                            && blockTypeAt(x, y, z + 1)
                             == Material.AIR) {
                             addHangingVine(x, y, z + 1, BlockFace.NORTH);
                         }
@@ -82,22 +82,22 @@ public class CocoaTree extends JungleTree {
     private void addVinesOnTrunk() {
         for (int y = 1; y < height; y++) {
             if (random.nextInt(3) != 0
-                && blockAt(loc.getBlockX() - 1, loc.getBlockY() + y, loc.getBlockZ()) == Material.AIR) {
+                && blockTypeAt(loc.getBlockX() - 1, loc.getBlockY() + y, loc.getBlockZ()) == Material.AIR) {
                 delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() - 1, loc.getBlockY() + y,
                     loc.getBlockZ(), Material.VINE, new Vine(BlockFace.EAST));
             }
             if (random.nextInt(3) != 0
-                && blockAt(loc.getBlockX() + 1, loc.getBlockY() + y, loc.getBlockZ()) == Material.AIR) {
+                && blockTypeAt(loc.getBlockX() + 1, loc.getBlockY() + y, loc.getBlockZ()) == Material.AIR) {
                 delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() + y,
                     loc.getBlockZ(), Material.VINE, new Vine(BlockFace.WEST));
             }
             if (random.nextInt(3) != 0
-                && blockAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ() - 1) == Material.AIR) {
+                && blockTypeAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ() - 1) == Material.AIR) {
                 delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
                     loc.getBlockZ() - 1, Material.VINE, new Vine(BlockFace.SOUTH));
             }
             if (random.nextInt(3) != 0
-                && blockAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ() + 1) == Material.AIR) {
+                && blockTypeAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ() + 1) == Material.AIR) {
                 delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
                     loc.getBlockZ() + 1, Material.VINE, new Vine(BlockFace.NORTH));
             }
@@ -106,7 +106,7 @@ public class CocoaTree extends JungleTree {
 
     private void addHangingVine(int x, int y, int z, BlockFace face) {
         for (int i = 0; i < 5; i++) {
-            if (blockAt(x, y - i, z) != Material.AIR) {
+            if (blockTypeAt(x, y - i, z) != Material.AIR) {
                 break;
             }
             delegate.setTypeAndData(loc.getWorld(), x, y - i, z, Material.VINE, new Vine(face));

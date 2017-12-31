@@ -43,7 +43,7 @@ public class SwampTree extends CocoaTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        Material type = blockAt(x, y, z);
+                        Material type = blockTypeAt(x, y, z);
                         if (!overridables.contains(type)) {
                             // the trunk can be immersed by 1 block of water
                             if (type == Material.WATER || type == Material.STATIONARY_WATER) {
@@ -91,7 +91,7 @@ public class SwampTree extends CocoaTree {
 
         // generate the trunk
         for (int y = 0; y < height; y++) {
-            Material material = blockAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ());
+            Material material = blockTypeAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ());
             if (material == Material.AIR || material == Material.LEAVES ||
                 material == Material.WATER || material == Material.STATIONARY_WATER) {
                 delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,

@@ -40,7 +40,7 @@ public class TallRedwoodTree extends RedwoodTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if ((Math.abs(x - loc.getBlockX()) != radius
                         || Math.abs(z - loc.getBlockZ()) != radius || radius <= 0) &&
-                        blockAt(x, y, z) == Material.AIR) {
+                        blockTypeAt(x, y, z) == Material.AIR) {
                         delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
                             leavesType);
                     }
