@@ -40,7 +40,7 @@ public class TallRedwoodTree extends RedwoodTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if ((Math.abs(x - loc.getBlockX()) != radius
                         || Math.abs(z - loc.getBlockZ()) != radius || radius <= 0) &&
-                        delegate.getBlockState(loc.getWorld(), x, y, z).getType() == Material.AIR) {
+                        blockTypeAt(x, y, z) == Material.AIR) {
                         delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
                             leavesType);
                     }
@@ -55,13 +55,8 @@ public class TallRedwoodTree extends RedwoodTree {
 
         // generate the trunk
         for (int y = 0; y < height - 1; y++) {
-            Material type = delegate
-                .getBlockState(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
-                    loc.getBlockZ()).getType();
-            if (type == Material.AIR || type == Material.LEAVES) {
-                delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
-                    loc.getBlockZ(), Material.LOG, logType);
-            }
+            replaceIfAirOrLeaves(loc.getBlockX(),
+                    loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
         }
 
         // block below trunk is always dirt

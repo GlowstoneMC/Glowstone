@@ -18,6 +18,11 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     private static final int FUEL_SLOT = 1;
     private static final int RESULT_SLOT = 2;
 
+    /**
+     * Creates the given furnace's inventory.
+     *
+     * @param owner the furnace BlockState
+     */
     public GlowFurnaceInventory(Furnace owner) {
         super(owner, InventoryType.FURNACE);
 
@@ -75,7 +80,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
             // Place the items in the player's inventory (right to left)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         } else {
-            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            // Clicked in the crafting grid, no special handling required (just place them left to
+            // right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
         }
         view.setItem(clickedSlot, clickedItem);

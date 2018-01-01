@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.World;
 import org.bukkit.map.MapRenderer;
@@ -14,26 +16,34 @@ import org.bukkit.map.MapView;
  */
 public final class GlowMapView implements MapView {
 
-    //private final Map<GlowPlayer, RenderData> renderCache = new HashMap<GlowPlayer, RenderData<>();
+    //private final Map<GlowPlayer, RenderData> renderCache =
+    //        new HashMap<GlowPlayer, RenderData<>();
     private final List<MapRenderer> renderers = new ArrayList<>();
     private final Map<MapRenderer, Map<GlowPlayer, GlowMapCanvas>> canvases = new HashMap<>();
+    @Getter
     private final short id;
+    @Getter
     private Scale scale;
-    private int x, z;
+    @Getter
+    @Setter
+    private int centerX;
+    @Getter
+    @Setter
+    private int centerZ;
+    @Getter
+    @Setter
     private World world;
+    @Getter
+    @Setter
+    private boolean unlimitedTracking;
 
     protected GlowMapView(World world, short id) {
         this.world = world;
         this.id = id;
-        x = world.getSpawnLocation().getBlockX();
-        z = world.getSpawnLocation().getBlockZ();
+        centerX = world.getSpawnLocation().getBlockX();
+        centerZ = world.getSpawnLocation().getBlockZ();
         scale = Scale.FAR;
         addRenderer(new GlowMapRenderer(this));
-    }
-
-    @Override
-    public short getId() {
-        return id;
     }
 
     @Override
@@ -42,46 +52,11 @@ public final class GlowMapView implements MapView {
     }
 
     @Override
-    public Scale getScale() {
-        return scale;
-    }
-
-    @Override
     public void setScale(Scale scale) {
         if (scale == null) {
             throw new NullPointerException();
         }
         this.scale = scale;
-    }
-
-    @Override
-    public int getCenterX() {
-        return x;
-    }
-
-    @Override
-    public void setCenterX(int x) {
-        this.x = x;
-    }
-
-    @Override
-    public int getCenterZ() {
-        return z;
-    }
-
-    @Override
-    public void setCenterZ(int z) {
-        this.z = z;
-    }
-
-    @Override
-    public World getWorld() {
-        return world;
-    }
-
-    @Override
-    public void setWorld(World world) {
-        this.world = world;
     }
 
     @Override
@@ -107,15 +82,5 @@ public final class GlowMapView implements MapView {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public boolean isUnlimitedTracking() {
-        return false;
-    }
-
-    @Override
-    public void setUnlimitedTracking(boolean unlimitedTracking) {
-
     }
 }

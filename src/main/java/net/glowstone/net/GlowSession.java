@@ -13,6 +13,7 @@ import io.netty.handler.codec.CodecException;
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
@@ -21,7 +22,6 @@ import javax.crypto.SecretKey;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.boss.BossBarManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -33,7 +33,6 @@ import net.glowstone.net.message.play.game.PingMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
 import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
-import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.net.pipeline.CodecsHandler;
 import net.glowstone.net.pipeline.CompressionHandler;
 import net.glowstone.net.pipeline.EncryptionHandler;
@@ -42,6 +41,7 @@ import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
 import org.bukkit.Statistic;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -117,11 +117,6 @@ public class GlowSession extends BasicSession {
      * The ID of the last ping message sent, used to ensure the client responded correctly.
      */
     private long pingMessageId;
-
-    /**
-     * Stores the last block placement message sent, see BlockPlacementHandler.
-     */
-    private BlockPlacementMessage previousPlacement;
 
     /**
      * The number of ticks until previousPlacement must be cleared.
@@ -257,25 +252,6 @@ public class GlowSession extends BasicSession {
         if (pingId == pingMessageId) {
             pingMessageId = 0;
         }
-    }
-
-    /**
-     * Get the saved previous BlockPlacementMessage for this session.
-     *
-     * @return The message.
-     */
-    public BlockPlacementMessage getPreviousPlacement() {
-        return previousPlacement;
-    }
-
-    /**
-     * Set the previous BlockPlacementMessage for this session.
-     *
-     * @param message The message.
-     */
-    public void setPreviousPlacement(BlockPlacementMessage message) {
-        previousPlacement = message;
-        previousPlacementTicks = 2;
     }
 
     @Override
@@ -449,10 +425,6 @@ public class GlowSession extends BasicSession {
      * Pulse this session, performing any updates needed.
      */
     void pulse() {
-        // drop the previous placement if needed
-        if (previousPlacementTicks > 0 && --previousPlacementTicks == 0) {
-            previousPlacement = null;
-        }
 
         // process messages
         Message message;
@@ -490,7 +462,14 @@ public class GlowSession extends BasicSession {
                 player.leaveBed(false);
             }
 
-            BossBarManager.clearBossBars(player);
+            Collection<BossBar> bars;
+            do {
+                bars = player.getBossBars();
+                for (BossBar bar : bars) {
+                    bar.removePlayer(player);
+                    player.removeBossBar(bar);
+                }
+            } while (!bars.isEmpty());
 
             String text = EventFactory.onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {

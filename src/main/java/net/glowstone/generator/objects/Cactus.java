@@ -8,20 +8,16 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 
-public class Cactus {
+public class Cactus implements TerrainObject {
 
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
         BlockFace.WEST};
 
     /**
      * Generates or extends a cactus, if there is space.
-     * @param world the world
-     * @param random the PRNG that will determine the height
-     * @param x the x coordinate
-     * @param y the y coordinate of the bottom new block
-     * @param z the z coordinate
      */
-    public void generate(World world, Random random, int x, int y, int z) {
+    @Override
+    public boolean generate(World world, Random random, int x, int y, int z) {
         if (world.getBlockAt(x, y, z).isEmpty()) {
             int height = random.nextInt(random.nextInt(3) + 1) + 1;
             for (int n = y; n < y + height; n++) {
@@ -31,7 +27,7 @@ public class Cactus {
                         && block.getRelative(BlockFace.UP).isEmpty()) {
                     for (BlockFace face : FACES) {
                         if (block.getRelative(face).getType().isSolid()) {
-                            return;
+                            return n > y;
                         }
                     }
                     BlockState state = block.getState();
@@ -41,5 +37,6 @@ public class Cactus {
                 }
             }
         }
+        return true;
     }
 }

@@ -14,11 +14,16 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
 
     private ItemStack playing;
 
+    /**
+     * Creates a block state for the given jukebox block.
+     *
+     * @param block the jukebox block
+     */
     public GlowJukebox(GlowBlock block) {
         super(block);
         if (block.getType() != Material.JUKEBOX) {
             throw new IllegalArgumentException(
-                "GlowNoteBlock: expected JUKEBOX, got " + block.getType());
+                "GlowJukebox: expected JUKEBOX, got " + block.getType());
         }
         playing = getBlockEntity().getPlaying();
     }

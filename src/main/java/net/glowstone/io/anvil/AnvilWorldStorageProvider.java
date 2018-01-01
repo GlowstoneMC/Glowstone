@@ -95,7 +95,8 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
     @Override
     public PlayerStatisticIoService getPlayerStatisticIoService() {
         if (statistics == null) {
-            statistics = new JsonPlayerStatisticIoService(world.getServer(), new File(dir, "stats"));
+            statistics = new JsonPlayerStatisticIoService(
+                    world.getServer(), new File(dir, "stats"));
         }
         return statistics;
     }

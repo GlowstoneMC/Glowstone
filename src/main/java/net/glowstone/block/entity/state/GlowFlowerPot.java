@@ -10,6 +10,11 @@ public class GlowFlowerPot extends GlowBlockState implements FlowerPot {
 
     private MaterialData contents;
 
+    /**
+     * Creates an instance for the given block.
+     *
+     * @param block the flowerpot block
+     */
     public GlowFlowerPot(GlowBlock block) {
         super(block);
         // Pre-1.7 uses block data and post-1.7 uses NBT data for flower pot contents.

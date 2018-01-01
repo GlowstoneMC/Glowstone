@@ -6,6 +6,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -55,5 +56,9 @@ public class ItemFilledBucket extends ItemType {
 
         // perform the block change
         newState.update(true);
+
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            holding.setType(Material.BUCKET);
+        }
     }
 }

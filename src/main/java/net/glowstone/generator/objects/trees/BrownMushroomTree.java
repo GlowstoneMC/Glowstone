@@ -57,8 +57,7 @@ public class BrownMushroomTree extends GenericTree {
                         // skip source block check
                         if (y != loc.getBlockY() || x != loc.getBlockX() || z != loc.getBlockZ()) {
                             // we can overlap leaves around
-                            Material type = delegate.getBlockState(loc.getWorld(), x, y, z)
-                                .getType();
+                            Material type = blockTypeAt(x, y, z);
                             if (!overridables.contains(type)) {
                                 return false;
                             }

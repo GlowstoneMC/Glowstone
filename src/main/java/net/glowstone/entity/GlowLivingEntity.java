@@ -106,14 +106,15 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     protected double maxHealth;
     /**
-     * The LivingEntity's number of ticks since death
+     * The LivingEntity's number of ticks since death.
      */
     @Getter
     protected int deathTicks;
     /**
-     * The entity's movement as a unit vector, applied each tick according to the entity's speed.
-     *
-     * The y value is not used. X is used for forward movement and z is used for sideways movement. These values are relative to the entity's current yaw.
+     * <p>The entity's movement as a unit vector, applied each tick according to the entity's speed.
+     * </p><p>
+     * The y value is not used. X is used for forward movement and z is used for sideways movement.
+     * These values are relative to the entity's current yaw.</p>
      */
     protected Vector movement = new Vector();
     /**
@@ -154,7 +155,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Getter
     private EquipmentMonitor equipmentMonitor = new EquipmentMonitor(this);
     /**
-     * Whether the entity can automatically glide when falling with an Elytra equipped. This value is ignored for players.
+     * Whether the entity can automatically glide when falling with an Elytra equipped. This value
+     * is ignored for players.
      */
     private boolean fallFlying;
     /**
@@ -174,7 +176,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     private boolean headRotated;
     /**
-     * The entity's current state;
+     * The entity's current AI state.
      */
     private MobState aiState = MobState.NO_AI;
     /**
@@ -562,7 +564,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * The volume of the sounds this entity makes
+     * The volume of the sounds this entity makes.
      *
      * @return the volume of the sounds
      */
@@ -571,7 +573,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * The pitch of the sounds this entity makes
+     * The pitch of the sounds this entity makes.
      *
      * @return the pitch of the sounds
      */
@@ -653,12 +655,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Deprecated
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 0).get(0);
+        return getLineOfSight(transparent, maxDistance, 1).get(0);
     }
 
     @Override
     public Block getTargetBlock(Set<Material> materials, int maxDistance) {
-        return getLineOfSight(materials, maxDistance).get(0);
+        return getLineOfSight(materials, maxDistance, 1).get(0);
     }
 
     @Deprecated
@@ -675,9 +677,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Projectiles
 
     /**
-     * Returns whether the entity's eye location is within a solid block
+     * Returns whether the entity's eye location is within a solid block.
      *
-     * @return if the entity is in a solid block
+     * @return true if the entity is in a solid block; false otherwise
      */
     public boolean isWithinSolidBlock() {
         return getEyeLocation().getBlock().getType().isOccluding();
@@ -769,11 +771,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                         // split experience
                         Integer[] values = ExperienceSplitter.cut(data.getExperience());
                         for (Integer exp : values) {
-                            double xMod = ThreadLocalRandom.current().nextDouble() - 0.5, zMod =
-                                ThreadLocalRandom.current().nextDouble() - 0.5;
+                            ThreadLocalRandom random = ThreadLocalRandom.current();
+                            double modX = random.nextDouble() - 0.5;
+                            double modZ = random.nextDouble() - 0.5;
                             Location xpLocation = new Location(world,
-                                location.getBlockX() + 0.5 + xMod, location.getY(),
-                                location.getBlockZ() + 0.5 + zMod);
+                                location.getBlockX() + 0.5 + modX, location.getY(),
+                                location.getBlockZ() + 0.5 + modZ);
                             GlowExperienceOrb orb = (GlowExperienceOrb) world
                                 .spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
                             orb.setExperience(exp);
@@ -799,21 +802,18 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         // fire resistance
         if (cause != null && hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
-            boolean isFireDamage = false;
             if (source instanceof Fireball) {
-                isFireDamage = true;
+                return;
             } else {
                 switch (cause) {
                     case FIRE:
                     case FIRE_TICK:
                     case HOT_FLOOR:
                     case LAVA:
-                        isFireDamage = true;
-                        break;
+                        return;
+                    default:
+                        // Not fire damage; continue
                 }
-            }
-            if (isFireDamage) {
-                return;
             }
         }
 
@@ -1027,6 +1027,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return aiState;
     }
 
+    /**
+     * Sets the AI state.
+     *
+     * @param state the new AI state
+     */
     public void setState(MobState state) {
         if (aiState != state) {
             aiState = state;
@@ -1134,4 +1139,3 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return false;
     }
 }
-

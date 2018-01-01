@@ -33,6 +33,14 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
+    /**
+     * Creates an item frame entity, and consumes the item frame item if a player is hanging it.
+     *
+     * @param player the player who is hanging this item frame if it was an item before, or null if
+     *         it wasn't (e.g. it's from the saved world or a /summon command)
+     * @param location the item frame's location
+     * @param facing the direction this item frame is facing
+     */
     public GlowItemFrame(GlowPlayer player, Location location, BlockFace facing) {
 
         super(location, facing);
@@ -88,7 +96,8 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
                 }
                 remove();
             } else {
-                if (EventFactory.callEvent(new EntityDamageByEntityEvent(player, this, DamageCause.ENTITY_ATTACK, 0)).isCancelled()) {
+                if (EventFactory.callEvent(new EntityDamageByEntityEvent(
+                        player, this, DamageCause.ENTITY_ATTACK, 0)).isCancelled()) {
                     return false;
                 }
                 if (player.getGameMode() != GameMode.CREATIVE) {
@@ -159,6 +168,9 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
             case SOUTH:
                 zoffset = 32;
                 break;
+            default:
+                // TODO: should this raise a warning
+                // do nothing
         }
 
         Key key = GlowChunk.Key.of(location.getBlockX() >> 4, location.getBlockZ() >> 4);

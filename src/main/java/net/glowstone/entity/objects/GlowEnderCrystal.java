@@ -26,6 +26,11 @@ import org.bukkit.util.BlockVector;
 
 public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
+    /**
+     * Creates an instance at the given location.
+     *
+     * @param location the ender crystal's location
+     */
     public GlowEnderCrystal(Location location) {
         super(location);
         setSize(2f, 2f);
@@ -82,7 +87,9 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
             if (!event.isCancelled()) {
                 Location location = getLocation();
-                double x = location.getX(), y = location.getY(), z = location.getZ();
+                double x = location.getX();
+                double y = location.getY();
+                double z = location.getZ();
                 world.createExplosion(this, x, y, z, event.getRadius(), event.getFire(), true);
             }
         }

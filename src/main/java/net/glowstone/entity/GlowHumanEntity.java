@@ -89,12 +89,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     private boolean isOp;
 
     /**
-     * The player's active game mode
+     * The player's active game mode.
      */
     private GameMode gameMode;
 
     /**
-     * The player's currently open inventory
+     * The player's currently open inventory.
      */
     private InventoryView inventoryView;
 
@@ -140,17 +140,20 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
         result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch,
-            metadata.getEntryList()));
+                metadata.getEntryList()));
 
         // head facing
         result.add(new EntityHeadRotationMessage(id, yaw));
 
         // equipment
         EntityEquipment equipment = getEquipment();
-        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, equipment.getItemInMainHand()));
-        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.OFF_HAND, equipment.getItemInOffHand()));
+        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, equipment
+                .getItemInMainHand()));
+        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.OFF_HAND, equipment
+                .getItemInOffHand()));
         for (int i = 0; i < 4; i++) {
-            result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT + i, equipment.getArmorContents()[i]));
+            result.add(new EntityEquipmentMessage(id,
+                    EntityEquipmentMessage.BOOTS_SLOT + i, equipment.getArmorContents()[i]));
         }
         return result;
     }
@@ -167,7 +170,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     /**
-     * Process changes to the human enitity's armor, and update the entity's armor attributes accordingly.
+     * Process changes to the human enitity's armor, and update the entity's armor attributes
+     * accordingly.
      */
     private void processArmorChanges() {
         GlowPlayer player = null;
@@ -186,9 +190,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         }
         if (armorUpdate) {
             getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR,
-                ArmorConstants.getDefense(getEquipment().getArmorContents()));
+                    ArmorConstants.getDefense(getEquipment().getArmorContents()));
             getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS,
-                ArmorConstants.getToughness(getEquipment().getArmorContents()));
+                    ArmorConstants.getToughness(getEquipment().getArmorContents()));
         }
         needsArmorUpdate = true;
     }
@@ -228,7 +232,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         // silently allow setting the same UUID again
         if (!profile.getUniqueId().equals(uuid)) {
             throw new IllegalStateException(
-                "UUID of " + this + " is already " + profile.getUniqueId());
+                    "UUID of " + this + " is already " + profile.getUniqueId());
         }
     }
 
@@ -314,7 +318,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
-        int ticks) {
+            int ticks) {
         return permissions.addAttachment(plugin, name, value, ticks);
     }
 
@@ -350,8 +354,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     @Override
     public boolean canTakeDamage(DamageCause damageCause) {
         return (damageCause == DamageCause.VOID || damageCause == DamageCause.SUICIDE
-            || gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) && super
-            .canTakeDamage(damageCause);
+                || gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) && super
+                .canTakeDamage(damageCause);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -503,7 +507,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     /**
-     * Drops the item this entity currently has in its hands and remove the item from the HumanEntity's inventory.
+     * Drops the item this entity currently has in its hands and remove the item from the
+     * HumanEntity's inventory.
      *
      * @param wholeStack True if the whole stack should be dropped
      */

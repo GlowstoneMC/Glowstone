@@ -22,11 +22,6 @@ public class ItemFood extends ItemTimedUsage {
         saturation = 0;
     }
 
-    @Override
-    public Context getContext() {
-        return Context.AIR;
-    }
-
     protected int getFoodLevel(ItemStack stack) {
         return foodLevel;
     }
