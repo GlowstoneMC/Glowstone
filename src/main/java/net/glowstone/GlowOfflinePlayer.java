@@ -169,7 +169,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public boolean isOp() {
-        return server.getOpsList().containsUUID(getUniqueId());
+        return server.getOpsList().containsUuid(getUniqueId());
     }
 
     ////////////////////////////////////////////////////////////////////////////

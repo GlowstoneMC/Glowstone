@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import net.glowstone.util.DynamicallyTypedMapWithFloats;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -19,8 +20,7 @@ import org.bukkit.util.BlockVector;
  * A map for entity metadata.
  */
 @ToString(of = {"entityClass", "map"})
-// TODO: Implement Map<MetadataIndex, Object>?
-public class MetadataMap {
+public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex> {
 
     private final Map<MetadataIndex, Object> map = new EnumMap<>(MetadataIndex.class);
     private final List<Entry> changes = new ArrayList<>(4);
@@ -131,6 +131,7 @@ public class MetadataMap {
         return (Number) o;
     }
 
+    @Override
     public boolean getBoolean(MetadataIndex index) {
         return get(index, MetadataType.BOOLEAN, false);
     }
@@ -139,14 +140,17 @@ public class MetadataMap {
         return get(index, MetadataType.BYTE, (byte) 0);
     }
 
+    @Override
     public int getInt(MetadataIndex index) {
         return get(index, MetadataType.INT, 0);
     }
 
+    @Override
     public float getFloat(MetadataIndex index) {
         return get(index, MetadataType.FLOAT, 0f);
     }
 
+    @Override
     public String getString(MetadataIndex index) {
         return get(index, MetadataType.STRING, null);
     }

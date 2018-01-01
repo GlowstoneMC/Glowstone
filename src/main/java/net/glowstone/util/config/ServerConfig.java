@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.util.DynamicallyTypedMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,7 +24,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 /**
  * Utilities for handling the server configuration files.
  */
-public final class ServerConfig {
+public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
 
     /**
      * The directory configurations are stored in.
@@ -102,12 +103,7 @@ public final class ServerConfig {
     ////////////////////////////////////////////////////////////////////////////
     // Value getters
 
-    /**
-     * Retrieves a setting as a {@link String}.
-     *
-     * @param key the setting
-     * @return the setting's value as a String
-     */
+    @Override
     public String getString(Key key) {
         if (parameters.containsKey(key)) {
             return parameters.get(key).toString();
@@ -117,12 +113,7 @@ public final class ServerConfig {
         return string;
     }
 
-    /**
-     * Retrieves a setting as an {@code int}.
-     *
-     * @param key the setting
-     * @return the setting's value as an int
-     */
+    @Override
     public int getInt(Key key) {
         if (parameters.containsKey(key)) {
             return (Integer) parameters.get(key);
@@ -132,12 +123,7 @@ public final class ServerConfig {
         return integer;
     }
 
-    /**
-     * Retrieves a setting as a {@code boolean}.
-     *
-     * @param key the setting
-     * @return the setting's value as a boolean
-     */
+    @Override
     public boolean getBoolean(Key key) {
         if (parameters.containsKey(key)) {
             return (Boolean) parameters.get(key);

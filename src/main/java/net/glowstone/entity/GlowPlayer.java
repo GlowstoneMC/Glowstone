@@ -1308,7 +1308,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean isOp() {
-        return getServer().getOpsList().containsUUID(getUniqueId());
+        return getServer().getOpsList().containsUuid(getUniqueId());
     }
 
     @Override
