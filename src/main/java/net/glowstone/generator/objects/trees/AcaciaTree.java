@@ -64,7 +64,7 @@ public class AcaciaTree extends GenericTree {
                 twistCount--;
             }
 
-            Material material = blockTypeAt(centerX, loc.getBlockY() + y, centerZ);
+            Material material = blockAt(centerX, loc.getBlockY() + y, centerZ);
             if (material == Material.AIR || material == Material.LEAVES) {
                 trunkTopY = loc.getBlockY() + y;
                 delegate.setTypeAndRawData(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ,
@@ -110,7 +110,7 @@ public class AcaciaTree extends GenericTree {
                 if (twistCount > 0) {
                     centerX += dxB;
                     centerZ += dzB;
-                    Material material = blockTypeAt(centerX, loc.getBlockY() + y, centerZ);
+                    Material material = blockAt(centerX, loc.getBlockY() + y, centerZ);
                     if (material == Material.AIR || material == Material.LEAVES) {
                         trunkTopY = loc.getBlockY() + y;
                         delegate.setTypeAndRawData(loc.getWorld(), centerX, loc.getBlockY() + y,
@@ -147,7 +147,7 @@ public class AcaciaTree extends GenericTree {
     }
 
     private void setLeaves(int x, int y, int z) {
-        if (blockTypeAt(x, y, z) == Material.AIR) {
+        if (blockAt(x, y, z) == Material.AIR) {
             delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES_2, 0);
         }
     }

@@ -1,6 +1,8 @@
 package net.glowstone.generator.structures;
 
 import java.util.Random;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
@@ -12,7 +14,13 @@ public abstract class GlowStructurePiece {
 
     protected StructureBoundingBox boundingBox;
     private BlockFace orientation;
-    private int unknownGD;
+    /**
+     * The field corresponding to the NBT tag "GD" in
+     * https://minecraft.gamepedia.com/Generated_structures_data_file_format.
+     */
+    @Getter
+    @Setter
+    private int unknownGd;
 
     public GlowStructurePiece() {
     }
@@ -22,6 +30,13 @@ public abstract class GlowStructurePiece {
         createNewBoundingBox(location, size);
     }
 
+    /**
+     * Creates an instance oriented randomly.
+     *
+     * @param random the PRNG used to orient this piece
+     * @param location the minimum coordinates of the bounding box
+     * @param size the size of the bounding box
+     */
     public GlowStructurePiece(Random random, Location location, Vector size) {
         orientation = getOrientationFromOrdinal(random.nextInt(4));
         switch (orientation) {
@@ -43,14 +58,11 @@ public abstract class GlowStructurePiece {
         this.boundingBox = boundingBox;
     }
 
-    public int getGD() {
-        return unknownGD;
-    }
-
-    public void setGD(int gd) {
-        unknownGD = gd;
-    }
-
+    /**
+     * Returns 0 if this structure faces north, 1 if east, 2 if south, 3 if west.
+     *
+     * @return a number corresponding to this structure's orientation
+     */
     public int getNumericOrientation() {
         switch (orientation) {
             case EAST:
@@ -74,8 +86,8 @@ public abstract class GlowStructurePiece {
 
     protected final BlockFace getRelativeFacing(BlockFace face) {
         BlockFace f = getOrientationFromOrdinal(orientation.ordinal() + face.ordinal() & 0x3);
-        if ((orientation == BlockFace.SOUTH || orientation == BlockFace.WEST) &&
-            (face == BlockFace.EAST || face == BlockFace.WEST)) {
+        if ((orientation == BlockFace.SOUTH || orientation == BlockFace.WEST)
+                && (face == BlockFace.EAST || face == BlockFace.WEST)) {
             return f.getOppositeFace();
         }
         return f;

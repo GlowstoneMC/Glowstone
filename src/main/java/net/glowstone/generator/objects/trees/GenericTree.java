@@ -9,7 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
+import org.bukkit.material.Vine;
 import org.bukkit.material.types.DirtType;
+import org.bukkit.util.Vector;
 
 /** Oak tree, and superclass for other types. */
 public class GenericTree {
@@ -137,7 +139,12 @@ public class GenericTree {
                     if (Math.abs(x - loc.getBlockX()) != radius
                         || Math.abs(z - loc.getBlockZ()) != radius
                         || random.nextBoolean() && n != 0) {
-                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType);
+                        Material material = delegate.getBlockState(loc.getWorld(), x, y, z)
+                            .getType();
+                        if (material == Material.AIR || material == Material.LEAVES) {
+                            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
+                                leavesType);
+                        }
                     }
                 }
             }
@@ -164,31 +171,44 @@ public class GenericTree {
     }
 
     /**
-     * Replaces the block at a location with the given new one, if it is air or leaves.
+     * Returns the block type at the given absolute coordinates.
      *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @param newMaterial the new block type
-     * @param data the new block data
+     * @param x the absolute X coordinate
+     * @param y the absolute Y coordinate
+     * @param z the absolute Z coordinate
+     * @return the material of the given block
      */
-    protected void replaceIfAirOrLeaves(int x, int y, int z, Material newMaterial, int data) {
-        Material oldMaterial = blockTypeAt(x, y, z);
-        if (oldMaterial == Material.AIR || oldMaterial == Material.LEAVES) {
-            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, newMaterial, data);
-        }
+    protected Material blockAt(int x, int y, int z) {
+        return delegate.getBlockState(loc.getWorld(), x, y, z).getType();
     }
 
     /**
-     * Returns the block type at the given coordinates.
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @return the block type
+     * Returns the block type at the given absolute coordinates.
+     *
+     * @param target a point in absolute coordinates
+     * @return the material of the given block
      */
-    protected Material blockTypeAt(int x, int y, int z) {
-        return delegate.getBlockState(
-                loc.getWorld(), x, y,
-                z).getType();
+    protected Material blockAt(Vector target) {
+        return blockAt(target.getBlockX(), target.getBlockY(), target.getBlockZ());
+    }
+
+    /**
+     * With probability 2/3, places a vine at the selected relative coordinates if the block
+     * currently there is air.
+     *
+     * @param offsetX the X coordinate relative to {@link #loc}
+     * @param offsetY the Y coordinate relative to {@link #loc}
+     * @param offsetZ the Z coordinate relative to {@link #loc}
+     * @param facing the direction the vine should face
+     */
+    protected void maybePlaceVine(int offsetX, int offsetY, int offsetZ, BlockFace facing) {
+        int absoluteX = loc.getBlockX() + offsetX;
+        int absoluteY = loc.getBlockY() + offsetY;
+        int absoluteZ = loc.getBlockZ() + offsetZ;
+        if (random.nextInt(3) != 0
+                && blockAt(absoluteX, absoluteY, absoluteZ) == Material.AIR) {
+            delegate.setTypeAndData(loc.getWorld(), absoluteX, absoluteY,
+                    absoluteZ, Material.VINE, new Vine(facing));
+        }
     }
 }

@@ -11,11 +11,19 @@ import org.bukkit.material.types.DirtType;
 
 public class SwampTree extends CocoaTree {
 
+    /**
+     * Initializes this tree, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and
+     *         leaf blocks
+     */
     public SwampTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         setOverridables(
-            Material.AIR,
-            Material.LEAVES
+                Material.AIR,
+                Material.LEAVES
         );
         setHeight(random.nextInt(4) + 5);
         setTypes(0, 0);
@@ -24,7 +32,7 @@ public class SwampTree extends CocoaTree {
     @Override
     public boolean canPlaceOn() {
         BlockState state = delegate
-            .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
+                .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
@@ -43,7 +51,7 @@ public class SwampTree extends CocoaTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        Material type = blockTypeAt(x, y, z);
+                        Material type = blockAt(x, y, z);
                         if (!overridables.contains(type)) {
                             // the trunk can be immersed by 1 block of water
                             if (type == Material.WATER || type == Material.STATIONARY_WATER) {
@@ -66,7 +74,8 @@ public class SwampTree extends CocoaTree {
     @Override
     public boolean generate() {
         while (loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.WATER
-            || loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.STATIONARY_WATER) {
+                || loc.getBlock().getRelative(BlockFace.DOWN).getType()
+                == Material.STATIONARY_WATER) {
             loc.subtract(0, 1, 0);
         }
 
@@ -81,9 +90,13 @@ public class SwampTree extends CocoaTree {
             for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (Math.abs(x - loc.getBlockX()) != radius
-                        || Math.abs(z - loc.getBlockZ()) != radius
-                        || random.nextBoolean() && n != 0) {
-                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType);
+                            || Math.abs(z - loc.getBlockZ()) != radius
+                            || random.nextBoolean() && n != 0) {
+                        Material material = blockAt(x, y, z);
+                        if (material == Material.AIR || material == Material.LEAVES) {
+                            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
+                                    leavesType);
+                        }
                     }
                 }
             }
@@ -91,11 +104,11 @@ public class SwampTree extends CocoaTree {
 
         // generate the trunk
         for (int y = 0; y < height; y++) {
-            Material material = blockTypeAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ());
-            if (material == Material.AIR || material == Material.LEAVES ||
-                material == Material.WATER || material == Material.STATIONARY_WATER) {
+            Material material = blockAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ());
+            if (material == Material.AIR || material == Material.LEAVES
+                    || material == Material.WATER || material == Material.STATIONARY_WATER) {
                 delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
-                    loc.getBlockZ(), Material.LOG, logType);
+                        loc.getBlockZ(), Material.LOG, logType);
             }
         }
 
@@ -105,8 +118,9 @@ public class SwampTree extends CocoaTree {
         // block below trunk is always dirt
         Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate
-            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(),
-                Material.DIRT, dirt);
+                .setTypeAndData(loc.getWorld(), loc.getBlockX(),
+                        loc.getBlockY() - 1, loc.getBlockZ(),
+                        Material.DIRT, dirt);
 
         return true;
     }

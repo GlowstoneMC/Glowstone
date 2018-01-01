@@ -6,10 +6,10 @@ import org.bukkit.inventory.Recipe;
 
 /**
  * <p>Represents a dynamic recipe. These are recipes that have can have different results, depending
- * on the inputs used, rather than a simple matching algorithm.</p>
+ * on the inputs used, rather than a simple matching algorithm.
  *
  * <p>Used for recipes such as banners, which require item metadata to be copied to an item, along
- * with having a semi-shaped recipe.</p>
+ * with having a semi-shaped recipe.
  */
 public class DynamicRecipe implements Recipe {
 

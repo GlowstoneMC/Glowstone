@@ -26,6 +26,11 @@ public class WorldScheduler {
     private final List<WorldEntry> worlds = new CopyOnWriteArrayList<>();
     private volatile int currentTick = -1;
 
+    /**
+     * Returns an immutable list of the currently scheduled worlds.
+     *
+     * @return the scheduled worlds
+     */
     public List<GlowWorld> getWorlds() {
         Builder<GlowWorld> ret = ImmutableList.builder();
         for (WorldEntry entry : worlds) {
@@ -34,6 +39,12 @@ public class WorldScheduler {
         return ret.build();
     }
 
+    /**
+     * Returns the world with a given name.
+     *
+     * @param name the name to look up
+     * @return the world with that name, or null if none match
+     */
     public GlowWorld getWorld(String name) {
         for (WorldEntry went : worlds) {
             if (went.world.getName().equals(name)) {
@@ -43,7 +54,14 @@ public class WorldScheduler {
         return null;
     }
 
+    /**
+     * Returns the world with a given UUID.
+     *
+     * @param uid the UUID to look up
+     * @return the world with that UUID, or null if none match
+     */
     public GlowWorld getWorld(UUID uid) {
+        // FIXME: Unnecessary linear time
         for (WorldEntry went : worlds) {
             if (went.world.getUID().equals(uid)) {
                 return went.world;
@@ -52,6 +70,12 @@ public class WorldScheduler {
         return null;
     }
 
+    /**
+     * Attempts to start scheduled ticks for a world.
+     *
+     * @param world the world to start ticking
+     * @return {@code world} if it is now ticking; null otherwise
+     */
     public GlowWorld addWorld(GlowWorld world) {
         WorldEntry went = new WorldEntry(world);
         worlds.add(went);
@@ -69,6 +93,12 @@ public class WorldScheduler {
         }
     }
 
+    /**
+     * Stops scheduled ticks for a world.
+     *
+     * @param world the world to stop ticking
+     * @return whether the world had been scheduled
+     */
     public boolean removeWorld(GlowWorld world) {
         for (WorldEntry entry : worlds) {
             if (entry.world.equals(world)) {

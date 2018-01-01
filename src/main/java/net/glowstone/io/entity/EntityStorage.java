@@ -106,7 +106,7 @@ public final class EntityStorage {
         bind(new FallingBlockStore());
         bind(new ItemFrameStore());
         bind(new ItemStore());
-        bind(new TNTPrimedStorage());
+        bind(new TntPrimedStorage());
         bind(new EnderCrystalStore());
         bind(new BoatStore());
         for (GlowMinecart.MinecartType type : GlowMinecart.MinecartType.values()) {

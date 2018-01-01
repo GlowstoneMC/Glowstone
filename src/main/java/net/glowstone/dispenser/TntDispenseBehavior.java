@@ -8,7 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-public class TNTDispenseBehavior extends DefaultDispenseBehavior {
+public class TntDispenseBehavior extends DefaultDispenseBehavior {
 
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {

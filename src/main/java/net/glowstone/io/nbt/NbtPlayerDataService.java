@@ -18,8 +18,8 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -76,11 +76,11 @@ public class NbtPlayerDataService implements PlayerDataService {
             futures.add(GlowOfflinePlayer.getOfflinePlayer(server, uuid));
         }
 
-        CompletableFuture<Void> gotAll = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+        CompletableFuture<Void> gotAll = CompletableFuture.allOf(futures.toArray(
+                new CompletableFuture[futures.size()]));
 
-        return gotAll.thenApplyAsync((v) -> {
-            return futures.stream().map((f) -> f.join()).collect(Collectors.toList());
-        });
+        return gotAll.thenApplyAsync((v) ->
+                futures.stream().map((f) -> f.join()).collect(Collectors.toList()));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         File playerFile = getPlayerFile(player.getUniqueId());
         CompoundTag playerTag = new CompoundTag();
         if (playerFile.exists()) {
-            try (NBTInputStream in = new NBTInputStream(new FileInputStream(playerFile))) {
+            try (NbtInputStream in = new NbtInputStream(new FileInputStream(playerFile))) {
                 playerTag = in.readCompound();
             } catch (IOException e) {
                 player.kickPlayer("Failed to read player data!");
@@ -109,7 +109,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         File playerFile = getPlayerFile(player.getUniqueId());
         CompoundTag tag = new CompoundTag();
         EntityStorage.save(player, tag);
-        try (NBTOutputStream out = new NBTOutputStream(new FileOutputStream(playerFile))) {
+        try (NbtOutputStream out = new NbtOutputStream(new FileOutputStream(playerFile))) {
             out.writeTag(tag);
         } catch (IOException e) {
             player.kickPlayer("Failed to save player data!");
@@ -125,7 +125,7 @@ public class NbtPlayerDataService implements PlayerDataService {
 
         public NbtPlayerReader(File playerFile) {
             if (playerFile.exists()) {
-                try (NBTInputStream in = new NBTInputStream(new FileInputStream(playerFile))) {
+                try (NbtInputStream in = new NbtInputStream(new FileInputStream(playerFile))) {
                     tag = in.readCompound();
                     hasPlayed = true;
                 } catch (IOException e) {

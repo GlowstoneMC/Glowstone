@@ -112,9 +112,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     protected int deathTicks;
     /**
      * <p>The entity's movement as a unit vector, applied each tick according to the entity's speed.
-     * </p><p>
+     * <p>
      * The y value is not used. X is used for forward movement and z is used for sideways movement.
-     * These values are relative to the entity's current yaw.</p>
+     * These values are relative to the entity's current yaw.
      */
     protected Vector movement = new Vector();
     /**

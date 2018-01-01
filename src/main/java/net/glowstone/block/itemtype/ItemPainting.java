@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
 public class ItemPainting extends ItemType {
 
     /**
-     * Contains all Arts Key is the size of the art in descending order
+     * Contains all Arts. Key is the size of the art in descending order.
      */
     private static final ListMultimap<Key, Art> ART_BY_SIZE;
 

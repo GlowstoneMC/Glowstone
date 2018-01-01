@@ -1,8 +1,8 @@
 package net.glowstone.util.nbt;
 
-public class NBTReadLimiter {
+public class NbtReadLimiter {
 
-    public static final NBTReadLimiter UNLIMITED = new NBTReadLimiter(0L) {
+    public static final NbtReadLimiter UNLIMITED = new NbtReadLimiter(0L) {
 
         @Override
         public void read(int length) {
@@ -12,10 +12,15 @@ public class NBTReadLimiter {
     private final long limit;
     private long read;
 
-    public NBTReadLimiter(long limit) {
+    public NbtReadLimiter(long limit) {
         this.limit = limit;
     }
 
+    /**
+     * Increments the read-length count, and throws an exception if the limit is exceeded.
+     * @param length the length to add to the read-length count
+     * @throws IllegalStateException if the limit is exceeded
+     */
     public void read(int length) {
         read += length;
         if (read > limit) {

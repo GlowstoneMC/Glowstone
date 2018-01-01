@@ -19,9 +19,9 @@ import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
-import net.glowstone.util.nbt.NBTReadLimiter;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
+import net.glowstone.util.nbt.NbtReadLimiter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -197,9 +197,9 @@ public final class GlowBufUtils {
         }
 
         buf.readerIndex(idx);
-        try (NBTInputStream str = new NBTInputStream(new ByteBufInputStream(buf), false)) {
+        try (NbtInputStream str = new NbtInputStream(new ByteBufInputStream(buf), false)) {
             return str.readCompound(
-                    network ? new NBTReadLimiter(2097152L) : NBTReadLimiter.UNLIMITED);
+                    network ? new NbtReadLimiter(2097152L) : NbtReadLimiter.UNLIMITED);
         } catch (IOException e) {
             return null;
         }
@@ -218,7 +218,7 @@ public final class GlowBufUtils {
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try (NBTOutputStream str = new NBTOutputStream(out, false)) {
+        try (NbtOutputStream str = new NbtOutputStream(out, false)) {
             str.writeTag(data);
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Error serializing NBT: " + data, e);
