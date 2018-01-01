@@ -9,7 +9,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.types.DoublePlantSpecies;
 
-public class DoubleTallPlant {
+public class DoubleTallPlant implements TerrainObject {
 
     private final DoublePlantSpecies species;
 
@@ -20,13 +20,9 @@ public class DoubleTallPlant {
     /**
      * Generates up to 64 plants around the given point.
      *
-     * @param world the world to generate in
-     * @param random the PRNG
-     * @param sourceX the center X coordinate
-     * @param sourceY the center Y coordinate
-     * @param sourceZ the center Z coordinate
      * @return true if at least one plant was successfully generated
      */
+    @Override
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         boolean placed = false;
         for (int i = 0; i < 64; i++) {
