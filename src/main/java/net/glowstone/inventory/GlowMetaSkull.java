@@ -150,6 +150,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
             return true;
         } else if (owningPlayer instanceof GlowPlayer) {
             this.owner.set(((GlowPlayer) owningPlayer).getProfile());
+            return true;
         } else {
             CompletableFuture<PlayerProfile> profileFuture = PlayerProfile
                     .getProfile(owningPlayer.getName());
