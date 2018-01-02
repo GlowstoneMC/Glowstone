@@ -16,6 +16,14 @@ public class PulseTask extends BukkitRunnable {
     private long delay;
     private boolean single;
 
+    /**
+     * Creates a block update task.
+     *
+     * @param block the block to update
+     * @param async whether to run asynchronously
+     * @param delay the ticks to wait before running the task
+     * @param single if true, run this task only once; if false, repeat every {@code delay} ticks
+     */
     public PulseTask(GlowBlock block, boolean async, long delay, boolean single) {
         this.location = block.getLocation();
         this.originalMaterial = block.getType();
@@ -24,6 +32,9 @@ public class PulseTask extends BukkitRunnable {
         this.single = single;
     }
 
+    /**
+     * Schedules this task.
+     */
     public void startPulseTask() {
         if (single) {
             if (async) {
