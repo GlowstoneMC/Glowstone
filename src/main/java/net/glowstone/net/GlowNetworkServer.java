@@ -8,7 +8,7 @@ import net.glowstone.GlowServer;
 /**
  * Represents a network server.
  *
- * <p>Modified implementation of {@link com.flowpowered.network.NetworkServer}.</p>
+ * <p>Modified implementation of {@link com.flowpowered.network.NetworkServer}.
  */
 public abstract class GlowNetworkServer {
 
