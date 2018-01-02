@@ -18,6 +18,11 @@ public class GlowSkull extends GlowBlockState implements Skull {
     private PlayerProfile owner;
     private BlockFace rotation;
 
+    /**
+     * Creates the instance for the given block.
+     *
+     * @param block a head/skull block
+     */
     public GlowSkull(GlowBlock block) {
         super(block);
         type = BlockSkull.getType(getBlockEntity().getType());

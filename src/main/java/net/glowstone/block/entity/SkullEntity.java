@@ -32,7 +32,7 @@ public class SkullEntity extends BlockEntity {
         }
         if (tag.containsKey("Owner")) {
             CompoundTag ownerTag = tag.getCompound("Owner");
-            owner = PlayerProfile.fromNBT(ownerTag).join();
+            owner = PlayerProfile.fromNbt(ownerTag).join();
         } else if (tag.containsKey("ExtraType")) {
             // Pre-1.8 uses just a name, instead of a profile object
             String name = tag.getString("ExtraType");
@@ -50,7 +50,7 @@ public class SkullEntity extends BlockEntity {
             tag.putByte("Rot", rotation);
         }
         if (type == BlockSkull.getType(SkullType.PLAYER) && owner != null) {
-            tag.putCompound("Owner", owner.toNBT());
+            tag.putCompound("Owner", owner.toNbt());
         }
     }
 
