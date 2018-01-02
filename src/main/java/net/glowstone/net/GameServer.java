@@ -18,6 +18,7 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
         bootstrap.childHandler(new GlowChannelInitializer(this));
     }
 
+    @Override
     public ChannelFuture bind(InetSocketAddress address) {
         GlowServer.logger.info("Binding server to " + address + "...");
         return super.bind(address);
