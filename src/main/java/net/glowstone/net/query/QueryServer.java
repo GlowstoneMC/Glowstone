@@ -28,6 +28,14 @@ public class QueryServer extends GlowDatagramServer {
      */
     private ChallengeTokenFlushTask flushTask;
 
+    /**
+     * Creates an instance for the specified server.
+     *
+     * @param server the associated GlowServer
+     * @param latch The countdown latch used during server startup to wait for network server
+     *         binding.
+     * @param showPlugins whether the plugin list should be included in responses
+     */
     public QueryServer(GlowServer server, CountDownLatch latch, boolean showPlugins) {
         super(server, latch);
         bootstrap.handler(new QueryHandler(this, showPlugins));
@@ -39,6 +47,7 @@ public class QueryServer extends GlowDatagramServer {
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
+    @Override
     public ChannelFuture bind(InetSocketAddress address) {
         GlowServer.logger.info("Binding query to address " + address + "...");
         if (flushTask == null) {
@@ -51,6 +60,7 @@ public class QueryServer extends GlowDatagramServer {
     /**
      * Shut the query server down.
      */
+    @Override
     public void shutdown() {
         super.shutdown();
         if (flushTask != null) {
