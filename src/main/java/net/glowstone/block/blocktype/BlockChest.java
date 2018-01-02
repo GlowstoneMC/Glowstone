@@ -7,6 +7,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ChestEntity;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -57,8 +58,8 @@ public class BlockChest extends BlockContainer {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowBlock block) {
-        return new ChestEntity(block);
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new ChestEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

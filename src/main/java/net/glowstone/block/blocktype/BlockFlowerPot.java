@@ -10,6 +10,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.FlowerPotEntity;
 import net.glowstone.block.entity.state.GlowFlowerPot;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
@@ -38,8 +39,8 @@ public class BlockFlowerPot extends BlockType {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowBlock block) {
-        return new FlowerPotEntity(block);
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new FlowerPotEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BannerEntity;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.state.GlowBanner;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.DyeColor;
@@ -73,8 +74,8 @@ public class BlockBanner extends BlockType {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowBlock block) {
-        return new BannerEntity(block);
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new BannerEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

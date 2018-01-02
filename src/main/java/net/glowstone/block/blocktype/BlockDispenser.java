@@ -5,6 +5,7 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.block.entity.state.GlowDispenser;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
@@ -48,8 +49,8 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowBlock block) {
-        return new DispenserEntity(block);
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new DispenserEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

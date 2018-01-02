@@ -1,5 +1,6 @@
 package net.glowstone.testutils;
 
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.mockito.Mockito;
@@ -25,7 +27,9 @@ public class InMemoryBlockStorage {
         BlockEntity entity = null;
         BlockType blockType = ItemTable.instance().getBlock(type);
         if (blockType != null) {
-            entity = blockType.createBlockEntity(mockBlock);
+            GlowChunk mockChunk = Mockito.mock(GlowChunk.class);
+            when(mockChunk.getBlock(anyInt(), anyInt(), anyInt())).thenReturn(mockBlock);
+            entity = blockType.createBlockEntity(mockChunk, 0, 0, 0);
         }
         when(mockBlock.getBlockEntity()).thenReturn(entity);
         return mockBlock;

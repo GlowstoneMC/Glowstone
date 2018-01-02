@@ -7,6 +7,7 @@ import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ContainerEntity;
 import net.glowstone.block.entity.HopperEntity;
 import net.glowstone.block.entity.state.GlowHopper;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.MaterialMatcher;
@@ -60,8 +61,8 @@ public class BlockHopper extends BlockContainer {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowBlock block) {
-        return new HopperEntity(block);
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new HopperEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

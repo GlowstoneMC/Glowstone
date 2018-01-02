@@ -4,6 +4,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.FurnaceEntity;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
@@ -21,8 +22,8 @@ public class BlockFurnace extends BlockContainer {
     }
 
     @Override
-    public BlockEntity createBlockEntity(GlowBlock block) {
-        return new FurnaceEntity(block);
+    public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
+        return new FurnaceEntity(chunk.getBlock(cx, cy, cz));
     }
 
     @Override

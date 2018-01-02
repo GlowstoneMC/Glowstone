@@ -35,7 +35,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
  *
  * @author Graham Edgecombe
  */
-public final class GlowChunk implements Chunk {
+public class GlowChunk implements Chunk {
 
     /**
      * The width of a chunk (x axis).
@@ -367,7 +367,7 @@ public final class GlowChunk implements Chunk {
                 }
 
                 try {
-                    BlockEntity entity = blockType.createBlockEntity(getBlock(cx, cy, cz));
+                    BlockEntity entity = blockType.createBlockEntity(this, cx, cy, cz);
                     if (entity == null) {
                         return null;
                     }
