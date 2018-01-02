@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 
 public class WorldBorderCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public WorldBorderCommand() {
         super("worldborder");
         setUsage("/worldborder <set|center|damage|warning|get|add> ...");
@@ -37,7 +40,8 @@ public class WorldBorderCommand extends VanillaCommand {
                 }
                 return true;
             } else {
-                double x, z;
+                double x;
+                double z;
                 try {
                     x = Double.parseDouble(args[1]);
                     z = Double.parseDouble(args[2]);

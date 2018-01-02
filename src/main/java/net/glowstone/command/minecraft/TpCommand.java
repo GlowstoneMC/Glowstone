@@ -13,9 +13,13 @@ import org.bukkit.entity.Player;
 
 public class TpCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public TpCommand() {
         super("tp", "Teleports an entity to another entity or to specific coordinates.",
-            "/tp [target entity] <destination player> OR /tp [target entity] <x> <y> <z> [<yaw> <pitch>]",
+            "/tp [target entity] <destination player> "
+                    + "OR /tp [target entity] <x> <y> <z> [<yaw> <pitch>]",
             Collections.emptyList());
         setPermission("minecraft.command.tp");
     }
@@ -69,7 +73,8 @@ public class TpCommand extends VanillaCommand {
                 }
             } else {
                 Entity destination;
-                String fromName = args[0], destName = args[1];
+                String fromName = args[0];
+                String destName = args[1];
                 if (fromName.startsWith("@") && fromName.length() >= 2 && CommandUtils
                     .isPhysical(sender)) {
                     Location location = CommandUtils.getLocation(sender);
