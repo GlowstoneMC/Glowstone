@@ -87,7 +87,8 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
             case "MC|BEdit": {
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
-                //GlowServer.logger.info("BookEdit [" + session.getPlayer().getName() + "]: " + item);
+                //GlowServer.logger.info(
+                //        "BookEdit [" + session.getPlayer().getName() + "]: " + item);
                 if (item == null || item.getType() != Material.BOOK_AND_QUILL) {
                     return;
                 }
@@ -120,7 +121,8 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
             case "MC|BSign":
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
-                //GlowServer.logger.info("BookSign [" + session.getPlayer().getName() + "]: " + item);
+                //GlowServer.logger.info(
+                //        "BookSign [" + session.getPlayer().getName() + "]: " + item);
                 if (item == null || item.getType() != Material.WRITTEN_BOOK) {
                     return;
                 }
