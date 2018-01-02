@@ -15,7 +15,8 @@ public final class WindowClickLogic {
     }
 
     /**
-     * Determine the ClickType of a window click message based on the raw mode, button, and slot values if possible.
+     * Determine the ClickType of a window click message based on the raw mode, button, and slot
+     * values if possible.
      *
      * @param mode The raw mode number.
      * @param button The raw button number.
@@ -76,17 +77,18 @@ public final class WindowClickLogic {
                 }
                 break;
 
-            case 5: // drag
-                break;
-
             case 6:
                 return ClickType.DOUBLE_CLICK;
+            case 5: // drag
+            default:
+                return ClickType.UNKNOWN;
         }
         return ClickType.UNKNOWN;
     }
 
     /**
-     * Determine the InventoryAction to be performed for a window click based on the click type, slot type, and items involved.
+     * Determine the InventoryAction to be performed for a window click based on the click type,
+     * slot type, and items involved.
      *
      * @param clickType The click type.
      * @param slot The slot clicked.
@@ -95,11 +97,12 @@ public final class WindowClickLogic {
      * @return The InventoryAction to perform, or UNKNOWN.
      */
     public static InventoryAction getAction(ClickType clickType, SlotType slot, ItemStack cursor,
-        ItemStack slotItem) {
+            ItemStack slotItem) {
         boolean outside = slot == SlotType.OUTSIDE;
         switch (clickType) {
             case LEFT:
-                // "SWAP_WITH_CURSOR", "PLACE_ONE", "DROP_ALL_CURSOR", "PLACE_ALL", "PLACE_SOME", "NOTHING", "PICKUP_ALL"
+                // "SWAP_WITH_CURSOR", "PLACE_ONE", "DROP_ALL_CURSOR", "PLACE_ALL", "PLACE_SOME",
+                // "NOTHING", "PICKUP_ALL"
                 if (InventoryUtil.isEmpty(cursor)) {
                     if (outside || InventoryUtil.isEmpty(slotItem)) {
                         return InventoryAction.NOTHING;
@@ -121,7 +124,7 @@ public final class WindowClickLogic {
 
                 if (slotItem.isSimilar(cursor)) {
                     int transfer = Math.min(cursor.getAmount(),
-                        slotItem.getType().getMaxStackSize() - slotItem.getAmount());
+                            slotItem.getType().getMaxStackSize() - slotItem.getAmount());
                     if (transfer == 0) {
                         return InventoryAction.NOTHING;
                     } else if (transfer == 1) {
@@ -226,8 +229,9 @@ public final class WindowClickLogic {
             case PLACE_ALL:
             case PLACE_SOME:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     /**
@@ -243,7 +247,8 @@ public final class WindowClickLogic {
             case PICKUP_ONE:
             case PICKUP_SOME:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 }
