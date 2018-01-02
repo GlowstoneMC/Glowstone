@@ -23,7 +23,9 @@ public class ItemWrittenBook extends ItemType {
     }
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+    public void rightClickBlock(
+            GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
+            Vector clickedLoc, EquipmentSlot hand) {
         openBook(player);
     }
 
