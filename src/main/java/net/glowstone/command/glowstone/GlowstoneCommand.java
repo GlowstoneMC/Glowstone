@@ -27,11 +27,14 @@ import org.bukkit.util.StringUtil;
 public class GlowstoneCommand extends BukkitCommand {
 
     private static final List<String> SUBCOMMANDS = Arrays
-        .asList("about", "chunk", "eval", "help", "property", "vm", "world");
+            .asList("about", "chunk", "eval", "help", "property", "vm", "world");
 
+    /**
+     * Creates the instance for this command.
+     */
     public GlowstoneCommand() {
         super("glowstone", "A handful of Glowstone commands for debugging purposes",
-            "/glowstone help", Arrays.asList("gs"));
+                "/glowstone help", Arrays.asList("gs"));
         setPermission("glowstone.debug");
     }
 
@@ -44,25 +47,28 @@ public class GlowstoneCommand extends BukkitCommand {
             // some info about this Glowstone server
             sender.sendMessage("Information about this server:");
             sender.sendMessage(
-                " - " + ChatColor.GOLD + "Server brand: " + ChatColor.AQUA + Bukkit.getName()
-                    + ChatColor.RESET + ".");
+                    " - " + ChatColor.GOLD + "Server brand: " + ChatColor.AQUA + Bukkit.getName()
+                            + ChatColor.RESET + ".");
             sender.sendMessage(
-                " - " + ChatColor.GOLD + "Server name: " + ChatColor.AQUA + Bukkit.getServerName()
-                    + ChatColor.RESET + ".");
+                    " - " + ChatColor.GOLD + "Server name: " + ChatColor.AQUA + Bukkit
+                            .getServerName()
+                            + ChatColor.RESET + ".");
             sender.sendMessage(
-                " - " + ChatColor.GOLD + "Glowstone version: " + ChatColor.AQUA + Bukkit
-                    .getVersion() + ChatColor.RESET + ".");
+                    " - " + ChatColor.GOLD + "Glowstone version: " + ChatColor.AQUA + Bukkit
+                            .getVersion() + ChatColor.RESET + ".");
             sender.sendMessage(" - " + ChatColor.GOLD + "API version: " + ChatColor.AQUA + Bukkit
-                .getBukkitVersion() + ChatColor.RESET + ".");
+                    .getBukkitVersion() + ChatColor.RESET + ".");
             sender.sendMessage(
-                " - " + ChatColor.GOLD + "Players: " + ChatColor.AQUA + Bukkit.getOnlinePlayers()
-                    .size() + ChatColor.RESET + ".");
+                    " - " + ChatColor.GOLD + "Players: " + ChatColor.AQUA + Bukkit
+                            .getOnlinePlayers()
+                            .size() + ChatColor.RESET + ".");
             sender.sendMessage(
-                " - " + ChatColor.GOLD + "Worlds: " + ChatColor.AQUA + Bukkit.getWorlds().size()
-                    + ChatColor.RESET + ".");
+                    " - " + ChatColor.GOLD + "Worlds: " + ChatColor.AQUA + Bukkit.getWorlds().size()
+                            + ChatColor.RESET + ".");
             sender.sendMessage(
-                " - " + ChatColor.GOLD + "Plugins: " + ChatColor.AQUA + Bukkit.getPluginManager()
-                    .getPlugins().length + ChatColor.RESET + ".");
+                    " - " + ChatColor.GOLD + "Plugins: " + ChatColor.AQUA + Bukkit
+                            .getPluginManager()
+                            .getPlugins().length + ChatColor.RESET + ".");
 
             // thread count
             int threadCount = 0;
@@ -73,27 +79,31 @@ public class GlowstoneCommand extends BukkitCommand {
                 }
             }
             sender.sendMessage(" - " + ChatColor.GOLD + "Threads: " + ChatColor.AQUA + threadCount
-                + ChatColor.RESET + ".");
+                    + ChatColor.RESET + ".");
             return false;
         }
         if ("help".equalsIgnoreCase(args[0])) {
             // some help
             sender.sendMessage(ChatColor.GOLD + "Glowstone command help:");
             sender.sendMessage(helpForSubCommand(label, "about", "Information about this server"));
-            sender.sendMessage(helpForSubCommand(label, "eval <eval>", "Evaluate a reflection string"));
+            sender.sendMessage(helpForSubCommand(label, "eval <eval>", "Evaluate a reflection "
+                    + "string"));
             sender.sendMessage(helpForSubCommand(label, "help", "Shows the help screen"));
-            sender.sendMessage(helpForSubCommand(label, "property [name]", "Lists or gets system properties"));
-            sender.sendMessage(helpForSubCommand(label, "chunk", "Gets the coordinates of the current chunk"));
+            sender.sendMessage(helpForSubCommand(label, "property [name]", "Lists or gets system "
+                    + "properties"));
+            sender.sendMessage(helpForSubCommand(label, "chunk", "Gets the coordinates of the "
+                    + "current chunk"));
             sender.sendMessage(helpForSubCommand(label, "vm", "Lists JVM options"));
-            sender.sendMessage(helpForSubCommand(label, "world [teleportTo]", "Lists or teleports to worlds"));
+            sender.sendMessage(helpForSubCommand(label, "world [teleportTo]", "Lists or teleports"
+                    + " to worlds"));
             return false;
         }
         if ("property".equalsIgnoreCase(args[0])) {
             if (args.length == 1) {
                 // list all
                 System.getProperties().forEach((key, value) -> sender.sendMessage(
-                    "Property '" + ChatColor.AQUA + key + ChatColor.RESET + "' = \""
-                        + ChatColor.GOLD + value + ChatColor.RESET + "\"."));
+                        "Property '" + ChatColor.AQUA + key + ChatColor.RESET + "' = \""
+                                + ChatColor.GOLD + value + ChatColor.RESET + "\"."));
             } else {
                 // get a property
                 String key = args[1].toLowerCase();
@@ -102,8 +112,8 @@ public class GlowstoneCommand extends BukkitCommand {
                     sender.sendMessage(ChatColor.RED + "Unknown system property '" + key + "'.");
                 } else {
                     sender.sendMessage(
-                        "Property '" + ChatColor.AQUA + key + ChatColor.RESET + "' = \""
-                            + ChatColor.GOLD + value + ChatColor.RESET + "\".");
+                            "Property '" + ChatColor.AQUA + key + ChatColor.RESET + "' = \""
+                                    + ChatColor.GOLD + value + ChatColor.RESET + "\".");
                 }
             }
             return false;
@@ -126,7 +136,8 @@ public class GlowstoneCommand extends BukkitCommand {
             if (args.length == 1) {
                 // list worlds
                 sender.sendMessage(
-                    "Worlds: " + CommandUtils.prettyPrint(getWorldNames().toArray(new String[0])));
+                        "Worlds: " + CommandUtils
+                                .prettyPrint(getWorldNames().toArray(new String[0])));
                 return true;
             }
             if (!(sender instanceof Player)) {
@@ -138,7 +149,8 @@ public class GlowstoneCommand extends BukkitCommand {
             GlowWorld world = player.getServer().getWorld(worldName);
             if (world == null) {
                 sender.sendMessage(
-                    ChatColor.RED + "World '" + worldName + "' is not loaded, or does not exist");
+                        ChatColor.RED + "World '" + worldName
+                                + "' is not loaded, or does not exist");
                 return false;
             }
             player.teleport(world.getSpawnLocation());
@@ -147,13 +159,14 @@ public class GlowstoneCommand extends BukkitCommand {
         }
         if ("chunk".equalsIgnoreCase(args[0])) {
             if (!CommandUtils.isPhysical(sender)) {
-                sender
-                    .sendMessage(ChatColor.RED + "This command may only be used by physical objects");
+                sender.sendMessage(
+                        ChatColor.RED + "This command may only be used by physical objects");
                 return false;
             }
             Chunk chunk = CommandUtils.getLocation(sender).getChunk();
             sender
-                .sendMessage("Chunk coordinates: [x=" + chunk.getX() + ", z=" + chunk.getZ() + "]");
+                    .sendMessage(
+                            "Chunk coordinates: [x=" + chunk.getX() + ", z=" + chunk.getZ() + "]");
             return true;
         }
         if ("eval".equalsIgnoreCase(args[0])) {
@@ -167,11 +180,12 @@ public class GlowstoneCommand extends BukkitCommand {
                 builder.append(args[i] + (i == args.length - 1 ? "" : " "));
             }
             ReflectionProcessor processor = new ReflectionProcessor(builder.toString(),
-                sender instanceof Entity ? sender : Bukkit.getServer());
+                    sender instanceof Entity ? sender : Bukkit.getServer());
             Object result = processor.process();
             sender.sendMessage(
-                ChatColor.GOLD + "Eval returned: " + (result == null ? ChatColor.RED + "<no value>"
-                    : ChatColor.AQUA + result.toString()));
+                    ChatColor.GOLD + "Eval returned: " + (result == null ? ChatColor.RED
+                            + "<no value>"
+                            : ChatColor.AQUA + result.toString()));
             return true;
         }
         sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <"
@@ -181,7 +195,7 @@ public class GlowstoneCommand extends BukkitCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         Preconditions.checkNotNull(sender, "Sender cannot be null");
         Preconditions.checkNotNull(args, "Arguments cannot be null");
         Preconditions.checkNotNull(alias, "Alias cannot be null");
@@ -190,28 +204,30 @@ public class GlowstoneCommand extends BukkitCommand {
         }
         if (args.length == 1) {
             return StringUtil
-                .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
+                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("property")) {
             return StringUtil
-                .copyPartialMatches(args[1], System.getProperties().stringPropertyNames(),
-                    new ArrayList<>(System.getProperties().stringPropertyNames().size()));
+                    .copyPartialMatches(args[1], System.getProperties().stringPropertyNames(),
+                            new ArrayList<>(System.getProperties().stringPropertyNames().size()));
         }
         if (args.length == 2 && (args[0].equalsIgnoreCase("world") || args[0]
-            .equalsIgnoreCase("worlds")) && sender instanceof Player) {
+                .equalsIgnoreCase("worlds")) && sender instanceof Player) {
             Collection<String> worlds = getWorldNames();
             return StringUtil
-                .copyPartialMatches(args[1], worlds, new ArrayList<>(worlds.size()));
+                    .copyPartialMatches(args[1], worlds, new ArrayList<>(worlds.size()));
         }
         return Collections.emptyList();
     }
 
     private String helpForSubCommand(String label, String subcommand, String description) {
-        return "- " + ChatColor.GOLD + "/" + label + " " + ChatColor.AQUA + subcommand + ChatColor.GRAY + ": " + description;
+        return "- " + ChatColor.GOLD + "/" + label + " "
+                + ChatColor.AQUA + subcommand
+                + ChatColor.GRAY + ": " + description;
     }
 
     private Collection<String> getWorldNames() {
         return Bukkit.getServer().getWorlds().stream().map(World::getName)
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 }
