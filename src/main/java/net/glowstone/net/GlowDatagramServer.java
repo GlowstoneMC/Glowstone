@@ -48,6 +48,7 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
         });
     }
 
+    @Override
     public void shutdown() {
         bootstrap.config().group().shutdownGracefully();
     }
