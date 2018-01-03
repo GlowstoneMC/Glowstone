@@ -16,6 +16,9 @@ import org.bukkit.entity.Player;
 
 public class XpCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public XpCommand() {
         super("xp", "Adds experience to a player.",
             "/xp <amount> [player] OR /xp <amount>L [player] OR /xp <amount>l [player]",
@@ -33,7 +36,8 @@ public class XpCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         } else {
-            final String stringAmount = args[0], playerPattern = (args.length > 1) ? args[1] : null;
+            final String stringAmount = args[0];
+            final String playerPattern = (args.length > 1) ? args[1] : null;
             final boolean addLevels = stringAmount.endsWith("l") || stringAmount.endsWith("L");
             int amount;
             List<Player> targets;

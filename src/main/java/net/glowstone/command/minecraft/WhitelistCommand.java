@@ -18,6 +18,9 @@ public class WhitelistCommand extends VanillaCommand {
     private static final List<String> SUBCOMMANDS = Arrays
         .asList("on", "off", "list", "add", "remove", "reload");
 
+    /**
+     * Creates the instance for this command.
+     */
     public WhitelistCommand() {
         super("whitelist", "Manage the server whitelist.",
             "/whitelist <on|off|list|add|remove|reload>", Collections.emptyList());

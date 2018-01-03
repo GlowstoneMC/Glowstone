@@ -16,6 +16,9 @@ import org.bukkit.entity.Player;
 
 public class TellCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public TellCommand() {
         super("tell", "Send a private message.", "/tell <player> <private message ...>",
             Arrays.asList("msg", "w"));
