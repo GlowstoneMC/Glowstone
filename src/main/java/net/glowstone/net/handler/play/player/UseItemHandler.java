@@ -1,9 +1,9 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
-import java.util.Arrays;
-import java.util.HashSet;
+import com.google.common.collect.ImmutableSortedSet;
 import java.util.List;
+import java.util.SortedSet;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -13,7 +13,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.UseItemMessage;
 import net.glowstone.util.InventoryUtil;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,9 +25,9 @@ import org.bukkit.util.Vector;
 
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
 
-    private static final HashSet<Material> IGNORE_MATS = new HashSet<>(Arrays.asList(
-                Material.AIR, Material.WATER, Material.LAVA, Material.STATIONARY_LAVA, Material.STATIONARY_WATER
-                ));
+    private static final SortedSet<Material> IGNORE_MATS = ImmutableSortedSet.of(
+            Material.AIR, Material.WATER, Material.LAVA, Material.STATIONARY_LAVA,
+            Material.STATIONARY_WATER);
 
     @Override
     public void handle(GlowSession session, UseItemMessage message) {
@@ -74,12 +73,14 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
         if (action == Action.RIGHT_CLICK_AIR) {
             handleRightClickAir(player, holding, slot);
         } else {
-            BlockPlacementHandler.handleRightClickBlock(player, holding, slot, block, face, clickedAt);
+            BlockPlacementHandler.handleRightClickBlock(
+                    player, holding, slot, block, face, clickedAt);
         }
     }
 
     static void handleRightClickAir(GlowPlayer player, ItemStack holding, EquipmentSlot slot) {
-        PlayerInteractEvent event = EventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_AIR, slot);
+        PlayerInteractEvent event = EventFactory.onPlayerInteract(
+                player, Action.RIGHT_CLICK_AIR, slot);
 
         if (event.useItemInHand() == null || event.useItemInHand() == Event.Result.DENY) {
             return;
