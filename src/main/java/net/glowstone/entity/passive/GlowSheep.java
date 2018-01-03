@@ -22,19 +22,24 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     private boolean sheared;
     private DyeColor color;
 
+    /**
+     * Creates a sheep with a random color.
+     *
+     * @param location the location
+     */
     public GlowSheep(Location location) {
         super(location, EntityType.SHEEP, 8);
         setSize(0.9F, 1.3F);
         int colorpc = ThreadLocalRandom.current().nextInt(10000);
-        if (colorpc < 8184) {
+        if (8184 > colorpc) {
             setColor(DyeColor.WHITE);
-        } else if (colorpc >= 8184 && 8684 > colorpc) {
+        } else if (8684 > colorpc) {
             setColor(DyeColor.BLACK);
-        } else if (colorpc >= 8684 && 9184 > colorpc) {
+        } else if (9184 > colorpc) {
             setColor(DyeColor.SILVER);
-        } else if (colorpc >= 9184 && 9684 > colorpc) {
+        } else if (9684 > colorpc) {
             setColor(DyeColor.GRAY);
-        } else if (colorpc >= 9684 && 9984 > colorpc) {
+        } else if (9984 > colorpc) {
             setColor(DyeColor.BROWN);
         } else {
             setColor(DyeColor.PINK);
