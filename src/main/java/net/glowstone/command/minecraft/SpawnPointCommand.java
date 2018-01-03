@@ -18,6 +18,9 @@ import org.bukkit.entity.Player;
 
 public class SpawnPointCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public SpawnPointCommand() {
         super("spawnpoint", "Sets the spawn point for a player.",
             "/spawnpoint OR /spawnpoint <player> OR /spawnpoint <player> <x> <y> <z>",

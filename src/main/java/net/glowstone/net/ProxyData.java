@@ -4,6 +4,8 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.util.UuidUtils;
@@ -15,23 +17,35 @@ import org.json.simple.parser.ParseException;
 /**
  * Container for proxy (e.g. BungeeCord) player data spoofing.
  */
+@AllArgsConstructor
 public final class ProxyData {
 
-    private String securityKey; // Lilypad security key - not used by us
-    private String hostname;
-    private InetSocketAddress address;
-    private String name;
-    private UUID uuid;
-    private List<PlayerProperty> properties;
+    /**
+     * The Lilypad security key sent by the proxy, or null if not present.
+     */
+    @Getter
+    private String securityKey;
 
-    public ProxyData(String securityKey, String hostname, InetSocketAddress address, String name, UUID uuid, List<PlayerProperty> properties) {
-        this.securityKey = securityKey;
-        this.hostname = hostname;
-        this.address = address;
-        this.name = name;
-        this.uuid = uuid;
-        this.properties = properties;
-    }
+    /** The spoofed hostname to use instead of the actual one. */
+    @Getter
+    private String hostname;
+
+    /**
+     * The spoofed address to use instead of the actual one.
+     *
+     * @return The spoofed address.
+     */
+    @Getter
+    private InetSocketAddress address;
+
+    /** The player name for the spoofed profile, or null if not specified. */
+    private String name;
+
+    /** The player UUID for the spoofed profile. */
+    private UUID uuid;
+
+    /** The player properties for the spoofed profile. */
+    private List<PlayerProperty> properties;
 
     /**
      * Create a proxy data structure for a session from the given source text.
@@ -54,7 +68,8 @@ public final class ProxyData {
             // LilyPad also spoofs the port, unlike Bungee
             hostname = (String) payload.get("h");
             uuid = UuidUtils.fromFlatString((String) payload.get("u"));
-            address = new InetSocketAddress((String) payload.get("rIp"), ((Long) payload.get("rP")).intValue());
+            address = new InetSocketAddress(
+                    (String) payload.get("rIp"), ((Long) payload.get("rP")).intValue());
 
             // Extract properties, if available
             if (payload.containsKey("p")) {
@@ -81,7 +96,8 @@ public final class ProxyData {
 
         String[] parts = sourceText.split("\0");
         if (parts.length != 3 && parts.length != 4) {
-            throw new IllegalArgumentException("parts length was " + parts.length + ", should be 3 or 4");
+            throw new IllegalArgumentException(
+                    "parts length was " + parts.length + ", should be 3 or 4");
         }
 
         // Set values that aren't supported or present to null
@@ -111,33 +127,6 @@ public final class ProxyData {
     }
 
     /**
-     * Gets the security key sent by the proxy, if any.
-     *
-     * @return The security key, or null if not present.
-     */
-    public String getSecurityKey() {
-        return securityKey;
-    }
-
-    /**
-     * Get the spoofed hostname to use instead of the actual one.
-     *
-     * @return The spoofed hostname.
-     */
-    public String getHostname() {
-        return hostname;
-    }
-
-    /**
-     * Get the spoofed address to use instead of the actual one.
-     *
-     * @return The spoofed address.
-     */
-    public InetSocketAddress getAddress() {
-        return address;
-    }
-
-    /**
      * Get a spoofed profile to use with the given name.
      *
      * @param name The player name.
@@ -148,7 +137,8 @@ public final class ProxyData {
     }
 
     /**
-     * Get a spoofed profile to use. Returns null if the proxy did not send a username as part of the payload.
+     * Get a spoofed profile to use. Returns null if the proxy did not send a username as part of
+     * the payload.
      *
      * @return The spoofed profile.
      */

@@ -16,6 +16,7 @@ public final class GlowScoreboardManager implements ScoreboardManager {
         this.server = server;
     }
 
+    @Override
     public GlowScoreboard getMainScoreboard() {
         if (mainScoreboard == null) {
             GlowScoreboard newScoreboard;
@@ -30,6 +31,7 @@ public final class GlowScoreboardManager implements ScoreboardManager {
 
     }
 
+    @Override
     public GlowScoreboard getNewScoreboard() {
         return new GlowScoreboard();
     }

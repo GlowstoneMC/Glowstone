@@ -1,7 +1,6 @@
 package net.glowstone.io.entity;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.function.Function;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -19,14 +18,8 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
 
     @Override
     public GlowMinecart createEntity(Location location, CompoundTag compound) {
-        try {
-            Constructor<? extends GlowMinecart> constructor = type.getMinecartClass()
-                .getConstructor(Location.class);
-            return constructor.newInstance(location);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Function<? super Location, ? extends GlowMinecart> creator = type.getCreator();
+        return creator == null ? null : creator.apply(location);
     }
 
     @Override

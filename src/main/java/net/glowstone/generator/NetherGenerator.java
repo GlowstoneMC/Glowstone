@@ -26,6 +26,9 @@ public class NetherGenerator extends GlowChunkGenerator {
 
     private final double[][][] density = new double[5][5][17];
 
+    /**
+     * Creates a chunk generator for the Nether.
+     */
     public NetherGenerator() {
         super(new NetherPopulator());
 
@@ -43,22 +46,23 @@ public class NetherGenerator extends GlowChunkGenerator {
 
     @Override
     public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ,
-        BiomeGrid biomes) {
+            BiomeGrid biomes) {
         ChunkData chunkData = generateRawTerrain(world, chunkX, chunkZ);
 
         int cx = chunkX << 4;
         int cz = chunkZ << 4;
 
         double[] surfaceNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("surface"))
-            .getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
+                .getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
         double[] soulsandNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("soulsand"))
-            .getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
+                .getFractalBrownianMotion(cx, cz, 0, 0.5D, 2.0D);
         double[] gravelNoise = ((PerlinOctaveGenerator) getWorldOctaves(world).get("gravel"))
-            .getFractalBrownianMotion(cx, 0, cz, 0.5D, 2.0D);
+                .getFractalBrownianMotion(cx, 0, cz, 0.5D, 2.0D);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 generateTerrainColumn(chunkData, world, random, cx + x, cz + z,
-                    surfaceNoise[x | z << 4], soulsandNoise[x | z << 4], gravelNoise[x | z << 4]);
+                        surfaceNoise[x | z << 4], soulsandNoise[x | z << 4], gravelNoise[x
+                                | z << 4]);
             }
         }
 
@@ -152,14 +156,14 @@ public class NetherGenerator extends GlowChunkGenerator {
                         for (int m = 0; m < 4; m++) {
                             double dens = d9;
                             for (int n = 0; n < 4; n++) {
-                                // any density higher than 0 is ground, any density lower or equal to 0 is air
-                                // (or lava if under the lava level).
+                                // any density higher than 0 is ground, any density lower or equal
+                                // to 0 is air (or lava if under the lava level).
                                 if (dens > 0) {
                                     chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2),
-                                        Material.NETHERRACK);
+                                            Material.NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
                                     chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2),
-                                        Material.STATIONARY_LAVA);
+                                            Material.STATIONARY_LAVA);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;
@@ -185,21 +189,21 @@ public class NetherGenerator extends GlowChunkGenerator {
     private void generateTerrainDensity(World world, int x, int z) {
         Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
         double[] heightNoise = ((PerlinOctaveGenerator) octaves.get("height"))
-            .getFractalBrownianMotion(x, z, 0.5D, 2.0D);
+                .getFractalBrownianMotion(x, z, 0.5D, 2.0D);
         double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness"))
-            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+                .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
         double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2"))
-            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+                .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
         double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail"))
-            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+                .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
 
-        double[] nV = new double[17];
+        double[] nv = new double[17];
         for (int i = 0; i < 17; i++) {
-            nV[i] = Math.cos(i * Math.PI * 6.0D / 17.0D) * 2.0D;
-            double nH = i > 17 / 2 ? 17 - 1 - i : i;
-            if (nH < 4.0D) {
-                nH = 4.0D - nH;
-                nV[i] -= nH * nH * nH * 10.0D;
+            nv[i] = Math.cos(i * Math.PI * 6.0D / 17.0D) * 2.0D;
+            double nh = i > 17 / 2 ? 17 - 1 - i : i;
+            if (nh < 4.0D) {
+                nh = 4.0D - nh;
+                nv[i] -= nh * nh * nh * 10.0D;
             }
         }
 
@@ -225,11 +229,11 @@ public class NetherGenerator extends GlowChunkGenerator {
                     double noiseR = roughnessNoise[index] / 512.0D;
                     double noiseR2 = roughnessNoise2[index] / 512.0D;
                     double noiseD = (detailNoise[index] / 10.0D + 1.0D) / 2.0D;
-                    double nH = nV[k];
+                    double nh = nv[k];
                     // linear interpolation
                     double dens = noiseD < 0 ? noiseR
-                        : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
-                    dens -= nH;
+                            : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
+                    dens -= nh;
                     index++;
                     if (k > 13) {
                         double lowering = (k - 13) / 3.0D;
@@ -241,8 +245,20 @@ public class NetherGenerator extends GlowChunkGenerator {
         }
     }
 
+    /**
+     * Generates a terrain column.
+     *
+     * @param chunkData the chunk in which to generate
+     * @param world the world
+     * @param random the PRNG
+     * @param x the column x coordinate
+     * @param z the column z coordinate
+     * @param surfaceNoise amplitude of surface-height variation
+     * @param soulsandNoise determines the chance of a soul sand patch
+     * @param gravelNoise determines the chance of a gravel patch
+     */
     public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z,
-        double surfaceNoise, double soulsandNoise, double gravelNoise) {
+            double surfaceNoise, double soulsandNoise, double gravelNoise) {
         Material topMat = Material.NETHERRACK;
         Material groundMat = Material.NETHERRACK;
 

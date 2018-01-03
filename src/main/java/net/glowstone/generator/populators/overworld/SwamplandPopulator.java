@@ -28,6 +28,9 @@ public class SwamplandPopulator extends BiomePopulator {
         Material.RED_MUSHROOM);
     protected final WaterLilyDecorator waterlilyDecorator = new WaterLilyDecorator();
 
+    /**
+     * Creates a populator for the Swamp and Swamp M biomes.
+     */
     public SwamplandPopulator() {
         sandPatchDecorator.setAmount(0);
         gravelPatchDecorator.setAmount(0);

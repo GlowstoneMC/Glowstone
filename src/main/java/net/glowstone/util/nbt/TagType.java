@@ -36,6 +36,12 @@ public enum TagType {
         this.valueClass = valueClass;
     }
 
+    /**
+     * Returns the tag type with a given ID.
+     *
+     * @param id the ID to look up
+     * @return the tag type with ID {@code id}, or null if none exists
+     */
     public static TagType byId(int id) {
         if (id < 0 || id >= values().length) {
             return null;
@@ -43,6 +49,13 @@ public enum TagType {
         return values()[id];
     }
 
+    /**
+     * Returns the tag type with a given ID.
+     *
+     * @param id the ID to look up
+     * @return the tag type with ID {@code id}
+     * @throws IOException if {@code id} doesn't match any tag type
+     */
     static TagType byIdOrError(int id) throws IOException {
         if (id < 0 || id >= values().length) {
             throw new IOException("Invalid tag type: " + id);

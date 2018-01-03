@@ -101,7 +101,9 @@ public final class BlockPlacementHandler implements
         handleRightClickBlock(player, holding, message.getHandSlot(), clicked, face, clickedLoc);
     }
 
-    static void handleRightClickBlock(GlowPlayer player, ItemStack holding, EquipmentSlot slot, GlowBlock clicked, BlockFace face, Vector clickedLoc) {
+    static void handleRightClickBlock(
+            GlowPlayer player, ItemStack holding, EquipmentSlot slot, GlowBlock clicked,
+            BlockFace face, Vector clickedLoc) {
         // call interact event
         PlayerInteractEvent event = EventFactory.onPlayerInteract(
                 player, Action.RIGHT_CLICK_BLOCK, slot, clicked, face);

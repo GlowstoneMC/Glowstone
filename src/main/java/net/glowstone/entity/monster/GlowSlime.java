@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 
+// TODO: Split when killed
 public class GlowSlime extends GlowMonster implements Slime {
 
     private boolean onGround;
@@ -19,7 +20,8 @@ public class GlowSlime extends GlowMonster implements Slime {
         super(loc, type, 1);
         byte size = 1;
         double health = 1;
-        switch (ThreadLocalRandom.current().nextInt(3)) {
+        int randomSize = ThreadLocalRandom.current().nextInt(3);
+        switch (randomSize) {
             case 0:
                 size = 1;
                 health = 1;
@@ -32,6 +34,8 @@ public class GlowSlime extends GlowMonster implements Slime {
                 size = 4;
                 health = 16;
                 break;
+            default:
+                throw new InternalError("ThreadLocalRandom.nextInt(3) returned " + randomSize);
         }
         setBoundingBox(0.51000005 * size, 0.51000005 * size);
         setSize(size);

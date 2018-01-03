@@ -63,6 +63,7 @@ public final class GlowServerIcon implements CachedServerIcon {
     /**
      * The image data to be sent to the client, or null.
      */
+    @Override
     public String getData() {
         return data;
     }

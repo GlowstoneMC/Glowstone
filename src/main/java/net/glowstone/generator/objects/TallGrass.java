@@ -16,12 +16,14 @@ public class TallGrass implements TerrainObject {
         this.grassType = grassType;
     }
 
+    @Override
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
-        while ((world.getBlockAt(sourceX, sourceY, sourceZ).isEmpty() ||
-            world.getBlockAt(sourceX, sourceY, sourceZ).getType() == Material.LEAVES) &&
-            sourceY > 0) {
+        Block thisBlock;
+        do {
+            thisBlock = world.getBlockAt(sourceX, sourceY, sourceZ);
             sourceY--;
-        }
+        } while ((thisBlock.isEmpty() || thisBlock.getType() == Material.LEAVES) && sourceY > 0);
+        sourceY++;
         boolean succeeded = false;
         for (int i = 0; i < 128; i++) {
             int x = sourceX + random.nextInt(8) - random.nextInt(8);
@@ -29,9 +31,9 @@ public class TallGrass implements TerrainObject {
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
             Block block = world.getBlockAt(x, y, z);
+            Material blockTypeBelow = block.getRelative(BlockFace.DOWN).getType();
             if (y < 255 && block.getType() == Material.AIR && (
-                block.getRelative(BlockFace.DOWN).getType() == Material.GRASS ||
-                    block.getRelative(BlockFace.DOWN).getType() == Material.DIRT)) {
+                    blockTypeBelow == Material.GRASS || blockTypeBelow == Material.DIRT)) {
                 BlockState state = block.getState();
                 state.setType(Material.LONG_GRASS);
                 state.setData(grassType);

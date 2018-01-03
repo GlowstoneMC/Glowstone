@@ -8,13 +8,20 @@ import net.glowstone.GlowServer;
 /**
  * Represents a network server.
  *
- * Modified implementation of {@link com.flowpowered.network.NetworkServer}.
+ * <p>Modified implementation of {@link com.flowpowered.network.NetworkServer}.
  */
 public abstract class GlowNetworkServer {
 
     private final GlowServer server;
     protected CountDownLatch latch;
 
+    /**
+     * Creates an instance for the specified server.
+     *
+     * @param server the associated GlowServer
+     * @param latch The countdown latch used during server startup to wait for network server
+     *         binding.
+     */
     public GlowNetworkServer(GlowServer server, CountDownLatch latch) {
         this.server = server;
         this.latch = latch;
