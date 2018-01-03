@@ -25,7 +25,7 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
     }
 
     /**
-     * Gets the statistics file for the given UUID
+     * Gets the statistics file for the given UUID.
      *
      * @param uuid the UUID of the player
      * @return the statistics file of the given UUID
@@ -38,7 +38,8 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
     }
 
     /**
-     * Reads the stats of a player from its statistics file and writes the values to the StatisticMap.
+     * Reads the stats of a player from its statistics file and writes the values to the
+     * StatisticMap.
      *
      * @param player the player to read the statistics from
      */
@@ -61,10 +62,14 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
                             longValue = (Long) object.get("value");
                         }
                     } else {
-                        GlowServer.logger.warning("Unknown statistic type for '" + entry.getKey() + "': " + entry.getValue() + " (" + entry.getValue().getClass().getSimpleName() + ")");
+                        GlowServer.logger.warning(String.format(
+                                "Unknown statistic type for '%s': %s (%s)",
+                                entry.getKey(), entry.getValue(),
+                                entry.getValue().getClass().getSimpleName()));
                     }
                     if (longValue != null) {
-                        player.getStatisticMap().getValues().put(entry.getKey(), longValue.intValue());
+                        player.getStatisticMap().getValues()
+                                .put(entry.getKey(), longValue.intValue());
                     }
                 }
             } catch (ParseException | IOException e) {
