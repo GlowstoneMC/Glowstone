@@ -9,6 +9,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class OpCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public OpCommand() {
         super("op", "Turns a player into a server operator.", "/op <player>",
             Collections.emptyList());

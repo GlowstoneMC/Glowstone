@@ -25,6 +25,9 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class SummonCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public SummonCommand() {
         super("summon", "Summons an entity.", "/summon <EntityName> [x] [y] [z] [dataTag]",
             Collections.<String>emptyList());

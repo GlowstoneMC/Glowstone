@@ -10,6 +10,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class PardonCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public PardonCommand() {
         super("pardon", "Unbans a player from the server.", "/pardon <name>",
             Collections.emptyList());
