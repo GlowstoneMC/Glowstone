@@ -11,8 +11,11 @@ public final class SpawnPlayerMessage implements Message {
 
     private final int id;
     private final UUID uuid;
-    private final double x, y, z;
-    private final int rotation, pitch;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final int rotation;
+    private final int pitch;
     private final List<Entry> metadata;
 
 }

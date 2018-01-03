@@ -44,6 +44,9 @@ public final class TitleCodec implements Codec<TitleMessage> {
                 buf.writeInt(message.getStay());
                 buf.writeInt(message.getFadeOut());
                 break;
+            default:
+                // TODO: Should this raise a warning?
+                // do nothing
         }
         return buf;
     }
