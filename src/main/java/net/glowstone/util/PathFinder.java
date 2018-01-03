@@ -1,15 +1,15 @@
 package net.glowstone.util;
 
-import java.util.Queue;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.HashMap;
 import java.util.PriorityQueue;
-import java.util.Collections;
-import java.util.Arrays;
+import java.util.Queue;
+import java.util.Set;
 
 import org.bukkit.util.Vector;
 
@@ -75,7 +75,7 @@ public class PathFinder {
      * Tries to find a path between the start and end points. This method currently
      * does not handle cases where a path could not potentially exist.
      */
-    public void aStarSearch() {
+    public void findPathAStar() {
         Queue<Vector> frontier = new PriorityQueue<>();
         this.fromPath = new HashMap<>();
         Map<Vector, Double> costSoFar = new HashMap<>();
