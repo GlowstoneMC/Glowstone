@@ -10,6 +10,12 @@ public class WaterMobStore<T extends GlowWaterMob> extends EntityStore<T> {
 
     private final Constructor<T> constructor;
 
+    /**
+     * Creates the instance for a mob type.
+     *
+     * @param clazz the mob type as a class
+     * @param type the mob type as an {@link EntityType}
+     */
     public WaterMobStore(Class<T> clazz, EntityType type) {
         super(clazz, type);
         Constructor<T> ctor = null;
