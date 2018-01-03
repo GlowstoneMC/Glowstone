@@ -13,18 +13,24 @@ import org.bukkit.entity.Rabbit;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
-    private static final ImmutableBiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap.<Type, Integer>builder()
-        .put(Type.BROWN, 0)
-        .put(Type.WHITE, 1)
-        .put(Type.BLACK, 2)
-        .put(Type.BLACK_AND_WHITE, 3)
-        .put(Type.GOLD, 4)
-        .put(Type.SALT_AND_PEPPER, 5)
-        .put(Type.THE_KILLER_BUNNY, 99)
-        .build();
+    private static final ImmutableBiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap
+            .<Type, Integer>builder()
+            .put(Type.BROWN, 0)
+            .put(Type.WHITE, 1)
+            .put(Type.BLACK, 2)
+            .put(Type.BLACK_AND_WHITE, 3)
+            .put(Type.GOLD, 4)
+            .put(Type.SALT_AND_PEPPER, 5)
+            .put(Type.THE_KILLER_BUNNY, 99)
+            .build();
 
     private Type rabbitType;
 
+    /**
+     * Creates a rabbit of a random type.
+     *
+     * @param location the location
+     */
     public GlowRabbit(Location location) {
         super(location, EntityType.RABBIT, 3);
         setSize(0.4F, 0.5F);
