@@ -174,7 +174,10 @@ public class ItemType {
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (placeAs != null) {
-            placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            Context context = placeAs.getContext();
+            if ((context == Context.ANY || context == Context.BLOCK)) {
+                placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            }
         }
     }
 
