@@ -145,7 +145,8 @@ public final class GlowPotionEffect extends PotionEffectType {
     /**
      * Pulse this potion effect on a specified entity.
      *
-     * <p>If the potion effect is not applicable, nothing happens. For instant effects, will only have an effect if 'ticks' is 0.
+     * <p>If the potion effect is not applicable, nothing happens. For instant effects, will only
+     * have an effect if 'ticks' is 0.
      *
      * @param entity The entity to pulse on.
      * @param effect Information on the effect's state.
