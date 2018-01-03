@@ -17,10 +17,21 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     private boolean canBreakDoors;
 
+    /**
+     * Creates a zombie.
+     *
+     * @param loc the location
+     */
     public GlowZombie(Location loc) {
         this(loc, EntityType.ZOMBIE);
     }
 
+    /**
+     * Creates a zombie.
+     *
+     * @param loc the location
+     * @param type the zombie type
+     */
     public GlowZombie(Location loc, EntityType type) {
         super(loc, type, 20);
         setBoundingBox(0.6, 1.8);
