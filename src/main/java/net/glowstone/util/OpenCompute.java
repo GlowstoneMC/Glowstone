@@ -50,7 +50,7 @@ public class OpenCompute {
                         return program;
                     } catch (IOException ex) {
                         GlowServer.logger.log(Level.WARNING,
-                                "Could not load custom OpenCL program. Trying builtins.", ex);
+                                "Could not load custom OpenCL program.", ex);
                     }
                 } else {
                     try (InputStream input = CLASS_LOADER
@@ -133,6 +133,7 @@ public class OpenCompute {
 
     /**
      * Calculates the number of work groups.
+     *
      * @param size the total number of local work units
      * @param localWorkSize the number of local work units per work group
      * @return the number of work groups
