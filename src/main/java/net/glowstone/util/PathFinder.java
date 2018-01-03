@@ -1,8 +1,17 @@
 package net.glowstone.util;
 
-import org.bukkit.util.Vector;
+import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Collections;
+import java.util.Arrays;
 
-import java.util.*;
+import org.bukkit.util.Vector;
 
 /**
  * General class for path finding.
@@ -66,18 +75,18 @@ public class PathFinder {
      * Tries to find a path between the start and end points. This method currently
      * does not handle cases where a path could not potentially exist.
      */
-    public void AStarSearch() {
+    public void aStarSearch() {
         Queue<Vector> frontier = new PriorityQueue<>();
         this.fromPath = new HashMap<>();
         Map<Vector, Double> costSoFar = new HashMap<>();
-//      HashSet<Vector> visitedNodes = new HashSet<>();
+        // HashSet<Vector> visitedNodes = new HashSet<>();
 
         // Add the starting node to our frontier
         // TODO: Might have to make a wrapper class for Vectors and computed distances to compare in the priority queue
         frontier.add(startNode);
 
         // Add the starting node to our hash map
-        fromPath.put(startNode, null);
+        this.fromPath.put(startNode, null);
 
         // Cost from the start is 0
         costSoFar.put(startNode, 0.0);
@@ -103,7 +112,7 @@ public class PathFinder {
                 if (!costSoFar.containsKey(nextNode) || newCost < costSoFar.get(nextNode)) {
                     costSoFar.put(nextNode, newCost);
                     frontier.add(nextNode);
-                    fromPath.put(nextNode, current);
+                    this.fromPath.put(nextNode, current);
                 }
 
             }
