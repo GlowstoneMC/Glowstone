@@ -35,8 +35,8 @@ public class PerlinNoise extends PerlinNoiseGenerator {
     }
 
     public static int floor(double x) {
-        int ix = (int) x;
-        return x < ix ? ix - 1 : ix;
+        int floored = (int) x;
+        return x < floored ? floored - 1 : floored;
     }
 
     /**
