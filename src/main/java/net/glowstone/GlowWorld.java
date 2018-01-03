@@ -45,7 +45,7 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLightningStrike;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.GlowTNTPrimed;
+import net.glowstone.entity.GlowTntPrimed;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
@@ -1410,7 +1410,7 @@ public final class GlowWorld implements World {
         GlowEntity entity = null;
 
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
-            entity = new GlowTNTPrimed(location, null);
+            entity = new GlowTntPrimed(location, null);
         }
 
         if (entity == null) {

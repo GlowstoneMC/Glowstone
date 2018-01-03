@@ -3,7 +3,7 @@ package net.glowstone.block.blocktype;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.GlowTNTPrimed;
+import net.glowstone.entity.GlowTntPrimed;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -22,7 +22,7 @@ public class BlockTnt extends BlockType {
     public static void igniteBlock(GlowBlock tntBlock, boolean ignitedByExplosion) {
         tntBlock.setType(Material.AIR);
         World world = tntBlock.getWorld();
-        GlowTNTPrimed tnt = (GlowTNTPrimed) world
+        GlowTntPrimed tnt = (GlowTntPrimed) world
             .spawnEntity(tntBlock.getLocation().add(0.5, 0, 0.5), EntityType.PRIMED_TNT);
         tnt.setIgnitedByExplosion(ignitedByExplosion);
         world.playSound(tntBlock.getLocation(), Sound.ENTITY_TNT_PRIMED, 1, 1);
