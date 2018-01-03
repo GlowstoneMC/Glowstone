@@ -51,11 +51,9 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                 entity.clearRecipes();
                 List<CompoundTag> recipesList = offers.getList("Recipes", TagType.COMPOUND);
                 for (CompoundTag recipeTag : recipesList) {
-                    boolean experienceReward = recipeTag.getBool("rewardExp");
-                    int uses = recipeTag.getInt("uses");
-                    int maxUses = recipeTag.getInt("maxUses");
-                    CompoundTag sellTag = recipeTag.getCompound("sell"), buy1tag = recipeTag
-                        .getCompound("buy"), buy2tag = null;
+                    CompoundTag sellTag = recipeTag.getCompound("sell");
+                    CompoundTag buy1tag = recipeTag.getCompound("buy");
+                    CompoundTag buy2tag = null;
                     if (recipeTag.isCompound("buyB")) {
                         buy2tag = recipeTag.getCompound("buyB");
                     }
@@ -66,6 +64,9 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                     if (buy2tag != null) {
                         ingredients.add(NbtSerialization.readItem(buy2tag));
                     }
+                    boolean experienceReward = recipeTag.getBool("rewardExp");
+                    int uses = recipeTag.getInt("uses");
+                    int maxUses = recipeTag.getInt("maxUses");
                     MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
                         experienceReward);
                     recipe.setIngredients(ingredients);
