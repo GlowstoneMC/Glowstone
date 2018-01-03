@@ -33,21 +33,32 @@ public final class LibraryManager {
 
     private final ExecutorService downloaderService = Executors.newCachedThreadPool();
 
+    /**
+     * Creates the instance.
+     */
     public LibraryManager() {
         // todo: allow configuration of repository, libraries, and directory
         repository = "https://repo.glowstone.net/service/local/repositories/central/content/";
         directory = new File("lib");
     }
 
+    /**
+     * Downloads the libraries.
+     */
     public void run() {
         if (!directory.isDirectory() && !directory.mkdirs()) {
-            GlowServer.logger.log(Level.SEVERE, "Could not create libraries directory: " + directory);
+            GlowServer.logger
+                    .log(Level.SEVERE, "Could not create libraries directory: " + directory);
         }
 
-        downloaderService.execute(new LibraryDownloader("org.xerial", "sqlite-jdbc", "3.21.0", ""));
-        downloaderService.execute(new LibraryDownloader("mysql", "mysql-connector-java", "5.1.44", ""));
-        downloaderService.execute(new LibraryDownloader("org.apache.logging.log4j", "log4j-api", "2.8.1", ""));
-        downloaderService.execute(new LibraryDownloader("org.apache.logging.log4j", "log4j-core", "2.8.1", ""));
+        downloaderService.execute(new LibraryDownloader(
+                "org.xerial", "sqlite-jdbc", "3.21.0", ""));
+        downloaderService.execute(new LibraryDownloader(
+                "mysql", "mysql-connector-java", "5.1.44", ""));
+        downloaderService.execute(new LibraryDownloader(
+                "org.apache.logging.log4j", "log4j-api", "2.8.1", ""));
+        downloaderService.execute(new LibraryDownloader(
+                "org.apache.logging.log4j", "log4j-core", "2.8.1", ""));
         downloaderService.shutdown();
         try {
             if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
@@ -80,16 +91,22 @@ public final class LibraryManager {
                 // download it
                 GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
                 try {
-                    URL downloadUrl = new URL(repository + group.replace('.', '/') + '/' + library + '/' + version + '/' + library + '-' + version + ".jar");
-                    HttpsURLConnection connection = (HttpsURLConnection) downloadUrl.openConnection();
+                    URL downloadUrl = new URL(
+                            repository + group.replace('.', '/') + '/' + library + '/' + version
+                                    + '/' + library + '-' + version + ".jar");
+                    HttpsURLConnection connection = (HttpsURLConnection) downloadUrl
+                            .openConnection();
                     connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-                    try (ReadableByteChannel input = Channels.newChannel(connection.getInputStream()); FileOutputStream output = new FileOutputStream(file)) {
+                    try (ReadableByteChannel input = Channels
+                            .newChannel(connection.getInputStream());
+                            FileOutputStream output = new FileOutputStream(file)) {
                         output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
                         GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
                     }
                 } catch (IOException e) {
-                    GlowServer.logger.log(Level.WARNING, "Failed to download: " + library + ' ' + version, e);
+                    GlowServer.logger.log(Level.WARNING,
+                            "Failed to download: " + library + ' ' + version, e);
                     file.delete();
                     return;
                 }
@@ -97,7 +114,8 @@ public final class LibraryManager {
 
             // hack it onto the classpath
             try {
-                String[] javaVersion = System.getProperty("java.version").split("-")[0].split("\\.");
+                String[] javaVersion = System.getProperty("java.version").split("-")[0]
+                        .split("\\.");
                 if (Integer.parseInt(javaVersion[0]) >= 9) {
                     ClassPathAgent.addJarFile(new JarFile(file));
                 } else {
@@ -106,7 +124,8 @@ public final class LibraryManager {
                     method.invoke(ClassLoader.getSystemClassLoader(), file.toURI().toURL());
                 }
             } catch (ReflectiveOperationException | IOException e) {
-                GlowServer.logger.log(Level.WARNING, "Failed to add to classpath: " + library + " " + version, e);
+                GlowServer.logger.log(Level.WARNING,
+                        "Failed to add to classpath: " + library + " " + version, e);
             }
         }
 
