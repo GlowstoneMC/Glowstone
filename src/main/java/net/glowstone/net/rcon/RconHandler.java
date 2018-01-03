@@ -21,6 +21,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final byte TYPE_COMMAND = 2;
     private static final byte TYPE_LOGIN = 3;
 
+    // FIXME: This is a password stored in plain text!
     private final String password;
 
     private boolean loggedIn;
@@ -35,6 +36,12 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
      */
     private RconCommandSender commandSender;
 
+    /**
+     * Creates a remote console handler.
+     *
+     * @param rconServer the associated server
+     * @param password the remote operator's password
+     */
     public RconHandler(RconServer rconServer, String password) {
         this.rconServer = rconServer;
         this.password = password;
@@ -72,6 +79,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
             sendResponse(ctx, requestId, TYPE_COMMAND, "");
             GlowServer.logger.info("Rcon connection from [" + ctx.channel().remoteAddress() + "]");
         } else {
+            // FIXME: Throttle online brute-force attacks!
             loggedIn = false;
             sendResponse(ctx, FAILURE, TYPE_COMMAND, "");
         }
