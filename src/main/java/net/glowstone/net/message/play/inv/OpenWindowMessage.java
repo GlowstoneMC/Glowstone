@@ -12,7 +12,8 @@ public final class OpenWindowMessage implements Message {
     private final int id;
     private final String type;
     private final TextMessage title;
-    private final int slots, entityId;
+    private final int slots;
+    private final int entityId;
 
     public OpenWindowMessage(int id, String type, String title, int slots) {
         this(id, type, new TextMessage(title), slots, 0);
