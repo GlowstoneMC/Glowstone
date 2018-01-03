@@ -1,6 +1,8 @@
 package net.glowstone.generator.objects;
 
+import com.google.common.collect.ImmutableSortedSet;
 import java.util.Random;
+import java.util.SortedSet;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -13,8 +15,9 @@ import org.bukkit.material.types.DoublePlantSpecies;
 public class StoneBoulder implements TerrainObject {
 
     private static final Material[] GROUND_TYPES = {Material.GRASS, Material.DIRT, Material.STONE};
-    private static final Material[] PLANT_TYPES = {Material.LONG_GRASS, Material.YELLOW_FLOWER,
-        Material.RED_ROSE, Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM};
+    private static final SortedSet<Material> PLANT_TYPES = ImmutableSortedSet
+            .of(Material.LONG_GRASS, Material.YELLOW_FLOWER, Material.RED_ROSE,
+                    Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM);
 
     @Override
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
@@ -43,28 +46,29 @@ public class StoneBoulder implements TerrainObject {
             for (int x = -radiusX; x <= radiusX; x++) {
                 for (int z = -radiusZ; z <= radiusZ; z++) {
                     for (int y = -radiusY; y <= radiusY; y++) {
-                        if (x * x + z * z + y * y <= f * f) {
-                            BlockState state = world
-                                    .getBlockAt(sourceX + x, sourceY + y, sourceZ + z).getState();
-                            Block blockAbove = state.getBlock().getRelative(BlockFace.UP);
-                            for (Material mat : PLANT_TYPES) {
-                                if (blockAbove.getType() == mat) {
-                                    if (mat == Material.DOUBLE_PLANT && blockAbove.getState()
-                                            .getData() instanceof DoublePlant &&
-                                            ((DoublePlant) blockAbove.getState().getData())
-                                                    .getSpecies()
-                                                    == DoublePlantSpecies.PLANT_APEX) {
-                                        blockAbove.getRelative(BlockFace.UP)
-                                                .setType(Material.AIR);
-                                    }
-                                    blockAbove.setType(Material.AIR);
-                                    break;
+                        if (x * x + z * z + y * y > f * f) {
+                            continue;
+                        }
+                        BlockState state = world
+                                .getBlockAt(sourceX + x, sourceY + y, sourceZ + z).getState();
+                        Block blockAbove = state.getBlock().getRelative(BlockFace.UP);
+                        Material mat = blockAbove.getType();
+                        if (PLANT_TYPES.contains(mat)) {
+                            if (mat == Material.DOUBLE_PLANT) {
+                                MaterialData dataAbove = blockAbove.getState().getData();
+                                if (dataAbove instanceof DoublePlant
+                                        && ((DoublePlant) dataAbove).getSpecies()
+                                        == DoublePlantSpecies.PLANT_APEX) {
+                                    blockAbove.getRelative(BlockFace.UP)
+                                            .setType(Material.AIR);
                                 }
                             }
-                            state.setType(Material.MOSSY_COBBLESTONE);
-                            state.setData(new MaterialData(Material.MOSSY_COBBLESTONE));
-                            state.update(true);
+                            blockAbove.setType(Material.AIR);
+                            break;
                         }
+                        state.setType(Material.MOSSY_COBBLESTONE);
+                        state.setData(new MaterialData(Material.MOSSY_COBBLESTONE));
+                        state.update(true);
                     }
                 }
             }
