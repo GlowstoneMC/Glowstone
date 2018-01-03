@@ -19,6 +19,9 @@ public class RoofedForestPopulator extends ForestPopulator {
         new TreeDecoration(RedMushroomTree.class, 2),
         new TreeDecoration(BrownMushroomTree.class, 2), new TreeDecoration(DarkOakTree.class, 50)};
 
+    /**
+     * Creates a populator specialized for the Roofed Forest and Roofed Forest M biomes.
+     */
     public RoofedForestPopulator() {
         treeDecorator.setAmount(50);
         treeDecorator.setTrees(TREES);
