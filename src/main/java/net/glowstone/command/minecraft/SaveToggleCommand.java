@@ -10,6 +10,11 @@ public class SaveToggleCommand extends VanillaCommand {
 
     private final boolean on;
 
+    /**
+     * Creates the instance for the {@code /save-on} or {@code /save-off} command.
+     *
+     * @param on true for {@code /save-on}; false for {@code /save-off}
+     */
     public SaveToggleCommand(boolean on) {
         super(on ? "save-on" : "save-off",
             on ? "Enables automatic server saves." : "Disables automatic sever saves.",

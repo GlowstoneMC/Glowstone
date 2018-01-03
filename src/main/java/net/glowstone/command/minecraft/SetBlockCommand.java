@@ -21,6 +21,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class SetBlockCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public SetBlockCommand() {
         super("setblock",
             "Changes a block to another block.",

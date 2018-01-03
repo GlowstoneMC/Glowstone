@@ -29,6 +29,9 @@ public class PlaySoundCommand extends VanillaCommand {
 
     private static final Set<String> SOUNDS = GlowSound.getSounds().keySet();
 
+    /**
+     * Creates the instance for this command.
+     */
     public PlaySoundCommand() {
         super("playsound", "Plays a sound.",
             "/playsound <sound> <source> <player> [x] [y] [z] [volume] [pitch] [minimumVolume]",
@@ -49,13 +52,17 @@ public class PlaySoundCommand extends VanillaCommand {
 
         final World world = CommandUtils.getWorld(sender);
 
-        String stringSound = args[0], stringCategory = args[1], playerPattern = args[2];
+        String stringSound = args[0];
+        String stringCategory = args[1];
+        String playerPattern = args[2];
         final Sound sound = GlowSound.getVanillaSound(
             stringSound.startsWith("minecraft:") ? stringSound : "minecraft:" + stringSound);
         final SoundCategory soundCategory = SoundUtil.buildSoundCategory(stringCategory);
         List<GlowPlayer> targets;
         boolean relativeLocation = false;
-        double volume = 1, minimumVolume = 0, pitch = 1;
+        double volume = 1;
+        double minimumVolume = 0;
+        double pitch = 1;
 
         if (sound == null) {
             sender.sendMessage(ChatColor.RED + "'" + stringSound + "' is not a valid sound.");
@@ -135,7 +142,8 @@ public class PlaySoundCommand extends VanillaCommand {
         }
 
         for (final GlowPlayer target : targets) {
-            Location soundLocation, targetLocation = target.getLocation();
+            Location soundLocation;
+            Location targetLocation = target.getLocation();
             double targetVolume = volume;
 
             try {
@@ -162,9 +170,9 @@ public class PlaySoundCommand extends VanillaCommand {
                         ChatColor.RED + target.getName() + " is too far away to hear the sound");
                     return false;
                 } else {
-                    final double deltaX = soundLocation.getX() - targetLocation.getX(),
-                        deltaY = soundLocation.getX() - targetLocation.getY(),
-                        deltaZ = soundLocation.getX() - targetLocation.getZ();
+                    final double deltaX = soundLocation.getX() - targetLocation.getX();
+                    final double deltaY = soundLocation.getX() - targetLocation.getY();
+                    final double deltaZ = soundLocation.getX() - targetLocation.getZ();
                     final double delta = Math
                         .sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2));
 
