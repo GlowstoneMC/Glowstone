@@ -73,6 +73,12 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         this(center, BlockFace.SOUTH);
     }
 
+    /**
+     * Creates a painting with the default art.
+     *
+     * @param center the center of the painting
+     * @param facing the direction for the painting to face
+     */
     public GlowPainting(Location center, BlockFace facing) {
         super(center, facing);
         this.center = center;
@@ -152,7 +158,8 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     /**
      * Refreshes the painting for nearby clients.
      *
-     * <p>This will first destroy, and then spawn the painting again using its current art and facing value.
+     * <p>This will first destroy, and then spawn the painting again using its current art and
+     * facing value.
      */
     public void refresh() {
         DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
@@ -341,6 +348,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         return this.center;
     }
 
+    @Override
     protected void updateBoundingBox() {
         BlockFace rightFace = getRightFace();
         double modX = Math.abs(rightFace.getModX() * art.getBlockWidth());
