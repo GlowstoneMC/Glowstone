@@ -31,7 +31,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private QueryServer queryServer;
 
     /**
-     * Whether the a plugin list should be included in responses.
+     * Whether the plugin list should be included in responses.
      */
     private boolean showPlugins;
 
