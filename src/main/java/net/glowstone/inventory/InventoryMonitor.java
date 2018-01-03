@@ -17,7 +17,8 @@ public final class InventoryMonitor {
 
     private final InventoryView view;
     private final ItemStack[] slots;
-    private final int size, id;
+    private final int size;
+    private final int id;
     private final String type;
 
     /**
@@ -26,7 +27,6 @@ public final class InventoryMonitor {
      * @param view The view to monitor.
      */
     public InventoryMonitor(InventoryView view) {
-        boolean isDefault = GlowInventoryView.isDefault(view);
         this.view = view;
         if (view.getTopInventory().getType() != InventoryType.CRAFTING
             && view.getBottomInventory().getType() == InventoryType.PLAYER) {
@@ -38,7 +38,7 @@ public final class InventoryMonitor {
         slots = new ItemStack[size];
 
         // determine id and type id
-        if (isDefault) {
+        if (GlowInventoryView.isDefault(view)) {
             id = 0;
         } else {
             id = nextId;
