@@ -11,6 +11,9 @@ import org.bukkit.entity.Player;
 
 public class KickCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public KickCommand() {
         super("kick", "Removes a player from the server.", "/kick <player> [reason]",
             Collections.emptyList());

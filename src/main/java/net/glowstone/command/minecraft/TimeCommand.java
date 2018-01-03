@@ -16,9 +16,13 @@ public class TimeCommand extends VanillaCommand {
     private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add");
     private static final List<String> TIMES = Arrays.asList("day", "night");
 
+    /**
+     * Creates the instance for this command.
+     */
     public TimeCommand() {
-        super("time", "Changes the time of the world.", "/time <set|add> <value>",
-            Collections.emptyList());
+        super("time", "Changes the time of the world.",
+                "/time <set|add> <value> OR /time query <daytime|gametime|day>",
+                Collections.emptyList());
         setPermission("minecraft.command.time");
     }
 
@@ -60,6 +64,25 @@ public class TimeCommand extends VanillaCommand {
                 return false;
             }
             sender.sendMessage("Added " + mod + " to the time");
+        } else if (subcommand.equals("query")) {
+            String output;
+            switch (value.toLowerCase()) {
+                case "gametime":
+                    output = "The time is " + world.getTime();
+                    break;
+                case "daytime":
+                    output = "The time of day is " +  world.getTime() % 24000;
+                    break;
+                case "day":
+                    output = "The day is " + world.getTime() / 24000;
+                    break;
+                default:
+                    sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+                    return false;
+            }
+            sender.sendMessage(output);
+            // TODO: Set the success count for command blocks
+            return true;
         } else {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -70,14 +93,14 @@ public class TimeCommand extends VanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 1) {
             return (List) StringUtil
-                .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
+                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
         }
         if (args.length == 2 && args[0].equals("set")) {
             return (List) StringUtil
-                .copyPartialMatches(args[1], TIMES, new ArrayList(TIMES.size()));
+                    .copyPartialMatches(args[1], TIMES, new ArrayList(TIMES.size()));
         }
         return Collections.emptyList();
     }

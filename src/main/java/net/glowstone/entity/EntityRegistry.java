@@ -205,7 +205,7 @@ public class EntityRegistry {
             .put(PigZombie.class, GlowPigZombie.class)
             .put(Player.class, GlowPlayer.class)
             .put(PolarBear.class, GlowPolarBear.class)
-            .put(TNTPrimed.class, GlowTNTPrimed.class)
+            .put(TNTPrimed.class, GlowTntPrimed.class)
             .put(Rabbit.class, GlowRabbit.class)
             .put(Sheep.class, GlowSheep.class)
             .put(Shulker.class, GlowShulker.class)

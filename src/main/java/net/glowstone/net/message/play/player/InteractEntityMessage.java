@@ -9,8 +9,11 @@ import org.bukkit.inventory.EquipmentSlot;
 @RequiredArgsConstructor
 public final class InteractEntityMessage implements Message {
 
-    private final int id, action;
-    private final float targetX, targetY, targetZ;
+    private final int id;
+    private final int action;
+    private final float targetX;
+    private final float targetY;
+    private final float targetZ;
     private final int hand; // 0 = main hand, 1 = off hand
 
     public InteractEntityMessage(int id, int action) {

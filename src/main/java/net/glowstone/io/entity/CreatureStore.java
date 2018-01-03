@@ -14,10 +14,12 @@ abstract class CreatureStore<T extends GlowCreature> extends LivingEntityStore<T
         super(clazz, type);
     }
 
+    @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
     }
 
+    @Override
     public void save(T entity, CompoundTag tag) {
         super.save(entity, tag);
     }

@@ -40,7 +40,8 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
                 return; // silently ignore parse data in PING protocol
             } catch (Exception ex) {
                 if (protocol == ProtocolType.LOGIN) {
-                    GlowServer.logger.log(Level.SEVERE, "Error parsing proxy data for " + session, ex);
+                    GlowServer.logger.log(Level.SEVERE,
+                            "Error parsing proxy data for " + session, ex);
                     session.disconnect("Failed to parse proxy data.");
                 }
                 return; // silently ignore parse data in PING protocol

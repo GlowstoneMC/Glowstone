@@ -27,6 +27,11 @@ public class GlowVillager extends GlowAgeable implements Villager {
     private boolean willing;
     private int careerLevel;
 
+    /**
+     * Creates a villager with a random profession.
+     *
+     * @param location the location
+     */
     public GlowVillager(Location location) {
         super(location, EntityType.VILLAGER, 20);
         setProfession(

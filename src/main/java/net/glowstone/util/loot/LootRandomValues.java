@@ -19,12 +19,23 @@ public class LootRandomValues {
     private final Optional<String> reflectiveCount;
     private final Map<Integer, Double> probabilities = new HashMap<>();
 
+    /**
+     * Creates an instance for a given range.
+     *
+     * @param min the minimum number
+     * @param max the maximum number
+     */
     public LootRandomValues(int min, int max) {
         this.min = Optional.of(min);
         this.max = Optional.of(max);
         this.reflectiveCount = Optional.empty();
     }
 
+    /**
+     * Reads an instance from its JSON form.
+     *
+     * @param object a LootRandomValues instance in JSON form
+     */
     public LootRandomValues(JSONObject object) {
         if (!object.containsKey("count")) {
             this.min = Optional.empty();

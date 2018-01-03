@@ -9,6 +9,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class SetIdleTimeoutCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public SetIdleTimeoutCommand() {
         super("setidletimeout", "Sets the time before idle players are kicked from the server.",
             "/setidletimeout <Minutes until kick>", Collections.emptyList());

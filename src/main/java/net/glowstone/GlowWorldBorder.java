@@ -40,12 +40,16 @@ public class GlowWorldBorder implements WorldBorder {
     }
 
     /**
-     * Creates a {@link WorldBorderMessage} containing information to initialize the world border on the client-side.
+     * Creates a {@link WorldBorderMessage} containing information to initialize the world border on
+     * the client-side.
      *
      * @return a new {@link WorldBorderMessage} for this world border.
      */
     public WorldBorderMessage createMessage() {
-        return new WorldBorderMessage(WorldBorderMessage.Action.INITIALIZE, center.getX(), center.getZ(), size, futureSize, time * 1000, 29999984, warningTime, warningDistance);
+        return new WorldBorderMessage(
+                WorldBorderMessage.Action.INITIALIZE, center.getX(), center.getZ(),
+                size, futureSize, time * 1000, 29999984,
+                warningTime, warningDistance);
     }
 
     /**
@@ -105,7 +109,8 @@ public class GlowWorldBorder implements WorldBorder {
         step = (size - this.size) / (double) ticks;
         futureSize = size;
         time = seconds;
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.LERP_SIZE, this.size, futureSize, time * 1000));
+        broadcast(new WorldBorderMessage(
+                WorldBorderMessage.Action.LERP_SIZE, this.size, futureSize, time * 1000));
     }
 
     @Override
@@ -116,7 +121,8 @@ public class GlowWorldBorder implements WorldBorder {
     @Override
     public void setCenter(Location location) {
         center = location.clone();
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_CENTER, center.getX(), center.getZ()));
+        broadcast(new WorldBorderMessage(
+                WorldBorderMessage.Action.SET_CENTER, center.getX(), center.getZ()));
     }
 
     @Override
@@ -170,7 +176,8 @@ public class GlowWorldBorder implements WorldBorder {
     public boolean isInside(Location location) {
         Location max = center.clone().add(size / 2, 0, size / 2);
         Location min = center.clone().subtract(size / 2, 0, size / 2);
-        return location.getX() <= max.getX() && location.getZ() <= max.getZ() && location.getX() >= min.getX() && location.getZ() >= min.getZ();
+        return location.getX() <= max.getX() && location.getZ() <= max.getZ()
+                && location.getX() >= min.getX() && location.getZ() >= min.getZ();
     }
 
     /**

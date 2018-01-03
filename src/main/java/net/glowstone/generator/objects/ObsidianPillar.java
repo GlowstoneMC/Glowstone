@@ -9,6 +9,7 @@ import org.bukkit.entity.EntityType;
 
 public class ObsidianPillar implements TerrainObject {
 
+    @Override
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         if (!world.getBlockAt(sourceX, sourceY, sourceZ).isEmpty()
                 || world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType()
