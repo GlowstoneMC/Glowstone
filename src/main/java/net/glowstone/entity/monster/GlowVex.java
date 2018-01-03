@@ -10,6 +10,11 @@ public class GlowVex extends GlowMonster implements Vex {
 
     private int lifeTicks;
 
+    /**
+     * Creates a vex with a random lifespan.
+     *
+     * @param loc the location
+     */
     public GlowVex(Location loc) {
         super(loc, EntityType.VEX, 14);
         ThreadLocalRandom random = ThreadLocalRandom.current();

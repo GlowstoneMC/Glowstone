@@ -43,7 +43,7 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                 switch (readableBytes) {
                     case 0:
                         sendByteBuf(channelHandlerContext, responseToByteBuf(channelHandlerContext,
-                            String.format("%s\u00a7%d\u00a7%d", legacyPingEvent.getMotd(),
+                            String.format("%s§%d§%d", legacyPingEvent.getMotd(),
                                 legacyPingEvent.getNumPlayers(), legacyPingEvent.getMaxPlayers())));
                         legacyPingProtocol = true;
                         break;
@@ -51,7 +51,7 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                         if (bytebuf.readByte() == (byte) 0x01) {
                             sendByteBuf(channelHandlerContext,
                                 responseToByteBuf(channelHandlerContext, String
-                                    .format("\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d",
+                                    .format("§1\0%d\0%s\0%s\0%d\0%d",
                                         GlowServer.PROTOCOL_VERSION, GlowServer.GAME_VERSION,
                                         legacyPingEvent.getMotd(), legacyPingEvent.getNumPlayers(),
                                         legacyPingEvent.getMaxPlayers())));
@@ -74,7 +74,7 @@ public class LegacyPingHandler extends ChannelInboundHandlerAdapter {
                                 && bytebuf.readableBytes() == 0) {
                                 sendByteBuf(channelHandlerContext,
                                     responseToByteBuf(channelHandlerContext, String
-                                        .format("\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d",
+                                        .format("§1\0%d\0%s\0%s\0%d\0%d",
                                             GlowServer.PROTOCOL_VERSION, GlowServer.GAME_VERSION,
                                             legacyPingEvent.getMotd(),
                                             legacyPingEvent.getNumPlayers(),

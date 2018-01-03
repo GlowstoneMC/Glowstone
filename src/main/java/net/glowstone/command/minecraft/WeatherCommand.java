@@ -15,6 +15,9 @@ public class WeatherCommand extends VanillaCommand {
 
     private static final List<String> WEATHER = Arrays.asList("clear", "rain", "thunder");
 
+    /**
+     * Creates the instance for this command.
+     */
     public WeatherCommand() {
         super("weather", "Changes the weather in the world.",
             "/weather <clear|rain|thunder> [duration in seconds]", Collections.emptyList());

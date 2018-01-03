@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SetPassengerMessage implements Message {
 
-    private final int entityID;
+    private final int entityId;
     private final int[] passengers;
 }

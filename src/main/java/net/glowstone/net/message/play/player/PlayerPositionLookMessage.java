@@ -8,9 +8,22 @@ import org.bukkit.Location;
 @EqualsAndHashCode(callSuper = true)
 public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
 
-    private final double x, y, z;
-    private final float yaw, pitch;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final float yaw;
+    private final float pitch;
 
+    /**
+     * Creates a message to update a player's location and facing direction.
+     *
+     * @param x the player's X coordinate
+     * @param y the player's Y coordinate
+     * @param z the player's Z coordinate
+     * @param yaw the yaw angle
+     * @param pitch the pitch angle
+     * @param onGround whether the player is on the ground
+     */
     public PlayerPositionLookMessage(boolean onGround, double x, double y, double z, float yaw,
         float pitch) {
         super(onGround);
@@ -37,14 +50,14 @@ public final class PlayerPositionLookMessage extends PlayerUpdateMessage {
 
     @Override
     public String toString() {
-        return "PlayerPositionLookMessage(" +
-            "onGround=" + isOnGround() +
-            ", x=" + x +
-            ", y=" + y +
-            ", z=" + z +
-            ", yaw=" + yaw +
-            ", pitch=" + pitch +
-            ')';
+        return "PlayerPositionLookMessage("
+            + "onGround=" + isOnGround()
+            + ", x=" + x
+            + ", y=" + y
+            + ", z=" + z
+            + ", yaw=" + yaw
+            + ", pitch=" + pitch
+            + ')';
     }
 
 }

@@ -23,6 +23,9 @@ public class MegaTaigaPopulator extends TaigaPopulator {
 
     protected final StoneBoulderDecorator stoneBoulderDecorator = new StoneBoulderDecorator();
 
+    /**
+     * Creates a populator specialized for the Mega Taiga and Mega Taiga Hills biomes.
+     */
     public MegaTaigaPopulator() {
         treeDecorator.setTrees(TREES);
         tallGrassDecorator.setAmount(7);

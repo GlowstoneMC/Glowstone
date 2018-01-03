@@ -15,7 +15,7 @@ import net.glowstone.net.GlowSession;
 public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
 
     /**
-     * The associated session
+     * The associated session.
      */
     private final AtomicReference<GlowSession> session = new AtomicReference<>(null);
     private final GameServer connectionManager;
@@ -23,7 +23,8 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
     /**
      * Creates a new network event handler.
      *
-     * @param connectionManager The connection manager to manage connections for this message handler.
+     * @param connectionManager The connection manager to manage connections for this message
+     *         handler.
      */
     public MessageHandler(GameServer connectionManager) {
         this.connectionManager = connectionManager;

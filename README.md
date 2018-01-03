@@ -53,7 +53,7 @@ For a current list of features, [check the wiki](https://github.com/GlowstoneMC/
 ## Downloads
 [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone)
 
-If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**. The `glowstone.jar` artifact will be under `tmp/circle-artifacts.#######/`.
+If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**.
 
 ## Building
 

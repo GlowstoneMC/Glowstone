@@ -38,6 +38,9 @@ public class OverworldPopulator extends BlockPopulator {
 
     private final Map<Biome, BiomePopulator> biomePopulators = new HashMap<>();
 
+    /**
+     * Creates a populator with biome populators for all vanilla overworld biomes.
+     */
     public OverworldPopulator() {
         registerBiomePopulator(new BiomePopulator()); // defaults applied to all biomes
         registerBiomePopulator(new PlainsPopulator());

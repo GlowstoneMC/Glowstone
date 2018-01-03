@@ -20,6 +20,11 @@ public class LootingManager {
 
     private static final Map<EntityType, EntityLootTable> entities = new HashMap<>();
 
+    /**
+     * Registers the built-in loot data.
+     *
+     * @throws Exception if some loot data is missing or invalid
+     */
     public static void load() throws Exception {
         String baseDir = "builtin/loot/entities/";
         register(EntityType.BAT, baseDir + "bat.json");
@@ -90,6 +95,12 @@ public class LootingManager {
         }
     }
 
+    /**
+     * Returns items and experience that the given entity drops when killed.
+     *
+     * @param entity the entity
+     * @return a {@link LootData} instance whose contents the entity can drop
+     */
     public static LootData generate(GlowLivingEntity entity) {
         if (!entities.containsKey(entity.getType())) {
             return new LootData(InventoryUtil.NO_ITEMS_COLLECTION, 0);

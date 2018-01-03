@@ -21,6 +21,13 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     protected final ServerBootstrap bootstrap;
     protected Channel channel;
 
+    /**
+     * Creates an instance for the specified server.
+     *
+     * @param server the associated GlowServer
+     * @param latch The countdown latch used during server startup to wait for network server
+     *         binding.
+     */
     public GlowSocketServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
         boolean epoll = Epoll.isAvailable();
@@ -39,6 +46,7 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
         return channel;
     }
 
+    @Override
     public ChannelFuture bind(InetSocketAddress address) {
         ChannelFuture cfuture = this.bootstrap.bind(address).addListener(future -> {
             if (future.isSuccess()) {
@@ -51,6 +59,7 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
         return cfuture;
     }
 
+    @Override
     public void shutdown() {
         channel.close();
         bootstrap.config().childGroup().shutdownGracefully();

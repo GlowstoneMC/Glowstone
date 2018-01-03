@@ -25,6 +25,9 @@ public class PlainsPopulator extends BiomePopulator {
         FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK};
     private final OctaveGenerator noiseGen;
 
+    /**
+     * Creates a populator specialized for plains.
+     */
     public PlainsPopulator() {
         flowerDecorator.setAmount(0);
         tallGrassDecorator.setAmount(0);

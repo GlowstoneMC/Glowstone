@@ -113,9 +113,10 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         FURNACE(Powered.class, EntityType.MINECART_FURNACE, PoweredMinecart.class, Powered
                 ::new),
         TNT(Explosive.class, EntityType.MINECART_TNT, ExplosiveMinecart.class, Explosive::new),
-        SPAWNER(Spawner.class, EntityType.MINECART_MOB_SPAWNER, SpawnerMinecart.class, Spawner::new),
+        SPAWNER(Spawner.class, EntityType.MINECART_MOB_SPAWNER, SpawnerMinecart.class,
+                Spawner::new),
         HOPPER(Hopper.class, EntityType.MINECART_HOPPER, HopperMinecart.class, Hopper::new),
-        COMMAND(Command.class, EntityType.MINECART_COMMAND, CommandMinecart.class, Command::new); // todo
+        COMMAND(Command.class, EntityType.MINECART_COMMAND, CommandMinecart.class, Command::new);
 
         @Getter
         private final Class<? extends GlowMinecart> minecartClass;
@@ -164,6 +165,11 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
         private final Inventory inventory;
 
+        /**
+         * Creates a minecart with a chest.
+         *
+         * @param location the location.
+         */
         public Storage(Location location) {
             super(location, MinecartType.CHEST);
             inventory = new GlowInventory(this, InventoryType.CHEST,
@@ -211,6 +217,11 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         @Setter
         private boolean enabled = true;
 
+        /**
+         * Creates a minecart with a hopper.
+         *
+         * @param location the location
+         */
         public Hopper(Location location) {
             super(location, MinecartType.HOPPER);
             inventory = new GlowInventory(this, InventoryType.HOPPER,
