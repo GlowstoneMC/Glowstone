@@ -76,10 +76,11 @@ public final class WindowClickLogic {
                     return ClickType.CONTROL_DROP;
                 }
                 break;
-
+            case 5: // drag
+                // TODO: implement this?
+                break;
             case 6:
                 return ClickType.DOUBLE_CLICK;
-            case 5: // drag
             default:
                 return ClickType.UNKNOWN;
         }
