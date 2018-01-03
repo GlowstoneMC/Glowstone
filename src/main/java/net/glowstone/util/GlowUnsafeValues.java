@@ -16,7 +16,8 @@ import org.bukkit.util.StringUtil;
  *
  * <p>In CraftBukkit, this uses Mojang identifiers, but here we just stick to Bukkit's.
  *
- * <p>The implementation may be a bit sketchy but this isn't a problem since the behavior of this class isn't strictly specified.
+ * <p>The implementation may be a bit sketchy but this isn't a problem since the behavior of this
+ * class isn't strictly specified.
  */
 @Deprecated
 public final class GlowUnsafeValues implements UnsafeValues {
@@ -63,7 +64,8 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
-    public List<String> tabCompleteInternalStatisticOrAchievementName(String token, List<String> completions) {
+    public List<String> tabCompleteInternalStatisticOrAchievementName(
+            String token, List<String> completions) {
         Statistic[] stats = Statistic.values();
         Achievement[] achievements = Achievement.values();
         List<String> names = new ArrayList<>(stats.length + achievements.length);

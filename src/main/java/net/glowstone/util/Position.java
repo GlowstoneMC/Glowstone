@@ -31,9 +31,13 @@ import org.bukkit.util.BlockVector;
 public final class Position {
 
     /**
-     * Common Rotation values used blocks such as Signs, Skulls, and Banners. The order relates to the data/tag that is applied to the block on placing.
+     * Common Rotation values used blocks such as Signs, Skulls, and Banners. The order relates to
+     * the data/tag that is applied to the block on placing.
      */
-    public static final List<BlockFace> ROTATIONS = ImmutableList.of(NORTH, NORTH_NORTH_EAST, NORTH_EAST, EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST, SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST, SOUTH_WEST, WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
+    public static final List<BlockFace> ROTATIONS = ImmutableList
+            .of(NORTH, NORTH_NORTH_EAST, NORTH_EAST, EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST,
+                    SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST, SOUTH_WEST,
+                    WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
 
     private Position() {
     }
@@ -76,7 +80,8 @@ public final class Position {
      * @return A boolean.
      */
     public static boolean hasMoved(Location first, Location second) {
-        return first.getX() != second.getX() || first.getY() != second.getY() || first.getZ() != second.getZ();
+        return first.getX() != second.getX() || first.getY() != second.getY()
+                || first.getZ() != second.getZ();
     }
 
     /**
@@ -155,7 +160,9 @@ public final class Position {
      * @return the serialized position value
      */
     public static long getPosition(BlockVector vector) {
-        return (((long) vector.getBlockX() & 0x3FFFFFF) << 38) | (((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ() & 0x3FFFFFF);
+        return (((long) vector.getBlockX() & 0x3FFFFFF) << 38) | (
+                ((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ()
+                & 0x3FFFFFF);
     }
 
     /**

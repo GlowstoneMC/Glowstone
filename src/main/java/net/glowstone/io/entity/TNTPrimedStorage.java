@@ -1,23 +1,23 @@
 package net.glowstone.io.entity;
 
-import net.glowstone.entity.GlowTNTPrimed;
+import net.glowstone.entity.GlowTntPrimed;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-class TNTPrimedStorage extends EntityStore<GlowTNTPrimed> {
+class TNTPrimedStorage extends EntityStore<GlowTntPrimed> {
 
     public TNTPrimedStorage() {
-        super(GlowTNTPrimed.class, EntityType.PRIMED_TNT);
+        super(GlowTntPrimed.class, EntityType.PRIMED_TNT);
     }
 
     @Override
-    public GlowTNTPrimed createEntity(Location location, CompoundTag compound) {
-        return new GlowTNTPrimed(location, null);
+    public GlowTntPrimed createEntity(Location location, CompoundTag compound) {
+        return new GlowTntPrimed(location, null);
     }
 
     @Override
-    public void load(GlowTNTPrimed entity, CompoundTag tag) {
+    public void load(GlowTntPrimed entity, CompoundTag tag) {
         super.load(entity, tag);
 
         if (tag.isByte("Fuse")) {
@@ -26,7 +26,7 @@ class TNTPrimedStorage extends EntityStore<GlowTNTPrimed> {
     }
 
     @Override
-    public void save(GlowTNTPrimed entity, CompoundTag tag) {
+    public void save(GlowTntPrimed entity, CompoundTag tag) {
         super.save(entity, tag);
 
         tag.putByte("Fuse", entity.getFuseTicks());

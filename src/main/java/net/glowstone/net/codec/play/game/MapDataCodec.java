@@ -20,7 +20,6 @@ public final class MapDataCodec implements Codec<MapDataMessage> {
     @Override
     public ByteBuf encode(ByteBuf buf, MapDataMessage message) throws IOException {
         List<Icon> icons = message.getIcons();
-        Section section = message.getSection();
 
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getScale());
@@ -31,7 +30,7 @@ public final class MapDataCodec implements Codec<MapDataMessage> {
             buf.writeByte(icon.x);
             buf.writeByte(icon.y);
         }
-
+        Section section = message.getSection();
         if (section == null) {
             buf.writeByte(0);
         } else {

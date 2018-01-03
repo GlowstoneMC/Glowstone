@@ -51,7 +51,13 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         this.basePotionData = potion.getBasePotionData();
     }
 
-    public static PotionEffect fromNBT(CompoundTag tag) {
+    /**
+     * Reads a {@link PotionEffect} from an NBT compound tag.
+     *
+     * @param tag a potion effect NBT compound tag
+     * @return {@code tag} as a {@link PotionEffect}
+     */
+    public static PotionEffect fromNbt(CompoundTag tag) {
         PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
         int duration = tag.getInt("Duration");
         int amplifier = tag.getByte("Amplifier");
@@ -61,7 +67,13 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         return new PotionEffect(type, duration, amplifier, ambient, particles);
     }
 
-    public static CompoundTag toNBT(PotionEffect effect) {
+    /**
+     * Converts a {@link PotionEffect} to an NBT compound tag.
+     *
+     * @param effect the potion effect
+     * @return {@code effect} as an NBT compound tag
+     */
+    public static CompoundTag toNbt(PotionEffect effect) {
         CompoundTag tag = new CompoundTag();
 
         tag.putByte("Id", effect.getType().getId());
@@ -101,7 +113,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         super.writeNbt(tag);
 
         if (hasCustomEffects()) {
-            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNBT)
+            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNbt)
                 .collect(Collectors.toList());
             tag.putCompoundList("CustomEffects", customEffects);
         }
@@ -118,7 +130,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (tag.isList("CustomEffects", TagType.COMPOUND)) {
             List<CompoundTag> customEffects = tag.getCompoundList("CustomEffects");
             for (CompoundTag effect : customEffects) {
-                addCustomEffect(fromNBT(effect), true);
+                addCustomEffect(fromNbt(effect), true);
             }
         }
         if (tag.isString("Potion")) {
@@ -214,7 +226,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     }
 
     /**
-     * Converts the PotionData of this item meta to a Potion ID string
+     * Converts the PotionData of this item meta to a Potion ID string.
      *
      * @return the Potion ID string
      */
@@ -236,7 +248,8 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
      */
     private PotionData dataFromString(String string) {
         PotionType type;
-        boolean extended = false, upgraded = false;
+        boolean extended = false;
+        boolean upgraded = false;
         if (string.startsWith("minecraft:")) {
             string = string.replace("minecraft:", "");
         }
@@ -271,7 +284,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         }
 
         /**
-         * Converts a Vanilla Potion ID to an equivalent Bukkit PotionType
+         * Converts a Vanilla Potion ID to an equivalent Bukkit PotionType.
          *
          * @param name the Vanilla Potion ID
          * @return the PotionType equivalent
@@ -286,7 +299,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         }
 
         /**
-         * Converts a Bukkit PotionType to an equivalent Vanilla Potion ID
+         * Converts a Bukkit PotionType to an equivalent Vanilla Potion ID.
          *
          * @param type the Bukkit PotionType
          * @return the Vanilla Potion ID equivalent

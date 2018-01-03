@@ -20,6 +20,11 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     private Note note;
 
+    /**
+     * Creates the instance for a note block.
+     *
+     * @param block the note block
+     */
     public GlowNoteBlock(GlowBlock block) {
         super(block);
         if (block.getType() != Material.NOTE_BLOCK) {

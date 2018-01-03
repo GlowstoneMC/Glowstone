@@ -36,16 +36,24 @@ public final class GlowTeam implements Team {
     private boolean friendlyFire;
     private boolean seeInvisible = true;
 
+    /**
+     * Creates a team.
+     *
+     * @param scoreboard the scoreboard for this team's scores
+     * @param name the team name
+     */
     public GlowTeam(GlowScoreboard scoreboard, String name) {
         this.scoreboard = scoreboard;
         this.name = name;
         displayName = name;
     }
 
+    @Override
     public Scoreboard getScoreboard() {
         return scoreboard;
     }
 
+    @Override
     public void unregister() throws IllegalStateException {
         checkValid();
         scoreboard.removeTeam(this);
@@ -75,16 +83,19 @@ public final class GlowTeam implements Team {
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    @Override
     public String getName() throws IllegalStateException {
         checkValid();
         return name;
     }
 
+    @Override
     public String getDisplayName() throws IllegalStateException {
         checkValid();
         return displayName;
     }
 
+    @Override
     public void setDisplayName(String displayName)
         throws IllegalStateException, IllegalArgumentException {
         checkNotNull(displayName, "Display name cannot be null");
@@ -93,11 +104,13 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    @Override
     public String getPrefix() throws IllegalStateException {
         checkValid();
         return prefix;
     }
 
+    @Override
     public void setPrefix(String prefix) throws IllegalStateException, IllegalArgumentException {
         checkNotNull(prefix, "Prefix cannot be null");
         checkValid();
@@ -105,11 +118,13 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    @Override
     public String getSuffix() throws IllegalStateException {
         checkValid();
         return suffix;
     }
 
+    @Override
     public void setSuffix(String suffix) throws IllegalStateException, IllegalArgumentException {
         checkNotNull(suffix, "Suffix cannot be null");
         checkValid();
@@ -117,35 +132,39 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    @Override
     public boolean allowFriendlyFire() throws IllegalStateException {
         checkValid();
         return friendlyFire;
     }
 
+    @Override
     public void setAllowFriendlyFire(boolean enabled) throws IllegalStateException {
         checkValid();
         friendlyFire = enabled;
         update();
     }
 
+    @Override
     public boolean canSeeFriendlyInvisibles() throws IllegalStateException {
         checkValid();
         return seeInvisible;
     }
 
+    @Override
     public void setCanSeeFriendlyInvisibles(boolean enabled) throws IllegalStateException {
         checkValid();
         seeInvisible = enabled;
         update();
     }
 
-    @Deprecated
+    @Override
     public NameTagVisibility getNameTagVisibility() throws IllegalStateException {
         checkValid();
         return NameTagVisibility.valueOf(nameTagVisibility.name());
     }
 
-    @Deprecated
+    @Override
     public void setNameTagVisibility(NameTagVisibility visibility) throws IllegalStateException {
         checkValid();
         nameTagVisibility = OptionStatus.valueOf(visibility.name());
@@ -158,6 +177,13 @@ public final class GlowTeam implements Team {
         return NameTagVisibility.valueOf(deathMessageVisibility.name());
     }
 
+    /**
+     * Sets to whom death messages are visible.
+     *
+     * @param deathMessageVisibility the new death message visibility
+     * @throws IllegalStateException if this team is not registered with a scoreboard
+     * @throws IllegalArgumentException if {@code deathMessageVisibility} is null
+     */
     @Deprecated
     public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility)
         throws IllegalStateException, IllegalArgumentException {

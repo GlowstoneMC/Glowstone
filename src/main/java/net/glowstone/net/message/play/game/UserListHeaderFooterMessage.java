@@ -7,6 +7,7 @@ import net.glowstone.util.TextMessage;
 @Data
 public final class UserListHeaderFooterMessage implements Message {
 
-    private final TextMessage header, footer;
+    private final TextMessage header;
+    private final TextMessage footer;
 
 }

@@ -7,7 +7,8 @@ import java.util.Arrays;
 /**
  * An array of nibbles (4-bit values) stored efficiently as a byte array of half the size.
  *
- * <p>The even indices are stored in the least significant nibble and the odd indices in the most significant bits. For example, [1 5 8 15] is stored as [0x51 0xf8].
+ * <p>The even indices are stored in the least significant nibble and the odd indices in the most
+ * significant bits. For example, [1 5 8 15] is stored as [0x51 0xf8].
  */
 public final class NibbleArray {
 
@@ -24,7 +25,8 @@ public final class NibbleArray {
     }
 
     /**
-     * Construct a new NibbleArray with the given size in nibble, filled with the specified nibble value.
+     * Construct a new NibbleArray with the given size in nibble, filled with the specified nibble
+     * value.
      *
      * @param size The number of nibbles in the array.
      * @param value The value to fill the array with.
@@ -108,7 +110,8 @@ public final class NibbleArray {
     }
 
     /**
-     * Get the raw bytes of this nibble array. Modifying the returned array will modify the internal representation of this nibble array.
+     * Get the raw bytes of this nibble array. Modifying the returned array will modify the internal
+     * representation of this nibble array.
      *
      * @return The raw bytes.
      */
@@ -123,7 +126,9 @@ public final class NibbleArray {
      * @throws IllegalArgumentException If source is not the correct length.
      */
     public void setRawData(byte... source) {
-        checkArgument(source.length == data.length, "expected byte array of length " + data.length + ", not " + source.length);
+        checkArgument(
+                source.length == data.length,
+                "expected byte array of length " + data.length + ", not " + source.length);
         System.arraycopy(source, 0, data, 0, source.length);
     }
 

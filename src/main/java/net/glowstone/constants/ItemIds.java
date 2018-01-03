@@ -539,7 +539,8 @@ public final class ItemIds {
     }
 
     /**
-     * Verify that a given material is a valid item. All non-blocks are valid items, but some blocks cannot be represented as items.
+     * Verify that a given material is a valid item. All non-blocks are valid items, but some blocks
+     * cannot be represented as items.
      *
      * @param material The material to verify.
      * @return true if the material is a valid item.
@@ -549,7 +550,8 @@ public final class ItemIds {
     }
 
     /**
-     * Convert an ItemStack which may have a type that is unrepresentable as an item to one that does, or to an empty stack if this is not possible.
+     * Convert an ItemStack which may have a type that is unrepresentable as an item to one that
+     * does, or to an empty stack if this is not possible.
      *
      * @param stack The stack to sanitize.
      * @return The sanitized stack, or null.
