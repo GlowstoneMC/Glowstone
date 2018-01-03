@@ -138,9 +138,9 @@ public final class NbtSerialization {
         }
         if (world == null && compound.isInt("Dimension")) {
             int dim = compound.getInt("Dimension");
-            for (World sWorld : server.getWorlds()) {
-                if (sWorld.getEnvironment().getId() == dim) {
-                    world = sWorld;
+            for (World serverWorld : server.getWorlds()) {
+                if (serverWorld.getEnvironment().getId() == dim) {
+                    world = serverWorld;
                     break;
                 }
             }
@@ -155,10 +155,10 @@ public final class NbtSerialization {
      * @param compound The tag to write to.
      */
     public static void writeWorld(World world, CompoundTag compound) {
-        UUID worldUUID = world.getUID();
+        UUID worldUuid = world.getUID();
         // world UUID used by Bukkit and code above
-        compound.putLong("WorldUUIDMost", worldUUID.getMostSignificantBits());
-        compound.putLong("WorldUUIDLeast", worldUUID.getLeastSignificantBits());
+        compound.putLong("WorldUUIDMost", worldUuid.getMostSignificantBits());
+        compound.putLong("WorldUUIDLeast", worldUuid.getLeastSignificantBits());
         // leave a Dimension value for possible Vanilla use
         compound.putInt("Dimension", world.getEnvironment().getId());
     }
@@ -167,7 +167,9 @@ public final class NbtSerialization {
      * Read a Location from the "Pos" and "Rotation" children of a tag.
      *
      * <p>If "Pos" is absent or invalid, null is returned.
-     * <p>If "Rotation" is absent or invalid, it is skipped and a location without rotation is returned.
+     *
+     * <p>If "Rotation" is absent or invalid, it is skipped and a location without rotation is
+     * returned.
      *
      * @param world The world of the location (see readWorld).
      * @param tag The tag to read from.
