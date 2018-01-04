@@ -17,8 +17,9 @@ public class ItemFishRaw extends ItemFood {
             case 2:
             case 3:
                 return 0.2f;
+            default:
+                throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
         }
-        throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
     }
 
     @Override
@@ -31,8 +32,9 @@ public class ItemFishRaw extends ItemFood {
             case 2:
             case 3:
                 return 1;
+            default:
+                throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
         }
-        throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
     }
 
     @Override

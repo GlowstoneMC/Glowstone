@@ -28,15 +28,19 @@ public class ItemBoat extends ItemType {
     }
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        // Two cases are handled here: Either the player clicked on a block on the land or beneath water
+    public void rightClickBlock(
+            GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
+            Vector clickedLoc, EquipmentSlot hand) {
+        // Two cases are handled here: Either the player clicked on a block on the land or beneath
+        // water
         placeBoat(player);
     }
 
     private void placeBoat(GlowPlayer player) {
         Block targetBlock = player.getTargetBlock((Set<Material>) null, 5);
 
-        if (targetBlock != null && !targetBlock.isEmpty() && targetBlock.getRelative(BlockFace.UP).isEmpty()) {
+        if (targetBlock != null && !targetBlock.isEmpty()
+                && targetBlock.getRelative(BlockFace.UP).isEmpty()) {
             Location location = targetBlock.getRelative(BlockFace.UP).getLocation();
             // center boat on cursor location
             location.add(0.6875f, 0, 0.6875f);
