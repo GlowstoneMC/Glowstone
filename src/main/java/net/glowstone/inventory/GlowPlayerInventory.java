@@ -57,6 +57,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      */
     private GlowHumanEntity owner;
 
+    /**
+     * Creates the instance for the given player's inventory.
+     *
+     * @param owner the player who owns this inventory
+     */
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
         // 36 = 4 rows of 9
@@ -90,6 +95,11 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return crafting;
     }
 
+    /**
+     * Sets which hotbar slot is the main-hand item.
+     *
+     * @param slot the slot number, starting with 0 (1 less than the default keyboard shortcut)
+     */
     public void setRawHeldItemSlot(int slot) {
         if (slot < 0 || slot > 8) {
             throw new IllegalArgumentException(slot + " not in range 0..8");
@@ -138,10 +148,12 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             if (top.getType().equals(InventoryType.FURNACE)) {
                 CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
                 if (cm.getFurnaceRecipe(clickedItem) != null) {
-                    // move items are be burnable to the input slot  TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?
+                    // move items are be burnable to the input slot
+                    // TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?
                     clickedItem = top.tryToFillSlots(clickedItem, 0, -1);
                 } else if (cm.isFuel(clickedItem.getType())) {
-                    // move fuel items direct to fuel slot   TODO: Use of variable (FUEL_SLOT) instead of hard coded value ?
+                    // move fuel items direct to fuel slot
+                    // TODO: Use of variable (FUEL_SLOT) instead of hard coded value ?
                     clickedItem = top.tryToFillSlots(clickedItem, 1, -1);
                 } else {
                     // switch them between hotbar and main inventory depending on where they are now
@@ -229,6 +241,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             case HEAD:
                 setHelmet(item);
                 break;
+            default:
+                // TODO: should this raise a warning?
+                // do nothing
         }
     }
 
@@ -378,7 +393,17 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return owner.getLocation();
     }
 
+    /**
+     * Remove all matching items from the inventory.
+     *
+     * @param type the item to remove, or null to remove everything
+     * @param data the data value to match on, or null to match all data values
+     * @return the number of items (not stacks) removed
+     */
     public int clear(Material type, MaterialData data) {
+        if (type == Material.AIR) {
+            return 0;
+        }
         int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
