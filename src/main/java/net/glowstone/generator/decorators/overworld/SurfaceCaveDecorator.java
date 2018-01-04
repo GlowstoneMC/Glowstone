@@ -22,15 +22,17 @@ public class SurfaceCaveDecorator extends BlockDecorator {
             return;
         }
         GlowChunk chunk = (GlowChunk) c;
-        final int startCx = random.nextInt(16), startCz = random.nextInt(16), startY = chunk
-            .getHeight(startCx, startCz);
+        final int startCx = random.nextInt(16);
+        final int startCz = random.nextInt(16);
+        final int startY = chunk.getHeight(startCx, startCz);
         final GlowBlock startBlock = chunk.getBlock(startCx, startY, startCz);
         if (startY > 128) {
             return;
         }
         PerlinOctaveGenerator octaves = new PerlinOctaveGenerator(random, 3, 4, 2, 4);
-        int cX = c.getX() << 4, cZ = c.getZ() << 4;
-        double[] noise = octaves.getFractalBrownianMotion(cX, cZ, 0, 0.5D, 0.2D);
+        int cx = c.getX() << 4;
+        int cz = c.getZ() << 4;
+        double[] noise = octaves.getFractalBrownianMotion(cx, cz, 0, 0.5D, 0.2D);
         double[] angles = new double[noise.length];
         for (int i = 0; i < noise.length; i++) {
             angles[i] = 360.0 * noise[i];
@@ -62,13 +64,16 @@ public class SurfaceCaveDecorator extends BlockDecorator {
 
     private void caveAroundRay(GlowBlock block, Random random) {
         int radius = random.nextInt(2) + 2;
-        final int bX = block.getX(), bY = block.getY(), bZ = block.getZ();
-        for (int x = bX - radius; x <= bX + radius; x++) {
-            for (int y = bY - radius; y <= bY + radius; y++) {
-                for (int z = bZ - radius; z <= bZ + radius; z++) {
-                    double distance =
-                        (bX - x) * (bX - x) + (bY - y) * (bY - y) + (bZ - z) * (bZ - z);
-                    if (distance < radius * radius) {
+        final int blockX = block.getX();
+        final int blockY = block.getY();
+        final int blockZ = block.getZ();
+        for (int x = blockX - radius; x <= blockX + radius; x++) {
+            for (int y = blockY - radius; y <= blockY + radius; y++) {
+                for (int z = blockZ - radius; z <= blockZ + radius; z++) {
+                    double distanceSquared =
+                        (blockX - x) * (blockX - x) + (blockY - y) * (blockY - y)
+                                + (blockZ - z) * (blockZ - z);
+                    if (distanceSquared < radius * radius) {
                         GlowBlock pocket = block.getWorld().getBlockAt(x, y, z);
                         pocket.setType(Material.AIR);
                     }
