@@ -143,7 +143,8 @@ public class ItemType {
     // Actions
 
     /**
-     * Called when a player right-clicks in midair while holding this item.
+     * Called when a player right-clicks in midair while holding this item. Also called by default
+     * if rightClickBlock is not overridden.
      *
      * @param player The player
      * @param holding The ItemStack the player was holding
@@ -153,7 +154,7 @@ public class ItemType {
     }
 
     /**
-     * Get the context this item can be used in
+     * Get the context this item can be used in.
      *
      * @return context of the item, default is {{@link Context#BLOCK}}
      */
@@ -172,8 +173,11 @@ public class ItemType {
      */
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        if (placeAs != null && (placeAs.getContext() == Context.ANY || placeAs.getContext() == Context.BLOCK)) {
-            placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+        if (placeAs != null) {
+            Context context = placeAs.getContext();
+            if ((context == Context.ANY || context == Context.BLOCK)) {
+                placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            }
         }
     }
 
@@ -182,23 +186,24 @@ public class ItemType {
 
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
+        return getClass().getSimpleName()
+                + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
     }
 
     /**
-     * Context of the Items interaction
+     * Context of the Items interaction.
      */
     public enum Context {
         /**
-         * The item can only be used when clicking in the air
+         * The item can only be used when clicking in the air.
          */
         AIR,
         /**
-         * The item can only be used when clicking against a block
+         * The item can only be used when clicking against a block.
          */
         BLOCK,
         /**
-         * The item can be used on any click
+         * The item can be used on any click.
          */
         ANY
     }

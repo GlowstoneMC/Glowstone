@@ -35,7 +35,9 @@ public class ItemBucket extends ItemType {
     }
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+    public void rightClickBlock(
+            GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
+            Vector clickedLoc, EquipmentSlot hand) {
         clickBucket(player, holding);
     }
 
@@ -47,7 +49,8 @@ public class ItemBucket extends ItemType {
         BlockType targetBlockType = null;
         boolean validTarget = false;
 
-        // Find the next available non-air liquid block type which is collectible in a radius of 5 blocks
+        // Find the next available non-air liquid block type which is collectible in a radius of 5
+        // blocks
         while (itr.hasNext()) {
             previousTarget = target;
             target = itr.next();
