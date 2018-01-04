@@ -38,12 +38,14 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.BitSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.config.ServerConfig.Key;
 import org.bukkit.Bukkit;
@@ -51,40 +53,39 @@ import org.bukkit.Bukkit;
 /**
  * Interfaces with region files on the disk
  *
- * Region File Format
+ * <p><strong>Region File Format</strong>
  *
- * <p>Concept: The minimum unit of storage on hard drives is 4KB. 90% of Minecraft
- * chunks are smaller than 4KB. 99% are smaller than 8KB. Write a simple
- * container to store chunks in single files in runs of 4KB sectors.
+ * <p>Concept: The minimum unit of storage on hard drives is 4KB. 90% of Minecraft chunks are
+ * smaller than 4KB. 99% are smaller than 8KB. Write a simple container to store chunks in single
+ * files in runs of 4KB sectors.
  *
- * <p>Each region file represents a 32x32 group of chunks. The conversion from
- * chunk number to region number is floor(coord / 32): a chunk at (30, -3)
- * would be in region (0, -1), and one at (70, -30) would be at (3, -1).
- * Region files are named "r.x.z.data", where x and z are the region coordinates.
+ * <p>Each region file represents a 32x32 group of chunks. The conversion from chunk number to
+ * region number is floor(coord / 32): a chunk at (30, -3) would be in region (0, -1), and one at
+ * (70, -30) would be at (3, -1). Region files are named "r.x.z.data", where x and z are the region
+ * coordinates.
  *
- * <p>A region file begins with a 4KB header that describes where chunks are stored
- * in the file. A 4-byte big-endian integer represents sector offsets and sector
- * counts. The chunk offset for a chunk (x, z) begins at byte 4*(x+z*32) in the
- * file. The bottom byte of the chunk offset indicates the number of sectors the
- * chunk takes up, and the top 3 bytes represent the sector number of the chunk.
- * Given a chunk offset o, the chunk data begins at byte 4096*(o/256) and takes up
- * at most 4096*(o%256) bytes. A chunk cannot exceed 1MB in size. If a chunk
- * offset is 0, the corresponding chunk is not stored in the region file.
+ * <p>A region file begins with a 4KB header that describes where chunks are stored in the file. A
+ * 4-byte big-endian integer represents sector offsets and sector counts. The chunk offset for a
+ * chunk (x, z) begins at byte 4*(x+z*32) in the file. The bottom byte of the chunk offset indicates
+ * the number of sectors the chunk takes up, and the top 3 bytes represent the sector number of the
+ * chunk. Given a chunk offset o, the chunk data begins at byte 4096*(o/256) and takes up at most
+ * 4096*(o%256) bytes. A chunk cannot exceed 1MB in size. If a chunk offset is 0, the corresponding
+ * chunk is not stored in the region file.
  *
- * <p>Chunk data begins with a 4-byte big-endian integer representing the chunk data
- * length in bytes, not counting the length field. The length must be smaller than
- * 4096 times the number of sectors. The next byte is a version field, to allow
- * backwards-compatible updates to how chunks are encoded.
+ * <p>Chunk data begins with a 4-byte big-endian integer representing the chunk data length in
+ * bytes, not counting the length field. The length must be smaller than 4096 times the number of
+ * sectors. The next byte is a version field, to allow backwards-compatible updates to how chunks
+ * are encoded.
  *
- * <p>A version of 1 represents a gzipped NBT file.
- * The gzipped data is the chunk length - 1.
+ * <p>A version of 1 represents a gzipped NBT file. The gzipped data is the chunk length - 1.
  *
- * <p>A version of 2 represents a deflated (zlib compressed) NBT file.
- * The deflated data is the chunk length - 1.
+ * <p>A version of 2 represents a deflated (zlib compressed) NBT file. The deflated data is the
+ * chunk length - 1.
  */
 public class RegionFile {
 
-    private static final boolean COMPRESSION_ENABLED = ((GlowServer) Bukkit.getServer()).getConfig().getBoolean(Key.REGION_COMPRESSION);
+    private static final boolean COMPRESSION_ENABLED = ((GlowServer) Bukkit.getServer()).getConfig()
+            .getBoolean(Key.REGION_COMPRESSION);
 
     private static final byte VERSION_GZIP = 1;
     private static final byte VERSION_DEFLATE = 2;
@@ -100,14 +101,28 @@ public class RegionFile {
     private RandomAccessFile file;
     private BitSet sectorsUsed;
     private int totalSectors;
-    private int sizeDelta;
+    private final AtomicInteger sizeDelta = new AtomicInteger();
+    /**
+     * Returns the modification timestamp of the region file when it was first opened by this
+     * instance, or zero if this instance created the file. The timestamp is in milliseconds since
+     * the Unix epoch (see {@link File#lastModified}).
+     *
+     * @return the modification timestamp
+     */
+    @Getter
     private long lastModified;
 
+    /**
+     * Opens a region file for reading and writing, creating it if it doesn't exist.
+     *
+     * @param path the file path; must be in an existing folder
+     * @throws IOException if the file cannot be opened
+     */
     public RegionFile(File path) throws IOException {
         offsets = new int[SECTOR_INTS];
         chunkTimestamps = new int[SECTOR_INTS];
 
-        sizeDelta = 0;
+        sizeDelta.set(0);
 
         if (path.exists()) {
             lastModified = path.lastModified();
@@ -122,28 +137,29 @@ public class RegionFile {
             // fast path for new or region files under 4K
             file.write(emptySector);
             file.write(emptySector);
-            sizeDelta = 2 * SECTOR_BYTES;
+            sizeDelta.set(2 * SECTOR_BYTES);
         } else {
             // seek to the end to prepare for grows
             file.seek(initialLength);
             if (initialLength < 2 * SECTOR_BYTES) {
                 // if the file size is under 8KB, grow it
-                sizeDelta = 2 * SECTOR_BYTES - initialLength;
+                sizeDelta.set(2 * SECTOR_BYTES - initialLength);
                 GlowServer.logger.warning(
-                    "Region \"" + path + "\" under 8K: " + initialLength + " increasing by " + (
-                        2 * SECTOR_BYTES - initialLength));
+                        "Region \"" + path + "\" under 8K: " + initialLength + " increasing by " + (
+                                2 * SECTOR_BYTES - initialLength));
 
-                for (long i = 0; i < sizeDelta; ++i) {
+                for (long i = 0; i < sizeDelta.get(); ++i) {
                     file.write(0);
                 }
             } else if ((initialLength & (SECTOR_BYTES - 1)) != 0) {
                 // if the file size is not a multiple of 4KB, grow it
-                sizeDelta = initialLength & (SECTOR_BYTES - 1);
+                sizeDelta.set(initialLength & (SECTOR_BYTES - 1));
                 GlowServer.logger.warning(
-                    "Region \"" + path + "\" not aligned: " + initialLength + " increasing by " + (
-                        SECTOR_BYTES - (initialLength & (SECTOR_BYTES - 1))));
+                        "Region \"" + path + "\" not aligned: " + initialLength + " increasing by "
+                                + (
+                                SECTOR_BYTES - (initialLength & (SECTOR_BYTES - 1))));
 
-                for (long i = 0; i < sizeDelta; ++i) {
+                for (long i = 0; i < sizeDelta.get(); ++i) {
                     file.write(0);
                 }
             }
@@ -182,8 +198,9 @@ public class RegionFile {
                 }
             } else if (offset != 0) {
                 GlowServer.logger.warning(
-                    "Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> " + startSector
-                        + "," + numSectors + " does not fit");
+                        "Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> "
+                                + startSector
+                                + "," + numSectors + " does not fit");
             }
         }
         // read timestamps from timestamp table
@@ -192,21 +209,23 @@ public class RegionFile {
         }
     }
 
-    /* the modification date of the region file when it was first opened */
-    public long getLastModified() {
-        return lastModified;
-    }
-
-    /* gets how much the region file has grown since it was last checked */
+    /**
+     * Returns how much the region file has grown since this function was last called.
+     *
+     * @return the growth in bytes
+     */
     public int getSizeDelta() {
-        int ret = sizeDelta;
-        sizeDelta = 0;
-        return ret;
+        return sizeDelta.getAndSet(0);
     }
 
-    /*
-     * gets an (uncompressed) stream representing the chunk data returns null if
-     * the chunk is not found or an error occurs
+    /**
+     * Gets an (uncompressed) stream representing the chunk data. Returns null if the chunk is not
+     * found or an error occurs.
+     *
+     * @param x the chunk X coordinate relative to the region
+     * @param z the chunk Z coordinate relative to the region
+     * @return an input stream with the chunk data, or null if the chunk is missing
+     * @throws IOException if the file cannot be read, or the chunk is invalid
      */
     public DataInputStream getChunkDataInputStream(int x, int z) throws IOException {
         checkBounds(x, z);
@@ -221,7 +240,7 @@ public class RegionFile {
         int numSectors = offset & 0xFF;
         if (sectorNumber + numSectors > totalSectors) {
             throw new IOException(
-                "Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
+                    "Invalid sector: " + sectorNumber + "+" + numSectors + " > " + totalSectors);
         }
 
         file.seek(sectorNumber * SECTOR_BYTES);
@@ -238,7 +257,7 @@ public class RegionFile {
             file.read(data);
             try {
                 return new DataInputStream(new BufferedInputStream(
-                    new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
+                        new GZIPInputStream(new ByteArrayInputStream(data), 2048)));
             } catch (ZipException e) {
                 if (e.getMessage().equals("Not in GZIP format")) {
                     GlowServer.logger.info("Incorrect region version, switching to zlib...");
@@ -257,12 +276,22 @@ public class RegionFile {
     }
 
     private DataInputStream getZlibInputStream(byte[] data) {
-        return new DataInputStream(new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(data), new Inflater(), 2048)));
+        return new DataInputStream(new BufferedInputStream(new InflaterInputStream(
+                new ByteArrayInputStream(data), new Inflater(), 2048)));
     }
 
+    /**
+     * Creates a {@link DataOutputStream} to write a chunk to a byte.
+     *
+     * @param x the chunk X coordinate within the region
+     * @param z the chunk Z coordinate within the region
+     * @return a {@link DataOutputStream}, backed by memory, that can prepare the chunk for writing
+     *         to disk.
+     */
     public DataOutputStream getChunkDataOutputStream(int x, int z) {
         checkBounds(x, z);
-        Deflater deflater = new Deflater(COMPRESSION_ENABLED ? Deflater.BEST_SPEED : Deflater.NO_COMPRESSION);
+        Deflater deflater = new Deflater(
+                COMPRESSION_ENABLED ? Deflater.BEST_SPEED : Deflater.NO_COMPRESSION);
         deflater.setStrategy(Deflater.HUFFMAN_ONLY);
         DeflaterOutputStream dos = new DeflaterOutputStream(new ChunkBuffer(x, z), deflater, 2048);
         return new DataOutputStream(new BufferedOutputStream(dos));
@@ -330,7 +359,7 @@ public class RegionFile {
                     sectorsUsed.set(totalSectors + i);
                 }
                 totalSectors += sectorsNeeded;
-                sizeDelta += SECTOR_BYTES * sectorsNeeded;
+                sizeDelta.addAndGet(SECTOR_BYTES * sectorsNeeded);
 
                 write(sectorNumber, data, length);
                 setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
@@ -386,7 +415,8 @@ public class RegionFile {
      */
     class ChunkBuffer extends ByteArrayOutputStream {
 
-        private final int x, z;
+        private final int x;
+        private final int z;
 
         public ChunkBuffer(int x, int z) {
             super(SECTOR_BYTES); // initialize to 4KB
