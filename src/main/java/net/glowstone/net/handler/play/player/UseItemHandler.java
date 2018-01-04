@@ -8,7 +8,6 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.block.itemtype.ItemType.Context;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.UseItemMessage;
@@ -89,7 +88,7 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
         if (!InventoryUtil.isEmpty(holding)) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
             if (type != null) {
-                if (type.getContext() == Context.ANY || type.getContext() == Context.AIR) {
+                if (type.getContext().isAirApplicable()) {
                     type.rightClickAir(player, holding);
                 }
             }
