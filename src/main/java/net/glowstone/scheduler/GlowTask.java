@@ -5,6 +5,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -25,11 +26,13 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
     /**
      * The ID of this task.
      */
+    @Getter
     private final int taskId;
 
     /**
-     * The Plugin that owns this task
+     * The Plugin that owns this task.
      */
+    @Getter
     private final Plugin owner;
 
     /**
@@ -42,8 +45,9 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
      */
     private final long period;
     /**
-     * A flag indicating whether this task is to be run asynchronously
+     * A flag indicating whether this task is to be run asynchronously.
      */
+    @Getter
     private final boolean sync;
     /**
      * A description of the runnable assigned to this task.
@@ -56,14 +60,18 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
     /**
      * The thread this task has been last executed on, if this task is async.
      */
-    private Thread executionThread;
+    @Getter
+    private Thread thread;
     /**
-     * Return the last state returned by {@link #shouldExecute()}
+     * The last execution state returned by {@link #shouldExecute()} (most likely the state the task
+     * is currently in).
      */
+    @Getter
     private volatile TaskExecutionState lastExecutionState = TaskExecutionState.WAIT;
 
     /**
-     * Creates a new task with the specified number of ticks between consecutive calls to execute().
+     * Creates a new task with the specified number of ticks between consecutive calls to
+     * execute().
      *
      * @param owner The plugin which started the task.
      * @param task The runnable for this task.
@@ -84,35 +92,12 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
 
     @Override
     public String toString() {
-        return "GlowTask{" +
-            "id=" + taskId +
-            ", plugin=" + owner +
-            ", sync=" + sync +
-            ": " + description +
-            '}';
-    }
-
-    /**
-     * Gets the ID of this task.
-     */
-    @Override
-    public int getTaskId() {
-        return taskId;
-    }
-
-    @Override
-    public boolean isSync() {
-        return sync;
-    }
-
-    @Override
-    public Plugin getOwner() {
-        return owner;
-    }
-
-    @Override
-    public Thread getThread() {
-        return executionThread;
+        return "GlowTask{"
+                + "id=" + taskId
+                + ", plugin=" + owner
+                + ", sync=" + sync
+                + ": " + description
+                + '}';
     }
 
     /**
@@ -152,18 +137,9 @@ public class GlowTask extends FutureTask<Void> implements BukkitTask, BukkitWork
         return TaskExecutionState.WAIT;
     }
 
-    /**
-     * Return the last execution state returned by {@link #shouldExecute()}
-     *
-     * @return the last state (most likely the state the task is currently in)
-     */
-    public TaskExecutionState getLastExecutionState() {
-        return lastExecutionState;
-    }
-
     @Override
     public void run() {
-        executionThread = Thread.currentThread();
+        thread = Thread.currentThread();
         if (period == -1) {
             super.run();
         } else {
