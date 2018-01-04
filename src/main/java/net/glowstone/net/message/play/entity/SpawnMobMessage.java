@@ -16,8 +16,15 @@ public final class SpawnMobMessage implements Message {
     private final int id;
     private final UUID uuid; //TODO: Handle UUID
     private final int type;
-    private final double x, y, z;
-    private final int rotation, pitch, headPitch, velX, velY, velZ;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final int rotation;
+    private final int pitch;
+    private final int headPitch;
+    private final int velX;
+    private final int velY;
+    private final int velZ;
     private final List<Entry> metadata;
 
     /**

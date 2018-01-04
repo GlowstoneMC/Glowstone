@@ -29,6 +29,13 @@ public class LootingUtil {
         return !is(a, b);
     }
 
+    /**
+     * Evaluates a condition for an entity.
+     *
+     * @param entity the entity
+     * @param condition the condition string to evaluate
+     * @return true if the condition is satisfied; false otherwise
+     */
     public static boolean conditionValue(GlowLivingEntity entity, String condition) {
         if (condition.equals("ENTITY_ONFIRE")) {
             return entity.getFireTicks() > 0;

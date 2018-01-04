@@ -94,12 +94,13 @@ public class ShoreMapLayer extends MapLayer {
                 int leftVal = values[j + (i + 1) * gridSizeX];
                 int rightVal = values[j + 2 + (i + 1) * gridSizeX];
                 int centerVal = values[j + 1 + (i + 1) * gridSizeX];
-                if (!OCEANS.contains(centerVal) && (OCEANS.contains(upperVal) || OCEANS
-                    .contains(lowerVal) ||
-                    OCEANS.contains(leftVal) || OCEANS.contains(rightVal))) {
+                if (!OCEANS.contains(centerVal) && (
+                        OCEANS.contains(upperVal) || OCEANS.contains(lowerVal)
+                        || OCEANS.contains(leftVal) || OCEANS.contains(rightVal))) {
                     finalValues[j + i * sizeX] =
-                        SPECIAL_SHORES.containsKey(centerVal) ? SPECIAL_SHORES.get(centerVal)
-                            : GlowBiome.getId(BEACHES);
+                            SPECIAL_SHORES.containsKey(centerVal)
+                                    ? SPECIAL_SHORES.get(centerVal)
+                                    : GlowBiome.getId(BEACHES);
                 } else {
                     finalValues[j + i * sizeX] = centerVal;
                 }

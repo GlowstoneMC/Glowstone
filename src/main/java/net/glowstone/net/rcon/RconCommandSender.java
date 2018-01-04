@@ -32,9 +32,17 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
         this.server = server;
     }
 
+    /**
+     * Empties the buffer and returns its contents.
+     *
+     * @return the previous contents of the buffer.
+     */
     public String flush() {
-        String result = buffer.toString();
-        buffer.setLength(0);
+        String result;
+        synchronized (buffer) {
+            result = buffer.toString();
+            buffer.setLength(0);
+        }
         return result;
     }
 

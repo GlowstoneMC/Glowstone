@@ -15,6 +15,13 @@ public final class PluginMessage implements Message {
     private final String channel;
     private final byte[] data;
 
+    /**
+     * Creates a message whose contents are a string in UTF8.
+     *
+     * @param channel the plugin message channel
+     * @param text the contents as a string
+     * @return a message for {@code channel} containing a UTF8-encoded copy of {@code text}
+     */
     public static PluginMessage fromString(String channel, String text) {
         ByteBuf buf = Unpooled.buffer(5 + text.length());
         try {

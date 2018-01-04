@@ -7,12 +7,22 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
+/**
+ * Desert temple, jungle temple, or witch hut.
+ */
 public class GlowTemple extends GlowStructure {
 
     private static final int MIN_DISTANCE = 8;
     private static final int MAX_DISTANCE = 32;
     private final Map<Biome, TempleType> types = new HashMap<>();
 
+    /**
+     * Creates a structure with no pieces.
+     *
+     * @param world the world to generate in
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     */
     public GlowTemple(World world, int chunkX, int chunkZ) {
         super(world, chunkX, chunkZ);
         types.put(Biome.DESERT, TempleType.DESERT_TEMPLE);
@@ -22,6 +32,14 @@ public class GlowTemple extends GlowStructure {
         types.put(Biome.SWAMPLAND, TempleType.WITCH_HUT);
     }
 
+    /**
+     * Creates a random temple or witch hut.
+     *
+     * @param world the world to generate in
+     * @param random the PRNG that will choose this temple's orientation
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     */
     public GlowTemple(World world, Random random, int chunkX, int chunkZ) {
         this(world, chunkX, chunkZ);
 

@@ -104,6 +104,7 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
         enchantmentManager.invalidate();
     }
 
+    @Override
     public Location getLocation() {
         return location;
     }

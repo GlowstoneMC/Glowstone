@@ -13,18 +13,17 @@ public class ReflectionProcessor {
     /**
      * Creates a new reflection processor instance.
      *
-     * <p>The processor is able to parse referenced contexts with the following syntax:
-     * <ol>
-     *   <li>$ to reference the first context (equivalent to $1)</li>
-     *   <li>$x to reference a specific context, where 'x' is the index of the context (starting from 1)</li>
-     * </ol>
+     * <p>The processor is able to parse referenced contexts with the following syntax: <ol> <li>$
+     * to reference the first context (equivalent to $1)</li> <li>$x to reference a specific
+     * context, where 'x' is the index of the context (starting from 1)</li> </ol>
      *
      * <p>To reference a static method/field call, specifying the full package is required.
      *
      * @param line the reflection line.
      * @param context the context(s) of the reflection line
-     *
-     * @see <a href="https://github.com/momothereal/OneLineReflection/blob/master/README.md">OneLineReflection README</a>
+     * @see
+     * <a href="https://github.com/momothereal/OneLineReflection/blob/master/README.md">OneLineReflection
+     *         README</a>
      */
     public ReflectionProcessor(String line, Object... context) {
         this.line = line;
@@ -45,11 +44,13 @@ public class ReflectionProcessor {
             if (section.equals("$") || section.equals("this")) {
                 // Context #1
                 cxt = context[0];
-            } else if (section.length() > 0 && section.charAt(0) == '$' && section.substring(1, section.length()).matches("[0-9]+")) {
+            } else if (section.length() > 0 && section.charAt(0) == '$' && section
+                    .substring(1, section.length()).matches("[0-9]+")) {
                 // Context #X
                 int index = Integer.valueOf(section.replace("$", "")) - 1;
                 cxt = context[index];
-            } else if (section.length() > 0 && section.charAt(0) == '\"' && section.length() > 0 && section.charAt(section.length() - 1) == '\"') {
+            } else if (section.length() > 0 && section.charAt(0) == '\"' && section.length() > 0
+                    && section.charAt(section.length() - 1) == '\"') {
                 // String literal
                 section = section.substring(1, section.length() - 1);
                 if (i == sections.length - 1) {
@@ -208,7 +209,8 @@ public class ReflectionProcessor {
                 boolean isEnum = ((Class) context).isEnum();
                 if (isEnum) {
                     try {
-                        return getMethod("valueOf", (Class) context, String.class).invoke(null, name);
+                        return getMethod("valueOf", (Class) context, String.class)
+                                .invoke(null, name);
                     } catch (Exception expected) {
                     }
                 }
@@ -237,7 +239,8 @@ public class ReflectionProcessor {
     /**
      * Gets the parameters inside a method parentheses enclosure.
      *
-     * @param section the method and its parameters, which are enclosed in parentheses and separated with commas (,)
+     * @param section the method and its parameters, which are enclosed in parentheses and
+     *         separated with commas (,)
      * @return the parameters
      */
     private String[] getMethodParams(String section) {

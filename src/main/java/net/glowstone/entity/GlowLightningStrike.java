@@ -161,6 +161,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         }
     }
 
+    @Override
     public LightningStrike.Spigot spigot() {
         return spigot;
     }

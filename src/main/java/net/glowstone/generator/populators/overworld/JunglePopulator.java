@@ -25,6 +25,9 @@ public class JunglePopulator extends BiomePopulator {
 
     private final MelonDecorator melonDecorator = new MelonDecorator();
 
+    /**
+     * Creates a populator specialized for jungles.
+     */
     public JunglePopulator() {
         treeDecorator.setAmount(65);
         treeDecorator.setTrees(TREES);
