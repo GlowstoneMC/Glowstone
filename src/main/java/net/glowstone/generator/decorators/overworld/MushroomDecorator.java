@@ -17,6 +17,11 @@ public class MushroomDecorator extends BlockDecorator {
     private boolean fixedHeightRange;
     private double density;
 
+    /**
+     * Creates a mushroom decorator for the overworld.
+     *
+     * @param type {@link Material#BROWN_MUSHROOM} or {@link Material#RED_MUSHROOM}
+     */
     public MushroomDecorator(Material type) {
         if (type != Material.BROWN_MUSHROOM && type != Material.RED_MUSHROOM) {
             throw new IllegalArgumentException(
@@ -51,18 +56,33 @@ public class MushroomDecorator extends BlockDecorator {
 
                 Block block = world.getBlockAt(x, y, z);
                 Block blockBelow = world.getBlockAt(x, y - 1, z);
-                if (y < 255 && block.getType() == Material.AIR &&
-                    ((blockBelow.getType() == Material.GRASS
-                        || blockBelow.getState().getData() instanceof Dirt &&
-                        ((Dirt) blockBelow.getState().getData()).getType() != DirtType.PODZOL)
-                        && block.getLightLevel() < 13 ||
-                        blockBelow.getType() == Material.MYCEL
-                        || blockBelow.getState().getData() instanceof Dirt &&
-                        ((Dirt) blockBelow.getState().getData()).getType() == DirtType.PODZOL)) {
-                    BlockState state = block.getState();
-                    state.setType(type);
-                    state.setData(new MaterialData(type));
-                    state.update(true);
+                if (y < 255 && block.getType() == Material.AIR) {
+                    boolean canPlaceShroom;
+                    switch (blockBelow.getType()) {
+                        case MYCEL:
+                            canPlaceShroom = true;
+                            break;
+                        case GRASS:
+                            canPlaceShroom = (block.getLightLevel() < 13);
+                            break;
+                        case DIRT:
+                            MaterialData data = blockBelow.getState().getData();
+                            if (data instanceof Dirt) {
+                                canPlaceShroom = (((Dirt) data).getType() == DirtType.PODZOL
+                                        || block.getLightLevel() < 13);
+                            } else {
+                                canPlaceShroom = false;
+                            }
+                            break;
+                        default:
+                            canPlaceShroom = false;
+                    }
+                    if (canPlaceShroom) {
+                        BlockState state = block.getState();
+                        state.setType(type);
+                        state.setData(new MaterialData(type));
+                        state.update(true);
+                    }
                 }
             }
         }

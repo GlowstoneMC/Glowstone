@@ -17,6 +17,11 @@ public class MushroomDecorator extends BlockDecorator {
 
     private final Material type;
 
+    /**
+     * Creates a mushroom decorator for the nether.
+     *
+     * @param type {@link Material#BROWN_MUSHROOM} or {@link Material#RED_MUSHROOM}
+     */
     public MushroomDecorator(Material type) {
         if (type != Material.BROWN_MUSHROOM && type != Material.RED_MUSHROOM) {
             throw new IllegalArgumentException(

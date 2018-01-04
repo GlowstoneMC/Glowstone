@@ -11,6 +11,11 @@ public class LakeDecorator extends BlockDecorator {
 
     private final Material type;
 
+    /**
+     * Creates a lake decorator.
+     *
+     * @param type {@link Material#STATIONARY_WATER} or {@link Material#STATIONARY_LAVA}
+     */
     public LakeDecorator(Material type) {
         if (type != Material.STATIONARY_WATER && type != Material.STATIONARY_LAVA) {
             throw new IllegalArgumentException(
