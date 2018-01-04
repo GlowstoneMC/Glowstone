@@ -64,15 +64,16 @@ public class SurfaceCaveDecorator extends BlockDecorator {
 
     private void caveAroundRay(GlowBlock block, Random random) {
         int radius = random.nextInt(2) + 2;
-        final int bx = block.getX();
-        final int by = block.getY();
-        final int bz = block.getZ();
-        for (int x = bx - radius; x <= bx + radius; x++) {
-            for (int y = by - radius; y <= by + radius; y++) {
-                for (int z = bz - radius; z <= bz + radius; z++) {
-                    double distance =
-                        (bx - x) * (bx - x) + (by - y) * (by - y) + (bz - z) * (bz - z);
-                    if (distance < radius * radius) {
+        final int blockX = block.getX();
+        final int blockY = block.getY();
+        final int blockZ = block.getZ();
+        for (int x = blockX - radius; x <= blockX + radius; x++) {
+            for (int y = blockY - radius; y <= blockY + radius; y++) {
+                for (int z = blockZ - radius; z <= blockZ + radius; z++) {
+                    double distanceSquared =
+                        (blockX - x) * (blockX - x) + (blockY - y) * (blockY - y)
+                                + (blockZ - z) * (blockZ - z);
+                    if (distanceSquared < radius * radius) {
                         GlowBlock pocket = block.getWorld().getBlockAt(x, y, z);
                         pocket.setType(Material.AIR);
                     }
