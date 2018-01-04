@@ -1,6 +1,8 @@
 package net.glowstone.block.itemtype;
 
 import com.google.common.base.Preconditions;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -174,8 +176,7 @@ public class ItemType {
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (placeAs != null) {
-            Context context = placeAs.getContext();
-            if ((context == Context.ANY || context == Context.BLOCK)) {
+            if (placeAs.getContext().isBlockApplicable()) {
                 placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
             }
         }
@@ -193,18 +194,24 @@ public class ItemType {
     /**
      * Context of the Items interaction.
      */
+    @AllArgsConstructor
     public enum Context {
         /**
          * The item can only be used when clicking in the air.
          */
-        AIR,
+        AIR(true, false),
         /**
          * The item can only be used when clicking against a block.
          */
-        BLOCK,
+        BLOCK(false, true),
         /**
          * The item can be used on any click.
          */
-        ANY
+        ANY(true, true);
+
+        @Getter
+        private boolean airApplicable;
+        @Getter
+        private boolean blockApplicable;
     }
 }
