@@ -84,6 +84,7 @@ public final class WindowClickLogic {
             default:
                 return ClickType.UNKNOWN;
         }
+        return ClickType.UNKNOWN;
     }
 
     /**
