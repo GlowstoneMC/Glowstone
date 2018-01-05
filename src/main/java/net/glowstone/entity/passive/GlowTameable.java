@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import java.util.UUID;
+import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
@@ -16,7 +17,8 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     protected boolean tamed;
     private AnimalTamer owner;
-    private UUID ownerUUId;
+    @Getter
+    private UUID ownerUuid;
     private boolean sitting;
     private MetadataIndex status = MetadataIndex.TAMEABLEAANIMAL_STATUS;
     private MetadataIndex ownerMetadata = MetadataIndex.TAMEABLEANIMAL_OWNER;
@@ -48,23 +50,19 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     @Override
     public AnimalTamer getOwner() {
-        return owner instanceof Player ? owner : Bukkit.getPlayer(ownerUUId);
+        return owner instanceof Player ? owner : Bukkit.getPlayer(ownerUuid);
     }
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
         if (animalTamer == null) {
             owner = null;
-            ownerUUId = null;
+            ownerUuid = null;
             return;
         }
         owner = animalTamer;
-        ownerUUId = animalTamer.getUniqueId();
+        ownerUuid = animalTamer.getUniqueId();
         metadata.set(ownerMetadata, owner.getUniqueId());
-    }
-
-    public UUID getOwnerUUID() {
-        return ownerUUId;
     }
 
     /**
@@ -72,25 +70,37 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      *
      * <p>The UUID's are validated through offline player checking.
      *
-     * <p>If a player with the specified UUID has not played on the server before, the owner is not set.
+     * <p>If a player with the specified UUID has not played on the server before, the owner is not
+     * set.
      *
-     * @param ownerUUID The player UUID of the owner.
+     * @param ownerUuid The player UUID of the owner.
      */
-    public void setOwnerUUID(UUID ownerUUID) {
-        if (ownerUUID == null) {
-            ownerUUId = null;
+    public void setOwnerUuid(UUID ownerUuid) {
+        if (ownerUuid == null) {
+            this.ownerUuid = null;
             return;
         }
-        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUID);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUuid);
         if (player != null && player.hasPlayedBefore()) {
-            ownerUUId = ownerUUID;
+            this.ownerUuid = ownerUuid;
         }
     }
 
+    /**
+     * Checks if this animal is sitting.
+     *
+     * @return true if sitting
+     */
     public boolean isSitting() {
         return sitting;
     }
 
+    /**
+     * Sets if this animal is sitting. Will remove any path that the animal
+     * was following beforehand.
+     *
+     * @param isSitting true if sitting
+     */
     public void setSitting(boolean isSitting) {
         metadata.setBit(status, TameableFlags.IS_SITTING,
             isSitting); //TODO 1.9 - This flag might need change
