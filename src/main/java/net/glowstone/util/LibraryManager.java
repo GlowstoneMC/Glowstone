@@ -136,7 +136,8 @@ public final class LibraryManager {
                         String checksum = reader.readLine();
                         reader.close();
                         if (!checksum(file, checksum, DEFAULT_HASH_FUNCTION)) {
-                            GlowServer.logger.log(Level.WARNING, "Checksum verification failed for " + file.getName() + ".");
+                            GlowServer.logger.log(Level.WARNING,
+                                    "Checksum verification failed for " + file.getName() + ".");
                             file.delete();
                         } else {
                             GlowServer.logger.info("Checksum validated for " + file.getName());
