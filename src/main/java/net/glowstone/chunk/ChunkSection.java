@@ -68,10 +68,10 @@ public final class ChunkSection {
     }
 
     /**
-     * <p>Create a new, unlit chunk section with the specified chunk data.</p>
+     * <p>Create a new, unlit chunk section with the specified chunk data.
      *
      * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be
-     * further modified.</p>
+     * further modified.
      *
      * @param types An array of block state IDs for this chunk section (containing type and
      *         metadata)
@@ -82,10 +82,10 @@ public final class ChunkSection {
     }
 
     /**
-     * <p>Create a ChunkSection with the specified chunk data.</p>
+     * <p>Create a ChunkSection with the specified chunk data.
      *
      * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be
-     * further modified.</p>
+     * further modified.
      *
      * @param types An array of block types for this chunk section.
      * @param skyLight An array for skylight data for this chunk section.
@@ -105,10 +105,10 @@ public final class ChunkSection {
     }
 
     /**
-     * <p>Create a ChunkSection with the specified chunk data.</p>
+     * <p>Create a ChunkSection with the specified chunk data.
      *
      * <p>This ChunkSection assumes
-     * ownership of the arrays passed in, and they should not be further modified.</p>
+     * ownership of the arrays passed in, and they should not be further modified.
      *
      * @param data An array of blocks in this section.
      * @param palette The palette that is associated with that data. If null, the global
@@ -279,7 +279,7 @@ public final class ChunkSection {
 
     /**
      * <p>Optimizes this chunk section, removing unneeded palette entries and recounting non-air
-     * blocks.</p>
+     * blocks.
      *
      * <p>This is an expensive operation, but occasionally performing it will improve
      * sending the section.
@@ -465,14 +465,14 @@ public final class ChunkSection {
     }
 
     /**
-     * <p>Checks whether this chunk section is empty, IE doesn't need to be sent or saved.</p>
+     * <p>Checks whether this chunk section is empty, IE doesn't need to be sent or saved.
      *
      * <p>This implementation has the same issue that causes
-     * <a href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>:</p>
+     * <a href="https://bugs.mojang.com/browse/MC-80966">MC-80966</a>:
      *
      * <p>It assumes that a chunk section with only air blocks has no meaningful data.
      * This assumption is incorrect for sections near light sources, which can create lighting bugs.
-     * However, it is more expensive to send additional sections with just light data.</p>
+     * However, it is more expensive to send additional sections with just light data.
      *
      * @return True if this chunk section is empty and can be removed.
      */

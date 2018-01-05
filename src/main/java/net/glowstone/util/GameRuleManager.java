@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Container for the game rule map for worlds.
  */
-public final class GameRuleManager {
+public final class GameRuleManager implements DynamicallyTypedMap<String> {
 
     private final Map<String, String> gameRules = new HashMap<>();
 
@@ -45,12 +45,12 @@ public final class GameRuleManager {
     }
 
     /**
-     * <p>Sets the value of a game rule.</p>
+     * <p>Sets the value of a game rule.
      *
-     * <p>The actual object value is never stored, only the string value.</p>
+     * <p>The actual object value is never stored, only the string value.
      *
      * <p>The helper methods provided in this class may be used to retrieve the value, such as
-     * {@link #getBoolean(String)}.</p>
+     * {@link #getBoolean(String)}.
      *
      * @param rule the rule to set, cannot be null
      * @param value the value to set, cannot be null or be represented as null
@@ -105,6 +105,11 @@ public final class GameRuleManager {
         return false;
     }
 
+    @Override
+    public int getInt(String key) {
+        return getInt(key, 0);
+    }
+
     /**
      * Gets the game rule value as an integer. If the value cannot be parsed or does not exist then
      * the default will be returned.
@@ -113,7 +118,7 @@ public final class GameRuleManager {
      * @param def the default value
      * @return the integer value of the rule, or the default
      */
-    public int getInteger(String rule, int def) {
+    public int getInt(String rule, int def) {
         if (isGameRule(rule)) {
             String value = getString(rule);
             try {

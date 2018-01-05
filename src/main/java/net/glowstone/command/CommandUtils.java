@@ -157,7 +157,7 @@ public class CommandUtils {
 
     /**
      * <p>Gets the relative location based on the given axis values (x/y/z) based on tilde
-     * notation.</p>
+     * notation.
      *
      * <p>For instance, using axis values of ~10 ~ ~15 will return the location with the offset of
      * the given rotation values.
@@ -208,10 +208,10 @@ public class CommandUtils {
 
     /**
      * <p>Gets the relative location based on the given rotation values (yaw/relative) based on
-     * tilde notation.</p>
+     * tilde notation.
      *
      * <p>For instance, using rotations of ~10 ~15 will return the location with the offset of the
-     * given rotation values.</p>
+     * given rotation values.
      *
      * @param location the initial location
      * @param yawRelative the relative yaw (if there is no tilde [~], then the literal value

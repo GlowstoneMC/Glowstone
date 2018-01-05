@@ -26,6 +26,11 @@ public class GlowParrot extends GlowTameable implements Parrot {
     public static final Variant[] VARIANTS = Variant.values();
     private int endOfLife = 0;
 
+    /**
+     * Creates a parrot of a random variant.
+     *
+     * @param location the location
+     */
     public GlowParrot(Location location) {
         super(location, EntityType.PARROT, 6);
         setBoundingBox(0.5, 1.0);
@@ -60,6 +65,11 @@ public class GlowParrot extends GlowTameable implements Parrot {
 
     }
 
+    /**
+     * Returns the player whose shoulder this parrot is sitting on, or null if not sitting.
+     *
+     * @return the player whose shoulder this parrot is sitting on, or null if not sitting
+     */
     public Player getSittingOn() {
         Player player = ((Player) getOwner());
         if (Objects.equals(this, player.getShoulderEntityRight()) || Objects
@@ -69,6 +79,14 @@ public class GlowParrot extends GlowTameable implements Parrot {
         return null;
     }
 
+    /**
+     * Puts this parrot on a player's shoulder.
+     *
+     * @param player the player
+     * @param shoulder the shoulder
+     */
+    // TODO: What if we're already on a player's shoulder? Should player be nullable so we can take
+    // off?
     public void setSittingOn(Player player, Shoulder shoulder) {
         if (shoulder == LEFT) {
             player.setShoulderEntityLeft(this);
@@ -118,7 +136,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
                 return true;
             }
             // TODO: sitting only happens on crouch
-            if (isTamed() && getOwnerUUID() != null && getOwnerUUID()
+            if (isTamed() && getOwnerUuid() != null && getOwnerUuid()
                 .equals(player.getUniqueId())) {
                 if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag()
                     .isEmpty()) {

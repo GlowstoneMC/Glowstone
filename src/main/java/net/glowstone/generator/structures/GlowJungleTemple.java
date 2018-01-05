@@ -76,7 +76,7 @@ public class GlowJungleTemple extends GlowTemplePiece {
             return false;
         }
 
-        adjustHPos(world);
+        adjustHorizPos(world);
 
         boundingBox.offset(new Vector(0, -4, 0));
 

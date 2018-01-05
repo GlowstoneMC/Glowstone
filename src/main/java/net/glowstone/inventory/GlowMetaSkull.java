@@ -38,7 +38,8 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
                 owner.set(((GlowMetaSkull) skull).owner.get());
             } else {
                 if (!setOwningPlayerInternal(skull.getOwningPlayer())) {
-                    owner.set(UNKNOWN_PLAYER); // necessary to preserve the return value of hasOwner()
+                    owner.set(UNKNOWN_PLAYER);
+                    // necessary to preserve the return value of hasOwner()
                 }
             }
         }
@@ -86,7 +87,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     void writeNbt(CompoundTag tag) {
         super.writeNbt(tag);
         if (hasOwner()) {
-            tag.putCompound("SkullOwner", owner.get().toNBT());
+            tag.putCompound("SkullOwner", owner.get().toNbt());
         }
     }
 
@@ -97,7 +98,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
             if (tag.isString("SkullOwner")) {
                 owner.set(PlayerProfile.getProfile(tag.getString("SkullOwner")).join());
             } else if (tag.isCompound("SkullOwner")) {
-                owner.set(PlayerProfile.fromNBT(tag.getCompound("SkullOwner")).join());
+                owner.set(PlayerProfile.fromNbt(tag.getCompound("SkullOwner")).join());
             }
         }
     }
@@ -133,7 +134,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     /**
      * {@inheritDoc}
      *
-     * When this returns false, it may still succeed asynchronously.
+     * <p>When this returns false, it may still succeed asynchronously.
      */
     @Override
     public boolean setOwningPlayer(OfflinePlayer owningPlayer) {

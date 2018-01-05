@@ -38,12 +38,14 @@ public class LavaDecorator extends BlockDecorator {
             return;
         }
         int netherrackBlockCount = 0;
+        for (BlockFace face : SIDES) {
+            if (block.getRelative(face).getType() == Material.NETHERRACK) {
+                netherrackBlockCount++;
+            }
+        }
         int airBlockCount = 0;
         for (BlockFace face : SIDES) {
-            Block neighbor = block.getRelative(face);
-            if (neighbor.getType() == Material.NETHERRACK) {
-                netherrackBlockCount++;
-            } else if (neighbor.isEmpty()) {
+            if (block.getRelative(face).isEmpty()) {
                 airBlockCount++;
             }
         }

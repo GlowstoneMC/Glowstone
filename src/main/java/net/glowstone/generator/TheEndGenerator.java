@@ -135,8 +135,8 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                double noiseHeight = 100.0D - Math.sqrt((x + i) * (x + i) + (z + j) * (z + j)) * 8.0D;
-                noiseHeight = Math.max(-100.0D, Math.min(80.0D, noiseHeight));
+                double nh = 100.0D - Math.sqrt((x + i) * (x + i) + (z + j) * (z + j)) * 8.0D;
+                nh = Math.max(-100.0D, Math.min(80.0D, nh));
                 for (int k = 0; k < 33; k++) {
                     double noiseR = roughnessNoise[index] / 512.0D;
                     double noiseR2 = roughnessNoise2[index] / 512.0D;
@@ -144,7 +144,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
                     // linear interpolation
                     double dens = noiseD < 0 ? noiseR
                             : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
-                    dens = dens - 8.0D + noiseHeight;
+                    dens = dens - 8.0D + nh;
                     index++;
                     if (k < 8) {
                         double lowering = (8 - k) / 7;

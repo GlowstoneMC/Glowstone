@@ -410,10 +410,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             if (stack != null && (type == null || stack.getType() == type) && (data == null || stack
                 .getData().equals(data))) {
                 setItem(i, InventoryUtil.createEmptyStack());
-                if (!InventoryUtil.isEmpty(stack)) {
-                    // never report AIR as removed - else will report all empty slots cleared
-                    numCleared += stack.getAmount(); // report # items, not # stacks removed
-                }
+                numCleared += stack.getAmount(); // report # items, not # stacks removed
             }
         }
         return numCleared;
