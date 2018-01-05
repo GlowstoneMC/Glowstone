@@ -43,22 +43,20 @@ public class OreVein implements TerrainObject {
             double radiusH = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2.0D;
             double radiusV = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2.0D;
             for (int x = (int) (originX - radiusH); x <= (int) (originX - radiusH); x++) {
-                double px = (x + 0.5D - originX) / radiusH;
-                px *= px;
-                if (px >= 1) {
+                double squaredNormalizedX = normalizedSquaredCoordinate(originX, radiusH, x);
+                if (squaredNormalizedX >= 1) {
                     continue;
                 }
                 for (int y = (int) (originY - radiusV); y <= (int) (originY + radiusV); y++) {
-                    double py = (y + 0.5D - originY) / radiusV;
-                    py *= py;
-                    if (px + py >= 1) {
+                    double squaredNormalizedY = normalizedSquaredCoordinate(originY, radiusV, y);
+                    if (squaredNormalizedX + squaredNormalizedY >= 1) {
                         continue;
                     }
                     for (int z = (int) (originZ - radiusH); z <= (int) (originZ + radiusH);
-                         z++) {
-                        double pz = (z + 0.5D - originZ) / radiusH;
-                        pz *= pz;
-                        if (px + py + pz < 1
+                            z++) {
+                        double squaredNormalizedZ
+                                = normalizedSquaredCoordinate(originZ, radiusH, z);
+                        if (squaredNormalizedX + squaredNormalizedY + squaredNormalizedZ < 1
                                 && world.getBlockAt(x, y, z).getType() == targetType) {
                             BlockState state = world.getBlockAt(x, y, z).getState();
                             state.setType(type);
@@ -71,5 +69,21 @@ public class OreVein implements TerrainObject {
             }
         }
         return succeeded;
+    }
+
+    /**
+     * The square of the percentage of the radius that is the distance between the given block's
+     * center and the center of an orthogonal ellipsoid. A block's center is inside the ellipsoid
+     * if and only if its normalizedSquaredCoordinate values add up to less than 1.
+     *
+     * @param origin the center of the spheroid
+     * @param radius the spheroid's radius on this axis
+     * @param x the raw coordinate
+     * @return the square of the normalized coordinate
+     */
+    protected static double normalizedSquaredCoordinate(double origin, double radius, int x) {
+        double squaredNormalizedX = (x + 0.5D - origin) / radius;
+        squaredNormalizedX *= squaredNormalizedX;
+        return squaredNormalizedX;
     }
 }

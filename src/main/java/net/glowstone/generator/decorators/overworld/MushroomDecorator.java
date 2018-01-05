@@ -65,7 +65,7 @@ public class MushroomDecorator extends BlockDecorator {
                         case GRASS:
                             canPlaceShroom = (block.getLightLevel() < 13);
                             break;
-                        default:
+                        case DIRT:
                             MaterialData data = blockBelow.getState().getData();
                             if (data instanceof Dirt) {
                                 canPlaceShroom = (((Dirt) data).getType() == DirtType.PODZOL
@@ -73,6 +73,9 @@ public class MushroomDecorator extends BlockDecorator {
                             } else {
                                 canPlaceShroom = false;
                             }
+                            break;
+                        default:
+                            canPlaceShroom = false;
                     }
                     if (canPlaceShroom) {
                         BlockState state = block.getState();

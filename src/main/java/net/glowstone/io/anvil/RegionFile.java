@@ -53,7 +53,7 @@ import org.bukkit.Bukkit;
 /**
  * Interfaces with region files on the disk
  *
- * <h2>Region File Format</h2>
+ * <p><strong>Region File Format</strong>
  *
  * <p>Concept: The minimum unit of storage on hard drives is 4KB. 90% of Minecraft chunks are
  * smaller than 4KB. 99% are smaller than 8KB. Write a simple container to store chunks in single
