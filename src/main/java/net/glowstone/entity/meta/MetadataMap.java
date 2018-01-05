@@ -115,6 +115,7 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
 
     /**
      * Returns the numeric value of a metadata field.
+     *
      * @param index the field to look up
      * @return the numeric value
      * @throws IllegalArgumentException if the value doesn't exist or isn't numeric
@@ -171,6 +172,7 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
 
     /**
      * Returns a list containing copies of all the entries.
+     *
      * @return a list containing copies of all the entries
      */
     public List<Entry> getEntryList() {

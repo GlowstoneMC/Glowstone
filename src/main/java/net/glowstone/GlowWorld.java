@@ -338,7 +338,7 @@ public final class GlowWorld implements World {
     /**
      * Creates a new world from the options in the given WorldCreator.
      *
-     * @param server The server for the world.
+     * @param server  The server for the world.
      * @param creator The WorldCreator to use.
      */
     public GlowWorld(GlowServer server, WorldCreator creator,
@@ -704,7 +704,7 @@ public final class GlowWorld implements World {
      * Calculates how much the rays from the location to the entity's bounding box is blocked.
      *
      * @param location The location for the rays to start
-     * @param entity The entity that's bounding box is the ray's end point
+     * @param entity   The entity that's bounding box is the ray's end point
      * @return a value between 0 and 1, where 0 = all rays blocked and 1 = all rays unblocked
      */
     public float rayTrace(Location location, GlowEntity entity) {
@@ -748,9 +748,9 @@ public final class GlowWorld implements World {
      * box.
      *
      * @param location The center of the bounding box
-     * @param x 1/2 the size of the box along x axis
-     * @param y 1/2 the size of the box along y axis
-     * @param z 1/2 the size of the box along z axis
+     * @param x        1/2 the size of the box along x axis
+     * @param y        1/2 the size of the box along y axis
+     * @param z        1/2 the size of the box along z axis
      * @return the collection of entities near location. This will always be a non-null collection.
      */
     @Override
@@ -1528,8 +1528,8 @@ public final class GlowWorld implements World {
      * Spawn a custom entity at the given {@link Location}.
      *
      * @param location the {@link Location} to spawn the entity at
-     * @param id the id of the custom entity
-     * @param <T> the class of the {@link Entity} to spawn
+     * @param id       the id of the custom entity
+     * @param <T>      the class of the {@link Entity} to spawn
      * @return an instance of the spawned {@link Entity}
      */
     public <T extends Entity> T spawnCustomEntity(Location location,
@@ -1541,9 +1541,9 @@ public final class GlowWorld implements World {
      * Spawn a custom entity at the given {@link Location}, with the given {@link SpawnReason}.
      *
      * @param location the {@link Location} to spawn the entity at
-     * @param id the id of the custom entity
-     * @param reason the reason for the spawning of the entity
-     * @param <T> the class of the {@link Entity} to spawn
+     * @param id       the id of the custom entity
+     * @param reason   the reason for the spawning of the entity
+     * @param <T>      the class of the {@link Entity} to spawn
      * @return an instance of the spawned {@link Entity}
      */
     @SuppressWarnings("unchecked")
@@ -1987,7 +1987,7 @@ public final class GlowWorld implements World {
     /**
      * Execute a runnable, optionally asynchronously.
      *
-     * @param async Whether to run the runnable in an asynchronous task.
+     * @param async    Whether to run the runnable in an asynchronous task.
      * @param runnable The runnable to run.
      */
     private void maybeAsync(boolean async, Runnable runnable) {

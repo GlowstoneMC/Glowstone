@@ -61,6 +61,7 @@ public abstract class GlowStructurePiece {
 
     /**
      * Returns the orientation using the numeric code from NBT.
+     *
      * @return the orientation (0=north, 1=east, 2=south, 3=west)
      */
     public int getNumericOrientation() {
@@ -78,6 +79,7 @@ public abstract class GlowStructurePiece {
 
     /**
      * Sets the orientation using the numeric code from NBT.
+     *
      * @param orientation the new orientation (0=north, 1=east, 2=south, 3=west)
      */
     public void setNumericOrientation(int orientation) {
