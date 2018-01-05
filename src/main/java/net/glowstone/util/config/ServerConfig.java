@@ -383,6 +383,7 @@ public final class ServerConfig {
         PLUGIN_FOLDER("folders.plugins", "plugins"),
         UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder"),
         WORLD_FOLDER("folders.worlds", "worlds", Migrate.BUKKIT, "settings.world-container"),
+        LIBRARIES_FOLDER("folders.libraries", "lib"),
 
         // files
         PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT,
@@ -412,6 +413,8 @@ public final class ServerConfig {
         REGION_CACHE_SIZE("advanced.region-file.cache-size", 256),
         REGION_COMPRESSION("advanced.region-file.compression", true),
         PROFILE_LOOKUP_TIMEOUT("advanced.profile-lookup-timeout", 5),
+        LIBRARY_CHECKSUM_VALIDATION("advanced.library-checksum-validation", true),
+        LIBRARY_REPOSITORY_URL("advanced.library-repository-url", "https://repo.glowstone.net/service/local/repositories/central/content/"),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),

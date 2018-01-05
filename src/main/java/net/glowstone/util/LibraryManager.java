@@ -1,8 +1,15 @@
 package net.glowstone.util;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -20,6 +27,15 @@ import net.glowstone.GlowServer;
  * Simple library manager which downloads external dependencies.
  */
 public final class LibraryManager {
+    /**
+     * The default hash function used to compute the digests.
+     */
+    private static final HashFunction DEFAULT_HASH_FUNCTION = Hashing.sha1();
+    /**
+     * The name of the hash function.
+     * <p>This value is used to request the file digest from the repository.
+     */
+    private static final String DEFAULT_HASH_FUNCTION_NAME = "sha1";
 
     /**
      * The Maven repository to download from.
@@ -31,15 +47,22 @@ public final class LibraryManager {
      */
     final File directory;
 
+    /**
+     * Whether the checksum of each library should be verified after being downloaded.
+     */
+    final boolean validateChecksum;
+
     private final ExecutorService downloaderService = Executors.newCachedThreadPool();
 
     /**
      * Creates the instance.
      */
-    public LibraryManager() {
-        // todo: allow configuration of repository, libraries, and directory
-        repository = "https://repo.glowstone.net/service/local/repositories/central/content/";
-        directory = new File("lib");
+    public LibraryManager(String repository, String directoryName, boolean validateChecksum) {
+        checkNotNull(repository);
+        checkNotNull(directoryName);
+        this.repository = repository;
+        this.directory = new File(directoryName);
+        this.validateChecksum = validateChecksum;
     }
 
     /**
@@ -52,13 +75,13 @@ public final class LibraryManager {
         }
 
         downloaderService.execute(new LibraryDownloader(
-                "org.xerial", "sqlite-jdbc", "3.21.0", ""));
+                "org.xerial", "sqlite-jdbc", "3.21.0"));
         downloaderService.execute(new LibraryDownloader(
-                "mysql", "mysql-connector-java", "5.1.44", ""));
+                "mysql", "mysql-connector-java", "5.1.44"));
         downloaderService.execute(new LibraryDownloader(
-                "org.apache.logging.log4j", "log4j-api", "2.8.1", ""));
+                "org.apache.logging.log4j", "log4j-api", "2.8.1"));
         downloaderService.execute(new LibraryDownloader(
-                "org.apache.logging.log4j", "log4j-core", "2.8.1", ""));
+                "org.apache.logging.log4j", "log4j-core", "2.8.1"));
         downloaderService.shutdown();
         try {
             if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
@@ -74,20 +97,18 @@ public final class LibraryManager {
         private final String group;
         private final String library;
         private final String version;
-        private String checksum;
 
-        LibraryDownloader(String group, String library, String version, String checksum) {
+        LibraryDownloader(String group, String library, String version) {
             this.group = group;
             this.library = library;
             this.version = version;
-            this.checksum = checksum;
         }
 
         @Override
         public void run() {
             // check if we already have it
             File file = new File(directory, getLibrary());
-            if (!checksum(file, checksum)) {
+            if (!file.exists()) {
                 // download it
                 GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
                 try {
@@ -103,6 +124,23 @@ public final class LibraryManager {
                             FileOutputStream output = new FileOutputStream(file)) {
                         output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
                         GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
+                    }
+
+                    if (validateChecksum) {
+                        // download checksum
+                        URL checksumUrl = new URL(downloadUrl.toString() + "." + DEFAULT_HASH_FUNCTION_NAME);
+                        connection = (HttpsURLConnection) checksumUrl
+                                .openConnection();
+                        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        String checksum = reader.readLine();
+                        reader.close();
+                        if (!checksum(file, checksum, DEFAULT_HASH_FUNCTION)) {
+                            GlowServer.logger.log(Level.WARNING, "Checksum verification failed for " + file.getName() + ".");
+                            file.delete();
+                        } else {
+                            GlowServer.logger.info("Checksum validated for " + file.getName());
+                        }
                     }
                 } catch (IOException e) {
                     GlowServer.logger.log(Level.WARNING,
@@ -133,9 +171,33 @@ public final class LibraryManager {
             return library + '-' + version + ".jar";
         }
 
-        boolean checksum(File file, String checksum) {
-            // TODO: actually check checksum
-            return file.exists();
+        /**
+         * Computes and validates the checksum of a file.
+         *
+         * @param file the file.
+         * @param checksum the reference checksum to validate the file's digest with.
+         * @param hashFunction the {@link HashFunction} used to compute the file's digest.
+         * @return true if the checksum was validated, false otherwise.
+         */
+        boolean checksum(File file, String checksum, HashFunction hashFunction) {
+            checkNotNull(file);
+            checkNotNull(hashFunction);
+            if (!file.exists()) {
+                return false;
+            }
+            if (checksum == null || checksum.isEmpty()) {
+                // assume everything is OK if no reference checksum is provided
+                return true;
+            }
+            // get the file digest
+            String digest;
+            try {
+                digest = Files.hash(file, hashFunction).toString();
+            } catch (IOException ex) {
+                GlowServer.logger.log(Level.SEVERE, "Failed to compute digest for '" + file.getName() + "'", ex);
+                return false;
+            }
+            return digest.equals(checksum);
         }
     }
 }
