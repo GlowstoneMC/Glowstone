@@ -35,7 +35,6 @@ public class OpenCompute {
      *
      * @param name the program filename
      * @return the OpenCL program, or null if there isn't a valid program with that name
-     *
      */
     public static CLProgram getProgram(String name) {
         if (programs.containsKey(name)) {
@@ -147,10 +146,19 @@ public class OpenCompute {
         return globalSize;
     }
 
+    /**
+     * Calculates the number of local work units per work group.
+     * @return the size of the work groups
+     */
     public static int getLocalSize() {
         return Math.min(device.getMaxWorkGroupSize(), 256);
     }
 
+    /**
+     * Calculates the number of local work units per work group, applying a specified maximum.
+     * @param max the maximum size allowed
+     * @return the size of the work groups
+     */
     public static int getLocalSize(int max) {
         return Math.min(device.getMaxWorkGroupSize(), max);
     }
