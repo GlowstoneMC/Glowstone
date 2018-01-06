@@ -15,6 +15,14 @@ import net.glowstone.net.GlowSocketServer;
  */
 public class RconServer extends GlowSocketServer {
 
+    /**
+     * Creates an instance.
+     *
+     * @param server the associated GlowServer
+     * @param latch The countdown latch used during server startup to wait for network server
+     *         binding.
+     * @param password the remote operator's password
+     */
     public RconServer(GlowServer server, CountDownLatch latch, String password) {
         super(server, latch);
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
@@ -33,6 +41,7 @@ public class RconServer extends GlowSocketServer {
      * @param address The address.
      * @return Netty channel future for bind operation.
      */
+    @Override
     public ChannelFuture bind(InetSocketAddress address) {
         GlowServer.logger.info("Binding rcon to " + address + "...");
         return super.bind(address);
@@ -52,6 +61,7 @@ public class RconServer extends GlowSocketServer {
     /**
      * Shut the Rcon server down.
      */
+    @Override
     public void shutdown() {
         workerGroup.shutdownGracefully();
         bossGroup.shutdownGracefully();

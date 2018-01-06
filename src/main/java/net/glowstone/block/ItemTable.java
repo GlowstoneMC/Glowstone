@@ -120,6 +120,7 @@ import net.glowstone.block.itemtype.ItemFoodSeeds;
 import net.glowstone.block.itemtype.ItemGoldenApple;
 import net.glowstone.block.itemtype.ItemHoe;
 import net.glowstone.block.itemtype.ItemItemFrame;
+import net.glowstone.block.itemtype.ItemKnowledgeBook;
 import net.glowstone.block.itemtype.ItemMilk;
 import net.glowstone.block.itemtype.ItemMinecart;
 import net.glowstone.block.itemtype.ItemPainting;
@@ -351,8 +352,10 @@ public final class ItemTable {
         reg(Material.DIODE_BLOCK_ON, new BlockRedstoneRepeater());
         reg(Material.DIODE_BLOCK_OFF, new BlockRedstoneRepeater());
         reg(Material.MAGMA, new BlockMagma());
-        reg(Material.NETHER_WART_BLOCK, new BlockDirectDrops(Material.NETHER_WART_BLOCK, ToolType.AXE));
-        reg(Material.RED_NETHER_BRICK, new BlockDirectDrops(Material.RED_NETHER_BRICK, ToolType.PICKAXE));
+        reg(Material.NETHER_WART_BLOCK, new BlockDirectDrops(Material.NETHER_WART_BLOCK, ToolType
+                .AXE));
+        reg(Material.RED_NETHER_BRICK, new BlockDirectDrops(Material.RED_NETHER_BRICK, ToolType
+                .PICKAXE));
         reg(Material.BONE_BLOCK, new BlockDirectDrops(Material.BONE_BLOCK, ToolType.PICKAXE));
         reg(Material.OBSERVER, new BlockObserver());
         reg(Material.REDSTONE_COMPARATOR_ON, new BlockRedstoneComparator());
@@ -363,22 +366,32 @@ public final class ItemTable {
         reg(Material.END_ROD, new BlockEndRod());
         reg(Material.CONCRETE, new BlockDirectDrops(Material.CONCRETE));
         reg(Material.CONCRETE_POWDER, new BlockConcretePowder());
-        reg(Material.WHITE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.WHITE_GLAZED_TERRACOTTA));
-        reg(Material.BLACK_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.BLACK_GLAZED_TERRACOTTA));
+        reg(Material.WHITE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .WHITE_GLAZED_TERRACOTTA));
+        reg(Material.BLACK_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .BLACK_GLAZED_TERRACOTTA));
         reg(Material.BLUE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.BLUE_GLAZED_TERRACOTTA));
-        reg(Material.BROWN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.BROWN_GLAZED_TERRACOTTA));
+        reg(Material.BROWN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .BROWN_GLAZED_TERRACOTTA));
         reg(Material.CYAN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.CYAN_GLAZED_TERRACOTTA));
         reg(Material.GRAY_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.GRAY_GLAZED_TERRACOTTA));
-        reg(Material.GREEN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.GREEN_GLAZED_TERRACOTTA));
-        reg(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.LIGHT_BLUE_GLAZED_TERRACOTTA));
+        reg(Material.GREEN_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .GREEN_GLAZED_TERRACOTTA));
+        reg(Material.LIGHT_BLUE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .LIGHT_BLUE_GLAZED_TERRACOTTA));
         reg(Material.LIME_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.LIME_GLAZED_TERRACOTTA));
-        reg(Material.MAGENTA_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.MAGENTA_GLAZED_TERRACOTTA));
-        reg(Material.ORANGE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.ORANGE_GLAZED_TERRACOTTA));
+        reg(Material.MAGENTA_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .MAGENTA_GLAZED_TERRACOTTA));
+        reg(Material.ORANGE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .ORANGE_GLAZED_TERRACOTTA));
         reg(Material.PINK_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.PINK_GLAZED_TERRACOTTA));
-        reg(Material.PURPLE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.PURPLE_GLAZED_TERRACOTTA));
+        reg(Material.PURPLE_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .PURPLE_GLAZED_TERRACOTTA));
         reg(Material.RED_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.RED_GLAZED_TERRACOTTA));
-        reg(Material.SILVER_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.SILVER_GLAZED_TERRACOTTA));
-        reg(Material.YELLOW_GLAZED_TERRACOTTA, new BlockDirectDrops(Material.YELLOW_GLAZED_TERRACOTTA));
+        reg(Material.SILVER_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .SILVER_GLAZED_TERRACOTTA));
+        reg(Material.YELLOW_GLAZED_TERRACOTTA, new BlockDirectDrops(Material
+                .YELLOW_GLAZED_TERRACOTTA));
         reg(Material.CHORUS_FLOWER, new BlockChorusFlower());
         reg(Material.CHORUS_PLANT, new BlockChorusPlant());
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
@@ -472,16 +485,19 @@ public final class ItemTable {
         reg(Material.PAINTING, new ItemPainting());
         reg(Material.FIREWORK, new ItemFirework());
         reg(Material.ENDER_PEARL, new ItemEnderPearl());
+        reg(Material.KNOWLEDGE_BOOK, new ItemKnowledgeBook());
     }
 
     private void reg(Material material, ItemType type) {
         if (material.isBlock() != type instanceof BlockType) {
-            throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
+            throw new IllegalArgumentException(
+                    "Cannot mismatch item and block: " + material + ", " + type);
         }
 
         if (materialToType.containsKey(material)) {
-            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + materialToType
-                .get(material));
+            throw new IllegalArgumentException(
+                    "Cannot use " + type + " for " + material + ", is already " + materialToType
+                            .get(material));
         }
 
         materialToType.put(material, type);
@@ -499,12 +515,14 @@ public final class ItemTable {
 
     private void reg(Material material, ItemType type, Sound sound) {
         if (material.isBlock() != type instanceof BlockType) {
-            throw new IllegalArgumentException("Cannot mismatch item and block: " + material + ", " + type);
+            throw new IllegalArgumentException(
+                    "Cannot mismatch item and block: " + material + ", " + type);
         }
 
         if (materialToType.containsKey(material)) {
-            throw new IllegalArgumentException("Cannot use " + type + " for " + material + ", is already " + materialToType
-                .get(material));
+            throw new IllegalArgumentException(
+                    "Cannot use " + type + " for " + material + ", is already " + materialToType
+                            .get(material));
         }
 
         materialToType.put(material, type);
@@ -569,6 +587,12 @@ public final class ItemTable {
         return getItem(Material.getMaterial(id));
     }
 
+    /**
+     * Returns the {@link ItemType} for a {@link Material}, or null if not a block.
+     *
+     * @param mat a {@link Material}
+     * @return {@code mat} as an {@link ItemType}
+     */
     public ItemType getItem(Material mat) {
         ItemType type = materialToType.get(mat);
         if (type == null) {
@@ -582,6 +606,12 @@ public final class ItemTable {
         return getBlock(Material.getMaterial(id));
     }
 
+    /**
+     * Returns the {@link BlockType} for a {@link Material}, or null if not a block.
+     *
+     * @param mat a {@link Material}
+     * @return {@code mat} as a {@link BlockType}, or null if {@code mat} isn't a block
+     */
     public BlockType getBlock(Material mat) {
         ItemType itemType = getItem(mat);
         if (itemType instanceof BlockType) {

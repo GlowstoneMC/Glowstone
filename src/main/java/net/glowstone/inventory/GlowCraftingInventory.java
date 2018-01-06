@@ -22,6 +22,12 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
     private static final int RESULT_SLOT = 0;
     private static final int MATRIX_START = 1;
 
+    /**
+     * Create an inventory for the 2x2 or 3x3 crafting grid.
+     *
+     * @param owner the crafting player
+     * @param type {@link InventoryType#CRAFTING} or {@link InventoryType#WORKBENCH}
+     */
     public GlowCraftingInventory(InventoryHolder owner, InventoryType type) {
         super(owner, type);
         if (type != InventoryType.CRAFTING && type != InventoryType.WORKBENCH) {
@@ -69,12 +75,15 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
             // Place the items in the player's inventory (right to left)
             player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
 
-            // Avoid calling craft because we already know the player can craft 'recipeAmount' of this item
+            // Avoid calling craft because we already know the player can craft 'recipeAmount' of
+            // this item
             CraftingManager cm = player.getServer().getCraftingManager();
-            // Removing all the items at once will avoid multiple useless calls to craft (and all of its sub methods like getRecipe)
+            // Removing all the items at once will avoid multiple useless calls to craft
+            // (and all of its sub methods like getRecipe)
             cm.removeItems(matrix, this, recipeAmount);
         } else {
-            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            // Clicked in the crafting grid, no special handling required
+            // (just place them left to right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
             view.setItem(clickedSlot, clickedItem);
         }

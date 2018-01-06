@@ -33,6 +33,8 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     }
 
     /**
+     * Populates a Map with the {@link OctaveGenerator} instances for the world.
+     *
      * @param world The world to create OctaveGenerators for
      * @param octaves The map to put the OctaveGenerators into
      */
@@ -40,6 +42,9 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
     }
 
     /**
+     * Returns the {@link OctaveGenerator} instances for the world, which are either newly created
+     * or retrieved from the cache.
+     *
      * @param world The world to look for in the cache
      * @return A map of {@link OctaveGenerator}s created by {@link #createWorldOctaves(World, Map)}
      */
@@ -66,7 +71,8 @@ public abstract class GlowChunkGenerator extends ChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation(World world, Random random) {
-        int spawnX = random.nextInt(256) - 128, spawnZ = random.nextInt(256) - 128;
+        int spawnX = random.nextInt(256) - 128;
+        int spawnZ = random.nextInt(256) - 128;
 
         for (int tries = 0; tries < 1000 && !canSpawn(world, spawnX, spawnZ); ++tries) {
             spawnX += random.nextInt(128) - 64;

@@ -28,8 +28,8 @@ public class GlowEnderman extends GlowMonster implements Enderman {
         if (type == null) {
             metadata.set(MetadataIndex.ENDERMAN_BLOCK, 0);
         } else {
-            // TODO: store block data. This code appears to be broken (although documented in the protocol):
-            // int blockId = type.getItemTypeId() << 4 | type.getData();
+            // TODO: store block data. This code appears to be broken (although documented in the
+            // protocol): int blockId = type.getItemTypeId() << 4 | type.getData();
             metadata.set(MetadataIndex.ENDERMAN_BLOCK, type.getItemTypeId());
         }
     }

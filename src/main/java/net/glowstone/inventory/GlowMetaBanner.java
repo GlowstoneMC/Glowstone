@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
@@ -17,38 +19,36 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
-    private List<Pattern> patterns = new ArrayList<>();
-    private DyeColor baseColor = null;
+    protected List<Pattern> patterns = new ArrayList<>();
+    @Getter
+    @Setter
+    protected DyeColor baseColor = null;
 
-    public GlowMetaBanner(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link BannerMeta}, its patterns are copied; otherwise, the new banner is blank.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaBanner(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaBanner)) {
+        if (!(meta instanceof BannerMeta)) {
             return;
         }
-        GlowMetaBanner banner = (GlowMetaBanner) meta;
-        patterns = banner.patterns;
-        baseColor = banner.baseColor;
+        BannerMeta banner = (BannerMeta) meta;
+        patterns = banner.getPatterns();
+        baseColor = banner.getBaseColor();
     }
 
     @Override
     public List<Pattern> getPatterns() {
-        return patterns;
+        return new ArrayList<>(patterns);
     }
 
     @Override
     public void setPatterns(List<Pattern> patterns) {
         checkNotNull(patterns, "Pattern cannot be null!");
-        this.patterns = patterns;
-    }
-
-    @Override
-    public DyeColor getBaseColor() {
-        return baseColor;
-    }
-
-    @Override
-    public void setBaseColor(DyeColor dyeColor) {
-        this.baseColor = dyeColor;
+        this.patterns.clear();
+        this.patterns.addAll(patterns);
     }
 
     @Override

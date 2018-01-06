@@ -1,6 +1,8 @@
 package net.glowstone.block.itemtype;
 
 import com.google.common.base.Preconditions;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -143,7 +145,8 @@ public class ItemType {
     // Actions
 
     /**
-     * Called when a player right-clicks in midair while holding this item. Also called by default if rightClickBlock is not overridden.
+     * Called when a player right-clicks in midair while holding this item. Also called by default
+     * if rightClickBlock is not overridden.
      *
      * @param player The player
      * @param holding The ItemStack the player was holding
@@ -153,7 +156,7 @@ public class ItemType {
     }
 
     /**
-     * Get the context this item can be used in
+     * Get the context this item can be used in.
      *
      * @return context of the item, default is {{@link Context#BLOCK}}
      */
@@ -173,7 +176,9 @@ public class ItemType {
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (placeAs != null) {
-            placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            if (placeAs.getContext().isBlockApplicable()) {
+                placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            }
         }
     }
 
@@ -182,24 +187,31 @@ public class ItemType {
 
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
+        return getClass().getSimpleName()
+                + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
     }
 
     /**
-     * Context of the Items interaction
+     * Context of the Items interaction.
      */
+    @AllArgsConstructor
     public enum Context {
         /**
-         * The item can only be used when clicking in the air
+         * The item can only be used when clicking in the air.
          */
-        AIR,
+        AIR(true, false),
         /**
-         * The item can only be used when clicking against a block
+         * The item can only be used when clicking against a block.
          */
-        BLOCK,
+        BLOCK(false, true),
         /**
-         * The item can be used on any click
+         * The item can be used on any click.
          */
-        ANY
+        ANY(true, true);
+
+        @Getter
+        private boolean airApplicable;
+        @Getter
+        private boolean blockApplicable;
     }
 }

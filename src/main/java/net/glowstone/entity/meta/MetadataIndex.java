@@ -3,6 +3,7 @@ package net.glowstone.entity.meta;
 import static net.glowstone.entity.meta.MetadataType.BLOCKID;
 import static net.glowstone.entity.meta.MetadataType.BOOLEAN;
 import static net.glowstone.entity.meta.MetadataType.BYTE;
+import static net.glowstone.entity.meta.MetadataType.CHAT;
 import static net.glowstone.entity.meta.MetadataType.DIRECTION;
 import static net.glowstone.entity.meta.MetadataType.FLOAT;
 import static net.glowstone.entity.meta.MetadataType.INT;
@@ -62,6 +63,7 @@ import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
+import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.entity.minecart.PoweredMinecart;
 
 /**
@@ -127,7 +129,8 @@ public enum MetadataIndex {
     ARMORSTAND_LEFT_LEG_POSITION(16, VECTOR, ArmorStand.class),
     ARMORSTAND_RIGHT_LEG_POSITION(17, VECTOR, ArmorStand.class),
 
-    //NO_AI(10, BYTE, Insentient.class), TODO - 1.9 "Insentient extends Living". Need more information
+    //NO_AI(10, BYTE, Insentient.class),
+    // TODO - 1.9 "Insentient extends Living". Need more information
 
     BAT_HANGING(12, BYTE, Bat.class),
 
@@ -225,9 +228,8 @@ public enum MetadataIndex {
 
     PARROT_VARIANT(15, INT, GlowParrot.class),
 
-    //TODO - 1.9 When Those minecarts are implemented, uncomment this
-    //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
-    //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
+    MINECARTCOMMANDBLOCK_COMMAND(12, STRING, CommandMinecart.class),
+    MINECARTCOMMANDBLOCK_LAST_OUTPUT(13, CHAT, CommandMinecart.class),
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
     TNT_PRIMED(6, INT, TNTPrimed.class),;
@@ -243,6 +245,12 @@ public enum MetadataIndex {
         this.appliesTo = appliesTo;
     }
 
+    /**
+     * Returns the first {@link MetadataIndex} with a given index and {@link MetadataType}.
+     * @param index the index to look up
+     * @param type the type to look up
+     * @return a {@link MetadataIndex} with that index and type, or null if none match
+     */
     public static MetadataIndex getIndex(int index, MetadataType type) {
         MetadataIndex output = null;
         for (MetadataIndex entry : values()) {

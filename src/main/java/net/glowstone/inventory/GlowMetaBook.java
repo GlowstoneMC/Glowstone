@@ -9,6 +9,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * The ItemMeta for book and quill and written book items.
@@ -20,16 +21,23 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     private List<String> pages;
     private Integer generation;
 
-    public GlowMetaBook(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link BookMeta}, its title, author, pages and generation are copied; otherwise, the new book
+     * is blank.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaBook(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaBook)) {
+        if (!(meta instanceof BookMeta)) {
             return;
         }
-        GlowMetaBook book = (GlowMetaBook) meta;
-        title = book.title;
-        author = book.author;
+        BookMeta book = (BookMeta) meta;
+        title = book.getTitle();
+        author = book.getAuthor();
         if (book.hasPages()) {
-            pages = new ArrayList<>(book.pages);
+            pages = new ArrayList<>(book instanceof GlowMetaBook
+                    ? ((GlowMetaBook) book).pages : book.getPages());
             filterPages();
         }
         if (hasGeneration()) {

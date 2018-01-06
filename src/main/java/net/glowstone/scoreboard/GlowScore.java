@@ -22,28 +22,39 @@ public final class GlowScore implements Score {
         this.entry = entry;
     }
 
+    @Override
     public Objective getObjective() {
         return objective;
     }
 
+    @Override
     public Scoreboard getScoreboard() {
         return objective.getScoreboard();
     }
 
+    @Override
     public String getEntry() {
         return entry;
     }
 
+    @Override
     @Deprecated
     public OfflinePlayer getPlayer() {
         return Bukkit.getOfflinePlayer(entry);
     }
 
+    @Override
     public int getScore() throws IllegalStateException {
         objective.checkValid();
         return score;
     }
 
+    /**
+     * Sets this score's value.
+     * @param score the new value
+     * @throws IllegalStateException if the objective is not registered on a scoreboard
+     */
+    @Override
     public void setScore(int score) throws IllegalStateException {
         objective.checkValid();
         this.score = score;

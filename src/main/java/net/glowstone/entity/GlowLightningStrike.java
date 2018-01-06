@@ -4,6 +4,7 @@ import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -36,9 +37,10 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     /**
      * Whether the lightning strike is just for effect.
      */
+    @Getter
     private boolean effect;
     /**
-     * Whether the lightning strike is silent
+     * Whether the lightning strike is silent.
      */
     private boolean isSilent;
     private final LightningStrike.Spigot spigot = new LightningStrike.Spigot() {
@@ -52,6 +54,13 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         this(location, false, false);
     }
 
+    /**
+     * Creates a lightning strike.
+     *
+     * @param location the location to strike
+     * @param effect true if this lightning strike doesn't damage entities or start fires
+     * @param isSilent true to suppress the sound effect
+     */
     public GlowLightningStrike(Location location, boolean effect, boolean isSilent) {
         super(location);
         this.effect = effect;
@@ -62,11 +71,6 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     @Override
     public EntityType getType() {
         return EntityType.LIGHTNING;
-    }
-
-    @Override
-    public boolean isEffect() {
-        return effect;
     }
 
     @Override
@@ -157,6 +161,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         }
     }
 
+    @Override
     public LightningStrike.Spigot spigot() {
         return spigot;
     }

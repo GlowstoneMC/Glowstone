@@ -6,7 +6,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-public class Flower {
+public class Flower implements TerrainObject {
 
     private final Material type;
     private final int data;
@@ -18,14 +18,10 @@ public class Flower {
 
     /**
      * Generates up to 64 flowers around the given point.
-     *
-     * @param world the affected world
-     * @param random the PRNG
-     * @param sourceX the center X coordinate
-     * @param sourceY the center Y coordinate
-     * @param sourceZ the center Z coordinate
      */
-    public void generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+    @Override
+    public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
+        boolean succeeded = false;
         for (int i = 0; i < 64; i++) {
             int x = sourceX + random.nextInt(8) - random.nextInt(8);
             int z = sourceZ + random.nextInt(8) - random.nextInt(8);
@@ -36,7 +32,9 @@ public class Flower {
                     && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
                 block.setType(type);
                 block.setData((byte) data);
+                succeeded = true;
             }
         }
+        return succeeded;
     }
 }

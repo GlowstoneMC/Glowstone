@@ -46,7 +46,7 @@ public final class GlowScheduler implements BukkitScheduler {
     private final ScheduledExecutorService executor = Executors
         .newSingleThreadScheduledExecutor(GlowThreadFactory.INSTANCE);
     /**
-     * Executor to handle execution of async tasks
+     * Executor to handle execution of async tasks.
      */
     private final ExecutorService asyncTaskExecutor = Executors
         .newCachedThreadPool(GlowThreadFactory.INSTANCE);
@@ -55,19 +55,19 @@ public final class GlowScheduler implements BukkitScheduler {
      */
     private final ConcurrentMap<Integer, GlowTask> tasks = new ConcurrentHashMap<>();
     /**
-     * World tick scheduler
+     * World tick scheduler.
      */
     private final WorldScheduler worlds;
     /**
-     * Tasks to be executed during the tick
+     * Tasks to be executed during the tick.
      */
     private final Deque<Runnable> inTickTasks = new ConcurrentLinkedDeque<>();
     /**
-     * Condition to wait on when processing in tick tasks
+     * Condition to wait on when processing in-tick tasks.
      */
     private final Object inTickTaskCondition;
     /**
-     * Runnable to run at end of tick
+     * Runnable to run at end of tick.
      */
     private final Runnable tickEndRun;
     /**
@@ -79,7 +79,8 @@ public final class GlowScheduler implements BukkitScheduler {
      * Creates a new task scheduler.
      *
      * @param server The server that will use this scheduler.
-     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's worlds.
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's
+     *         worlds.
      */
     public GlowScheduler(GlowServer server, WorldScheduler worlds) {
         this.server = server;
@@ -89,6 +90,9 @@ public final class GlowScheduler implements BukkitScheduler {
         primaryThread = Thread.currentThread();
     }
 
+    /**
+     * Starts running ticks.
+     */
     public void start() {
         executor.scheduleAtFixedRate(() -> {
             try {
@@ -134,6 +138,11 @@ public final class GlowScheduler implements BukkitScheduler {
         return Thread.currentThread() == primaryThread;
     }
 
+    /**
+     * Schedules the given task for the start of the next tick.
+     *
+     * @param run the task to run
+     */
     public void scheduleInTickExecution(Runnable run) {
         if (isPrimaryThread() || executor.isShutdown()) {
             run.run();
@@ -146,7 +155,8 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
-     * Adds new tasks and updates existing tasks, removing them if necessary. <br> todo: Add watchdog system to make sure ticks advance
+     * Adds new tasks and updates existing tasks, removing them if necessary. <br/>
+     * todo: Add watchdog system to make sure ticks advance
      */
     private void pulse() {
         primaryThread = Thread.currentThread();
@@ -167,6 +177,9 @@ public final class GlowScheduler implements BukkitScheduler {
                     break;
                 case STOP:
                     it.remove();
+                    break;
+                default:
+                    // do nothing
             }
         }
         try {
@@ -331,6 +344,14 @@ public final class GlowScheduler implements BukkitScheduler {
         return future;
     }
 
+    /**
+     * Runs a task on the primary thread, and blocks waiting for it to finish.
+     *
+     * @param task the task to run
+     * @param <T> the task's return type
+     * @return the task result
+     * @throws Exception if thrown by the task
+     */
     public <T> T syncIfNeeded(Callable<T> task) throws Exception {
         if (isPrimaryThread()) {
             return task.call();
@@ -366,7 +387,7 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
-     * Returns active async tasks
+     * Returns active async tasks.
      *
      * @return active async tasks
      */
@@ -378,7 +399,7 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
-     * Returns tasks that still have at least one run remaining
+     * Returns tasks that still have at least one run remaining.
      *
      * @return the tasks to be run
      */

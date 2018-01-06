@@ -218,6 +218,7 @@ public final class GlowScoreboard implements Scoreboard {
     ////////////////////////////////////////////////////////////////////////////
     // Objectives
 
+    @Override
     public Objective registerNewObjective(String name, String criteria)
         throws IllegalArgumentException {
         checkNotNull(name, "Name cannot be null");
@@ -234,23 +235,28 @@ public final class GlowScoreboard implements Scoreboard {
         return objective;
     }
 
+    @Override
     public Objective getObjective(String name) throws IllegalArgumentException {
         return objectives.get(name);
     }
 
+    @Override
     public Objective getObjective(DisplaySlot slot) throws IllegalArgumentException {
         checkNotNull(slot, "Slot cannot be null");
         return displaySlots.get(slot);
     }
 
+    @Override
     public Set<Objective> getObjectivesByCriteria(String criteria) throws IllegalArgumentException {
         return ImmutableSet.copyOf(getForCriteria(criteria));
     }
 
+    @Override
     public Set<Objective> getObjectives() {
         return ImmutableSet.copyOf(objectives.values());
     }
 
+    @Override
     public void clearSlot(DisplaySlot slot) throws IllegalArgumentException {
         checkNotNull(slot, "Slot cannot be null");
         setDisplaySlot(slot, null);
@@ -259,6 +265,7 @@ public final class GlowScoreboard implements Scoreboard {
     ////////////////////////////////////////////////////////////////////////////
     // Teams
 
+    @Override
     public Team registerNewTeam(String name) throws IllegalArgumentException {
         checkNotNull(name, "Name cannot be null");
         checkArgument(!teams.containsKey(name), "Team \"" + name + "\" already exists");
@@ -269,6 +276,7 @@ public final class GlowScoreboard implements Scoreboard {
         return team;
     }
 
+    @Override
     public Team getPlayerTeam(OfflinePlayer player) throws IllegalArgumentException {
         checkNotNull(player, "Player cannot be null");
         return entryTeams.get(player.getName());
@@ -280,11 +288,13 @@ public final class GlowScoreboard implements Scoreboard {
         return entryTeams.get(entry);
     }
 
+    @Override
     public Team getTeam(String teamName) throws IllegalArgumentException {
         checkNotNull(teamName, "Team name cannot be null");
         return teams.get(teamName);
     }
 
+    @Override
     public Set<Team> getTeams() {
         return ImmutableSet.copyOf(teams.values());
     }
@@ -292,10 +302,12 @@ public final class GlowScoreboard implements Scoreboard {
     ////////////////////////////////////////////////////////////////////////////
     // Scores
 
+    @Override
     public Set<String> getEntries() {
         return ImmutableSet.copyOf(scoreMap.keySet());
     }
 
+    @Override
     public Set<Score> getScores(String entry) throws IllegalArgumentException {
         checkNotNull(entry, "Entry cannot be null");
 
@@ -307,12 +319,13 @@ public final class GlowScoreboard implements Scoreboard {
         }
     }
 
-    @Deprecated
+    @Override
     public Set<Score> getScores(OfflinePlayer player) throws IllegalArgumentException {
         checkNotNull(player, "Player cannot be null");
         return getScores(player.getName());
     }
 
+    @Override
     public void resetScores(String entry) throws IllegalArgumentException {
         checkNotNull(entry, "Entry cannot be null");
 
@@ -323,13 +336,13 @@ public final class GlowScoreboard implements Scoreboard {
         scoreMap.remove(entry);
     }
 
-    @Deprecated
+    @Override
     public void resetScores(OfflinePlayer player) throws IllegalArgumentException {
         checkNotNull(player, "Player cannot be null");
         resetScores(player.getName());
     }
 
-    @Deprecated
+    @Override
     public Set<OfflinePlayer> getPlayers() {
         Set<OfflinePlayer> result = getEntries().stream().map(Bukkit::getOfflinePlayer)
             .collect(Collectors.toSet());

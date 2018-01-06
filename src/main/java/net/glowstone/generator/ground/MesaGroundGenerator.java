@@ -28,6 +28,11 @@ public class MesaGroundGenerator extends GroundGenerator {
         this(MesaType.NORMAL);
     }
 
+    /**
+     * Creates a ground generator for mesa biomes.
+     *
+     * @param type the type of mesa biome to generate
+     */
     public MesaGroundGenerator(MesaType type) {
         this.type = type;
         topMaterial = RED_SAND;
@@ -66,12 +71,12 @@ public class MesaGroundGenerator extends GroundGenerator {
         boolean colored = Math.cos(surfaceNoise / 3.0D * Math.PI) <= 0;
         double bryceCanyonHeight = 0;
         if (type == MesaType.BRYCE) {
-            int nX = (x & 0xFFFFFFF0) + (z & 0xF);
-            int nZ = (z & 0xFFFFFFF0) + (x & 0xF);
+            int noiseX = (x & 0xFFFFFFF0) + (z & 0xF);
+            int noiseZ = (z & 0xFFFFFFF0) + (x & 0xF);
             double noiseCanyonHeight = Math
-                .min(Math.abs(surfaceNoise), canyonHeightNoise.noise(nX, nZ, 0.5D, 2.0D));
+                .min(Math.abs(surfaceNoise), canyonHeightNoise.noise(noiseX, noiseZ, 0.5D, 2.0D));
             if (noiseCanyonHeight > 0) {
-                double heightScale = Math.abs(canyonScaleNoise.noise(nX, nZ, 0.5D, 2.0D));
+                double heightScale = Math.abs(canyonScaleNoise.noise(noiseX, noiseZ, 0.5D, 2.0D));
                 bryceCanyonHeight = Math.pow(noiseCanyonHeight, 2) * 2.5D;
                 double maxHeight = Math.ceil(50 * heightScale) + 14;
                 if (bryceCanyonHeight > maxHeight) {

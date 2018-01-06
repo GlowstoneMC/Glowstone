@@ -18,6 +18,9 @@ import org.bukkit.entity.Entity;
 
 public class TestForCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public TestForCommand() {
         super("testfor",
             "Tests for a certain target in game",
@@ -84,7 +87,8 @@ public class TestForCommand extends VanillaCommand {
             }
         }
 
-        // TODO: When command blocks are implemented, this should be updated to output the number of matching entities.
+        // TODO: When command blocks are implemented, this should be updated to output the number of
+        // matching entities.
         return true;
     }
 }

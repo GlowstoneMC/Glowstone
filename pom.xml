@@ -6,7 +6,7 @@
   <groupId>net.glowstone</groupId>
   <artifactId>glowstone</artifactId>
   <packaging>jar</packaging>
-  <version>2018.0.0-SNAPSHOT</version>
+  <version>2018.1.0-SNAPSHOT</version>
   <name>Glowstone</name>
   <url>https://www.glowstone.net</url>
   <description>A fast, customizable and compatible open source Minecraft server.</description>
@@ -249,6 +249,7 @@
           <forceCreation>true</forceCreation>
           <archive>
             <manifestEntries>
+              <Launcher-Agent-Class>net.glowstone.util.ClassPathAgent</Launcher-Agent-Class>
               <Main-Class>net.glowstone.GlowServer</Main-Class>
               <Implementation-Title>${project.name}</Implementation-Title>
               <Implementation-Version>${project.version}.${describe}</Implementation-Version>

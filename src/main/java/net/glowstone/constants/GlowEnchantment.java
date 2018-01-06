@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.util.WeightedRandom.Choice;
 import org.bukkit.Material;
@@ -168,10 +170,12 @@ public final class GlowEnchantment extends Enchantment implements Choice {
     }
 
     /**
-     * Treasure enchantments can only be obtained from chest loot, fishing, or trading for enchanted books.
+     * Treasure enchantments can only be obtained from chest loot, fishing, or trading for enchanted
+     * books.
      *
      * @return true if the enchantment is a treasure, otherwise false
      */
+    @Override
     public boolean isTreasure() {
         return impl.treasure;
     }
@@ -194,6 +198,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         return modifier >= impl.getMinRange(level) && modifier <= impl.getMaxRange(level);
     }
 
+    @RequiredArgsConstructor
     private enum Impl {
         PROTECTION_ENVIRONMENTAL(0, "Protection", 4, Rarity.COMMON, 1, 11, 20,
             EnchantmentTarget.ARMOR, GROUP_PROTECT, "minecraft:protection"),
@@ -261,16 +266,17 @@ public final class GlowEnchantment extends Enchantment implements Choice {
         private final int id;
         private final String name;
         private final int maxLevel;
+        private final Rarity rarity;
+        private final boolean treasure;
+        private final boolean cursed;
+        private final int minValue;
+        private final int minIncrement;
+        private final int maxIncrement;
+        private final boolean simpleRange;
         private final EnchantmentTarget target;
         private final MaterialMatcher matcher;
         private final int group;
-        private final Rarity rarity;
-        private final int minValue, minIncrement;
-        private final int maxIncrement;
-        private final boolean treasure;
-        private final boolean simpleRange;
-        private final boolean cursed;
-        private final String vanillaId;
+        @Getter private final String vanillaId;
 
         Impl(int id, String name, int max, Rarity rarity, int minValue, int minInc, int maxInc,
             EnchantmentTarget target, String vanillaId) {
@@ -317,25 +323,6 @@ public final class GlowEnchantment extends Enchantment implements Choice {
                 matcher, group, vanillaId);
         }
 
-        Impl(int id, String name, int max, Rarity rarity, boolean treasure, boolean cursed,
-            int minValue, int minInc, int maxInc, boolean simpleRange, EnchantmentTarget target,
-            MaterialMatcher matcher, int group, String vanillaId) {
-            this.id = id;
-            this.name = name;
-            maxLevel = max;
-            this.rarity = rarity;
-            this.target = target;
-            this.matcher = matcher;
-            this.group = group;
-            this.minValue = minValue;
-            minIncrement = minInc;
-            maxIncrement = maxInc;
-            this.simpleRange = simpleRange;
-            this.treasure = treasure;
-            this.cursed = cursed;
-            this.vanillaId = vanillaId;
-        }
-
         int getMinRange(int modifier) {
             modifier = modifier - 1; // Formula depends on input 1 being 0 for "no offset"
             return minIncrement * modifier + minValue;
@@ -343,10 +330,6 @@ public final class GlowEnchantment extends Enchantment implements Choice {
 
         int getMaxRange(int modifier) {
             return (simpleRange ? getMinRange(modifier) : 1 + modifier * 10) + maxIncrement;
-        }
-
-        public String getVanillaId() {
-            return vanillaId;
         }
     }
 

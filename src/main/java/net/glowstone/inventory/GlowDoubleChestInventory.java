@@ -12,6 +12,12 @@ public class GlowDoubleChestInventory extends GlowSuperInventory implements Doub
 
     private GlowChest first;
 
+    /**
+     * Creates an instance for the given double chest.
+     *
+     * @param first the north or west half of the chest
+     * @param second the south or east half of the chest
+     */
     public GlowDoubleChestInventory(GlowChest first, GlowChest second) {
         initialize(
             // Inventories

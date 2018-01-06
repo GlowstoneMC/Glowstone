@@ -11,20 +11,24 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffectMeta {
 
     private FireworkEffect effect;
 
-    public GlowMetaFireworkEffect(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link FireworkEffectMeta}, it is copied fully; otherwise, the {@link FireworkEffect} is
+     * null.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaFireworkEffect(ItemMeta meta) {
         super(meta);
 
-        if (!(meta instanceof GlowMetaFireworkEffect)) {
-            return;
+        if (meta instanceof FireworkEffectMeta) {
+            effect = ((FireworkEffectMeta) meta).getEffect();
         }
-
-        GlowMetaFireworkEffect effect = (GlowMetaFireworkEffect) meta;
-        this.effect = effect.effect;
     }
 
     static FireworkEffect toEffect(CompoundTag explosion) {

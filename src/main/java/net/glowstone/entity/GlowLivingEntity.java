@@ -182,7 +182,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     private boolean headRotated;
     /**
-     * The entity's current state.
+     * The entity's current AI state.
      */
     private MobState aiState = MobState.NO_AI;
     /**
@@ -661,12 +661,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Deprecated
     public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 0).get(0);
+        return getLineOfSight(transparent, maxDistance, 1).get(0);
     }
 
     @Override
     public Block getTargetBlock(Set<Material> materials, int maxDistance) {
-        return getLineOfSight(materials, maxDistance).get(0);
+        return getLineOfSight(materials, maxDistance, 1).get(0);
     }
 
     @Deprecated
@@ -685,7 +685,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Returns whether the entity's eye location is within a solid block.
      *
-     * @return if the entity is in a solid block
+     * @return true if the entity is in a solid block; false otherwise
      */
     public boolean isWithinSolidBlock() {
         return getEyeLocation().getBlock().getType().isOccluding();
@@ -841,11 +841,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                         // split experience
                         Integer[] values = ExperienceSplitter.cut(data.getExperience());
                         for (Integer exp : values) {
-                            double xmod = ThreadLocalRandom.current().nextDouble() - 0.5;
-                            double zmod = ThreadLocalRandom.current().nextDouble() - 0.5;
+                            ThreadLocalRandom random = ThreadLocalRandom.current();
+                            double modX = random.nextDouble() - 0.5;
+                            double modZ = random.nextDouble() - 0.5;
                             Location xpLocation = new Location(world,
-                                location.getBlockX() + 0.5 + xmod, location.getY(),
-                                location.getBlockZ() + 0.5 + zmod);
+                                location.getBlockX() + 0.5 + modX, location.getY(),
+                                location.getBlockZ() + 0.5 + modZ);
                             GlowExperienceOrb orb = (GlowExperienceOrb) world
                                 .spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
                             orb.setExperience(exp);
@@ -871,23 +872,18 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         // fire resistance
         if (cause != null && hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
-            boolean isFireDamage = false;
             if (source instanceof Fireball) {
-                isFireDamage = true;
+                return;
             } else {
                 switch (cause) {
                     case FIRE:
                     case FIRE_TICK:
                     case HOT_FLOOR:
                     case LAVA:
-                        isFireDamage = true;
-                        break;
+                        return;
                     default:
-                        // do nothing
+                        // Not fire damage; continue
                 }
-            }
-            if (isFireDamage) {
-                return;
             }
         }
 

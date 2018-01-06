@@ -16,6 +16,13 @@ public abstract class MapLayer {
         this.seed = seed;
     }
 
+    /**
+     * Creates the instances for the given map.
+     * @param seed the world seed
+     * @param environment the type of dimension
+     * @param worldType the world generator
+     * @return an array of all map layers this dimension needs
+     */
     public static MapLayer[] initialize(long seed, Environment environment, WorldType worldType) {
         if (environment == Environment.NORMAL && worldType == WorldType.FLAT) {
             return new MapLayer[]{new ConstantBiomeMapLayer(seed, Biome.PLAINS), null};

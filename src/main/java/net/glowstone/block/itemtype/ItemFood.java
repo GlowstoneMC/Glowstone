@@ -22,11 +22,6 @@ public class ItemFood extends ItemTimedUsage {
         saturation = 0;
     }
 
-    @Override
-    public Context getContext() {
-        return Context.AIR;
-    }
-
     protected int getFoodLevel(ItemStack stack) {
         return foodLevel;
     }
@@ -55,6 +50,13 @@ public class ItemFood extends ItemTimedUsage {
         return true;
     }
 
+    /**
+     * Player attempts to eat this food.
+     *
+     * @param player the eating player
+     * @param item the item stack eaten from
+     * @return whether food was eaten successfully
+     */
     public boolean eat(GlowPlayer player, ItemStack item) {
         if (!handleEat(player, item)) {
             return false;

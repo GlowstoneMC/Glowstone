@@ -11,6 +11,11 @@ public class LootItem {
     private final DefaultLootItem defaultItem;
     private final ConditionalLootItem[] conditionalItems;
 
+    /**
+     * Reads a LootItem from its JSON form.
+     *
+     * @param object a LootItem in JSON form
+     */
     public LootItem(JSONObject object) {
         defaultItem = new DefaultLootItem((JSONObject) object.get("default"));
         if (object.containsKey("conditions")) {

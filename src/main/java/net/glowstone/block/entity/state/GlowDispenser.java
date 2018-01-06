@@ -24,7 +24,8 @@ import org.bukkit.util.Vector;
 
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 
-    private static final DispenseBehaviorRegistry dispenseBehaviorRegistry = new DispenseBehaviorRegistry();
+    private static final DispenseBehaviorRegistry dispenseBehaviorRegistry =
+            new DispenseBehaviorRegistry();
 
     public GlowDispenser(GlowBlock block) {
         super(block);
@@ -34,6 +35,9 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         return dispenseBehaviorRegistry;
     }
 
+    /**
+     * Registers all vanilla dispense behaviors.
+     */
     public static void register() {
         // register all dispense behaviors
         DefaultDispenseBehavior bucketDispenseBehavior = new BucketDispenseBehavior();
@@ -105,6 +109,12 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         return InventoryUtil.getRandomSlot(ThreadLocalRandom.current(), getInventory(), true);
     }
 
+    /**
+     * Puts as much as possible of an {@link ItemStack} in the dispenser, and returns the rest.
+     *
+     * @param toPlace the item stack
+     * @return the portion of the item stack that didn't fit in the dispenser, or null if it all fit
+     */
     public ItemStack placeInDispenser(ItemStack toPlace) {
         Inventory inv = getInventory();
         Map<Integer, ItemStack> map = inv.addItem(toPlace);

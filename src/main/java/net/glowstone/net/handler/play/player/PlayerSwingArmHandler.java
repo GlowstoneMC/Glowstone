@@ -14,23 +14,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 
 public final class PlayerSwingArmHandler implements
-    MessageHandler<GlowSession, PlayerSwingArmMessage> {
+        MessageHandler<GlowSession, PlayerSwingArmMessage> {
 
     @Override
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
         GlowPlayer player = session.getPlayer();
 
-        Block block;
-        try {
-            block = player.getTargetBlock((Set<Material>) null, 6);
-        } catch (IllegalStateException ex) {
-            // getTargetBlock failed to find any block at all
-            block = null;
-        }
+        Block block = player.getTargetBlock((Set<Material>) null, 6);
 
         if (block == null || block.isEmpty()) {
-            if (EventFactory.onPlayerInteract(player, Action.LEFT_CLICK_AIR, message.getHandSlot()).useItemInHand()
-                == Result.DENY) {
+            if (EventFactory.onPlayerInteract(
+                    player, Action.LEFT_CLICK_AIR, message.getHandSlot()).useItemInHand()
+                    == Result.DENY) {
                 return;
             }
             // todo: item interactions with air
@@ -39,7 +34,7 @@ public final class PlayerSwingArmHandler implements
         if (!EventFactory.callEvent(new PlayerAnimationEvent(player)).isCancelled()) {
             // play the animation to others
             player.playAnimation(message.getHand() == 1 ? EntityAnimation.SWING_OFF_HAND
-                : EntityAnimation.SWING_MAIN_HAND);
+                    : EntityAnimation.SWING_MAIN_HAND);
         }
     }
 }

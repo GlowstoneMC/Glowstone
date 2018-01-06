@@ -33,28 +33,27 @@ public class LavaDecorator extends BlockDecorator {
         int sourceY = flowing ? 4 + random.nextInt(120) : 10 + random.nextInt(108);
 
         Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
-        if ((block.getType() == Material.NETHERRACK || block.isEmpty()) &&
-            block.getRelative(BlockFace.UP).getType() == Material.NETHERRACK) {
-            int netherrackBlockCount = 0;
-            for (BlockFace face : SIDES) {
-                if (block.getRelative(face).getType() == Material.NETHERRACK) {
-                    netherrackBlockCount++;
-                }
+        if ((block.getType() != Material.NETHERRACK && !block.isEmpty())
+                || block.getRelative(BlockFace.UP).getType() != Material.NETHERRACK) {
+            return;
+        }
+        int netherrackBlockCount = 0;
+        int airBlockCount = 0;
+        for (BlockFace face : SIDES) {
+            Block neighbor = block.getRelative(face);
+            if (neighbor.getType() == Material.NETHERRACK) {
+                netherrackBlockCount++;
+            } else if (neighbor.isEmpty()) {
+                airBlockCount++;
             }
-            int airBlockCount = 0;
-            for (BlockFace face : SIDES) {
-                if (block.getRelative(face).isEmpty()) {
-                    airBlockCount++;
-                }
-            }
+        }
 
-            if (netherrackBlockCount == 5
-                || flowing && airBlockCount == 1 && netherrackBlockCount == 4) {
-                BlockState state = block.getState();
-                state.setType(Material.LAVA);
-                state.update(true);
-                new PulseTask((GlowBlock) block, true, 1, true).startPulseTask();
-            }
+        if (netherrackBlockCount == 5
+            || flowing && airBlockCount == 1 && netherrackBlockCount == 4) {
+            BlockState state = block.getState();
+            state.setType(Material.LAVA);
+            state.update(true);
+            new PulseTask((GlowBlock) block, true, 1, true).startPulseTask();
         }
     }
 }
