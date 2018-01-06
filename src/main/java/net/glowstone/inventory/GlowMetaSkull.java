@@ -134,7 +134,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     /**
      * {@inheritDoc}
      *
-     * <p>When this returns false, it may still succeed asynchronously.</p>
+     * <p>When this returns false, it may still succeed asynchronously.
      */
     @Override
     public boolean setOwningPlayer(OfflinePlayer owningPlayer) {
