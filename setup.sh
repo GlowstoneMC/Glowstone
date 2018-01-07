@@ -8,4 +8,4 @@ echo verifying environment
 java -version
 mvn -version
 echo starting
-mvn -T 1C -B package clean install
+mvn -T 1C -B -X package clean install
