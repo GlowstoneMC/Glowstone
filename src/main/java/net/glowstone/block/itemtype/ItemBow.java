@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.InventoryUtil;
@@ -18,19 +19,7 @@ public class ItemBow extends ItemTimedUsage {
 
     @Override
     public void startUse(GlowPlayer player, ItemStack item) {
-        boolean haveArrow = false;
-        findArrow: for (ItemStack itemStack : player.getInventory().getContents()) {
-            switch (itemStack.getType()) {
-                case ARROW:
-                case SPECTRAL_ARROW:
-                case TIPPED_ARROW:
-                    haveArrow = true;
-                    break findArrow;
-                default:
-                    // do nothing
-            }
-        }
-        if (haveArrow) {
+        if (findArrow(player).isPresent()) {
             player.setUsageItem(item);
             player.setUsageTime(TICKS_TO_FULLY_CHARGE);
         }
@@ -38,23 +27,11 @@ public class ItemBow extends ItemTimedUsage {
 
     @Override
     public void endUse(GlowPlayer player, ItemStack item) {
-        ItemStack currentArrow = null;
-        // Check arrows again, since plugins can change the inventory while a bow is drawn
-        findArrow: for (ItemStack itemStack : player.getInventory().getContents()) {
-            switch (itemStack.getType()) {
-                case SPECTRAL_ARROW:
-                case TIPPED_ARROW:
-                    currentArrow = itemStack;
-                    break findArrow;
-                case ARROW:
-                    currentArrow = itemStack;
-                    break; // continue to search for a special arrow
-                default:
-                    // do nothing
-            }
-        }
-        if (currentArrow != null) {
-            Material arrowType = currentArrow.getType();
+        // Check arrows again, since plugins may have changed the inventory while the bow was drawn
+        Optional<ItemStack> maybeArrow = findArrow(player);
+        if (maybeArrow.isPresent()) {
+            ItemStack arrow = maybeArrow.get();
+            Material arrowType = arrow.getType();
             Arrow launchedArrow = null;
             boolean consumeArrow = (player.getGameMode() != GameMode.CREATIVE);
             switch (arrowType) {
@@ -67,7 +44,7 @@ public class ItemBow extends ItemTimedUsage {
                 case TIPPED_ARROW:
                     launchedArrow = player.launchProjectile(TippedArrow.class);
                     TippedArrow launchedTippedArrow = (TippedArrow) launchedArrow;
-                    InventoryUtil.copyPotionDataToTippedArrow(launchedTippedArrow, currentArrow);
+                    InventoryUtil.copyPotionDataToTippedArrow(launchedTippedArrow, arrow);
                     break;
                 case SPECTRAL_ARROW:
                     launchedArrow = player.launchProjectile(SpectralArrow.class);
@@ -80,11 +57,11 @@ public class ItemBow extends ItemTimedUsage {
             }
             if (launchedArrow != null) {
                 if (consumeArrow) {
-                    int amount = currentArrow.getAmount();
+                    int amount = arrow.getAmount();
                     if (amount <= 1) {
-                        player.getInventory().remove(currentArrow);
+                        player.getInventory().remove(arrow);
                     } else {
-                        currentArrow.setAmount(amount - 1);
+                        arrow.setAmount(amount - 1);
                     }
                 }
                 double chargeFraction = Math.max(0.0,
@@ -111,5 +88,22 @@ public class ItemBow extends ItemTimedUsage {
         }
         player.setUsageItem(null);
         player.setUsageTime(0);
+    }
+
+    private Optional<ItemStack> findArrow(GlowPlayer player) {
+        Optional<ItemStack> currentArrow = Optional.empty();
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            switch (itemStack.getType()) {
+                case SPECTRAL_ARROW:
+                case TIPPED_ARROW:
+                    return Optional.of(itemStack);
+                case ARROW:
+                    currentArrow = Optional.of(itemStack);
+                    // keep looking; we may find a special arrows
+                default:
+                    // do nothing
+            }
+        }
+        return currentArrow;
     }
 }
