@@ -29,6 +29,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     public GlowArrow(Location location) {
         super(location);
+        setGravityAccel(new Vector(0,-0.05,0));
         setBoundingBox(0.5, 0.5);
     }
 
@@ -36,7 +37,6 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     protected void pulsePhysics() {
         super.pulsePhysics();
         if (!isOnGround()) {
-            setVelocity(getVelocity().subtract(new Vector(0, 0.05, 0)));
             location.add(getVelocity());
             if (isTouchingMaterial(Material.WATER)
                     || isTouchingMaterial(Material.STATIONARY_WATER)) {

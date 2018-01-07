@@ -13,16 +13,8 @@ import org.bukkit.util.Vector;
 public class GlowEgg extends GlowProjectile implements Egg {
     public GlowEgg(Location location) {
         super(location);
+        setGravityAccel(new Vector(0, -0.3, 0));
         setBoundingBox(0.25, 0.25);
-    }
-
-    @Override
-    protected void pulsePhysics() {
-        super.pulsePhysics();
-        if (!isOnGround()) {
-            setVelocity(getVelocity().subtract(new Vector(0, 0.3, 0)));
-            location.add(getVelocity());
-        }
     }
 
     @Override
