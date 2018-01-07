@@ -1,3 +1,11 @@
 #!/bin/sh
 # Setup script for Glowstone
-mvn -T 1C -B package
+echo preparing environment
+sudo apt-get update
+apt-cache search maven
+sudo apt-get install maven default-jre default-jdk
+echo verifying environment
+java -version
+mvn -version
+echo starting
+mvn -T 1C -B -X package clean install
