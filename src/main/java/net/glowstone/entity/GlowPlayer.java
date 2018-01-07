@@ -233,7 +233,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private final List<Message> afterBlockChanges = new LinkedList<>();
 
     /**
-     * The set of plugin channels this player is listening on
+     * The set of plugin channels this player is listening on.
      */
     private final Set<String> listeningChannels = new HashSet<>();
 
@@ -281,7 +281,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private String displayName;
     /**
-     * The name a player has in the player list
+     * The name a player has in the player list.
      */
     private String playerListName;
     /**
@@ -297,7 +297,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private float experience;
     /**
-     * The human entity's current food level
+     * The human entity's current food level.
      */
     private int food = 20;
     /**
@@ -347,11 +347,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private boolean sleepingIgnored;
     /**
-     * The bed in which the player currently lies
+     * The bed in which the player currently lies.
      */
     private GlowBlock bed;
     /**
-     * The bed spawn location of a player
+     * The bed spawn location of a player.
      */
     private Location bedSpawn;
     /**
@@ -360,10 +360,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private boolean bedSpawnForced;
     private final Player.Spigot spigot = new Player.Spigot() {
         @Override
-        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius) {
+        public void playEffect(Location location, Effect effect, int id, int data, float offsetX,
+                float offsetY, float offsetZ, float speed, int particleCount, int radius) {
             if (effect.getType() == Type.PARTICLE) {
                 MaterialData material = new MaterialData(id, (byte) data);
-                showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed, particleCount);
+                showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed,
+                        particleCount);
             } else {
                 GlowPlayer.this.playEffect(location, effect, data);
             }
@@ -391,7 +393,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         @Override
         public Set<Player> getHiddenPlayers() {
-            return hiddenEntities.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).collect(Collectors.toSet());
+            return hiddenEntities.stream().map(Bukkit::getPlayer).filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
         }
 
         @Override
@@ -444,7 +447,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private GlowScoreboard scoreboard;
     /**
-     * The player's current title, if any
+     * The player's current title, if any.
      */
     private Title.Builder currentTitle = new Title.Builder();
     /**
@@ -575,6 +578,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return new Location(world, blockX + 0.5, y, blockZ + 0.5);
     }
 
+    /**
+     * Loads the player's state and sends the messages that are necessary on login.
+     *
+     * @param session the player's session
+     * @param reader the source of the player's saved state
+     */
     public void join(GlowSession session, PlayerReader reader) {
         // send join game
         // in future, handle hardcore, difficulty, and level type
@@ -583,7 +592,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (server.isHardcore()) {
             gameMode |= 0x8;
         }
-        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world.getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world.getGameRuleMap().getBoolean("reducedDebugInfo")));
+        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world
+                .getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world
+                .getGameRuleMap().getBoolean("reducedDebugInfo")));
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
@@ -671,7 +682,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean canTakeDamage(DamageCause damageCause) {
-        return damageCause == DamageCause.FALL ? !getAllowFlight() && super.canTakeDamage(damageCause) : super.canTakeDamage(damageCause);
+        return damageCause == DamageCause.FALL ? !getAllowFlight() && super
+                .canTakeDamage(damageCause) : super.canTakeDamage(damageCause);
     }
 
     /**
@@ -693,7 +705,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Kicks this player
+     * Kicks this player.
      */
     @Override
     public void remove() {
@@ -714,6 +726,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         super.remove();
     }
 
+    /**
+     * Handle player disconnection.
+     *
+     * @param async if true, the player's data is saved asynchronously
+     */
     public void remove(boolean async) {
         knownChunks.clear();
         chunkLock.clear();
@@ -765,7 +782,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 saturation = Math.max(saturation - 1f, 0f);
                 sendHealth();
             } else if (world.getDifficulty() != Difficulty.PEACEFUL) {
-                FoodLevelChangeEvent event = EventFactory.callEvent(new FoodLevelChangeEvent(this, Math.max(food - 1, 0)));
+                FoodLevelChangeEvent event = EventFactory
+                        .callEvent(new FoodLevelChangeEvent(this, Math.max(food - 1, 0)));
                 if (!event.isCancelled()) {
                     food = event.getFoodLevel();
                 }
@@ -774,9 +792,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         if (getHealth() < getMaxHealth() && !isDead()) {
-            if (food >= 18 && ticksLived % 80 == 0 || world.getDifficulty() == Difficulty.PEACEFUL) {
+            if (food >= 18 && ticksLived % 80 == 0
+                    || world.getDifficulty() == Difficulty.PEACEFUL) {
 
-                EntityRegainHealthEvent event1 = new EntityRegainHealthEvent(this, 1f, RegainReason.SATIATED);
+                EntityRegainHealthEvent event1
+                        = new EntityRegainHealthEvent(this, 1f, RegainReason.SATIATED);
                 EventFactory.callEvent(event1);
                 if (!event1.isCancelled()) {
                     setHealth(getHealth() + 1);
@@ -836,28 +856,31 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             // add entities
             knownChunks.forEach(key ->
-                            world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
-                    .filter(entity -> this != entity
-                            && isWithinDistance(entity)
-                            && !entity.isDead()
-                            && !knownEntities.contains(entity)
-                            && !hiddenEntities.contains(entity.getUniqueId()))
-                    .forEach((entity) -> Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
-                        worldLock.readLock().lock();
-                        try {
-                            knownEntities.add(entity);
-                        } finally {
-                            worldLock.readLock().unlock();
-                        }
-                        entity.createSpawnMessage().forEach(session::send);
-                        entity.createAfterSpawnMessage(session).forEach(session::send);
-                    })));
+                    world.getChunkAt(key.getX(), key.getZ()).getRawEntities().stream()
+                            .filter(entity -> this != entity
+                                    && isWithinDistance(entity)
+                                    && !entity.isDead()
+                                    && !knownEntities.contains(entity)
+                                    && !hiddenEntities.contains(entity.getUniqueId()))
+                            .forEach((entity) -> Bukkit.getScheduler()
+                                    .runTaskAsynchronously(null, () -> {
+                                        worldLock.readLock().lock();
+                                        try {
+                                            knownEntities.add(entity);
+                                        } finally {
+                                            worldLock.readLock().unlock();
+                                        }
+                                        entity.createSpawnMessage().forEach(session::send);
+                                        entity.createAfterSpawnMessage(session)
+                                                .forEach(session::send);
+                                    })));
         } finally {
             worldLock.writeLock().unlock();
         }
 
         if (passengerChanged) {
-            session.send(new SetPassengerMessage(SELF_ID, getPassengers().stream().mapToInt(Entity::getEntityId).toArray()));
+            session.send(new SetPassengerMessage(SELF_ID, getPassengers().stream()
+                    .mapToInt(Entity::getEntityId).toArray()));
         }
         getAttributeManager().sendMessages(session);
     }
@@ -888,8 +911,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 if (message != null) {
                     Key key = GlowChunk.Key.of(message.getX() >> 4, message.getZ() >> 4);
                     if (canSeeChunk(key)) {
-                        Map<BlockVector, BlockChangeMessage> map = chunks.computeIfAbsent(key, k -> new HashMap<>());
-                        map.put(new BlockVector(message.getX(), message.getY(), message.getZ()), message);
+                        Map<BlockVector, BlockChangeMessage> map = chunks
+                                .computeIfAbsent(key, k -> new HashMap<>());
+                        map.put(new BlockVector(message.getX(), message.getY(), message
+                                .getZ()), message);
                     }
                 }
             }
@@ -929,7 +954,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                     newChunks.add(GlowChunk.Key.of(x, z));
                 }
             }
-        } else if (Math.abs(centralX - prevCentralX) > radius || Math.abs(centralZ - prevCentralZ) > radius) {
+        } else if (Math.abs(centralX - prevCentralX) > radius
+                || Math.abs(centralZ - prevCentralZ) > radius) {
             knownChunks.clear();
             for (int x = centralX - radius; x <= centralX + radius; x++) {
                 for (int z = centralZ - radius; z <= centralZ + radius; z++) {
@@ -981,12 +1007,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         boolean skylight = world.getEnvironment() == Environment.NORMAL;
 
         newChunks.stream().map(key -> world.getChunkAt(key.getX(), key.getZ()).toMessage(skylight))
-            .forEach(session::send);
+                .forEach(session::send);
 
         // send visible block entity data
         newChunks.stream().flatMap(key -> world.getChunkAt(key.getX(),
-            key.getZ()).getRawBlockEntities().stream())
-            .forEach(entity -> entity.update(this));
+                key.getZ()).getRawBlockEntities().stream())
+                .forEach(entity -> entity.update(this));
 
         // and remove old chunks
         if (previousChunks != null) {
@@ -1028,7 +1054,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         // spawn into world
         String type = world.getWorldType().getName().toLowerCase();
-        session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty().getValue(), getGameMode().getValue(), type));
+        session.send(new RespawnMessage(world.getEnvironment().getId(), world.getDifficulty()
+                .getValue(), getGameMode().getValue(), type));
 
         setRawLocation(location, false); // take us to spawn position
         session.send(new PositionRotationMessage(location));
@@ -1103,10 +1130,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             // fire event and perform spawn
             PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
             EventFactory.callEvent(event);
-            if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities.isEmpty()) {
-                // we need to manually reset all known entities if the player respawns in the same world
+            if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities
+                    .isEmpty()) {
+                // we need to manually reset all known entities if the player respawns in the
+                // same world
                 List<Integer> entityIds = new ArrayList<>(knownEntities.size());
-                entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId).collect(Collectors.toList()));
+                entityIds.addAll(knownEntities.stream().map(GlowEntity::getEntityId)
+                        .collect(Collectors.toList()));
                 session.send(new DestroyEntitiesMessage(entityIds));
                 knownEntities.clear();
             }
@@ -1170,7 +1200,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Check that the specified location matches that of the last opened sign editor, and if so, clears the last opened sign editor.
+     * Check that the specified location matches that of the last opened sign editor, and if so,
+     * clears the last opened sign editor.
      *
      * @param loc The location to check
      * @return Whether the location matched.
@@ -1203,7 +1234,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param updateMessage The message to send.
      */
     private void updateUserListEntries(UserListItemMessage updateMessage) {
-        server.getRawOnlinePlayers().stream().filter(player -> player.canSee(this)).forEach(player -> player.getSession().send(updateMessage));
+        server.getRawOnlinePlayers().stream().filter(player -> player.canSee(this))
+                .forEach(player -> player.getSession().send(updateMessage));
     }
 
     @Override
@@ -1222,7 +1254,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param settings The settings to set.
      */
     public void setSettings(ClientSettings settings) {
-        forceStream = settings.getViewDistance() != this.settings.getViewDistance() && settings.getViewDistance() + 1 <= server.getViewDistance();
+        forceStream = settings.getViewDistance() != this.settings.getViewDistance()
+                && settings.getViewDistance() + 1 <= server.getViewDistance();
         this.settings = settings;
         metadata.set(MetadataIndex.PLAYER_SKIN_PARTS, settings.getSkinFlags());
         metadata.set(MetadataIndex.PLAYER_MAIN_HAND, settings.getMainHand());
@@ -1308,7 +1341,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean isOp() {
-        return getServer().getOpsList().containsUUID(getUniqueId());
+        return getServer().getOpsList().containsUuid(getUniqueId());
     }
 
     @Override
@@ -1730,6 +1763,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         spectating = entity;
     }
 
+    /**
+     * Updates the hunger bar and hunger saturation.
+     *
+     * @param food the amount of food (in half-icons on the hunger bar)
+     * @param saturation the amount of food saturation (in half-icons of food it will save)
+     */
     public void setFoodLevelAndSaturation(int food, float saturation) {
         this.food = Math.max(Math.min(food, 20), 0);
         this.saturation = Math.min(this.saturation + food * saturation * 2.0F, this.food);
@@ -1751,6 +1790,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return getGameMode() == GameMode.SURVIVAL | getGameMode() == GameMode.ADVENTURE;
     }
 
+    /**
+     * Increases the exhaustion counter, but applies the maximum.
+     *
+     * @param exhaustion the amount of exhaustion to add
+     */
     // todo: effects
     // todo: swim
     // todo: jump
@@ -1765,14 +1809,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     ////////////////////////////////////////////////////////////////////////////
     // Actions
 
+    /**
+     * Add the exhaustion for sprinting from the given location to the current location, if this
+     * player <em>is</em> sprinting.
+     *
+     * @param move the previous location
+     */
     public void addMoveExhaustion(Location move) {
-        if (shouldCalculateExhaustion() && !teleported) {
+        if (shouldCalculateExhaustion() && !teleported && isSprinting()) {
             double distanceSquared = location.distanceSquared(move);
             if (distanceSquared > 0) { // update packet and rotation
                 double distance = Math.sqrt(distanceSquared);
-                if (isSprinting()) {
-                    addExhaustion((float) (0.1f * distance));
-                }
+                addExhaustion((float) (0.1f * distance));
             }
         }
     }
@@ -1820,7 +1868,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         checkNotNull(location.getWorld(), "location's world cannot be null");
         checkNotNull(cause, "cause cannot be null");
         if (this.location != null && this.location.getWorld() != null) {
-            PlayerTeleportEvent event = new PlayerTeleportEvent(this, this.location, location, cause);
+            PlayerTeleportEvent event
+                    = new PlayerTeleportEvent(this, this.location, location, cause);
             if (EventFactory.callEvent(event).isCancelled()) {
                 return false;
             }
@@ -1846,6 +1895,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return true;
     }
 
+    /**
+     * Finishes the teleport process.
+     */
     public void endTeleport() {
         Position.copyLocation(teleportedTo, location);
         teleportedTo = null;
@@ -1859,7 +1911,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             target = server.getWorlds().get(0).getSpawnLocation();
         }
 
-        PlayerPortalEvent event = EventFactory.callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
+        PlayerPortalEvent event = EventFactory
+                .callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
         }
@@ -1888,7 +1941,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             return false;
         }
 
-        PlayerPortalEvent event = EventFactory.callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
+        PlayerPortalEvent event = EventFactory
+                .callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
         }
@@ -1924,7 +1978,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         getSession().send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
         UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
-        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this)).forEach(p -> p.getSession().send(msg));
+        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this))
+                .forEach(p -> p.getSession().send(msg));
     }
 
     /**
@@ -1942,7 +1997,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (exitBlock == null) { // If no empty blocks were found fallback to block above bed
             exitBlock = head.getRelative(BlockFace.UP);
         }
-        Location exitLocation = exitBlock.getLocation().add(0.5, 0.1, 0.5); // Use center of block
 
         // Set their spawn (normally omitted if their bed gets destroyed instead of them leaving it)
         if (setSpawn) {
@@ -1955,6 +2009,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sleeping = false;
 
         // And eject the player
+        Location exitLocation = exitBlock.getLocation().add(0.5, 0.1, 0.5); // Use center of block
         setRawLocation(exitLocation, false);
         teleported = true;
 
@@ -1989,7 +2044,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendMessage(ChatMessageType chatMessageType, BaseComponent... baseComponents) {
-        session.send(new ChatMessage(TextMessage.decode(ComponentSerializer.toString(baseComponents)), chatMessageType.ordinal()));
+        session.send(new ChatMessage(TextMessage
+                .decode(ComponentSerializer.toString(baseComponents)), chatMessageType.ordinal()));
     }
 
     @Override
@@ -2000,7 +2056,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendActionBar(String message) {
-        // "old" formatting workaround because apparently "new" styling doesn't work as of 01/18/2015
+        // "old" formatting workaround because apparently "new" styling doesn't work as of
+        // 01/18/2015
         JSONObject json = new JSONObject();
         json.put("text", message);
         session.send(new ChatMessage(new TextMessage(json), 2));
@@ -2027,42 +2084,50 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, T data) {
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count,
+            T data) {
         spawnParticle(particle, x, y, z, count, 0, 0, 0, 1, data);
     }
 
     @Override
-    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ) {
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ) {
         spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, 1, null);
     }
 
     @Override
-    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ) {
+    public void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ) {
         spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, 1, null);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, T data) {
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ, T data) {
         spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, 1, data);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, T data) {
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ, T data) {
         spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetY, 1, data);
     }
 
     @Override
-    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ, double extra) {
         spawnParticle(particle, location, count, offsetX, offsetY, offsetZ, extra, null);
     }
 
     @Override
-    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+    public void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ, double extra) {
         spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, extra, null);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ, double extra, T data) {
         double distance = getLocation().distanceSquared(location);
         boolean isLongDistance = GlowParticle.isLongDistance(particle);
 
@@ -2070,13 +2135,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         int[] particleData = GlowParticle.getExtData(particle, data);
 
         if (distance <= 1024.0D || isLongDistance && distance <= 262144.0D) {
-            getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra, count, particleData));
+            getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location
+                    .getX(), (float) location.getY(), (float) location
+                    .getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra,
+                    count, particleData));
         }
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
-        spawnParticle(particle, new Location(world, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ, double extra, T data) {
+        spawnParticle(particle, new Location(world, x, y, z), count, offsetX, offsetY, offsetZ,
+                extra, data);
     }
 
     @Override
@@ -2141,13 +2211,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             Runnable task = () -> {
                 server.getLogger().info(getName() + " issued command: " + text);
                 try {
-                    PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(this, text);
+                    PlayerCommandPreprocessEvent event
+                            = new PlayerCommandPreprocessEvent(this, text);
                     if (!EventFactory.callEvent(event).isCancelled()) {
                         server.dispatchCommand(this, event.getMessage().substring(1));
                     }
                 } catch (Exception ex) {
-                    sendMessage(ChatColor.RED + "An internal error occurred while executing your command.");
-                    server.getLogger().log(Level.SEVERE, "Exception while executing command: " + text, ex);
+                    sendMessage(ChatColor.RED
+                            + "An internal error occurred while executing your command.");
+                    server.getLogger()
+                            .log(Level.SEVERE, "Exception while executing command: " + text, ex);
                 }
             };
 
@@ -2177,6 +2250,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         saveData(true);
     }
 
+    /**
+     * Saves the players current location, health, inventory, motion, and other information into the
+     * username.dat file, in the world/player folder.
+     *
+     * @param async if true, save asynchronously; if false, block until saved
+     */
     public void saveData(boolean async) {
         if (async) {
             Bukkit.getScheduler().runTaskAsynchronously(null, () -> {
@@ -2290,7 +2369,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         int id = effect.getId();
-        session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data, false));
+        session.send(new PlayEffectMessage(id, loc.getBlockX(), loc.getBlockY(), loc
+                .getBlockZ(), data, false));
     }
 
     @Override
@@ -2300,7 +2380,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        playSound(location, sound, GlowSound.getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
+        playSound(location, sound, GlowSound
+                .getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
     }
 
     @Override
@@ -2309,7 +2390,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void playSound(Location location, String sound, SoundCategory category, float volume, float pitch) {
+    public void playSound(Location location, String sound, SoundCategory category, float volume,
+            float pitch) {
         if (location == null || sound == null) {
             return;
         }
@@ -2320,7 +2402,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
+    public void playSound(Location location, Sound sound, SoundCategory category, float volume,
+            float pitch) {
         playSound(location, GlowSound.getVanillaId(sound), category, volume, pitch);
     }
 
@@ -2380,8 +2463,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return spigot;
     }
 
+    /**
+     * Sends a {@link PlayParticleMessage} to display the given particle.
+     *
+     * @param loc the location
+     * @param particle the particle type
+     * @param material the item or block data
+     * @param offsetX TODO: document this parameter
+     * @param offsetY TODO: document this parameter
+     * @param offsetZ TODO: document this parameter
+     * @param speed TODO: document this parameter
+     * @param amount the number of particles
+     */
     //@Override
-    public void showParticle(Location loc, Effect particle, MaterialData material, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+    public void showParticle(Location loc, Effect particle, MaterialData material, float offsetX,
+            float offsetY, float offsetZ, float speed, int amount) {
         if (location == null || particle == null || particle.getType() != Type.PARTICLE) {
             return;
         }
@@ -2392,7 +2488,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         float y = (float) loc.getY();
         float z = (float) loc.getZ();
         int[] extData = GlowParticle.getExtData(particle, material);
-        session.send(new PlayParticleMessage(id, longDistance, x, y, z, offsetX, offsetY, offsetZ, speed, amount, extData));
+        session.send(new PlayParticleMessage(id, longDistance, x, y, z, offsetX, offsetY,
+                offsetZ, speed, amount, extData));
     }
 
     @Override
@@ -2402,9 +2499,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendBlockChange(Location loc, int material, byte data) {
-        sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material, data));
+        sendBlockChange(new BlockChangeMessage(loc.getBlockX(), loc.getBlockY(), loc
+                .getBlockZ(), material, data));
     }
 
+    /**
+     * Sends the given {@link BlockChangeMessage} if it's in a chunk this player can see.
+     *
+     * @param message the message to send
+     */
     public void sendBlockChange(BlockChangeMessage message) {
         // only send message if the chunk is within visible range
         Key key = GlowChunk.Key.of(message.getX() >> 4, message.getZ() >> 4);
@@ -2429,12 +2532,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         checkNotNull(lines, "lines cannot be null");
         checkArgument(lines.length == 4, "lines.length must equal 4");
 
-        afterBlockChanges.add(UpdateSignMessage.fromPlainText(location.getBlockX(), location.getBlockY(), location.getBlockZ(), lines));
+        afterBlockChanges.add(UpdateSignMessage
+                .fromPlainText(location.getBlockX(), location.getBlockY(), location
+                        .getBlockZ(), lines));
     }
 
     /**
-     * Send a sign change, similar to {@link #sendSignChange(Location, String[])},
-     * but using complete TextMessages instead of strings.
+     * Send a sign change, similar to {@link #sendSignChange(Location, String[])}, but using
+     * complete TextMessages instead of strings.
      *
      * @param sign the sign
      * @param location the location of the sign
@@ -2442,14 +2547,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @throws IllegalArgumentException if location is null
      * @throws IllegalArgumentException if lines is non-null and has a length less than 4
      */
-    public void sendSignChange(SignEntity sign, Location location, TextMessage[] lines) throws IllegalArgumentException {
+    public void sendSignChange(SignEntity sign, Location location,
+            TextMessage[] lines) throws IllegalArgumentException {
         checkNotNull(location, "location cannot be null");
         checkNotNull(lines, "lines cannot be null");
         checkArgument(lines.length == 4, "lines.length must equal 4");
 
         CompoundTag tag = new CompoundTag();
         sign.saveNbt(tag);
-        afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), GlowBlockEntity.SIGN.getValue(), tag));
+        afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location
+                .getBlockY(), location.getBlockZ(), GlowBlockEntity.SIGN.getValue(), tag));
     }
 
     /**
@@ -2464,19 +2571,22 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         checkNotNull(type, "Type cannot be null");
         checkNotNull(nbt, "NBT cannot be null");
 
-        afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location.getBlockY(), location.getBlockZ(), type.getValue(), nbt));
+        afterBlockChanges.add(new UpdateBlockEntityMessage(location.getBlockX(), location
+                .getBlockY(), location.getBlockZ(), type.getValue(), nbt));
     }
 
     @Override
     public void sendMap(MapView map) {
         GlowMapCanvas mapCanvas = GlowMapCanvas.createAndRender(map, this);
-        session.send(new MapDataMessage(map.getId(), map.getScale().ordinal(), Collections.emptyList(),
-            mapCanvas.toSection()));
+        session.send(new MapDataMessage(map.getId(), map.getScale().ordinal(), Collections
+                .emptyList(),
+                mapCanvas.toSection()));
     }
 
     @Override
     public void setPlayerListHeaderFooter(BaseComponent[] header, BaseComponent[] footer) {
-        TextMessage h = TextMessage.decode(ComponentSerializer.toString(header)), f = TextMessage.decode(ComponentSerializer.toString(footer));
+        TextMessage h = TextMessage.decode(ComponentSerializer.toString(header));
+        TextMessage f = TextMessage.decode(ComponentSerializer.toString(footer));
         session.send(new UserListHeaderFooterMessage(h, f));
     }
 
@@ -2513,12 +2623,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void showTitle(BaseComponent[] title, BaseComponent[] subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
+    public void showTitle(BaseComponent[] title, BaseComponent[] subtitle, int fadeInTicks,
+            int stayTicks, int fadeOutTicks) {
         sendTitle(new Title(title, subtitle, fadeInTicks, stayTicks, fadeOutTicks));
     }
 
     @Override
-    public void showTitle(BaseComponent title, BaseComponent subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
+    public void showTitle(BaseComponent title, BaseComponent subtitle, int fadeInTicks,
+            int stayTicks, int fadeOutTicks) {
         sendTitle(new Title(title, subtitle, fadeInTicks, stayTicks, fadeOutTicks));
     }
 
@@ -2538,7 +2650,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Send the player a title base on a {@link Title.Builder}
+     * Send the player a title base on a {@link Title.Builder}.
      *
      * @param title the {@link Title.Builder} to send the player
      */
@@ -2547,7 +2659,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Send the player their current title
+     * Send the player their current title.
      */
     public void sendTitle() {
         sendTitle(currentTitle);
@@ -2566,7 +2678,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             currentTitle.subtitle(title.getSubtitle());
         }
 
-        if (builtTitle.getFadeIn() != title.getFadeIn() && title.getFadeIn() != Title.DEFAULT_FADE_IN) {
+        if (builtTitle.getFadeIn() != title.getFadeIn()
+                && title.getFadeIn() != Title.DEFAULT_FADE_IN) {
             currentTitle.fadeIn(title.getFadeIn());
         }
 
@@ -2574,23 +2687,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             currentTitle.stay(title.getStay());
         }
 
-        if (builtTitle.getFadeOut() != title.getFadeOut() && title.getFadeOut() != Title.DEFAULT_FADE_OUT) {
+        if (builtTitle.getFadeOut() != title.getFadeOut()
+                && title.getFadeOut() != Title.DEFAULT_FADE_OUT) {
             currentTitle.fadeOut(title.getFadeOut());
         }
     }
 
     /**
-     * Update a specific attribute of the player's title
+     * Update a specific attribute of the player's title.
      *
      * @param action the attribute to update
      * @param value the value of the attribute
      */
     public void updateTitle(TitleMessage.Action action, Object... value) {
-        Preconditions.checkArgument(value.length > 0, "Expected at least one argument. Got " + value.length);
+        Preconditions.checkArgument(
+                value.length > 0, "Expected at least one argument. Got " + value.length);
 
         switch (action) {
             case TITLE:
-                Preconditions.checkArgument(!(value instanceof String[] || value instanceof BaseComponent[]), "Value is not of the correct type");
+                Preconditions.checkArgument(!(value instanceof String[]
+                        || value instanceof BaseComponent[]), "Value is not of the correct type");
 
                 if (value[0] instanceof String) {
                     StringBuilder builder = new StringBuilder();
@@ -2610,7 +2726,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
                 break;
             case SUBTITLE:
-                Preconditions.checkArgument(!(value instanceof String[] || value instanceof BaseComponent[]), "Value is not of the correct type");
+                Preconditions.checkArgument(!(value instanceof String[]
+                        || value instanceof BaseComponent[]), "Value is not of the correct type");
 
                 if (value[0] instanceof String) {
                     StringBuilder builder = new StringBuilder();
@@ -2630,8 +2747,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
                 break;
             case TIMES:
-                Preconditions.checkArgument(!(value instanceof Integer[]), "Value is not of the correct type");
-                Preconditions.checkArgument(value.length == 3, "Expected 3 values. Got " + value.length);
+                Preconditions
+                        .checkArgument(!(value instanceof Integer[]), "Value is not of the "
+                                + "correct type");
+                Preconditions
+                        .checkArgument(value.length == 3, "Expected 3 values. Got " + value.length);
 
                 currentTitle.fadeIn((int) value[0]);
                 currentTitle.stay((int) value[1]);
@@ -2639,7 +2759,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
                 break;
             default:
-                Preconditions.checkArgument(true, "Action is something other than a title, subtitle, or times");
+                Preconditions
+                        .checkArgument(true, "Action is something other than a title, subtitle, "
+                                + "or times");
         }
     }
 
@@ -2663,10 +2785,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Awards the given achievement if the player already has the parent achievement, otherwise does nothing.
+     * Awards the given achievement if the player already has the parent achievement, otherwise does
+     * nothing.
      *
-     * <p>If {@code awardParents} is true, award the player all parent achievements and the given achievement,
-     * making this method equivalent to {@link #awardAchievement(Achievement)}.
+     * <p>If {@code awardParents} is true, award the player all parent achievements and the given
+     * achievement, making this method equivalent to {@link #awardAchievement(Achievement)}.
      *
      * @param achievement the achievement to award.
      * @param awardParents whether parent achievements should be awarded.
@@ -2695,7 +2818,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         if (server.getAnnounceAchievements()) {
             // todo: make message fancier (hover, translated names)
-            server.broadcastMessage(getName() + " has just earned the achievement " + ChatColor.GREEN + "[" + GlowAchievement.getFancyName(achievement) + "]");
+            server.broadcastMessage(
+                    getName() + " has just earned the achievement " + ChatColor.GREEN + "["
+                            + GlowAchievement.getFancyName(achievement) + "]");
         }
         return true;
     }
@@ -2722,12 +2847,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+    public int getStatistic(Statistic statistic,
+            Material material) throws IllegalArgumentException {
         return stats.get(statistic, material);
     }
 
     @Override
-    public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+    public int getStatistic(Statistic statistic,
+            EntityType entityType) throws IllegalArgumentException {
         return stats.get(statistic, entityType);
     }
 
@@ -2737,7 +2864,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void setStatistic(Statistic statistic, Material material, int newValue) throws IllegalArgumentException {
+    public void setStatistic(Statistic statistic, Material material,
+            int newValue) throws IllegalArgumentException {
         stats.set(statistic, material, newValue);
     }
 
@@ -2767,12 +2895,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+    public void incrementStatistic(Statistic statistic,
+            EntityType entityType) throws IllegalArgumentException {
         stats.add(statistic, entityType, 1);
     }
 
     @Override
-    public void incrementStatistic(Statistic statistic, EntityType entityType, int amount) throws IllegalArgumentException {
+    public void incrementStatistic(Statistic statistic, EntityType entityType,
+            int amount) throws IllegalArgumentException {
         stats.add(statistic, entityType, amount);
     }
 
@@ -2782,22 +2912,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void decrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
+    public void decrementStatistic(Statistic statistic,
+            int amount) throws IllegalArgumentException {
         stats.add(statistic, -amount);
     }
 
     @Override
-    public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+    public void decrementStatistic(Statistic statistic,
+            Material material) throws IllegalArgumentException {
         stats.add(statistic, material, -1);
     }
 
     @Override
-    public void decrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
+    public void decrementStatistic(Statistic statistic, Material material,
+            int amount) throws IllegalArgumentException {
         stats.add(statistic, material, -amount);
     }
 
     @Override
-    public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+    public void decrementStatistic(Statistic statistic,
+            EntityType entityType) throws IllegalArgumentException {
         stats.add(statistic, entityType, -1);
     }
 
@@ -2822,6 +2956,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new SetWindowContentsMessage(invMonitor.getId(), invMonitor.getContents()));
     }
 
+    /**
+     * Sends a {@link SetWindowSlotMessage} to update the contents of an inventory slot.
+     *
+     * @param slot the slot ID
+     * @param item the new contents
+     */
     public void sendItemChange(int slot, ItemStack item) {
         if (invMonitor != null) {
             session.send(new SetWindowSlotMessage(invMonitor.getId(), slot, item));
@@ -2851,7 +2991,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public MainHand getMainHand() {
-        return metadata.getByte(MetadataIndex.PLAYER_MAIN_HAND) == 0 ? MainHand.LEFT : MainHand.RIGHT;
+        return metadata.getByte(MetadataIndex.PLAYER_MAIN_HAND) == 0 ? MainHand.LEFT
+                : MainHand.RIGHT;
     }
 
     @Override
@@ -2877,7 +3018,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             if (view.getTopInventory() instanceof PlayerInventory && defaultTitle) {
                 title = ((PlayerInventory) view.getTopInventory()).getHolder().getName();
             }
-            Message open = new OpenWindowMessage(viewId, invMonitor.getType(), title, ((GlowInventory) view.getTopInventory()).getRawSlots());
+            Message open = new OpenWindowMessage(viewId, invMonitor
+                    .getType(), title, ((GlowInventory) view.getTopInventory()).getRawSlots());
             session.send(open);
         }
 
@@ -2946,6 +3088,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         setPlayerTime(0, true);
     }
 
+    /**
+     * Sends a {@link TimeMessage} with the time of day.
+     */
     public void sendTime() {
         long time = getPlayerTime();
         if (!timeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
@@ -2973,8 +3118,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendSkyDarkness();
     }
 
+    /**
+     * Sends a {@link StateChangeMessage} with the current weather.
+     */
     public void sendWeather() {
-        boolean stormy = playerWeather == null ? getWorld().hasStorm() : playerWeather == WeatherType.DOWNFALL;
+        boolean stormy = playerWeather == null ? getWorld().hasStorm()
+                : playerWeather == WeatherType.DOWNFALL;
         session.send(new StateChangeMessage(stormy ? Reason.START_RAIN : Reason.STOP_RAIN, 0));
     }
 
@@ -3003,7 +3152,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         worldLock.writeLock().lock();
         try {
             if (knownEntities.remove(player)) {
-                session.send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+                session.send(new DestroyEntitiesMessage(Collections
+                        .singletonList(player.getEntityId())));
             }
         } finally {
             worldLock.writeLock().unlock();
@@ -3027,7 +3177,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         hiddenEntities.remove(player.getUniqueId());
-        session.send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, ((GlowPlayer) player).getUserListEntry()));
+        session.send(new UserListItemMessage(UserListItemMessage.Action.ADD_PLAYER, ((GlowPlayer)
+                player)
+                .getUserListEntry()));
     }
 
     @Override
@@ -3044,7 +3196,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     // Scoreboard
 
     /**
-     * Called when a player hidden to this player disconnects. This is necessary so the player is visible again after they reconnected.
+     * Called when a player hidden to this player disconnects. This is necessary so the player is
+     * visible again after they reconnected.
      *
      * @param player The disconnected player
      */
@@ -3061,7 +3214,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     // Conversable
 
     @Override
-    public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
+    public void setScoreboard(
+            Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
         checkNotNull(scoreboard, "Scoreboard must not be null");
         if (!(scoreboard instanceof GlowScoreboard)) {
             throw new IllegalArgumentException("Scoreboard must be GlowScoreboard");
@@ -3114,7 +3268,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
-        StandardMessenger.validatePluginMessage(getServer().getMessenger(), source, channel, message);
+        StandardMessenger
+                .validatePluginMessage(getServer().getMessenger(), source, channel, message);
         if (listeningChannels.contains(channel)) {
             // only send if player is listening for it
             session.send(new PluginMessage(channel, message));
@@ -3167,6 +3322,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
     }
 
+    /**
+     * Updates level after enchanting.
+     *
+     * @param clicked the enchanting-table slot used: 0 for top, 1 for middle, 2 for bottom
+     */
     public void enchanted(int clicked) {
         level -= clicked + 1;
         if (level < 0) {
@@ -3198,6 +3358,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return digging;
     }
 
+    /**
+     * Starts breaking a block.
+     *
+     * @param block the block to start breaking
+     */
     public void setDigging(GlowBlock block) {
         if (block == null) {
             if (digging != null) {
@@ -3214,12 +3379,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     private void sendBlockBreakAnimation(Location loc, int destroyStage) {
-        afterBlockChanges.add(new BlockBreakAnimationMessage(this.getEntityId(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), destroyStage));
+        afterBlockChanges
+                .add(new BlockBreakAnimationMessage(this.getEntityId(), loc.getBlockX(), loc
+                        .getBlockY(), loc.getBlockZ(), destroyStage));
     }
 
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
         GlowChunk.Key key = GlowChunk.Key.of(block.getX() >> 4, block.getZ() >> 4);
-        block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key) && player != this).forEach(player -> player.sendBlockBreakAnimation(block.getLocation(), destroyStage));
+        block.getWorld().getRawPlayers().stream()
+                .filter(player -> player.canSeeChunk(key) && player != this)
+                .forEach(player -> player
+                        .sendBlockBreakAnimation(block.getLocation(), destroyStage));
     }
 
     private void pulseDigging() {
@@ -3227,8 +3397,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         float hardness = digging.getMaterialValues().getHardness() * 20; // seconds to ticks
 
-        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material multiplier, etc.)
-        // for now, assuming hands are used and the block is not dropped
+        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material
+        // multiplier, etc.). For now, assuming hands are used and the block is not dropped.
         hardness *= 5;
 
         double completion = (double) diggingTicks / hardness;
@@ -3241,7 +3411,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Returns true if the player is inside a water block
+     * Returns true if the player is inside a water block.
      *
      * @return True if entity is in water.
      */
@@ -3258,6 +3428,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Add a boss bar.
+     *
      * @param bar the boss bar to add
      */
     public void addBossBar(BossBar bar) {
@@ -3266,6 +3437,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Remove a boss bar.
+     *
      * @param bar the boss bar to remove
      */
     public void removeBossBar(BossBar bar) {
@@ -3274,6 +3446,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
      * Returns a collection of the boss bars this player sees.
+     *
      * @return the boss bars this player sees
      */
     public Collection<BossBar> getBossBars() {

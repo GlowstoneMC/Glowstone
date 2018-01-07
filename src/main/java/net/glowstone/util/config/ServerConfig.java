@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.util.DynamicallyTypedMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,7 +24,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 /**
  * Utilities for handling the server configuration files.
  */
-public final class ServerConfig {
+public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
 
     /**
      * The directory configurations are stored in.
@@ -67,10 +68,10 @@ public final class ServerConfig {
         this.parameters = parameters;
 
         config.options().indent(4).copyHeader(true).header(
-            "glowstone.yml is the main configuration file for a Glowstone server\n"
-                + "It contains everything from server.properties and bukkit.yml in a\n"
-                + "normal CraftBukkit installation.\n\n"
-                + "For help, join us on Discord: https://discord.gg/TFJqhsC");
+                "glowstone.yml is the main configuration file for a Glowstone server\n"
+                        + "It contains everything from server.properties and bukkit.yml in a\n"
+                        + "normal CraftBukkit installation.\n\n"
+                        + "For help, join us on Discord: https://discord.gg/TFJqhsC");
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ public final class ServerConfig {
     ////////////////////////////////////////////////////////////////////////////
     // Value getters
 
+    @Override
     public String getString(Key key) {
         if (parameters.containsKey(key)) {
             return parameters.get(key).toString();
@@ -111,6 +113,7 @@ public final class ServerConfig {
         return string;
     }
 
+    @Override
     public int getInt(Key key) {
         if (parameters.containsKey(key)) {
             return (Integer) parameters.get(key);
@@ -120,6 +123,7 @@ public final class ServerConfig {
         return integer;
     }
 
+    @Override
     public boolean getBoolean(Key key) {
         if (parameters.containsKey(key)) {
             return (Boolean) parameters.get(key);
@@ -132,6 +136,13 @@ public final class ServerConfig {
     ////////////////////////////////////////////////////////////////////////////
     // Fancy stuff
 
+    /**
+     * Returns the file that contains a given setting. If it doesn't exist, it is created and
+     * populated with defaults.
+     *
+     * @param key the configuration setting
+     * @return the file containing that setting
+     */
     public ConfigurationSection getConfigFile(Key key) {
         String filename = getString(key);
         if (extraConfig.containsKey(filename)) {
@@ -179,6 +190,11 @@ public final class ServerConfig {
     ////////////////////////////////////////////////////////////////////////////
     // Load and internals
 
+    /**
+     * Loads the server config from disk. If it doesn't exist, the default config is written,
+     * creating the folder if necessary. If it's in the old bukkit.yml format and/or incomplete, it
+     * is converted to canonical form and saved.
+     */
     public void load() {
         // load extra config files again next time they're needed
         extraConfig.clear();
@@ -237,7 +253,7 @@ public final class ServerConfig {
         }
 
         try (final InputStream in = resource.openStream();
-            final OutputStream out = new FileOutputStream(dest)) {
+                final OutputStream out = new FileOutputStream(dest)) {
             byte[] buf = new byte[2048];
             int len;
             while ((len = in.read(buf)) > 0) {
@@ -258,7 +274,7 @@ public final class ServerConfig {
             GlowServer.logger.severe("Config file " + file + " isn't valid!");
         } else {
             GlowServer.logger
-                .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
+                    .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
     }
 
@@ -308,7 +324,8 @@ public final class ServerConfig {
                             config.set(key.path, Integer.parseInt(value));
                         } catch (NumberFormatException e) {
                             GlowServer.logger.log(Level.WARNING,
-                                "Could not migrate " + key.migratePath + " from " + serverProps, e);
+                                    "Could not migrate " + key.migratePath + " from "
+                                            + serverProps, e);
                             continue;
                         }
                     } else if (key.def instanceof Boolean) {
@@ -338,7 +355,7 @@ public final class ServerConfig {
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list"),
         MOTD("server.motd", "A Glowstone server", Migrate.PROPS, "motd"),
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT,
-            "settings.shutdown-message"),
+                "settings.shutdown-message"),
         ALLOW_CLIENT_MODS("server.allow-client-mods", true),
 
         // console
@@ -355,7 +372,7 @@ public final class ServerConfig {
         PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp"),
         MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height"),
         ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS,
-            "announce-player-achievements"),
+                "announce-player-achievements"),
 
         // server.properties keys
         ALLOW_FLIGHT("game.allow-flight", false, Migrate.PROPS, "allow-flight"),
@@ -365,7 +382,7 @@ public final class ServerConfig {
         RESOURCE_PACK_HASH("game.resource-pack-hash", "", Migrate.PROPS, "resource-pack-hash"),
         SNOOPER_ENABLED("server.snooper-enabled", false, Migrate.PROPS, "snooper-enabled"),
         PREVENT_PROXY("server.prevent-proxy-connections", true, Migrate.PROPS,
-            "prevent-proxy-connections"),
+                "prevent-proxy-connections"),
 
         // critters
         SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters"),
@@ -374,7 +391,7 @@ public final class ServerConfig {
         MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters"),
         ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals"),
         WATER_ANIMAL_LIMIT("creatures.limit.water", 5, Migrate.BUKKIT,
-            "spawn-limits.water-animals"),
+                "spawn-limits.water-animals"),
         AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient"),
         MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns"),
         ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns"),
@@ -386,25 +403,26 @@ public final class ServerConfig {
 
         // files
         PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT,
-            "settings.permissions-file"),
+                "settings.permissions-file"),
         COMMANDS_FILE("files.commands", "commands.yml"),
         HELP_FILE("files.help", "help.yml"),
 
         // advanced
         CONNECTION_THROTTLE("advanced.connection-throttle", 4000, Migrate.BUKKIT,
-            "settings.connection-throttle"),
-        //PING_PACKET_LIMIT("advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
+                "settings.connection-throttle"),
+        //PING_PACKET_LIMIT(
+        //        "advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
         PLAYER_IDLE_TIMEOUT("advanced.idle-timeout", 0, Migrate.PROPS, "player-idle-timeout"),
         WARN_ON_OVERLOAD("advanced.warn-on-overload", true, Migrate.BUKKIT,
-            "settings.warn-on-overload"),
+                "settings.warn-on-overload"),
         EXACT_LOGIN_LOCATION("advanced.exact-login-location", false, Migrate.BUKKIT,
-            "settings.use-exact-login-location"),
+                "settings.use-exact-login-location"),
         PLUGIN_PROFILING("advanced.plugin-profiling", false, Migrate.BUKKIT,
-            "settings.plugin-profiling"),
+                "settings.plugin-profiling"),
         WARNING_STATE("advanced.deprecated-verbose", "false", Migrate.BUKKIT,
-            "settings.deprecated-verbose"),
+                "settings.deprecated-verbose"),
         COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS,
-            "network-compression-threshold"),
+                "network-compression-threshold"),
         PROXY_SUPPORT("advanced.proxy-support", false),
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12),
         GRAPHICS_COMPUTE("advanced.graphics-compute.enable", false),
