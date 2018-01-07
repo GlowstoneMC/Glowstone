@@ -73,7 +73,7 @@ public class OpenCompute {
 
     /**
      * Returns a {@link CLKernel} that is part of the given {@link CLProgram}.
-.     *
+     *
      * @param program the {@link CLProgram} that contains the kernel
      * @param name the name of the kernel
      * @param threaded if true, always create a new {@link CLKernel} instance
@@ -148,6 +148,7 @@ public class OpenCompute {
 
     /**
      * Calculates the number of local work units per work group.
+     *
      * @return the size of the work groups
      */
     public static int getLocalSize() {
@@ -156,6 +157,7 @@ public class OpenCompute {
 
     /**
      * Calculates the number of local work units per work group, applying a specified maximum.
+     *
      * @param max the maximum size allowed
      * @return the size of the work groups
      */
