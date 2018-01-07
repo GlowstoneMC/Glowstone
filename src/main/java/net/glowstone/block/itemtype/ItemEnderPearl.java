@@ -2,8 +2,6 @@ package net.glowstone.block.itemtype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.projectile.GlowEnderPearl;
-
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;

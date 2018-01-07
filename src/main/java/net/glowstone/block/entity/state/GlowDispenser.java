@@ -88,10 +88,10 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
                 new ProjectileDispenseBehavior(GlowSpectralArrow::new));
         registry.putBehavior(Material.TIPPED_ARROW,
                 new ProjectileDispenseBehavior(((location, itemStack) -> {
-            TippedArrow tippedArrow = new GlowTippedArrow(location);
-            InventoryUtil.copyPotionDataToTippedArrow(tippedArrow, itemStack);
-            return tippedArrow;
-        })));
+                    TippedArrow tippedArrow = new GlowTippedArrow(location);
+                    InventoryUtil.copyPotionDataToTippedArrow(tippedArrow, itemStack);
+                    return tippedArrow;
+                })));
         registry.putBehavior(Material.FIREWORK_CHARGE, new ProjectileDispenseBehavior(location -> {
             Fireball fireball = new GlowFireball(location);
             fireball.setYield(0);
@@ -135,7 +135,8 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
      * Puts as much as possible of an {@link ItemStack} in the dispenser, and returns the rest.
      *
      * @param toPlace the item stack
-     * @return the portion of the item stack that didn't fit in the dispenser, or null if it all fit
+     * @return the portion of the item stack that didn't fit in the dispenser, or null if it all
+     *         fit
      */
     public ItemStack placeInDispenser(ItemStack toPlace) {
         Inventory inv = getInventory();
@@ -169,7 +170,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile,
-        Vector velocity) {
+            Vector velocity) {
         // todo: projectile launching
         return null;
     }
