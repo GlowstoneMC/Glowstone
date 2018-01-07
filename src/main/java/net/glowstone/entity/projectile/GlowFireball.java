@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Ghast;
@@ -43,7 +44,13 @@ public class GlowFireball extends GlowProjectile implements Fireball {
 
     @Override
     protected int getObjectId() {
-        return (getShooter() instanceof Ghast) ? 63 : 64;
+        ProjectileSource shooter = getShooter();
+        if (shooter instanceof Ghast) {
+            return 63;
+        } else if (shooter instanceof EnderDragon) {
+            return 93;
+        }
+        return 64;
     }
 
     @Override
