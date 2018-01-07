@@ -14,6 +14,10 @@ import org.bukkit.util.Vector;
 
 public class DefaultDispenseBehavior implements DispenseBehavior {
 
+    public static final DefaultDispenseBehavior INSTANCE = new DefaultDispenseBehavior();
+
+    protected DefaultDispenseBehavior() {}
+
     @Override
     public ItemStack dispense(GlowBlock block, ItemStack stack) {
         ItemStack result = dispenseStack(block, stack);

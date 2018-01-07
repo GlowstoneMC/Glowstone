@@ -99,10 +99,20 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
 
         ItemStack origItems = getInventory().getItem(dispenseSlot);
 
-        DispenseBehavior behavior = getDispenseBehaviorRegistry().getBehavior(origItems.getType());
+        DispenseBehavior behavior = getDispenseBehavior(origItems.getType());
         ItemStack result = behavior.dispense(block, origItems);
         getInventory().setItem(dispenseSlot, result);
         return true;
+    }
+
+    /**
+     * Returns the dispense behavior that will dispense this type of item.
+     *
+     * @param itemType the item type to dispense
+     * @return the dispense behavior
+     */
+    protected DispenseBehavior getDispenseBehavior(Material itemType) {
+        return getDispenseBehaviorRegistry().getBehavior(itemType);
     }
 
     public int getDispenseSlot() {

@@ -24,12 +24,12 @@ public class DispenseBehaviorRegistry {
      */
     public DispenseBehavior getBehavior(Material material) {
         if (material == null) {
-            return new DefaultDispenseBehavior();
+            return DefaultDispenseBehavior.INSTANCE;
         }
 
         DispenseBehavior behavior = dispenseBehaviorMap.get(material);
         if (behavior == null) {
-            return new DefaultDispenseBehavior();
+            return DefaultDispenseBehavior.INSTANCE;
         }
 
         return behavior;
