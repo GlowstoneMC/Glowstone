@@ -16,8 +16,11 @@ import net.glowstone.dispenser.TNTDispenseBehavior;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowEgg;
 import net.glowstone.entity.projectile.GlowFireball;
+import net.glowstone.entity.projectile.GlowLingeringPotion;
 import net.glowstone.entity.projectile.GlowSnowball;
 import net.glowstone.entity.projectile.GlowSpectralArrow;
+import net.glowstone.entity.projectile.GlowSplashPotion;
+import net.glowstone.entity.projectile.GlowThrownExpBottle;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
@@ -25,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SplashPotion;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -84,6 +88,8 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.EGG, new ProjectileDispenseBehavior(GlowEgg::new));
         registry.putBehavior(Material.SNOW_BALL, new ProjectileDispenseBehavior(GlowSnowball::new));
         registry.putBehavior(Material.ARROW, new ProjectileDispenseBehavior(GlowArrow::new));
+        registry.putBehavior(Material.EXP_BOTTLE,
+                new ProjectileDispenseBehavior(GlowThrownExpBottle::new));
         registry.putBehavior(Material.SPECTRAL_ARROW,
                 new ProjectileDispenseBehavior(GlowSpectralArrow::new));
         registry.putBehavior(Material.TIPPED_ARROW,
@@ -92,12 +98,24 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
                     InventoryUtil.copyPotionDataToTippedArrow(tippedArrow, itemStack);
                     return tippedArrow;
                 })));
-        registry.putBehavior(Material.FIREWORK_CHARGE, new ProjectileDispenseBehavior(location -> {
+        registry.putBehavior(Material.FIREBALL, new ProjectileDispenseBehavior(location -> {
             Fireball fireball = new GlowFireball(location);
             fireball.setYield(0);
             fireball.setIsIncendiary(true);
             return fireball;
         }));
+        registry.putBehavior(Material.SPLASH_POTION,
+                new ProjectileDispenseBehavior((location, itemStack) -> {
+                    SplashPotion potion = new GlowSplashPotion(location);
+                    potion.setItem(itemStack);
+                    return potion;
+                }));
+        registry.putBehavior(Material.LINGERING_POTION,
+                new ProjectileDispenseBehavior((location, itemStack) -> {
+                    SplashPotion potion = new GlowLingeringPotion(location);
+                    potion.setItem(itemStack);
+                    return potion;
+                }));
     }
 
     private DispenserEntity getBlockEntity() {
