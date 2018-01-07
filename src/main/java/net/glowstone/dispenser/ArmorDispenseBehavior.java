@@ -14,8 +14,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
 
-    DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
-
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {
         BlockFace facing = BlockDispenser.getFacing(block);
@@ -50,6 +48,6 @@ public class ArmorDispenseBehavior extends DefaultDispenseBehavior {
                     .tryToFillSlots(stack, 36, 40);
             }
         }
-        return defaultBehavior.dispense(block, stack); // Fallback
+        return INSTANCE.dispense(block, stack); // Fallback
     }
 }
