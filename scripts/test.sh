@@ -13,7 +13,7 @@ fi
 if [ "$1" != "run" ] && [ $? -eq 0 ];
 then
   # Run Glowstone
-  (cd target && ../scripts/start.sh)
+  (cd ../target && ../scripts/start.sh)
 else
   echo "Glowstone did not build successfully."
 fi
