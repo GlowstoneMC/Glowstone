@@ -97,5 +97,4 @@ public class ItemBow extends ItemTimedUsage {
         player.setUsageTime(0);
         currentArrow = null;
     }
-
 }

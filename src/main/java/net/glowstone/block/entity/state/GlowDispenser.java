@@ -116,6 +116,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
                     potion.setItem(itemStack);
                     return potion;
                 }));
+        // TODO: Firework rockets
     }
 
     private DispenserEntity getBlockEntity() {

@@ -29,7 +29,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     public GlowArrow(Location location) {
         super(location);
-        setGravityAccel(new Vector(0,-0.05,0));
+        setGravityAccel(new Vector(0, -0.05, 0));
         setBoundingBox(0.5, 0.5);
     }
 
@@ -55,7 +55,6 @@ public class GlowArrow extends GlowProjectile implements Arrow {
             setVelocity(new Vector(0, 0, 0));
         }
     }
-
 
     @Override
     public void collide(Block block) {
@@ -99,25 +98,17 @@ public class GlowArrow extends GlowProjectile implements Arrow {
         metadata.setBit(MetadataIndex.ARROW_CRITICAL, 0x1, critical);
     }
 
-    @Override public PickupStatus getPickupStatus() {
+    @Override
+    public PickupStatus getPickupStatus() {
         PickupStatus customPickupStatus = this.customPickupStatus;
         return customPickupStatus != null ? customPickupStatus :
                 getShooter() instanceof Monster ? PickupStatus.DISALLOWED :
                 PickupStatus.ALLOWED;
     }
 
-    @Override public void setPickupStatus(PickupStatus pickupStatus) {
+    @Override
+    public void setPickupStatus(PickupStatus pickupStatus) {
         customPickupStatus = pickupStatus;
-    }
-
-    @Override
-    public PickupRule getPickupRule() {
-        return null;
-    }
-
-    @Override
-    public void setPickupRule(PickupRule pickupRule) {
-
     }
 
     @Override

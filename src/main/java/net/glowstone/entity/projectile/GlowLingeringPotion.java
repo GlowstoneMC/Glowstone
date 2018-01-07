@@ -51,5 +51,4 @@ public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPo
         }
         remove();
     }
-
 }

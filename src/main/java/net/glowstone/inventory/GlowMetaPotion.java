@@ -117,7 +117,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
                 .collect(Collectors.toList());
             tag.putCompoundList("CustomEffects", customEffects);
         }
-        tag.putString("Potion", dataToString());
+        tag.putString("Potion", dataToString(basePotionData));
         if (this.color != null) {
             tag.putInt("CustomPotionColor", this.color.asRGB());
         }
@@ -226,11 +226,12 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     }
 
     /**
-     * Converts the PotionData of this item meta to a Potion ID string.
+     * Converts a PotionData to a Potion ID string.
      *
+     * @param basePotionData the PotionData to convert
      * @return the Potion ID string
      */
-    private String dataToString() {
+    public static String dataToString(PotionData basePotionData) {
         String name = "minecraft:";
         if (basePotionData.isExtended()) {
             name += "long_";

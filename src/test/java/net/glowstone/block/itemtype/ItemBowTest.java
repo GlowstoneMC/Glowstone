@@ -63,5 +63,4 @@ public class ItemBowTest {
         assertEquals(1, bowItemStack.getDurability()); // shooting should damage the bow
         // FIXME: assertEquals(1, arrows.getAmount()); // one arrow should be consumed
     }
-
 }
