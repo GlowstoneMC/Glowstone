@@ -82,6 +82,7 @@ import net.glowstone.command.minecraft.TeleportCommand;
 import net.glowstone.command.minecraft.TellCommand;
 import net.glowstone.command.minecraft.TellrawCommand;
 import net.glowstone.command.minecraft.TestForBlockCommand;
+import net.glowstone.command.minecraft.TestForBlocksCommand;
 import net.glowstone.command.minecraft.TestForCommand;
 import net.glowstone.command.minecraft.TimeCommand;
 import net.glowstone.command.minecraft.TitleCommand;
@@ -1013,6 +1014,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new TestForBlockCommand());
         commandMap.register("minecraft", new SetBlockCommand());
         commandMap.register("minecraft", new CloneCommand());
+        commandMap.register("minecraft", new TestForBlocksCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {

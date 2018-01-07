@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import com.google.common.collect.AbstractIterator;
 import java.util.Collections;
 import java.util.Iterator;
 import lombok.Getter;
@@ -9,13 +8,14 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.util.RectangularRegion;
+import net.glowstone.util.RectangularRegion.IterationDirection;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
-import org.jetbrains.annotations.NotNull;
 
 
 public class CloneCommand extends VanillaCommand {
@@ -117,19 +117,6 @@ public class CloneCommand extends VanillaCommand {
         Location parsedFrom2 = CommandUtils.getLocation(sender, args[3], args[4], args[5]);
         Location to = CommandUtils.getLocation(sender, args[6], args[7], args[8]);
 
-        Location lowCorner = new Location(
-                world,
-                Double.min(parsedFrom1.getX(), parsedFrom2.getX()),
-                Double.min(parsedFrom1.getY(), parsedFrom2.getY()),
-                Double.min(parsedFrom1.getZ(), parsedFrom2.getZ())
-        );
-        Location highCorner = new Location(
-                world,
-                Double.max(parsedFrom1.getX(), parsedFrom2.getX()),
-                Double.max(parsedFrom1.getY(), parsedFrom2.getY()),
-                Double.max(parsedFrom1.getZ(), parsedFrom2.getZ())
-        );
-
         MaskMode maskMode = args.length >= 10
                 ? MaskMode.fromCommandName(args[9]) : MaskMode.REPLACE;
         CloneMode cloneMode = args.length >= 11
@@ -186,6 +173,12 @@ public class CloneCommand extends VanillaCommand {
                 return false;
         }
 
+        RectangularRegion fromRegion = new RectangularRegion(parsedFrom1, parsedFrom2);
+        RectangularRegion toRegion = fromRegion.moveTo(to);
+        
+        Location lowCorner = fromRegion.getLowCorner();
+        Location highCorner = fromRegion.getHighCorner();
+
         boolean overlaps = between(lowCorner.getBlockX(), highCorner.getBlockX(), to.getBlockX())
                 || between(lowCorner.getBlockY(), highCorner.getBlockY(), to.getBlockY())
                 || between(lowCorner.getBlockZ(), highCorner.getBlockZ(), to.getBlockZ());
@@ -197,50 +190,48 @@ public class CloneCommand extends VanillaCommand {
 
         int blocksCloned = 0;
 
-        int widthX = highCorner.getBlockX() - lowCorner.getBlockX() + 1;
-        int widthY = highCorner.getBlockY() - lowCorner.getBlockY() + 1;
-        int widthZ = highCorner.getBlockZ() - lowCorner.getBlockZ() + 1;
+        IterationDirection directionX = to.getBlockX() < lowCorner.getBlockX()
+                ? IterationDirection.FORWARDS : IterationDirection.BACKWARDS;
+        IterationDirection directionY = to.getBlockY() < lowCorner.getBlockY()
+                ? IterationDirection.FORWARDS : IterationDirection.BACKWARDS;
+        IterationDirection directionZ = to.getBlockZ() < lowCorner.getBlockZ()
+                ? IterationDirection.FORWARDS : IterationDirection.BACKWARDS;
 
-        Iterable<Integer> iterX = to.getBlockX() < lowCorner
-                .getBlockX() ? new ForwardsAxisIterable(widthX) : new BackwardsAxisIterable(widthX);
-        Iterable<Integer> iterY = to.getBlockY() < lowCorner
-                .getBlockY() ? new ForwardsAxisIterable(widthY) : new BackwardsAxisIterable(widthY);
-        Iterable<Integer> iterZ = to.getBlockZ() < lowCorner
-                .getBlockZ() ? new ForwardsAxisIterable(widthZ) : new BackwardsAxisIterable(widthZ);
+        Iterator<Location> fromIterator = fromRegion
+                .blockLocations(directionX, directionY, directionZ).iterator();
+        Iterator<Location> toIterator = toRegion
+                .blockLocations(directionX, directionY, directionZ).iterator();
 
-        for (int x : iterX) {
-            for (int y : iterY) {
-                for (int z : iterZ) {
-                    GlowBlock fromBlock = world.getBlockAt(lowCorner.getBlockX() + x, lowCorner
-                            .getBlockY() + y, lowCorner.getBlockZ() + z);
+        while (fromIterator.hasNext() && toIterator.hasNext()) {
+            Location fromLocation = fromIterator.next();
+            Location toLocation = toIterator.next();
 
-                    if (blockFilter.shouldClone(fromBlock)) {
-                        GlowBlock toBlock = world
-                                .getBlockAt(to.getBlockX() + x, to.getBlockY() + y, to
-                                        .getBlockZ() + z);
-                        toBlock.setTypeIdAndData(fromBlock.getTypeId(), fromBlock.getData(), false);
+            GlowBlock fromBlock = world.getBlockAt(fromLocation);
 
-                        BlockEntity fromEntity = fromBlock.getBlockEntity();
-                        if (fromEntity != null) {
-                            BlockEntity toEntity = toBlock.getChunk()
-                                    .createEntity(toBlock.getX(), toBlock.getY(), toBlock
-                                            .getZ(), toBlock.getTypeId());
-                            if (toEntity != null) {
-                                CompoundTag entityTag = new CompoundTag();
-                                fromEntity.saveNbt(entityTag);
-                                toEntity.loadNbt(entityTag);
-                            }
-                        }
+            if (blockFilter.shouldClone(fromBlock)) {
+                GlowBlock toBlock = world.getBlockAt(toLocation);
+                toBlock.setTypeIdAndData(fromBlock.getTypeId(), fromBlock.getData(), false);
 
-                        if (cloneMode == CloneMode.MOVE) {
-                            fromBlock.setType(Material.AIR, false);
-                        }
-
-                        blocksCloned++;
+                BlockEntity fromEntity = fromBlock.getBlockEntity();
+                if (fromEntity != null) {
+                    BlockEntity toEntity = toBlock.getChunk()
+                            .createEntity(toBlock.getX(), toBlock.getY(), toBlock
+                                    .getZ(), toBlock.getTypeId());
+                    if (toEntity != null) {
+                        CompoundTag entityTag = new CompoundTag();
+                        fromEntity.saveNbt(entityTag);
+                        toEntity.loadNbt(entityTag);
                     }
                 }
+
+                if (cloneMode == CloneMode.MOVE) {
+                    fromBlock.setType(Material.AIR, false);
+                }
+
+                blocksCloned++;
             }
         }
+
 
         if (blocksCloned == 0) {
             sender.sendMessage(ChatColor.RED + "No blocks cloned.");
@@ -252,76 +243,6 @@ public class CloneCommand extends VanillaCommand {
 
     private static boolean between(double low, double high, double n) {
         return low < n && n < high;
-    }
-
-    private static class ForwardsAxisIterable implements Iterable<Integer> {
-        private final int max;
-
-        private ForwardsAxisIterable(int max) {
-            this.max = max;
-        }
-
-        @NotNull
-        @Override
-        public Iterator<Integer> iterator() {
-            return new ForwardsAxisIterator(max);
-        }
-    }
-
-    private static class ForwardsAxisIterator extends AbstractIterator<Integer> {
-        private final int max;
-        private int current;
-
-        public ForwardsAxisIterator(int max) {
-            this.max = max;
-            this.current = 0;
-        }
-
-        @Override
-        protected Integer computeNext() {
-            if (current <= max) {
-                // Could use a post-increment operator here, but this is a bit more clear in
-                // getting the meaning across.
-                int retval = current;
-                current++;
-                return retval;
-            }
-            return endOfData();
-        }
-    }
-
-    private static class BackwardsAxisIterable implements Iterable<Integer> {
-        private final int max;
-
-        private BackwardsAxisIterable(int max) {
-            this.max = max;
-        }
-
-        @NotNull
-        @Override
-        public Iterator<Integer> iterator() {
-            return new BackwardsAxisIterator(max);
-        }
-    }
-
-    private static class BackwardsAxisIterator extends AbstractIterator<Integer> {
-        private int current;
-
-        public BackwardsAxisIterator(int length) {
-            this.current = length;
-        }
-
-        @Override
-        protected Integer computeNext() {
-            if (current >= 0) {
-                // Could use a post-decrement operator here, but this is a bit more clear in
-                // getting the meaning across.
-                int retval = current;
-                current--;
-                return retval;
-            }
-            return endOfData();
-        }
     }
 
     private interface BlockFilter {
