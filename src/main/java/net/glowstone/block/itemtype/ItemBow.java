@@ -99,7 +99,7 @@ public class ItemBow extends ItemTimedUsage {
                     return Optional.of(itemStack);
                 case ARROW:
                     currentArrow = Optional.of(itemStack);
-                    // keep looking; we may find a special arrows
+                    continue; // keep looking, in case we find a special arrow
                 default:
                     // do nothing
             }
