@@ -11,12 +11,21 @@ import net.glowstone.dispenser.DispenseBehavior;
 import net.glowstone.dispenser.DispenseBehaviorRegistry;
 import net.glowstone.dispenser.EmptyBucketDispenseBehavior;
 import net.glowstone.dispenser.FlintAndSteelDispenseBehavior;
+import net.glowstone.dispenser.SimpleProjectileDispenseBehavior;
 import net.glowstone.dispenser.TNTDispenseBehavior;
+import net.glowstone.entity.projectile.GlowArrow;
+import net.glowstone.entity.projectile.GlowEgg;
+import net.glowstone.entity.projectile.GlowFireball;
+import net.glowstone.entity.projectile.GlowSnowball;
+import net.glowstone.entity.projectile.GlowSpectralArrow;
+import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.BlockProjectileSource;
@@ -41,41 +50,63 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
     public static void register() {
         // register all dispense behaviors
         DefaultDispenseBehavior bucketDispenseBehavior = new BucketDispenseBehavior();
-        getDispenseBehaviorRegistry().putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
-        getDispenseBehaviorRegistry()
+        DispenseBehaviorRegistry registry = getDispenseBehaviorRegistry();
+        registry.putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
+        registry.putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
+        registry
             .putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
-        getDispenseBehaviorRegistry()
+        registry
             .putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
-        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
+        registry.putBehavior(Material.TNT, new TNTDispenseBehavior());
 
         ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
-        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry()
+        registry.putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
+        registry.putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
+        registry
             .putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_CHESTPLATE, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.GOLD_HELMET, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.IRON_BOOTS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.IRON_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.IRON_CHESTPLATE, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.IRON_HELMET, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_BOOTS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry()
+        registry.putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLD_CHESTPLATE, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLD_HELMET, armorDispenseBehavior);
+        registry.putBehavior(Material.IRON_BOOTS, armorDispenseBehavior);
+        registry.putBehavior(Material.IRON_LEGGINGS, armorDispenseBehavior);
+        registry.putBehavior(Material.IRON_CHESTPLATE, armorDispenseBehavior);
+        registry.putBehavior(Material.IRON_HELMET, armorDispenseBehavior);
+        registry.putBehavior(Material.CHAINMAIL_BOOTS, armorDispenseBehavior);
+        registry
             .putBehavior(Material.CHAINMAIL_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry()
+        registry
             .putBehavior(Material.CHAINMAIL_CHESTPLATE, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.CHAINMAIL_HELMET, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_BOOTS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_LEGGINGS, armorDispenseBehavior);
-        getDispenseBehaviorRegistry()
+        registry.putBehavior(Material.CHAINMAIL_HELMET, armorDispenseBehavior);
+        registry.putBehavior(Material.DIAMOND_BOOTS, armorDispenseBehavior);
+        registry.putBehavior(Material.DIAMOND_LEGGINGS, armorDispenseBehavior);
+        registry
             .putBehavior(Material.DIAMOND_CHESTPLATE, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.DIAMOND_HELMET, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
-        getDispenseBehaviorRegistry().putBehavior(Material.PUMPKIN, armorDispenseBehavior);
+        registry.putBehavior(Material.DIAMOND_HELMET, armorDispenseBehavior);
+        registry.putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
+        registry.putBehavior(Material.PUMPKIN, armorDispenseBehavior);
+
+        registry.putBehavior(Material.EGG, new SimpleProjectileDispenseBehavior(GlowEgg::new));
+        registry.putBehavior(Material.SNOW_BALL,
+                new SimpleProjectileDispenseBehavior(GlowSnowball::new));
+        registry.putBehavior(Material.ARROW,
+                new SimpleProjectileDispenseBehavior(GlowArrow::new));
+        registry.putBehavior(Material.SPECTRAL_ARROW,
+                new SimpleProjectileDispenseBehavior(GlowSpectralArrow::new));
+        registry.putBehavior(Material.TIPPED_ARROW,
+                new SimpleProjectileDispenseBehavior(((location, itemStack) -> {
+                    TippedArrow tippedArrow = new GlowTippedArrow(location);
+                    InventoryUtil.copyPotionDataToTippedArrow(tippedArrow, itemStack);
+                    return tippedArrow;
+                })));
+        registry.putBehavior(Material.FIREWORK_CHARGE, new SimpleProjectileDispenseBehavior(
+                location -> {
+                    Fireball fireball = new GlowFireball();
+                    fireball.setYield(0);
+                    fireball.setIsIncendiary(true);
+                    return fireball;
+                }));
     }
 
     private DispenserEntity getBlockEntity() {

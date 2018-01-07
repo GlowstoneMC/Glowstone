@@ -10,8 +10,6 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
 
 public class ItemBow extends ItemTimedUsage {
     private static final long TICKS_TO_FULLY_CHARGE = 20;
@@ -57,12 +55,7 @@ public class ItemBow extends ItemTimedUsage {
             case TIPPED_ARROW:
                 launchedArrow = player.launchProjectile(TippedArrow.class);
                 TippedArrow launchedTippedArrow = (TippedArrow) launchedArrow;
-                PotionMeta meta = (PotionMeta) currentArrow.getItemMeta();
-                launchedTippedArrow.setBasePotionData(meta.getBasePotionData());
-                launchedTippedArrow.setColor(meta.getColor());
-                for (PotionEffect effect : meta.getCustomEffects()) {
-                    launchedTippedArrow.addCustomEffect(effect, true);
-                }
+                InventoryUtil.copyPotionDataToTippedArrow(launchedTippedArrow, currentArrow);
                 break;
             case SPECTRAL_ARROW:
                 launchedArrow = player.launchProjectile(SpectralArrow.class);
@@ -104,4 +97,5 @@ public class ItemBow extends ItemTimedUsage {
         player.setUsageTime(0);
         currentArrow = null;
     }
+
 }

@@ -11,9 +11,12 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
 
 public class InventoryUtil {
 
@@ -98,6 +101,21 @@ public class InventoryUtil {
                 EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
             }
             holding.setAmount(0);
+        }
+    }
+
+    /**
+     * Copies potion data from a tipped-arrow item to a tipped-arrow entity.
+     *
+     * @param entity the tipped-arrow entity to update
+     * @param item the tipped-arrow item to copy from
+     */
+    public static void copyPotionDataToTippedArrow(TippedArrow entity, ItemStack item) {
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
+        entity.setBasePotionData(meta.getBasePotionData());
+        entity.setColor(meta.getColor());
+        for (PotionEffect effect : meta.getCustomEffects()) {
+            entity.addCustomEffect(effect, true);
         }
     }
 }
