@@ -53,17 +53,14 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         DispenseBehaviorRegistry registry = getDispenseBehaviorRegistry();
         registry.putBehavior(Material.WATER_BUCKET, bucketDispenseBehavior);
         registry.putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
-        registry
-            .putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
-        registry
-            .putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
+        registry.putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
+        registry.putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
         registry.putBehavior(Material.TNT, new TNTDispenseBehavior());
 
         ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         registry.putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
         registry.putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
-        registry
-            .putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
+        registry.putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
         registry.putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
         registry.putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
         registry.putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
