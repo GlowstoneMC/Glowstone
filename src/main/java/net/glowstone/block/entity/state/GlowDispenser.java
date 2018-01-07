@@ -11,7 +11,7 @@ import net.glowstone.dispenser.DispenseBehavior;
 import net.glowstone.dispenser.DispenseBehaviorRegistry;
 import net.glowstone.dispenser.EmptyBucketDispenseBehavior;
 import net.glowstone.dispenser.FlintAndSteelDispenseBehavior;
-import net.glowstone.dispenser.SimpleProjectileDispenseBehavior;
+import net.glowstone.dispenser.ProjectileDispenseBehavior;
 import net.glowstone.dispenser.TNTDispenseBehavior;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowEgg;
@@ -87,22 +87,22 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
         registry.putBehavior(Material.PUMPKIN, armorDispenseBehavior);
 
-        registry.putBehavior(Material.EGG, new SimpleProjectileDispenseBehavior(GlowEgg::new));
+        registry.putBehavior(Material.EGG, new ProjectileDispenseBehavior(GlowEgg::new));
         registry.putBehavior(Material.SNOW_BALL,
-                new SimpleProjectileDispenseBehavior(GlowSnowball::new));
+                new ProjectileDispenseBehavior(GlowSnowball::new));
         registry.putBehavior(Material.ARROW,
-                new SimpleProjectileDispenseBehavior(GlowArrow::new));
+                new ProjectileDispenseBehavior(GlowArrow::new));
         registry.putBehavior(Material.SPECTRAL_ARROW,
-                new SimpleProjectileDispenseBehavior(GlowSpectralArrow::new));
+                new ProjectileDispenseBehavior(GlowSpectralArrow::new));
         registry.putBehavior(Material.TIPPED_ARROW,
-                new SimpleProjectileDispenseBehavior(((location, itemStack) -> {
+                new ProjectileDispenseBehavior(((location, itemStack) -> {
                     TippedArrow tippedArrow = new GlowTippedArrow(location);
                     InventoryUtil.copyPotionDataToTippedArrow(tippedArrow, itemStack);
                     return tippedArrow;
                 })));
-        registry.putBehavior(Material.FIREWORK_CHARGE, new SimpleProjectileDispenseBehavior(
+        registry.putBehavior(Material.FIREWORK_CHARGE, new ProjectileDispenseBehavior(
                 location -> {
-                    Fireball fireball = new GlowFireball();
+                    Fireball fireball = new GlowFireball(location);
                     fireball.setYield(0);
                     fireball.setIsIncendiary(true);
                     return fireball;
