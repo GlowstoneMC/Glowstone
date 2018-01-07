@@ -11,7 +11,7 @@ import net.glowstone.dispenser.DispenseBehavior;
 import net.glowstone.dispenser.DispenseBehaviorRegistry;
 import net.glowstone.dispenser.EmptyBucketDispenseBehavior;
 import net.glowstone.dispenser.FlintAndSteelDispenseBehavior;
-import net.glowstone.dispenser.TNTDispenseBehavior;
+import net.glowstone.dispenser.TntDispenseBehavior;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -47,7 +47,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
             .putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
         getDispenseBehaviorRegistry()
             .putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
-        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
+        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TntDispenseBehavior());
 
         ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);

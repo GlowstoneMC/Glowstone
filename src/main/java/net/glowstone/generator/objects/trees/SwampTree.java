@@ -11,6 +11,14 @@ import org.bukkit.material.types.DirtType;
 
 public class SwampTree extends CocoaTree {
 
+    /**
+     * Initializes this tree with a random height, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and
+     *         leaf blocks
+     */
     public SwampTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         setOverridables(
@@ -92,8 +100,8 @@ public class SwampTree extends CocoaTree {
         // generate the trunk
         for (int y = 0; y < height; y++) {
             Material material = blockTypeAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ());
-            if (material == Material.AIR || material == Material.LEAVES ||
-                material == Material.WATER || material == Material.STATIONARY_WATER) {
+            if (material == Material.AIR || material == Material.LEAVES
+                    || material == Material.WATER || material == Material.STATIONARY_WATER) {
                 delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
                     loc.getBlockZ(), Material.LOG, logType);
             }

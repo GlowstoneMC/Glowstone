@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import net.glowstone.util.DynamicallyTypedMapWithFloats;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -19,7 +20,7 @@ import org.bukkit.util.BlockVector;
  * A map for entity metadata.
  */
 @ToString(of = {"entityClass", "map"})
-public class MetadataMap {
+public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex> {
 
     private final Map<MetadataIndex, Object> map = new EnumMap<>(MetadataIndex.class);
     private final List<Entry> changes = new ArrayList<>(4);
@@ -34,6 +35,12 @@ public class MetadataMap {
         return map.containsKey(index);
     }
 
+    /**
+     * Sets the value of a metadata field.
+     *
+     * @param index the field to set
+     * @param value the new value
+     */
     public void set(MetadataIndex index, Object value) {
         // take numbers down to the correct precision
         if (value != null) {
@@ -49,6 +56,8 @@ public class MetadataMap {
                     case FLOAT:
                         value = n.floatValue();
                         break;
+                    default:
+                        // do nothing
                 }
             }
             if (!index.getType().getDataType().isAssignableFrom(value.getClass())) {
@@ -89,6 +98,13 @@ public class MetadataMap {
         return (getNumber(index).intValue() & bit) != 0;
     }
 
+    /**
+     * Sets or clears bits in an integer field.
+     *
+     * @param index the field to update
+     * @param bit a mask of the bits to set or clear
+     * @param status true to set; false to clear
+     */
     public void setBit(MetadataIndex index, int bit, boolean status) {
         if (status) {
             set(index, getNumber(index).intValue() | bit);
@@ -97,6 +113,13 @@ public class MetadataMap {
         }
     }
 
+    /**
+     * Returns the numeric value of a metadata field.
+     *
+     * @param index the field to look up
+     * @return the numeric value
+     * @throws IllegalArgumentException if the value doesn't exist or isn't numeric
+     */
     public Number getNumber(MetadataIndex index) {
         if (!containsKey(index)) {
             return 0;
@@ -109,6 +132,7 @@ public class MetadataMap {
         return (Number) o;
     }
 
+    @Override
     public boolean getBoolean(MetadataIndex index) {
         return get(index, MetadataType.BOOLEAN, false);
     }
@@ -117,14 +141,17 @@ public class MetadataMap {
         return get(index, MetadataType.BYTE, (byte) 0);
     }
 
+    @Override
     public int getInt(MetadataIndex index) {
         return get(index, MetadataType.INT, 0);
     }
 
+    @Override
     public float getFloat(MetadataIndex index) {
         return get(index, MetadataType.FLOAT, 0f);
     }
 
+    @Override
     public String getString(MetadataIndex index) {
         return get(index, MetadataType.STRING, null);
     }
@@ -134,7 +161,7 @@ public class MetadataMap {
     }
 
     /**
-     * Gets the optional position value for the given MetadataIndex
+     * Gets the optional position value for the given MetadataIndex.
      *
      * @param index the MetadataIndex of the optional position
      * @return the position value as a BlockVector, null if the value is not present
@@ -143,6 +170,11 @@ public class MetadataMap {
         return get(index, MetadataType.OPTPOSITION, null);
     }
 
+    /**
+     * Returns a list containing copies of all the entries.
+     *
+     * @return a list containing copies of all the entries
+     */
     public List<Entry> getEntryList() {
         List<Entry> result = new ArrayList<>(map.size());
         result.addAll(

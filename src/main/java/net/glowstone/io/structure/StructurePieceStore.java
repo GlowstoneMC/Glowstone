@@ -45,7 +45,7 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      */
     public void load(T structurePiece, CompoundTag compound) {
         if (compound.isInt("GD")) {
-            structurePiece.setGD(compound.getInt("GD"));
+            structurePiece.setUnknownGd(compound.getInt("GD"));
         }
         if (compound.isInt("O")) {
             structurePiece.setNumericOrientation(compound.getInt("O"));
@@ -67,7 +67,7 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      * @param compound The target tag.
      */
     public void save(T structurePiece, CompoundTag compound) {
-        compound.putInt("GD", structurePiece.getGD());
+        compound.putInt("GD", structurePiece.getUnknownGd());
         compound.putInt("O", structurePiece.getNumericOrientation());
         StructureBoundingBox boundingBox = structurePiece.getBoundingBox();
         int[] bb = new int[6];

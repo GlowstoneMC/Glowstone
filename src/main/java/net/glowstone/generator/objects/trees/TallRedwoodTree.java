@@ -9,6 +9,14 @@ import org.bukkit.material.types.DirtType;
 
 public class TallRedwoodTree extends RedwoodTree {
 
+    /**
+     * Initializes this tree with a random height and radius, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param location the base of the trunk
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and
+     *         leaf blocks
+     */
     public TallRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
         super(random, location, delegate);
         setOverridables(
@@ -39,8 +47,8 @@ public class TallRedwoodTree extends RedwoodTree {
             for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if ((Math.abs(x - loc.getBlockX()) != radius
-                        || Math.abs(z - loc.getBlockZ()) != radius || radius <= 0) &&
-                        blockTypeAt(x, y, z) == Material.AIR) {
+                                    || Math.abs(z - loc.getBlockZ()) != radius || radius <= 0)
+                            && blockTypeAt(x, y, z) == Material.AIR) {
                         delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
                             leavesType);
                     }

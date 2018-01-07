@@ -198,8 +198,10 @@ public final class GlowWorld implements World {
         }
 
         @Override
-        public void playEffect(Location location, Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int particleCount, int radius) {
-            showParticle(location, effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, radius);
+        public void playEffect(Location location, Effect effect, int id, int data, float offsetX,
+                float offsetY, float offsetZ, float speed, int particleCount, int radius) {
+            showParticle(location, effect, id, data, offsetX, offsetY, offsetZ, speed,
+                    particleCount, radius);
         }
 
         @Override
@@ -339,7 +341,8 @@ public final class GlowWorld implements World {
      * @param server  The server for the world.
      * @param creator The WorldCreator to use.
      */
-    public GlowWorld(GlowServer server, WorldCreator creator, WorldStorageProvider worldStorageProvider) {
+    public GlowWorld(GlowServer server, WorldCreator creator,
+            WorldStorageProvider worldStorageProvider) {
         this.server = server;
 
         // set up values from WorldCreator
@@ -385,7 +388,8 @@ public final class GlowWorld implements World {
 
         chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         structures = storageProvider.getStructureDataService().readStructuresData();
-        functions = storageProvider.getFunctionIoService().readFunctions().stream().collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
+        functions = storageProvider.getFunctionIoService().readFunctions().stream()
+                .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
         EventFactory.callEvent(new WorldInitEvent(this));
@@ -457,7 +461,8 @@ public final class GlowWorld implements World {
         }
 
         updateBlocksInActiveChunks();
-        // why update blocks before Players or Entities? if there is a specific reason we should document it here.
+        // why update blocks before Players or Entities? if there is a specific reason we should
+        // document it here.
 
         pulsePlayers(players);
         resetEntities(allEntities);
@@ -565,7 +570,8 @@ public final class GlowWorld implements World {
     // Tick the world age and time of day
     private void updateWorldTime() {
         worldAge++;
-        // worldAge is used to determine when to (periodically) update clients of server time (time of day - "time")
+        // worldAge is used to determine when to (periodically) update clients of server time
+        // (time of day - "time")
         // also used to occasionally pulse some blocks (see "tickMap" and "requestPulse()")
 
         // Modulus by 24000, the tick length of a day
@@ -591,7 +597,8 @@ public final class GlowWorld implements World {
                 wakeUpAllPlayers(players);
                 // no need to send them the time - handle that normally
             } else { // otherwise check whether everyone is asleep
-                boolean skipNight = gameRules.getBoolean("doDaylightCycle") && areAllPlayersSleeping(players);
+                boolean skipNight = gameRules.getBoolean("doDaylightCycle")
+                        && areAllPlayersSleeping(players);
                 // check gamerule before iterating players (micro-optimization)
                 if (skipNight) {
                     skipRestOfNight(players);
@@ -626,7 +633,8 @@ public final class GlowWorld implements World {
 
     private boolean areAllPlayersSleeping(List<GlowPlayer> players) {
         for (GlowPlayer player : players) {
-            if (!(player.isSleeping() && player.getSleepTicks() >= 100) && !player.isSleepingIgnored()) {
+            if (!(player.isSleeping() && player.getSleepTicks() >= 100) && !player
+                    .isSleepingIgnored()) {
                 return false;
             }
         }
@@ -634,7 +642,8 @@ public final class GlowWorld implements World {
     }
 
     public void broadcastBlockChangeInRange(GlowChunk.Key chunkKey, BlockChangeMessage message) {
-        getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.sendBlockChangeForce(message));
+        getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey))
+                .forEach(player -> player.sendBlockChangeForce(message));
     }
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {
@@ -652,27 +661,32 @@ public final class GlowWorld implements World {
         int z = (cz << 4) + (n >> 8 & 0xF);
         int y = getHighestBlockYAt(x, z);
 
-        // search for living entities in a 6×6×h (there's an error in the wiki!) region from 3 below the
+        // search for living entities in a 6×6×h (there's an error in the wiki!) region from 3
+        // below the
         // target block up to the world height
-        BoundingBox searchBox = BoundingBox.fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
+        BoundingBox searchBox = BoundingBox
+                .fromPositionAndSize(new Vector(x, y, z), new Vector(0, 0, 0));
         Vector vec = new Vector(3, 3, 3);
         Vector vec2 = new Vector(0, getMaxHeight(), 0);
         searchBox.minCorner.subtract(vec);
         searchBox.maxCorner.add(vec).add(vec2);
         List<LivingEntity> livingEntities = new LinkedList<>();
         // make sure entity can see sky
-        getEntityManager().getEntitiesInside(searchBox, null).stream().filter(entity -> entity instanceof LivingEntity && !entity.isDead()).forEach(entity -> {
-            Vector pos = entity.getLocation().toVector();
-            int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
-            if (pos.getBlockY() >= minY) {
-                livingEntities.add((LivingEntity) entity);
-            }
-        });
+        getEntityManager().getEntitiesInside(searchBox, null).stream()
+                .filter(entity -> entity instanceof LivingEntity && !entity.isDead())
+                .forEach(entity -> {
+                    Vector pos = entity.getLocation().toVector();
+                    int minY = getHighestBlockYAt(pos.getBlockX(), pos.getBlockZ());
+                    if (pos.getBlockY() >= minY) {
+                        livingEntities.add((LivingEntity) entity);
+                    }
+                });
 
         // re-target lightning if required
         if (!livingEntities.isEmpty()) {
             // randomly choose an entity
-            LivingEntity entity = livingEntities.get(ThreadLocalRandom.current().nextInt(livingEntities.size()));
+            LivingEntity entity = livingEntities
+                    .get(ThreadLocalRandom.current().nextInt(livingEntities.size()));
             // re-target lightning on this living entity
             Vector newTarget = entity.getLocation().toVector();
             x = newTarget.getBlockX();
@@ -694,9 +708,11 @@ public final class GlowWorld implements World {
      * @return a value between 0 and 1, where 0 = all rays blocked and 1 = all rays unblocked
      */
     public float rayTrace(Location location, GlowEntity entity) {
-        // TODO: calculate how much of the entity is visible (not blocked by blocks) from the location
+        // TODO: calculate how much of the entity is visible (not blocked by blocks) from the
+        // location
         /*
-         * To calculate this step through the entity's bounding box and check whether the ray to the point
+         * To calculate this step through the entity's bounding box and check whether the ray to
+         * the point
          * in the bounding box is blocked.
          *
          * Return (unblockedRays / allRays)
@@ -728,7 +744,8 @@ public final class GlowWorld implements World {
     /**
      * Returns a list of entities within a bounding box centered around a Location.
      *
-     * <p>Some implementations may impose artificial restrictions on the size of the search bounding box.
+     * <p>Some implementations may impose artificial restrictions on the size of the search bounding
+     * box.
      *
      * @param location The center of the bounding box
      * @param x        1/2 the size of the box along x axis
@@ -738,8 +755,10 @@ public final class GlowWorld implements World {
      */
     @Override
     public Collection<Entity> getNearbyEntities(Location location, double x, double y, double z) {
-        Vector minCorner = new Vector(location.getX() - x, location.getY() - y, location.getZ() - z);
-        Vector maxCorner = new Vector(location.getX() + x, location.getY() + y, location.getZ() + z);
+        Vector minCorner = new Vector(
+                location.getX() - x, location.getY() - y, location.getZ() - z);
+        Vector maxCorner = new Vector(
+                location.getX() + x, location.getY() + y, location.getZ() + z);
         BoundingBox searchBox = BoundingBox.fromCorners(minCorner, maxCorner); // TODO: test
         GlowEntity except = null;
         return entities.getEntitiesInside(searchBox, except);
@@ -752,7 +771,8 @@ public final class GlowWorld implements World {
 
     @Override
     public List<LivingEntity> getLivingEntities() {
-        return entities.getAll().stream().filter(e -> e instanceof GlowLivingEntity).map(e -> (GlowLivingEntity) e).collect(Collectors.toCollection(LinkedList::new));
+        return entities.getAll().stream().filter(e -> e instanceof GlowLivingEntity)
+                .map(e -> (GlowLivingEntity) e).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
@@ -765,7 +785,8 @@ public final class GlowWorld implements World {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Entity> Collection<T> getEntitiesByClass(Class<T> cls) {
-        return entities.getAll().stream().filter(e -> cls.isAssignableFrom(e.getClass())).map(e -> (T) e).collect(Collectors.toCollection(ArrayList::new));
+        return entities.getAll().stream().filter(e -> cls.isAssignableFrom(e.getClass()))
+                .map(e -> (T) e).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -800,6 +821,13 @@ public final class GlowWorld implements World {
         return setSpawnLocation(new Location(this, x, y, z), true);
     }
 
+    /**
+     * Sets the spawn location of the world.
+     *
+     * @param newSpawn the new spawn location
+     * @param anchor if true, the spawn is never unloaded while the world is running
+     * @return true if the spawn location has changed
+     */
     public boolean setSpawnLocation(Location newSpawn, boolean anchor) {
         Location oldSpawn = spawnLocation;
         if (newSpawn.equals(oldSpawn)) {
@@ -845,9 +873,11 @@ public final class GlowWorld implements World {
                 // determine a location randomly
                 int spawnX = ThreadLocalRandom.current().nextInt(256) - 128;
                 int spawnZ = ThreadLocalRandom.current().nextInt(256) - 128;
-                getChunkAt(spawnX >> 4, spawnZ >> 4).load(true);  // I'm not sure there's a sane way around this
+                getChunkAt(spawnX >> 4, spawnZ >> 4)
+                        .load(true);  // I'm not sure there's a sane way around this
 
-                for (int tries = 0; tries < 1000 && !generator.canSpawn(this, spawnX, spawnZ); ++tries) {
+                for (int tries = 0; tries < 1000 && !generator.canSpawn(this, spawnX, spawnZ);
+                     ++tries) {
                     spawnX += ThreadLocalRandom.current().nextInt(256) - 128;
                     spawnZ += ThreadLocalRandom.current().nextInt(256) - 128;
                 }
@@ -876,7 +906,8 @@ public final class GlowWorld implements World {
         }
 
         if (needSpawn) {
-            setSpawnLocation(spawnLocation.getBlockX(), getHighestBlockYAt(spawnLocation.getBlockX(), spawnLocation.getBlockZ()), spawnLocation.getBlockZ(), false);
+            setSpawnLocation(spawnLocation.getBlockX(), getHighestBlockYAt(spawnLocation
+                    .getBlockX(), spawnLocation.getBlockZ()), spawnLocation.getBlockZ(), false);
         }
     }
 
@@ -1063,6 +1094,11 @@ public final class GlowWorld implements World {
         save(false);
     }
 
+    /**
+     * Saves world to disk synchronously or asynchronously.
+     *
+     * @param async if true, save asynchronously
+     */
     public void save(boolean async) {
         EventFactory.callEvent(new WorldSaveEvent(this));
 
@@ -1103,15 +1139,18 @@ public final class GlowWorld implements World {
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate).generate()) {
+        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate)
+                .generate()) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
-            StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, false, null, blockStates);
+            StructureGrowEvent growEvent
+                    = new StructureGrowEvent(loc, type, false, null, blockStates);
             EventFactory.callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
                     state.update(true);
                     if (delegate != null) {
-                        delegate.setTypeIdAndData(state.getX(), state.getY(), state.getZ(), state.getTypeId(), state.getRawData());
+                        delegate.setTypeIdAndData(state.getX(), state.getY(), state.getZ(), state
+                                .getTypeId(), state.getRawData());
                     }
                 }
                 return true;
@@ -1138,6 +1177,11 @@ public final class GlowWorld implements World {
         return getBlockEntityCount();
     }
 
+    /**
+     * Returns the number of block entities in loaded chunks.
+     *
+     * @return the number of block entities
+     */
     public int getBlockEntityCount() {
         int length = 0;
         for (GlowChunk chunk : getChunkManager().getLoadedChunks()) {
@@ -1152,6 +1196,11 @@ public final class GlowWorld implements World {
         return getTickableBlockEntityCount();
     }
 
+    /**
+     * Returns the number of tickable block entities in loaded chunks.
+     *
+     * @return the number of tickable block entities
+     */
     public int getTickableBlockEntityCount() {
         // TODO: distinguish between block entity types
         int length = 0;
@@ -1214,7 +1263,15 @@ public final class GlowWorld implements World {
         return getBlockAt(location.getBlockX(), getHighestBlockYAt(location), location.getBlockZ());
     }
 
-    public Block getHighestBlockAt(Location location, Material[] except) {
+    /**
+     * Gets the lowest block at the given {@link Location} such that the block
+     * and all blocks above it are either air or one of the given materials.
+     *
+     * @param location Coordinates to get the highest block
+     * @param except Blocks to exclude in addition to air
+     * @return Highest non-empty block
+     */
+    public Block getHighestBlockAt(Location location, Material... except) {
         Block block = getHighestBlockAt(location);
         List<Material> array = Arrays.asList(except);
         for (int i = 0; i < 6; i++) {
@@ -1244,7 +1301,8 @@ public final class GlowWorld implements World {
 
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
-        Bukkit.getServer().getScheduler().runTaskAsynchronously(null, () -> cb.onLoad(chunks.getChunk(x, z)));
+        Bukkit.getServer().getScheduler()
+                .runTaskAsynchronously(null, () -> cb.onLoad(chunks.getChunk(x, z)));
     }
 
     @Override
@@ -1360,7 +1418,8 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome, boolean includeBiomeTempRain) {
+    public ChunkSnapshot getEmptyChunkSnapshot(int x, int z, boolean includeBiome,
+            boolean includeBiomeTempRain) {
         return new EmptySnapshot(x, z, this, includeBiome, includeBiomeTempRain);
     }
 
@@ -1380,7 +1439,9 @@ public final class GlowWorld implements World {
 
     @Override
     public void setBiome(int x, int z, Biome bio) {
-        getChunkAtAsync(x >> 4, z >> 4, chunk -> ((GlowChunk) chunk).setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
+        getChunkAtAsync(
+                x >> 4, z >> 4, chunk -> ((GlowChunk) chunk)
+                        .setBiome(x & 0xF, z & 0xF, GlowBiome.getId(bio)));
     }
 
     @Override
@@ -1397,16 +1458,28 @@ public final class GlowWorld implements World {
     // Entity spawning
 
     @Override
-    public <T extends Entity> T spawn(Location location, Class<T> clazz) throws IllegalArgumentException {
+    public <T extends Entity> T spawn(Location location,
+            Class<T> clazz) throws IllegalArgumentException {
         return (T) spawn(location, EntityRegistry.getEntity(clazz), SpawnReason.CUSTOM);
     }
 
     @Override
-    public <T extends Entity> T spawn(Location location, Class<T> clazz, Consumer<T> function) throws IllegalArgumentException {
+    public <T extends Entity> T spawn(Location location, Class<T> clazz,
+            Consumer<T> function) throws IllegalArgumentException {
         return null; // TODO: work on type mismatches
     }
 
-    public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz, SpawnReason reason) throws IllegalArgumentException {
+    /**
+     * Spawns an entity.
+     *
+     * @param location the {@link Location} to spawn the entity at
+     * @param clazz the class of the {@link Entity} to spawn
+     * @param reason the reason for the spawning of the entity
+     * @return an instance of the spawned {@link Entity}
+     * @throws IllegalArgumentException TODO: document the reason this can happen
+     */
+    public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz,
+            SpawnReason reason) throws IllegalArgumentException {
         GlowEntity entity = null;
 
         if (TNTPrimed.class.isAssignableFrom(clazz)) {
@@ -1415,13 +1488,15 @@ public final class GlowWorld implements World {
 
         if (entity == null) {
             try {
-                Constructor<? extends GlowEntity> constructor = clazz.getConstructor(Location.class);
+                Constructor<? extends GlowEntity> constructor = clazz
+                        .getConstructor(Location.class);
                 entity = constructor.newInstance(location);
                 GlowEntity impl = entity;
                 // function.accept(entity); TODO: work on type mismatches
                 EntitySpawnEvent spawnEvent = null;
                 if (entity instanceof LivingEntity) {
-                    spawnEvent = EventFactory.callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
+                    spawnEvent = EventFactory
+                            .callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
                 } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
                     spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
                 }
@@ -1430,11 +1505,14 @@ public final class GlowWorld implements World {
                     entity.remove();
                 } else {
                     List<Message> spawnMessage = entity.createSpawnMessage();
-                    getRawPlayers().stream().filter(player -> player.canSeeEntity(impl)).forEach(player -> player.getSession().sendAll(spawnMessage.toArray(new Message[spawnMessage.size()])));
+                    getRawPlayers().stream().filter(player -> player.canSeeEntity(impl))
+                            .forEach(player -> player.getSession().sendAll(spawnMessage
+                                    .toArray(new Message[spawnMessage.size()])));
                 }
             } catch (NoSuchMethodException e) {
                 GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
-            } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException
+                    e) {
                 GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
             }
         }
@@ -1447,19 +1525,20 @@ public final class GlowWorld implements World {
     }
 
     /**
-     * Spawn a custom entity at the given {@link Location}
+     * Spawn a custom entity at the given {@link Location}.
      *
      * @param location the {@link Location} to spawn the entity at
      * @param id       the id of the custom entity
      * @param <T>      the class of the {@link Entity} to spawn
      * @return an instance of the spawned {@link Entity}
      */
-    public <T extends Entity> T spawnCustomEntity(Location location, String id) throws IllegalArgumentException {
+    public <T extends Entity> T spawnCustomEntity(Location location,
+            String id) throws IllegalArgumentException {
         return spawnCustomEntity(location, id, SpawnReason.CUSTOM);
     }
 
     /**
-     * Spawn a custom entity at the given {@link Location}, with the given {@link SpawnReason}
+     * Spawn a custom entity at the given {@link Location}, with the given {@link SpawnReason}.
      *
      * @param location the {@link Location} to spawn the entity at
      * @param id       the id of the custom entity
@@ -1467,11 +1546,14 @@ public final class GlowWorld implements World {
      * @param <T>      the class of the {@link Entity} to spawn
      * @return an instance of the spawned {@link Entity}
      */
-    public <T extends Entity> T spawnCustomEntity(Location location, String id, SpawnReason reason) throws IllegalArgumentException {
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> T spawnCustomEntity(Location location, String id,
+            SpawnReason reason) throws IllegalArgumentException {
         Preconditions.checkNotNull(id);
         CustomEntityDescriptor descriptor = EntityRegistry.getCustomEntityDescriptor(id);
         if (descriptor == null) {
-            throw new IllegalArgumentException("Could not find a custom entity descriptor for the given id '" + id + "'");
+            throw new IllegalArgumentException(
+                    "Could not find a custom entity descriptor for the given id '" + id + "'");
         }
         return (T) spawn(location, descriptor.getEntityClass(), reason);
     }
@@ -1500,7 +1582,8 @@ public final class GlowWorld implements World {
     @Override
     public Arrow spawnArrow(Location location, Vector velocity, float speed, float spread) {
         // Transformative magic
-        Vector randVec = new Vector(ThreadLocalRandom.current().nextGaussian(), ThreadLocalRandom.current().nextGaussian(), ThreadLocalRandom.current().nextGaussian());
+        Vector randVec = new Vector(ThreadLocalRandom.current().nextGaussian(), ThreadLocalRandom
+                .current().nextGaussian(), ThreadLocalRandom.current().nextGaussian());
         randVec.multiply(0.0075 * spread);
 
         velocity.normalize();
@@ -1516,17 +1599,20 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public <T extends Arrow> T spawnArrow(Location location, Vector direction, float speed, float spread, Class<T> clazz) {
+    public <T extends Arrow> T spawnArrow(Location location, Vector direction, float speed,
+            float spread, Class<T> clazz) {
         return null;
     }
 
     @Override
-    public FallingBlock spawnFallingBlock(Location location, MaterialData data) throws IllegalArgumentException {
+    public FallingBlock spawnFallingBlock(Location location,
+            MaterialData data) throws IllegalArgumentException {
         return spawnFallingBlock(location, data.getItemType(), data.getData());
     }
 
     @Override
-    public FallingBlock spawnFallingBlock(Location location, Material material, byte data) throws IllegalArgumentException {
+    public FallingBlock spawnFallingBlock(Location location, Material material,
+            byte data) throws IllegalArgumentException {
         if (location == null || material == null) {
             throw new IllegalArgumentException();
         }
@@ -1534,7 +1620,8 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public FallingBlock spawnFallingBlock(Location location, int blockId, byte blockData) throws IllegalArgumentException {
+    public FallingBlock spawnFallingBlock(Location location, int blockId,
+            byte blockData) throws IllegalArgumentException {
         Material material = Material.getMaterial(blockId);
         return spawnFallingBlock(location, material, blockData);
     }
@@ -1544,7 +1631,8 @@ public final class GlowWorld implements World {
         return spawn(loc, type.getEntityClass());
     }
 
-    private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect, boolean isSilent) {
+    private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect,
+            boolean isSilent) {
         GlowLightningStrike strike = new GlowLightningStrike(loc, effect, isSilent);
         LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
         if (EventFactory.callEvent(event).isCancelled()) {
@@ -1610,9 +1698,11 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
-            setWeatherDuration(ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setWeatherDuration(
+                    ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS) + HALF_DAY_IN_TICKS);
         } else {
-            setWeatherDuration(ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setWeatherDuration(
+                    ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
 
         // update players
@@ -1649,9 +1739,11 @@ public final class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyThundering) {
-            setThunderDuration(ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS) + 180 * TICKS_PER_SECOND);
+            setThunderDuration(ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS)
+                    + 180 * TICKS_PER_SECOND);
         } else {
-            setThunderDuration(ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setThunderDuration(
+                    ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
         }
     }
 
@@ -1714,7 +1806,8 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public boolean createExplosion(double x, double y, double z, float power, boolean setFire, boolean breakBlocks) {
+    public boolean createExplosion(double x, double y, double z, float power, boolean setFire,
+            boolean breakBlocks) {
         return createExplosion(null, x, y, z, power, setFire, breakBlocks);
     }
 
@@ -1730,7 +1823,8 @@ public final class GlowWorld implements World {
      * @param breakBlocks Whether or not to have blocks be destroyed
      * @return false if explosion was canceled, otherwise true
      */
-    public boolean createExplosion(Entity source, double x, double y, double z, float power, boolean incendiary, boolean breakBlocks) {
+    public boolean createExplosion(Entity source, double x, double y, double z, float power,
+            boolean incendiary, boolean breakBlocks) {
         Explosion explosion = new Explosion(source, this, x, y, z, power, incendiary, breakBlocks);
         return explosion.explodeWithEvent();
     }
@@ -1746,7 +1840,9 @@ public final class GlowWorld implements World {
     @Override
     public void playEffect(Location location, Effect effect, int data, int radius) {
         int radiusSquared = radius * radius;
-        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playEffect(location, effect, data));
+        getRawPlayers().stream()
+                .filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared)
+                .forEach(player -> player.playEffect(location, effect, data));
     }
 
     @Override
@@ -1759,14 +1855,28 @@ public final class GlowWorld implements World {
         playEffect(location, effect, GlowEffect.getDataValue(effect, data), radius);
     }
 
-    public void playEffectExceptTo(Location location, Effect effect, int data, int radius, Player exclude) {
+    /**
+     * Plays an effect to all but one player within a given radius around a location.
+     *
+     * @param location the {@link Location} around which players must be to
+     *     hear the effect
+     * @param effect the {@link Effect}
+     * @param data a data bit needed for some effects
+     * @param radius the radius around the location
+     * @param exclude the player who won't see the effect
+     */
+    public void playEffectExceptTo(Location location, Effect effect, int data, int radius,
+            Player exclude) {
         int radiusSquared = radius * radius;
-        getRawPlayers().stream().filter(player -> !player.equals(exclude) && player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playEffect(location, effect, data));
+        getRawPlayers().stream().filter(player -> !player.equals(exclude)
+                && player.getLocation().distanceSquared(location) <= radiusSquared)
+                .forEach(player -> player.playEffect(location, effect, data));
     }
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        playSound(location, sound, GlowSound.getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
+        playSound(location, sound, GlowSound
+                .getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
     }
 
     @Override
@@ -1775,17 +1885,21 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
+    public void playSound(Location location, Sound sound, SoundCategory category, float volume,
+            float pitch) {
         if (location == null || sound == null) {
             return;
         }
 
         double radiusSquared = Math.pow(volume * 16, 2);
-        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared).forEach(player -> player.playSound(location, sound, category, volume, pitch));
+        getRawPlayers().stream()
+                .filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared)
+                .forEach(player -> player.playSound(location, sound, category, volume, pitch));
     }
 
     @Override
-    public void playSound(Location location, String sound, SoundCategory category, float volume, float pitch) {
+    public void playSound(Location location, String sound, SoundCategory category, float volume,
+            float pitch) {
         playSound(location, GlowSound.getVanillaSound(sound), category, volume, pitch);
     }
 
@@ -1794,8 +1908,20 @@ public final class GlowWorld implements World {
         return spigot;
     }
 
+    /**
+     * Displays the given particle to all players.
+     *
+     * @param loc the location
+     * @param particle the particle type
+     * @param offsetX TODO: document this parameter
+     * @param offsetY TODO: document this parameter
+     * @param offsetZ TODO: document this parameter
+     * @param speed TODO: document this parameter
+     * @param amount the number of particles
+     */
     //@Override
-    public void showParticle(Location loc, Effect particle, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+    public void showParticle(Location loc, Effect particle, float offsetX, float offsetY,
+            float offsetZ, float speed, int amount) {
         int radius;
         if (GlowParticle.isLongDistance(particle)) {
             radius = 48;
@@ -1803,18 +1929,37 @@ public final class GlowWorld implements World {
             radius = 16;
         }
 
-        showParticle(loc, particle, particle.getId(), 0, offsetX, offsetY, offsetZ, speed, amount, radius);
+        showParticle(loc, particle, particle
+                .getId(), 0, offsetX, offsetY, offsetZ, speed, amount, radius);
     }
 
+    /**
+     * Displays the given particle to all players.
+     *
+     * @param loc the location
+     * @param particle the particle type
+     * @param id the block or item type ID
+     * @param data the block or item data
+     * @param offsetX TODO: document this parameter
+     * @param offsetY TODO: document this parameter
+     * @param offsetZ TODO: document this parameter
+     * @param speed TODO: document this parameter
+     * @param amount the number of particles
+     */
     //@Override
-    public void showParticle(Location loc, Effect particle, int id, int data, float offsetX, float offsetY, float offsetZ, float speed, int amount, int radius) {
+    public void showParticle(Location loc, Effect particle, int id, int data, float offsetX,
+            float offsetY, float offsetZ, float speed, int amount, int radius) {
         if (loc == null || particle == null) {
             return;
         }
 
         double radiusSquared = radius * radius;
 
-        getRawPlayers().stream().filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared).forEach(player -> player.spigot().playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed, amount, radius));
+        getRawPlayers().stream()
+                .filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared)
+                .forEach(player -> player.spigot()
+                        .playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed,
+                                amount, radius));
     }
 
     /**
@@ -1915,7 +2060,10 @@ public final class GlowWorld implements World {
             getRawPlayers().forEach(GlowPlayer::sendTime);
         } else if (rule.equals("reducedDebugInfo")) {
             // inform clients about the debug info change
-            EntityStatusMessage message = new EntityStatusMessage(0, gameRules.getBoolean("reducedDebugInfo") ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
+            EntityStatusMessage message = new EntityStatusMessage(0,
+                    gameRules.getBoolean("reducedDebugInfo")
+                            ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO
+                            : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
             for (GlowPlayer player : getRawPlayers()) {
                 player.getSession().send(message);
             }
@@ -1953,48 +2101,60 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, T data) {
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count,
+            T data) {
         spawnParticle(particle, x, y, z, count, 0, 0, 0, data);
     }
 
     @Override
-    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ) {
-        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, offsetX, offsetY, offsetZ);
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ) {
+        spawnParticle(particle, location.getX(), location.getY(), location
+                .getZ(), count, offsetX, offsetY, offsetZ);
     }
 
     @Override
-    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ) {
+    public void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ) {
         spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, null);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, T data) {
-        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, offsetX, offsetY, offsetZ, data);
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ, T data) {
+        spawnParticle(particle, location.getX(), location.getY(), location
+                .getZ(), count, offsetX, offsetY, offsetZ, data);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, T data) {
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ, T data) {
         spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, 1, data);
     }
 
     @Override
-    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra) {
-        spawnParticle(particle, location.getX(), location.getY(), location.getZ(), count, offsetX, offsetY, offsetZ, extra);
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ, double extra) {
+        spawnParticle(particle, location.getX(), location.getY(), location
+                .getZ(), count, offsetX, offsetY, offsetZ, extra);
     }
 
     @Override
-    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra) {
+    public void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ, double extra) {
         spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, extra, null);
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX,
+            double offsetY, double offsetZ, double extra, T data) {
         if (particle == null) {
             throw new IllegalArgumentException("particle cannot be null!");
         }
 
         if (data != null && !particle.getDataType().isInstance(data)) {
-            throw new IllegalArgumentException("wrong data type " + data.getClass() + " should be " + particle.getDataType());
+            throw new IllegalArgumentException(
+                    "wrong data type " + data.getClass() + " should be " + particle.getDataType());
         }
 
         for (GlowPlayer player : getRawPlayers()) {
@@ -2006,8 +2166,10 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ, double extra, T data) {
-        spawnParticle(particle, new Location(this, x, y, z), count, offsetX, offsetY, offsetZ, extra, data);
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count,
+            double offsetX, double offsetY, double offsetZ, double extra, T data) {
+        spawnParticle(particle, new Location(this, x, y, z), count, offsetX, offsetY, offsetZ,
+                extra, data);
     }
 
     public GameRuleManager getGameRuleMap() {
@@ -2064,13 +2226,15 @@ public final class GlowWorld implements World {
             if (!chunk.isLoaded()) {
                 continue;
             }
-            int typeId = chunk.getType(location.getBlockX() & 0xF, location.getBlockZ() & 0xF, location.getBlockY());
+            int typeId = chunk.getType(
+                    location.getBlockX() & 0xF, location.getBlockZ() & 0xF, location.getBlockY());
             BlockType type = itemTable.getBlock(Material.getMaterial(typeId));
             if (type == null) {
                 cancelPulse(location);
                 continue;
             }
-            GlowBlock block = new GlowBlock(chunk, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+            GlowBlock block = new GlowBlock(chunk, location.getBlockX(), location
+                    .getBlockY(), location.getBlockZ());
             Integer speed = type.getPulseTickSpeed(block);
             boolean once = type.isPulseOnce(block);
             if (speed == 0) {
@@ -2118,7 +2282,8 @@ public final class GlowWorld implements World {
     /**
      * The metadata store class for worlds.
      */
-    private static final class WorldMetadataStore extends MetadataStoreBase<World> implements MetadataStore<World> {
+    private static final class WorldMetadataStore extends MetadataStoreBase<World>
+            implements MetadataStore<World> {
 
         @Override
         protected String disambiguate(World subject, String metadataKey) {

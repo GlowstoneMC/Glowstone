@@ -135,7 +135,8 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                double noiseHeight = 100.0D - Math.sqrt((x + i) * (x + i) + (z + j) * (z + j)) * 8.0D;
+                double noiseHeight =
+                        100.0D - Math.sqrt((x + i) * (x + i) + (z + j) * (z + j)) * 8.0D;
                 noiseHeight = Math.max(-100.0D, Math.min(80.0D, noiseHeight));
                 for (int k = 0; k < 33; k++) {
                     double noiseR = roughnessNoise[index] / 512.0D;

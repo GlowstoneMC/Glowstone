@@ -5,9 +5,9 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-class TNTPrimedStorage extends EntityStore<GlowTntPrimed> {
+class TntPrimedStorage extends EntityStore<GlowTntPrimed> {
 
-    public TNTPrimedStorage() {
+    public TntPrimedStorage() {
         super(GlowTntPrimed.class, EntityType.PRIMED_TNT);
     }
 

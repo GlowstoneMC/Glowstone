@@ -71,8 +71,9 @@ public class PlayerProfile {
             return CompletableFuture.completedFuture(null);
         }
 
-        if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
-            return ProfileCache.getUUID(name).thenComposeAsync((uuid) -> {
+        if (Bukkit.getServer().getOnlineMode()
+                || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
+            return ProfileCache.getUuid(name).thenComposeAsync((uuid) -> {
                 if (uuid == null) {
                     return CompletableFuture.completedFuture(null);
                 } else {
@@ -84,12 +85,12 @@ public class PlayerProfile {
     }
 
     /**
-     * Get the profile from a NBT tag (e.g. skulls).
+     * Get the profile from a NBT tag (e.g. skulls). Missing information is fetched asynchronously.
      *
      * @param tag The NBT tag containing profile information.
      * @return A PlayerProfile future. May contain a null name if the lookup failed.
      */
-    public static CompletableFuture<PlayerProfile> fromNBT(CompoundTag tag) {
+    public static CompletableFuture<PlayerProfile> fromNbt(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
         UUID uuid = UUID.fromString(tag.getString("Id"));
 
@@ -105,13 +106,20 @@ public class PlayerProfile {
         }
 
         if (tag.containsKey("Name")) {
-            return CompletableFuture.completedFuture(new PlayerProfile(tag.getString("Name"), uuid, properties));
+            return CompletableFuture.completedFuture(
+                    new PlayerProfile(tag.getString("Name"), uuid, properties));
         } else {
-            return ProfileCache.getProfile(uuid)
-                   .thenApplyAsync((profile) -> new PlayerProfile(profile.getName(), uuid, properties));
+            return ProfileCache.getProfile(uuid).thenApplyAsync(
+                (profile) -> new PlayerProfile(profile.getName(), uuid, properties));
         }
     }
 
+    /**
+     * Reads a PlayerProfile from a JSON object.
+     *
+     * @param json a player profile in JSON form
+     * @return {@code json} as a PlayerProfile
+     */
     public static PlayerProfile fromJson(JSONObject json) {
         String name = (String) json.get("name");
         String id = (String) json.get("id");
@@ -139,7 +147,12 @@ public class PlayerProfile {
         return new PlayerProfile(name, uuid, properties);
     }
 
-    public CompoundTag toNBT() {
+    /**
+     * Converts this player profile to an NBT compound tag.
+     *
+     * @return an NBT compound tag that's a copy of this player profile
+     */
+    public CompoundTag toNbt() {
         CompoundTag profileTag = new CompoundTag();
         profileTag.putString("Id", uniqueId.toString());
         profileTag.putString("Name", name);

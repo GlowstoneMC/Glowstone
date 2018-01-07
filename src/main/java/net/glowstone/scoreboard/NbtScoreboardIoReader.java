@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
+import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -16,10 +16,17 @@ import org.bukkit.scoreboard.Team;
 
 public class NbtScoreboardIoReader {
 
+    /**
+     * Loads the scoreboard status from an NBT file.
+     *
+     * @param path the file path
+     * @return the loaded scoreboard
+     * @throws IOException if the file cannot be read
+     */
     public static GlowScoreboard readMainScoreboard(File path) throws IOException {
         CompoundTag root;
 
-        try (NBTInputStream nbt = new NBTInputStream(getDataInputStream(path), true)) {
+        try (NbtInputStream nbt = new NbtInputStream(getDataInputStream(path), true)) {
             root = nbt.readCompound().getCompound("data");
         }
 
@@ -88,10 +95,6 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
-        boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
-        boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
-        Team.OptionStatus nameTagVisibility = Team.OptionStatus
-            .valueOf(data.getString("NameTagVisibility").toUpperCase());
         Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
         switch (data.getString("DeathMessageVisibility")) {
             case "never":
@@ -103,6 +106,9 @@ public class NbtScoreboardIoReader {
             case "hideForOwnTeam":
                 deathMessageVisibility = Team.OptionStatus.FOR_OWN_TEAM;
                 break;
+            default:
+                // TODO: should this raise a warning?
+                // leave deathMessageVisibility at default
         }
         Team.OptionStatus collisionRule = Team.OptionStatus.ALWAYS;
         switch (data.getString("CollisionRule")) {
@@ -115,30 +121,31 @@ public class NbtScoreboardIoReader {
             case "pushOwnTeam":
                 collisionRule = Team.OptionStatus.FOR_OWN_TEAM;
                 break;
+            default:
+                // TODO: Should this raise a warning?
+                // leave collisionRule at default
         }
         String displayName = data.getString("DisplayName");
-        String name = data.getString("Name");
-        String prefix = data.getString("Prefix");
-        String suffix = data.getString("Suffix");
         ChatColor teamColor = null;
         if (data.containsKey("TeamColor")) {
             teamColor = ChatColor.valueOf(data.getString("TeamColor").toUpperCase());
         }
 
-        List<String> players = data.getList("Players", TagType.STRING);
-
-        GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(name);
+        GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(data.getString("Name"));
         team.setDisplayName(displayName);
-        team.setPrefix(prefix);
-        team.setSuffix(suffix);
-        team.setAllowFriendlyFire(allowFriendlyFire);
-        team.setCanSeeFriendlyInvisibles(seeFriendlyInvisibles);
+        team.setPrefix(data.getString("Prefix"));
+        team.setSuffix(data.getString("Suffix"));
+        team.setAllowFriendlyFire(data.getByte("AllowFriendlyFire") == 1);
+        team.setCanSeeFriendlyInvisibles(data.getByte("SeeFriendlyInvisibles") == 1);
+        Team.OptionStatus nameTagVisibility = Team.OptionStatus
+                .valueOf(data.getString("NameTagVisibility").toUpperCase());
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, nameTagVisibility);
         team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, deathMessageVisibility);
         team.setOption(Team.Option.COLLISION_RULE, collisionRule);
         if (teamColor != null) {
             team.setColor(teamColor);
         }
+        List<String> players = data.getList("Players", TagType.STRING);
 
         players.forEach(team::addEntry);
     }

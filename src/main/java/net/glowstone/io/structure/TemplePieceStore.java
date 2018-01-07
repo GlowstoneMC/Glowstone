@@ -23,7 +23,7 @@ abstract class TemplePieceStore<T extends GlowTemplePiece> extends StructurePiec
             structurePiece.setDepth(compound.getInt("Depth"));
         }
         if (compound.isInt("HPos")) {
-            structurePiece.setHPos(compound.getInt("HPos"));
+            structurePiece.setHorizPos(compound.getInt("HPos"));
         }
     }
 
@@ -34,6 +34,6 @@ abstract class TemplePieceStore<T extends GlowTemplePiece> extends StructurePiec
         compound.putInt("Width", structurePiece.getWidth());
         compound.putInt("Height", structurePiece.getHeight());
         compound.putInt("Depth", structurePiece.getDepth());
-        compound.putInt("HPos", structurePiece.getHPos());
+        compound.putInt("HPos", structurePiece.getHorizPos());
     }
 }

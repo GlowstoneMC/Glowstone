@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 
 /**
  * The {@code TAG_Compound} tag.
  */
-public final class CompoundTag extends Tag<Map<String, Tag>> {
+public final class CompoundTag extends Tag<Map<String, Tag>>
+        implements DynamicallyTypedMapWithDoubles<String> {
 
     /**
      * The value.
@@ -170,6 +172,11 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             return (int) getLong(key);
         }
         return get(key, IntTag.class);
+    }
+
+    @Override
+    public boolean getBoolean(String key) {
+        return getByte(key) != 0;
     }
 
     /**

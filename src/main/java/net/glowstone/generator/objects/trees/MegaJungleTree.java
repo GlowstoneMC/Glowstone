@@ -77,7 +77,8 @@ public class MegaJungleTree extends GenericTree {
         // generates the branches
         int branchHeight = height - 2 - random.nextInt(4);
         while (branchHeight > height / 2) { // branching start at least at middle height
-            int x = 0, z = 0;
+            int x = 0;
+            int z = 0;
             // generates a branch
             float d = (float) (random.nextFloat() * Math.PI * 2.0F); // random direction
             for (int i = 0; i < 5; i++) {

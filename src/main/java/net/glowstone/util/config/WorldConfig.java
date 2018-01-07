@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -15,7 +16,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 /**
  * Utilities for handling the server configuration files.
  */
-public final class WorldConfig {
+public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldConfig.Key> {
 
     /**
      * The directory configurations are stored in.
@@ -81,6 +82,7 @@ public final class WorldConfig {
     ////////////////////////////////////////////////////////////////////////////
     // Value getters
 
+    @Override
     public String getString(Key key) {
         if (cache.containsKey(key)) {
             return cache.get(key).toString();
@@ -90,6 +92,7 @@ public final class WorldConfig {
         return string;
     }
 
+    @Override
     public int getInt(Key key) {
         if (cache.containsKey(key)) {
             return (Integer) cache.get(key);
@@ -99,6 +102,7 @@ public final class WorldConfig {
         return integer;
     }
 
+    @Override
     public double getDouble(Key key) {
         if (cache.containsKey(key)) {
             return (Double) cache.get(key);
@@ -108,6 +112,12 @@ public final class WorldConfig {
         return doub;
     }
 
+    @Override
+    public float getFloat(Key key) {
+        return (float) getDouble(key);
+    }
+
+    @Override
     public boolean getBoolean(Key key) {
         if (cache.containsKey(key)) {
             return (Boolean) cache.get(key);
@@ -127,6 +137,10 @@ public final class WorldConfig {
     ////////////////////////////////////////////////////////////////////////////
     // Load and internals
 
+    /**
+     * Loads the configuration from disk if it exists. Creates it if it doesn't exist, creating the
+     * folder if necessary. Completes and saves the configuration if it's incomplete.
+     */
     public void load() {
         boolean changed = false;
 
@@ -177,7 +191,7 @@ public final class WorldConfig {
             GlowServer.logger.severe("Config file " + file + " isn't valid!");
         } else {
             GlowServer.logger
-                .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
+                    .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
     }
 

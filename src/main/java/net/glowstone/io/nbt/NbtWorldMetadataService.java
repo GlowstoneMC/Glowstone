@@ -13,8 +13,8 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WorldType;
@@ -27,6 +27,13 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
     private CompoundTag unknownTags;
 
+    /**
+     * Creates the instance for the given world's metadata.
+     *
+     * @param world the world
+     * @param dir the world's metadata folder, containing uid.dat and level.dat if the world has
+     *         been previously saved; if this folder doesn't exist, it is created
+     */
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
         this.dir = dir;
@@ -57,7 +64,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         CompoundTag level = new CompoundTag();
         File levelFile = new File(dir, "level.dat");
         if (levelFile.exists()) {
-            try (NBTInputStream in = new NBTInputStream(new FileInputStream(levelFile))) {
+            try (NbtInputStream in = new NbtInputStream(new FileInputStream(levelFile))) {
                 level = in.readCompound();
                 if (level.isCompound("Data")) {
                     level = level.getCompound("Data");
@@ -241,7 +248,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         CompoundTag root = new CompoundTag();
         root.putCompound("Data", out);
-        try (NBTOutputStream nbtOut = new NBTOutputStream(
+        try (NbtOutputStream nbtOut = new NbtOutputStream(
             new FileOutputStream(new File(dir, "level.dat")))) {
             nbtOut.writeTag(root);
         } catch (IOException e) {
