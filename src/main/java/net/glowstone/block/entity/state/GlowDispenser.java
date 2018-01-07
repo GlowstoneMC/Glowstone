@@ -11,7 +11,7 @@ import net.glowstone.dispenser.DispenseBehavior;
 import net.glowstone.dispenser.DispenseBehaviorRegistry;
 import net.glowstone.dispenser.EmptyBucketDispenseBehavior;
 import net.glowstone.dispenser.FlintAndSteelDispenseBehavior;
-import net.glowstone.dispenser.TNTDispenseBehavior;
+import net.glowstone.dispenser.TntDispenseBehavior;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -47,7 +47,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
             .putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
         getDispenseBehaviorRegistry()
             .putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
-        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
+        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TntDispenseBehavior());
 
         ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
@@ -99,10 +99,20 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
 
         ItemStack origItems = getInventory().getItem(dispenseSlot);
 
-        DispenseBehavior behavior = getDispenseBehaviorRegistry().getBehavior(origItems.getType());
+        DispenseBehavior behavior = getDispenseBehavior(origItems.getType());
         ItemStack result = behavior.dispense(block, origItems);
         getInventory().setItem(dispenseSlot, result);
         return true;
+    }
+
+    /**
+     * Returns the dispense behavior that will dispense this type of item.
+     *
+     * @param itemType the item type to dispense
+     * @return the dispense behavior
+     */
+    protected DispenseBehavior getDispenseBehavior(Material itemType) {
+        return getDispenseBehaviorRegistry().getBehavior(itemType);
     }
 
     public int getDispenseSlot() {

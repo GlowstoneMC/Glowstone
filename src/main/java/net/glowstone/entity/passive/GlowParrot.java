@@ -26,6 +26,11 @@ public class GlowParrot extends GlowTameable implements Parrot {
     public static final Variant[] VARIANTS = Variant.values();
     private int endOfLife = 0;
 
+    /**
+     * Creates a parrot of a random variant.
+     *
+     * @param location the initial location
+     */
     public GlowParrot(Location location) {
         super(location, EntityType.PARROT, 6);
         setBoundingBox(0.5, 1.0);
@@ -60,6 +65,11 @@ public class GlowParrot extends GlowTameable implements Parrot {
 
     }
 
+    /**
+     * Returns the owner, if this parrot is sitting on its owner's shoulder.
+     *
+     * @return the owner, if this parrot is sitting on its owner's shoulder, or null otherwise
+     */
     public Player getSittingOn() {
         Player player = ((Player) getOwner());
         if (Objects.equals(this, player.getShoulderEntityRight()) || Objects
@@ -69,6 +79,12 @@ public class GlowParrot extends GlowTameable implements Parrot {
         return null;
     }
 
+    /**
+     * Sits on the given player's shoulder.
+     *
+     * @param player the player whose shoulder to sit on
+     * @param shoulder which shoulder to sit on
+     */
     public void setSittingOn(Player player, Shoulder shoulder) {
         if (shoulder == LEFT) {
             player.setShoulderEntityLeft(this);
@@ -118,7 +134,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
                 return true;
             }
             // TODO: sitting only happens on crouch
-            if (isTamed() && getOwnerUUID() != null && getOwnerUUID()
+            if (isTamed() && getOwnerUuid() != null && getOwnerUuid()
                 .equals(player.getUniqueId())) {
                 if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag()
                     .isEmpty()) {
