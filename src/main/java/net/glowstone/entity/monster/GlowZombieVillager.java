@@ -1,5 +1,10 @@
 package net.glowstone.entity.monster;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -9,20 +14,34 @@ import org.bukkit.entity.ZombieVillager;
 
 public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
 
+    /**
+     * The {@link UUID} of the player who converted this Zombie Villager.
+     */
+    @Getter
+    @Setter
+    private UUID conversionPlayer;
+    /**
+     * The conversion time of this Zombie Villager, in ticks.
+     */
+    private int conversionTime;
+
     public GlowZombieVillager(Location loc) {
         super(loc, EntityType.ZOMBIE_VILLAGER);
         setBoundingBox(0.6, 1.95);
+        setConversionTime(-1);
+        setVillagerProfession(Villager.Profession.FARMER);
     }
 
     @Override
     public Villager.Profession getVillagerProfession() {
-        int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) ? metadata
-            .getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
+        int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) ?
+                metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
         return Villager.Profession.values()[profession];
     }
 
     @Override
     public void setVillagerProfession(Villager.Profession profession) {
+        checkNotNull(profession);
         metadata.set(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION, profession.ordinal());
     }
 
@@ -39,5 +58,24 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT;
+    }
+
+    /**
+     * Gets the conversion time of this Zombie Villager.
+     *
+     * @return the conversion time of this Zombie Villager, in ticks
+     */
+    public int getConversionTime() {
+        return this.conversionTime;
+    }
+
+    /**
+     * Sets the conversion time of this Zombie Villager.
+     *
+     * @param conversionTime the conversion time of this villager, in ticks
+     */
+    public void setConversionTime(int conversionTime) {
+        this.conversionTime = Math.max(-1, conversionTime);
+        metadata.set(MetadataIndex.ZOMBIE_VILLAGER_IS_CONVERTING, this.conversionTime != -1);
     }
 }
