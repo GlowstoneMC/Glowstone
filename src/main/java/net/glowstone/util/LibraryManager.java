@@ -30,27 +30,6 @@ import net.glowstone.util.config.ServerConfig;
  */
 public final class LibraryManager {
     /**
-     * The default hash function used to compute the digests.
-     */
-    private static final HashFunction DEFAULT_HASH_FUNCTION = Hashing.sha1();
-    /**
-     * The alternative hash function used to compute the digests.
-     */
-    private static final HashFunction ALTERNATIVE_HASH_FUNCTION = Hashing.md5();
-    /**
-     * The default {@link HashAlgorithm} used by Glowstone for server libraries.
-     */
-    private static final HashAlgorithm DEFAULT_HASH_ALGORITHM = HashAlgorithm.SHA1;
-    /**
-     * The name of the default hash function.
-     */
-    private static final String DEFAULT_HASH_FUNCTION_NAME = "sha1";
-    /**
-     * The name of the alternative hash function.
-     */
-    private static final String ALTERNATIVE_HASH_FUNCTION_NAME = "md5";
-
-    /**
      * The Maven repository to download from.
      */
     final String repository;
@@ -89,19 +68,19 @@ public final class LibraryManager {
 
         downloaderService.execute(new LibraryDownloader(
                 "org.xerial", "sqlite-jdbc", "3.21.0",
-                "347e4d1d3e1dff66d389354af8f0021e62344584", DEFAULT_HASH_ALGORITHM));
+                "347e4d1d3e1dff66d389354af8f0021e62344584", HashAlgorithm.SHA1));
         downloaderService.execute(new LibraryDownloader(
                 "mysql", "mysql-connector-java", "5.1.44",
-                "61b6b998192c85bb581c6be90e03dcd4b9079db4", DEFAULT_HASH_ALGORITHM));
+                "61b6b998192c85bb581c6be90e03dcd4b9079db4", HashAlgorithm.SHA1));
         downloaderService.execute(new LibraryDownloader(
                 "org.apache.logging.log4j", "log4j-api", "2.8.1",
-                "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72", DEFAULT_HASH_ALGORITHM));
+                "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72", HashAlgorithm.SHA1));
         downloaderService.execute(new LibraryDownloader(
                 "org.apache.logging.log4j", "log4j-core", "2.8.1",
-                "4ac28ff2f1ddf05dae3043a190451e8c46b73c31", DEFAULT_HASH_ALGORITHM));
+                "4ac28ff2f1ddf05dae3043a190451e8c46b73c31", HashAlgorithm.SHA1));
         downloaderService.execute(new LibraryDownloader(
                 "org.apache.commons", "commons-lang3", "3.5",
-                "6c6c702c89bfff3cd9e80b04d668c5e190d588c6", DEFAULT_HASH_ALGORITHM));
+                "6c6c702c89bfff3cd9e80b04d668c5e190d588c6", HashAlgorithm.SHA1));
         downloaderService.shutdown();
         try {
             if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
@@ -229,8 +208,8 @@ public final class LibraryManager {
 
     public enum HashAlgorithm {
 
-        SHA1(DEFAULT_HASH_FUNCTION, DEFAULT_HASH_FUNCTION_NAME),
-        MD5(ALTERNATIVE_HASH_FUNCTION, ALTERNATIVE_HASH_FUNCTION_NAME);
+        SHA1(Hashing.sha1(), "sha1"),
+        MD5(Hashing.md5(), "md5");
 
         /**
          * The hash function for this algorithm.
