@@ -383,6 +383,10 @@ public final class GlowServer implements Server {
      * The storage provider for the world.
      */
     private WorldStorageProviderFactory storageProviderFactory = null;
+    /**
+     * The file name for the server icon.
+     */
+    private static final String SERVER_ICON_FILE = "server-icon.png";
 
     /**
      * Creates a new server.
@@ -948,12 +952,24 @@ public final class GlowServer implements Server {
         // server icon
         defaultIcon = new GlowServerIcon();
         try {
-            File file = config.getFile("server-icon.png");
-            if (file.isFile()) {
-                defaultIcon = new GlowServerIcon(file);
+            File serverIconFile = config.getFile(SERVER_ICON_FILE);
+            if (serverIconFile.isFile()) {
+                defaultIcon = new GlowServerIcon(serverIconFile);
+            } else {
+                try {
+                    File vanillaServerIcon = new File(SERVER_ICON_FILE);
+                    if (vanillaServerIcon.isFile()) {
+                        // Import from Vanilla
+                        logger.info("Importing 'server-icon.png' from Vanilla.");
+                        Files.copy(vanillaServerIcon.toPath(), serverIconFile.toPath());
+                        defaultIcon = new GlowServerIcon(serverIconFile);
+                    }
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "Failed to import 'server-icon.png' from Vanilla", e);
+                }
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Failed to load server-icon.png", e);
+            logger.log(Level.WARNING, "Failed to load 'server-icon.png'", e);
         }
     }
 
