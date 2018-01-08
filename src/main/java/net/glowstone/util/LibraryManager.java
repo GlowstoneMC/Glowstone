@@ -99,6 +99,9 @@ public final class LibraryManager {
         downloaderService.execute(new LibraryDownloader(
                 "org.apache.logging.log4j", "log4j-core", "2.8.1",
                 "4ac28ff2f1ddf05dae3043a190451e8c46b73c31", DEFAULT_HASH_ALGORITHM));
+        downloaderService.execute(new LibraryDownloader(
+                "org.apache.commons", "commons-lang3", "3.5",
+                "6c6c702c89bfff3cd9e80b04d668c5e190d588c6", DEFAULT_HASH_ALGORITHM));
         downloaderService.shutdown();
         try {
             if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
