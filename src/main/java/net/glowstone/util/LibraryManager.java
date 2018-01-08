@@ -2,26 +2,29 @@ package net.glowstone.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import javax.net.ssl.HttpsURLConnection;
+import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.util.config.ServerConfig;
 
 /**
  * Simple library manager which downloads external dependencies.
@@ -32,10 +35,21 @@ public final class LibraryManager {
      */
     private static final HashFunction DEFAULT_HASH_FUNCTION = Hashing.sha1();
     /**
-     * The name of the hash function.
-     * <p>This value is used to request the file digest from the repository.
+     * The alternative hash function used to compute the digests.
+     */
+    private static final HashFunction ALTERNATIVE_HASH_FUNCTION = Hashing.md5();
+    /**
+     * The default {@link HashAlgorithm} used by Glowstone for server libraries.
+     */
+    private static final HashAlgorithm DEFAULT_HASH_ALGORITHM = HashAlgorithm.SHA1;
+    /**
+     * The name of the default hash function.
      */
     private static final String DEFAULT_HASH_FUNCTION_NAME = "sha1";
+    /**
+     * The name of the alternative hash function.
+     */
+    private static final String ALTERNATIVE_HASH_FUNCTION_NAME = "md5";
 
     /**
      * The Maven repository to download from.
@@ -75,13 +89,17 @@ public final class LibraryManager {
         }
 
         downloaderService.execute(new LibraryDownloader(
-                "org.xerial", "sqlite-jdbc", "3.21.0"));
+                "org.xerial", "sqlite-jdbc", "3.21.0",
+                "347e4d1d3e1dff66d389354af8f0021e62344584", DEFAULT_HASH_ALGORITHM));
         downloaderService.execute(new LibraryDownloader(
-                "mysql", "mysql-connector-java", "5.1.44"));
+                "mysql", "mysql-connector-java", "5.1.44",
+                "61b6b998192c85bb581c6be90e03dcd4b9079db4", DEFAULT_HASH_ALGORITHM));
         downloaderService.execute(new LibraryDownloader(
-                "org.apache.logging.log4j", "log4j-api", "2.8.1"));
+                "org.apache.logging.log4j", "log4j-api", "2.8.1",
+                "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72", DEFAULT_HASH_ALGORITHM));
         downloaderService.execute(new LibraryDownloader(
-                "org.apache.logging.log4j", "log4j-core", "2.8.1"));
+                "org.apache.logging.log4j", "log4j-core", "2.8.1",
+                "4ac28ff2f1ddf05dae3043a190451e8c46b73c31", DEFAULT_HASH_ALGORITHM));
         downloaderService.shutdown();
         try {
             if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
@@ -97,11 +115,15 @@ public final class LibraryManager {
         private final String group;
         private final String library;
         private final String version;
+        private final String checksum;
+        private final HashAlgorithm algorithm;
 
-        LibraryDownloader(String group, String library, String version) {
+        LibraryDownloader(String group, String library, String version, String checksum, HashAlgorithm algorithm) {
             this.group = group;
             this.library = library;
             this.version = version;
+            this.checksum = checksum;
+            this.algorithm = algorithm;
         }
 
         @Override
@@ -126,21 +148,13 @@ public final class LibraryManager {
                         GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
                     }
 
-                    if (validateChecksum) {
-                        // download checksum
-                        URL checksumUrl = new URL(downloadUrl.toString() + "." + DEFAULT_HASH_FUNCTION_NAME);
-                        connection = (HttpsURLConnection) checksumUrl
-                                .openConnection();
-                        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                        String checksum = reader.readLine();
-                        reader.close();
-                        if (!checksum(file, checksum, DEFAULT_HASH_FUNCTION)) {
-                            GlowServer.logger.log(Level.WARNING,
-                                    "Checksum verification failed for " + file.getName() + ".");
+                    if (validateChecksum && algorithm != null && checksum != null) {
+                        if (!checksum(file, checksum, algorithm)) {
+                            GlowServer.logger.severe("The checksum for the library '" + getLibrary()
+                                    + "' does not match. "
+                                    + "Restart the server to download it again.");
                             file.delete();
-                        } else {
-                            GlowServer.logger.info("Checksum validated for " + file.getName());
+                            return;
                         }
                     }
                 } catch (IOException e) {
@@ -148,6 +162,15 @@ public final class LibraryManager {
                             "Failed to download: " + library + ' ' + version, e);
                     file.delete();
                     return;
+                }
+            } else if (validateChecksum && algorithm != null && checksum != null) {
+                // The file is already downloaded, but validate the checksum as a warning only
+                if (!checksum(file, checksum, algorithm)) {
+                    GlowServer.logger.warning("The checksum for the library '" + getLibrary()
+                            + "' does not match. "
+                            + "Remove the library and restart the server to download it again.");
+                    GlowServer.logger.warning("Additionally, you can disable this warning in the server "
+                            + "configuration, under '" + ServerConfig.Key.LIBRARY_CHECKSUM_VALIDATION.getPath() + "'.");
                 }
             }
 
@@ -177,28 +200,73 @@ public final class LibraryManager {
          *
          * @param file the file.
          * @param checksum the reference checksum to validate the file's digest with.
-         * @param hashFunction the {@link HashFunction} used to compute the file's digest.
+         * @param algorithm the {@link HashAlgorithm} used to compute the file's digest.
          * @return true if the checksum was validated, false otherwise.
          */
-        boolean checksum(File file, String checksum, HashFunction hashFunction) {
+        boolean checksum(File file, String checksum, HashAlgorithm algorithm) {
             checkNotNull(file);
-            checkNotNull(hashFunction);
             if (!file.exists()) {
                 return false;
             }
-            if (checksum == null || checksum.isEmpty()) {
+            if (algorithm == null || checksum == null || checksum.isEmpty()) {
                 // assume everything is OK if no reference checksum is provided
                 return true;
             }
             // get the file digest
             String digest;
             try {
-                digest = Files.hash(file, hashFunction).toString();
+                digest = Files.hash(file, algorithm.getFunction()).toString();
             } catch (IOException ex) {
                 GlowServer.logger.log(Level.SEVERE, "Failed to compute digest for '" + file.getName() + "'", ex);
                 return false;
             }
             return digest.equals(checksum);
+        }
+    }
+
+    public enum HashAlgorithm {
+
+        SHA1(DEFAULT_HASH_FUNCTION, DEFAULT_HASH_FUNCTION_NAME),
+        MD5(ALTERNATIVE_HASH_FUNCTION, ALTERNATIVE_HASH_FUNCTION_NAME);
+
+        /**
+         * The hash function for this algorithm.
+         */
+        @Getter
+        private final HashFunction function;
+        /**
+         * The name of the algorithm, used in configuration files.
+         */
+        @Getter
+        private final String name;
+
+        private static final Map<String, HashAlgorithm> BY_NAME = Maps.newHashMap();
+
+        HashAlgorithm(HashFunction function, String name) {
+            Preconditions.checkNotNull(function);
+            Preconditions.checkNotNull(name);
+
+            this.function = function;
+            this.name = name;
+        }
+
+        /**
+         * Gets the hash algorithm corresponding to the given name.
+         *
+         * @param name the name of the algorithm
+         * @return the corresponding algorithm, or null if none exists
+         */
+        public static HashAlgorithm getAlgorithm(String name) {
+            Preconditions.checkNotNull(name);
+
+            return BY_NAME.get(name.toLowerCase());
+        }
+
+        static {
+            // add the algorithm to the map
+            for (HashAlgorithm algorithm : values()) {
+                BY_NAME.put(algorithm.getName(), algorithm);
+            }
         }
     }
 }

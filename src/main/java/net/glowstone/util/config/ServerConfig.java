@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -446,6 +448,7 @@ public final class ServerConfig {
         DB_PASSWORD("database.password", "nether", Migrate.BUKKIT, "database.password"),
         DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation"),;
 
+        @Getter
         private final String path;
         private final Object def;
         private final Migrate migrate;
