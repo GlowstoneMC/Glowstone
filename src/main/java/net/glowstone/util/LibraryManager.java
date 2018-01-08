@@ -185,7 +185,7 @@ public final class LibraryManager {
                     method.setAccessible(true);
                     method.invoke(ClassLoader.getSystemClassLoader(), file.toURI().toURL());
                 }
-            } catch (ReflectiveOperationException | IOException e) {
+            } catch (Exception e) {
                 GlowServer.logger.log(Level.WARNING,
                         "Failed to add to classpath: " + library + " " + version, e);
             }
