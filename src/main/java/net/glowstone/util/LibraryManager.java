@@ -109,7 +109,8 @@ public final class LibraryManager {
          * @param group the Maven group ID of the library
          * @param library the Maven artifact ID of the library
          * @param version the Maven artifact version of the library
-         * @param checksum the reference checksum of the library. See {@link LibraryDownloader#checksum(File, String, HashAlgorithm)}
+         * @param checksum the reference checksum of the library.
+         *                  See {@link LibraryDownloader#checksum(File, String, HashAlgorithm)}
          * @param algorithm the algorithm used to validate the checksum.
          *                   See {@link LibraryDownloader#checksum(File, String, HashAlgorithm)}
          */
