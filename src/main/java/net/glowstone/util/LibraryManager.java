@@ -44,6 +44,11 @@ public final class LibraryManager {
      */
     final boolean validateChecksum;
 
+    /**
+     * The maximum amount of attempts to download each library.
+     */
+    final int maxDownloadAttempts;
+
     private final ExecutorService downloaderService = Executors.newCachedThreadPool();
 
     /**
@@ -53,12 +58,13 @@ public final class LibraryManager {
      * @param directoryName the name of the directory to download the libraries to
      * @param validateChecksum whether or not checksum validation is enabled
      */
-    public LibraryManager(String repository, String directoryName, boolean validateChecksum) {
+    public LibraryManager(String repository, String directoryName, boolean validateChecksum, int maxDownloadAttempts) {
         checkNotNull(repository);
         checkNotNull(directoryName);
         this.repository = repository;
         this.directory = new File(directoryName);
         this.validateChecksum = validateChecksum;
+        this.maxDownloadAttempts = maxDownloadAttempts;
     }
 
     /**
@@ -127,36 +133,53 @@ public final class LibraryManager {
             // check if we already have it
             File file = new File(directory, getLibrary());
             if (!file.exists()) {
-                // download it
-                GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
-                try {
-                    URL downloadUrl = new URL(
-                            repository + group.replace('.', '/') + '/' + library + '/' + version
-                                    + '/' + library + '-' + version + ".jar");
-                    HttpsURLConnection connection = (HttpsURLConnection) downloadUrl
-                            .openConnection();
-                    connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+                int attempts = 0;
+                while (attempts < maxDownloadAttempts) {
+                    attempts++;
+                    // download it
+                    GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
+                    try {
+                        URL downloadUrl = new URL(
+                                repository + group.replace('.', '/') + '/'
+                                        + library + '/' + version + '/' + library + '-' + version + ".jar");
+                        HttpsURLConnection connection = (HttpsURLConnection) downloadUrl
+                                .openConnection();
+                        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-                    try (ReadableByteChannel input = Channels
-                            .newChannel(connection.getInputStream());
-                            FileOutputStream output = new FileOutputStream(file)) {
-                        output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
-                        GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
-                    }
+                        try (ReadableByteChannel input = Channels
+                                .newChannel(connection.getInputStream());
+                             FileOutputStream output = new FileOutputStream(file)) {
+                            output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
+                            GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
+                        }
 
-                    if (validateChecksum && algorithm != null && checksum != null
-                            && !checksum(file, checksum, algorithm)) {
-                        GlowServer.logger.severe("The checksum for the library '" + getLibrary()
-                                + "' does not match. "
-                                + "Restart the server to download it again.");
+                        if (validateChecksum && algorithm != null && checksum != null
+                                && !checksum(file, checksum, algorithm)) {
+                            GlowServer.logger.severe("The checksum for the library '" + getLibrary()
+                                    + "' does not match. "
+                                    + (attempts == maxDownloadAttempts ? "Restart the server to download it again."
+                                            : "Attempting download again ("
+                                                    + (attempts + 1) + "/" + maxDownloadAttempts + ")"));
+                            file.delete();
+                            if (attempts == maxDownloadAttempts) {
+                                return;
+                            }
+                            continue;
+                        }
+                        // everything's fine
+                        break;
+                    } catch (IOException e) {
+                        GlowServer.logger.log(Level.WARNING,
+                                "Failed to download: " + library + ' ' + version, e);
                         file.delete();
-                        return;
+                        if (attempts == maxDownloadAttempts) {
+                            GlowServer.logger.warning("Restart the server to download '" + getLibrary()
+                                    + "' again.");
+                            return;
+                        }
+                        GlowServer.logger.warning("Attempting download of '" + getLibrary() + "' again ("
+                                + (attempts + 1) + "/" + maxDownloadAttempts + ")");
                     }
-                } catch (IOException e) {
-                    GlowServer.logger.log(Level.WARNING,
-                            "Failed to download: " + library + ' ' + version, e);
-                    file.delete();
-                    return;
                 }
             } else if (validateChecksum && algorithm != null && checksum != null
                     && !checksum(file, checksum, algorithm)) {
@@ -196,7 +219,9 @@ public final class LibraryManager {
 
         /**
          * Computes and validates the checksum of a file.
+         *
          * <p>If the file does not exist, the checksum will be automatically invalidated.
+         *
          * <p>If the reference checksum or the algorithm are empty or null,
          * the checksum will be automatically validated.
          *
