@@ -3,8 +3,10 @@ package net.glowstone.io.entity;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.entity.monster.GlowZombieVillager;
+import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
@@ -25,13 +27,13 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
 
         if (compound.isInt("Profession")) {
             int professionId = compound.getInt("Profession");
-            if (professionId < 0 || professionId >= PROFESSIONS.length) {
-                entity.setVillagerProfession(Villager.Profession.FARMER);
+            if (GlowVillager.isValidProfession(professionId)) {
+                entity.setVillagerProfession(GlowVillager.getProfessionById(professionId));
             } else {
-                entity.setVillagerProfession(PROFESSIONS[professionId]);
+                entity.setVillagerProfession(GlowVillager.getRandomProfession(ThreadLocalRandom.current()));
             }
         } else {
-            entity.setVillagerProfession(Villager.Profession.FARMER);
+            entity.setVillagerProfession(GlowVillager.getRandomProfession(ThreadLocalRandom.current()));
         }
 
         if (compound.isInt("ConversionTime")) {
@@ -53,7 +55,7 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         GlowZombieVillager entity = (GlowZombieVillager) zombie;
         super.save(entity, compound);
 
-        if (entity.getVillagerProfession() != null) {
+        if (entity.getVillagerProfession() != null && entity.getVillagerProfession() != Villager.Profession.HUSK) {
             compound.putInt("Profession", entity.getVillagerProfession().ordinal());
         }
 
