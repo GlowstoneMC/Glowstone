@@ -153,8 +153,6 @@ public final class LibraryManager {
                             GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
                         }
 
-                        Hashing.crc32c();
-
                         if (validateChecksum && algorithm != null && checksum != null
                                 && !checksum(file, checksum, algorithm)) {
                             GlowServer.logger.severe("The checksum for the library '" + getLibrary()
