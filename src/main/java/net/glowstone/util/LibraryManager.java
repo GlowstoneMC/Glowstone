@@ -48,6 +48,10 @@ public final class LibraryManager {
 
     /**
      * Creates the instance.
+     *
+     * @param repository the repository to download the libraries from
+     * @param directoryName the name of the directory to download the libraries to
+     * @param validateChecksum whether or not checksum validation is enabled
      */
     public LibraryManager(String repository, String directoryName, boolean validateChecksum) {
         checkNotNull(repository);
@@ -99,6 +103,16 @@ public final class LibraryManager {
         private final String checksum;
         private final HashAlgorithm algorithm;
 
+        /**
+         * Creates an instance of the downloader for a library.
+         *
+         * @param group the Maven group ID of the library
+         * @param library the Maven artifact ID of the library
+         * @param version the Maven artifact version of the library
+         * @param checksum the reference checksum of the library. See {@link LibraryDownloader#checksum(File, String, HashAlgorithm)}
+         * @param algorithm the algorithm used to validate the checksum.
+         *                   See {@link LibraryDownloader#checksum(File, String, HashAlgorithm)}
+         */
         LibraryDownloader(String group, String library, String version, String checksum, HashAlgorithm algorithm) {
             this.group = group;
             this.library = library;
@@ -170,6 +184,11 @@ public final class LibraryManager {
             }
         }
 
+        /**
+         * Gets the name of the file the library will be saved to.
+         *
+         * @return the name of the file the library will be saved to
+         */
         String getLibrary() {
             return library + '-' + version + ".jar";
         }
