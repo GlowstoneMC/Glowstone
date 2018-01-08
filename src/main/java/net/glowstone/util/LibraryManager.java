@@ -2,7 +2,6 @@ package net.glowstone.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
@@ -246,8 +245,8 @@ public final class LibraryManager {
         private static final Map<String, HashAlgorithm> BY_NAME = Maps.newHashMap();
 
         HashAlgorithm(HashFunction function, String name) {
-            Preconditions.checkNotNull(function);
-            Preconditions.checkNotNull(name);
+            checkNotNull(function);
+            checkNotNull(name);
 
             this.function = function;
             this.name = name;
@@ -260,7 +259,7 @@ public final class LibraryManager {
          * @return the corresponding algorithm, or null if none exists
          */
         public static HashAlgorithm getAlgorithm(String name) {
-            Preconditions.checkNotNull(name);
+            checkNotNull(name);
 
             return BY_NAME.get(name.toLowerCase());
         }
