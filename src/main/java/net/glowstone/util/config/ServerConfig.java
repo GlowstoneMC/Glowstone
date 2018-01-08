@@ -1,5 +1,6 @@
 package net.glowstone.util.config;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
@@ -244,8 +246,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                 } else if (key.validator != null) {
                     // validate existing values
                     Object val = config.get(key.path);
-                    if ((key.enumClass != null && !key.validator.validate(val, key.enumClass).get()) || !key.validator.validate(val).get()) {
-                        GlowServer.logger.warning("Invalid value for '" + key.path + "' (" + val + "), "
+                    if (!key.validator.test(val)) {
+                        GlowServer.logger.warning("Invalid config value for '" + key.path + "' (" + val + "), "
                                 + "resetting to default (" + key.def + ")");
                         config.set(key.path, key.def);
                         changed = true;
@@ -379,9 +381,9 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss"),
 
         // game props
-        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode", Validators.ENUM, GameMode.class),
+        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode", Validators.forEnum(GameMode.class)),
         FORCE_GAMEMODE("game.gamemode-force", false, Migrate.PROPS, "force-gamemode"),
-        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty", Validators.ENUM, Difficulty.class),
+        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty", Validators.forEnum(Difficulty.class)),
         HARDCORE("game.hardcore", false, Migrate.PROPS, "hardcore"),
         PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp"),
         MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height", Validators.POSITIVE),
@@ -437,8 +439,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         WARNING_STATE("advanced.deprecated-verbose", "false", Migrate.BUKKIT,
                 "settings.deprecated-verbose"),
         COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS,
-                "network-compression-threshold", (number, e) -> Validation.of((int) number == -1)
-                .or(Validators.ABSOLUTE, (int) number)),
+                "network-compression-threshold", Validators.ABSOLUTE.or((value) -> value == -1)),
         PROXY_SUPPORT("advanced.proxy-support", false),
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12, Validators.ABSOLUTE),
         GRAPHICS_COMPUTE("advanced.graphics-compute.enable", false),
@@ -486,41 +487,26 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         private final Object def;
         private final Migrate migrate;
         private final String migratePath;
-        private final Validator validator;
-        private final Class<? extends Enum> enumClass;
+        private final Predicate validator;
 
         Key(String path, Object def) {
-            this(path, def, (Validator) null, null);
+            this(path, def, null, null);
         }
 
-        Key(String path, Object def, Class<? extends Enum> enumClass) {
-            this(path, def, null, null, null, enumClass);
-        }
-
-        Key(String path, Object def, Validator validator) {
+        Key(String path, Object def, Predicate<?> validator) {
             this(path, def, null, null, validator);
-        }
-
-        Key(String path, Object def, Validator validator, Class<? extends Enum> enumClass) {
-            this(path, def, null, null, validator, enumClass);
         }
 
         Key(String path, Object def, Migrate migrate, String migratePath) {
             this(path, def, migrate, migratePath, null);
         }
 
-        Key(String path, Object def, Migrate migrate, String migratePath, Validator validator) {
-            this(path, def, migrate, migratePath, validator, null);
-        }
-
-        Key(String path, Object def, Migrate migrate, String migratePath, Validator validator,
-            Class<? extends Enum> enumClass) {
+        Key(String path, Object def, Migrate migrate, String migratePath, Predicate<?> validator) {
             this.path = path;
             this.def = def;
             this.migrate = migrate;
             this.migratePath = migratePath;
             this.validator = validator;
-            this.enumClass = enumClass;
         }
 
         @Override
@@ -529,77 +515,83 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         }
     }
 
-    static class Validation {
-        final boolean result;
+    /**
+     * A predicate wrapper to check if a value is a valid element of an enum.
+     *
+     * <p>See {@link Validators#forEnum(Class)}
+     *
+     * @param <T> the type of the enum
+     */
+    static final class EnumPredicate<T extends Enum> implements Predicate<String> {
+        final Class<T> enumClass;
 
-        Validation(boolean result) {
-            this.result = result;
+        EnumPredicate(Class<T> enumClass) {
+            checkNotNull(enumClass);
+            checkArgument(enumClass.isEnum());
+            this.enumClass = enumClass;
         }
 
-        <T> Validation and(Validator<T> other, T value) {
-            return new Validation(result && other.validate(value).get());
+        @Override
+        public boolean test(String value) {
+            if (value == null || value.isEmpty()) {
+                return false;
+            }
+            try {
+                Enum.valueOf(enumClass, value);
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
         }
-
-        <T> Validation or(Validator<T> other, T value) {
-            return new Validation(result || other.validate(value).get());
-        }
-
-        boolean get() {
-            return result;
-        }
-
-        static Validation of(boolean statement) {
-            return new Validation(statement);
-        }
-
-        static Validation any() {
-            return new Validation(true);
-        }
-
-        static Validation none() {
-            return new Validation(false);
-        }
-    }
-
-    @FunctionalInterface
-    interface Validator<T> {
-        Validation validate(T value, Object... extras);
     }
 
     static class Validators {
-        static final Validator<Integer> POSITIVE = (number, e) -> Validation.of(number > 0);
-        static final Validator<Integer> ZERO = (number, e) -> Validation.of(number == 0);
-        static final Validator<Integer> ABSOLUTE = (number, e) -> Validation.none()
-                .or(POSITIVE, number)
-                .or(ZERO, number);
-        static final Validator<Integer> PORT = (number, e) -> Validation.of(number < 49151)
-                .and(POSITIVE, number);
-        static final Validator<String> ENUM = (value, extras) -> {
-            if (value == null || value.isEmpty()) {
-                return Validation.of(false);
-            }
-            if (extras.length == 0 || !(extras[0] instanceof Class)) {
-                return Validation.of(true);
-            }
-            Class clazz = (Class) extras[0];
-            if (!clazz.isEnum()) {
-                return Validation.of(true);
-            }
-            for (Object e : clazz.getEnumConstants()) {
-                if (e.toString().equalsIgnoreCase(value)) {
-                    return Validation.of(true);
-                }
-            }
-            return Validation.of(false);
-        };
-        static final Validator<String> WORLD_TYPE = (value, e) -> Validation.of(WorldType.getByName(value) != null);
-        static final Validator<String> PATH = (value, e) -> {
+        /**
+         * Checks if the value is positive. (over zero)
+         */
+        static final Predicate<Integer> POSITIVE = (number) -> number > 0;
+        /**
+         * Checks if the value is zero.
+         */
+        static final Predicate<Integer> ZERO = (number) -> number == 0;
+        /**
+         * Checks if the value is greater than (positive) or equal to zero.
+         */
+        static final Predicate<Integer> ABSOLUTE = POSITIVE.or(ZERO);
+        /**
+         * Checks if the value is a valid port number.
+         */
+        static final Predicate<Integer> PORT = POSITIVE.and((number) -> number < 49151);
+        /**
+         * Checks if the value is a valid {@link WorldType} name.
+         */
+        static final Predicate<String> WORLD_TYPE = (value) -> WorldType.getByName(value) != null;
+
+        /**
+         * Creates a {@link EnumPredicate} that checks if the value is a member of the given enum class.
+         *
+         * @param enumClass the enum class
+         * @param <T> the type of the enum
+         * @return the predicate
+         */
+        static <T extends Enum> EnumPredicate<T> forEnum(Class<T> enumClass) {
+            return new EnumPredicate<>(enumClass);
+        }
+
+        /**
+         * Checks if the value is a valid file/directory path.
+         *
+         * <p>Note that the behavior of this predicate may be platform-dependent.
+         */
+        static final Predicate<String> PATH = (value) -> {
             try {
-                Paths.get(value);
+                if (Paths.get(value) == null) {
+                    return false;
+                }
             } catch (Exception ex) {
-                return Validation.of(false);
+                return false;
             }
-            return Validation.of(true);
+            return true;
         };
     }
 
