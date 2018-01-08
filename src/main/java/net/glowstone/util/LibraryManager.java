@@ -206,6 +206,9 @@ public final class LibraryManager {
         }
     }
 
+    /**
+     * An enum containing the supported hash algorithms.
+     */
     public enum HashAlgorithm {
         /**
          * The SHA-1 hash algorithm.
