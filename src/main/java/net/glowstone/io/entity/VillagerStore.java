@@ -5,7 +5,6 @@ import java.util.List;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
@@ -47,9 +46,10 @@ class VillagerStore extends AgeableStore<GlowVillager> {
         // Recipes
         if (compound.isCompound("Offers")) {
             CompoundTag offers = compound.getCompound("Offers");
-            if (offers.isList("Recipes", TagType.COMPOUND)) {
-                entity.clearRecipes();
-                List<CompoundTag> recipesList = offers.getList("Recipes", TagType.COMPOUND);
+            if (offers.isCompoundList("Recipes")) {
+                entity.clearRecipes(); // clear defaults
+                List<CompoundTag> recipesList = offers.getCompoundList("Recipes");
+                List<MerchantRecipe> recipes = new ArrayList<>();
                 for (CompoundTag recipeTag : recipesList) {
                     CompoundTag sellTag = recipeTag.getCompound("sell");
                     CompoundTag buy1tag = recipeTag.getCompound("buy");
@@ -70,8 +70,9 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                     MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
                         experienceReward);
                     recipe.setIngredients(ingredients);
-                    entity.getRecipes().add(recipe);
+                    recipes.add(recipe);
                 }
+                entity.setRecipes(recipes);
             }
         }
 

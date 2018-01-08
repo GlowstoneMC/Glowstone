@@ -3452,4 +3452,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public Collection<BossBar> getBossBars() {
         return new ArrayList<>(bossBars);
     }
+
+    /**
+     * Gets the currently open window ID.
+     *
+     * @return the currently open window ID, -1 if there is no open window
+     */
+    public int getOpenWindowId() {
+        if (invMonitor == null) {
+            return -1;
+        }
+        return invMonitor.getId();
+    }
 }
