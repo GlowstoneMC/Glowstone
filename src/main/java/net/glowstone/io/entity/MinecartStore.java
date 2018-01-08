@@ -12,7 +12,7 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
     private GlowMinecart.MinecartType type;
 
     public MinecartStore(GlowMinecart.MinecartType type) {
-        super((Class<GlowMinecart>) type.getMinecartClass(), type.getEntityType());
+        super(type.getMinecartClass(), type.getEntityType());
         this.type = type;
     }
 
@@ -27,9 +27,9 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
         super.load(entity, tag);
         if (entity instanceof InventoryHolder) {
             InventoryHolder inv = (InventoryHolder) entity;
-            if (inv.getInventory() != null) {
+            if (inv.getInventory() != null && tag.isCompoundList("Items")) {
                 inv.getInventory().setContents(NbtSerialization
-                    .readInventory(tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
+                        .readInventory(tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
             }
         }
         // todo
@@ -42,7 +42,7 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
             InventoryHolder inv = (InventoryHolder) entity;
             if (inv.getInventory() != null) {
                 tag.putCompoundList("Items",
-                    NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
+                        NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
             }
         }
         // todo
