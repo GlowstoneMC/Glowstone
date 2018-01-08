@@ -197,6 +197,9 @@ public final class LibraryManager {
 
         /**
          * Computes and validates the checksum of a file.
+         * <p>If the file does not exist, the checksum will be automatically invalidated.
+         * <p>If the reference checksum or the algorithm are empty or null,
+         * the checksum will be automatically validated.
          *
          * @param file the file.
          * @param checksum the reference checksum to validate the file's digest with.
