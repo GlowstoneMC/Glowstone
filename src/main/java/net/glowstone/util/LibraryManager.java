@@ -207,8 +207,13 @@ public final class LibraryManager {
     }
 
     public enum HashAlgorithm {
-
+        /**
+         * The SHA-1 hash algorithm.
+         */
         SHA1(Hashing.sha1(), "sha1"),
+        /**
+         * The MD5 hash algorithm.
+         */
         MD5(Hashing.md5(), "md5");
 
         /**
@@ -224,6 +229,12 @@ public final class LibraryManager {
 
         private static final Map<String, HashAlgorithm> BY_NAME = Maps.newHashMap();
 
+        /**
+         * Represents a hash algorithm.
+         *
+         * @param function the {@link HashFunction} used to calculate the hash
+         * @param name the name of the algorithm
+         */
         HashAlgorithm(HashFunction function, String name) {
             checkNotNull(function);
             checkNotNull(name);
@@ -245,7 +256,7 @@ public final class LibraryManager {
         }
 
         static {
-            // add the algorithm to the map
+            // add the algorithms to the map
             for (HashAlgorithm algorithm : values()) {
                 BY_NAME.put(algorithm.getName(), algorithm);
             }
