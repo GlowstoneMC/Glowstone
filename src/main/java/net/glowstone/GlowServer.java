@@ -738,7 +738,9 @@ public final class GlowServer implements Server {
         }
 
         // Start loading plugins
-        new LibraryManager().run();
+        new LibraryManager(config.getString(Key.LIBRARY_REPOSITORY_URL),
+                config.getString(Key.LIBRARIES_FOLDER), config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
+                config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS)).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 

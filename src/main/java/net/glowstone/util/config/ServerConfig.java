@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.DynamicallyTypedMap;
 import org.bukkit.configuration.ConfigurationSection;
@@ -400,6 +401,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         PLUGIN_FOLDER("folders.plugins", "plugins"),
         UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder"),
         WORLD_FOLDER("folders.worlds", "worlds", Migrate.BUKKIT, "settings.world-container"),
+        LIBRARIES_FOLDER("folders.libraries", "lib"),
 
         // files
         PERMISSIONS_FILE("files.permissions", "permissions.yml", Migrate.BUKKIT,
@@ -430,6 +432,10 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         REGION_CACHE_SIZE("advanced.region-file.cache-size", 256),
         REGION_COMPRESSION("advanced.region-file.compression", true),
         PROFILE_LOOKUP_TIMEOUT("advanced.profile-lookup-timeout", 5),
+        LIBRARY_CHECKSUM_VALIDATION("advanced.library-checksum-validation", true),
+        LIBRARY_REPOSITORY_URL("advanced.library-repository-url",
+                "https://repo.glowstone.net/service/local/repositories/central/content/"),
+        LIBRARY_DOWNLOAD_ATTEMPTS("advanced.library-download-attempts", 2),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),
@@ -461,6 +467,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         DB_PASSWORD("database.password", "nether", Migrate.BUKKIT, "database.password"),
         DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation"),;
 
+        @Getter
         private final String path;
         private final Object def;
         private final Migrate migrate;
