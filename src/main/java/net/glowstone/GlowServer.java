@@ -960,16 +960,16 @@ public final class GlowServer implements Server {
                     File vanillaServerIcon = new File(SERVER_ICON_FILE);
                     if (vanillaServerIcon.isFile()) {
                         // Import from Vanilla
-                        logger.info("Importing 'server-icon.png' from Vanilla.");
+                        logger.info("Importing '" + SERVER_ICON_FILE + "' from Vanilla.");
                         Files.copy(vanillaServerIcon.toPath(), serverIconFile.toPath());
                         defaultIcon = new GlowServerIcon(serverIconFile);
                     }
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, "Failed to import 'server-icon.png' from Vanilla", e);
+                    logger.log(Level.WARNING, "Failed to import '" + SERVER_ICON_FILE + "' from Vanilla", e);
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Failed to load 'server-icon.png'", e);
+            logger.log(Level.WARNING, "Failed to load '" + SERVER_ICON_FILE + "'", e);
         }
     }
 
