@@ -153,11 +153,14 @@ public final class LibraryManager {
                             GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
                         }
 
+                        Hashing.crc32c();
+
                         if (validateChecksum && algorithm != null && checksum != null
                                 && !checksum(file, checksum, algorithm)) {
                             GlowServer.logger.severe("The checksum for the library '" + getLibrary()
                                     + "' does not match. "
-                                    + (attempts == maxDownloadAttempts ? "Restart the server to download it again."
+                                    + (attempts == maxDownloadAttempts ? "Restart the server to attempt "
+                                    + "downloading it again."
                                             : "Attempting download again ("
                                                     + (attempts + 1) + "/" + maxDownloadAttempts + ")"));
                             file.delete();
@@ -173,8 +176,8 @@ public final class LibraryManager {
                                 "Failed to download: " + library + ' ' + version, e);
                         file.delete();
                         if (attempts == maxDownloadAttempts) {
-                            GlowServer.logger.warning("Restart the server to download '" + getLibrary()
-                                    + "' again.");
+                            GlowServer.logger.warning("Restart the server to attempt downloading '"
+                                    + getLibrary() + "' again.");
                             return;
                         }
                         GlowServer.logger.warning("Attempting download of '" + getLibrary() + "' again ("
