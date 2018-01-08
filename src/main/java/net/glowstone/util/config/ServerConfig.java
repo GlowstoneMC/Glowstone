@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
-
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import org.bukkit.configuration.ConfigurationSection;
