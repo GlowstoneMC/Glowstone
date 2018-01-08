@@ -147,14 +147,13 @@ public final class LibraryManager {
                         GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
                     }
 
-                    if (validateChecksum && algorithm != null && checksum != null) {
-                        if (!checksum(file, checksum, algorithm)) {
-                            GlowServer.logger.severe("The checksum for the library '" + getLibrary()
-                                    + "' does not match. "
-                                    + "Restart the server to download it again.");
-                            file.delete();
-                            return;
-                        }
+                    if (validateChecksum && algorithm != null && checksum != null
+                            && !checksum(file, checksum, algorithm)) {
+                        GlowServer.logger.severe("The checksum for the library '" + getLibrary()
+                                + "' does not match. "
+                                + "Restart the server to download it again.");
+                        file.delete();
+                        return;
                     }
                 } catch (IOException e) {
                     GlowServer.logger.log(Level.WARNING,
@@ -162,15 +161,14 @@ public final class LibraryManager {
                     file.delete();
                     return;
                 }
-            } else if (validateChecksum && algorithm != null && checksum != null) {
+            } else if (validateChecksum && algorithm != null && checksum != null
+                    && !checksum(file, checksum, algorithm)) {
                 // The file is already downloaded, but validate the checksum as a warning only
-                if (!checksum(file, checksum, algorithm)) {
-                    GlowServer.logger.warning("The checksum for the library '" + getLibrary()
-                            + "' does not match. "
-                            + "Remove the library and restart the server to download it again.");
-                    GlowServer.logger.warning("Additionally, you can disable this warning in the server "
-                            + "configuration, under '" + ServerConfig.Key.LIBRARY_CHECKSUM_VALIDATION.getPath() + "'.");
-                }
+                GlowServer.logger.warning("The checksum for the library '" + getLibrary()
+                        + "' does not match. "
+                        + "Remove the library and restart the server to download it again.");
+                GlowServer.logger.warning("Additionally, you can disable this warning in the server "
+                        + "configuration, under '" + ServerConfig.Key.LIBRARY_CHECKSUM_VALIDATION.getPath() + "'.");
             }
 
             // hack it onto the classpath

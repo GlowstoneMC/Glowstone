@@ -415,7 +415,8 @@ public final class ServerConfig {
         REGION_COMPRESSION("advanced.region-file.compression", true),
         PROFILE_LOOKUP_TIMEOUT("advanced.profile-lookup-timeout", 5),
         LIBRARY_CHECKSUM_VALIDATION("advanced.library-checksum-validation", true),
-        LIBRARY_REPOSITORY_URL("advanced.library-repository-url", "https://repo.glowstone.net/service/local/repositories/central/content/"),
+        LIBRARY_REPOSITORY_URL("advanced.library-repository-url",
+                "https://repo.glowstone.net/service/local/repositories/central/content/"),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),
