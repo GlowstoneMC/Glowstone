@@ -1,9 +1,9 @@
-package net.glowstone.library;
+package net.glowstone.util.library;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import net.glowstone.library.LibraryManager.HashAlgorithm;
+import net.glowstone.util.library.LibraryManager.HashAlgorithm;
 
 public class Library {
     private static final String ARTIFACT_ID_KEY = "artifact-id";

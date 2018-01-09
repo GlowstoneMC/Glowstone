@@ -1,4 +1,4 @@
-package net.glowstone.library;
+package net.glowstone.util.library;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
