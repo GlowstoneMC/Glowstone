@@ -1,4 +1,4 @@
-package net.glowstone.util;
+package net.glowstone.library;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import javax.net.ssl.HttpsURLConnection;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.util.ClassPathAgent;
 import net.glowstone.util.config.ServerConfig;
 
 /**

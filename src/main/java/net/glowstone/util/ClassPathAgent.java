@@ -11,7 +11,7 @@ public class ClassPathAgent {
         inst = instrumentation;
     }
 
-    static void addJarFile(JarFile file) {
+    public static void addJarFile(JarFile file) {
         if (inst != null) {
             inst.appendToSystemClassLoaderSearch(file);
         }
