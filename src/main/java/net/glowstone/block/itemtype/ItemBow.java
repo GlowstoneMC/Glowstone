@@ -3,6 +3,7 @@ package net.glowstone.block.itemtype;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.inventory.GlowInventorySlot;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -28,9 +29,9 @@ public class ItemBow extends ItemTimedUsage {
     @Override
     public void endUse(GlowPlayer player, ItemStack item) {
         // Check arrows again, since plugins may have changed the inventory while the bow was drawn
-        Optional<ItemStack> maybeArrow = findArrow(player);
+        Optional<GlowInventorySlot> maybeArrow = findArrow(player);
         if (maybeArrow.isPresent()) {
-            ItemStack arrow = maybeArrow.get();
+            ItemStack arrow = maybeArrow.get().getItem();
             Material arrowType = arrow.getType();
             Arrow launchedArrow = null;
             boolean consumeArrow = (player.getGameMode() != GameMode.CREATIVE);
@@ -59,10 +60,11 @@ public class ItemBow extends ItemTimedUsage {
                 if (consumeArrow) {
                     int amount = arrow.getAmount();
                     if (amount <= 1) {
-                        player.getInventory().remove(arrow);
+                        arrow = InventoryUtil.createEmptyStack();
                     } else {
                         arrow.setAmount(amount - 1);
                     }
+                    maybeArrow.get().setItem(arrow);
                 }
                 double chargeFraction = Math.max(0.0,
                         1.0 - (TICKS_TO_FULLY_CHARGE - player.getUsageTime())
@@ -90,15 +92,16 @@ public class ItemBow extends ItemTimedUsage {
         player.setUsageTime(0);
     }
 
-    private Optional<ItemStack> findArrow(GlowPlayer player) {
-        Optional<ItemStack> currentArrow = Optional.empty();
-        for (ItemStack itemStack : player.getInventory().getContents()) {
+    private Optional<GlowInventorySlot> findArrow(GlowPlayer player) {
+        Optional<GlowInventorySlot> currentArrow = Optional.empty();
+        for (GlowInventorySlot itemSlot : player.getInventory().getSlots()) {
+            ItemStack itemStack = itemSlot.getItem();
             switch (itemStack.getType()) {
                 case SPECTRAL_ARROW:
                 case TIPPED_ARROW:
-                    return Optional.of(itemStack);
+                    return Optional.of(itemSlot);
                 case ARROW:
-                    currentArrow = Optional.of(itemStack);
+                    currentArrow = Optional.of(itemSlot);
                     continue; // keep looking, in case we find a special arrow
                 default:
                     // do nothing

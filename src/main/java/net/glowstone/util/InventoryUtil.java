@@ -80,19 +80,21 @@ public class InventoryUtil {
     /**
      * Inflicts damage to an item. Unbreaking enchantment is applied if present.
      *
-     * @param player The player holding the item, or null if held by a dispenser
-     * @param holding The item
+     * @param player the player holding the item, or null if held by a dispenser
+     * @param holding the item
+     *
+     * @return the updated item stack
      */
-    public static void damageItem(GlowPlayer player, ItemStack holding) {
+    public static ItemStack damageItem(GlowPlayer player, ItemStack holding) {
         if (player != null && player.getGameMode() == GameMode.CREATIVE) {
-            return;
+            return holding;
         }
 
         // Apply unbreaking enchantment.
         // TODO: Armor has a different formula for chance to avoid damage
         int durability = holding.getEnchantmentLevel(Enchantment.DURABILITY);
         if (durability > 0 && ThreadLocalRandom.current().nextDouble() < 1 / (durability + 1)) {
-            return;
+            return holding;
         }
 
         holding.setDurability((short) (holding.getDurability() + 1));
@@ -100,8 +102,9 @@ public class InventoryUtil {
             if (player != null) {
                 EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
             }
-            holding.setAmount(0);
+            return InventoryUtil.createEmptyStack();
         }
+        return holding;
     }
 
     /**

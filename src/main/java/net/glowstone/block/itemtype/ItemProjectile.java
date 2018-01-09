@@ -16,5 +16,12 @@ public abstract class ItemProjectile extends ItemType {
         this.entityType = entityType;
     }
 
+    /**
+     * Throws this projectile.
+     *
+     * @param player the player throwing the projectile
+     * @param holding the projectile as an item
+     * @return the projectile as an entity
+     */
     public abstract Projectile use(GlowPlayer player, ItemStack holding);
 }
