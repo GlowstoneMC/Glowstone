@@ -385,6 +385,12 @@ public final class GlowServer implements Server {
      */
     private WorldStorageProviderFactory storageProviderFactory = null;
     /**
+     * Whether the server should just generate and load configuration files, then exit.
+     *
+     * <p>This can be enabled by using the --generate-config launch argument.
+     */
+    private static boolean generateConfigOnly;
+    /**
      * The file name for the server icon.
      */
     private static final String SERVER_ICON_FILE = "server-icon.png";
@@ -427,8 +433,12 @@ public final class GlowServer implements Server {
         try {
             GlowServer server = createFromArguments(args);
 
-            // we don't want to run a server when called with --version
+            // we don't want to run a server when called with --version, --help or --generate-config
             if (server == null) {
+                return;
+            }
+            if (generateConfigOnly) {
+                GlowServer.logger.info("Configuration files have been loaded, exiting...");
                 return;
             }
 
@@ -488,6 +498,9 @@ public final class GlowServer implements Server {
                         .println("  --version, -v                  Shows version information and "
                                 + "exits.");
                 System.out
+                        .println("  --generate-config              Generates and loads configuration files, then "
+                                + "exits.");
+                System.out
                         .println("  --configdir <directory>        Sets the configuration "
                                 + "directory.");
                 System.out.println("  --configfile <file>            Sets the configuration file.");
@@ -527,10 +540,12 @@ public final class GlowServer implements Server {
                 System.out.println(
                         "Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
                 return null;
+            } else if ("--generate-config".equals(opt)) {
+                generateConfigOnly = true;
             }
 
             // Below this point, options require parameters
-            if (i == args.length - 1) {
+            if (i == args.length - 1 && !"--generate-config".equals(opt)) {
                 System.err.println("Ignored option specified without value: " + opt);
                 continue;
             }
@@ -580,6 +595,9 @@ public final class GlowServer implements Server {
                 case "--log-pattern":
                 case "-L":
                     parameters.put(Key.LOG_FILE, args[++i]);
+                    break;
+                case "--generate-config":
+                    // previously handled
                     break;
                 default:
                     System.err.println("Ignored invalid option: " + opt);
