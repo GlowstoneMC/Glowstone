@@ -289,7 +289,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return getType().getName();
     }
 
     ////////////////////////////////////////////////////////////////////////////

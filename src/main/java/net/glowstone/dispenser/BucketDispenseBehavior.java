@@ -12,8 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class BucketDispenseBehavior extends DefaultDispenseBehavior {
 
-    DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
-
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {
         ItemFilledBucket bucket = (ItemFilledBucket) ItemTable.instance().getItem(stack.getType());
@@ -27,7 +25,7 @@ public class BucketDispenseBehavior extends DefaultDispenseBehavior {
             stack.setAmount(1);
             return stack;
         } else {
-            return defaultBehavior.dispense(block, stack);
+            return INSTANCE.dispense(block, stack);
         }
     }
 

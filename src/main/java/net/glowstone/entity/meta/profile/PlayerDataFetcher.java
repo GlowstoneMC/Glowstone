@@ -71,7 +71,7 @@ class PlayerDataFetcher {
      * @param playerName The name to look up.
      * @return The UUID, or null on failure.
      */
-    public static UUID getUUID(String playerName) {
+    public static UUID getUuid(String playerName) {
         HttpsURLConnection conn;
         try {
             URL url = new URL(UUID_URL);

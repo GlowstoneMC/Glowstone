@@ -12,7 +12,7 @@ import net.glowstone.dispenser.DispenseBehaviorRegistry;
 import net.glowstone.dispenser.EmptyBucketDispenseBehavior;
 import net.glowstone.dispenser.FlintAndSteelDispenseBehavior;
 import net.glowstone.dispenser.ProjectileDispenseBehavior;
-import net.glowstone.dispenser.TNTDispenseBehavior;
+import net.glowstone.dispenser.TntDispenseBehavior;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowEgg;
 import net.glowstone.entity.projectile.GlowFireball;
@@ -59,8 +59,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.LAVA_BUCKET, bucketDispenseBehavior);
         registry.putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
         registry.putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
-        registry.putBehavior(Material.TNT, new TNTDispenseBehavior());
-
+        registry.putBehavior(Material.TNT, new TntDispenseBehavior());
         ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         registry.putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);
         registry.putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
@@ -140,10 +139,20 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
 
         ItemStack origItems = getInventory().getItem(dispenseSlot);
 
-        DispenseBehavior behavior = getDispenseBehaviorRegistry().getBehavior(origItems.getType());
+        DispenseBehavior behavior = getDispenseBehavior(origItems.getType());
         ItemStack result = behavior.dispense(block, origItems);
         getInventory().setItem(dispenseSlot, result);
         return true;
+    }
+
+    /**
+     * Returns the dispense behavior that will dispense this type of item.
+     *
+     * @param itemType the item type to dispense
+     * @return the dispense behavior
+     */
+    protected DispenseBehavior getDispenseBehavior(Material itemType) {
+        return getDispenseBehaviorRegistry().getBehavior(itemType);
     }
 
     public int getDispenseSlot() {

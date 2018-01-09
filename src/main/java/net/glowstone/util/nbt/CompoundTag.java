@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 
 /**
  * The {@code TAG_Compound} tag.
  */
-public final class CompoundTag extends Tag<Map<String, Tag>> {
+public final class CompoundTag extends Tag<Map<String, Tag>>
+        implements DynamicallyTypedMapWithDoubles<String> {
 
     /**
      * The value.
@@ -170,6 +172,11 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             return (int) getLong(key);
         }
         return get(key, IntTag.class);
+    }
+
+    @Override
+    public boolean getBoolean(String key) {
+        return getByte(key) != 0;
     }
 
     /**
@@ -385,6 +392,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
      * Test whether the subtag with the given key is of {@link List} type.
      *
      * @param key the key to look up
+     * @param type the {@link TagType} of the list's elements
      * @return true if the subtag exists and is a {@link List}; false otherwise
      */
     public boolean isList(String key, TagType type) {
@@ -396,13 +404,24 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     /**
-     * Test whether the subtag with the given key is of CompoundTag type.
+     * Test whether the subtag with the given key is of {@link CompoundTag} type.
      *
      * @param key the key to look up
-     * @return true if the subtag exists and is a CompoundTag; false otherwise
+     * @return true if the subtag exists and is a {@link CompoundTag}; false otherwise
      */
     public boolean isCompound(String key) {
         return is(key, CompoundTag.class);
+    }
+
+    /**
+     * Test whether the subtag with the given key is of {@link List} type with elements of type {@link CompoundTag}.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@link List} with elements of type {@link CompoundTag};
+     *         false otherwise
+     */
+    public boolean isCompoundList(String key) {
+        return isList(key, TagType.COMPOUND);
     }
 
     ////////////////////////////////////////////////////////////////////////////

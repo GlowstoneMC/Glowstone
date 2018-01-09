@@ -35,7 +35,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
  *
  * @author Graham Edgecombe
  */
-public final class GlowChunk implements Chunk {
+public class GlowChunk implements Chunk {
 
     /**
      * The width of a chunk (x axis).

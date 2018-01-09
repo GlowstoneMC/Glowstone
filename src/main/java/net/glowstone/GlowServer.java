@@ -82,6 +82,7 @@ import net.glowstone.command.minecraft.TeleportCommand;
 import net.glowstone.command.minecraft.TellCommand;
 import net.glowstone.command.minecraft.TellrawCommand;
 import net.glowstone.command.minecraft.TestForBlockCommand;
+import net.glowstone.command.minecraft.TestForBlocksCommand;
 import net.glowstone.command.minecraft.TestForCommand;
 import net.glowstone.command.minecraft.TimeCommand;
 import net.glowstone.command.minecraft.TitleCommand;
@@ -383,6 +384,16 @@ public final class GlowServer implements Server {
      * The storage provider for the world.
      */
     private WorldStorageProviderFactory storageProviderFactory = null;
+    /**
+     * Whether the server should just generate and load configuration files, then exit.
+     *
+     * <p>This can be enabled by using the --generate-config launch argument.
+     */
+    private static boolean generateConfigOnly;
+    /**
+     * The file name for the server icon.
+     */
+    private static final String SERVER_ICON_FILE = "server-icon.png";
 
     /**
      * Creates a new server.
@@ -422,8 +433,12 @@ public final class GlowServer implements Server {
         try {
             GlowServer server = createFromArguments(args);
 
-            // we don't want to run a server when called with --version
+            // we don't want to run a server when called with --version, --help or --generate-config
             if (server == null) {
+                return;
+            }
+            if (generateConfigOnly) {
+                GlowServer.logger.info("Configuration files have been loaded, exiting...");
                 return;
             }
 
@@ -483,6 +498,9 @@ public final class GlowServer implements Server {
                         .println("  --version, -v                  Shows version information and "
                                 + "exits.");
                 System.out
+                        .println("  --generate-config              Generates and loads configuration files, then "
+                                + "exits.");
+                System.out
                         .println("  --configdir <directory>        Sets the configuration "
                                 + "directory.");
                 System.out.println("  --configfile <file>            Sets the configuration file.");
@@ -522,10 +540,12 @@ public final class GlowServer implements Server {
                 System.out.println(
                         "Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
                 return null;
+            } else if ("--generate-config".equals(opt)) {
+                generateConfigOnly = true;
             }
 
             // Below this point, options require parameters
-            if (i == args.length - 1) {
+            if (i == args.length - 1 && !"--generate-config".equals(opt)) {
                 System.err.println("Ignored option specified without value: " + opt);
                 continue;
             }
@@ -575,6 +595,9 @@ public final class GlowServer implements Server {
                 case "--log-pattern":
                 case "-L":
                     parameters.put(Key.LOG_FILE, args[++i]);
+                    break;
+                case "--generate-config":
+                    // previously handled
                     break;
                 default:
                     System.err.println("Ignored invalid option: " + opt);
@@ -733,7 +756,9 @@ public final class GlowServer implements Server {
         }
 
         // Start loading plugins
-        new LibraryManager().run();
+        new LibraryManager(config.getString(Key.LIBRARY_REPOSITORY_URL),
+                config.getString(Key.LIBRARIES_FOLDER), config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
+                config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS)).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
@@ -948,12 +973,24 @@ public final class GlowServer implements Server {
         // server icon
         defaultIcon = new GlowServerIcon();
         try {
-            File file = config.getFile("server-icon.png");
-            if (file.isFile()) {
-                defaultIcon = new GlowServerIcon(file);
+            File serverIconFile = config.getFile(SERVER_ICON_FILE);
+            if (serverIconFile.isFile()) {
+                defaultIcon = new GlowServerIcon(serverIconFile);
+            } else {
+                try {
+                    File vanillaServerIcon = new File(SERVER_ICON_FILE);
+                    if (vanillaServerIcon.isFile()) {
+                        // Import from Vanilla
+                        logger.info("Importing '" + SERVER_ICON_FILE + "' from Vanilla.");
+                        Files.copy(vanillaServerIcon.toPath(), serverIconFile.toPath());
+                        defaultIcon = new GlowServerIcon(serverIconFile);
+                    }
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "Failed to import '" + SERVER_ICON_FILE + "' from Vanilla", e);
+                }
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Failed to load server-icon.png", e);
+            logger.log(Level.WARNING, "Failed to load '" + SERVER_ICON_FILE + "'", e);
         }
     }
 
@@ -1013,6 +1050,7 @@ public final class GlowServer implements Server {
         commandMap.register("minecraft", new TestForBlockCommand());
         commandMap.register("minecraft", new SetBlockCommand());
         commandMap.register("minecraft", new CloneCommand());
+        commandMap.register("minecraft", new TestForBlocksCommand());
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {

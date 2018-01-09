@@ -70,7 +70,7 @@ cd Glowstone
 ### 2. Build
 
 ```sh
-./setup.sh
+./scripts/build.sh
 ```
 
 The final jar will be placed in `target/` named `glowstone.jar`.
