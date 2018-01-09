@@ -19,7 +19,9 @@ public class FlintAndSteelDispenseBehavior extends DefaultDispenseBehavior {
         successful = true;
         if (target.getType() == Material.AIR) {
             target.setType(Material.FIRE);
-            InventoryUtil.damageItem(null, stack);
+            // TODO: Find the slot, so we can damage the flint and steel and write it back to the
+            // inventory
+            // InventoryUtil.damageItem(null, stack);
         } else if (target.getType() == Material.TNT) {
             BlockTnt.igniteBlock(target, false);
         } else {

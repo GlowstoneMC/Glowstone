@@ -27,17 +27,18 @@ public class ItemBow extends ItemTimedUsage {
     }
 
     @Override
-    public void endUse(GlowPlayer player, ItemStack item) {
+    public void endUse(GlowPlayer player, ItemStack bow) {
         // Check arrows again, since plugins may have changed the inventory while the bow was drawn
         Optional<GlowInventorySlot> maybeArrow = findArrow(player);
         if (maybeArrow.isPresent()) {
-            ItemStack arrow = maybeArrow.get().getItem();
+            GlowInventorySlot slot = maybeArrow.get();
+            ItemStack arrow = slot.getItem();
             Material arrowType = arrow.getType();
             Arrow launchedArrow = null;
             boolean consumeArrow = (player.getGameMode() != GameMode.CREATIVE);
             switch (arrowType) {
                 case ARROW:
-                    if (item.containsEnchantment(Enchantment.ARROW_INFINITE)) {
+                    if (bow.containsEnchantment(Enchantment.ARROW_INFINITE)) {
                         consumeArrow = false;
                     }
                     launchedArrow = player.launchProjectile(Arrow.class);
@@ -64,28 +65,29 @@ public class ItemBow extends ItemTimedUsage {
                     } else {
                         arrow.setAmount(amount - 1);
                     }
-                    maybeArrow.get().setItem(arrow);
+                    slot.setItem(arrow);
                 }
                 double chargeFraction = Math.max(0.0,
                         1.0 - (TICKS_TO_FULLY_CHARGE - player.getUsageTime())
                                 / TICKS_TO_FULLY_CHARGE);
                 double damage = MAX_BASE_DAMAGE * chargeFraction
-                        * (1 + 0.25 * item.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
+                        * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
                 launchedArrow.setVelocity(launchedArrow.getVelocity().normalize().multiply(
                         chargeFraction * MAX_SPEED));
                 launchedArrow.spigot().setDamage(damage);
-                if (item.containsEnchantment(Enchantment.ARROW_FIRE)) {
+                if (bow.containsEnchantment(Enchantment.ARROW_FIRE)) {
                     // Arrow will burn as long as it's in flight, unless extinguished by water
                     launchedArrow.setFireTicks(Integer.MAX_VALUE);
                 }
                 launchedArrow
-                        .setKnockbackStrength(item
+                        .setKnockbackStrength(bow
                                 .getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK));
                 // 20% crit chance
                 if (ThreadLocalRandom.current().nextDouble() < 0.2) {
                     launchedArrow.setCritical(true);
                 }
-                InventoryUtil.damageItem(player, item);
+                // TODO: Is main hand always the correct slot?
+                player.setItemInHand(InventoryUtil.damageItem(player, bow));
             }
         }
         player.setUsageItem(null);
