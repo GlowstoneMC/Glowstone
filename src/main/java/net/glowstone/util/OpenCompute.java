@@ -123,6 +123,7 @@ public class OpenCompute {
 
     /**
      * Calculates the number of work groups.
+     *
      * @param size the total number of local work units
      * @return the number of work groups
      */
