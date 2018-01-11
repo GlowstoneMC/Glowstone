@@ -51,9 +51,10 @@ However, there are several drawbacks:
 For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features).
 
 ## Downloads
-[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone)
 
-If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**.
+The latest LTS and monthly releases, as well as a direct link to our latest build can be found on [our website](https://glowstone.net/#downloads).
+
+Older releases can be found on [GitHub](https://github.com/GlowstoneMC/Glowstone/releases).
 
 ## Building
 
