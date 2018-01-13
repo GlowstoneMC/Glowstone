@@ -140,6 +140,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
 
     /**
      * Retrieves a section as a list of maps.
+     *
      * @param key the key to look up
      * @return the value as a list of maps
      */
