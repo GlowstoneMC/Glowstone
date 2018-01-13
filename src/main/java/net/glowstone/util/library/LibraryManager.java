@@ -103,7 +103,7 @@ public final class LibraryManager {
         /**
          * Creates an instance of the downloader for a library.
          *
-         * @param library an object representing a library
+         * @param library a {@link Library} instance representing a library
          */
         LibraryDownloader(Library library) {
             this.library = library;
@@ -221,7 +221,7 @@ public final class LibraryManager {
          * the checksum will be automatically validated.
          *
          * @param file the file.
-         * @param library the library containing the algorithm and the checksum.
+         * @param library the {@link Library} instance containing the algorithm and the checksum.
          * @return true if the checksum was validated, false otherwise.
          */
         boolean checksum(File file, Library library) {

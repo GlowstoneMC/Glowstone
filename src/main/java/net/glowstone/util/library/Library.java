@@ -20,10 +20,10 @@ public class Library {
 
     /**
      * Extracts the needed information from a map of key-value pairs inside a config file to
-     * download a library and inject it at runtime.
+     * download a {@link Library} and inject it at runtime.
      *
      * @param configMap The Map that was extracted from a config file.
-     * @return A Library instance populated with whatever information we could extract.
+     * @return A {@link Library} instance populated with whatever information we could extract.
      */
     @SuppressWarnings("unchecked")
     public static Library fromConfigMap(Map<?, ?> configMap) {
@@ -83,7 +83,7 @@ public class Library {
     private final String checksumValue;
 
     /**
-     * Creates a library with the specified group ID, artifact ID, and version.
+     * Creates a {@link Library} instance with the specified group ID, artifact ID, and version.
      *
      * @param groupId The group ID of the library, separated by periods.
      * @param artifactId The artifact ID of the library.
@@ -94,7 +94,8 @@ public class Library {
     }
 
     /**
-     * Creates a library with the specified group ID, artifact ID, version, and repository.
+     * Creates a {@link Library} instance with the specified group ID, artifact ID, version, and
+     * repository.
      *
      * @param groupId The group ID of the library, separated by periods.
      * @param artifactId The artifact ID of the library.
@@ -106,7 +107,8 @@ public class Library {
     }
 
     /**
-     * Creates a library with the specified group ID, artifact ID, version, and checksum.
+     * Creates a {@link Library} instance with the specified group ID, artifact ID, version, and
+     * checksum.
      *
      * @param groupId The group ID of the library, separated by periods.
      * @param artifactId The artifact ID of the library.
@@ -120,7 +122,8 @@ public class Library {
     }
 
     /**
-     * Creates a library with the specified group ID, artifact ID, version, repository, and checksum.
+     * Creates a {@link Library} instance with the specified group ID, artifact ID, version,
+     * repository, and checksum.
      *
      * @param groupId The group ID of the library, separated by periods.
      * @param artifactId The artifact ID of the library.
@@ -140,7 +143,8 @@ public class Library {
     }
 
     /**
-     * Converts the library to a map that can be serialized and saved into a config file.
+     * Converts the {@link Library} instance to a map that can be serialized and saved into a
+     * config file.
      *
      * @return A map that is able to be serialized into a config.
      */
