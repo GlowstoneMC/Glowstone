@@ -547,7 +547,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
 
     static class Validators {
         /**
-         * Checks if the value is positive. (over zero)
+         * Checks if the value is positive (over zero).
          */
         static final Predicate<Integer> POSITIVE = (number) -> number > 0;
         /**
