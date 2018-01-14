@@ -3,7 +3,6 @@ package net.glowstone.dispenser;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockDispenser;
 import net.glowstone.block.blocktype.BlockTnt;
-import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
