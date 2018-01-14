@@ -11,12 +11,12 @@ public class GlowWitherSkull extends GlowFireball implements WitherSkull {
     @Setter
     private boolean charged;
 
+    public GlowWitherSkull(Location location) {
+        super(location);
+    }
+    
     @Override
     protected int getObjectId() {
         return NETWORK_ID;
-    }
-
-    public GlowWitherSkull(Location location) {
-        super(location);
     }
 }
