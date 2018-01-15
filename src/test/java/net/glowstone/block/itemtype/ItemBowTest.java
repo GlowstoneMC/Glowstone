@@ -3,7 +3,6 @@ package net.glowstone.block.itemtype;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
@@ -43,13 +42,10 @@ public class ItemBowTest {
         for (ItemStack item : inventory.getContents()) {
             switch (item.getType()) {
                 case BOW:
-                    if (expectBow) {
-                        assertFalse("Duplicate bow found", foundBow);
-                        foundBow = true;
-                        assertEquals((long) expectedBowDamage, (long) item.getDurability());
-                    } else {
-                        fail("Unexpected bow found");
-                    }
+                    assertTrue("Unexpected bow found", expectBow);
+                    assertFalse("Duplicate bow found", foundBow);
+                    foundBow = true;
+                    assertEquals((long) expectedBowDamage, (long) item.getDurability());
                     break;
                 case ARROW:
                     arrows += item.getAmount();
