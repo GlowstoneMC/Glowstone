@@ -1,6 +1,7 @@
 package net.glowstone.block.itemtype;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
@@ -29,7 +30,7 @@ public class ItemBowTest {
         GlowPlayerInventory inventory = new GlowPlayerInventory(player);
         when(player.getInventory()).thenReturn(inventory);
         ItemStack bowItemStack = new ItemStack(Material.BOW);
-        inventory.addItem(bowItemStack);
+        inventory.setItemInMainHand(bowItemStack);
         ItemBow bow = new ItemBow();
 
         // Shouldn't be able to use bow without arrows
@@ -54,13 +55,27 @@ public class ItemBowTest {
         when(launchedArrow.getVelocity()).thenReturn(new Vector(2, 0, 0));
         when(launchedArrow.spigot()).thenReturn(spigot);
         when(player.launchProjectile(Arrow.class)).thenReturn(launchedArrow);
-
+        Mockito.doCallRealMethod().when(player).setItemInHand(any(ItemStack.class));
         // Finish shooting
         bow.endUse(player, bowItemStack);
         verify(player, times(1)).launchProjectile(Arrow.class);
         verify(player, times(1)).setUsageItem(null);
         verify(player, times(1)).setUsageTime(0);
-        assertEquals(1, bowItemStack.getDurability()); // shooting should damage the bow
-        // FIXME: assertEquals(1, arrows.getAmount()); // one arrow should be consumed
+        boolean foundBow = false;
+        boolean foundArrow = false;
+        for (ItemStack item : inventory.getContents()) {
+            switch (item.getType()) {
+                case BOW:
+                    foundBow = true;
+                    assertEquals(1, item.getDurability()); // shooting should damage the bow
+                    break;
+                case ARROW:
+                    foundArrow = true;
+                    assertEquals(1, item.getAmount()); // 1 of the 2 arrows should be spent
+                    break;
+            }
+        }
+        assertTrue(foundBow);
+        assertTrue(foundArrow);
     }
 }
