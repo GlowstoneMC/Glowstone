@@ -10,10 +10,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -32,6 +34,7 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.scheduler.BukkitScheduler;
 
 /**
  * Central class for the calling of events.
@@ -49,7 +52,7 @@ public final class EventFactory {
      * @return the called event
      */
     public static <T extends Event> T callEvent(T event) {
-        GlowServer server = (GlowServer) Bukkit.getServer();
+        Server server = Bukkit.getServer();
 
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);
@@ -57,7 +60,8 @@ public final class EventFactory {
         } else {
             FutureTask<T> task = new FutureTask<>(
                 () -> server.getPluginManager().callEvent(event), event);
-            server.getScheduler().scheduleInTickExecution(task);
+            BukkitScheduler scheduler = server.getScheduler();
+            ((GlowScheduler) scheduler).scheduleInTickExecution(task);
             try {
                 return task.get();
             } catch (InterruptedException e) {

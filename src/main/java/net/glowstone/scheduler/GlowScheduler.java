@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.net.SessionRegistry;
+import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -39,7 +41,7 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * The server this scheduler is managing for.
      */
-    private final GlowServer server;
+    private final Server server;
     /**
      * The scheduled executor service which backs this worlds.
      */
@@ -74,17 +76,32 @@ public final class GlowScheduler implements BukkitScheduler {
      * The primary worlds thread in which pulse() is called.
      */
     private Thread primaryThread;
-
+    /**
+     * The session registry used to pulse all players.
+     */
+    private final SessionRegistry sessionRegistry;
     /**
      * Creates a new task scheduler.
      *
      * @param server The server that will use this scheduler.
-     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the servers
      *         worlds.
      */
     public GlowScheduler(GlowServer server, WorldScheduler worlds) {
+        this(server, worlds, server.getSessionRegistry());
+    }
+
+    /**
+     * Creates a new task scheduler.
+     * @param server The server that will use this scheduler.
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the servers
+     * @param sessionRegistry The {@link SessionRegistry} this scheduler will use to tick players
+     */
+    public GlowScheduler(Server server, WorldScheduler worlds,
+            SessionRegistry sessionRegistry) {
         this.server = server;
         this.worlds = worlds;
+        this.sessionRegistry = sessionRegistry;
         inTickTaskCondition = worlds.getAdvanceCondition();
         tickEndRun = this.worlds::doTickEnd;
         primaryThread = Thread.currentThread();
@@ -162,7 +179,7 @@ public final class GlowScheduler implements BukkitScheduler {
         primaryThread = Thread.currentThread();
 
         // Process player packets
-        server.getSessionRegistry().pulse();
+        sessionRegistry.pulse();
 
         // Run the relevant tasks.
         for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
