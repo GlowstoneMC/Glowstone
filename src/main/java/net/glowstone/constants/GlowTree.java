@@ -43,7 +43,8 @@ import org.bukkit.TreeType;
 
 public final class GlowTree {
 
-    private static final ImmutableMap<TreeType, BiFunction<Random, BlockStateDelegate, ? extends GenericTree>> CONSTRUCTORS =
+    private static final ImmutableMap<TreeType,
+            BiFunction<Random, BlockStateDelegate, ? extends GenericTree>> CONSTRUCTORS =
             ImmutableMap
                     .<TreeType, BiFunction<Random, BlockStateDelegate, ? extends GenericTree>>
                             builder()
