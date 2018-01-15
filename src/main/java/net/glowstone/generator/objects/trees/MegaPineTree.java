@@ -26,42 +26,39 @@ public class MegaPineTree extends MegaRedwoodTree {
     }
 
     @Override
-    public boolean generate(Location loc) {
-        boolean generated = super.generate(loc);
+    public boolean generate(World world, Random random, int blockX, int blockY, int blockZ) {
+        boolean generated = super.generate(world, random, blockX, blockY, blockZ);
         if (generated) {
-            generatePodzol(loc);
+            generatePodzol(blockX, blockY, blockZ, world, random);
         }
         return generated;
     }
 
     @Override
-    protected void generateDirtBelowTrunk(Location loc) {
+    protected void generateDirtBelowTrunk(World world, int blockX, int blockY,
+            int blockZ) {
         // SELF, SOUTH, EAST, SOUTH EAST
         Dirt dirt = new Dirt(DirtType.PODZOL);
         delegate
-            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc
-                            .getBlockY() - 1, loc.getBlockZ(),
+            .setTypeAndData(world, blockX, blockY - 1, blockZ,
                 Material.DIRT, dirt);
-        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1,
-            loc.getBlockZ() + 1, Material.DIRT, dirt);
-        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1,
-            loc.getBlockZ(), Material.DIRT, dirt);
-        delegate.setTypeAndData(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY() - 1,
-            loc.getBlockZ() + 1, Material.DIRT, dirt);
+        delegate.setTypeAndData(world, blockX, blockY - 1,
+            blockZ + 1, Material.DIRT, dirt);
+        delegate.setTypeAndData(world, blockX + 1, blockY - 1,
+            blockZ, Material.DIRT, dirt);
+        delegate.setTypeAndData(world, blockX + 1, blockY - 1,
+            blockZ + 1, Material.DIRT, dirt);
     }
 
-    private void generatePodzol(Location loc) {
-        int sourceX = loc.getBlockX();
-        int sourceY = loc.getBlockY();
-        int sourceZ = loc.getBlockZ();
-        generatePodzolPatch(sourceX - 1, sourceY, sourceZ - 1, loc.getWorld());
-        generatePodzolPatch(sourceX + 2, sourceY, sourceZ - 1, loc.getWorld());
-        generatePodzolPatch(sourceX - 1, sourceY, sourceZ + 2, loc.getWorld());
-        generatePodzolPatch(sourceX + 2, sourceY, sourceZ + 2, loc.getWorld());
+    private void generatePodzol(int sourceX, int sourceY, int sourceZ, World world, Random random) {
+        generatePodzolPatch(sourceX - 1, sourceY, sourceZ - 1, world);
+        generatePodzolPatch(sourceX + 2, sourceY, sourceZ - 1, world);
+        generatePodzolPatch(sourceX - 1, sourceY, sourceZ + 2, world);
+        generatePodzolPatch(sourceX + 2, sourceY, sourceZ + 2, world);
         for (int i = 0; i < 5; i++) {
             int n = random.nextInt(64);
             if (n % 8 == 0 || n % 8 == 7 || n / 8 == 0 || n / 8 == 7) {
-                generatePodzolPatch(sourceX - 3 + n % 8, sourceY, sourceZ - 3 + n / 8, loc.getWorld());
+                generatePodzolPatch(sourceX - 3 + n % 8, sourceY, sourceZ - 3 + n / 8, world);
             }
         }
     }
