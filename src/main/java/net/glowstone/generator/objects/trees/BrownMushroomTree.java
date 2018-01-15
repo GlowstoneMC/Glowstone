@@ -15,12 +15,10 @@ public class BrownMushroomTree extends GenericTree {
      * Initializes this mushroom with a random height, preparing it to attempt to generate.
      *
      * @param random the PRNG
-     * @param location the base of the trunk
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
-     *     blocks
      */
-    public BrownMushroomTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    public BrownMushroomTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         type = Material.HUGE_MUSHROOM_1;
         setOverridables(
             Material.AIR,
@@ -31,7 +29,7 @@ public class BrownMushroomTree extends GenericTree {
     }
 
     @Override
-    public boolean canPlaceOn() {
+    public boolean canPlaceOn(Location loc) {
         BlockState state = delegate
             .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT
@@ -39,7 +37,7 @@ public class BrownMushroomTree extends GenericTree {
     }
 
     @Override
-    public boolean canPlace() {
+    public boolean canPlace(Location loc) {
         for (int y = loc.getBlockY(); y <= loc.getBlockY() + 1 + height; y++) {
             // Space requirement is 7x7 blocks, so brown mushroom's cap
             // can be directly touching a mushroom next to it.
@@ -57,7 +55,7 @@ public class BrownMushroomTree extends GenericTree {
                         // skip source block check
                         if (y != loc.getBlockY() || x != loc.getBlockX() || z != loc.getBlockZ()) {
                             // we can overlap leaves around
-                            Material type = blockTypeAt(x, y, z);
+                            Material type = blockTypeAt(x, y, z, loc.getWorld());
                             if (!overridables.contains(type)) {
                                 return false;
                             }
@@ -72,8 +70,8 @@ public class BrownMushroomTree extends GenericTree {
     }
 
     @Override
-    public boolean generate() {
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+    public boolean generate(Location loc) {
+        if (cannotGenerateAt(loc)) {
             return false;
         }
 

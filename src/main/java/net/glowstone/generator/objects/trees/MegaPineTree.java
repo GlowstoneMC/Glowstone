@@ -4,6 +4,7 @@ import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
@@ -20,25 +21,26 @@ public class MegaPineTree extends MegaRedwoodTree {
      *     blocks
      */
     public MegaPineTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+        super(random, delegate);
         setLeavesHeight(random.nextInt(5) + 3);
     }
 
     @Override
-    public boolean generate() {
-        boolean generated = super.generate();
+    public boolean generate(Location loc) {
+        boolean generated = super.generate(loc);
         if (generated) {
-            generatePodzol();
+            generatePodzol(loc);
         }
         return generated;
     }
 
     @Override
-    protected void generateDirtBelowTrunk() {
+    protected void generateDirtBelowTrunk(Location loc) {
         // SELF, SOUTH, EAST, SOUTH EAST
         Dirt dirt = new Dirt(DirtType.PODZOL);
         delegate
-            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(),
+            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc
+                            .getBlockY() - 1, loc.getBlockZ(),
                 Material.DIRT, dirt);
         delegate.setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1,
             loc.getBlockZ() + 1, Material.DIRT, dirt);
@@ -48,34 +50,34 @@ public class MegaPineTree extends MegaRedwoodTree {
             loc.getBlockZ() + 1, Material.DIRT, dirt);
     }
 
-    private void generatePodzol() {
+    private void generatePodzol(Location loc) {
         int sourceX = loc.getBlockX();
         int sourceY = loc.getBlockY();
         int sourceZ = loc.getBlockZ();
-        generatePodzolPatch(sourceX - 1, sourceY, sourceZ - 1);
-        generatePodzolPatch(sourceX + 2, sourceY, sourceZ - 1);
-        generatePodzolPatch(sourceX - 1, sourceY, sourceZ + 2);
-        generatePodzolPatch(sourceX + 2, sourceY, sourceZ + 2);
+        generatePodzolPatch(sourceX - 1, sourceY, sourceZ - 1, loc.getWorld());
+        generatePodzolPatch(sourceX + 2, sourceY, sourceZ - 1, loc.getWorld());
+        generatePodzolPatch(sourceX - 1, sourceY, sourceZ + 2, loc.getWorld());
+        generatePodzolPatch(sourceX + 2, sourceY, sourceZ + 2, loc.getWorld());
         for (int i = 0; i < 5; i++) {
             int n = random.nextInt(64);
             if (n % 8 == 0 || n % 8 == 7 || n / 8 == 0 || n / 8 == 7) {
-                generatePodzolPatch(sourceX - 3 + n % 8, sourceY, sourceZ - 3 + n / 8);
+                generatePodzolPatch(sourceX - 3 + n % 8, sourceY, sourceZ - 3 + n / 8, loc.getWorld());
             }
         }
     }
 
-    private void generatePodzolPatch(int sourceX, int sourceY, int sourceZ) {
+    private void generatePodzolPatch(int sourceX, int sourceY, int sourceZ, World world) {
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
                 if (Math.abs(x) != 2 || Math.abs(z) != 2) {
                     for (int y = 2; y >= -3; y--) {
-                        Block block = loc.getWorld()
+                        Block block = world
                             .getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
                         if (block.getType() == Material.GRASS || block.getType() == Material.DIRT) {
                             BlockState state = block.getState();
                             state.setType(Material.DIRT);
                             DirtType dirtType = DirtType.PODZOL;
-                            if (loc.getWorld().getBlockAt(sourceX + x, sourceY + y + 1, sourceZ + z)
+                            if (world.getBlockAt(sourceX + x, sourceY + y + 1, sourceZ + z)
                                 .getType().isOccluding()) {
                                 dirtType = DirtType.NORMAL;
                             }

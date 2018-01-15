@@ -15,12 +15,10 @@ public class SwampTree extends CocoaTree {
      * Initializes this tree with a random height, preparing it to attempt to generate.
      *
      * @param random the PRNG
-     * @param location the base of the trunk
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and
-     *         leaf blocks
      */
-    public SwampTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    public SwampTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setOverridables(
             Material.AIR,
             Material.LEAVES
@@ -30,14 +28,14 @@ public class SwampTree extends CocoaTree {
     }
 
     @Override
-    public boolean canPlaceOn() {
+    public boolean canPlaceOn(Location loc) {
         BlockState state = delegate
             .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
     @Override
-    public boolean canPlace() {
+    public boolean canPlace(Location loc) {
         for (int y = loc.getBlockY(); y <= loc.getBlockY() + 1 + height; y++) {
             // Space requirement
             int radius = 1; // default radius if above first block
@@ -51,7 +49,7 @@ public class SwampTree extends CocoaTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        Material type = blockTypeAt(x, y, z);
+                        Material type = blockTypeAt(x, y, z, loc.getWorld());
                         if (!overridables.contains(type)) {
                             // the trunk can be immersed by 1 block of water
                             if (type == Material.WATER || type == Material.STATIONARY_WATER) {
@@ -72,13 +70,13 @@ public class SwampTree extends CocoaTree {
     }
 
     @Override
-    public boolean generate() {
+    public boolean generate(Location loc) {
         while (loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.WATER
             || loc.getBlock().getRelative(BlockFace.DOWN).getType() == Material.STATIONARY_WATER) {
             loc.subtract(0, 1, 0);
         }
 
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+        if (cannotGenerateAt(loc)) {
             return false;
         }
 
@@ -91,7 +89,7 @@ public class SwampTree extends CocoaTree {
                     if (Math.abs(x - loc.getBlockX()) != radius
                         || Math.abs(z - loc.getBlockZ()) != radius
                         || random.nextBoolean() && n != 0) {
-                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType);
+                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType, loc.getWorld());
                     }
                 }
             }
@@ -99,21 +97,24 @@ public class SwampTree extends CocoaTree {
 
         // generate the trunk
         for (int y = 0; y < height; y++) {
-            Material material = blockTypeAt(loc.getBlockX(), loc.getBlockY() + y, loc.getBlockZ());
+            Material material = blockTypeAt(loc.getBlockX(), loc.getBlockY() + y, loc
+                    .getBlockZ(), loc.getWorld());
             if (material == Material.AIR || material == Material.LEAVES
                     || material == Material.WATER || material == Material.STATIONARY_WATER) {
                 delegate.setTypeAndRawData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + y,
+
                     loc.getBlockZ(), Material.LOG, logType);
             }
         }
 
         // add some vines on the leaves
-        addVinesOnLeaves();
+        addVinesOnLeaves(loc);
 
         // block below trunk is always dirt
         Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate
-            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(),
+            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc
+                            .getBlockY() - 1, loc.getBlockZ(),
                 Material.DIRT, dirt);
 
         return true;

@@ -13,12 +13,10 @@ public class TallRedwoodTree extends RedwoodTree {
      * Initializes this tree with a random height and radius, preparing it to attempt to generate.
      *
      * @param random the PRNG
-     * @param location the base of the trunk
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and
-     *         leaf blocks
      */
-    public TallRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    public TallRedwoodTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setOverridables(
             Material.AIR,
             Material.LEAVES,
@@ -35,8 +33,8 @@ public class TallRedwoodTree extends RedwoodTree {
     }
 
     @Override
-    public boolean generate() {
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+    public boolean generate(Location loc) {
+        if (cannotGenerateAt(loc)) {
             return false;
         }
 
@@ -48,7 +46,7 @@ public class TallRedwoodTree extends RedwoodTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if ((Math.abs(x - loc.getBlockX()) != radius
                                     || Math.abs(z - loc.getBlockZ()) != radius || radius <= 0)
-                            && blockTypeAt(x, y, z) == Material.AIR) {
+                            && blockTypeAt(x, y, z, loc.getWorld()) == Material.AIR) {
                         delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
                             leavesType);
                     }
@@ -64,13 +62,14 @@ public class TallRedwoodTree extends RedwoodTree {
         // generate the trunk
         for (int y = 0; y < height - 1; y++) {
             replaceIfAirOrLeaves(loc.getBlockX(),
-                    loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
+                    loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType, loc.getWorld());
         }
 
         // block below trunk is always dirt
         Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate
-            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(),
+            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc
+                            .getBlockY() - 1, loc.getBlockZ(),
                 Material.DIRT, dirt);
 
         return true;

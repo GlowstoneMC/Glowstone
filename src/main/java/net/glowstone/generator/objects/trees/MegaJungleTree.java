@@ -4,6 +4,7 @@ import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
@@ -14,27 +15,24 @@ public class MegaJungleTree extends GenericTree {
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
-     *
-     * @param random the PRNG
-     * @param location the base of the trunk
+     *  @param random the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and
-     *         leaf blocks
      */
-    public MegaJungleTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    public MegaJungleTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setHeight(random.nextInt(20) + random.nextInt(3) + 10);
         setTypes(3, 3);
     }
 
     @Override
-    public boolean canPlaceOn() {
+    public boolean canPlaceOn(Location loc) {
         BlockState state = delegate
                 .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
     @Override
-    public boolean canPlace() {
+    public boolean canPlace(Location loc) {
         for (int y = loc.getBlockY(); y <= loc.getBlockY() + 1 + height; y++) {
             // Space requirement
             int radius = 2; // default radius if above first block
@@ -48,7 +46,7 @@ public class MegaJungleTree extends GenericTree {
                 for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
                     if (y >= 0 && y < 256) {
                         // we can overlap some blocks around
-                        Material type = blockTypeAt(x, y, z);
+                        Material type = blockTypeAt(x, y, z, loc.getWorld());
                         if (!overridables.contains(type)) {
                             return false;
                         }
@@ -62,8 +60,8 @@ public class MegaJungleTree extends GenericTree {
     }
 
     @Override
-    public boolean generate() {
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+    public boolean generate(Location loc) {
+        if (cannotGenerateAt(loc)) {
             return false;
         }
 
@@ -71,7 +69,7 @@ public class MegaJungleTree extends GenericTree {
         for (int y = -2; y <= 0; y++) {
             generateLeaves(
                     loc.getBlockX() + 0, loc.getBlockY() + height + y, loc.getBlockZ(), 3 - y,
-                    false);
+                    false, loc.getWorld());
         }
 
         // generates the branches
@@ -92,25 +90,27 @@ public class MegaJungleTree extends GenericTree {
             }
             // generates leaves for this branch
             for (int y = branchHeight - (random.nextInt(2) + 1); y <= branchHeight; y++) {
-                generateLeaves(loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() + z,
-                        1 - (y - branchHeight), true);
+                generateLeaves(
+                        loc.getBlockX() + x, loc.getBlockY() + y, loc.getBlockZ() + z,
+                        1 - (y - branchHeight), true, loc.getWorld());
             }
             branchHeight -= random.nextInt(4) + 2;
         }
 
         // generates the trunk
-        generateTrunk();
+        generateTrunk(loc);
 
         // add some vines on the trunk
-        addVinesOnTrunk();
+        addVinesOnTrunk(loc);
 
         // blocks below trunk are always dirt
-        generateDirtBelowTrunk();
+        generateDirtBelowTrunk(loc);
 
         return true;
     }
 
-    protected void generateLeaves(int sourceX, int sourceY, int sourceZ, int radius, boolean odd) {
+    protected void generateLeaves(int sourceX, int sourceY, int sourceZ, int radius, boolean odd,
+            World world) {
         int n = 1;
         if (odd) {
             n = 0;
@@ -128,13 +128,13 @@ public class MegaJungleTree extends GenericTree {
 
                 if (sqX + sqZ <= sqR || sqXb + sqZb <= sqR || sqX + sqZb <= sqR
                         || sqXb + sqZ <= sqR) {
-                    replaceIfAirOrLeaves(x, sourceY, z, Material.LEAVES, leavesType);
+                    replaceIfAirOrLeaves(x, sourceY, z, Material.LEAVES, leavesType, world);
                 }
             }
         }
     }
 
-    protected void generateTrunk() {
+    protected void generateTrunk(Location loc) {
         // SELF, SOUTH, EAST, SOUTH EAST
         for (int y = 0; y < height + -1; y++) {
             Material type = loc.getWorld()
@@ -168,7 +168,7 @@ public class MegaJungleTree extends GenericTree {
         }
     }
 
-    protected void generateDirtBelowTrunk() {
+    protected void generateDirtBelowTrunk(Location loc) {
         // SELF, SOUTH, EAST, SOUTH EAST
         Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate
@@ -183,26 +183,28 @@ public class MegaJungleTree extends GenericTree {
                 loc.getBlockZ() + 1, Material.DIRT, dirt);
     }
 
-    private void addVinesOnTrunk() {
+    private void addVinesOnTrunk(Location loc) {
         for (int y = 1; y < height; y++) {
-            maybePlaceVine(-1, y, 0, BlockFace.EAST);
-            maybePlaceVine(0, y, -1, BlockFace.SOUTH);
-            maybePlaceVine(2, y, 0, BlockFace.WEST);
-            maybePlaceVine(1, y, -1, BlockFace.SOUTH);
-            maybePlaceVine(2, y, 1, BlockFace.WEST);
-            maybePlaceVine(1, y, 2, BlockFace.NORTH);
-            maybePlaceVine(-1, y, 1, BlockFace.EAST);
-            maybePlaceVine(0, y, 2, BlockFace.NORTH);
+            maybePlaceVine(loc, -1, y, 0, BlockFace.EAST);
+            maybePlaceVine(loc, 0, y, -1, BlockFace.SOUTH);
+            maybePlaceVine(loc, 2, y, 0, BlockFace.WEST);
+            maybePlaceVine(loc, 1, y, -1, BlockFace.SOUTH);
+            maybePlaceVine(loc, 2, y, 1, BlockFace.WEST);
+            maybePlaceVine(loc, 1, y, 2, BlockFace.NORTH);
+            maybePlaceVine(loc, -1, y, 1, BlockFace.EAST);
+            maybePlaceVine(loc, 0, y, 2, BlockFace.NORTH);
         }
     }
 
-    private void maybePlaceVine(int x, int y, int z, BlockFace east) {
-        int absoluteX = loc.getBlockX() + x;
-        int absoluteY = loc.getBlockY() + y;
-        int absoluteZ = loc.getBlockZ() + z;
+    private void maybePlaceVine(Location baseLoc, int offsetX, int offsetY, int offsetZ,
+            BlockFace east) {
+        int absoluteX = baseLoc.getBlockX() + offsetX;
+        int absoluteY = baseLoc.getBlockY() + offsetY;
+        int absoluteZ = baseLoc.getBlockZ() + offsetZ;
         if (random.nextInt(3) != 0
-                && blockTypeAt(absoluteX, absoluteY, absoluteZ) == Material.AIR) {
-            delegate.setTypeAndData(loc.getWorld(), absoluteX, absoluteY,
+                && blockTypeAt(absoluteX, absoluteY, absoluteZ, baseLoc.getWorld())
+                == Material.AIR) {
+            delegate.setTypeAndData(baseLoc.getWorld(), absoluteX, absoluteY,
                     absoluteZ, Material.VINE, new Vine(east));
         }
     }

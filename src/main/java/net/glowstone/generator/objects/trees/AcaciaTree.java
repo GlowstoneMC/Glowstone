@@ -4,6 +4,7 @@ import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.Dirt;
@@ -13,28 +14,25 @@ public class AcaciaTree extends GenericTree {
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
-     *
-     * @param random the PRNG
-     * @param location the base of the trunk
+     *  @param random the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
-     *     blocks
      */
-    public AcaciaTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    public AcaciaTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setHeight(random.nextInt(3) + random.nextInt(3) + 5);
     }
 
     @Override
-    public boolean canPlaceOn() {
+    public boolean canPlaceOn(Location loc) {
         BlockState state = delegate
             .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
     @Override
-    public boolean generate() {
+    public boolean generate(Location loc) {
 
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+        if (cannotGenerateAt(loc)) {
             return false;
         }
 
@@ -53,7 +51,7 @@ public class AcaciaTree extends GenericTree {
         int centerX = loc.getBlockX();
         int centerZ = loc.getBlockZ();
         int trunkTopY = 0;
-
+        World world = loc.getWorld();
         // generates the trunk
         for (int y = 0; y < height; y++) {
 
@@ -64,10 +62,10 @@ public class AcaciaTree extends GenericTree {
                 twistCount--;
             }
 
-            Material material = blockTypeAt(centerX, loc.getBlockY() + y, centerZ);
+            Material material = blockTypeAt(centerX, loc.getBlockY() + y, centerZ, loc.getWorld());
             if (material == Material.AIR || material == Material.LEAVES) {
                 trunkTopY = loc.getBlockY() + y;
-                delegate.setTypeAndRawData(loc.getWorld(), centerX, loc.getBlockY() + y, centerZ,
+                delegate.setTypeAndRawData(world, centerX, loc.getBlockY() + y, centerZ,
                     Material.LOG_2, 0);
             }
         }
@@ -76,13 +74,13 @@ public class AcaciaTree extends GenericTree {
         for (int x = -3; x <= 3; x++) {
             for (int z = -3; z <= 3; z++) {
                 if (Math.abs(x) < 3 || Math.abs(z) < 3) {
-                    setLeaves(centerX + x, trunkTopY, centerZ + z);
+                    setLeaves(centerX + x, trunkTopY, centerZ + z, world);
                 }
                 if (Math.abs(x) < 2 && Math.abs(z) < 2) {
-                    setLeaves(centerX + x, trunkTopY + 1, centerZ + z);
+                    setLeaves(centerX + x, trunkTopY + 1, centerZ + z, world);
                 }
                 if (Math.abs(x) == 2 && Math.abs(z) == 0 || Math.abs(x) == 0 && Math.abs(z) == 2) {
-                    setLeaves(centerX + x, trunkTopY + 1, centerZ + z);
+                    setLeaves(centerX + x, trunkTopY + 1, centerZ + z, world);
                 }
             }
         }
@@ -110,10 +108,10 @@ public class AcaciaTree extends GenericTree {
                 if (twistCount > 0) {
                     centerX += dxB;
                     centerZ += dzB;
-                    Material material = blockTypeAt(centerX, loc.getBlockY() + y, centerZ);
+                    Material material = blockTypeAt(centerX, loc.getBlockY() + y, centerZ, loc.getWorld());
                     if (material == Material.AIR || material == Material.LEAVES) {
                         trunkTopY = loc.getBlockY() + y;
-                        delegate.setTypeAndRawData(loc.getWorld(), centerX, loc.getBlockY() + y,
+                        delegate.setTypeAndRawData(world, centerX, loc.getBlockY() + y,
                             centerZ, Material.LOG_2, 0);
                     }
                     twistCount--;
@@ -125,13 +123,13 @@ public class AcaciaTree extends GenericTree {
                 for (int x = -2; x <= 2; x++) {
                     for (int z = -2; z <= 2; z++) {
                         if (Math.abs(x) < 2 || Math.abs(z) < 2) {
-                            setLeaves(centerX + x, trunkTopY, centerZ + z);
+                            setLeaves(centerX + x, trunkTopY, centerZ + z, world);
                         }
                     }
                 }
                 for (int x = -1; x <= 1; x++) {
                     for (int z = -1; z <= 1; z++) {
-                        setLeaves(centerX + x, trunkTopY + 1, centerZ + z);
+                        setLeaves(centerX + x, trunkTopY + 1, centerZ + z, world);
                     }
                 }
             }
@@ -140,15 +138,16 @@ public class AcaciaTree extends GenericTree {
         // block below trunk is always dirt
         Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate
-            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(),
+            .setTypeAndData(world, loc.getBlockX(), loc
+                            .getBlockY() - 1, loc.getBlockZ(),
                 Material.DIRT, dirt);
 
         return true;
     }
 
-    private void setLeaves(int x, int y, int z) {
-        if (blockTypeAt(x, y, z) == Material.AIR) {
-            delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES_2, 0);
+    private void setLeaves(int x, int y, int z, World world) {
+        if (blockTypeAt(x, y, z, world) == Material.AIR) {
+            delegate.setTypeAndRawData(world, x, y, z, Material.LEAVES_2, 0);
         }
     }
 }

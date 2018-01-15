@@ -10,14 +10,11 @@ public class MegaRedwoodTree extends MegaJungleTree {
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
-     *
-     * @param random the PRNG
-     * @param location the base of the trunk
+     *  @param random the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
-     *     blocks
      */
-    public MegaRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    public MegaRedwoodTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setHeight(random.nextInt(15) + random.nextInt(3) + 13);
         setTypes(1, 1);
         setLeavesHeight(random.nextInt(5) + (random.nextBoolean() ? 3 : 13));
@@ -28,8 +25,8 @@ public class MegaRedwoodTree extends MegaJungleTree {
     }
 
     @Override
-    public boolean generate() {
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+    public boolean generate(Location loc) {
+        if (cannotGenerateAt(loc)) {
             return false;
         }
 
@@ -41,21 +38,21 @@ public class MegaRedwoodTree extends MegaJungleTree {
             if (radius == previousRadius && n > 0 && y % 2 == 0) {
                 radius++;
             }
-            generateLeaves(loc.getBlockX(), y, loc.getBlockZ(), radius, false);
+            generateLeaves(loc.getBlockX(), y, loc.getBlockZ(), radius, false, loc.getWorld());
             previousRadius = radius;
         }
 
         // generates the trunk
-        generateTrunk();
+        generateTrunk(loc);
 
         // blocks below trunk are always dirt
-        generateDirtBelowTrunk();
+        generateDirtBelowTrunk(loc);
 
         return true;
     }
 
     @Override
-    protected void generateDirtBelowTrunk() {
+    protected void generateDirtBelowTrunk(Location loc) {
         // mega redwood tree does not replaces blocks below (surely to preserves podzol)
     }
 }

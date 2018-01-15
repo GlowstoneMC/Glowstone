@@ -11,26 +11,23 @@ public class JungleBush extends GenericTree {
 
     /**
      * Initializes this bush, preparing it to attempt to generate.
-     *
-     * @param random the PRNG
-     * @param location the base of the trunk
+     *  @param random the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
-     *     blocks
      */
-    public JungleBush(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    public JungleBush(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setTypes(3, 0);
     }
 
     @Override
-    public boolean canPlaceOn() {
+    public boolean canPlaceOn(Location loc) {
         BlockState state = delegate
             .getBlockState(loc.getBlock().getRelative(BlockFace.DOWN).getLocation());
         return state.getType() == Material.GRASS || state.getType() == Material.DIRT;
     }
 
     @Override
-    public boolean generate() {
+    public boolean generate(Location loc) {
         Location l = loc.clone();
         while ((l.getBlock().getType() == Material.AIR || l.getBlock().getType() == Material.LEAVES)
             && l.getBlockY() > 0) {
@@ -38,7 +35,7 @@ public class JungleBush extends GenericTree {
         }
 
         // check only below block
-        if (!canPlaceOn()) {
+        if (!canPlaceOn(loc)) {
             return false;
         }
 
