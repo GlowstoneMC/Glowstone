@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.entity.projectile.PotionLike;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
@@ -21,7 +23,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
+public class GlowMetaPotion extends GlowMetaItem implements PotionMeta, PotionLike {
 
     @Getter
     @Setter
@@ -42,13 +44,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (!(meta instanceof PotionMeta)) {
             return;
         }
-
-        PotionMeta potion = (PotionMeta) meta;
-        if (potion.hasCustomEffects()) {
-            effects.addAll(potion instanceof GlowMetaPotion
-                    ? ((GlowMetaPotion) potion).effects : potion.getCustomEffects());
-        }
-        this.basePotionData = potion.getBasePotionData();
+        InventoryUtil.copyPotionData(this, (PotionMeta) meta);
     }
 
     /**
@@ -188,6 +184,11 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         }
 
         return false;
+    }
+
+    @Override
+    public void clearCustomEffects0() {
+        clearCustomEffects();
     }
 
     @Override

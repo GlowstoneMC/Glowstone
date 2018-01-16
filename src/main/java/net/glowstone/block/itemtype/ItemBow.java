@@ -3,6 +3,7 @@ package net.glowstone.block.itemtype;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.inventory.GlowInventorySlot;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
 public class ItemBow extends ItemTimedUsage {
     private static final long TICKS_TO_FULLY_CHARGE = 20;
@@ -45,8 +47,8 @@ public class ItemBow extends ItemTimedUsage {
                     break;
                 case TIPPED_ARROW:
                     launchedArrow = player.launchProjectile(TippedArrow.class);
-                    TippedArrow launchedTippedArrow = (TippedArrow) launchedArrow;
-                    InventoryUtil.copyPotionDataToTippedArrow(launchedTippedArrow, arrow);
+                    GlowTippedArrow launchedTippedArrow = (GlowTippedArrow) launchedArrow;
+                    InventoryUtil.copyPotionData(launchedTippedArrow, (PotionMeta) arrow.getItemMeta());
                     break;
                 case SPECTRAL_ARROW:
                     launchedArrow = player.launchProjectile(SpectralArrow.class);

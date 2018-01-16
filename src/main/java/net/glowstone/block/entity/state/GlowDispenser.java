@@ -29,9 +29,9 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SplashPotion;
-import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.util.Vector;
 
@@ -93,8 +93,8 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
                 new ProjectileDispenseBehavior(GlowSpectralArrow::new));
         registry.putBehavior(Material.TIPPED_ARROW,
                 new ProjectileDispenseBehavior(((location, itemStack) -> {
-                    TippedArrow tippedArrow = new GlowTippedArrow(location);
-                    InventoryUtil.copyPotionDataToTippedArrow(tippedArrow, itemStack);
+                    GlowTippedArrow tippedArrow = new GlowTippedArrow(location);
+                    InventoryUtil.copyPotionData(tippedArrow, (PotionMeta) itemStack.getItemMeta());
                     return tippedArrow;
                 })));
         registry.putBehavior(Material.FIREBALL, new ProjectileDispenseBehavior(location -> {

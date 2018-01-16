@@ -8,10 +8,10 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.projectile.PotionLike;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -108,17 +108,16 @@ public class InventoryUtil {
     }
 
     /**
-     * Copies potion data from a tipped-arrow item to a tipped-arrow entity.
+     * Copies potion data from an item to an entity.
      *
-     * @param entity the tipped-arrow entity to update
-     * @param item the tipped-arrow item to copy from
+     * @param dest the entity to update
+     * @param meta the metadata of the item to copy from
      */
-    public static void copyPotionDataToTippedArrow(TippedArrow entity, ItemStack item) {
-        PotionMeta meta = (PotionMeta) item.getItemMeta();
-        entity.setBasePotionData(meta.getBasePotionData());
-        entity.setColor(meta.getColor());
+    public static void copyPotionData(PotionLike dest, PotionMeta meta) {
+        dest.setBasePotionData(meta.getBasePotionData());
+        dest.setColor(meta.getColor());
         for (PotionEffect effect : meta.getCustomEffects()) {
-            entity.addCustomEffect(effect, true);
+            dest.addCustomEffect(effect, true);
         }
     }
 }

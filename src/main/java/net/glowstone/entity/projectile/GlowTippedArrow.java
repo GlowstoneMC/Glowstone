@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 // TODO: stubs
-public class GlowTippedArrow extends GlowArrow implements TippedArrow {
+public class GlowTippedArrow extends GlowArrow implements TippedArrow, PotionLike {
 
     @Getter
     @Setter
@@ -64,6 +64,11 @@ public class GlowTippedArrow extends GlowArrow implements TippedArrow {
     @Override
     public boolean hasCustomEffect(PotionEffectType potionEffectType) {
         return customEffects.containsKey(potionEffectType);
+    }
+
+    @Override
+    public void clearCustomEffects0() {
+        clearCustomEffects();
     }
 
     @Override
