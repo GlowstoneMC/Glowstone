@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 // TODO: stubs
-public class GlowTippedArrow extends GlowArrow implements TippedArrow, PotionLike {
+public class GlowTippedArrow extends GlowArrow implements TippedArrow, PotionBased {
 
     @Getter
     @Setter

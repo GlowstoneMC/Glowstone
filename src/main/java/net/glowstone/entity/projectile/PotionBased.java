@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
  *     <li>{@link ItemMeta}</li>
  * </ul>
  */
-public interface PotionLike {
+public interface PotionBased {
     /**
      * Checks for the presence of custom potion effects.
      *

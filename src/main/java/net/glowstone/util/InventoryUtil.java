@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.projectile.PotionLike;
+import net.glowstone.entity.projectile.PotionBased;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -113,7 +113,7 @@ public class InventoryUtil {
      * @param dest the entity to update
      * @param meta the metadata of the item to copy from
      */
-    public static void copyPotionData(PotionLike dest, PotionMeta meta) {
+    public static void copyPotionData(PotionBased dest, PotionMeta meta) {
         dest.setBasePotionData(meta.getBasePotionData());
         dest.setColor(meta.getColor());
         for (PotionEffect effect : meta.getCustomEffects()) {
