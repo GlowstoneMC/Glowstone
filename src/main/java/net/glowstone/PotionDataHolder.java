@@ -4,6 +4,7 @@ import java.util.List;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -42,8 +43,8 @@ public interface PotionDataHolder {
     /**
      * Gets an immutable list containing all custom potion effects applied to
      * this.
-     * <p>
-     * Plugins should check that hasCustomEffects() returns true before calling
+     *
+     * <p>Plugins should check that hasCustomEffects() returns true before calling
      * this method.
      *
      * @return the immutable list of custom potion effects
@@ -53,9 +54,9 @@ public interface PotionDataHolder {
     /**
      * Adds a custom potion effect to this arrow.
      *
-     * @param effect the potion effect to add
+     * @param potionEffect the potion effect to add
      * @param overwrite true if any existing effect of the same type should be
-     * overwritten
+     *         overwritten
      * @return true if the effect was added as a result of this call
      */
     boolean addCustomEffect(PotionEffect potionEffect, boolean overwrite);
@@ -63,17 +64,16 @@ public interface PotionDataHolder {
     /**
      * Removes a custom potion effect from this arrow.
      *
-     * @param type the potion effect type to remove
+     * @param potionEffectType the potion effect type to remove
      * @return true if the an effect was removed as a result of this call
-     * @throws IllegalArgumentException if this operation would leave the Arrow
-     * in a state with no Custom Effects and PotionType.UNCRAFTABLE
+     * @throws IllegalArgumentException if this would place an item or entity in an invalid state
      */
     boolean removeCustomEffect(PotionEffectType potionEffectType);
 
     /**
      * Checks for a specific custom potion effect type on this arrow.
      *
-     * @param type the potion effect type to check for
+     * @param potionEffectType the potion effect type to check for
      * @return true if the potion has this effect
      */
     boolean hasCustomEffect(PotionEffectType potionEffectType);
@@ -100,11 +100,11 @@ public interface PotionDataHolder {
     org.bukkit.potion.PotionData getBasePotionData();
 
     /**
-     * Sets the underlying potion data
+     * Sets the underlying potion data.
      *
-     * @param data PotionData to set the base potion state to
+     * @param basePotionData PotionData to set the base potion state to
      */
-    void setBasePotionData(org.bukkit.potion.PotionData basePotionData);
+    void setBasePotionData(PotionData basePotionData);
 
     /**
      * Removes all custom potion effects. This method is renamed because of incompatible return
