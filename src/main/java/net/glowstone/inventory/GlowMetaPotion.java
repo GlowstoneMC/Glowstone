@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.projectile.PotionBased;
-import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
@@ -44,7 +43,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta, PotionBa
         if (!(meta instanceof PotionMeta)) {
             return;
         }
-        InventoryUtil.copyPotionData(this, (PotionMeta) meta);
+        PotionBased.copyPotionData(this, (PotionMeta) meta);
     }
 
     /**

@@ -107,17 +107,4 @@ public class InventoryUtil {
         return holding;
     }
 
-    /**
-     * Copies potion data from an item to an entity.
-     *
-     * @param dest the entity to update
-     * @param meta the metadata of the item to copy from
-     */
-    public static void copyPotionData(PotionBased dest, PotionMeta meta) {
-        dest.setBasePotionData(meta.getBasePotionData());
-        dest.setColor(meta.getColor());
-        for (PotionEffect effect : meta.getCustomEffects()) {
-            dest.addCustomEffect(effect, true);
-        }
-    }
 }

@@ -22,6 +22,7 @@ import net.glowstone.entity.projectile.GlowSpectralArrow;
 import net.glowstone.entity.projectile.GlowSplashPotion;
 import net.glowstone.entity.projectile.GlowThrownExpBottle;
 import net.glowstone.entity.projectile.GlowTippedArrow;
+import net.glowstone.entity.projectile.PotionBased;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -94,7 +95,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.TIPPED_ARROW,
                 new ProjectileDispenseBehavior(((location, itemStack) -> {
                     GlowTippedArrow tippedArrow = new GlowTippedArrow(location);
-                    InventoryUtil.copyPotionData(tippedArrow, (PotionMeta) itemStack.getItemMeta());
+                    PotionBased.copyPotionData(tippedArrow, (PotionMeta) itemStack.getItemMeta());
                     return tippedArrow;
                 })));
         registry.putBehavior(Material.FIREBALL, new ProjectileDispenseBehavior(location -> {

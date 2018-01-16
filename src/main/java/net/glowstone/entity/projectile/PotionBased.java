@@ -20,6 +20,20 @@ import org.bukkit.potion.PotionEffectType;
  */
 public interface PotionBased {
     /**
+     * Copies potion data from an item to an entity.
+     *
+     * @param dest the entity to update
+     * @param meta the metadata of the item to copy from
+     */
+    static void copyPotionData(PotionBased dest, PotionMeta meta) {
+        dest.setBasePotionData(meta.getBasePotionData());
+        dest.setColor(meta.getColor());
+        for (PotionEffect effect : meta.getCustomEffects()) {
+            dest.addCustomEffect(effect, true);
+        }
+    }
+
+    /**
      * Checks for the presence of custom potion effects.
      *
      * @return true if custom potion effects are applied
