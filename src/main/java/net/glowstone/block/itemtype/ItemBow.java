@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.projectile.GlowTippedArrow;
-import net.glowstone.entity.projectile.PotionBased;
+import net.glowstone.PotionDataHolder;
 import net.glowstone.inventory.GlowInventorySlot;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
@@ -49,7 +49,7 @@ public class ItemBow extends ItemTimedUsage {
                 case TIPPED_ARROW:
                     launchedArrow = player.launchProjectile(TippedArrow.class);
                     GlowTippedArrow launchedTippedArrow = (GlowTippedArrow) launchedArrow;
-                    PotionBased.copyPotionData(launchedTippedArrow, (PotionMeta) arrow.getItemMeta());
+                    PotionDataHolder.copyPotionData(launchedTippedArrow, (PotionMeta) arrow.getItemMeta());
                     break;
                 case SPECTRAL_ARROW:
                     launchedArrow = player.launchProjectile(SpectralArrow.class);

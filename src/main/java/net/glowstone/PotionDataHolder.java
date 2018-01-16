@@ -1,4 +1,4 @@
-package net.glowstone.entity.projectile;
+package net.glowstone;
 
 import java.util.List;
 import org.bukkit.entity.TippedArrow;
@@ -18,14 +18,14 @@ import org.bukkit.potion.PotionEffectType;
  *     <li>{@link ItemMeta}</li>
  * </ul>
  */
-public interface PotionBased {
+public interface PotionDataHolder {
     /**
      * Copies potion data from an item to an entity.
      *
      * @param dest the entity to update
      * @param meta the metadata of the item to copy from
      */
-    static void copyPotionData(PotionBased dest, PotionMeta meta) {
+    static void copyPotionData(PotionDataHolder dest, PotionMeta meta) {
         dest.setBasePotionData(meta.getBasePotionData());
         dest.setColor(meta.getColor());
         for (PotionEffect effect : meta.getCustomEffects()) {

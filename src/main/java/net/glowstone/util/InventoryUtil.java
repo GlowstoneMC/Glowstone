@@ -8,15 +8,12 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.projectile.PotionBased;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
 
 public class InventoryUtil {
 
