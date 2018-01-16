@@ -66,6 +66,8 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
 
     @Override
     public GlowAreaEffectCloud createEntity(Location location, CompoundTag compound) {
-        return new GlowAreaEffectCloud(location);
+        GlowAreaEffectCloud cloud = new GlowAreaEffectCloud(location);
+        load(cloud, compound);
+        return cloud;
     }
 }
