@@ -43,7 +43,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta, PotionDa
         if (!(meta instanceof PotionMeta)) {
             return;
         }
-        PotionDataHolder.copyPotionData(this, (PotionMeta) meta);
+        this.copyFrom((PotionMeta) meta);
     }
 
     /**

@@ -8,28 +8,27 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
- * An object that has fields for color, base potion data and custom effects, like a {@link
+ * A mutable object that has fields for color, base potion data and custom effects, like a {@link
  * PotionMeta}, but is not necessarily an {@link ItemMeta}. If Glowstone devs controlled Bukkit,
  * then this would be a superinterface of all the following; instead, it's a superinterface of their
  * implementations.
  * <ul>
  *     <li>{@link TippedArrow}</li>
  *     <li>{@link org.bukkit.entity.AreaEffectCloud}</li>
- *     <li>{@link ItemMeta}</li>
+ *     <li>{@link PotionMeta}</li>
  * </ul>
  */
 public interface PotionDataHolder {
     /**
      * Copies potion data from an item to an entity.
      *
-     * @param dest the entity to update
      * @param meta the metadata of the item to copy from
      */
-    static void copyPotionData(PotionDataHolder dest, PotionMeta meta) {
-        dest.setBasePotionData(meta.getBasePotionData());
-        dest.setColor(meta.getColor());
+    default void copyFrom(PotionMeta meta) {
+        setBasePotionData(meta.getBasePotionData());
+        setColor(meta.getColor());
         for (PotionEffect effect : meta.getCustomEffects()) {
-            dest.addCustomEffect(effect, true);
+            addCustomEffect(effect, true);
         }
     }
 
