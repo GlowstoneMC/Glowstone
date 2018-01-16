@@ -2,10 +2,22 @@ package net.glowstone.entity.projectile;
 
 import java.util.List;
 import org.bukkit.entity.TippedArrow;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+/**
+ * An object that has fields for color, base potion data and custom effects, like a {@link
+ * PotionMeta}, but is not necessarily an {@link ItemMeta}. If Glowstone devs controlled Bukkit,
+ * then this would be a superinterface of all the following; instead, it's a superinterface of their
+ * implementations.
+ * <ul>
+ *     <li>{@link TippedArrow}</li>
+ *     <li>{@link org.bukkit.entity.AreaEffectCloud}</li>
+ *     <li>{@link ItemMeta}</li>
+ * </ul>
+ */
 public interface PotionLike {
     /**
      * Checks for the presence of custom potion effects.
@@ -89,4 +101,13 @@ public interface PotionLike {
      * @throws IllegalArgumentException if this would create an impossible item or entity
      */
     void clearCustomEffects0();
+
+    /**
+     * Checks for existence of a potion color.
+     *
+     * @return true if this has a custom potion color
+     */
+    default boolean hasColor() {
+        return getColor() != null;
+    }
 }

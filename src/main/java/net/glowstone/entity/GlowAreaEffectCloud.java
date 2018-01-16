@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.entity.projectile.PotionLike;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Color;
@@ -22,7 +23,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
-public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
+public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud, PotionLike {
 
     private static final int NETWORK_TYPE_ID = 3;
 
@@ -129,6 +130,11 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     @Override
     public boolean hasCustomEffect(PotionEffectType potionEffectType) {
         return customEffects.containsKey(potionEffectType);
+    }
+
+    @Override
+    public void clearCustomEffects0() {
+        clearCustomEffects();
     }
 
     @Override
