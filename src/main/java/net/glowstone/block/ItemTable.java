@@ -110,6 +110,7 @@ import net.glowstone.block.itemtype.ItemDye;
 import net.glowstone.block.itemtype.ItemEgg;
 import net.glowstone.block.itemtype.ItemEndCrystal;
 import net.glowstone.block.itemtype.ItemEnderPearl;
+import net.glowstone.block.itemtype.ItemExperienceBottle;
 import net.glowstone.block.itemtype.ItemFilledBucket;
 import net.glowstone.block.itemtype.ItemFirework;
 import net.glowstone.block.itemtype.ItemFishCooked;
@@ -475,6 +476,7 @@ public final class ItemTable {
         reg(Material.SNOW_BALL, new ItemSnowball());
         reg(Material.EGG, new ItemEgg());
         reg(Material.BOW, new ItemBow());
+        reg(Material.EXP_BOTTLE, new ItemExperienceBottle());
         reg(Material.END_CRYSTAL, new ItemEndCrystal());
         reg(Material.BOAT, new ItemBoat(TreeSpecies.GENERIC));
         reg(Material.BOAT_SPRUCE, new ItemBoat(TreeSpecies.REDWOOD));
