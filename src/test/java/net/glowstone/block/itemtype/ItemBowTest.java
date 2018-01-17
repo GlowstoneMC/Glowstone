@@ -158,7 +158,7 @@ public class ItemBowTest {
         final PotionData potionData = new PotionData(PotionType.FIRE_RESISTANCE);
         potion.setBasePotionData(potionData);
         final PotionEffect effect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 1);
-        // potion.addCustomEffect(effect, false);
+        potion.addCustomEffect(effect, false);
         assertTrue(arrow.setItemMeta(potion));
         inventory.addItem(arrow);
 
@@ -173,7 +173,7 @@ public class ItemBowTest {
         verify(player, times(1)).launchProjectile(TippedArrow.class);
         verify(launchedTippedArrow, times(1)).setColor(Color.PURPLE);
         verify(launchedTippedArrow, times(1)).setBasePotionData(potionData);
-        //verify(launchedTippedArrow, times(1)).addCustomEffect(eq(effect), anyBoolean());
+        verify(launchedTippedArrow, times(1)).addCustomEffect(eq(effect), anyBoolean());
         verify(player, times(1)).setUsageItem(null);
         verify(player, times(1)).setUsageTime(0);
         scanInventory(true, 1, 0);
