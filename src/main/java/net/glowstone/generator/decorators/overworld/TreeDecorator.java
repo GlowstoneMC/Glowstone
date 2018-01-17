@@ -47,9 +47,9 @@ public class TreeDecorator extends BlockDecorator {
                     .getConstructor(Random.class, Location.class, BlockStateDelegate.class);
                 tree = c.newInstance(random, sourceBlock.getLocation(), delegate);
             } catch (Exception ex) {
-                tree = new GenericTree(random, sourceBlock.getLocation(), delegate);
+                tree = new GenericTree(random, delegate);
             }
-            if (tree.generate()) {
+            if (tree.generate(sourceBlock.getLocation())) {
                 delegate.updateBlockStates();
             }
         }
