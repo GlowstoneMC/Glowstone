@@ -27,10 +27,12 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -206,11 +208,23 @@ public class ItemBowTest {
 
     @Test
     public void testBreakBow() {
-        ItemStack arrows = new ItemStack(Material.ARROW, 1);
-        inventory.addItem(arrows);
+        ItemStack arrow = new ItemStack(Material.ARROW, 1);
+        inventory.addItem(arrow);
         bowItemStack.setDurability(Material.BOW.getMaxDurability());
         bow.startUse(player, bowItemStack);
         bow.endUse(player, bowItemStack);
         scanInventory(false, 0, 0);
+    }
+
+    @Test
+    public void testInfinity() {
+        ItemStack arrow = new ItemStack(Material.ARROW, 1);
+        inventory.addItem(arrow);
+        ItemMeta meta = bowItemStack.getItemMeta();
+        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        bowItemStack.setItemMeta(meta);
+        bow.startUse(player, bowItemStack);
+        bow.endUse(player, bowItemStack);
+        scanInventory(true, 1, 1);
     }
 }
