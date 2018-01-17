@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -30,6 +31,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -99,6 +101,7 @@ public class ItemBowTest {
             when(arrow.getVelocity()).thenReturn(new Vector(2, 0, 0));
             when(arrow.spigot()).thenReturn(spigot);
         }
+        doCallRealMethod().when(launchedTippedArrow).copyFrom(any(PotionMeta.class));
         when(player.launchProjectile(Arrow.class)).thenReturn(launchedArrow);
         when(player.launchProjectile(SpectralArrow.class)).thenReturn(launchedSpectralArrow);
         when(player.launchProjectile(TippedArrow.class)).thenReturn(launchedTippedArrow);
@@ -155,7 +158,7 @@ public class ItemBowTest {
         final PotionData potionData = new PotionData(PotionType.FIRE_RESISTANCE);
         potion.setBasePotionData(potionData);
         final PotionEffect effect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 1);
-        potion.addCustomEffect(effect, false);
+        // potion.addCustomEffect(effect, false);
         assertTrue(arrow.setItemMeta(potion));
         inventory.addItem(arrow);
 
@@ -168,11 +171,9 @@ public class ItemBowTest {
         // Finish shooting
         bow.endUse(player, bowItemStack);
         verify(player, times(1)).launchProjectile(TippedArrow.class);
-        /* FIXME: Failing; can diagnose once https://github.com/GlowstoneMC/Glowkit/pull/17 released
         verify(launchedTippedArrow, times(1)).setColor(Color.PURPLE);
         verify(launchedTippedArrow, times(1)).setBasePotionData(potionData);
-        verify(launchedTippedArrow, times(1)).addCustomEffect(eq(effect), anyBoolean());
-        */
+        //verify(launchedTippedArrow, times(1)).addCustomEffect(eq(effect), anyBoolean());
         verify(player, times(1)).setUsageItem(null);
         verify(player, times(1)).setUsageTime(0);
         scanInventory(true, 1, 0);
