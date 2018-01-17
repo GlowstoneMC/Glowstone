@@ -2,6 +2,7 @@ package net.glowstone.util.config;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,12 +11,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.DynamicallyTypedMap;
+import net.glowstone.util.library.Library;
+import net.glowstone.util.library.LibraryManager.HashAlgorithm;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -132,6 +136,25 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         boolean bool = config.getBoolean(key.path, (Boolean) key.def);
         parameters.put(key, bool);
         return bool;
+    }
+
+    /**
+     * Retrieves a section as a list of maps.
+     *
+     * @param key the key to look up
+     * @return the value as a list of maps
+     */
+    @SuppressWarnings("unchecked")
+    public List<Map<?, ?>> getMapList(Key key) {
+        if (parameters.containsKey(key)) {
+            return (List<Map<?, ?>>) parameters.get(key);
+        }
+        // there's no get or default method for the getMapList method, so using contains.
+        if (!config.contains(key.path)) {
+            parameters.put(key, key.def);
+            return (List<Map<?, ?>>) key.def;
+        }
+        return config.getMapList(key.path);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -342,6 +365,23 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         return migrateStatus;
     }
 
+    private static final List<Map<?, ?>> DEFAULT_LIBRARIES_VALUE =
+            ImmutableList.<Map<?, ?>>builder()
+                    .add(new Library("org.xerial", "sqlite-jdbc", "3.21.0", HashAlgorithm.SHA1,
+                            "347e4d1d3e1dff66d389354af8f0021e62344584").toConfigMap())
+                    .add(new Library("mysql", "mysql-connector-java", "5.1.44", HashAlgorithm.SHA1,
+                            "61b6b998192c85bb581c6be90e03dcd4b9079db4").toConfigMap())
+                    .add(new Library("org.apache.logging.log4j", "log4j-api", "2.8.1",
+                            HashAlgorithm.SHA1, "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72")
+                            .toConfigMap())
+                    .add(new Library("org.apache.logging.log4j", "log4j-core", "2.8.1",
+                            HashAlgorithm.SHA1, "4ac28ff2f1ddf05dae3043a190451e8c46b73c31")
+                            .toConfigMap())
+                    .add(new Library("org.apache.commons", "commons-lang3", "3.5",
+                            HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6")
+                            .toConfigMap())
+                    .build();
+
     /**
      * An enum containing configuration keys used by the server.
      */
@@ -465,7 +505,11 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         DB_URL("database.url", "jdbc:sqlite:config/database.db", Migrate.BUKKIT, "database.url"),
         DB_USERNAME("database.username", "glowstone", Migrate.BUKKIT, "database.username"),
         DB_PASSWORD("database.password", "nether", Migrate.BUKKIT, "database.password"),
-        DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation"),;
+        DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation"),
+
+        // libraries
+        LIBRARIES("libraries", DEFAULT_LIBRARIES_VALUE),
+        ;
 
         @Getter
         private final String path;

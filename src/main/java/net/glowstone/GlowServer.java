@@ -122,7 +122,6 @@ import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.GlowServerIcon;
 import net.glowstone.util.GlowUnsafeValues;
-import net.glowstone.util.LibraryManager;
 import net.glowstone.util.OpenCompute;
 import net.glowstone.util.SecurityUtils;
 import net.glowstone.util.ShutdownMonitorThread;
@@ -132,6 +131,8 @@ import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
+import net.glowstone.util.library.Library;
+import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.BanEntry;
@@ -756,9 +757,10 @@ public final class GlowServer implements Server {
         }
 
         // Start loading plugins
+        List<Library> libraries = aggregateLibraries();
         new LibraryManager(config.getString(Key.LIBRARY_REPOSITORY_URL),
                 config.getString(Key.LIBRARIES_FOLDER), config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
-                config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS)).run();
+                config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS), libraries).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
@@ -992,6 +994,15 @@ public final class GlowServer implements Server {
         } catch (Exception e) {
             logger.log(Level.WARNING, "Failed to load '" + SERVER_ICON_FILE + "'", e);
         }
+    }
+
+    /**
+     * Aggregates libraries from all relevant sources together.
+     */
+    private List<Library> aggregateLibraries() {
+        return config.getMapList(Key.LIBRARIES).stream()
+                .map(Library::fromConfigMap)
+                .collect(Collectors.toList());
     }
 
     /**
