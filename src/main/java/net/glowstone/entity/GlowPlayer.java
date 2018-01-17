@@ -23,9 +23,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -223,7 +225,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * A queue of BlockChangeMessages to be sent.
      */
-    private final List<BlockChangeMessage> blockChanges = new LinkedList<>();
+    private final Queue<BlockChangeMessage> blockChanges = new ConcurrentLinkedDeque<>();
 
     /**
      * A queue of messages that should be sent after block changes are processed.
@@ -901,39 +903,37 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * Process and send pending BlockChangeMessages.
      */
     private void processBlockChanges() {
-        synchronized (blockChanges) {
-            List<BlockChangeMessage> messages = new ArrayList<>(blockChanges);
-            blockChanges.clear();
-            // separate messages by chunk
-            // inner map is used to only send one entry for same coordinates
-            Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
-            for (BlockChangeMessage message : messages) {
-                if (message != null) {
-                    Key key = GlowChunk.Key.of(message.getX() >> 4, message.getZ() >> 4);
-                    if (canSeeChunk(key)) {
-                        Map<BlockVector, BlockChangeMessage> map = chunks
-                                .computeIfAbsent(key, k -> new HashMap<>());
-                        map.put(new BlockVector(message.getX(), message.getY(), message
-                                .getZ()), message);
-                    }
-                }
+        // separate messages by chunk
+        // inner map is used to only send one entry for same coordinates
+        Map<Key, Map<BlockVector, BlockChangeMessage>> chunks = new HashMap<>();
+        while (true) {
+            BlockChangeMessage message = blockChanges.poll();
+            if (message == null) {
+                break;
             }
-            // send away
-            for (Map.Entry<Key, Map<BlockVector, BlockChangeMessage>> entry : chunks.entrySet()) {
-                Key key = entry.getKey();
-                List<BlockChangeMessage> value = new ArrayList<>(entry.getValue().values());
-
-                if (value.size() == 1) {
-                    session.send(value.get(0));
-                } else if (value.size() > 1) {
-                    session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
-                }
+            Key key = GlowChunk.Key.of(message.getX() >> 4, message.getZ() >> 4);
+            if (canSeeChunk(key)) {
+                Map<BlockVector, BlockChangeMessage> map = chunks
+                        .computeIfAbsent(key, k -> new HashMap<>());
+                map.put(new BlockVector(message.getX(), message.getY(), message
+                        .getZ()), message);
             }
-            // now send post-block-change messages
-            List<Message> postMessages = new ArrayList<>(afterBlockChanges);
-            afterBlockChanges.clear();
-            postMessages.forEach(session::send);
         }
+        // send away
+        for (Map.Entry<Key, Map<BlockVector, BlockChangeMessage>> entry : chunks.entrySet()) {
+            Key key = entry.getKey();
+            List<BlockChangeMessage> value = new ArrayList<>(entry.getValue().values());
+
+            if (value.size() == 1) {
+                session.send(value.get(0));
+            } else if (value.size() > 1) {
+                session.send(new MultiBlockChangeMessage(key.getX(), key.getZ(), value));
+            }
+        }
+        // now send post-block-change messages
+        List<Message> postMessages = new ArrayList<>(afterBlockChanges);
+        afterBlockChanges.clear();
+        postMessages.forEach(session::send);
     }
 
     /**
