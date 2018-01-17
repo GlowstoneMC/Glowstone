@@ -22,7 +22,7 @@ public class ItemBow extends ItemTimedUsage {
 
     @Override
     public void startUse(GlowPlayer player, ItemStack item) {
-        if (findArrow(player).isPresent()) {
+        if (player.getGameMode() == GameMode.CREATIVE || findArrow(player).isPresent()) {
             player.setUsageItem(item);
             player.setUsageTime(TICKS_TO_FULLY_CHARGE);
         }
@@ -32,65 +32,76 @@ public class ItemBow extends ItemTimedUsage {
     public void endUse(GlowPlayer player, ItemStack bow) {
         // Check arrows again, since plugins may have changed the inventory while the bow was drawn
         Optional<GlowInventorySlot> maybeArrow = findArrow(player);
+        GlowInventorySlot slot = null;
+        ItemStack arrow = null;
+        Material arrowType = Material.AIR;
+        Arrow launchedArrow = null;
+        boolean consumeArrow = false;
         if (maybeArrow.isPresent()) {
-            GlowInventorySlot slot = maybeArrow.get();
-            ItemStack arrow = slot.getItem();
-            Material arrowType = arrow.getType();
-            Arrow launchedArrow = null;
-            boolean consumeArrow = (player.getGameMode() != GameMode.CREATIVE);
-            switch (arrowType) {
-                case ARROW:
-                    if (bow.containsEnchantment(Enchantment.ARROW_INFINITE)) {
-                        consumeArrow = false;
-                    }
-                    launchedArrow = player.launchProjectile(Arrow.class);
-                    break;
-                case TIPPED_ARROW:
-                    launchedArrow = player.launchProjectile(TippedArrow.class);
-                    GlowTippedArrow launchedTippedArrow = (GlowTippedArrow) launchedArrow;
-                    launchedTippedArrow.copyFrom((PotionMeta) arrow.getItemMeta());
-                    break;
-                case SPECTRAL_ARROW:
-                    launchedArrow = player.launchProjectile(SpectralArrow.class);
-                    break;
-                default:
-                    player.getServer().getLogger()
-                            .severe(String.format("Attempt to fire a %s from a bow",
-                                    arrowType));
+            slot = maybeArrow.get();
+            arrow = slot.getItem();
+            arrowType = arrow.getType();
+            consumeArrow = (player.getGameMode() != GameMode.CREATIVE);
+        } else if (player.getGameMode() == GameMode.CREATIVE) {
+            // Can fire without arrows in Creative
+            arrowType = Material.ARROW;
+            consumeArrow = false;
+        }
+        switch (arrowType) {
+            case ARROW:
+                if (bow.containsEnchantment(Enchantment.ARROW_INFINITE)) {
+                    consumeArrow = false;
+                }
+                launchedArrow = player.launchProjectile(Arrow.class);
+                break;
+            case TIPPED_ARROW:
+                launchedArrow = player.launchProjectile(TippedArrow.class);
+                GlowTippedArrow launchedTippedArrow = (GlowTippedArrow) launchedArrow;
+                launchedTippedArrow.copyFrom((PotionMeta) arrow.getItemMeta());
+                break;
+            case SPECTRAL_ARROW:
+                launchedArrow = player.launchProjectile(SpectralArrow.class);
+                break;
+            case AIR:
+                // Not in creative mode and have no arrow
+                break;
+            default:
+                player.getServer().getLogger()
+                        .severe(String.format("Attempt to fire a %s from a bow",
+                                arrowType));
 
+        }
+        if (launchedArrow != null) {
+            if (consumeArrow) {
+                int amount = arrow.getAmount();
+                if (amount <= 1) {
+                    arrow = InventoryUtil.createEmptyStack();
+                } else {
+                    arrow.setAmount(amount - 1);
+                }
+                slot.setItem(arrow);
             }
-            if (launchedArrow != null) {
-                if (consumeArrow) {
-                    int amount = arrow.getAmount();
-                    if (amount <= 1) {
-                        arrow = InventoryUtil.createEmptyStack();
-                    } else {
-                        arrow.setAmount(amount - 1);
-                    }
-                    slot.setItem(arrow);
-                }
-                double chargeFraction = Math.max(0.0,
-                        1.0 - (TICKS_TO_FULLY_CHARGE - player.getUsageTime())
-                                / TICKS_TO_FULLY_CHARGE);
-                double damage = MAX_BASE_DAMAGE * chargeFraction
-                        * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
-                launchedArrow.setVelocity(launchedArrow.getVelocity().normalize().multiply(
-                        chargeFraction * MAX_SPEED));
-                launchedArrow.spigot().setDamage(damage);
-                if (bow.containsEnchantment(Enchantment.ARROW_FIRE)) {
-                    // Arrow will burn as long as it's in flight, unless extinguished by water
-                    launchedArrow.setFireTicks(Integer.MAX_VALUE);
-                }
-                launchedArrow
-                        .setKnockbackStrength(bow
-                                .getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK));
-                // 20% crit chance
-                if (ThreadLocalRandom.current().nextDouble() < 0.2) {
-                    launchedArrow.setCritical(true);
-                }
-                // TODO: Is main hand always the correct slot?
-                player.setItemInHand(InventoryUtil.damageItem(player, bow));
+            double chargeFraction = Math.max(0.0,
+                    1.0 - (TICKS_TO_FULLY_CHARGE - player.getUsageTime())
+                            / TICKS_TO_FULLY_CHARGE);
+            double damage = MAX_BASE_DAMAGE * chargeFraction
+                    * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
+            launchedArrow.setVelocity(launchedArrow.getVelocity().normalize().multiply(
+                    chargeFraction * MAX_SPEED));
+            launchedArrow.spigot().setDamage(damage);
+            if (bow.containsEnchantment(Enchantment.ARROW_FIRE)) {
+                // Arrow will burn as long as it's in flight, unless extinguished by water
+                launchedArrow.setFireTicks(Integer.MAX_VALUE);
             }
+            launchedArrow
+                    .setKnockbackStrength(bow
+                            .getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK));
+            // 20% crit chance
+            if (ThreadLocalRandom.current().nextDouble() < 0.2) {
+                launchedArrow.setCritical(true);
+            }
+            // TODO: Is main hand always the correct slot?
+            player.setItemInHand(InventoryUtil.damageItem(player, bow));
         }
         player.setUsageItem(null);
         player.setUsageTime(0);
