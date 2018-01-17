@@ -168,7 +168,7 @@ public class ItemBowTest {
         // Finish shooting
         bow.endUse(player, bowItemStack);
         verify(player, times(1)).launchProjectile(TippedArrow.class);
-        /* FIXME: Failing
+        /* FIXME: Failing; can diagnose once https://github.com/GlowstoneMC/Glowkit/pull/17 released
         verify(launchedTippedArrow, times(1)).setColor(Color.PURPLE);
         verify(launchedTippedArrow, times(1)).setBasePotionData(potionData);
         verify(launchedTippedArrow, times(1)).addCustomEffect(eq(effect), anyBoolean());
