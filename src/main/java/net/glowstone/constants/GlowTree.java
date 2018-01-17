@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.BiFunction;
 import net.glowstone.generator.objects.trees.AcaciaTree;
 import net.glowstone.generator.objects.trees.BigTree;
 import net.glowstone.generator.objects.trees.BirchTree;
@@ -38,18 +39,15 @@ import net.glowstone.generator.objects.trees.SwampTree;
 import net.glowstone.generator.objects.trees.TallBirchTree;
 import net.glowstone.generator.objects.trees.TallRedwoodTree;
 import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.Location;
 import org.bukkit.TreeType;
 
 public final class GlowTree {
 
-    @FunctionalInterface
-    private interface TreeConstructorLambda {
-        GenericTree newInstance(Random random, Location location, BlockStateDelegate delegate);
-    }
-
-    private static final ImmutableMap<TreeType, TreeConstructorLambda> CONSTRUCTORS =
-            ImmutableMap.<TreeType, TreeConstructorLambda>builder()
+    private static final ImmutableMap<TreeType,
+            BiFunction<Random, BlockStateDelegate, ? extends GenericTree>> CONSTRUCTORS =
+            ImmutableMap
+                    .<TreeType, BiFunction<Random, BlockStateDelegate, ? extends GenericTree>>
+                            builder()
                     .put(TREE, GenericTree::new)
                     .put(BIG_TREE, BigTree::new)
                     .put(REDWOOD, RedwoodTree::new)
@@ -82,13 +80,12 @@ public final class GlowTree {
      *
      * @param type the tree type
      * @param random the PRNG
-     * @param loc the base of the trunk
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
      *     blocks
      * @return a new tree of {@code type}
      */
-    public static GenericTree newInstance(TreeType type, Random random, Location loc,
-        BlockStateDelegate delegate) {
-        return CONSTRUCTORS.getOrDefault(type, GenericTree::new).newInstance(random, loc, delegate);
+    public static GenericTree newInstance(TreeType type, Random random,
+            BlockStateDelegate delegate) {
+        return CONSTRUCTORS.getOrDefault(type, GenericTree::new).apply(random, delegate);
     }
 }

@@ -1139,8 +1139,8 @@ public final class GlowWorld implements World {
     @Override
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
-        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), loc, blockStateDelegate)
-                .generate()) {
+        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), blockStateDelegate)
+                .generate(loc)) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent
                     = new StructureGrowEvent(loc, type, false, null, blockStates);
