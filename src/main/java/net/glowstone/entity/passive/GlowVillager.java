@@ -5,11 +5,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowHumanEntity;
@@ -81,6 +83,12 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     @Override
     public void setCareer(Career career) {
+        setCareer(career, true);
+    }
+
+    @Override
+    public void setCareer(Career career, boolean resetTrades) {
+        // todo: implement resetTrades
         Profession profession = getProfession();
         if (profession == null || profession.isZombie()) {
             return;
@@ -310,7 +318,7 @@ public class GlowVillager extends GlowAgeable implements Villager {
     /**
      * Gets the career associated with a given ID and profession.
      *
-     * @param id the id of the career
+     * @param id         the id of the career
      * @param profession the profession
      * @return the career associated with the given ID and profession
      */
@@ -318,10 +326,23 @@ public class GlowVillager extends GlowAgeable implements Villager {
         if (profession == null || profession.isZombie()) {
             return null;
         }
-        return Arrays.stream(Career.values())
-                .filter(career -> career.getProfession() == profession)
-                .filter(career -> career.getId() == id)
-                .findFirst().orElse(null);
+        if (id >= profession.getCareers().size()) {
+            return null;
+        }
+        return profession.getCareers().get(id);
+    }
+
+    /**
+     * Gets the numerical ID of the given career.
+     *
+     * @param career the career
+     * @return the id of the career
+     */
+    public static int getCareerId(Career career) {
+        checkNotNull(career);
+
+        Profession profession = career.getProfession();
+        return profession.getCareers().indexOf(career);
     }
 
     /**
