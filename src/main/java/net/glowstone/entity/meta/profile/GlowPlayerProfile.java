@@ -2,6 +2,7 @@ package net.glowstone.entity.meta.profile;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -23,7 +24,7 @@ import org.json.simple.JSONObject;
 /**
  * Information about a player's name, UUID, and other properties.
  */
-public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProfile {
+public class GlowPlayerProfile implements PlayerProfile {
 
     public static final int MAX_USERNAME_LENGTH = 16;
     private final String name;
@@ -39,7 +40,7 @@ public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProf
      * @param uuid The player's UUID.
      * @throws IllegalArgumentException if uuid is null.
      */
-    public PlayerProfile(String name, UUID uuid) {
+    public GlowPlayerProfile(String name, UUID uuid) {
         this(name, uuid, Collections.emptySet());
     }
 
@@ -53,7 +54,7 @@ public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProf
      * @param properties A list of extra properties.
      * @throws IllegalArgumentException if uuid or properties are null.
      */
-    public PlayerProfile(String name, UUID uuid, Collection<ProfileProperty> properties) {
+    public GlowPlayerProfile(String name, UUID uuid, Collection<ProfileProperty> properties) {
         checkNotNull(uuid, "uuid must not be null");
         checkNotNull(properties, "properties must not be null");
 
@@ -67,9 +68,9 @@ public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProf
      * Get the profile for a username.
      *
      * @param name The username to lookup.
-     * @return A PlayerProfile future. May be null if the name could not be resolved.
+     * @return A GlowPlayerProfile future. May be null if the name could not be resolved.
      */
-    public static CompletableFuture<PlayerProfile> getProfile(String name) {
+    public static CompletableFuture<GlowPlayerProfile> getProfile(String name) {
         if (name == null || name.length() > MAX_USERNAME_LENGTH || name.isEmpty()) {
             return CompletableFuture.completedFuture(null);
         }
@@ -91,9 +92,9 @@ public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProf
      * Get the profile from a NBT tag (e.g. skulls). Missing information is fetched asynchronously.
      *
      * @param tag The NBT tag containing profile information.
-     * @return A PlayerProfile future. May contain a null name if the lookup failed.
+     * @return A GlowPlayerProfile future. May contain a null name if the lookup failed.
      */
-    public static CompletableFuture<PlayerProfile> fromNbt(CompoundTag tag) {
+    public static CompletableFuture<GlowPlayerProfile> fromNbt(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
         UUID uuid = UUID.fromString(tag.getString("Id"));
 
@@ -110,20 +111,20 @@ public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProf
 
         if (tag.containsKey("Name")) {
             return CompletableFuture.completedFuture(
-                    new PlayerProfile(tag.getString("Name"), uuid, properties));
+                    new GlowPlayerProfile(tag.getString("Name"), uuid, properties));
         } else {
             return ProfileCache.getProfile(uuid).thenApplyAsync(
-                (profile) -> new PlayerProfile(profile.getName(), uuid, properties));
+                (profile) -> new GlowPlayerProfile(profile.getName(), uuid, properties));
         }
     }
 
     /**
-     * Reads a PlayerProfile from a JSON object.
+     * Reads a GlowPlayerProfile from a JSON object.
      *
      * @param json a player profile in JSON form
-     * @return {@code json} as a PlayerProfile
+     * @return {@code json} as a GlowPlayerProfile
      */
-    public static PlayerProfile fromJson(JSONObject json) {
+    public static GlowPlayerProfile fromJson(JSONObject json) {
         String name = (String) json.get("name");
         String id = (String) json.get("id");
         JSONArray propsArray = (JSONArray) json.get("properties");
@@ -147,7 +148,7 @@ public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProf
             properties.add(new ProfileProperty(propName, value, signature));
         }
 
-        return new PlayerProfile(name, uuid, properties);
+        return new GlowPlayerProfile(name, uuid, properties);
     }
 
     /**

@@ -2,7 +2,7 @@ package net.glowstone.command.minecraft;
 
 import java.util.Collections;
 import java.util.List;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +26,7 @@ public class BanCommand extends VanillaCommand {
             return false;
         }
         if (args.length > 0) {
-            if (PlayerProfile.getProfile(args[0]).join() == null) {
+            if (GlowPlayerProfile.getProfile(args[0]).join() == null) {
                 sender.sendMessage(ChatColor.RED + "Could not ban player " + args[0]);
                 return false;
             }

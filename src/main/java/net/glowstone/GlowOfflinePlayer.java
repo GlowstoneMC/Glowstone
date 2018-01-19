@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import org.bukkit.BanList.Type;
@@ -23,7 +24,7 @@ import org.bukkit.entity.Player;
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
-    private final PlayerProfile profile;
+    private final GlowPlayerProfile profile;
 
     private boolean hasPlayed;
     private long firstPlayed;
@@ -38,7 +39,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      * @param server The server of the offline player. Must not be null.
      * @param profile The profile associated with the player. Must not be null.
      */
-    public GlowOfflinePlayer(GlowServer server, PlayerProfile profile) {
+    public GlowOfflinePlayer(GlowServer server, GlowPlayerProfile profile) {
         checkNotNull(server, "server must not be null");
         checkNotNull(profile, "profile must not be null");
         this.server = server;
@@ -147,7 +148,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return lastPlayed;
     }
 
-    public PlayerProfile getProfile() {
+    public GlowPlayerProfile getProfile() {
         return profile;
     }
 

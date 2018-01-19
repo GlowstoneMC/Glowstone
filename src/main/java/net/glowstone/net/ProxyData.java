@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.UuidUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -132,8 +132,8 @@ public final class ProxyData {
      * @param name The player name.
      * @return The spoofed profile.
      */
-    public PlayerProfile getProfile(String name) {
-        return new PlayerProfile(name, uuid, properties);
+    public GlowPlayerProfile getProfile(String name) {
+        return new GlowPlayerProfile(name, uuid, properties);
     }
 
     /**
@@ -142,10 +142,10 @@ public final class ProxyData {
      *
      * @return The spoofed profile.
      */
-    public PlayerProfile getProfile() {
+    public GlowPlayerProfile getProfile() {
         if (name == null) {
             return null;
         }
-        return new PlayerProfile(name, uuid, properties);
+        return new GlowPlayerProfile(name, uuid, properties);
     }
 }

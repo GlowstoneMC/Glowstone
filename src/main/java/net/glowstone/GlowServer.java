@@ -97,7 +97,7 @@ import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
@@ -1661,20 +1661,20 @@ public final class GlowServer implements Server {
     }
 
     @Override
-    public PlayerProfile createProfile(UUID id) {
+    public GlowPlayerProfile createProfile(UUID id) {
         checkNotNull(id);
         return createProfile(id, null);
     }
 
     @Override
-    public PlayerProfile createProfile(String name) {
+    public GlowPlayerProfile createProfile(String name) {
         checkNotNull(name);
         return createProfile(null, name);
     }
 
     @Override
-    public PlayerProfile createProfile(UUID id, String name) {
-        return new PlayerProfile(name, id);
+    public GlowPlayerProfile createProfile(UUID id, String name) {
+        return new GlowPlayerProfile(name, id);
     }
 
     @Override
@@ -1847,12 +1847,12 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Creates a new {@link GlowOfflinePlayer} instance for the given {@link PlayerProfile}.
+     * Creates a new {@link GlowOfflinePlayer} instance for the given {@link GlowPlayerProfile}.
      *
      * @param profile the player's profile.
      * @return a new {@link GlowOfflinePlayer} instance for the given profile.
      */
-    public OfflinePlayer getOfflinePlayer(PlayerProfile profile) {
+    public OfflinePlayer getOfflinePlayer(GlowPlayerProfile profile) {
         return new GlowOfflinePlayer(this, profile);
     }
 
@@ -1889,7 +1889,7 @@ public final class GlowServer implements Server {
         } catch (TimeoutException ex) {
             GlowServer.logger.log(Level.WARNING, "Profile lookup timeout: ", ex);
         }
-        return new GlowOfflinePlayer(this, new PlayerProfile(null, uuid));
+        return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid));
     }
 
     /**
@@ -1904,7 +1904,7 @@ public final class GlowServer implements Server {
             return CompletableFuture.completedFuture(onlinePlayer);
         }
 
-        return PlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
+        return GlowPlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
             if (profile == null) {
                 return getOfflinePlayerFallback(name);
             } else {
@@ -1930,7 +1930,7 @@ public final class GlowServer implements Server {
     }
 
     private OfflinePlayer getOfflinePlayerFallback(String name) {
-        return getOfflinePlayer(new PlayerProfile(name, UUID
+        return getOfflinePlayer(new GlowPlayerProfile(name, UUID
                 .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
     }
 

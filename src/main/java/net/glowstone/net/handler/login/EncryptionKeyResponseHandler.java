@@ -20,7 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import lombok.AllArgsConstructor;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.http.HttpCallback;
 import net.glowstone.net.http.HttpClient;
@@ -172,7 +172,7 @@ public final class EncryptionKeyResponseHandler implements
 
             // spawn player
             session.getServer().getScheduler()
-                .runTask(null, () -> session.setPlayer(new PlayerProfile(name, uuid, properties)));
+                .runTask(null, () -> session.setPlayer(new GlowPlayerProfile(name, uuid, properties)));
         }
 
         @Override

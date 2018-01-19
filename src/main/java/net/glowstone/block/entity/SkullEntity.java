@@ -6,7 +6,7 @@ import net.glowstone.block.blocktype.BlockSkull;
 import net.glowstone.block.entity.state.GlowSkull;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.SkullType;
 import org.bukkit.material.Skull;
@@ -15,7 +15,7 @@ public class SkullEntity extends BlockEntity {
 
     private byte type;
     private byte rotation;
-    private PlayerProfile owner;
+    private GlowPlayerProfile owner;
 
     public SkullEntity(GlowBlock block) {
         super(block);
@@ -32,12 +32,12 @@ public class SkullEntity extends BlockEntity {
         }
         if (tag.containsKey("Owner")) {
             CompoundTag ownerTag = tag.getCompound("Owner");
-            owner = PlayerProfile.fromNbt(ownerTag).join();
+            owner = GlowPlayerProfile.fromNbt(ownerTag).join();
         } else if (tag.containsKey("ExtraType")) {
             // Pre-1.8 uses just a name, instead of a profile object
             String name = tag.getString("ExtraType");
             if (name != null && !name.isEmpty()) {
-                owner = PlayerProfile.getProfile(name).join();
+                owner = GlowPlayerProfile.getProfile(name).join();
             }
         }
     }
@@ -83,11 +83,11 @@ public class SkullEntity extends BlockEntity {
         this.rotation = rotation;
     }
 
-    public PlayerProfile getOwner() {
+    public GlowPlayerProfile getOwner() {
         return owner;
     }
 
-    public void setOwner(PlayerProfile owner) {
+    public void setOwner(GlowPlayerProfile owner) {
         this.owner = owner;
         type = BlockSkull.getType(SkullType.PLAYER);
     }

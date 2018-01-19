@@ -23,7 +23,7 @@ import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
@@ -293,7 +293,7 @@ public class GlowSession extends BasicSession {
      * @throws IllegalStateException if there is already a player associated with this
      *         session.
      */
-    public void setPlayer(PlayerProfile profile) {
+    public void setPlayer(GlowPlayerProfile profile) {
         if (player != null) {
             throw new IllegalStateException("Cannot set player twice");
         }
@@ -501,7 +501,7 @@ public class GlowSession extends BasicSession {
         }
     }
 
-    private void finalizeLogin(PlayerProfile profile) {
+    private void finalizeLogin(GlowPlayerProfile profile) {
         // enable compression if needed
         int compression = getServer().getCompressionThreshold();
         if (compression > 0) {
