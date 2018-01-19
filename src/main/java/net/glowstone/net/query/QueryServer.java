@@ -49,7 +49,8 @@ public class QueryServer extends GlowDatagramServer {
      */
     @Override
     public ChannelFuture bind(InetSocketAddress address) {
-        GlowServer.logger.info("Binding query to address " + address.getAddress().getHostAddress() + ":" + address.getPort() + "...");
+        GlowServer.logger.info("Binding query to address "
+                + address.getAddress().getHostAddress() + ":" + address.getPort() + "...");
         if (flushTask == null) {
             flushTask = new ChallengeTokenFlushTask();
             flushTask.runTaskTimerAsynchronously(null, 600, 600);
@@ -100,13 +101,15 @@ public class QueryServer extends GlowDatagramServer {
 
     @Override
     public void onBindSuccess(InetSocketAddress address) {
-        GlowServer.logger.info("Successfully bound query to " + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
+        GlowServer.logger.info("Successfully bound query to "
+                + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
         super.onBindSuccess(address);
     }
 
     @Override
     public void onBindFailure(InetSocketAddress address, Throwable t) {
-        GlowServer.logger.warning("Failed to bind query to" + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
+        GlowServer.logger.warning("Failed to bind query to "
+                + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
     }
 
     /**

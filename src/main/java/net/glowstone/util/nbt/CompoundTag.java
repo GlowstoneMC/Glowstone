@@ -414,11 +414,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
     }
 
     /**
-     * Test whether the subtag with the given key is of {@link List} type with elements of type {@link CompoundTag}.
+     * Test whether the subtag with the given key is of {@link List} type with elements of type
+     * {@link CompoundTag}.
      *
      * @param key the key to look up
-     * @return true if the subtag exists and is a {@link List} with elements of type {@link CompoundTag};
-     *         false otherwise
+     * @return true if the subtag exists and is a {@link List} with elements of type
+     *         {@link CompoundTag}; false otherwise
      */
     public boolean isCompoundList(String key) {
         return isList(key, TagType.COMPOUND);
