@@ -32,7 +32,7 @@ public class OpCommand extends VanillaCommand {
         // asynchronously lookup player
         server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
             if (ex != null) {
-                sender.sendMessage(ChatColor.RED + "Failed to op '" + name + "': "
+                sender.sendMessage(ChatColor.RED + "Failed to op " + name + ": "
                         + ex.getMessage());
                 ex.printStackTrace();
                 return;

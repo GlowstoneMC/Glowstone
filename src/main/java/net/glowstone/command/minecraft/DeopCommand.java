@@ -37,7 +37,7 @@ public class DeopCommand extends VanillaCommand {
         // asynchronously lookup player
         server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
             if (ex != null) {
-                sender.sendMessage(ChatColor.RED + "Failed to deop '" + name + "': "
+                sender.sendMessage(ChatColor.RED + "Failed to deop " + name + ": "
                         + ex.getMessage());
                 ex.printStackTrace();
                 return;
