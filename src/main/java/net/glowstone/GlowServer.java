@@ -499,8 +499,8 @@ public final class GlowServer implements Server {
                         .println("  --version, -v                  Shows version information and "
                                 + "exits.");
                 System.out
-                        .println("  --generate-config              Generates and loads configuration files, then "
-                                + "exits.");
+                        .println("  --generate-config              Generates and loads "
+                                + "configuration files, then exits.");
                 System.out
                         .println("  --configdir <directory>        Sets the configuration "
                                 + "directory.");
@@ -759,7 +759,8 @@ public final class GlowServer implements Server {
         // Start loading plugins
         List<Library> libraries = aggregateLibraries();
         new LibraryManager(config.getString(Key.LIBRARY_REPOSITORY_URL),
-                config.getString(Key.LIBRARIES_FOLDER), config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
+                config.getString(Key.LIBRARIES_FOLDER),
+                config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
                 config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS), libraries).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
@@ -988,7 +989,8 @@ public final class GlowServer implements Server {
                         defaultIcon = new GlowServerIcon(serverIconFile);
                     }
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, "Failed to import '" + SERVER_ICON_FILE + "' from Vanilla", e);
+                    logger.log(Level.WARNING,
+                            "Failed to import '" + SERVER_ICON_FILE + "' from Vanilla", e);
                 }
             }
         } catch (Exception e) {

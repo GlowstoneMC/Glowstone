@@ -1,6 +1,7 @@
 package net.glowstone.io.entity;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static net.glowstone.entity.passive.GlowVillager.getRandomProfession;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,10 +31,10 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
             if (GlowVillager.isValidProfession(professionId)) {
                 entity.setVillagerProfession(GlowVillager.getProfessionById(professionId));
             } else {
-                entity.setVillagerProfession(GlowVillager.getRandomProfession(ThreadLocalRandom.current()));
+                entity.setVillagerProfession(getRandomProfession(ThreadLocalRandom.current()));
             }
         } else {
-            entity.setVillagerProfession(GlowVillager.getRandomProfession(ThreadLocalRandom.current()));
+            entity.setVillagerProfession(getRandomProfession(ThreadLocalRandom.current()));
         }
 
         if (compound.isInt("ConversionTime")) {
@@ -55,15 +56,17 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         GlowZombieVillager entity = (GlowZombieVillager) zombie;
         super.save(entity, compound);
 
-        if (entity.getVillagerProfession() != null && entity.getVillagerProfession() != Villager.Profession.HUSK) {
-            compound.putInt("Profession", entity.getVillagerProfession().ordinal());
+        final Villager.Profession profession = entity.getVillagerProfession();
+        if (profession != null && profession != Villager.Profession.HUSK) {
+            compound.putInt("Profession", profession.ordinal());
         }
 
         compound.putInt("ConversionTime", entity.getConversionTime());
 
-        if (entity.getConversionPlayer() != null) {
-            compound.putLong("ConversionPlayerMost", entity.getConversionPlayer().getMostSignificantBits());
-            compound.putLong("ConversionPlayerLeast", entity.getConversionPlayer().getLeastSignificantBits());
+        final UUID conversionPlayer = entity.getConversionPlayer();
+        if (conversionPlayer != null) {
+            compound.putLong("ConversionPlayerMost", conversionPlayer.getMostSignificantBits());
+            compound.putLong("ConversionPlayerLeast", conversionPlayer.getLeastSignificantBits());
         }
     }
 }

@@ -63,7 +63,7 @@ public final class LibraryManager {
      * @param validateChecksum whether or not checksum validation is enabled
      */
     public LibraryManager(String defaultRepository, String directoryName, boolean validateChecksum,
-                          int maxDownloadAttempts, Collection<Library> libraries) {
+            int maxDownloadAttempts, Collection<Library> libraries) {
         checkNotNull(defaultRepository);
         checkNotNull(directoryName);
         this.defaultRepository = defaultRepository;
@@ -140,7 +140,7 @@ public final class LibraryManager {
 
                         try (ReadableByteChannel input = Channels
                                 .newChannel(connection.getInputStream());
-                             FileOutputStream output = new FileOutputStream(file)) {
+                                FileOutputStream output = new FileOutputStream(file)) {
                             output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
                             GlowServer.logger.info("Downloaded " + library.toString() + '.');
                         }
@@ -150,10 +150,10 @@ public final class LibraryManager {
                                 && !checksum(file, library)) {
                             GlowServer.logger.severe("The checksum for the library '" + getLibrary()
                                     + "' does not match. "
-                                    + (attempts == maxDownloadAttempts ? "Restart the server to attempt "
-                                    + "downloading it again."
+                                    + (attempts == maxDownloadAttempts
+                                            ? "Restart the server to attempt downloading it again."
                                             : "Attempting download again ("
-                                                    + (attempts + 1) + "/" + maxDownloadAttempts + ")"));
+                                            + (attempts + 1) + "/" + maxDownloadAttempts + ")"));
                             file.delete();
                             if (attempts == maxDownloadAttempts) {
                                 return;
@@ -171,8 +171,9 @@ public final class LibraryManager {
                                     + getLibrary() + "' again.");
                             return;
                         }
-                        GlowServer.logger.warning("Attempting download of '" + getLibrary() + "' again ("
-                                + (attempts + 1) + "/" + maxDownloadAttempts + ")");
+                        GlowServer.logger
+                                .warning("Attempting download of '" + getLibrary() + "' again ("
+                                        + (attempts + 1) + "/" + maxDownloadAttempts + ")");
                     }
                 }
             } else if (validateChecksum && library.getChecksumType() != null
@@ -182,8 +183,10 @@ public final class LibraryManager {
                 GlowServer.logger.warning("The checksum for the library '" + getLibrary()
                         + "' does not match. "
                         + "Remove the library and restart the server to download it again.");
-                GlowServer.logger.warning("Additionally, you can disable this warning in the server "
-                        + "configuration, under '" + ServerConfig.Key.LIBRARY_CHECKSUM_VALIDATION.getPath() + "'.");
+                GlowServer.logger
+                        .warning("Additionally, you can disable this warning in the server "
+                                + "configuration, under '"
+                                + ServerConfig.Key.LIBRARY_CHECKSUM_VALIDATION.getPath() + "'.");
             }
 
             // hack it onto the classpath
@@ -217,11 +220,12 @@ public final class LibraryManager {
          *
          * <p>If the file does not exist, the checksum will be automatically invalidated.
          *
-         * <p>If the reference checksum or the algorithm are empty or null,
-         * the checksum will be automatically validated.
+         * <p>If the reference checksum or the algorithm are empty or null, the checksum will be
+         * automatically validated.
          *
          * @param file the file.
-         * @param library the {@link Library} instance containing the algorithm and the checksum.
+         * @param library the {@link Library} instance containing the algorithm and the
+         *         checksum.
          * @return true if the checksum was validated, false otherwise.
          */
         boolean checksum(File file, Library library) {
@@ -240,7 +244,8 @@ public final class LibraryManager {
             try {
                 digest = Files.hash(file, algorithm.getFunction()).toString();
             } catch (IOException ex) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to compute digest for '" + file.getName() + "'", ex);
+                GlowServer.logger.log(Level.SEVERE,
+                        "Failed to compute digest for '" + file.getName() + "'", ex);
                 return false;
             }
             return digest.equals(checksum);

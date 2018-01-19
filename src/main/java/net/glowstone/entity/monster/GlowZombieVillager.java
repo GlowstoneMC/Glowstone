@@ -22,9 +22,17 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     private UUID conversionPlayer;
     /**
      * The conversion time of this Zombie Villager, in ticks.
+     *
+     * @return the conversion time of this Zombie Villager, in ticks
      */
+    @Getter
     private int conversionTime;
 
+    /**
+     * Creates a zombie villager that is a farmer.
+     *
+     * @param loc the initial location
+     */
     public GlowZombieVillager(Location loc) {
         super(loc, EntityType.ZOMBIE_VILLAGER);
         setBoundingBox(0.6, 1.95);
@@ -34,8 +42,8 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
 
     @Override
     public Villager.Profession getVillagerProfession() {
-        int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) ?
-                metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
+        int profession = metadata.containsKey(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION)
+                ? metadata.getInt(MetadataIndex.ZOMBIE_VILLAGER_PROFESSION) : 0;
         return Villager.Profession.values()[profession];
     }
 
@@ -58,15 +66,6 @@ public class GlowZombieVillager extends GlowZombie implements ZombieVillager {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ZOMBIE_VILLAGER_AMBIENT;
-    }
-
-    /**
-     * Gets the conversion time of this Zombie Villager.
-     *
-     * @return the conversion time of this Zombie Villager, in ticks
-     */
-    public int getConversionTime() {
-        return this.conversionTime;
     }
 
     /**

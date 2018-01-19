@@ -20,7 +20,8 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
 
     @Override
     public ChannelFuture bind(InetSocketAddress address) {
-        GlowServer.logger.info("Binding server to " + address.getAddress().getHostAddress() + ":" + address.getPort() + "...");
+        GlowServer.logger.info("Binding server to "
+                + address.getAddress().getHostAddress() + ":" + address.getPort() + "...");
         return super.bind(address);
     }
 
@@ -28,13 +29,15 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
     public void onBindSuccess(InetSocketAddress address) {
         getServer().setPort(address.getPort());
         getServer().setIp(address.getHostString());
-        GlowServer.logger.info("Successfully bound server to " + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
+        GlowServer.logger.info("Successfully bound server to "
+                + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
         super.onBindSuccess(address);
     }
 
     @Override
     public void onBindFailure(InetSocketAddress address, Throwable t) {
-        GlowServer.logger.severe("Failed to bind server to " + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
+        GlowServer.logger.severe("Failed to bind server to "
+                + address.getAddress().getHostAddress() + ":" + address.getPort() + '.');
         if (t.getMessage().contains("Cannot assign requested address")) {
             GlowServer.logger.severe("The 'server.ip' in your configuration may not be valid.");
             GlowServer.logger.severe("Unless you are sure you need it, try removing it.");
