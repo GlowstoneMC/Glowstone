@@ -80,6 +80,7 @@ public final class GlowScheduler implements BukkitScheduler {
      * The session registry used to pulse all players.
      */
     private final SessionRegistry sessionRegistry;
+
     /**
      * Creates a new task scheduler.
      *
