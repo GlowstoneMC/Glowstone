@@ -43,14 +43,32 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class ItemBowTest {
+public class ItemBowTest extends ItemTypeTest {
+    @Override
+    @Before
+    public void setUp() {
+        super.setUp();
+        bowItemStack = new ItemStack(Material.BOW);
+        inventory.setItemInMainHand(bowItemStack);
+        Mockito.doCallRealMethod().when(player).setItemInHand(any(ItemStack.class));
+        bow = new ItemBow();
+        launchedArrow = mock(GlowArrow.class, RETURNS_SMART_NULLS);
+        launchedSpectralArrow = mock(GlowSpectralArrow.class, RETURNS_SMART_NULLS);
+        launchedTippedArrow = mock(GlowTippedArrow.class, RETURNS_SMART_NULLS);
+        for (Arrow arrow : new Arrow[]{launchedArrow, launchedSpectralArrow, launchedTippedArrow}) {
+            Arrow.Spigot spigot = mock(Arrow.Spigot.class, RETURNS_SMART_NULLS);
+            when(arrow.getLocation()).thenReturn(location);
+            when(arrow.getVelocity()).thenReturn(new Vector(2, 0, 0));
+            when(arrow.spigot()).thenReturn(spigot);
+        }
+        doCallRealMethod().when(launchedTippedArrow).copyFrom(any(PotionMeta.class));
+        when(player.launchProjectile(Arrow.class)).thenReturn(launchedArrow);
+        when(player.launchProjectile(SpectralArrow.class)).thenReturn(launchedSpectralArrow);
+        when(player.launchProjectile(TippedArrow.class)).thenReturn(launchedTippedArrow);
+    }
 
-    GlowPlayer player;
-    private GlowPlayerInventory inventory;
     private ItemBow bow;
     private ItemStack bowItemStack;
-    private World world;
-    private Location location;
     private GlowArrow launchedArrow;
     private GlowSpectralArrow launchedSpectralArrow;
     private GlowTippedArrow launchedTippedArrow;
@@ -79,34 +97,6 @@ public class ItemBowTest {
         if (expectBow) {
             assertTrue("No bow found", foundBow);
         }
-    }
-
-    @Before
-    public void setUp() {
-        ServerShim.install();
-        player = Mockito.mock(GlowPlayer.class, RETURNS_SMART_NULLS);
-        inventory = new GlowPlayerInventory(player);
-        when(player.getInventory()).thenReturn(inventory);
-        when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
-        bowItemStack = new ItemStack(Material.BOW);
-        inventory.setItemInMainHand(bowItemStack);
-        Mockito.doCallRealMethod().when(player).setItemInHand(any(ItemStack.class));
-        bow = new ItemBow();
-        world = mock(World.class, RETURNS_SMART_NULLS);
-        location = new Location(world, 0, 0, 0);
-        launchedArrow = mock(GlowArrow.class, RETURNS_SMART_NULLS);
-        launchedSpectralArrow = mock(GlowSpectralArrow.class, RETURNS_SMART_NULLS);
-        launchedTippedArrow = mock(GlowTippedArrow.class, RETURNS_SMART_NULLS);
-        for (Arrow arrow : new Arrow[]{launchedArrow, launchedSpectralArrow, launchedTippedArrow}) {
-            Arrow.Spigot spigot = mock(Arrow.Spigot.class, RETURNS_SMART_NULLS);
-            when(arrow.getLocation()).thenReturn(location);
-            when(arrow.getVelocity()).thenReturn(new Vector(2, 0, 0));
-            when(arrow.spigot()).thenReturn(spigot);
-        }
-        doCallRealMethod().when(launchedTippedArrow).copyFrom(any(PotionMeta.class));
-        when(player.launchProjectile(Arrow.class)).thenReturn(launchedArrow);
-        when(player.launchProjectile(SpectralArrow.class)).thenReturn(launchedSpectralArrow);
-        when(player.launchProjectile(TippedArrow.class)).thenReturn(launchedTippedArrow);
     }
 
     @Test
