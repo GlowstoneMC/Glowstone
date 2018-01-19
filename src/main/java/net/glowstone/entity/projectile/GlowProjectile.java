@@ -31,6 +31,11 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
     @Setter
     private boolean bounce;
 
+    /**
+     * Creates a projectile.
+     *
+     * @param location the initial location
+     */
     public GlowProjectile(Location location) {
         super(location);
     }

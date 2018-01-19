@@ -19,6 +19,11 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     @Setter
     private float yield;
 
+    /**
+     * Creates a fireball.
+     *
+     * @param location the initial location
+     */
     public GlowFireball(Location location) {
         super(location);
         setGravity(false); // Fireballs fly in a straight line

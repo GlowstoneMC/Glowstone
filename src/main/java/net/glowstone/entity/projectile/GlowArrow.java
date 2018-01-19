@@ -27,6 +27,11 @@ public class GlowArrow extends GlowProjectile implements Arrow {
      */
     private static final int TARGET_BURN_TICKS = 100;
 
+    /**
+     * Creates an arrow entity.
+     *
+     * @param location the initial location
+     */
     public GlowArrow(Location location) {
         super(location);
         setGravityAccel(new Vector(0, -0.05, 0));

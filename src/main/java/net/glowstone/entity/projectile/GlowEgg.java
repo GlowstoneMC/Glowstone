@@ -11,6 +11,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class GlowEgg extends GlowProjectile implements Egg {
+
+    /**
+     * Creates an egg entity.
+     *
+     * @param location the initial location
+     */
     public GlowEgg(Location location) {
         super(location);
         setGravityAccel(new Vector(0, -0.3, 0));
