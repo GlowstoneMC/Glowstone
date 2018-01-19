@@ -19,6 +19,7 @@ import org.bukkit.util.Vector;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     private static final double ENDER_PEARL_DAMAGE = 5.0;
+    private static final int NETWORK_ID = 65;
 
     /**
      * Creates a thrown ender pearl with default speed.
@@ -78,7 +79,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
 
     @Override
     protected int getObjectId() {
-        return 65;
+        return NETWORK_ID;
     }
 
     @Override
