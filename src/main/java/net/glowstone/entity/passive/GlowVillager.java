@@ -36,7 +36,8 @@ import org.bukkit.inventory.MerchantRecipe;
 public class GlowVillager extends GlowAgeable implements Villager {
 
     private static final Profession[] PROFESSIONS = Profession.values();
-    private static final MerchantRecipe DEFAULT_RECIPE = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
+    private static final MerchantRecipe DEFAULT_RECIPE
+            = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
 
     private Career career;
     private int riches;
@@ -204,7 +205,8 @@ public class GlowVillager extends GlowAgeable implements Villager {
         super.entityInteract(player, message);
         if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             if (this.recipes.isEmpty()) {
-                GlowServer.logger.info(player.getName() + " tried trading with a villager with no recipes.");
+                GlowServer.logger.info(
+                        player.getName() + " tried trading with a villager with no recipes.");
                 return false;
             }
             // open merchant view

@@ -183,9 +183,9 @@ public class Library {
             return false;
         }
         Library library = (Library) o;
-        return Objects.equals(groupId, library.groupId) &&
-                Objects.equals(artifactId, library.artifactId) &&
-                Objects.equals(version, library.version);
+        return Objects.equals(groupId, library.groupId)
+                && Objects.equals(artifactId, library.artifactId)
+                && Objects.equals(version, library.version);
     }
 
     @Override
