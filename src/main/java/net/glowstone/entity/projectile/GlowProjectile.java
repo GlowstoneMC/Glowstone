@@ -58,15 +58,11 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     @Override
     protected void pulsePhysics() {
-        if (location.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-            setOnGround(true);
-            collide(location.getBlock().getRelative(BlockFace.DOWN));
-            return;
-        }
         // TODO: Entity collisions
         super.pulsePhysics();
     }
 
+    @Override
     public abstract void collide(Block block);
 
     public abstract void collide(LivingEntity entity);

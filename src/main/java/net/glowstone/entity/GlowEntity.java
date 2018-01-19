@@ -952,7 +952,8 @@ public abstract class GlowEntity implements Entity {
 
     protected void pulsePhysics() {
         Location velLoc = location.clone().add(velocity);
-        if (velLoc.getBlock().getType().isOccluding()) {
+        final Block block = velLoc.getBlock();
+        if (block.getType().isOccluding()) {
             Location velLocY = location.clone().add(0, velocity.getY(), 0);
             if (velLocY.getBlock().getType().isOccluding()) {
                 velocity.setY(0);
@@ -965,6 +966,7 @@ public abstract class GlowEntity implements Entity {
             if (velLocZ.getBlock().getType().isOccluding()) {
                 velocity.setZ(0);
             }
+            collide(block);
         } else {
             if (hasFriction()) {
                 // apply friction and gravity
@@ -996,6 +998,15 @@ public abstract class GlowEntity implements Entity {
             }
             setRawLocation(velLoc);
         }
+    }
+
+    /**
+     * Collide with the target block.
+     *
+     * @param block a block whose type {@link Material#isOccluding()}
+     */
+    public void collide(Block block) {
+        // No-op by default.
     }
 
     protected void updateBoundingBox() {

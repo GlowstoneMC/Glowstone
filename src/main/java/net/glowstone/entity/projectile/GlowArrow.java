@@ -67,6 +67,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
         if (block.getType() == Material.TNT) {
             BlockTnt.igniteBlock(block, false);
         }
+        setOnGround(true);
         // Don't despawn
     }
 
