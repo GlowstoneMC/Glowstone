@@ -63,6 +63,7 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
             collide(location.getBlock().getRelative(BlockFace.DOWN));
             return;
         }
+        // TODO: Entity collisions
         super.pulsePhysics();
     }
 
