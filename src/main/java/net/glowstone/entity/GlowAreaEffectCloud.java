@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import org.bukkit.projectiles.ProjectileSource;
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud, PotionDataHolder {
 
     private static final int NETWORK_TYPE_ID = 3;
+    private final Map<LivingEntity, Long> temporaryImmunities = new WeakHashMap<>();
 
     @Override
     public void pulse() {
@@ -33,14 +35,16 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud, 
         radius += radiusPerTick;
         waitTime--;
         duration--;
-        reapplicationDelay--;
         if (duration <= 0 || radius <= 0) {
             remove();
         }
         if (waitTime <= 0) {
+            long currentTick = world.getFullTime();
             for (LivingEntity entity : world.getLivingEntities()) {
-                if (location.distanceSquared(entity.getLocation()) < radius * radius) {
+                if (temporaryImmunities.getOrDefault(entity, Long.MIN_VALUE) <= currentTick
+                        && location.distanceSquared(entity.getLocation()) < radius * radius) {
                     entity.addPotionEffects(customEffects.values());
+                    temporaryImmunities.put(entity, currentTick + reapplicationDelay);
                 }
             }
         }
