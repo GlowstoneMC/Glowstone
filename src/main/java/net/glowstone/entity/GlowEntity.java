@@ -169,9 +169,15 @@ public abstract class GlowEntity implements Entity {
     @Getter
     protected boolean removed;
     /**
-     * Velocity reduction applied each tick in air.
+     * Velocity reduction applied each tick in air, y component.
      */
     protected double airDrag = 0.98;
+    /**
+     * Velocity reduction applied each tick in air, x and z components.
+     */
+    @Getter
+    @Setter
+    private double horizontalAirDrag = 0.91;
     /**
      * Velocity reduction applied each tick in liquids.
      */
@@ -982,7 +988,8 @@ public abstract class GlowEntity implements Entity {
                         velocity.setX(velocity.getX() * slipMultiplier);
                         velocity.setZ(velocity.getZ() * slipMultiplier);
                     } else {
-                        velocity.setX(velocity.getX() * 0.91);
+                        horizontalAirDrag = 0.91;
+                        velocity.setX(velocity.getX() * horizontalAirDrag);
                         velocity.setZ(velocity.getZ() * 0.91);
                     }
                 }

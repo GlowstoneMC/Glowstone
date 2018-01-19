@@ -40,36 +40,22 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
         super(location);
         setDrag(0.99, false);
         setDrag(0.99, true);
+        setHorizontalAirDrag(0.95);
         setGravityAccel(new Vector(0,-0.06,0));
         setVelocity(location.getDirection().multiply(speed));
     }
 
     @Override
-    protected void pulsePhysics() {
-        velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
-
-        velocity.setX(velocity.getX() * 0.95);
-        velocity.setZ(velocity.getZ() * 0.95);
-
-        setRawLocation(location.clone().add(velocity));
-
-        // If the EnderPearl collides with anything except air/fluids
-        if (!location.getBlock().isLiquid() && !location.getBlock().isEmpty()) {
-            ProjectileSource source = getShooter();
-            if (source instanceof Entity) {
-                ((Entity) source).teleport(location, PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
-                if (source instanceof LivingEntity) {
-                    ((LivingEntity) source).damage(ENDER_PEARL_DAMAGE,
-                            EntityDamageEvent.DamageCause.FALL);
-                }
-            }
-            remove();
-        }
-    }
-
-    @Override
     public void collide(Block block) {
-        // No-op.
+        ProjectileSource source = getShooter();
+        if (source instanceof Entity) {
+            ((Entity) source).teleport(location, PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
+            if (source instanceof LivingEntity) {
+                ((LivingEntity) source).damage(ENDER_PEARL_DAMAGE,
+                        EntityDamageEvent.DamageCause.FALL);
+            }
+        }
+        remove();
     }
 
     @Override
