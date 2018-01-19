@@ -118,6 +118,7 @@ public final class EntityStorage {
         bind(new EnderDragonStore());
         bind(new ZombieVillagerStore());
 
+        bind(new AreaEffectCloudStore());
         bind(new ArmorStandStore());
         bind(new FallingBlockStore());
         bind(new ItemFrameStore());
