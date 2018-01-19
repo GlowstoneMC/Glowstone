@@ -704,22 +704,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector) {
         float offset = 0.0F;
         float velocity = 1.5F;
-        if (Arrow.class.isAssignableFrom(clazz)) {
-            velocity = 3.0F;
-            if (this instanceof GlowPlayer) {
-                GlowPlayer player = (GlowPlayer) this;
-                if (player.getUsageItem() != null
-                        && player.getUsageItem().getType() == Material.BOW) {
-                    int timeUsed = (int)
-                            (20 - (player.getUsageTime() <= 0 ? 0 : player.getUsageTime()));
-                    velocity = 3.0F * ((float) timeUsed / 20.0F);
-                }
-            }
-        }
         T projectile = launchProjectile(clazz, vector, offset, velocity);
-        if (Arrow.class.isAssignableFrom(clazz) && velocity == 3.0F) {
-            ((Arrow) projectile).setCritical(true);
-        }
         return projectile;
     }
 
