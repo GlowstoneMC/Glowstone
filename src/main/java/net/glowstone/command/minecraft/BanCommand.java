@@ -3,7 +3,6 @@ package net.glowstone.command.minecraft;
 import java.util.Collections;
 import java.util.List;
 import net.glowstone.GlowServer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,6 +53,7 @@ public class BanCommand extends VanillaCommand {
                 }
                 sender.sendMessage("Banned player " + player.getName());
             });
+            // todo: asynchronous command callbacks?
             return true;
         }
         sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
