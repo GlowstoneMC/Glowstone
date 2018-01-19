@@ -270,8 +270,9 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                     // validate existing values
                     Object val = config.get(key.path);
                     if (!key.validator.test(val)) {
-                        GlowServer.logger.warning("Invalid config value for '" + key.path + "' (" + val + "), "
-                                + "resetting to default (" + key.def + ")");
+                        GlowServer.logger.warning(
+                                "Invalid config value for '" + key.path + "' (" + val + "), "
+                                        + "resetting to default (" + key.def + ")");
                         config.set(key.path, key.def);
                         changed = true;
                     }
@@ -421,12 +422,15 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss"),
 
         // game props
-        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode", Validators.forEnum(GameMode.class)),
+        GAMEMODE("game.gamemode", "SURVIVAL", Migrate.PROPS, "gamemode", Validators
+                .forEnum(GameMode.class)),
         FORCE_GAMEMODE("game.gamemode-force", false, Migrate.PROPS, "force-gamemode"),
-        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty", Validators.forEnum(Difficulty.class)),
+        DIFFICULTY("game.difficulty", "NORMAL", Migrate.PROPS, "difficulty", Validators
+                .forEnum(Difficulty.class)),
         HARDCORE("game.hardcore", false, Migrate.PROPS, "hardcore"),
         PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp"),
-        MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height", Validators.POSITIVE),
+        MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height",
+                Validators.POSITIVE),
         ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS,
                 "announce-player-achievements"),
 
@@ -444,18 +448,25 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters"),
         SPAWN_ANIMALS("creatures.enable.animals", true, Migrate.PROPS, "spawn-animals"),
         SPAWN_NPCS("creatures.enable.npcs", true, Migrate.PROPS, "spawn-npcs"),
-        MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters", Validators.ABSOLUTE),
-        ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals", Validators.ABSOLUTE),
+        MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters",
+                Validators.ABSOLUTE),
+        ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals",
+                Validators.ABSOLUTE),
         WATER_ANIMAL_LIMIT("creatures.limit.water", 5, Migrate.BUKKIT,
                 "spawn-limits.water-animals", Validators.ABSOLUTE),
-        AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient", Validators.ABSOLUTE),
-        MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns", Validators.ABSOLUTE),
-        ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns", Validators.ABSOLUTE),
+        AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient",
+                Validators.ABSOLUTE),
+        MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns",
+                Validators.ABSOLUTE),
+        ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns",
+                Validators.ABSOLUTE),
 
         // folders
         PLUGIN_FOLDER("folders.plugins", "plugins", Validators.PATH),
-        UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder", Validators.PATH),
-        WORLD_FOLDER("folders.worlds", "worlds", Migrate.BUKKIT, "settings.world-container", Validators.PATH),
+        UPDATE_FOLDER("folders.update", "update", Migrate.BUKKIT, "settings.update-folder",
+                Validators.PATH),
+        WORLD_FOLDER("folders.worlds", "worlds", Migrate.BUKKIT, "settings.world-container",
+                Validators.PATH),
         LIBRARIES_FOLDER("folders.libraries", "lib", Validators.PATH),
 
         // files
@@ -469,7 +480,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                 "settings.connection-throttle", Validators.ABSOLUTE),
         //PING_PACKET_LIMIT(
         //        "advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
-        PLAYER_IDLE_TIMEOUT("advanced.idle-timeout", 0, Migrate.PROPS, "player-idle-timeout", Validators.ABSOLUTE),
+        PLAYER_IDLE_TIMEOUT("advanced.idle-timeout", 0, Migrate.PROPS, "player-idle-timeout",
+                Validators.ABSOLUTE),
         WARN_ON_OVERLOAD("advanced.warn-on-overload", true, Migrate.BUKKIT,
                 "settings.warn-on-overload"),
         EXACT_LOGIN_LOCATION("advanced.exact-login-location", false, Migrate.BUKKIT,
@@ -504,9 +516,12 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         // level props
         LEVEL_NAME("world.name", "world", Migrate.PROPS, "level-name"),
         LEVEL_SEED("world.seed", "", Migrate.PROPS, "level-seed"),
-        LEVEL_TYPE("world.level-type", "DEFAULT", Migrate.PROPS, "level-type", Validators.WORLD_TYPE),
-        SPAWN_RADIUS("world.spawn-radius", 16, Migrate.PROPS, "spawn-protection", Validators.ABSOLUTE),
-        VIEW_DISTANCE("world.view-distance", 8, Migrate.PROPS, "view-distance", Validators.POSITIVE),
+        LEVEL_TYPE("world.level-type", "DEFAULT", Migrate.PROPS, "level-type", Validators
+                .WORLD_TYPE),
+        SPAWN_RADIUS("world.spawn-radius", 16, Migrate.PROPS, "spawn-protection", Validators
+                .ABSOLUTE),
+        VIEW_DISTANCE("world.view-distance", 8, Migrate.PROPS, "view-distance", Validators
+                .POSITIVE),
         GENERATE_STRUCTURES("world.gen-structures", true, Migrate.PROPS, "generate-structures"),
         ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether"),
         ALLOW_END("world.allow-end", true, Migrate.BUKKIT, "settings.allow-end"),
@@ -523,8 +538,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation"),
 
         // libraries
-        LIBRARIES("libraries", DEFAULT_LIBRARIES_VALUE),
-        ;
+        LIBRARIES("libraries", DEFAULT_LIBRARIES_VALUE),;
 
         @Getter
         private final String path;
@@ -612,7 +626,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         static final Predicate<String> WORLD_TYPE = (value) -> WorldType.getByName(value) != null;
 
         /**
-         * Creates a {@link EnumPredicate} that checks if the value is a member of the given enum class.
+         * Creates a {@link EnumPredicate} that checks if the value is a member of the given enum
+         * class.
          *
          * @param enumClass the enum class
          * @param <T> the type of the enum
