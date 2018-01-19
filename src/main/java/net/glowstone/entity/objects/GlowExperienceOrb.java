@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;

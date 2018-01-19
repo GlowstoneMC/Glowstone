@@ -5,13 +5,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowHumanEntity;
