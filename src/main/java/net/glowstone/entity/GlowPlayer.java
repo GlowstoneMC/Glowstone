@@ -1640,6 +1640,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public void giveExp(int xp, boolean applyMending) {
+        // todo: implement applyMending
+        giveExp(xp);
+    }
+
+    @Override
+    public int applyMending(int amount) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
     public void giveExpLevels(int amount) {
         setLevel(getLevel() + amount);
     }

@@ -2,14 +2,17 @@ package net.glowstone.entity.meta.profile;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
-import lombok.Data;
 import net.glowstone.GlowServer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
@@ -20,13 +23,12 @@ import org.json.simple.JSONObject;
 /**
  * Information about a player's name, UUID, and other properties.
  */
-@Data
-public class PlayerProfile {
+public class PlayerProfile implements com.destroystokyo.paper.profile.PlayerProfile {
 
     public static final int MAX_USERNAME_LENGTH = 16;
     private final String name;
     private final UUID uniqueId;
-    private final List<PlayerProperty> properties;
+    private final Map<String, ProfileProperty> properties;
 
     /**
      * Construct a new profile with only a name and UUID.
@@ -38,7 +40,7 @@ public class PlayerProfile {
      * @throws IllegalArgumentException if uuid is null.
      */
     public PlayerProfile(String name, UUID uuid) {
-        this(name, uuid, Collections.emptyList());
+        this(name, uuid, Collections.emptySet());
     }
 
     /**
@@ -51,13 +53,14 @@ public class PlayerProfile {
      * @param properties A list of extra properties.
      * @throws IllegalArgumentException if uuid or properties are null.
      */
-    public PlayerProfile(String name, UUID uuid, List<PlayerProperty> properties) {
+    public PlayerProfile(String name, UUID uuid, Collection<ProfileProperty> properties) {
         checkNotNull(uuid, "uuid must not be null");
         checkNotNull(properties, "properties must not be null");
 
         this.name = name;
         this.uniqueId = uuid;
-        this.properties = properties;
+        this.properties = Maps.newHashMap();
+        properties.forEach((property) -> this.properties.put(property.getName(), property));
     }
 
     /**
@@ -94,14 +97,14 @@ public class PlayerProfile {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
         UUID uuid = UUID.fromString(tag.getString("Id"));
 
-        List<PlayerProperty> properties = new ArrayList<>();
+        Collection<ProfileProperty> properties = Sets.newHashSet();
         if (tag.containsKey("Properties")) {
             CompoundTag texture = tag.getCompound("Properties").getCompoundList("textures").get(0);
             if (texture.containsKey("Signature")) {
-                properties.add(new PlayerProperty("textures", texture.getString("Value"),
+                properties.add(new ProfileProperty("textures", texture.getString("Value"),
                     texture.getString("Signature")));
             } else {
-                properties.add(new PlayerProperty("textures", texture.getString("Value")));
+                properties.add(new ProfileProperty("textures", texture.getString("Value")));
             }
         }
 
@@ -135,13 +138,13 @@ public class PlayerProfile {
         }
 
         // Parse properties
-        List<PlayerProperty> properties = new ArrayList<>(propsArray.size());
+        Collection<ProfileProperty> properties = new HashSet<>(propsArray.size());
         for (Object obj : propsArray) {
             JSONObject propJson = (JSONObject) obj;
             String propName = (String) propJson.get("name");
             String value = (String) propJson.get("value");
             String signature = (String) propJson.get("signature");
-            properties.add(new PlayerProperty(propName, value, signature));
+            properties.add(new ProfileProperty(propName, value, signature));
         }
 
         return new PlayerProfile(name, uuid, properties);
@@ -158,14 +161,14 @@ public class PlayerProfile {
         profileTag.putString("Name", name);
 
         CompoundTag propertiesTag = new CompoundTag();
-        for (PlayerProperty property : properties) {
+        for (ProfileProperty property : properties.values()) {
             CompoundTag propertyValueTag = new CompoundTag();
             if (property.isSigned()) {
                 propertyValueTag.putString("Signature", property.getSignature());
             }
             propertyValueTag.putString("Value", property.getValue());
 
-            propertiesTag.putCompoundList(property.getName(), Arrays.asList(propertyValueTag));
+            propertiesTag.putCompoundList(property.getName(), Collections.singletonList(propertyValueTag));
         }
         if (!propertiesTag.isEmpty()) { // Only add properties if not empty
             profileTag.putCompound("Properties", propertiesTag);
@@ -173,4 +176,74 @@ public class PlayerProfile {
         return profileTag;
     }
 
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public UUID getId() {
+        return this.uniqueId;
+    }
+
+    /**
+     * Gets the UUID of this profile.
+     *
+     * @return the UUID of this profile.
+     */
+    public UUID getUniqueId() {
+        return getId();
+    }
+
+    @Override
+    public Set<ProfileProperty> getProperties() {
+        return Sets.newHashSet(this.properties.values());
+    }
+
+    @Override
+    public void setProperty(ProfileProperty property) {
+        checkNotNull(property);
+    }
+
+    @Override
+    public void setProperties(Collection<ProfileProperty> properties) {
+        clearProperties();
+        if (properties != null) {
+            properties.forEach(property -> this.properties.put(property.getName(), property));
+        }
+    }
+
+    @Override
+    public boolean removeProperty(String name) {
+        checkNotNull(name);
+        return this.properties.remove(name) != null;
+    }
+
+    @Override
+    public boolean removeProperty(ProfileProperty property) {
+        checkNotNull(property);
+        return removeProperty(property.getName());
+    }
+
+    @Override
+    public boolean removeProperties(Collection<ProfileProperty> properties) {
+        checkNotNull(properties);
+        boolean foundAll = true;
+        for (ProfileProperty property : properties) {
+            if (!removeProperty(property)) {
+                foundAll = false;
+            }
+        }
+        return foundAll;
+    }
+
+    @Override
+    public void clearProperties() {
+        this.properties.clear();
+    }
+
+    @Override
+    public boolean isComplete() {
+        return name != null && uniqueId != null && properties.containsKey("textures");
+    }
 }

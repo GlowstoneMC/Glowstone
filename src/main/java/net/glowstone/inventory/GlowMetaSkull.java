@@ -1,5 +1,7 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -124,6 +126,21 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         }
         this.owner.set(owner);
         return true;
+    }
+
+    @Override
+    public void setPlayerProfile(com.destroystokyo.paper.profile.PlayerProfile profile) {
+        if (profile == null) {
+            this.owner.set(UNKNOWN_PLAYER);
+            return;
+        }
+        checkArgument(profile instanceof PlayerProfile);
+        this.owner.set((PlayerProfile) profile);
+    }
+
+    @Override
+    public com.destroystokyo.paper.profile.PlayerProfile getPlayerProfile() {
+        return this.owner.get();
     }
 
     @Override

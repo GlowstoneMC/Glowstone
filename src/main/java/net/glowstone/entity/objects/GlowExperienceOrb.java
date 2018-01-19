@@ -5,6 +5,10 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
@@ -21,6 +25,15 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     private static final int LIFETIME = 5 * 60 * 20;
 
     private boolean fromBottle;
+    @Getter
+    @Setter
+    private UUID sourceEntityId;
+    @Getter
+    @Setter
+    private UUID triggerEntityId;
+    @Getter
+    @Setter
+    private SpawnReason spawnReason;
     private int experience;
     private boolean tickSkipped = false;
 

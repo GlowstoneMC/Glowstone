@@ -1,7 +1,8 @@
 package net.glowstone;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
@@ -1543,7 +1544,7 @@ public final class GlowServer implements Server {
      * @param online whether the player is online or offline
      */
     public void setPlayerOnline(GlowPlayer player, boolean online) {
-        Preconditions.checkNotNull(player);
+        checkNotNull(player);
         if (online) {
             onlinePlayers.add(player);
         } else {
@@ -1657,6 +1658,23 @@ public final class GlowServer implements Server {
     public boolean suggestPlayerNamesWhenNullTabCompletions() {
         // TODO: Implementation (1.12.1)
         return false;
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id) {
+        checkNotNull(id);
+        return createProfile(id, null);
+    }
+
+    @Override
+    public PlayerProfile createProfile(String name) {
+        checkNotNull(name);
+        return createProfile(null, name);
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id, String name) {
+        return new PlayerProfile(name, id);
     }
 
     @Override
