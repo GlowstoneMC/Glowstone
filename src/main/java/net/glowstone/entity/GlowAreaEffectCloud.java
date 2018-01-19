@@ -18,6 +18,7 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -40,11 +41,13 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud, 
         }
         if (waitTime <= 0) {
             long currentTick = world.getFullTime();
-            for (LivingEntity entity : world.getLivingEntities()) {
-                if (temporaryImmunities.getOrDefault(entity, Long.MIN_VALUE) <= currentTick
+            for (Entity entity : world.getNearbyEntities(location, radius, radius, radius)) {
+                if (entity instanceof LivingEntity
+                        && temporaryImmunities.getOrDefault(entity, Long.MIN_VALUE) <= currentTick
                         && location.distanceSquared(entity.getLocation()) < radius * radius) {
-                    entity.addPotionEffects(customEffects.values());
-                    temporaryImmunities.put(entity, currentTick + reapplicationDelay);
+                    ((LivingEntity) entity).addPotionEffects(customEffects.values());
+                    temporaryImmunities.put((LivingEntity) entity,
+                            currentTick + reapplicationDelay);
                 }
             }
         }
