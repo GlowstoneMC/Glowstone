@@ -2,8 +2,6 @@ package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
 import java.util.List;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
