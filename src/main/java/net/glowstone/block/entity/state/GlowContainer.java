@@ -20,6 +20,7 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     private final AtomicLong lootTableSeed = new AtomicLong(0);
     private String lock;
     private String customName;
+
     public GlowContainer(GlowBlock block) {
         super(block);
     }
