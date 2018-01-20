@@ -1,5 +1,7 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.blocktype.BlockSkull;
@@ -13,8 +15,13 @@ import org.bukkit.material.Skull;
 
 public class SkullEntity extends BlockEntity {
 
+    @Getter
+    @Setter
     private byte type;
+    @Getter
+    @Setter
     private byte rotation;
+    @Getter
     private PlayerProfile owner;
 
     public SkullEntity(GlowBlock block) {
@@ -65,26 +72,6 @@ public class SkullEntity extends BlockEntity {
         CompoundTag nbt = new CompoundTag();
         saveNbt(nbt);
         player.sendBlockEntityChange(getBlock().getLocation(), GlowBlockEntity.SKULL, nbt);
-    }
-
-    public byte getType() {
-        return type;
-    }
-
-    public void setType(byte type) {
-        this.type = type;
-    }
-
-    public byte getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(byte rotation) {
-        this.rotation = rotation;
-    }
-
-    public PlayerProfile getOwner() {
-        return owner;
     }
 
     public void setOwner(PlayerProfile owner) {

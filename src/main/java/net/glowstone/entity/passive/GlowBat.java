@@ -3,7 +3,6 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -26,11 +25,11 @@ public class GlowBat extends GlowAmbient implements Bat {
         List<Message> result = new LinkedList<>();
 
         result.add(new SpawnMobMessage(
-                id, UUID.randomUUID(), getType().getTypeId(), location, metadata.getEntryList()));
-        //TODO 1.9 - Real UUID
+                entityId, getUniqueId(), getType().getTypeId(), location,
+                metadata.getEntryList()));
 
         // head facing
-        result.add(new EntityHeadRotationMessage(id, Position.getIntYaw(location)));
+        result.add(new EntityHeadRotationMessage(entityId, Position.getIntYaw(location)));
         return result;
     }
 

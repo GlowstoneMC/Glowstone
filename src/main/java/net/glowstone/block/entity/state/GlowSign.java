@@ -30,7 +30,7 @@ public class GlowSign extends GlowBlockState implements Sign {
 
     @Override
     public String[] getLines() {
-        return lines;
+        return lines.clone();
     }
 
     @Override

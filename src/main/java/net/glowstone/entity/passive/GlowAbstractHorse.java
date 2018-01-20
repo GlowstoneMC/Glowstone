@@ -29,7 +29,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
         map.set(MetadataIndex.ABSTRACT_HORSE_FLAGS, getHorseFlags());
-        messages.add(new EntityMetadataMessage(id, map.getEntryList()));
+        messages.add(new EntityMetadataMessage(entityId, map.getEntryList()));
         return messages;
     }
 

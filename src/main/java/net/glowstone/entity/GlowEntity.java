@@ -90,6 +90,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The server this entity belongs to.
      */
+    @Getter
     protected final GlowServer server;
     /**
      * The entity's metadata.
@@ -129,6 +130,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The world this entity belongs to. Guarded by {@link #worldLock}.
      */
+    @Getter
     protected GlowWorld world;
     /**
      * Lock to prevent concurrent modifications affected by switching worlds.
@@ -141,10 +143,12 @@ public abstract class GlowEntity implements Entity {
     /**
      * This entity's current identifier for its world.
      */
-    protected int id;
+    @Getter
+    protected int entityId;
     /**
      * Whether the entity should have its position resent as if teleported.
      */
+    @Getter
     protected boolean teleported;
     /**
      * Whether the entity should have its velocity resent.
@@ -153,10 +157,13 @@ public abstract class GlowEntity implements Entity {
     /**
      * A counter of how long this entity has existed.
      */
+    @Getter
+    @Setter
     protected int ticksLived;
     /**
      * The entity this entity is currently riding.
      */
+    @Getter
     protected GlowEntity vehicle;
     /**
      * The entity's bounding box, or null if it has no physical presence.
@@ -185,6 +192,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * Gravity acceleration applied each tick.
      */
+    @Setter
     protected Vector gravityAccel = new Vector(0, -0.04, 0);
     /**
      * The slipperiness multiplier applied according to the block this entity was on.
@@ -197,22 +205,29 @@ public abstract class GlowEntity implements Entity {
     /**
      * An EntityDamageEvent representing the last damage cause on this entity.
      */
+    @Getter
+    @Setter
     private EntityDamageEvent lastDamageCause;
     /**
      * A flag indicting if the entity is on the ground.
      */
+    @Getter
     private boolean onGround = true;
     /**
      * The distance the entity is currently falling without touching the ground.
      */
+    @Getter
     private float fallDistance;
     /**
      * How long the entity has been on fire, or 0 if it is not.
      */
+    @Getter
+    @Setter
     private int fireTicks;
     /**
      * Whether gravity applies to the entity.
      */
+    @Setter
     private boolean gravity = true;
     /**
      * Whether friction applies to the entity.
@@ -222,6 +237,8 @@ public abstract class GlowEntity implements Entity {
     /**
      * Whether this entity is invulnerable.
      */
+    @Getter
+    @Setter
     private boolean invulnerable;
     /**
      * The leash holders uuid of the entity. Will be null after the entities first tick.
@@ -241,6 +258,8 @@ public abstract class GlowEntity implements Entity {
     /**
      * The Nether portal cooldown for the entity.
      */
+    @Getter
+    @Setter
     private int portalCooldown;
     private Spigot spigot = new Spigot() {
         @Override
@@ -289,27 +308,12 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public final GlowServer getServer() {
-        return server;
-    }
-
-    @Override
     public String getName() {
         return getType().getName();
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Location stuff
-
-    @Override
-    public final GlowWorld getWorld() {
-        return world;
-    }
-
-    @Override
-    public final int getEntityId() {
-        return id;
-    }
 
     @Override
     public UUID getUniqueId() {
@@ -344,7 +348,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean isValid() {
-        return world.getEntityManager().getEntity(id) == this;
+        return world.getEntityManager().getEntity(entityId) == this;
     }
 
     @Override
@@ -416,10 +420,6 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
-    public void setGravityAccel(Vector gravity) {
-        this.gravityAccel = gravity;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
@@ -470,10 +470,6 @@ public abstract class GlowEntity implements Entity {
     @Override
     public boolean teleport(Entity destination, TeleportCause cause) {
         return teleport(destination.getLocation(), cause);
-    }
-
-    public boolean isTeleported() {
-        return teleported;
     }
 
     /**
@@ -766,29 +762,30 @@ public abstract class GlowEntity implements Entity {
         boolean rotated = hasRotated();
 
         if (teleported || moved && teleport) {
-            result.add(new EntityTeleportMessage(id, location));
+            result.add(new EntityTeleportMessage(entityId, location));
         } else if (rotated) {
             int yaw = Position.getIntYaw(location);
             int pitch = Position.getIntPitch(location);
             if (moved) {
-                result.add(new RelativeEntityPositionRotationMessage(id,
+                result.add(new RelativeEntityPositionRotationMessage(entityId,
                         (short) dx, (short) dy, (short) dz, yaw, pitch));
             } else {
-                result.add(new EntityRotationMessage(id, yaw, pitch));
+                result.add(new EntityRotationMessage(entityId, yaw, pitch));
             }
         } else if (moved) {
-            result.add(new RelativeEntityPositionMessage(id, (short) dx, (short) dy, (short) dz));
+            result.add(new RelativeEntityPositionMessage(
+                    entityId, (short) dx, (short) dy, (short) dz));
         }
 
         // send changed metadata
         List<Entry> changes = metadata.getChanges();
         if (!changes.isEmpty()) {
-            result.add(new EntityMetadataMessage(id, changes));
+            result.add(new EntityMetadataMessage(entityId, changes));
         }
 
         // send velocity if needed
         if (velocityChanged) {
-            result.add(new EntityVelocityMessage(id, velocity));
+            result.add(new EntityVelocityMessage(entityId, velocity));
         }
 
         if (passengerChanged) {
@@ -1027,53 +1024,13 @@ public abstract class GlowEntity implements Entity {
     // Various properties
 
     @Override
-    public int getFireTicks() {
-        return fireTicks;
-    }
-
-    @Override
-    public void setFireTicks(int ticks) {
-        fireTicks = ticks;
-    }
-
-    @Override
     public int getMaxFireTicks() {
         return 160;  // this appears to be Minecraft's default value
     }
 
     @Override
-    public float getFallDistance() {
-        return fallDistance;
-    }
-
-    @Override
     public void setFallDistance(float distance) {
         fallDistance = Math.max(distance, 0);
-    }
-
-    @Override
-    public EntityDamageEvent getLastDamageCause() {
-        return lastDamageCause;
-    }
-
-    @Override
-    public void setLastDamageCause(EntityDamageEvent event) {
-        lastDamageCause = event;
-    }
-
-    @Override
-    public int getTicksLived() {
-        return ticksLived;
-    }
-
-    @Override
-    public void setTicksLived(int value) {
-        ticksLived = value;
-    }
-
-    @Override
-    public boolean isOnGround() {
-        return onGround;
     }
 
     /**
@@ -1138,7 +1095,7 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void playEffect(EntityEffect type) {
-        EntityStatusMessage message = new EntityStatusMessage(id, type);
+        EntityStatusMessage message = new EntityStatusMessage(entityId, type);
         world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
                 .forEach(player -> player.getSession().send(message));
     }
@@ -1159,11 +1116,6 @@ public abstract class GlowEntity implements Entity {
     @Override
     public boolean leaveVehicle() {
         return isInsideVehicle() && vehicle.removePassenger(this);
-    }
-
-    @Override
-    public Entity getVehicle() {
-        return vehicle;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1209,16 +1161,6 @@ public abstract class GlowEntity implements Entity {
     @Override
     public void setGlowing(boolean glowing) {
         metadata.setBit(MetadataIndex.STATUS, StatusFlags.GLOWING, glowing);
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return invulnerable;
-    }
-
-    @Override
-    public void setInvulnerable(boolean invulnerable) {
-        this.invulnerable = invulnerable;
     }
 
     @Override
@@ -1335,21 +1277,6 @@ public abstract class GlowEntity implements Entity {
     @Override
     public boolean hasGravity() {
         return gravity;
-    }
-
-    @Override
-    public void setGravity(boolean gravity) {
-        this.gravity = gravity;
-    }
-
-    @Override
-    public int getPortalCooldown() {
-        return portalCooldown;
-    }
-
-    @Override
-    public void setPortalCooldown(int cooldown) {
-        this.portalCooldown = cooldown;
     }
 
     @Override
@@ -1511,7 +1438,7 @@ public abstract class GlowEntity implements Entity {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + id;
+        result = prime * result + entityId;
         return result;
     }
 
@@ -1527,7 +1454,7 @@ public abstract class GlowEntity implements Entity {
             return false;
         }
         GlowEntity other = (GlowEntity) obj;
-        return id == other.id;
+        return entityId == other.entityId;
     }
 
     public boolean isLeashed() {

@@ -125,7 +125,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         int blockIdData = getBlockId() | getBlockData() << 12;
 
         return Collections.singletonList(
-            new SpawnObjectMessage(id, getUniqueId(), 70, location, blockIdData)
+            new SpawnObjectMessage(entityId, getUniqueId(), 70, location, blockIdData)
         );
     }
 

@@ -4,6 +4,8 @@ import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -17,6 +19,8 @@ import org.bukkit.util.Vector;
 
 public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 
+    @Getter
+    @Setter
     private int fuseTicks;
     private Entity source;
 
@@ -88,17 +92,8 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return Collections.singletonList(new SpawnObjectMessage(id, getUniqueId(), 50, location));
-    }
-
-    @Override
-    public final int getFuseTicks() {
-        return fuseTicks;
-    }
-
-    @Override
-    public final void setFuseTicks(int i) {
-        fuseTicks = i;
+        return Collections.singletonList(new SpawnObjectMessage(
+                entityId, getUniqueId(), 50, location));
     }
 
     @Override
