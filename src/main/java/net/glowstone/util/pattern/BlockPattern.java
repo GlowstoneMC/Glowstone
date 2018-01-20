@@ -12,10 +12,6 @@ public class BlockPattern {
         this.blocks = blocks;
     }
 
-    public PatternItem[] getBlocks() {
-        return blocks;
-    }
-
     /**
      * Test whether this pattern matches a block.
      * @param location the base location
