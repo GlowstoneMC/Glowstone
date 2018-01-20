@@ -2,6 +2,9 @@ package net.glowstone.block.entity.state;
 
 import com.destroystokyo.paper.loottable.LootableBlockInventory;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import org.bukkit.Nameable;
@@ -9,8 +12,14 @@ import org.bukkit.block.Container;
 import org.bukkit.block.Lockable;
 import org.bukkit.inventory.Inventory;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public abstract class GlowContainer extends GlowBlockState implements LootableBlockInventory,
     Lockable, Nameable, Container {
+    private final AtomicLong nextRefill = new AtomicLong(-1);
+    private final AtomicLong lootTableSeed = new AtomicLong(0);
+    private String lock;
+    private String customName;
 
     public GlowContainer(GlowBlock block) {
         super(block);
@@ -40,12 +49,12 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
 
     @Override
     public long getLootTableSeed() {
-        return 0;
+        return lootTableSeed.get();
     }
 
     @Override
     public long setLootTableSeed(long seed) {
-        return 0;
+        return lootTableSeed.getAndSet(seed);
     }
 
     @Override
@@ -80,7 +89,7 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
 
     @Override
     public boolean hasPendingRefill() {
-        return false;
+        return getNextRefill() >= 0;
     }
 
     @Override
@@ -90,37 +99,17 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
 
     @Override
     public long getNextRefill() {
-        return 0;
+        return nextRefill.get();
     }
 
     @Override
     public long setNextRefill(long l) {
-        return 0;
-    }
-
-    @Override
-    public String getCustomName() {
-        return null;
-    }
-
-    @Override
-    public void setCustomName(String s) {
-
+        return nextRefill.getAndSet(l);
     }
 
     @Override
     public boolean isLocked() {
         return false;
-    }
-
-    @Override
-    public String getLock() {
-        return null;
-    }
-
-    @Override
-    public void setLock(String s) {
-
     }
 
     @Override
