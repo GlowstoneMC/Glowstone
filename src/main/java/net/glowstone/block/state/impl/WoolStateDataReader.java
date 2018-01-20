@@ -1,7 +1,6 @@
 package net.glowstone.block.state.impl;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import java.util.Set;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.BlockStateReader;

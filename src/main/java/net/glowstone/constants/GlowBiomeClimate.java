@@ -64,7 +64,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import lombok.Data;
-import lombok.Getter;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;

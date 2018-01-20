@@ -84,8 +84,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         double z = location.getZ();
 
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, UUID.randomUUID(), SpawnObjectMessage.FIREWORK, x, y, z, 0,
-                0),
+            new SpawnObjectMessage(
+                    entityId, UUID.randomUUID(), SpawnObjectMessage.FIREWORK, x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }

@@ -762,7 +762,8 @@ public abstract class GlowEntity implements Entity {
                 result.add(new EntityRotationMessage(entityId, yaw, pitch));
             }
         } else if (moved) {
-            result.add(new RelativeEntityPositionMessage(entityId, (short) dx, (short) dy, (short) dz));
+            result.add(new RelativeEntityPositionMessage(
+                    entityId, (short) dx, (short) dy, (short) dz));
         }
 
         // send changed metadata
