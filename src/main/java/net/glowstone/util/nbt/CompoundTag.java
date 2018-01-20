@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 
 /**
@@ -21,6 +22,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
     /**
      * The value.
      */
+    @Getter
     private final Map<String, Tag> value = new LinkedHashMap<>();
 
     /**
@@ -28,11 +30,6 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
      */
     public CompoundTag() {
         super(TagType.COMPOUND);
-    }
-
-    @Override
-    public Map<String, Tag> getValue() {
-        return value;
     }
 
     @Override
