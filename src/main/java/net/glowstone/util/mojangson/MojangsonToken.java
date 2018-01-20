@@ -1,5 +1,10 @@
 package net.glowstone.util.mojangson;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum MojangsonToken {
 
     COMPOUND_START(0, "Compound_Start", '{'),
@@ -18,27 +23,9 @@ public enum MojangsonToken {
 
     WHITE_SPACE(13, "WhiteSpace", ' ');
 
-    private int id;
-    private String name;
-    private char symbol;
-
-    MojangsonToken(int id, String name, char symbol) {
-        this.id = id;
-        this.name = name;
-        this.symbol = symbol;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public char getSymbol() {
-        return symbol;
-    }
+    private final int id;
+    private final String name;
+    private final char symbol;
 
     @Override
     public String toString() {

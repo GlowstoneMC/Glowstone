@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,6 +25,7 @@ public final class GlowTeam implements Team {
 
     private final String name;
     private final HashSet<String> players = new HashSet<>();
+    @Getter
     private GlowScoreboard scoreboard;
     // properties
     private String displayName;
@@ -32,6 +34,7 @@ public final class GlowTeam implements Team {
     private Team.OptionStatus nameTagVisibility = Team.OptionStatus.ALWAYS;
     private Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
     private Team.OptionStatus collisionRule = Team.OptionStatus.ALWAYS;
+    @Getter
     private ChatColor color = ChatColor.RESET;
     private boolean friendlyFire;
     private boolean seeInvisible = true;
@@ -46,11 +49,6 @@ public final class GlowTeam implements Team {
         this.scoreboard = scoreboard;
         this.name = name;
         displayName = name;
-    }
-
-    @Override
-    public Scoreboard getScoreboard() {
-        return scoreboard;
     }
 
     @Override
@@ -267,11 +265,6 @@ public final class GlowTeam implements Team {
     public void addPlayer(OfflinePlayer player)
         throws IllegalStateException, IllegalArgumentException {
         players.add(player.getName());
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return color;
     }
 
     @Override

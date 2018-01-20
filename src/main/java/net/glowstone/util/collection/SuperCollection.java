@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Generic super collection. This is an abstract collection which delegates (ie redirects
@@ -29,7 +31,34 @@ import java.util.List;
 public abstract class SuperCollection<E> implements Collection<E> {
 
     private final List<? extends Collection<E>> parents;
+    /**
+     * Current result mode.
+     *
+     * <p>If mode is set to ANY, operations will return "true" as long as the parents returned
+     * "true" at least once.
+     *
+     * <p>If mode is set to ALL, operations will only return "true" if all parents also returned
+     * "true".
+     *
+     * @param resultMode Result mode.
+     * @return Result mode.
+     */
+    @Getter
+    @Setter
     private ResultMode resultMode = ResultMode.ANY;
+    /**
+     * Determines how this collection will behave to additions.
+     *
+     * <p>If mode is set to ALL, the addition will be performed on every parent. Default for sets.
+     *
+     * <p>If mode is set to LAST, the operation will be performed on the last parent only. Default
+     * for lists.
+     *
+     * @param additionMode Addition mode.
+     * @return Addition mode.
+     */
+    @Getter
+    @Setter
     private AdditionMode additionMode;
 
     public SuperCollection(AdditionMode additionMode) {
@@ -47,54 +76,8 @@ public abstract class SuperCollection<E> implements Collection<E> {
      * @return Parent list.
      */
     public List<? extends Collection<E>> getParents() {
+        // TODO: Replace with facade
         return parents;
-    }
-
-    /**
-     * Returns current result mode.
-     *
-     * @return Result mode.
-     */
-    public ResultMode getResultMode() {
-        return resultMode;
-    }
-
-    /**
-     * Sets what will this collection returns for certain operations.
-     *
-     * <p>If mode is set to ANY, operations will return "true" as long as the parents returned
-     * "true" at least once.
-     *
-     * <p>If mode is set to ALL, operations will only return "true" if all parents also returned
-     * "true".
-     *
-     * @param resultMode Result mode.
-     */
-    public void setResultMode(ResultMode resultMode) {
-        this.resultMode = resultMode;
-    }
-
-    /**
-     * Returns current addition mode.
-     *
-     * @return Addition mode.
-     */
-    public AdditionMode getAdditionMode() {
-        return additionMode;
-    }
-
-    /**
-     * Sets how this collection will behave to additions.
-     *
-     * <p>If mode is set to ALL, the addition will be performed on every parent. Default for sets.
-     *
-     * <p>If mode is set to LAST, the operation will be performed on the last parent only. Default
-     * for lists.
-     *
-     * @param additionMode Addition mode.
-     */
-    public void setAdditionMode(AdditionMode additionMode) {
-        this.additionMode = additionMode;
     }
 
     /**
