@@ -4,7 +4,6 @@ import java.util.Set;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Server;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;

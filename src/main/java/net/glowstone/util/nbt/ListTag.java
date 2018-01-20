@@ -25,7 +25,7 @@ public final class ListTag<T extends Tag> extends Tag<List<T>> {
     /**
      * Creates the tag.
      *
-     * @param type The type of item in the list.
+     * @param childType The type of item in the list.
      * @param value The value.
      */
     public ListTag(TagType childType, List<T> value) {
