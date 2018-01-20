@@ -12,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 
 public abstract class GlowSocketServer extends GlowNetworkServer {
@@ -19,6 +20,7 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     protected final EventLoopGroup bossGroup;
     protected final EventLoopGroup workerGroup;
     protected final ServerBootstrap bootstrap;
+    @Getter
     protected Channel channel;
 
     /**
@@ -40,10 +42,6 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
             .channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childOption(ChannelOption.SO_KEEPALIVE, true);
-    }
-
-    public Channel getChannel() {
-        return channel;
     }
 
     @Override
