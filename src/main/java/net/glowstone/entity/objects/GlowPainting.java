@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -66,8 +67,10 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         TITLE_BY_ART.forEach((art, title) -> ART_BY_TITLE.put(title, art));
     }
 
+    @Getter
     private Art art;
-    private Location center;
+    @Getter
+    private Location artCenter;
 
     public GlowPainting(Location center) {
         this(center, BlockFace.SOUTH);
@@ -81,7 +84,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
      */
     public GlowPainting(Location center, BlockFace facing) {
         super(center, facing);
-        this.center = center;
+        this.artCenter = center;
         setArtInternal(DEFAULT_ART);
     }
 
@@ -115,20 +118,15 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = center.getBlockX();
-        int y = center.getBlockY();
-        int z = center.getBlockZ();
+        int x = artCenter.getBlockX();
+        int y = artCenter.getBlockY();
+        int z = artCenter.getBlockZ();
         String title = getArtTitle();
 
         return Collections.singletonList(
             new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z,
                 facing.ordinal())
         );
-    }
-
-    @Override
-    public Art getArt() {
-        return art;
     }
 
     @Override
@@ -308,7 +306,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     private Location getTopLeftCorner() {
         BlockFace left = getLeftFace();
-        Location topLeft = center.clone();
+        Location topLeft = artCenter.clone();
         int topMod = (int) getArtHeight();
         int widthMod = (int) getArtWidth();
 
@@ -344,10 +342,6 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         return art.getBlockHeight() / 2;
     }
 
-    public Location getArtCenter() {
-        return this.center;
-    }
-
     @Override
     protected void updateBoundingBox() {
         BlockFace rightFace = getRightFace();
@@ -378,9 +372,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public void setRawLocation(Location location, boolean fall) {
         // Also try to move the center of the painting along
-        Location difference = location.subtract(center);
+        Location difference = location.subtract(artCenter);
         super.setRawLocation(location, fall);
 
-        center = location.clone().subtract(difference);
+        artCenter = location.clone().subtract(difference);
     }
 }

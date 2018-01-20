@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -107,6 +108,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         return true;
     }
 
+    @RequiredArgsConstructor
     public enum MinecartType {
         RIDEABLE(Rideable.class, EntityType.MINECART, RideableMinecart.class, Rideable::new),
         CHEST(Storage.class, EntityType.MINECART_CHEST, StorageMinecart.class, Storage::new),
@@ -126,15 +128,6 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
         private final Class<? extends Minecart> entityClass;
         @Getter
         private final Function<? super Location, ? extends GlowMinecart> creator;
-
-        MinecartType(Class<? extends GlowMinecart> minecartClass, EntityType entityType,
-                Class<? extends Minecart> entityClass,
-                Function<Location, ? extends GlowMinecart> creator) {
-            this.minecartClass = minecartClass;
-            this.entityType = entityType;
-            this.entityClass = entityClass;
-            this.creator = creator;
-        }
     }
 
     public static class Rideable extends GlowMinecart implements RideableMinecart {
@@ -163,6 +156,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
 
     public static class Storage extends GlowMinecart implements StorageMinecart {
 
+        @Getter
         private final Inventory inventory;
 
         /**
@@ -187,11 +181,6 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
             }
             player.openInventory(inventory);
             return true;
-        }
-
-        @Override
-        public Inventory getInventory() {
-            return inventory;
         }
     }
 

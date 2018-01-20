@@ -84,7 +84,10 @@ public final class GlowChunk implements Chunk {
     private final Set<GlowEntity> entities = ConcurrentHashMap.newKeySet(4);
     /**
      * The array of chunk sections this chunk contains, or null if it is unloaded.
+     *
+     * @return The chunk sections array.
      */
+    @Getter
     private ChunkSection[] sections;
     /**
      * The array of biomes this chunk contains, or null if it is unloaded.
@@ -384,15 +387,6 @@ public final class GlowChunk implements Chunk {
             return null;
         }
         return sections[idx];
-    }
-
-    /**
-     * Get all ChunkSection of this chunk.
-     *
-     * @return The chunk sections array.
-     */
-    public ChunkSection[] getSections() {
-        return sections;
     }
 
     /**

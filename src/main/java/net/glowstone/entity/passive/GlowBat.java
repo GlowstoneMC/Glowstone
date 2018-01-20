@@ -3,6 +3,8 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import java.util.LinkedList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
@@ -46,46 +48,6 @@ public class GlowBat extends GlowAmbient implements Bat {
     @Override
     public EntityType getType() {
         return EntityType.BAT;
-    }
-
-    @Override
-    public boolean isGliding() {
-        return false;
-    }
-
-    @Override
-    public void setGliding(boolean b) {
-
-    }
-
-    @Override
-    public void setAI(boolean b) {
-
-    }
-
-    @Override
-    public boolean hasAI() {
-        return false;
-    }
-
-    @Override
-    public boolean isCollidable() {
-        return false;
-    }
-
-    @Override
-    public void setCollidable(boolean b) {
-
-    }
-
-    @Override
-    public int getArrowsStuck() {
-        return 0;
-    }
-
-    @Override
-    public void setArrowsStuck(int i) {
-
     }
 
     @Override

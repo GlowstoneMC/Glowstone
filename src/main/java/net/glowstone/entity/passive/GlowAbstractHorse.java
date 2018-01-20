@@ -2,6 +2,10 @@ package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -14,9 +18,17 @@ import org.bukkit.inventory.HorseInventory;
 
 public abstract class GlowAbstractHorse extends GlowTameable implements AbstractHorse {
 
+    @Getter
+    @Setter
     private int domestication;
+    @Getter
+    @Setter
     private int maxDomestication;
+    @Getter
+    @Setter
     private double jumpStrength;
+    @Getter
+    @Setter
     private boolean tamed;
 
     public GlowAbstractHorse(Location location, EntityType type, double maxHealth) {
@@ -42,46 +54,6 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     @Override
     public void setVariant(Horse.Variant variant) {
         // Field has been removed in 1.11
-    }
-
-    @Override
-    public int getDomestication() {
-        return domestication;
-    }
-
-    @Override
-    public void setDomestication(int domestication) {
-        this.domestication = domestication;
-    }
-
-    @Override
-    public int getMaxDomestication() {
-        return maxDomestication;
-    }
-
-    @Override
-    public void setMaxDomestication(int maxDomestication) {
-        this.maxDomestication = maxDomestication;
-    }
-
-    @Override
-    public double getJumpStrength() {
-        return jumpStrength;
-    }
-
-    @Override
-    public void setJumpStrength(double jumpStrength) {
-        this.jumpStrength = jumpStrength;
-    }
-
-    @Override
-    public boolean isTamed() {
-        return tamed;
-    }
-
-    @Override
-    public void setTamed(boolean tamed) {
-        this.tamed = tamed;
     }
 
     private int getHorseFlags() {

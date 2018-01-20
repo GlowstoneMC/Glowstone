@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableBiMap;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
@@ -24,6 +25,7 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
             .put(Type.THE_KILLER_BUNNY, 99)
             .build();
 
+    @Getter
     private Type rabbitType;
 
     /**
@@ -36,11 +38,6 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
         setSize(0.4F, 0.5F);
         setRabbitType(
             Type.values()[ThreadLocalRandom.current().nextInt(rabbitTypeIntegerMap.size())]);
-    }
-
-    @Override
-    public Type getRabbitType() {
-        return rabbitType;
     }
 
     @Override
