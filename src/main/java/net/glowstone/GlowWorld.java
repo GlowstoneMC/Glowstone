@@ -337,13 +337,11 @@ public final class GlowWorld implements World {
     /**
      * Ticks between when passive mobs are spawned.
      */
-    @Getter
     @Setter
     private int ticksPerAnimalSpawns;
     /**
      * Ticks between when hostile mobs are spawned.
      */
-    @Getter
     @Setter
     private int ticksPerMonsterSpawns;
     /**
@@ -1005,6 +1003,18 @@ public final class GlowWorld implements World {
     @Override
     public boolean canGenerateStructures() {
         return generateStructures;
+    }
+
+    @Override
+    public long getTicksPerAnimalSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerAnimalSpawns;
+    }
+
+    @Override
+    public long getTicksPerMonsterSpawns() {
+        // Can't be lombokified because inherited return type is long, not int
+        return ticksPerMonsterSpawns;
     }
 
     ////////////////////////////////////////////////////////////////////////////
