@@ -21,6 +21,7 @@ public class GlowWorldBorder implements WorldBorder {
     @Getter
     private double sizeLerpTarget;
     private double step;
+    @Getter
     private Location center;
     @Getter
     @Setter
@@ -127,11 +128,6 @@ public class GlowWorldBorder implements WorldBorder {
         sizeLerpTime = seconds;
         broadcast(new WorldBorderMessage(
                 WorldBorderMessage.Action.LERP_SIZE, this.size, sizeLerpTarget, sizeLerpTime * 1000));
-    }
-
-    @Override
-    public Location getCenter() {
-        return center;
     }
 
     @Override

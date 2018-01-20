@@ -1,6 +1,8 @@
 package net.glowstone.block;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Location;
@@ -16,13 +18,23 @@ import org.bukkit.plugin.Plugin;
  */
 public class GlowBlockState implements BlockState {
 
+    @Getter
     private final GlowWorld world;
+    @Getter
     private final int x;
+    @Getter
     private final int y;
+    @Getter
     private final int z;
-    private final byte light;
-    protected int type;
+    @Getter
+    private final byte lightLevel;
+    @Getter
+    protected int typeId;
+    @Getter
+    @Setter
     protected MaterialData data;
+    @Getter
+    @Setter
     private boolean flowed;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -38,14 +50,9 @@ public class GlowBlockState implements BlockState {
         x = block.getX();
         y = block.getY();
         z = block.getZ();
-        type = block.getTypeId();
-        light = block.getLightLevel();
+        typeId = block.getTypeId();
+        lightLevel = block.getLightLevel();
         makeData(block.getData());
-    }
-
-    @Override
-    public GlowWorld getWorld() {
-        return world;
     }
 
     @Override
@@ -56,21 +63,6 @@ public class GlowBlockState implements BlockState {
     @Override
     public GlowBlock getBlock() {
         return world.getBlockAt(x, y, z);
-    }
-
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    @Override
-    public int getZ() {
-        return z;
     }
 
     @Override
@@ -88,7 +80,7 @@ public class GlowBlockState implements BlockState {
 
     @Override
     public final Material getType() {
-        return Material.getMaterial(type);
+        return Material.getMaterial(typeId);
     }
 
     @Override
@@ -97,25 +89,10 @@ public class GlowBlockState implements BlockState {
     }
 
     @Override
-    public final int getTypeId() {
-        return type;
-    }
-
-    @Override
     public final boolean setTypeId(int type) {
-        this.type = type;
+        this.typeId = type;
         makeData((byte) 0);
         return true;
-    }
-
-    @Override
-    public final MaterialData getData() {
-        return data;
-    }
-
-    @Override
-    public final void setData(MaterialData data) {
-        this.data = data;
     }
 
     @Override
@@ -137,11 +114,6 @@ public class GlowBlockState implements BlockState {
     // Update
 
     @Override
-    public final byte getLightLevel() {
-        return light;
-    }
-
-    @Override
     public final boolean update() {
         return update(false, true);
     }
@@ -155,25 +127,17 @@ public class GlowBlockState implements BlockState {
     public boolean update(boolean force, boolean applyPhysics) {
         Block block = getBlock();
 
-        return (block.getTypeId() == type || force)
-                && block.setTypeIdAndData(type, getRawData(), applyPhysics);
-    }
-
-    public boolean getFlowed() {
-        return flowed;
-    }
-
-    public void setFlowed(boolean flowed) {
-        this.flowed = flowed;
+        return (block.getTypeId() == typeId || force)
+                && block.setTypeIdAndData(typeId, getRawData(), applyPhysics);
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
     private void makeData(byte data) {
-        Material mat = Material.getMaterial(type);
+        Material mat = Material.getMaterial(typeId);
         if (mat == null) {
-            this.data = new MaterialData(type, data);
+            this.data = new MaterialData(typeId, data);
         } else {
             this.data = mat.getNewData(data);
         }
@@ -210,7 +174,7 @@ public class GlowBlockState implements BlockState {
         result = prime * result + x;
         result = prime * result + y;
         result = prime * result + z;
-        result = prime * result + type;
+        result = prime * result + typeId;
         result = prime * result + (data != null ? data.hashCode() : 0);
         return result;
     }
@@ -234,7 +198,7 @@ public class GlowBlockState implements BlockState {
         } else if (!data.equals(other.data)) {
             return false;
         }
-        if (type != other.type) {
+        if (typeId != other.typeId) {
             return false;
         }
         if (world == null) {
