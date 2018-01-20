@@ -1,5 +1,6 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.chunk.GlowChunk;
@@ -14,6 +15,12 @@ import org.bukkit.block.Block;
  */
 public abstract class BlockEntity {
 
+    /**
+     * Get the block this BlockEntity is associated with.
+     *
+     * @return The entity's block.
+     */
+    @Getter
     protected final GlowBlock block;
     private String saveId;
 
@@ -28,15 +35,6 @@ public abstract class BlockEntity {
 
     ////////////////////////////////////////////////////////////////////////////
     // Utility stuff
-
-    /**
-     * Get the block this BlockEntity is associated with.
-     *
-     * @return The entity's block.
-     */
-    public final Block getBlock() {
-        return block;
-    }
 
     /**
      * Update this BlockEntity's visible state to all players in range.

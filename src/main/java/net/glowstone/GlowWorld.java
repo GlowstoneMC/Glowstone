@@ -159,9 +159,12 @@ public final class GlowWorld implements World {
     @Getter
     private final ChunkManager chunkManager;
     /**
-     * The world metadata service used.
+     * The storage provider for the world.
+     *
+     * @return The {@link WorldStorageProvider}.
      */
-    private final WorldStorageProvider storageProvider;
+    @Getter
+    private final WorldStorageProvider storage;
     /**
      * The world's UUID.
      */
@@ -184,7 +187,8 @@ public final class GlowWorld implements World {
     /**
      * The game rules used in this world.
      */
-    private final GameRuleManager gameRules = new GameRuleManager();
+    @Getter
+    private final GameRuleManager gameRuleMap = new GameRuleManager();
     /**
      * The environment.
      */
@@ -233,6 +237,7 @@ public final class GlowWorld implements World {
     /**
      * The world border.
      */
+    @Getter
     private final GlowWorldBorder worldBorder;
     /**
      * The functions for this world.
@@ -279,30 +284,40 @@ public final class GlowWorld implements World {
     /**
      * How many ticks until the rain/snow status is expected to change.
      */
-    private int rainingTicks;
+    @Getter
+    @Setter
+    private int weatherDuration;
     /**
      * Whether it is currently thundering on this world.
      */
-    private boolean currentlyThundering = true;
+    @Getter
+    private boolean thundering = true;
     /**
      * How many ticks until the thundering status is expected to change.
      */
-    private int thunderingTicks;
+    @Getter
+    @Setter
+    private int thunderDuration;
     /**
      * The rain density on the current world tick.
      */
-    private float currentRainDensity;
+    @Getter
+    private float rainDensity;
     /**
      * The sky darkness on the current world tick.
      */
-    private float currentSkyDarkness;
+    @Getter
+    private float skyDarkness;
     /**
      * The age of the world, in ticks.
      */
-    private long worldAge;
+    @Getter
+    @Setter
+    private long fullTime;
     /**
      * The current world time.
      */
+    @Getter
     private long time;
     /**
      * The time until the next full-save.
@@ -311,19 +326,26 @@ public final class GlowWorld implements World {
     /**
      * The check to autosave.
      */
-    private boolean autosave = true;
+    @Getter
+    @Setter
+    private boolean autoSave = true;
     /**
      * The world's gameplay difficulty.
      */
+    @Getter
     private Difficulty difficulty;
     /**
      * Ticks between when passive mobs are spawned.
      */
-    private long ticksPerAnimalSpawn;
+    @Getter
+    @Setter
+    private int ticksPerAnimalSpawns;
     /**
      * Ticks between when hostile mobs are spawned.
      */
-    private long ticksPerMonster;
+    @Getter
+    @Setter
+    private int ticksPerMonsterSpawns;
     /**
      * Per-world spawn limits on hostile mobs.
      */
@@ -352,7 +374,8 @@ public final class GlowWorld implements World {
     /**
      * The maximum height at which players may place blocks.
      */
-    private int maxBuildHeight;
+    @Getter
+    private int maxHeight;
     private Set<Key> activeChunksSet = new HashSet<>();
 
     /**
@@ -373,13 +396,13 @@ public final class GlowWorld implements World {
 
         generator = creator.generator();
 
-        storageProvider = worldStorageProvider;
-        storageProvider.setWorld(this);
+        storage = worldStorageProvider;
+        storage.setWorld(this);
         populators = generator.getDefaultPopulators(this);
 
         // set up values from server defaults
-        ticksPerAnimalSpawn = server.getTicksPerAnimalSpawns();
-        ticksPerMonster = server.getTicksPerMonsterSpawns();
+        ticksPerAnimalSpawns = server.getTicksPerAnimalSpawns();
+        ticksPerMonsterSpawns = server.getTicksPerMonsterSpawns();
         monsterSpawnLimit = server.getMonsterSpawnLimit();
         animalSpawnLimit = server.getAnimalSpawnLimit();
         waterAnimalSpawnLimit = server.getWaterAnimalSpawnLimit();
@@ -387,13 +410,13 @@ public final class GlowWorld implements World {
         keepSpawnLoaded = server.keepSpawnLoaded();
         populateAnchoredChunks = server.populateAnchoredChunks();
         difficulty = server.getDifficulty();
-        maxBuildHeight = server.getMaxBuildHeight();
+        maxHeight = server.getMaxBuildHeight();
         seaLevel = GlowServer.getWorldConfig().getInt(WorldConfig.Key.SEA_LEVEL);
         worldBorder = new GlowWorldBorder(this);
 
         // read in world data
         WorldFinalValues values;
-        values = storageProvider.getMetadataService().readWorldData();
+        values = storage.getMetadataService().readWorldData();
         if (values != null) {
             if (values.getSeed() == 0L) {
                 seed = creator.seed();
@@ -406,9 +429,9 @@ public final class GlowWorld implements World {
             uid = UUID.randomUUID();
         }
 
-        chunkManager = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
-        structures = storageProvider.getStructureDataService().readStructuresData();
-        functions = storageProvider.getFunctionIoService().readFunctions().stream()
+        chunkManager = new ChunkManager(this, storage.getChunkIoService(), generator);
+        structures = storage.getStructureDataService().readStructuresData();
+        functions = storage.getFunctionIoService().readFunctions().stream()
                 .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
@@ -541,7 +564,7 @@ public final class GlowWorld implements World {
         if (--saveTimer <= 0) {
             saveTimer = AUTOSAVE_TIME;
             chunkManager.unloadOldChunks();
-            if (autosave) {
+            if (autoSave) {
                 save(true);
             }
         }
@@ -550,12 +573,12 @@ public final class GlowWorld implements World {
     private void updateOverworldWeather() {
         // only tick weather in a NORMAL world
         if (environment == Environment.NORMAL) {
-            if (--rainingTicks <= 0) {
+            if (--weatherDuration <= 0) {
                 setStorm(!currentlyRaining);
             }
 
-            if (--thunderingTicks <= 0) {
-                setThundering(!currentlyThundering);
+            if (--thunderDuration <= 0) {
+                setThundering(!thundering);
             }
 
             updateWeather();
@@ -563,7 +586,7 @@ public final class GlowWorld implements World {
     }
 
     private void informPlayersOfTime() {
-        if (worldAge % (30 * TICKS_PER_SECOND) == 0) {
+        if (fullTime % (30 * TICKS_PER_SECOND) == 0) {
             // Only send the time every 30 seconds; clients are smart.
             getRawPlayers().forEach(GlowPlayer::sendTime);
         }
@@ -571,13 +594,13 @@ public final class GlowWorld implements World {
 
     // Tick the world age and time of day
     private void updateWorldTime() {
-        worldAge++;
-        // worldAge is used to determine when to (periodically) update clients of server time
+        fullTime++;
+        // fullTime is used to determine when to (periodically) update clients of server time
         // (time of day - "time")
         // also used to occasionally pulse some blocks (see "tickMap" and "requestPulse()")
 
         // Modulus by 24000, the tick length of a day
-        if (gameRules.getBoolean("doDaylightCycle")) {
+        if (gameRuleMap.getBoolean("doDaylightCycle")) {
             time = (time + 1) % DAY_LENGTH;
         }
     }
@@ -599,7 +622,7 @@ public final class GlowWorld implements World {
                 wakeUpAllPlayers(players);
                 // no need to send them the time - handle that normally
             } else { // otherwise check whether everyone is asleep
-                boolean skipNight = gameRules.getBoolean("doDaylightCycle")
+                boolean skipNight = gameRuleMap.getBoolean("doDaylightCycle")
                         && areAllPlayersSleeping(players);
                 // check gamerule before iterating players (micro-optimization)
                 if (skipNight) {
@@ -610,7 +633,7 @@ public final class GlowWorld implements World {
     }
 
     private void skipRestOfNight(List<GlowPlayer> players) {
-        worldAge = (worldAge / DAY_LENGTH + 1) * DAY_LENGTH;
+        fullTime = (fullTime / DAY_LENGTH + 1) * DAY_LENGTH;
         time = 0;
         wakeUpAllPlayers(players, true);
         // true = send time to all players because we just changed it (to 0), above
@@ -649,7 +672,7 @@ public final class GlowWorld implements World {
     }
 
     private void maybeStrikeLightningInChunk(int cx, int cz) {
-        if (environment == Environment.NORMAL && currentlyRaining && currentlyThundering) {
+        if (environment == Environment.NORMAL && currentlyRaining && thundering) {
             if (ThreadLocalRandom.current().nextInt(100000) == 0) {
                 strikeLightningInChunk(cx, cz);
             }
@@ -933,21 +956,6 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public boolean isAutoSave() {
-        return autosave;
-    }
-
-    @Override
-    public void setAutoSave(boolean value) {
-        autosave = value;
-    }
-
-    @Override
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    @Override
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
         ServerDifficultyMessage message = new ServerDifficultyMessage(difficulty);
@@ -975,37 +983,12 @@ public final class GlowWorld implements World {
         return spawnMonsters;
     }
 
-    @Override
-    public long getTicksPerAnimalSpawns() {
-        return ticksPerAnimalSpawn;
-    }
-
-    @Override
-    public void setTicksPerAnimalSpawns(int ticksPerAnimalSpawns) {
-        ticksPerAnimalSpawn = ticksPerAnimalSpawns;
-    }
-
-    @Override
-    public long getTicksPerMonsterSpawns() {
-        return ticksPerMonster;
-    }
-
-    @Override
-    public void setTicksPerMonsterSpawns(int ticksPerMonsterSpawns) {
-        ticksPerMonster = ticksPerMonsterSpawns;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Various fixed world properties
 
     @Override
     public UUID getUID() {
         return uid;
-    }
-
-    @Override
-    public int getMaxHeight() {
-        return maxBuildHeight;
     }
 
     @Override
@@ -1098,6 +1081,7 @@ public final class GlowWorld implements World {
     }
 
     public Map<Integer, GlowStructure> getStructures() {
+        // TODO: Replace with a facade
         return structures;
     }
 
@@ -1593,25 +1577,10 @@ public final class GlowWorld implements World {
     // Time
 
     @Override
-    public long getTime() {
-        return time;
-    }
-
-    @Override
     public void setTime(long time) {
         this.time = (time % DAY_LENGTH + DAY_LENGTH) % DAY_LENGTH;
 
         getRawPlayers().forEach(GlowPlayer::sendTime);
-    }
-
-    @Override
-    public long getFullTime() {
-        return worldAge;
-    }
-
-    @Override
-    public void setFullTime(long time) {
-        worldAge = time;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1650,21 +1619,6 @@ public final class GlowWorld implements World {
     }
 
     @Override
-    public int getWeatherDuration() {
-        return rainingTicks;
-    }
-
-    @Override
-    public void setWeatherDuration(int duration) {
-        rainingTicks = duration;
-    }
-
-    @Override
-    public boolean isThundering() {
-        return currentlyThundering;
-    }
-
-    @Override
     public void setThundering(boolean thundering) {
         // call event
         ThunderChangeEvent event = new ThunderChangeEvent(this, thundering);
@@ -1673,10 +1627,10 @@ public final class GlowWorld implements World {
         }
 
         // change weather
-        currentlyThundering = thundering;
+        this.thundering = thundering;
 
         // Numbers borrowed from CraftBukkit.
-        if (currentlyThundering) {
+        if (this.thundering) {
             setThunderDuration(ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS)
                     + 180 * TICKS_PER_SECOND);
         } else {
@@ -1685,37 +1639,19 @@ public final class GlowWorld implements World {
         }
     }
 
-    @Override
-    public int getThunderDuration() {
-        return thunderingTicks;
-    }
-
-    @Override
-    public void setThunderDuration(int duration) {
-        thunderingTicks = duration;
-    }
-
-    public float getRainDensity() {
-        return currentRainDensity;
-    }
-
-    public float getSkyDarkness() {
-        return currentSkyDarkness;
-    }
-
     private void updateWeather() {
-        float previousRainDensity = currentRainDensity;
-        float previousSkyDarkness = currentSkyDarkness;
+        float previousRainDensity = rainDensity;
+        float previousSkyDarkness = skyDarkness;
         float rainDensityModifier = currentlyRaining ? .01F : -.01F;
-        float skyDarknessModifier = currentlyThundering ? .01F : -.01F;
-        currentRainDensity = Math.max(0, Math.min(1, previousRainDensity + rainDensityModifier));
-        currentSkyDarkness = Math.max(0, Math.min(1, previousSkyDarkness + skyDarknessModifier));
+        float skyDarknessModifier = thundering ? .01F : -.01F;
+        rainDensity = Math.max(0, Math.min(1, previousRainDensity + rainDensityModifier));
+        skyDarkness = Math.max(0, Math.min(1, previousSkyDarkness + skyDarknessModifier));
 
-        if (previousRainDensity != currentRainDensity) {
+        if (previousRainDensity != rainDensity) {
             getRawPlayers().forEach(GlowPlayer::sendRainDensity);
         }
 
-        if (previousSkyDarkness != currentSkyDarkness) {
+        if (previousSkyDarkness != skyDarkness) {
             getRawPlayers().forEach(GlowPlayer::sendSkyDarkness);
         }
     }
@@ -1908,14 +1844,14 @@ public final class GlowWorld implements World {
     private void writeWorldData(boolean async) {
         maybeAsync(async, () -> {
             try {
-                storageProvider.getMetadataService().writeWorldData();
-                storageProvider.getScoreboardIoService().save();
+                storage.getMetadataService().writeWorldData();
+                storage.getScoreboardIoService().save();
             } catch (IOException e) {
                 server.getLogger().severe("Could not save metadata for world: " + getName());
                 e.printStackTrace();
             }
 
-            storageProvider.getStructureDataService().writeStructuresData(structures);
+            storage.getStructureDataService().writeStructuresData(structures);
         });
     }
 
@@ -1948,21 +1884,12 @@ public final class GlowWorld implements World {
             return false;
         }
         try {
-            storageProvider.getChunkIoService().unload();
-            storageProvider.getScoreboardIoService().unload();
+            storage.getChunkIoService().unload();
+            storage.getScoreboardIoService().unload();
         } catch (IOException e) {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Get the storage provider for the world.
-     *
-     * @return The {@link WorldStorageProvider}.
-     */
-    public WorldStorageProvider getStorage() {
-        return storageProvider;
     }
 
     /**
@@ -1972,12 +1899,12 @@ public final class GlowWorld implements World {
      */
     @Override
     public File getWorldFolder() {
-        return storageProvider.getFolder();
+        return storage.getFolder();
     }
 
     @Override
     public String[] getGameRules() {
-        return gameRules.getKeys();
+        return gameRuleMap.getKeys();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1985,12 +1912,12 @@ public final class GlowWorld implements World {
 
     @Override
     public String getGameRuleValue(String rule) {
-        return gameRules.getString(rule);
+        return gameRuleMap.getString(rule);
     }
 
     @Override
     public boolean setGameRuleValue(String rule, String value) {
-        if (!gameRules.setValue(rule, value)) {
+        if (!gameRuleMap.setValue(rule, value)) {
             return false;
         }
         if (rule.equals("doDaylightCycle")) {
@@ -1999,7 +1926,7 @@ public final class GlowWorld implements World {
         } else if (rule.equals("reducedDebugInfo")) {
             // inform clients about the debug info change
             EntityStatusMessage message = new EntityStatusMessage(0,
-                    gameRules.getBoolean("reducedDebugInfo")
+                    gameRuleMap.getBoolean("reducedDebugInfo")
                             ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO
                             : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
             for (GlowPlayer player : getRawPlayers()) {
@@ -2011,15 +1938,11 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean isGameRule(String rule) {
-        return gameRules.isGameRule(rule);
-    }
-
-    @Override
-    public GlowWorldBorder getWorldBorder() {
-        return worldBorder;
+        return gameRuleMap.isGameRule(rule);
     }
 
     public Map<String, CommandFunction> getFunctions() {
+        // TODO: replace this with a facade
         return functions;
     }
 
@@ -2110,10 +2033,6 @@ public final class GlowWorld implements World {
                 extra, data);
     }
 
-    public GameRuleManager getGameRuleMap() {
-        return gameRules;
-    }
-
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         metadata.setMetadata(this, metadataKey, newMetadataValue);
@@ -2159,7 +2078,7 @@ public final class GlowWorld implements World {
 
     private void pulseTickMap() {
         ItemTable itemTable = ItemTable.instance();
-        for (Location location : getTickMap()) {
+        for (Location location : tickMap) {
             GlowChunk chunk = (GlowChunk) location.getChunk();
             if (!chunk.isLoaded()) {
                 continue;
@@ -2178,7 +2097,7 @@ public final class GlowWorld implements World {
             if (speed == 0) {
                 continue;
             }
-            if (worldAge % speed == 0) {
+            if (fullTime % speed == 0) {
                 type.receivePulse(block);
                 if (once) {
                     cancelPulse(location);
@@ -2188,6 +2107,7 @@ public final class GlowWorld implements World {
     }
 
     public ConcurrentSet<Location> getTickMap() {
+        // TODO: replace with a facade
         return tickMap;
     }
 
