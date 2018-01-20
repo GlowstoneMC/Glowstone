@@ -51,7 +51,7 @@ public final class NibbleArray {
     /**
      * Construct a new NibbleArray using the given underlying bytes. No copy is created.
      *
-     * @param data The raw data to use.
+     * @param rawData The raw data to use.
      */
     public NibbleArray(byte... rawData) {
         this.rawData = rawData;
