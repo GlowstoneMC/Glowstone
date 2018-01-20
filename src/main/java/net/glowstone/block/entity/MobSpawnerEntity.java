@@ -45,6 +45,11 @@ public class MobSpawnerEntity extends BlockEntity {
     }
 
     @Override
+    public GlowBlockState getState() {
+        return new GlowCreatureSpawner(block);
+    }
+
+    @Override
     public void saveNbt(CompoundTag tag) {
         super.saveNbt(tag);
         tag.putString("EntityId", spawning == null ? "" : spawning.getName());
