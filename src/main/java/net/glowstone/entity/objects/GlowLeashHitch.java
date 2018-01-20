@@ -107,8 +107,8 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         int z = location.getBlockZ();
 
         return Lists.newArrayList(
-            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.LEASH_HITCH, x, y, z, 0,
-                0),
+            new SpawnObjectMessage(
+                    entityId, getUniqueId(), SpawnObjectMessage.LEASH_HITCH, x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }

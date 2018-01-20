@@ -88,7 +88,8 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return Collections.singletonList(new SpawnObjectMessage(entityId, getUniqueId(), 50, location));
+        return Collections.singletonList(new SpawnObjectMessage(
+                entityId, getUniqueId(), 50, location));
     }
 
     @Override

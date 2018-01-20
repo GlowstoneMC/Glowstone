@@ -363,8 +363,10 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             new EntityEquipmentMessage(entityId, EntityEquipmentMessage.OFF_HAND,
                 equipment.getItemInOffHand()),
             new EntityEquipmentMessage(entityId, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
-            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.LEGGINGS_SLOT, getLeggings()),
-            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.CHESTPLATE_SLOT, getChestplate()),
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.LEGGINGS_SLOT,
+                    getLeggings()),
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.CHESTPLATE_SLOT,
+                    getChestplate()),
             new EntityEquipmentMessage(entityId, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
         );
     }
