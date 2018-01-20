@@ -1,5 +1,8 @@
 package net.glowstone.scoreboard;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,31 +13,21 @@ import org.bukkit.scoreboard.Scoreboard;
 /**
  * Implementation/data holder for Scores.
  */
+@RequiredArgsConstructor
 public final class GlowScore implements Score {
 
+    @Getter
     private final GlowObjective objective;
+    @Getter
     private final String entry;
     private int score;
+    @Getter
+    @Setter
     private boolean locked;
-
-    public GlowScore(GlowObjective objective, String entry) {
-        this.objective = objective;
-        this.entry = entry;
-    }
-
-    @Override
-    public Objective getObjective() {
-        return objective;
-    }
 
     @Override
     public Scoreboard getScoreboard() {
         return objective.getScoreboard();
-    }
-
-    @Override
-    public String getEntry() {
-        return entry;
     }
 
     @Override
@@ -66,13 +59,5 @@ public final class GlowScore implements Score {
     public boolean isScoreSet() throws IllegalStateException {
         objective.checkValid();
         return objective.getScoreboard().getScores(entry).contains(this);
-    }
-
-    public boolean getLocked() {
-        return locked;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
     }
 }

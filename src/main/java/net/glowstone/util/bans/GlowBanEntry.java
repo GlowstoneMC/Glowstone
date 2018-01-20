@@ -3,6 +3,8 @@ package net.glowstone.util.bans;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.bans.JsonListFile.BaseEntry;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList.Type;
@@ -15,10 +17,15 @@ import org.bukkit.OfflinePlayer;
 final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
 
     private final GlowBanList list;
+    @Getter
     private final String target;
     private Date created;
     private Date expires;
+    @Getter
+    @Setter
     private String source;
+    @Getter
+    @Setter
     private String reason;
 
     GlowBanEntry(GlowBanList list, String target, String reason, Date created, Date expires,
@@ -61,11 +68,6 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
     }
 
     @Override
-    public String getTarget() {
-        return target;
-    }
-
-    @Override
     public Date getCreated() {
         return copy(created);
     }
@@ -76,16 +78,6 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
     }
 
     @Override
-    public String getSource() {
-        return source;
-    }
-
-    @Override
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    @Override
     public Date getExpiration() {
         return copy(expires);
     }
@@ -93,16 +85,6 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
     @Override
     public void setExpiration(Date expiration) {
         expires = copy(expiration);
-    }
-
-    @Override
-    public String getReason() {
-        return reason;
-    }
-
-    @Override
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 
     @Override

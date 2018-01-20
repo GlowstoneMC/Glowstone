@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -21,7 +22,8 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
     /**
      * The directory configurations are stored in.
      */
-    private final File configDir;
+    @Getter
+    private final File directory;
 
     /**
      * The main configuration file.
@@ -31,6 +33,7 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
     /**
      * The actual configuration data.
      */
+    @Getter
     private final YamlConfiguration config = new YamlConfiguration();
 
     /**
@@ -41,15 +44,15 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
     /**
      * Initialize a new ServerConfig and associated settings.
      *
-     * @param configDir The config directory, or null for default.
+     * @param directory The config directory, or null for default.
      * @param configFile The config file, or null for default.
      */
-    public WorldConfig(File configDir, File configFile) {
-        checkNotNull(configDir);
+    public WorldConfig(File directory, File configFile) {
+        checkNotNull(directory);
         checkNotNull(configFile);
         checkNotNull(cache);
 
-        this.configDir = configDir;
+        this.directory = directory;
         this.configFile = configFile;
     }
 
@@ -128,13 +131,6 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Fancy stuff
-
-    public File getDirectory() {
-        return configDir;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
     // Load and internals
 
     /**
@@ -149,8 +145,8 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
             GlowServer.logger.info("Creating default world config: " + configFile);
 
             // create config directory
-            if (!configDir.isDirectory() && !configDir.mkdirs()) {
-                GlowServer.logger.severe("Cannot create directory: " + configDir);
+            if (!directory.isDirectory() && !directory.mkdirs()) {
+                GlowServer.logger.severe("Cannot create directory: " + directory);
                 return;
             }
 
@@ -193,10 +189,6 @@ public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldCo
             GlowServer.logger
                     .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
-    }
-
-    public YamlConfiguration getConfig() {
-        return config;
     }
 
     /**

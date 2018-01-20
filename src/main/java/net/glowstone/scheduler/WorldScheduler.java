@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
 import java.util.logging.Level;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 
@@ -19,6 +20,7 @@ import net.glowstone.GlowWorld;
  */
 public class WorldScheduler {
 
+    @Getter
     private final Object advanceCondition = new Object();
     private final ExecutorService worldExecutor = Executors.newCachedThreadPool();
     private final Phaser tickBegin = new Phaser(1);
@@ -138,10 +140,6 @@ public class WorldScheduler {
         synchronized (advanceCondition) {
             advanceCondition.notifyAll();
         }
-    }
-
-    public Object getAdvanceCondition() {
-        return advanceCondition;
     }
 
     private static class WorldEntry {

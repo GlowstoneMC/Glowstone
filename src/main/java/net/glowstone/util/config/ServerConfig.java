@@ -40,7 +40,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
     /**
      * The directory configurations are stored in.
      */
-    private final File configDir;
+    @Getter
+    private final File directory;
 
     /**
      * The main configuration file.
@@ -65,16 +66,16 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
     /**
      * Initialize a new ServerConfig and associated settings.
      *
-     * @param configDir The config directory, or null for default.
+     * @param directory The config directory, or null for default.
      * @param configFile The config file, or null for default.
      * @param parameters The command-line parameters used as overrides.
      */
-    public ServerConfig(File configDir, File configFile, Map<Key, Object> parameters) {
-        checkNotNull(configDir);
+    public ServerConfig(File directory, File configFile, Map<Key, Object> parameters) {
+        checkNotNull(directory);
         checkNotNull(configFile);
         checkNotNull(parameters);
 
-        this.configDir = configDir;
+        this.directory = directory;
         this.configFile = configFile;
         this.parameters = parameters;
 
@@ -209,12 +210,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         return config.getConfigurationSection("worlds");
     }
 
-    public File getDirectory() {
-        return configDir;
-    }
-
     public File getFile(String filename) {
-        return new File(configDir, filename);
+        return new File(directory, filename);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -236,8 +233,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
             GlowServer.logger.info("Creating default config: " + configFile);
 
             // create config directory
-            if (!configDir.isDirectory() && !configDir.mkdirs()) {
-                GlowServer.logger.severe("Cannot create directory: " + configDir);
+            if (!directory.isDirectory() && !directory.mkdirs()) {
+                GlowServer.logger.severe("Cannot create directory: " + directory);
                 return;
             }
 

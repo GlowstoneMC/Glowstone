@@ -1,9 +1,14 @@
 package net.glowstone.util;
 
+import lombok.Getter;
+
 public final class VariableValueArray implements Cloneable {
 
+    @Getter
     private final long[] backing;
+    @Getter
     private final int capacity;
+    @Getter
     private final int bitsPerValue;
     private final long valueMask;
 
@@ -45,18 +50,6 @@ public final class VariableValueArray implements Cloneable {
             number >>>= 1;
         } while (number != 0);
         return count;
-    }
-
-    public long[] getBacking() {
-        return backing;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public int getBitsPerValue() {
-        return bitsPerValue;
     }
 
     public long getLargestPossibleValue() {

@@ -108,6 +108,7 @@ public final class StatisticMap {
     }
 
     public Map<String, Integer> getValues() {
+        // TODO: Replace with facade
         return values;
     }
 }
