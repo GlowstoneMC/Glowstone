@@ -34,8 +34,7 @@ public class EntityManager implements Iterable<GlowEntity> {
      * A map of entity types to a set containing all entities of that type.
      */
     private final Multimap<Class<? extends GlowEntity>, GlowEntity> groupedEntities
-            = newSetMultimap(
-            new ConcurrentHashMap<>(),
+            = newSetMultimap(new ConcurrentHashMap<>(),
                     Sets::newConcurrentHashSet);
 
     /**
