@@ -1,5 +1,7 @@
 package net.glowstone.entity.projectile;
 
+import static net.glowstone.net.message.play.entity.SpawnObjectMessage.THROWN_ENDERPEARL;
+
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +21,6 @@ import org.bukkit.util.Vector;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     private static final double ENDER_PEARL_DAMAGE = 5.0;
-    private static final int NETWORK_ID = 65;
 
     /**
      * Creates a thrown ender pearl with default speed.
@@ -65,14 +66,14 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
 
     @Override
     protected int getObjectId() {
-        return NETWORK_ID;
+        return THROWN_ENDERPEARL;
     }
 
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
                 new SpawnObjectMessage(
-                        id, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
+                        id, getUniqueId(), THROWN_ENDERPEARL, location),
                 new EntityMetadataMessage(id, metadata.getEntryList()),
                 // These keep the client from assigning a random velocity
                 new EntityTeleportMessage(id, location),

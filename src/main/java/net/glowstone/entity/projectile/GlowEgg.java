@@ -12,6 +12,8 @@ import org.bukkit.util.Vector;
 
 public class GlowEgg extends GlowProjectile implements Egg {
 
+    private static final int NETWORK_ID = 62;
+
     /**
      * Creates an egg entity.
      *
@@ -54,6 +56,6 @@ public class GlowEgg extends GlowProjectile implements Egg {
 
     @Override
     protected int getObjectId() {
-        return 62;
+        return NETWORK_ID;
     }
 }
