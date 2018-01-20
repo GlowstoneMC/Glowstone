@@ -171,8 +171,8 @@ public final class EncryptionKeyResponseHandler implements
             }
 
             // spawn player
-            session.getServer().getScheduler()
-                .runTask(null, () -> session.setPlayer(new GlowPlayerProfile(name, uuid, properties)));
+            session.getServer().getScheduler().runTask(null, () -> session.setPlayer(
+                    new GlowPlayerProfile(name, uuid, properties)));
         }
 
         @Override

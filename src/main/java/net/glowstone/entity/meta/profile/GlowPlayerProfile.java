@@ -169,7 +169,8 @@ public class GlowPlayerProfile implements PlayerProfile {
             }
             propertyValueTag.putString("Value", property.getValue());
 
-            propertiesTag.putCompoundList(property.getName(), Collections.singletonList(propertyValueTag));
+            propertiesTag.putCompoundList(property.getName(),
+                    Collections.singletonList(propertyValueTag));
         }
         if (!propertiesTag.isEmpty()) { // Only add properties if not empty
             profileTag.putCompound("Properties", propertiesTag);

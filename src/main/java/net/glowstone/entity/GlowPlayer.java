@@ -1304,7 +1304,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean isWhitelisted() {
-        return server.getWhitelist().containsProfile(new GlowPlayerProfile(getName(), getUniqueId()));
+        return server.getWhitelist().containsProfile(
+                new GlowPlayerProfile(getName(),getUniqueId()));
     }
 
     @Override
