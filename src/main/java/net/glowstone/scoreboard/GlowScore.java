@@ -21,7 +21,6 @@ public final class GlowScore implements Score {
     @Getter
     private final String entry;
     private int score;
-    @Getter
     @Setter
     private boolean locked;
 
@@ -59,5 +58,9 @@ public final class GlowScore implements Score {
     public boolean isScoreSet() throws IllegalStateException {
         objective.checkValid();
         return objective.getScoreboard().getScores(entry).contains(this);
+    }
+
+    public boolean getLocked() {
+        return locked;
     }
 }
