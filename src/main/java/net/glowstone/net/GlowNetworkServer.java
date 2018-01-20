@@ -3,6 +3,7 @@ package net.glowstone.net;
 import io.netty.channel.ChannelFuture;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 
 /**
@@ -12,6 +13,7 @@ import net.glowstone.GlowServer;
  */
 public abstract class GlowNetworkServer {
 
+    @Getter
     private final GlowServer server;
     protected CountDownLatch latch;
 
@@ -28,10 +30,6 @@ public abstract class GlowNetworkServer {
     }
 
     public abstract ChannelFuture bind(InetSocketAddress address);
-
-    public GlowServer getServer() {
-        return server;
-    }
 
     public void onBindSuccess(InetSocketAddress address) {
         latch.countDown();

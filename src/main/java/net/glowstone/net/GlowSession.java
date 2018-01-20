@@ -20,6 +20,7 @@ import java.util.Queue;
 import java.util.logging.Level;
 import javax.crypto.SecretKey;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -56,7 +57,10 @@ public class GlowSession extends BasicSession {
 
     /**
      * The server this session belongs to.
+     *
+     * @return The server.
      */
+    @Getter
     private final GlowServer server;
 
     /**
@@ -72,25 +76,39 @@ public class GlowSession extends BasicSession {
     /**
      * The remote address of the connection.
      */
+    @Getter
     private InetSocketAddress address;
 
     /**
      * The state of the connection.
+     *
+     * @return true if this session's state is online
      */
+    @Getter
     private boolean online;
     /**
-     * The verify token used in authentication.
+     * The randomly-generated verify token used in authentication for this session.
+     *
+     * @param verifyToken the verify token
+     * @return The verify token
      */
+    @Getter
+    @Setter
     private byte[] verifyToken;
 
     /**
      * The verify username used in authentication.
      */
+    @Getter
+    @Setter
     private String verifyUsername;
 
     /**
-     * The hostname used to connect.
+     * Set the hostname the player used to connect to the server.
+     *
+     * @param hostname Hostname in "addr:port" format.
      */
+    @Setter
     private String hostname;
 
     /**
@@ -104,12 +122,18 @@ public class GlowSession extends BasicSession {
      * properties and other data even if the server is running in offline mode.
      *
      * <p>Null for non-proxied sessions.
+     *
+     * @return The proxy data to use, or null for an unproxied connection.
      */
+    @Getter
     private ProxyData proxyData;
 
     /**
      * The player associated with this session (if there is one).
+     *
+     * @return The player, or {@code null} if no player is associated with this session.
      */
+    @Getter
     private GlowPlayer player;
 
     /**
@@ -147,62 +171,8 @@ public class GlowSession extends BasicSession {
         address = super.getAddress();
     }
 
-    /**
-     * Gets the server associated with this session.
-     *
-     * @return The server.
-     */
-    public GlowServer getServer() {
-        return server;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Auxiliary state
-
-    /**
-     * Get the randomly-generated verify token for this session.
-     *
-     * @return The verify token
-     */
-    public byte[] getVerifyToken() {
-        return verifyToken;
-    }
-
-    /**
-     * Sets the verify token of this session.
-     *
-     * @param verifyToken The verify token.
-     */
-    public void setVerifyToken(byte... verifyToken) {
-        this.verifyToken = verifyToken;
-    }
-
-    /**
-     * Gets the verify username for this session.
-     *
-     * @return The verify username.
-     */
-    public String getVerifyUsername() {
-        return verifyUsername;
-    }
-
-    /**
-     * Sets the verify username for this session.
-     *
-     * @param verifyUsername The verify username.
-     */
-    public void setVerifyUsername(String verifyUsername) {
-        this.verifyUsername = verifyUsername;
-    }
-
-    /**
-     * Get the {@link ProxyData} for this session if available.
-     *
-     * @return The proxy data to use, or null for an unproxied connection.
-     */
-    public ProxyData getProxyData() {
-        return proxyData;
-    }
 
     /**
      * Set the {@link ProxyData} for this session.
@@ -213,15 +183,6 @@ public class GlowSession extends BasicSession {
         this.proxyData = proxyData;
         address = proxyData.getAddress();
         hostname = proxyData.getHostname();
-    }
-
-    /**
-     * Set the hostname the player used to connect to the server.
-     *
-     * @param hostname Hostname in "addr:port" format.
-     */
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
     }
 
     /**
@@ -260,31 +221,8 @@ public class GlowSession extends BasicSession {
         }
     }
 
-    @Override
-    public InetSocketAddress getAddress() {
-        return address;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Player and state management
-
-    /**
-     * Get session online state.
-     *
-     * @return true if this session's state is online
-     */
-    public boolean isOnline() {
-        return online;
-    }
-
-    /**
-     * Gets the player associated with this session.
-     *
-     * @return The player, or {@code null} if no player is associated with it.
-     */
-    public GlowPlayer getPlayer() {
-        return player;
-    }
 
     /**
      * Sets the player associated with this session.
