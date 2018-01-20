@@ -1,17 +1,10 @@
 package net.glowstone.block.entity.state;
 
 import com.destroystokyo.paper.loottable.LootableBlockInventory;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import org.bukkit.Nameable;
@@ -19,18 +12,13 @@ import org.bukkit.block.Container;
 import org.bukkit.block.Lockable;
 import org.bukkit.inventory.Inventory;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public abstract class GlowContainer extends GlowBlockState implements LootableBlockInventory,
     Lockable, Nameable, Container {
-    private final AtomicLong lastFilled = new AtomicLong(-1);
     private final AtomicLong nextRefill = new AtomicLong(-1);
     private final AtomicLong lootTableSeed = new AtomicLong(0);
-    private final AtomicReference<String> lootTable = new AtomicReference<>(null);
-    private final Map<UUID, Long> playersWhoHaveLooted = new ConcurrentHashMap<>();
-    @Getter
-    @Setter
     private String lock;
-    @Getter
-    @Setter
     private String customName;
     public GlowContainer(GlowBlock block) {
         super(block);
@@ -40,23 +28,22 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
 
     @Override
     public String getLootTableName() {
-        return lootTable.get();
+        return null;
     }
 
     @Override
     public boolean hasLootTable() {
-        return lootTable.get() != null;
+        return false;
     }
 
     @Override
     public String setLootTable(String name) {
-        return setLootTable(name, 0);
+        return null;
     }
 
     @Override
     public String setLootTable(String s, long l) {
-        setLootTableSeed(l);
-        return lootTable.getAndSet(s);
+        return null;
     }
 
     @Override
@@ -71,45 +58,42 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
 
     @Override
     public void clearLootTable() {
-        setLootTable(null);
+
     }
 
     @Override
     public boolean isRefillEnabled() {
-        // TODO
         return false;
     }
 
     @Override
     public boolean hasBeenFilled() {
-        return lastFilled.get() >= 0;
+        return false;
     }
 
     @Override
     public boolean hasPlayerLooted(UUID uuid) {
-        return playersWhoHaveLooted.containsKey(uuid);
+        return false;
     }
 
     @Override
     public Long getLastLooted(UUID uuid) {
-        return playersWhoHaveLooted.get(uuid);
+        return null;
     }
 
     @Override
     public boolean setHasPlayerLooted(UUID uuid, boolean b) {
-        return b
-                ? playersWhoHaveLooted.put(uuid, getWorld().getFullTime()) != null
-                : playersWhoHaveLooted.remove(uuid) != null;
+        return false;
     }
 
     @Override
     public boolean hasPendingRefill() {
-        return getNextRefill() >= Math.max(0, getLastFilled());
+        return getNextRefill() >= 0;
     }
 
     @Override
     public long getLastFilled() {
-        return lastFilled.get();
+        return 0;
     }
 
     @Override
@@ -124,12 +108,11 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
 
     @Override
     public boolean isLocked() {
-        return getLock() != null;
+        return false;
     }
 
     @Override
     public Inventory getSnapshotInventory() {
-        // TODO
         throw new UnsupportedOperationException();
     }
 }
