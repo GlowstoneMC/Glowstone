@@ -3,6 +3,7 @@ package net.glowstone.generator.structures.util;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.generator.objects.RandomItemsContent;
@@ -491,8 +492,12 @@ public class StructureBuilder {
         }
     }
 
+    @AllArgsConstructor
     @Data
     public static final class StructureMaterial {
+        public StructureMaterial(Material type) {
+            this(type, 0);
+        }
         private Material type;
         private int data;
     }
