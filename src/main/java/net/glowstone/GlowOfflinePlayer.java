@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import lombok.Getter;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -23,13 +24,17 @@ import org.bukkit.entity.Player;
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
+    @Getter
     private final PlayerProfile profile;
 
     private boolean hasPlayed;
+    @Getter
     private long firstPlayed;
+    @Getter
     private long lastPlayed;
     private String lastName;
-    private Location bedSpawn;
+    @Getter
+    private Location bedSpawnLocation;
 
     /**
      * Create a new offline player for the given name. If possible, the player's data will be
@@ -89,7 +94,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             if (hasPlayed) {
                 firstPlayed = reader.getFirstPlayed();
                 lastPlayed = reader.getLastPlayed();
-                bedSpawn = reader.getBedSpawnLocation();
+                bedSpawnLocation = reader.getBedSpawnLocation();
 
                 String lastName = reader.getLastKnownName();
                 if (lastName != null) {
@@ -137,27 +142,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return hasPlayed;
     }
 
-    @Override
-    public long getFirstPlayed() {
-        return firstPlayed;
-    }
-
-    @Override
-    public long getLastPlayed() {
-        return lastPlayed;
-    }
-
-    public PlayerProfile getProfile() {
-        return profile;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Ban, op, whitelist
-
-    @Override
-    public Location getBedSpawnLocation() {
-        return bedSpawn;
-    }
 
     @Override
     public boolean isBanned() {

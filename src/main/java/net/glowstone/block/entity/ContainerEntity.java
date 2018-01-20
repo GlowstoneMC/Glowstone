@@ -1,5 +1,6 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.io.nbt.NbtSerialization;
@@ -13,15 +14,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class ContainerEntity extends BlockEntity {
 
+    @Getter
     private final GlowInventory inventory;
 
     public ContainerEntity(GlowBlock block, GlowInventory inventory) {
         super(block);
         this.inventory = inventory;
-    }
-
-    public Inventory getInventory() {
-        return inventory;
     }
 
     public void setContents(ItemStack... contents) {

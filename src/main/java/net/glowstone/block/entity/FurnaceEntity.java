@@ -1,5 +1,7 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
@@ -20,7 +22,11 @@ import org.bukkit.inventory.Recipe;
 
 public class FurnaceEntity extends ContainerEntity {
 
+    @Getter
+    @Setter
     private short burnTime;
+    @Getter
+    @Setter
     private short cookTime;
     private short burnTimeFuel;
 
@@ -57,22 +63,6 @@ public class FurnaceEntity extends ContainerEntity {
         if (tag.isShort("CookTime")) {
             cookTime = tag.getShort("CookTime");
         }
-    }
-
-    public short getBurnTime() {
-        return burnTime;
-    }
-
-    public void setBurnTime(short burnTime) {
-        this.burnTime = burnTime;
-    }
-
-    public short getCookTime() {
-        return cookTime;
-    }
-
-    public void setCookTime(short cookTime) {
-        this.cookTime = cookTime;
     }
 
     /**

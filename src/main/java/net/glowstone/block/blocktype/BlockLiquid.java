@@ -7,6 +7,7 @@ import static org.bukkit.block.BlockFace.SOUTH;
 import static org.bukkit.block.BlockFace.UP;
 import static org.bukkit.block.BlockFace.WEST;
 
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -28,6 +29,12 @@ public abstract class BlockLiquid extends BlockType {
 
     private static final int TICK_RATE_WATER = 4;
     private static final int TICK_RATE_LAVA = 20;
+    /**
+     * Get the bucket type to replace the empty bucket when the liquid has been collected.
+     *
+     * @return The associated bucket types material
+     */
+    @Getter
     private final Material bucketType;
 
     protected BlockLiquid(Material bucketType) {
@@ -71,15 +78,6 @@ public abstract class BlockLiquid extends BlockType {
             default:
                 return Material.AIR;
         }
-    }
-
-    /**
-     * Get the bucket type to replace the empty bucket when the liquid has been collected.
-     *
-     * @return The associated bucket types material
-     */
-    public Material getBucketType() {
-        return bucketType;
     }
 
     /**
