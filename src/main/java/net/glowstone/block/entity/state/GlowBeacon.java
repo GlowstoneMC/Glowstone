@@ -2,6 +2,7 @@ package net.glowstone.block.entity.state;
 
 import java.util.Collection;
 import java.util.Collections;
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BeaconEntity;
 import org.bukkit.block.Beacon;
@@ -12,7 +13,9 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GlowBeacon extends GlowContainer implements Beacon {
 
+    @Getter
     private PotionEffect primaryEffect;
+    @Getter
     private PotionEffect secondaryEffect;
 
     /**
@@ -45,19 +48,9 @@ public class GlowBeacon extends GlowContainer implements Beacon {
     }
 
     @Override
-    public PotionEffect getPrimaryEffect() {
-        return primaryEffect;
-    }
-
-    @Override
     public void setPrimaryEffect(PotionEffectType primary) {
         this.primaryEffect = new PotionEffect(primary, 7, getTier(), true);
         getBlockEntity().setPrimaryId(primary.getId());
-    }
-
-    @Override
-    public PotionEffect getSecondaryEffect() {
-        return secondaryEffect;
     }
 
     @Override
