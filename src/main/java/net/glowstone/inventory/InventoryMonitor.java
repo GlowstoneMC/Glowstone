@@ -3,6 +3,7 @@ package net.glowstone.inventory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
 import net.glowstone.constants.ItemIds;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
@@ -17,8 +18,27 @@ public final class InventoryMonitor {
 
     private final InventoryView view;
     private final ItemStack[] slots;
+    /**
+     * Get the number of slots in this inventory view.
+     *
+     * @return The number of slots.
+     */
+    @Getter
     private final int size;
+    /**
+     * The network ID of this inventory view.
+     *
+     * @return The id.
+     */
+    @Getter
     private final int id;
+
+    /**
+     * Get the network type ID of this inventory view.
+     *
+     * @return The type id.
+     */
+    @Getter
     private final String type;
 
     /**
@@ -123,34 +143,8 @@ public final class InventoryMonitor {
      * @return The contents.
      */
     public ItemStack[] getContents() {
+        // TODO: Defensive deep copy
         return slots;
-    }
-
-    /**
-     * Get the number of slots in this inventory view.
-     *
-     * @return The number of slots.
-     */
-    public int getSize() {
-        return size;
-    }
-
-    /**
-     * Get the network ID of this inventory view.
-     *
-     * @return The id.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Get the network type ID of this inventory view.
-     *
-     * @return The type id.
-     */
-    public String getType() {
-        return type;
     }
 
     /**

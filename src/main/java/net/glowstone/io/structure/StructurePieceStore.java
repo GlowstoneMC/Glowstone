@@ -1,5 +1,6 @@
 package net.glowstone.io.structure;
 
+import lombok.Data;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
@@ -10,23 +11,11 @@ import org.bukkit.util.Vector;
  *
  * @param <T> The type of structure piece being stored.
  */
+@Data
 public abstract class StructurePieceStore<T extends GlowStructurePiece> {
 
+    private final Class<T> type;
     private final String id;
-    private final Class<T> clazz;
-
-    public StructurePieceStore(Class<T> clazz, String id) {
-        this.id = id;
-        this.clazz = clazz;
-    }
-
-    public final String getId() {
-        return id;
-    }
-
-    public final Class<T> getType() {
-        return clazz;
-    }
 
     /**
      * Create a structure piece of this store's type.

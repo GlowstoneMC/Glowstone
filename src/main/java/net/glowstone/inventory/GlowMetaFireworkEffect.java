@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -15,6 +17,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffectMeta {
 
+    @Getter
+    @Setter
     private FireworkEffect effect;
 
     /**
@@ -136,15 +140,5 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     @Override
     public boolean hasEffect() {
         return effect != null;
-    }
-
-    @Override
-    public FireworkEffect getEffect() {
-        return effect;
-    }
-
-    @Override
-    public void setEffect(FireworkEffect effect) {
-        this.effect = effect;
     }
 }

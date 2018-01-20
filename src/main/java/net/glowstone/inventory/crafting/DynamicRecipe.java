@@ -1,6 +1,7 @@
 package net.glowstone.inventory.crafting;
 
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -14,6 +15,12 @@ import org.bukkit.inventory.Recipe;
 public class DynamicRecipe implements Recipe {
 
     private ItemMatcher matcher;
+    /**
+     * Gets the result of this recipe, given the input of {@link #matches(ItemStack[])}.
+     *
+     * @return The result of the recipe, or null if it does not match
+     */
+    @Getter
     private ItemStack result;
 
     public DynamicRecipe() {
@@ -44,15 +51,5 @@ public class DynamicRecipe implements Recipe {
     public boolean matches(ItemStack[] matrix) {
         result = matcher.getResult(matrix);
         return result != null;
-    }
-
-    /**
-     * Gets the result of this recipe, given the input of {@link #matches(ItemStack[])}.
-     *
-     * @return The result of the recipe, or null if it does not match
-     */
-    @Override
-    public ItemStack getResult() {
-        return result;
     }
 }

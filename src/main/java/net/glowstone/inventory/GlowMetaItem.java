@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
@@ -22,10 +24,14 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class GlowMetaItem implements ItemMeta {
 
+    @Getter
+    @Setter
     private String displayName;
     private List<String> lore;
     private Map<Enchantment, Integer> enchants;
     private int hideFlag;
+    @Getter
+    @Setter
     private boolean unbreakable;
 
     /**
@@ -218,16 +224,6 @@ public class GlowMetaItem implements ItemMeta {
         return !Strings.isNullOrEmpty(displayName);
     }
 
-    @Override
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    @Override
-    public void setDisplayName(String name) {
-        displayName = name;
-    }
-
     // TODO: support localization
 
     @Override
@@ -252,23 +248,15 @@ public class GlowMetaItem implements ItemMeta {
 
     @Override
     public List<String> getLore() {
+        // TODO: Defensive copy
         return lore;
     }
 
     @Override
     public void setLore(List<String> lore) {
         // todo: fancy validation things
+        // TODO: Defensive copy
         this.lore = lore;
-    }
-
-    @Override
-    public boolean isUnbreakable() {
-        return unbreakable;
-    }
-
-    @Override
-    public void setUnbreakable(boolean unbreakable) {
-        this.unbreakable = unbreakable;
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -61,6 +61,7 @@ public final class GlowMapView implements MapView {
 
     @Override
     public List<MapRenderer> getRenderers() {
+        // TODO: Defensive copy
         return renderers;
     }
 
