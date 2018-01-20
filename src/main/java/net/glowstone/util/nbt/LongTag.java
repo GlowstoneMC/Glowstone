@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import lombok.Getter;
+
 /**
  * The {@code TAG_Long} tag.
  */
@@ -8,6 +10,7 @@ public final class LongTag extends Tag<Long> {
     /**
      * The value.
      */
+    @Getter
     private final long value;
 
     /**
@@ -18,11 +21,6 @@ public final class LongTag extends Tag<Long> {
     public LongTag(long value) {
         super(TagType.LONG);
         this.value = value;
-    }
-
-    @Override
-    public Long getValue() {
-        return value;
     }
 }
 
