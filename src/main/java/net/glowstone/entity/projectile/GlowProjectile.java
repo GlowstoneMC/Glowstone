@@ -12,9 +12,11 @@ import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.Vector;
 
 public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
@@ -57,7 +59,14 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     @Override
     protected void pulsePhysics() {
-        // TODO: Entity collisions
+        Vector size = boundingBox.getSize();
+        for (Entity entity : world.getNearbyEntities(
+                location, size.getX(), size.getY(), size.getZ())) {
+            if (entity instanceof LivingEntity && !(entity.equals(shooter))) {
+                collide((LivingEntity) entity);
+                return;
+            }
+        }
         super.pulsePhysics();
     }
 
