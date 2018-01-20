@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -295,22 +294,10 @@ public class GlowVillager extends GlowAgeable implements Villager {
         if (profession == null || profession.isZombie()) {
             this.career = null;
         } else {
-            Career[] careers = getCareersByProfession(profession);
-            this.career = careers[ThreadLocalRandom.current().nextInt(careers.length)];
+            List<Career> careers = profession.getCareers();
+            this.career = careers.get(ThreadLocalRandom.current().nextInt(careers.size()));
             this.careerLevel = 1;
         }
-    }
-
-    /**
-     * Gets all assignable careers for a given profession.
-     *
-     * @param profession the profession
-     * @return the assignable careers for the given profession
-     */
-    public static Career[] getCareersByProfession(Profession profession) {
-        return Arrays.stream(Career.values())
-                .filter(c -> c.getProfession() == profession)
-                .toArray(Career[]::new);
     }
 
     /**
