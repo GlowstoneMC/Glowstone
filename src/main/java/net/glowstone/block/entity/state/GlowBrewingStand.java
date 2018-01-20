@@ -1,5 +1,7 @@
 package net.glowstone.block.entity.state;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BrewingStandEntity;
 import org.bukkit.block.BrewingStand;
@@ -7,40 +9,25 @@ import org.bukkit.inventory.BrewerInventory;
 
 public class GlowBrewingStand extends GlowContainer implements BrewingStand {
 
-    private int brewTime;
+    @Getter
+    @Setter
+    private int brewingTime;
+    @Getter
+    @Setter
+    private int fuelLevel;
 
     public GlowBrewingStand(GlowBlock block) {
         super(block);
-        brewTime = getBlockEntity().getBrewTime();
+        brewingTime = getBlockEntity().getBrewTime();
     }
 
     public GlowBrewingStand(GlowBlock block, int brewTime) {
         super(block);
-        this.brewTime = brewTime;
+        this.brewingTime = brewTime;
     }
 
     private BrewingStandEntity getBlockEntity() {
         return (BrewingStandEntity) getBlock().getBlockEntity();
-    }
-
-    @Override
-    public int getBrewingTime() {
-        return brewTime;
-    }
-
-    @Override
-    public void setBrewingTime(int brewTime) {
-        this.brewTime = brewTime;
-    }
-
-    @Override
-    public int getFuelLevel() {
-        return 0;
-    }
-
-    @Override
-    public void setFuelLevel(int i) {
-
     }
 
     @Override
@@ -53,7 +40,7 @@ public class GlowBrewingStand extends GlowContainer implements BrewingStand {
         boolean result = super.update(force, applyPhysics);
         if (result) {
             BrewingStandEntity stand = getBlockEntity();
-            stand.setBrewTime(brewTime);
+            stand.setBrewTime(brewingTime);
             stand.updateInRange();
         }
         return result;

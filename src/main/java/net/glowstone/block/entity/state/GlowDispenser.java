@@ -2,6 +2,7 @@ package net.glowstone.block.entity.state;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.ArmorDispenseBehavior;
@@ -24,15 +25,12 @@ import org.bukkit.util.Vector;
 
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 
+    @Getter
     private static final DispenseBehaviorRegistry dispenseBehaviorRegistry =
             new DispenseBehaviorRegistry();
 
     public GlowDispenser(GlowBlock block) {
         super(block);
-    }
-
-    public static DispenseBehaviorRegistry getDispenseBehaviorRegistry() {
-        return dispenseBehaviorRegistry;
     }
 
     /**

@@ -1,5 +1,7 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.state.GlowNoteBlock;
@@ -8,6 +10,8 @@ import org.bukkit.Note;
 
 public class NoteblockEntity extends BlockEntity {
 
+    @Getter
+    @Setter
     private Note note = new Note(0);
 
     public NoteblockEntity(GlowBlock block) {
@@ -30,13 +34,5 @@ public class NoteblockEntity extends BlockEntity {
     @Override
     public GlowBlockState getState() {
         return new GlowNoteBlock(block);
-    }
-
-    public Note getNote() {
-        return note;
-    }
-
-    public void setNote(Note note) {
-        this.note = note;
     }
 }
