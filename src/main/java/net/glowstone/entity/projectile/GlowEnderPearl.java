@@ -73,11 +73,11 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
                 new SpawnObjectMessage(
-                        id, getUniqueId(), THROWN_ENDERPEARL, location),
-                new EntityMetadataMessage(id, metadata.getEntryList()),
+                        entityId, getUniqueId(), THROWN_ENDERPEARL, location),
+                new EntityMetadataMessage(entityId, metadata.getEntryList()),
                 // These keep the client from assigning a random velocity
-                new EntityTeleportMessage(id, location),
-                new EntityVelocityMessage(id, getVelocity())
+                new EntityTeleportMessage(entityId, location),
+                new EntityVelocityMessage(entityId, getVelocity())
         );
     }
 }
