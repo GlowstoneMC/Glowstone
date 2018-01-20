@@ -204,6 +204,7 @@ public class GlowPlayerProfile implements PlayerProfile {
     @Override
     public void setProperty(ProfileProperty property) {
         checkNotNull(property);
+        this.properties.put(property.getName(), property);
     }
 
     @Override
