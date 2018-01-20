@@ -161,8 +161,11 @@ public final class GlowWorld implements World {
     private final UUID uid;
     /**
      * The entity manager.
+     *
+     * @return the entity manager
      */
-    private final EntityManager entities = new EntityManager();
+    @Getter
+    private final EntityManager entityManager = new EntityManager();
     /**
      * The chunk generator for this world.
      */
@@ -315,19 +318,27 @@ public final class GlowWorld implements World {
     /**
      * Per-world spawn limits on hostile mobs.
      */
-    private int monsterLimit;
+    @Getter
+    @Setter
+    private int monsterSpawnLimit;
     /**
      * Per-world spawn limits on passive mobs.
      */
-    private int animalLimit;
+    @Getter
+    @Setter
+    private int animalSpawnLimit;
     /**
      * Per-world spawn limits on water mobs (squids).
      */
-    private int waterAnimalLimit;
+    @Getter
+    @Setter
+    private int waterAnimalSpawnLimit;
     /**
      * Per-world spawn limits on ambient mobs (bats).
      */
-    private int ambientLimit;
+    @Getter
+    @Setter
+    private int ambientSpawnLimit;
     private Map<Integer, GlowStructure> structures;
     /**
      * The maximum height at which players may place blocks.
@@ -360,10 +371,10 @@ public final class GlowWorld implements World {
         // set up values from server defaults
         ticksPerAnimal = server.getTicksPerAnimalSpawns();
         ticksPerMonster = server.getTicksPerMonsterSpawns();
-        monsterLimit = server.getMonsterSpawnLimit();
-        animalLimit = server.getAnimalSpawnLimit();
-        waterAnimalLimit = server.getWaterAnimalSpawnLimit();
-        ambientLimit = server.getAmbientSpawnLimit();
+        monsterSpawnLimit = server.getMonsterSpawnLimit();
+        animalSpawnLimit = server.getAnimalSpawnLimit();
+        waterAnimalSpawnLimit = server.getWaterAnimalSpawnLimit();
+        ambientSpawnLimit = server.getAmbientSpawnLimit();
         keepSpawnLoaded = server.keepSpawnLoaded();
         populateAnchoredChunks = server.populateAnchoredChunks();
         difficulty = server.getDifficulty();
@@ -440,7 +451,7 @@ public final class GlowWorld implements World {
      * Updates all the entities within this world.
      */
     public void pulse() {
-        List<GlowEntity> allEntities = new ArrayList<>(entities.getAll());
+        List<GlowEntity> allEntities = new ArrayList<>(entityManager.getAll());
         List<GlowPlayer> players = new LinkedList<>();
 
         activeChunksSet.clear();
@@ -726,11 +737,11 @@ public final class GlowWorld implements World {
      * @return The entity manager.
      */
     public EntityManager getEntityManager() {
-        return entities;
+        return entityManager;
     }
 
     public Collection<GlowPlayer> getRawPlayers() {
-        return entities.getAll(GlowPlayer.class);
+        return entityManager.getAll(GlowPlayer.class);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -738,7 +749,7 @@ public final class GlowWorld implements World {
 
     @Override
     public List<Player> getPlayers() {
-        return new ArrayList<>(entities.getAll(GlowPlayer.class));
+        return new ArrayList<>(entityManager.getAll(GlowPlayer.class));
     }
 
     /**
@@ -761,17 +772,17 @@ public final class GlowWorld implements World {
                 location.getX() + x, location.getY() + y, location.getZ() + z);
         BoundingBox searchBox = BoundingBox.fromCorners(minCorner, maxCorner); // TODO: test
         GlowEntity except = null;
-        return entities.getEntitiesInside(searchBox, except);
+        return entityManager.getEntitiesInside(searchBox, except);
     }
 
     @Override
     public List<Entity> getEntities() {
-        return new ArrayList<>(entities.getAll());
+        return new ArrayList<>(entityManager.getAll());
     }
 
     @Override
     public List<LivingEntity> getLivingEntities() {
-        return entities.getAll().stream().filter(e -> e instanceof GlowLivingEntity)
+        return entityManager.getAll().stream().filter(e -> e instanceof GlowLivingEntity)
                 .map(e -> (GlowLivingEntity) e).collect(Collectors.toCollection(LinkedList::new));
     }
 
@@ -785,14 +796,14 @@ public final class GlowWorld implements World {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Entity> Collection<T> getEntitiesByClass(Class<T> cls) {
-        return entities.getAll().stream().filter(e -> cls.isAssignableFrom(e.getClass()))
+        return entityManager.getAll().stream().filter(e -> cls.isAssignableFrom(e.getClass()))
                 .map(e -> (T) e).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     public Collection<Entity> getEntitiesByClasses(Class<?>... classes) {
         ArrayList<Entity> result = new ArrayList<>();
-        for (Entity e : entities.getAll()) {
+        for (Entity e : entityManager.getAll()) {
             for (Class<?> cls : classes) {
                 if (cls.isAssignableFrom(e.getClass())) {
                     result.add(e);
@@ -1000,46 +1011,6 @@ public final class GlowWorld implements World {
     @Override
     public void setTicksPerMonsterSpawns(int ticksPerMonsterSpawns) {
         ticksPerMonster = ticksPerMonsterSpawns;
-    }
-
-    @Override
-    public int getMonsterSpawnLimit() {
-        return monsterLimit;
-    }
-
-    @Override
-    public void setMonsterSpawnLimit(int limit) {
-        monsterLimit = limit;
-    }
-
-    @Override
-    public int getAnimalSpawnLimit() {
-        return animalLimit;
-    }
-
-    @Override
-    public void setAnimalSpawnLimit(int limit) {
-        animalLimit = limit;
-    }
-
-    @Override
-    public int getWaterAnimalSpawnLimit() {
-        return waterAnimalLimit;
-    }
-
-    @Override
-    public void setWaterAnimalSpawnLimit(int limit) {
-        waterAnimalLimit = limit;
-    }
-
-    @Override
-    public int getAmbientSpawnLimit() {
-        return ambientLimit;
-    }
-
-    @Override
-    public void setAmbientSpawnLimit(int limit) {
-        ambientLimit = limit;
     }
 
     ////////////////////////////////////////////////////////////////////////////
