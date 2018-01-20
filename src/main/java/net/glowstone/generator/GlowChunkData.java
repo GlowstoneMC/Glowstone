@@ -1,5 +1,6 @@
 package net.glowstone.generator;
 
+import lombok.Getter;
 import net.glowstone.chunk.GlowChunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,16 +10,14 @@ import org.bukkit.material.MaterialData;
 @SuppressWarnings("deprecation")
 public class GlowChunkData implements ChunkData {
 
+    @Getter
     private final int maxHeight;
+    @Getter
     private short[][] sections;
 
     public GlowChunkData(World world) {
         maxHeight = world.getMaxHeight();
         sections = new short[GlowChunk.SEC_COUNT][];
-    }
-
-    public short[][] getSections() {
-        return sections;
     }
 
     @Override
@@ -31,11 +30,6 @@ public class GlowChunkData implements ChunkData {
             return (byte) 0;
         }
         return (byte) (sections[y >> 4][(y & 0xF) << 8 | z << 4 | x] & 0xF);
-    }
-
-    @Override
-    public int getMaxHeight() {
-        return maxHeight;
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.glowstone.inventory;
 
 import static net.glowstone.util.Position.copyPosition;
 
+import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     private static final int ITEM_SLOT = 0;
     private static final int LAPIS_SLOT = 1;
 
+    @Getter
     private final Location location;
     private final EnchantmentManager enchantmentManager;
 
@@ -102,11 +104,6 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         enchantmentManager.invalidate();
-    }
-
-    @Override
-    public Location getLocation() {
-        return location;
     }
 
     @Override
