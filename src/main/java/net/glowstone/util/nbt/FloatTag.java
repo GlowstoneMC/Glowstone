@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import lombok.Getter;
+
 /**
  * The {@code TAG_Float} tag.
  */
@@ -8,6 +10,7 @@ public final class FloatTag extends Tag<Float> {
     /**
      * The value.
      */
+    @Getter
     private final float value;
 
     /**
@@ -18,11 +21,6 @@ public final class FloatTag extends Tag<Float> {
     public FloatTag(float value) {
         super(TagType.FLOAT);
         this.value = value;
-    }
-
-    @Override
-    public Float getValue() {
-        return value;
     }
 }
 
