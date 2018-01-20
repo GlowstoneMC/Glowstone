@@ -14,6 +14,8 @@ import static net.glowstone.entity.meta.MetadataType.OPTUUID;
 import static net.glowstone.entity.meta.MetadataType.STRING;
 import static net.glowstone.entity.meta.MetadataType.VECTOR;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.passive.GlowParrot;
 import net.glowstone.entity.passive.GlowTameable;
 import org.bukkit.entity.AbstractHorse;
@@ -67,6 +69,7 @@ import org.bukkit.entity.minecart.PoweredMinecart;
 /**
  * Index constants for entity metadata.
  */
+@RequiredArgsConstructor
 public enum MetadataIndex {
 
     //Entity
@@ -233,16 +236,12 @@ public enum MetadataIndex {
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
     TNT_PRIMED(6, INT, TNTPrimed.class),;
 
-
+    @Getter
     private final int index;
+    @Getter
     private final MetadataType type;
+    @Getter
     private final Class<? extends Entity> appliesTo;
-
-    MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
-        this.index = index;
-        this.type = type;
-        this.appliesTo = appliesTo;
-    }
 
     /**
      * Returns the first {@link MetadataIndex} with a given index and {@link MetadataType}.
@@ -259,18 +258,6 @@ public enum MetadataIndex {
             }
         }
         return output;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public MetadataType getType() {
-        return type;
-    }
-
-    public Class<?> getAppliesTo() {
-        return appliesTo;
     }
 
     public boolean appliesTo(Class<? extends Entity> clazz) {
