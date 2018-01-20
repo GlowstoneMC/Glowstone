@@ -3,7 +3,6 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import net.glowstone.entity.GlowAmbient;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
