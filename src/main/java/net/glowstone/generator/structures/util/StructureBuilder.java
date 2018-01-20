@@ -498,6 +498,7 @@ public class StructureBuilder {
         public StructureMaterial(Material type) {
             this(type, 0);
         }
+
         private Material type;
         private int data;
     }
