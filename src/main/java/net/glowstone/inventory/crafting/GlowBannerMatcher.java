@@ -1,6 +1,7 @@
 package net.glowstone.inventory.crafting;
 
 import java.util.List;
+import lombok.Getter;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -156,9 +157,11 @@ public class GlowBannerMatcher extends ItemMatcher {
         TRIANGLE_TOP("# #", " # ", "   "),
         TRIANGLE_TOP_LEFT("## ", "#  ", "   "),
         TRIANGLE_TOP_RIGHT(" ##", "  #", "   ");
-
+        @Getter
         char[] values;
-        Material item;
+        @Getter
+        Material type;
+        @Getter
         short data;
 
         LayerRecipe(String... rows) {
@@ -172,28 +175,16 @@ public class GlowBannerMatcher extends ItemMatcher {
         }
 
         LayerRecipe(Material item) {
-            this.item = item;
+            this.type = item;
         }
 
         LayerRecipe(Material item, short data) {
-            this.item = item;
+            this.type = item;
             this.data = data;
         }
 
-        public char[] getValues() {
-            return values;
-        }
-
         public boolean hasItem() {
-            return item != null;
-        }
-
-        public Material getType() {
-            return item;
-        }
-
-        public short getData() {
-            return data;
+            return type != null;
         }
 
         public Pattern getPattern() {

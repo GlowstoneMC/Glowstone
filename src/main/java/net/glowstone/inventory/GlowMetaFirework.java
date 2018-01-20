@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
     private List<FireworkEffect> effects = new ArrayList<>();
+    @Getter
     private int power;
 
     /**
@@ -134,11 +136,6 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
     @Override
     public boolean hasEffects() {
         return !effects.isEmpty();
-    }
-
-    @Override
-    public int getPower() {
-        return power;
     }
 
     @Override

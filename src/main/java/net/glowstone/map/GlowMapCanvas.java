@@ -1,6 +1,9 @@
 package net.glowstone.map;
 
 import java.awt.Image;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.net.message.play.game.MapDataMessage.Section;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
@@ -16,8 +19,12 @@ import org.bukkit.map.MapView;
 public final class GlowMapCanvas implements MapCanvas {
 
     public static final int MAP_SIZE = 128;
+    @Getter(AccessLevel.PROTECTED)
     private final byte[] buffer = new byte[MAP_SIZE * MAP_SIZE];
+    @Getter
     private final MapView mapView;
+    @Getter
+    @Setter
     private MapCursorCollection cursors = new MapCursorCollection();
     private byte[] base;
 
@@ -52,21 +59,6 @@ public final class GlowMapCanvas implements MapCanvas {
     }
 
     @Override
-    public MapView getMapView() {
-        return mapView;
-    }
-
-    @Override
-    public MapCursorCollection getCursors() {
-        return cursors;
-    }
-
-    @Override
-    public void setCursors(MapCursorCollection cursors) {
-        this.cursors = cursors;
-    }
-
-    @Override
     public void setPixel(int x, int y, byte color) {
         if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) {
             return;
@@ -95,10 +87,6 @@ public final class GlowMapCanvas implements MapCanvas {
 
     protected void setBase(byte... base) {
         this.base = base;
-    }
-
-    protected byte[] getBuffer() {
-        return buffer;
     }
 
     @Override

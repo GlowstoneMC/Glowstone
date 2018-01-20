@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.InventoryUtil;
@@ -39,36 +41,41 @@ public class GlowInventory implements Inventory {
     /**
      * The owner of this inventory.
      */
-    private InventoryHolder owner;
+    @Getter
+    private InventoryHolder holder;
 
     /**
      * The type of this inventory.
      */
+    @Getter
     private InventoryType type;
 
     /**
      * The inventory's name.
      */
+    @Getter
     private String title;
 
     /**
      * The inventory's maximum stack size.
      */
+    @Getter
+    @Setter
     private int maxStackSize = 64;
 
     protected GlowInventory() {
     }
 
-    public GlowInventory(InventoryHolder owner, InventoryType type) {
-        this(owner, type, type.getDefaultSize(), type.getDefaultTitle());
+    public GlowInventory(InventoryHolder holder, InventoryType type) {
+        this(holder, type, type.getDefaultSize(), type.getDefaultTitle());
     }
 
-    public GlowInventory(InventoryHolder owner, InventoryType type, int size) {
-        this(owner, type, size, type.getDefaultTitle());
+    public GlowInventory(InventoryHolder holder, InventoryType type, int size) {
+        this(holder, type, size, type.getDefaultTitle());
     }
 
-    public GlowInventory(InventoryHolder owner, InventoryType type, int size, String title) {
-        initialize(GlowInventorySlot.createList(size), new HashSet<>(), owner, type, title);
+    public GlowInventory(InventoryHolder holder, InventoryType type, int size, String title) {
+        initialize(GlowInventorySlot.createList(size), new HashSet<>(), holder, type, title);
     }
 
     /**
@@ -86,7 +93,7 @@ public class GlowInventory implements Inventory {
             InventoryHolder owner, InventoryType type, String title) {
         this.slots = slots;
         this.viewers = viewers;
-        this.owner = owner;
+        this.holder = owner;
         this.type = type;
         this.title = title;
     }
@@ -118,6 +125,7 @@ public class GlowInventory implements Inventory {
      * @return Viewers set.
      */
     public Set<HumanEntity> getViewersSet() {
+        // TODO: Defensive copy
         return viewers;
     }
 
@@ -290,26 +298,13 @@ public class GlowInventory implements Inventory {
      * @return Slot list.
      */
     public List<GlowInventorySlot> getSlots() {
+        // TODO: Defensive copy
         return slots;
     }
 
     @Override
-    public final InventoryType getType() {
-        return type;
-    }
-
-    @Override
-    public InventoryHolder getHolder() {
-        return owner;
-    }
-
-    @Override
     public final String getName() {
-        return title;
-    }
-
-    @Override
-    public final String getTitle() {
+        // Can't be fully Lombokified because getTitle() is identical
         return title;
     }
 
@@ -324,16 +319,6 @@ public class GlowInventory implements Inventory {
         } else {
             this.title = title;
         }
-    }
-
-    @Override
-    public int getMaxStackSize() {
-        return maxStackSize;
-    }
-
-    @Override
-    public void setMaxStackSize(int size) {
-        maxStackSize = size;
     }
 
     @Override
