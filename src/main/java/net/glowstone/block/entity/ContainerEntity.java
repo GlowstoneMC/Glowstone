@@ -6,7 +6,6 @@ import net.glowstone.inventory.GlowInventory;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
