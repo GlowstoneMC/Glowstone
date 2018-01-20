@@ -310,11 +310,15 @@ public final class GlowWorld implements World {
     /**
      * Ticks between when passive mobs are spawned.
      */
-    private long ticksPerAnimal;
+    @Getter
+    @Setter
+    private int ticksPerAnimalSpawns;
     /**
      * Ticks between when hostile mobs are spawned.
      */
-    private long ticksPerMonster;
+    @Getter
+    @Setter
+    private int ticksPerMonsterSpawns;
     /**
      * Per-world spawn limits on hostile mobs.
      */
@@ -369,8 +373,8 @@ public final class GlowWorld implements World {
         populators = generator.getDefaultPopulators(this);
 
         // set up values from server defaults
-        ticksPerAnimal = server.getTicksPerAnimalSpawns();
-        ticksPerMonster = server.getTicksPerMonsterSpawns();
+        ticksPerAnimalSpawns = server.getTicksPerAnimalSpawns();
+        ticksPerMonsterSpawns = server.getTicksPerMonsterSpawns();
         monsterSpawnLimit = server.getMonsterSpawnLimit();
         animalSpawnLimit = server.getAnimalSpawnLimit();
         waterAnimalSpawnLimit = server.getWaterAnimalSpawnLimit();
@@ -731,15 +735,6 @@ public final class GlowWorld implements World {
         return RayUtil.getExposure(location, entity.getLocation());
     }
 
-    /**
-     * Gets the entity manager.
-     *
-     * @return The entity manager.
-     */
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
-
     public Collection<GlowPlayer> getRawPlayers() {
         return entityManager.getAll(GlowPlayer.class);
     }
@@ -991,26 +986,6 @@ public final class GlowWorld implements World {
     @Override
     public boolean getAllowMonsters() {
         return spawnMonsters;
-    }
-
-    @Override
-    public long getTicksPerAnimalSpawns() {
-        return ticksPerAnimal;
-    }
-
-    @Override
-    public void setTicksPerAnimalSpawns(int ticksPerAnimalSpawns) {
-        ticksPerAnimal = ticksPerAnimalSpawns;
-    }
-
-    @Override
-    public long getTicksPerMonsterSpawns() {
-        return ticksPerMonster;
-    }
-
-    @Override
-    public void setTicksPerMonsterSpawns(int ticksPerMonsterSpawns) {
-        ticksPerMonster = ticksPerMonsterSpawns;
     }
 
     ////////////////////////////////////////////////////////////////////////////
