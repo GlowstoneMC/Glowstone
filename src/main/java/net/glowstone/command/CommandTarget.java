@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -264,6 +265,7 @@ public class CommandTarget {
      * Types of selectors, namely @p (closest player), @r (random player), @a (all players), @e
      * (all entities).
      */
+    @RequiredArgsConstructor
     enum SelectorType {
         NEAREST_PLAYER('p'),
         RANDOM('r'),
@@ -271,11 +273,8 @@ public class CommandTarget {
         ALL_ENTITIES('e'),
         SENDER('s');
 
-        private char selector;
-
-        SelectorType(char selector) {
-            this.selector = selector;
-        }
+        @Getter
+        private final char selector;
 
         public static SelectorType get(char selector) {
             for (SelectorType selectorType : values()) {
@@ -284,10 +283,6 @@ public class CommandTarget {
                 }
             }
             return null;
-        }
-
-        public char getSelector() {
-            return selector;
         }
     }
 

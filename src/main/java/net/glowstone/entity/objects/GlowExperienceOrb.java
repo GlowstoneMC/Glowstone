@@ -5,6 +5,8 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
@@ -20,7 +22,10 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
     private static final int LIFETIME = 5 * 60 * 20;
 
+    @Getter
+    @Setter
     private boolean fromBottle;
+    @Getter
     private int experience;
     private boolean tickSkipped = false;
 
@@ -92,24 +97,10 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     }
 
     @Override
-    public int getExperience() {
-        return experience;
-    }
-
-    @Override
     public void setExperience(int experience) {
         Preconditions.checkArgument(experience > 0, "Experience points cannot be negative.");
         this.experience = experience;
         refresh();
-    }
-
-    @Override
-    public boolean isFromBottle() {
-        return fromBottle;
-    }
-
-    public void setFromBottle(boolean fromBottle) {
-        this.fromBottle = fromBottle;
     }
 
     @Override
