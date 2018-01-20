@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,16 +11,12 @@ import org.bukkit.material.MaterialData;
 
 public class GlowEnderman extends GlowMonster implements Enderman {
 
+    @Getter
     private MaterialData carriedMaterial = new MaterialData(Material.AIR);
 
     public GlowEnderman(Location loc) {
         super(loc, EntityType.ENDERMAN, 40);
         setBoundingBox(0.6, 2.9);
-    }
-
-    @Override
-    public MaterialData getCarriedMaterial() {
-        return carriedMaterial;
     }
 
     @Override
