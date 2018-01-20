@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -16,15 +17,12 @@ import org.bukkit.util.Vector;
 
 public class ItemFilledBucket extends ItemType {
 
+    @Getter
     private final BlockType liquid;
 
     public ItemFilledBucket(Material liquid) {
         this.liquid = ItemTable.instance().getBlock(liquid);
         setMaxStackSize(1);
-    }
-
-    public BlockType getLiquid() {
-        return liquid;
     }
 
     @Override

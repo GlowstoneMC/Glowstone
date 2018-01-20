@@ -81,7 +81,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     @Override
     public List<Message> createSpawnMessage() {
         return Collections.singletonList(
-                new SpawnObjectMessage(id, getUniqueId(), 10, location, minecartType.ordinal()));
+                new SpawnObjectMessage(entityId, getUniqueId(), 10, location, minecartType.ordinal()));
     }
 
     @Override

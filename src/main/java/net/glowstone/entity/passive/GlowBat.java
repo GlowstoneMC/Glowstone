@@ -26,11 +26,11 @@ public class GlowBat extends GlowAmbient implements Bat {
         List<Message> result = new LinkedList<>();
 
         result.add(new SpawnMobMessage(
-                id, UUID.randomUUID(), getType().getTypeId(), location, metadata.getEntryList()));
+                entityId, UUID.randomUUID(), getType().getTypeId(), location, metadata.getEntryList()));
         //TODO 1.9 - Real UUID
 
         // head facing
-        result.add(new EntityHeadRotationMessage(id, Position.getIntYaw(location)));
+        result.add(new EntityHeadRotationMessage(entityId, Position.getIntYaw(location)));
         return result;
     }
 

@@ -30,7 +30,7 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
         result.add(
-            new SpawnObjectMessage(id, UUID.randomUUID(), 79, x, y, z, pitch, yaw, 0, 0, 0, 0));
+            new SpawnObjectMessage(entityId, UUID.randomUUID(), 79, x, y, z, pitch, yaw, 0, 0, 0, 0));
         return result;
     }
 

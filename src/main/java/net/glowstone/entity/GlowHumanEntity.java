@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.profile.PlayerProfile;
@@ -56,20 +58,24 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * The player profile with name and UUID information.
      */
+    @Getter
     private final PlayerProfile profile;
 
     /**
      * The inventory of this human.
      */
+    @Getter
     private final GlowPlayerInventory inventory = new GlowPlayerInventory(this);
 
     /**
      * The ender chest inventory of this human.
      */
+    @Getter
     private final GlowInventory enderChest = new GlowInventory(this, InventoryType.ENDER_CHEST);
     /**
      * Whether this human is sleeping or not.
      */
+    @Getter
     protected boolean sleeping;
     /**
      * This human's PermissibleBase for permissions.
@@ -78,29 +84,38 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * The item the player has on their cursor.
      */
+    @Getter
+    @Setter
     private ItemStack itemOnCursor;
     /**
      * How long this human has been sleeping.
      */
-    private int sleepingTicks;
+    @Getter
+    private int sleepTicks;
     /**
      * Whether this human is considered an op.
      */
-    private boolean isOp;
+    @Getter
+    private boolean op;
 
     /**
      * The player's active game mode.
      */
+    @Getter
+    @Setter
     private GameMode gameMode;
 
     /**
      * The player's currently open inventory.
      */
-    private InventoryView inventoryView;
+    @Getter
+    private InventoryView openInventory;
 
     /**
      * The player's xpSeed. Used for calculation of enchantments.
      */
+    @Getter
+    @Setter
     private int xpSeed;
 
     /**
@@ -121,9 +136,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
 
-        inventoryView = new GlowInventoryView(this);
-        addViewer(inventoryView.getTopInventory());
-        addViewer(inventoryView.getBottomInventory());
+        openInventory = new GlowInventoryView(this);
+        addViewer(openInventory.getTopInventory());
+        addViewer(openInventory.getBottomInventory());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -139,20 +154,20 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch,
+        result.add(new SpawnPlayerMessage(entityId, profile.getUniqueId(), x, y, z, yaw, pitch,
                 metadata.getEntryList()));
 
         // head facing
-        result.add(new EntityHeadRotationMessage(id, yaw));
+        result.add(new EntityHeadRotationMessage(entityId, yaw));
 
         // equipment
         EntityEquipment equipment = getEquipment();
-        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, equipment
+        result.add(new EntityEquipmentMessage(entityId, EntityEquipmentMessage.HELD_ITEM, equipment
                 .getItemInMainHand()));
-        result.add(new EntityEquipmentMessage(id, EntityEquipmentMessage.OFF_HAND, equipment
+        result.add(new EntityEquipmentMessage(entityId, EntityEquipmentMessage.OFF_HAND, equipment
                 .getItemInOffHand()));
         for (int i = 0; i < 4; i++) {
-            result.add(new EntityEquipmentMessage(id,
+            result.add(new EntityEquipmentMessage(entityId,
                     EntityEquipmentMessage.BOOTS_SLOT + i, equipment.getArmorContents()[i]));
         }
         return result;
@@ -162,9 +177,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public void pulse() {
         super.pulse();
         if (sleeping) {
-            ++sleepingTicks;
+            ++sleepTicks;
         } else {
-            sleepingTicks = 0;
+            sleepTicks = 0;
         }
         processArmorChanges();
     }
@@ -197,23 +212,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         needsArmorUpdate = true;
     }
 
-    /**
-     * Get this human entity's PlayerProfile with associated data.
-     *
-     * @return The PlayerProfile.
-     */
-    public final PlayerProfile getProfile() {
-        return profile;
-    }
-
-    public int getXpSeed() {
-        return xpSeed;
-    }
-
-    public void setXpSeed(int xpSeed) {
-        this.xpSeed = xpSeed;
-    }
-
     @Override
     public String getName() {
         return profile.getName();
@@ -237,26 +235,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public boolean isSleeping() {
-        return sleeping;
-    }
-
-    @Override
-    public int getSleepTicks() {
-        return sleepingTicks;
-    }
-
-    @Override
-    public GameMode getGameMode() {
-        return gameMode;
-    }
-
-    @Override
-    public void setGameMode(GameMode mode) {
-        gameMode = mode;
-    }
-
-    @Override
     public boolean isBlocking() {
         return false;
     }
@@ -268,7 +246,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public EntityEquipment getEquipment() {
-        return inventory;
+        return getInventory();
     }
 
     @Override
@@ -338,13 +316,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public boolean isOp() {
-        return isOp;
-    }
-
-    @Override
     public void setOp(boolean value) {
-        isOp = value;
+        op = value;
         recalculatePermissions();
     }
 
@@ -362,11 +335,6 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     // Inventory
 
     @Override
-    public GlowPlayerInventory getInventory() {
-        return inventory;
-    }
-
-    @Override
     public ItemStack getItemInHand() {
         return getInventory().getItemInMainHand();
     }
@@ -377,29 +345,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public ItemStack getItemOnCursor() {
-        return itemOnCursor;
-    }
-
-    @Override
-    public void setItemOnCursor(ItemStack item) {
-        itemOnCursor = item;
-    }
-
-    @Override
-    public Inventory getEnderChest() {
-        return enderChest;
-    }
-
-    @Override
     public boolean setWindowProperty(Property prop, int value) {
         // nb: does not actually send anything
-        return prop.getType() == inventoryView.getType();
-    }
-
-    @Override
-    public InventoryView getOpenInventory() {
-        return inventoryView;
+        return prop.getType() == openInventory.getType();
     }
 
     @Override
@@ -415,11 +363,11 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         this.inventory.getDragTracker().reset();
 
         // stop viewing the old inventory and start viewing the new one
-        removeViewer(inventoryView.getTopInventory());
-        removeViewer(inventoryView.getBottomInventory());
-        inventoryView = inventory;
-        addViewer(inventoryView.getTopInventory());
-        addViewer(inventoryView.getBottomInventory());
+        removeViewer(openInventory.getTopInventory());
+        removeViewer(openInventory.getBottomInventory());
+        openInventory = inventory;
+        addViewer(openInventory.getTopInventory());
+        addViewer(openInventory.getBottomInventory());
     }
 
     @Override
@@ -446,7 +394,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void closeInventory() {
-        EventFactory.callEvent(new InventoryCloseEvent(inventoryView));
+        EventFactory.callEvent(new InventoryCloseEvent(openInventory));
         if (getGameMode() != GameMode.CREATIVE) {
             if (!InventoryUtil.isEmpty(getItemOnCursor())) {
                 drop(getItemOnCursor());

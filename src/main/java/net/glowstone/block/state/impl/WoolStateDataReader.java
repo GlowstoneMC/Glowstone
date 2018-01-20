@@ -1,5 +1,6 @@
 package net.glowstone.block.state.impl;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import java.util.Set;
 import net.glowstone.block.state.BlockStateData;
@@ -12,7 +13,7 @@ import org.bukkit.material.Wool;
 
 public class WoolStateDataReader extends BlockStateReader<Wool> {
 
-    private static final Set<String> VALID_STATES = Sets.newHashSet("color");
+    private static final Set<String> VALID_STATES = ImmutableSet.of("color");
 
     @Override
     public Set<String> getValidStates() {

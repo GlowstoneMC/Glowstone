@@ -19,6 +19,12 @@ import org.bukkit.entity.Player;
 public class CommandTarget {
 
     private final CommandSender sender;
+    /**
+     * The type of selector (target).
+     *
+     * @return the type of selector of this target
+     */
+    @Getter
     private final SelectorType selector;
     private final HashMap<String, SelectorValue> arguments;
 
@@ -48,20 +54,12 @@ public class CommandTarget {
     }
 
     /**
-     * The type of selector (target).
-     *
-     * @return the type of selector of this target
-     */
-    public SelectorType getSelector() {
-        return selector;
-    }
-
-    /**
      * The arguments of the selector (target).
      *
      * @return the arguments of the selector of this target
      */
     public HashMap<String, SelectorValue> getArguments() {
+        // TODO: Defensive copy
         return arguments;
     }
 

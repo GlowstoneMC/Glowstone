@@ -203,8 +203,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public static final int SELF_ID = 0;
 
     /**
-     * This player's session.
+     * The network session attached to this player.
+     *
+     * @return The GlowSession of the player.
      */
+    @Getter
     private final GlowSession session;
 
     /**
@@ -261,10 +264,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Getter
     private final PlayerRecipeMonitor recipeMonitor;
     public Location teleportedTo = null;
+    @Setter
     public boolean affectsSpawning = true;
     /**
-     * The time the player joined.
+     * The time the player joined, in milliseconds, to be saved as last played time.
+     *
+     * @return The player's join time.
      */
+    @Getter
     private long joinTime;
     /**
      * The settings sent by the client.
@@ -686,24 +693,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public boolean canTakeDamage(DamageCause damageCause) {
         return damageCause == DamageCause.FALL ? !getAllowFlight() && super
                 .canTakeDamage(damageCause) : super.canTakeDamage(damageCause);
-    }
-
-    /**
-     * Get the network session attached to this player.
-     *
-     * @return The GlowSession of the player.
-     */
-    public GlowSession getSession() {
-        return session;
-    }
-
-    /**
-     * Get the join time in milliseconds, to be saved as last played time.
-     *
-     * @return The player's join time.
-     */
-    public long getJoinTime() {
-        return joinTime;
     }
 
     /**
@@ -2162,11 +2151,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public boolean getAffectsSpawning() {
         return affectsSpawning;
-    }
-
-    @Override
-    public void setAffectsSpawning(boolean affects) {
-        affectsSpawning = affects;
     }
 
     @Override

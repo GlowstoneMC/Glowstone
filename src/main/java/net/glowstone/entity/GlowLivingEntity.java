@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -86,8 +87,27 @@ import org.bukkit.util.Vector;
 public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
 
     /**
+     * The player that killed this entity, or null if not killed by a player.
+     */
+    @Getter
+    @Setter
+    private Player killer;
+    /**
+     * Whether entities can collide with this entity.
+     */
+    @Getter
+    @Setter
+    private boolean collidable = true;
+    /**
+     * The number of arrows stuck inside this entity.
+     */
+    @Getter
+    @Setter
+    private int arrowsStuck = 0;
+    /**
      * The entity's AI task manager.
      */
+    @Getter
     protected final TaskManager taskManager;
     /**
      * Potion effects on the entity.
@@ -96,10 +116,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The LivingEntity's AttributeManager.
      */
+    @Getter
     private final AttributeManager attributeManager;
     /**
      * The entity's health.
      */
+    @Getter
     protected double health;
     /**
      * The entity's max health.
@@ -116,39 +138,53 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * The y value is not used. X is used for forward movement and z is used for sideways movement.
      * These values are relative to the entity's current yaw.</p>
      */
+    @Getter
+    @Setter
     protected Vector movement = new Vector();
     /**
      * The speed multiplier of the entity.
      */
+    @Getter
+    @Setter
     protected double speed = 1;
     /**
      * The magnitude of the last damage the entity took.
      */
+    @Getter
+    @Setter
     private double lastDamage;
     /**
      * How long the entity has until it runs out of air.
      */
-    private int airTicks = 300;
+    @Getter
+    private int remainingAir = 300;
     /**
      * The maximum amount of air the entity can hold.
      */
+    @Getter
     private int maximumAir = 300;
     /**
      * The number of ticks remaining in the invincibility period.
      */
+    @Getter
+    @Setter
     private int noDamageTicks;
     /**
      * The default length of the invincibility period.
      */
-    private int maxNoDamageTicks = 10;
+    @Getter
+    @Setter
+    private int maximumNoDamageTicks = 10;
     /**
      * Whether the entity should be removed if it is too distant from players.
      */
-    private boolean removeDistance;
+    @Setter
+    private boolean removeWhenFarAway;
     /**
      * Whether the (non-Player) entity can pick up armor and tools.
      */
-    private boolean pickupItems;
+    @Setter
+    private boolean canPickupItems;
     /**
      * Monitor for the equipment of this entity.
      */
@@ -158,6 +194,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Whether the entity can automatically glide when falling with an Elytra equipped. This value
      * is ignored for players.
      */
+    @Getter
+    @Setter
     private boolean fallFlying;
     /**
      * Ticks until the next ambient sound roll.
@@ -166,10 +204,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The last entity which damaged this living entity.
      */
+    @Getter
+    @Setter
     private Entity lastDamager;
     /**
      * The head rotation of the living entity, if applicable.
      */
+    @Getter
     private float headYaw;
     /**
      * Whether the headYaw value should be updated.
@@ -178,7 +219,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The entity's current AI state.
      */
-    private MobState aiState = MobState.NO_AI;
+    @Getter
+    private MobState state = MobState.NO_AI;
     /**
      * If this entity has swam in lava (for fire application).
      */
@@ -231,14 +273,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // breathing
         if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
             if (canTakeDamage(DamageCause.DROWNING)) {
-                --airTicks;
-                if (airTicks <= -20) {
-                    airTicks = 0;
+                --remainingAir;
+                if (remainingAir <= -20) {
+                    remainingAir = 0;
                     damage(1, DamageCause.DROWNING);
                 }
             }
         } else {
-            airTicks = maximumAir;
+            remainingAir = maximumAir;
         }
 
         if (isTouchingMaterial(Material.CACTUS)) {
@@ -361,22 +403,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return movement;
     }
 
-    public Vector getMovement() {
-        return movement.clone();
-    }
-
-    public void setMovement(Vector movement) {
-        this.movement = movement;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
     protected void jump() {
         if (location.getBlock().isLiquid()) {
             // jump out more when you breach the surface of the liquid
@@ -403,18 +429,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         List<Message> messages = super.createUpdateMessage(session);
 
         messages.addAll(equipmentMonitor.getChanges().stream()
-            .map(change -> new EntityEquipmentMessage(id, change.slot, change.item))
+            .map(change -> new EntityEquipmentMessage(entityId, change.slot, change.item))
             .collect(Collectors.toList()));
         if (headRotated) {
-            messages.add(new EntityHeadRotationMessage(id, Position.getIntHeadYaw(headYaw)));
+            messages.add(new EntityHeadRotationMessage(entityId, Position.getIntHeadYaw(headYaw)));
         }
         attributeManager.applyMessages(messages);
 
         return messages;
-    }
-
-    public AttributeManager getAttributeManager() {
-        return attributeManager;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -436,22 +458,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public Player getKiller() {
-        return null;
-    }
-
-    @Override
-    public void setKiller(Player player) {
-        throw new UnsupportedOperationException("Not implemented yet.");
-    }
-
-    @Override
     public boolean hasLineOfSight(Entity other) {
         return false;
-    }
-
-    public float getHeadYaw() {
-        return headYaw;
     }
 
     public void setHeadYaw(float headYaw) {
@@ -468,38 +476,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public int getNoDamageTicks() {
-        return noDamageTicks;
-    }
-
-    @Override
-    public void setNoDamageTicks(int ticks) {
-        noDamageTicks = ticks;
-    }
-
-    @Override
-    public int getMaximumNoDamageTicks() {
-        return maxNoDamageTicks;
-    }
-
-    @Override
-    public void setMaximumNoDamageTicks(int ticks) {
-        maxNoDamageTicks = ticks;
-    }
-
-    @Override
-    public int getRemainingAir() {
-        return airTicks;
-    }
-
-    @Override
     public void setRemainingAir(int ticks) {
-        airTicks = Math.min(ticks, maximumAir);
-    }
-
-    @Override
-    public int getMaximumAir() {
-        return maximumAir;
+        remainingAir = Math.min(ticks, maximumAir);
     }
 
     @Override
@@ -509,22 +487,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public boolean getRemoveWhenFarAway() {
-        return removeDistance;
-    }
-
-    @Override
-    public void setRemoveWhenFarAway(boolean remove) {
-        removeDistance = remove;
+        return removeWhenFarAway;
     }
 
     @Override
     public boolean getCanPickupItems() {
-        return pickupItems;
-    }
-
-    @Override
-    public void setCanPickupItems(boolean pickup) {
-        pickupItems = pickup;
+        return canPickupItems;
     }
 
     /**
@@ -703,11 +671,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public double getHealth() {
-        return health;
-    }
-
-    @Override
     public void setHealth(double health) {
         if (health < 0) {
             health = 0;
@@ -797,7 +760,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause) || isInvulnerable()) {
             return;
         } else {
-            noDamageTicks = maxNoDamageTicks;
+            noDamageTicks = maximumNoDamageTicks;
         }
 
         // fire resistance
@@ -876,24 +839,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void resetMaxHealth() {
         setMaxHealth(maxHealth);
-    }
-
-    @Override
-    public double getLastDamage() {
-        return lastDamage;
-    }
-
-    @Override
-    public void setLastDamage(double damage) {
-        lastDamage = damage;
-    }
-
-    public Entity getLastDamager() {
-        return lastDamager;
-    }
-
-    public void setLastDamager(Entity lastDamager) {
-        this.lastDamager = lastDamager;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -998,14 +943,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         super.setOnGround(onGround);
     }
 
-    public boolean isFallFlying() {
-        return fallFlying;
-    }
-
-    public void setFallFlying(boolean fallFlying) {
-        this.fallFlying = fallFlying;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Leashes
 
@@ -1023,18 +960,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING, gliding);
     }
 
-    public MobState getState() {
-        return aiState;
-    }
-
     /**
      * Sets the AI state.
      *
      * @param state the new AI state
      */
     public void setState(MobState state) {
-        if (aiState != state) {
-            aiState = state;
+        if (this.state != state) {
+            this.state = state;
             getTaskManager().updateState();
         }
     }
@@ -1042,7 +975,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void setAI(boolean ai) {
         if (ai) {
-            if (aiState == MobState.NO_AI) {
+            if (state == MobState.NO_AI) {
                 setState(MobState.IDLE);
             }
         } else {
@@ -1052,29 +985,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public boolean hasAI() {
-        return aiState != MobState.NO_AI;
-    }
-
-    @Override
-    public boolean isCollidable() {
-        // todo: 1.11
-        return true;
-    }
-
-    @Override
-    public void setCollidable(boolean collidable) {
-        // todo: 1.11
-    }
-
-    @Override
-    public int getArrowsStuck() {
-        // todo: 1.11
-        return 0;
-    }
-
-    @Override
-    public void setArrowsStuck(int arrowsStuck) {
-        // todo: 1.11
+        return state != MobState.NO_AI;
     }
 
     @Override
@@ -1089,10 +1000,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     public AttributeInstance getAttribute(Attribute attribute) {
         // todo: 1.11
         return null;
-    }
-
-    public TaskManager getTaskManager() {
-        return taskManager;
     }
 
     @Override

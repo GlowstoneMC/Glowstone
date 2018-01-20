@@ -47,8 +47,8 @@ public class GlowBoat extends GlowEntity implements Boat {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.BOAT, location),
-            new EntityMetadataMessage(id, metadata.getEntryList())
+            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.BOAT, location),
+            new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
 
