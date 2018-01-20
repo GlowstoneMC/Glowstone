@@ -26,7 +26,7 @@ public class EntityIdManager {
      * @return The id.
      */
     synchronized int allocate(GlowEntity entity) {
-        if (entity.id != 0) {
+        if (entity.entityId != 0) {
             throw new IllegalStateException("Entity already has an id assigned.");
         }
 
@@ -39,7 +39,7 @@ public class EntityIdManager {
             }
 
             if (usedIds.add(id)) {
-                entity.id = id;
+                entity.entityId = id;
                 lastId = id;
                 return id;
             }
@@ -54,10 +54,10 @@ public class EntityIdManager {
      * @param entity The entity.
      */
     synchronized void deallocate(GlowEntity entity) {
-        if (entity.id == 0) {
+        if (entity.entityId == 0) {
             throw new IllegalStateException("Entity does not have an id assigned.");
         }
-        usedIds.remove(entity.id);
+        usedIds.remove(entity.entityId);
     }
 
 }

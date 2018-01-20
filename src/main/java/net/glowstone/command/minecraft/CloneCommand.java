@@ -4,6 +4,7 @@ import com.google.common.collect.AbstractIterator;
 import java.util.Collections;
 import java.util.Iterator;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
@@ -19,20 +20,14 @@ import org.jetbrains.annotations.NotNull;
 
 
 public class CloneCommand extends VanillaCommand {
+    @RequiredArgsConstructor
     public enum MaskMode {
         REPLACE("replace"),
         MASKED("masked"),
         FILTERED("filter");
 
+        @Getter
         private final String commandName;
-
-        MaskMode(String commandName) {
-            this.commandName = commandName;
-        }
-
-        public String getCommandName() {
-            return commandName;
-        }
 
         /**
          * Returns the MaskMode with a given subcommand name, or null if none match.

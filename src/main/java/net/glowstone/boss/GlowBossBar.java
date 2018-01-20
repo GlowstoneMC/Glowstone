@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.player.BossBarMessage;
 import net.glowstone.util.TextMessage;
@@ -15,13 +16,19 @@ import org.bukkit.entity.Player;
 
 public class GlowBossBar implements BossBar {
 
+    @Getter
     private final UUID uniqueId;
     private final List<BarFlag> flags = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
+    @Getter
     private String title;
+    @Getter
     private BarColor color;
+    @Getter
     private BarStyle style;
+    @Getter
     private double progress = 1.0;
+    @Getter
     private boolean visible = true;
 
     /**
@@ -48,22 +55,12 @@ public class GlowBossBar implements BossBar {
     }
 
     @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
     public void setTitle(String title) {
         this.title = title;
         if (isVisible()) {
             sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_TITLE, new
                     TextMessage(title)));
         }
-    }
-
-    @Override
-    public BarColor getColor() {
-        return color;
     }
 
     @Override
@@ -74,11 +71,6 @@ public class GlowBossBar implements BossBar {
                     BossBarMessage.Color
                     .fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
         }
-    }
-
-    @Override
-    public BarStyle getStyle() {
-        return style;
     }
 
     @Override
@@ -116,11 +108,6 @@ public class GlowBossBar implements BossBar {
     @Override
     public boolean hasFlag(BarFlag flag) {
         return flags.contains(flag);
-    }
-
-    @Override
-    public double getProgress() {
-        return progress;
     }
 
     @Override
@@ -173,12 +160,8 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public List<Player> getPlayers() {
+        // TODO: Defensive copy
         return players;
-    }
-
-    @Override
-    public boolean isVisible() {
-        return visible;
     }
 
     @Override
@@ -201,10 +184,6 @@ public class GlowBossBar implements BossBar {
     @Override
     public void hide() {
         setVisible(false);
-    }
-
-    public UUID getUniqueId() {
-        return uniqueId;
     }
 
     private byte flagsToByte() {

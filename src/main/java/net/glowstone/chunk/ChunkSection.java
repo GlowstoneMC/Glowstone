@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import javax.annotation.Nullable;
+import lombok.Getter;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
@@ -49,11 +50,16 @@ public final class ChunkSection {
     private VariableValueArray data;
     /**
      * The sky light array. This array is always set, even in dimensions without skylight.
+     *
+     * @return The sky light array. If the dimension of this chunk section's chunk's world is not
+     *         the overworld, this array contains only maximum light levels.
      */
+    @Getter
     private NibbleArray skyLight;
     /**
      * The block light array.
      */
+    @Getter
     private NibbleArray blockLight;
     /**
      * The number of non-air blocks in this section, used to determine whether it is empty.
@@ -398,15 +404,6 @@ public final class ChunkSection {
     }
 
     /**
-     * Gets the block light array.
-     *
-     * @return The block light array.
-     */
-    public NibbleArray getBlockLight() {
-        return blockLight;
-    }
-
-    /**
      * Gets the block light at the given block.
      *
      * @param x The x coordinate, for east and west.
@@ -428,16 +425,6 @@ public final class ChunkSection {
      */
     public void setBlockLight(int x, int y, int z, byte light) {
         blockLight.set(index(x, y, z), light);
-    }
-
-    /**
-     * Gets the sky light array.
-     *
-     * @return The sky light array. If the dimension of this chunk section's chunk's world is not
-     *         the overworld, this array contains only maximum light levels.
-     */
-    public NibbleArray getSkyLight() {
-        return skyLight;
     }
 
     /**

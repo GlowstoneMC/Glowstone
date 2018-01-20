@@ -79,10 +79,10 @@ public class EntityManager implements Iterable<GlowEntity> {
      */
     @SuppressWarnings("unchecked")
     void register(GlowEntity entity) {
-        if (entity.id == 0) {
+        if (entity.entityId == 0) {
             throw new IllegalStateException("Entity has not been assigned an id.");
         }
-        entities.put(entity.id, entity);
+        entities.put(entity.entityId, entity);
         groupedEntities.put(entity.getClass(), entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().add(entity);
     }
@@ -93,7 +93,7 @@ public class EntityManager implements Iterable<GlowEntity> {
      * @param entity The entity.
      */
     void unregister(GlowEntity entity) {
-        entities.remove(entity.id);
+        entities.remove(entity.entityId);
         groupedEntities.remove(entity.getClass(), entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().remove(entity);
     }
