@@ -102,7 +102,7 @@ public abstract class BlockLiquid extends BlockType {
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
         Material oldType, byte oldData, Material newType, byte newData) {
-        if (block.getState().getFlowed() && !(isWater(newType) || newType == Material.LAVA
+        if (block.getState().isFlowed() && !(isWater(newType) || newType == Material.LAVA
             || newType == Material.STATIONARY_LAVA)) {
             block.getState().setFlowed(false);
         }
@@ -120,7 +120,7 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     private void calculateFlow(GlowBlock block) {
-        if (!block.getState().getFlowed()) {
+        if (!block.getState().isFlowed()) {
             GlowBlockState state = block.getState();
             // see if we can flow down
             if (block.getY() > 0) {
@@ -143,7 +143,7 @@ public abstract class BlockLiquid extends BlockType {
                             }
                         }
                         // if we already found a match at this radius, stop
-                        if (state.getFlowed()) {
+                        if (state.isFlowed()) {
                             return;
                         }
                     }
