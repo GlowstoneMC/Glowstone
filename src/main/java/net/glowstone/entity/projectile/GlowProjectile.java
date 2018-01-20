@@ -51,9 +51,9 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
         int pitch = Position.getIntPitch(location);
 
         return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), getObjectId(), x, y, z, pitch, yaw),
-                new EntityMetadataMessage(id, metadata.getEntryList()),
-                new EntityVelocityMessage(id, getVelocity())
+                new SpawnObjectMessage(entityId, getUniqueId(), getObjectId(), x, y, z, pitch, yaw),
+                new EntityMetadataMessage(entityId, metadata.getEntryList()),
+                new EntityVelocityMessage(entityId, getVelocity())
         );
     }
 
