@@ -126,8 +126,8 @@ public class GlowWorldBorder implements WorldBorder {
         step = (size - this.size) / (double) ticks;
         sizeLerpTarget = size;
         sizeLerpTime = seconds;
-        broadcast(new WorldBorderMessage(
-                WorldBorderMessage.Action.LERP_SIZE, this.size, sizeLerpTarget, sizeLerpTime * 1000));
+        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.LERP_SIZE,
+                this.size, sizeLerpTarget, sizeLerpTime * 1000));
     }
 
     @Override
