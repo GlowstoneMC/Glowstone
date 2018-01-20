@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.WorldBorderMessage;
 import org.bukkit.Location;
@@ -9,6 +10,7 @@ import org.bukkit.WorldBorder;
 public class GlowWorldBorder implements WorldBorder {
 
     private final World world;
+    @Getter
     private double size;
     private double futureSize;
     private double step;
@@ -85,11 +87,6 @@ public class GlowWorldBorder implements WorldBorder {
         setDamageAmount(0.2);
         setWarningTime(15);
         setWarningDistance(5);
-    }
-
-    @Override
-    public double getSize() {
-        return size;
     }
 
     @Override
