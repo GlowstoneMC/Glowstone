@@ -1,23 +1,18 @@
 package net.glowstone.generator.structures.util;
 
+import lombok.Getter;
 import org.bukkit.util.Vector;
 
 public class StructureBoundingBox {
 
+    @Getter
     private Vector min;
+    @Getter
     private Vector max;
 
     public StructureBoundingBox(Vector min, Vector max) {
         this.min = min;
         this.max = max;
-    }
-
-    public Vector getMin() {
-        return min;
-    }
-
-    public Vector getMax() {
-        return max;
     }
 
     /**

@@ -123,6 +123,8 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiome;
@@ -598,6 +600,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
         }
     }
 
+    @RequiredArgsConstructor
     private static class BiomeHeight {
 
         public static final BiomeHeight DEFAULT = new BiomeHeight(
@@ -667,20 +670,9 @@ public class OverworldGenerator extends GlowChunkGenerator {
                 getWorldConfig().getDouble(BIOME_HEIGHT_DEEP_OCEAN),
                 getWorldConfig().getDouble(BIOME_SCALE_DEEP_OCEAN));
 
+        @Getter
         private final double height;
+        @Getter
         private final double scale;
-
-        public BiomeHeight(double height, double scale) {
-            this.height = height;
-            this.scale = scale;
-        }
-
-        public double getHeight() {
-            return height;
-        }
-
-        public double getScale() {
-            return scale;
-        }
     }
 }

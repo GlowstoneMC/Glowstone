@@ -1,6 +1,8 @@
 package net.glowstone.inventory;
 
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.ChatColor;
@@ -19,7 +21,10 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
     private static final int FIRST_ITEM_SLOT = 0;
     private static final int SECOND_ITEM_SLOT = 1;
     private static final int RESULT_SLOT = 2;
-    private String rename = "";
+    @Getter
+    private String renameText = "";
+    @Getter
+    @Setter
     private int repairCost;
 
     /**
@@ -124,19 +129,14 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         return null;
     }
 
-    @Override
-    public String getRenameText() {
-        return rename;
-    }
-
     /**
      * Sets the name of the next item to be modified on this anvil.
      *
      * @param name the item name
      */
     public void setRenameText(String name) {
-        rename = name;
-        if (rename.isEmpty()) {
+        renameText = name;
+        if (renameText.isEmpty()) {
             setItem(FIRST_ITEM_SLOT, getFirstItem());
             setItem(SECOND_ITEM_SLOT, getSecondItem());
         } else {
@@ -147,20 +147,10 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
                 }
                 // rename the item
                 ItemMeta m = result.getItemMeta();
-                m.setDisplayName(ChatColor.ITALIC + rename);
+                m.setDisplayName(ChatColor.ITALIC + renameText);
                 result.setItemMeta(m);
                 setItem(RESULT_SLOT, result);
             }
         }
-    }
-
-    @Override
-    public int getRepairCost() {
-        return repairCost;
-    }
-
-    @Override
-    public void setRepairCost(int levels) {
-        repairCost = levels;
     }
 }
