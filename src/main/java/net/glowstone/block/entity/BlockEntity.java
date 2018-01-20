@@ -7,7 +7,6 @@ import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.block.Block;
 
 /**
  * Base class for block entities (blocks with NBT data) in the world. Most access to block entities
