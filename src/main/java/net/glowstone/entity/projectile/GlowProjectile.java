@@ -64,7 +64,7 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
                 location, size.getX(), size.getY(), size.getZ())) {
             if (entity instanceof LivingEntity && !(entity.equals(shooter))) {
                 collide((LivingEntity) entity);
-                return;
+                break;
             }
         }
         super.pulsePhysics();
