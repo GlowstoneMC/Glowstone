@@ -140,17 +140,24 @@ public final class GlowWorld implements World {
      */
     private static int seaLevel;
     /**
-     * The server of this world.
+     * Get the world's parent server.
+     *
+     * @return The GlowServer for the world.
      */
+    @Getter
     private final GlowServer server;
     /**
      * The name of this world.
      */
+    @Getter
     private final String name;
     /**
      * The chunk manager.
+     *
+     * @return The ChunkManager for the world.
      */
-    private final ChunkManager chunks;
+    @Getter
+    private final ChunkManager chunkManager;
     /**
      * The world metadata service used.
      */
@@ -178,6 +185,7 @@ public final class GlowWorld implements World {
     /**
      * The environment.
      */
+    @Getter
     private final Environment environment;
     /**
      * Whether structure generation is enabled.
@@ -186,6 +194,7 @@ public final class GlowWorld implements World {
     /**
      * The world seed.
      */
+    @Getter
     private final long seed;
     /**
      * Contains how regular blocks should be pulsed.
@@ -227,7 +236,7 @@ public final class GlowWorld implements World {
      */
     private final Map<String, CommandFunction> functions;
     /**
-     * A lock kept on the spawn chunks.
+     * A lock kept on the spawn chunkManager.
      */
     private ChunkLock spawnChunkLock;
     /**
@@ -241,11 +250,11 @@ public final class GlowWorld implements World {
      */
     private Location spawnLocation;
     /**
-     * Whether to keep the spawn chunks in memory (prevent them from being unloaded).
+     * Whether to keep the spawn chunkManager in memory (prevent them from being unloaded).
      */
     private boolean keepSpawnLoaded = true;
     /**
-     * Whether to populate chunks when they are anchored.
+     * Whether to populate chunkManager when they are anchored.
      */
     private boolean populateAnchoredChunks;
     /**
@@ -386,7 +395,7 @@ public final class GlowWorld implements World {
             uid = UUID.randomUUID();
         }
 
-        chunks = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
+        chunkManager = new ChunkManager(this, storageProvider.getChunkIoService(), generator);
         structures = storageProvider.getStructureDataService().readStructuresData();
         functions = storageProvider.getFunctionIoService().readFunctions().stream()
                 .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
@@ -409,31 +418,13 @@ public final class GlowWorld implements World {
     // Various internal mechanisms
 
     /**
-     * Get the world chunk manager.
-     *
-     * @return The ChunkManager for the world.
-     */
-    public ChunkManager getChunkManager() {
-        return chunks;
-    }
-
-    /**
-     * Get the world's parent server.
-     *
-     * @return The GlowServer for the world.
-     */
-    public GlowServer getServer() {
-        return server;
-    }
-
-    /**
-     * Get a new chunk lock object a player or other party can use to keep chunks loaded.
+     * Get a new chunk lock object a player or other party can use to keep chunkManager loaded.
      *
      * @param desc A description for this chunk lock.
      * @return The ChunkLock.
      */
     public ChunkLock newChunkLock(String desc) {
-        return new ChunkLock(chunks, name + ": " + desc);
+        return new ChunkLock(chunkManager, name + ": " + desc);
     }
 
     /**
@@ -478,7 +469,7 @@ public final class GlowWorld implements World {
     }
 
     private void updateActiveChunkCollection(GlowEntity entity) {
-        // build a set of chunks around each player in this world, the
+        // build a set of chunkManager around each player in this world, the
         // server view distance is taken here
         int radius = server.getViewDistance();
         Location playerLocation = entity.getLocation();
@@ -538,7 +529,7 @@ public final class GlowWorld implements World {
     private void saveWorld() {
         if (--saveTimer <= 0) {
             saveTimer = AUTOSAVE_TIME;
-            chunks.unloadOldChunks();
+            chunkManager.unloadOldChunks();
             if (autosave) {
                 save(true);
             }
@@ -900,7 +891,7 @@ public final class GlowWorld implements World {
                 prepareSpawn();
             } else {
                 // attempt to immediately unload the spawn
-                chunks.unloadOldChunks();
+                chunkManager.unloadOldChunks();
                 spawnChunkLock = null;
             }
         }
@@ -1046,23 +1037,8 @@ public final class GlowWorld implements World {
     // Various fixed world properties
 
     @Override
-    public Environment getEnvironment() {
-        return environment;
-    }
-
-    @Override
-    public long getSeed() {
-        return seed;
-    }
-
-    @Override
     public UUID getUID() {
         return uid;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -1105,10 +1081,10 @@ public final class GlowWorld implements World {
         // save metadata
         writeWorldData(async);
 
-        // save chunks
+        // save chunkManager
         maybeAsync(async, () -> {
-            for (GlowChunk chunk : chunks.getLoadedChunks()) {
-                chunks.performSave(chunk);
+            for (GlowChunk chunk : chunkManager.getLoadedChunks()) {
+                chunkManager.performSave(chunk);
             }
         });
 
@@ -1123,7 +1099,7 @@ public final class GlowWorld implements World {
 
     @Override
     public ChunkGenerator getGenerator() {
-        return chunks.getGenerator();
+        return chunkManager.getGenerator();
     }
 
     @Override
@@ -1178,7 +1154,7 @@ public final class GlowWorld implements World {
     }
 
     /**
-     * Returns the number of block entities in loaded chunks.
+     * Returns the number of block entities in loaded chunkManager.
      *
      * @return the number of block entities
      */
@@ -1197,7 +1173,7 @@ public final class GlowWorld implements World {
     }
 
     /**
-     * Returns the number of tickable block entities in loaded chunks.
+     * Returns the number of tickable block entities in loaded chunkManager.
      *
      * @return the number of tickable block entities
      */
@@ -1291,7 +1267,7 @@ public final class GlowWorld implements World {
 
     @Override
     public GlowChunk getChunkAt(int x, int z) {
-        return chunks.getChunk(x, z);
+        return chunkManager.getChunk(x, z);
     }
 
     @Override
@@ -1302,7 +1278,7 @@ public final class GlowWorld implements World {
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
         Bukkit.getServer().getScheduler()
-                .runTaskAsynchronously(null, () -> cb.onLoad(chunks.getChunk(x, z)));
+                .runTaskAsynchronously(null, () -> cb.onLoad(chunkManager.getChunk(x, z)));
     }
 
     @Override
@@ -1325,17 +1301,17 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean isChunkLoaded(int x, int z) {
-        return chunks.isChunkLoaded(x, z);
+        return chunkManager.isChunkLoaded(x, z);
     }
 
     @Override
     public boolean isChunkInUse(int x, int z) {
-        return chunks.isChunkInUse(x, z);
+        return chunkManager.isChunkInUse(x, z);
     }
 
     @Override
     public Chunk[] getLoadedChunks() {
-        return chunks.getLoadedChunks();
+        return chunkManager.getLoadedChunks();
     }
 
     @Override
@@ -1391,7 +1367,7 @@ public final class GlowWorld implements World {
 
     @Override
     public boolean regenerateChunk(int x, int z) {
-        if (!chunks.forceRegeneration(x, z)) {
+        if (!chunkManager.forceRegeneration(x, z)) {
             return false;
         }
         refreshChunk(x, z);
