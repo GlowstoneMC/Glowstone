@@ -11,9 +11,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-@Sounds(hurt = Sound.ENTITY_ZOMBIE_HURT,
-        death = Sound.ENTITY_ZOMBIE_DEATH,
-        ambient = Sound.ENTITY_ZOMBIE_AMBIENT)
+@Sounds(hurt = Sound.ENTITY_ZOMBIE_PIG_HURT,
+        death = Sound.ENTITY_ZOMBIE_PIG_DEATH,
+        ambient = Sound.ENTITY_ZOMBIE_PIG_AMBIENT)
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Getter
