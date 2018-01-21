@@ -1,5 +1,7 @@
 package net.glowstone.entity.monster;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
@@ -31,8 +33,9 @@ public class GlowSlime extends GlowMonster implements Slime {
     }
 
     @Override
-    public void setSize(int sz) {
-        metadata.set(MetadataIndex.SLIME_SIZE, sz);
+    public void setSize(int size) {
+        checkArgument(size > 0);
+        metadata.set(MetadataIndex.SLIME_SIZE, size);
     }
 
     @Override
