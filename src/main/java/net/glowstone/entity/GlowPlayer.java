@@ -1466,6 +1466,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
 
             super.setGameMode(mode);
+            super.setFallDistance(0);
             updateUserListEntries(UserListItemMessage.gameModeOne(getUniqueId(), mode.getValue()));
             session.send(new StateChangeMessage(Reason.GAMEMODE, mode.getValue()));
         }
