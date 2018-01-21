@@ -1,10 +1,12 @@
 package net.glowstone.entity.monster;
 
+import net.glowstone.entity.annotation.EntityProperties;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Skeleton;
 
+@EntityProperties(undead = true)
 public class GlowSkeleton extends GlowMonster implements Skeleton {
 
     public GlowSkeleton(Location loc) {
@@ -40,10 +42,5 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SKELETON_AMBIENT;
-    }
-
-    @Override
-    public boolean isUndead() {
-        return true;
     }
 }

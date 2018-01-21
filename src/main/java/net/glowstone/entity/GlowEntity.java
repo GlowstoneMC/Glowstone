@@ -22,6 +22,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.entity.annotation.EntityProperties;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
@@ -42,6 +43,7 @@ import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
 import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.AnnotationUtil;
 import net.glowstone.util.Position;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -250,6 +252,10 @@ public abstract class GlowEntity implements Entity {
     @Getter
     @Setter
     private int portalCooldown;
+    /**
+     * The properties annotation for this entity type.
+     */
+    protected static EntityProperties properties;
     private Spigot spigot = new Spigot() {
         @Override
         public boolean isInvulnerable() {
@@ -276,6 +282,7 @@ public abstract class GlowEntity implements Entity {
         server.getEntityIdManager().allocate(this);
         world.getEntityManager().register(this);
         previousLocation = location.clone();
+        properties = AnnotationUtil.getClassAnnotation(EntityProperties.class, getClass());
     }
 
     ////////////////////////////////////////////////////////////////////////////

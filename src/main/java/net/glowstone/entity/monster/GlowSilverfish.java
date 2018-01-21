@@ -1,10 +1,12 @@
 package net.glowstone.entity.monster;
 
+import net.glowstone.entity.annotation.EntityProperties;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Silverfish;
 
+@EntityProperties(arthropod = true)
 public class GlowSilverfish extends GlowMonster implements Silverfish {
 
     public GlowSilverfish(Location loc) {
@@ -25,10 +27,5 @@ public class GlowSilverfish extends GlowMonster implements Silverfish {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SILVERFISH_AMBIENT;
-    }
-
-    @Override
-    public boolean isArthropod() {
-        return true;
     }
 }

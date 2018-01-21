@@ -24,6 +24,7 @@ import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
+import net.glowstone.entity.annotation.Sounds;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.entity.objects.GlowLeashHitch;
@@ -36,6 +37,7 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
+import net.glowstone.util.AnnotationUtil;
 import net.glowstone.util.ExperienceSplitter;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
@@ -225,6 +227,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * If this entity has swam in lava (for fire application).
      */
     private boolean swamInLava;
+    /**
+     * The sound data annotation for this entity type.
+     */
+    private static Sounds soundData;
 
     /**
      * Creates a mob within the specified world.
@@ -248,6 +254,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         attributeManager.setProperty(Key.KEY_MAX_HEALTH, maxHealth);
         health = maxHealth;
         taskManager = new TaskManager(this);
+        soundData = AnnotationUtil.getClassAnnotation(Sounds.class, getClass());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -500,8 +507,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      *
      * @return the hurt sound if available
      */
-    protected Sound getHurtSound() {
-        return null;
+    protected /* final */ Sound getHurtSound() {
+        return soundData == null ? null : soundData.hurt();
     }
 
     /**
@@ -509,8 +516,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      *
      * @return the death sound if available
      */
-    protected Sound getDeathSound() {
-        return null;
+    protected /* final */ Sound getDeathSound() {
+        return soundData == null ? null : soundData.death();
     }
 
     /**
@@ -518,8 +525,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      *
      * @return the ambient sound if available
      */
-    protected Sound getAmbientSound() {
-        return null;
+    protected /* final */ Sound getAmbientSound() {
+        return soundData == null ? null : soundData.ambient();
     }
 
     /**
@@ -562,25 +569,25 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * Get whether of not this entity is an arthropod.
+     * Gets whether of not this entity is an arthropod.
      *
      * @return true if this entity is an arthropod, false otherwise
      */
-    public boolean isArthropod() {
-        return false;
+    public final boolean isArthropod() {
+        return properties.arthropod();
+    }
+
+    /**
+     * Gets whether or not this entity is undead.
+     *
+     * @return true if this entity is undead, false otherwise
+     */
+    public final boolean isUndead() {
+        return properties.undead();
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Line of Sight
-
-    /**
-     * Get whether or not this entity is undead.
-     *
-     * @return true if this entity is undead, false otherwise
-     */
-    public boolean isUndead() {
-        return false;
-    }
 
     private List<Block> getLineOfSight(Set<Material> transparent, int maxDistance, int maxLength) {
         // same limit as CraftBukkit
