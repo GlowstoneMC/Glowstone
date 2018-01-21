@@ -1662,13 +1662,11 @@ public final class GlowServer implements Server {
 
     @Override
     public GlowPlayerProfile createProfile(UUID id) {
-        checkNotNull(id);
         return createProfile(id, null);
     }
 
     @Override
     public GlowPlayerProfile createProfile(String name) {
-        checkNotNull(name);
         return createProfile(null, name);
     }
 

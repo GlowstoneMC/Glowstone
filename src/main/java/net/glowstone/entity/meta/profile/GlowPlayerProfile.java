@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
@@ -27,6 +28,7 @@ import org.json.simple.JSONObject;
 public class GlowPlayerProfile implements PlayerProfile {
 
     public static final int MAX_USERNAME_LENGTH = 16;
+    @Getter
     private final String name;
     private final UUID uniqueId;
     private final Map<String, ProfileProperty> properties;
@@ -176,11 +178,6 @@ public class GlowPlayerProfile implements PlayerProfile {
             profileTag.putCompound("Properties", propertiesTag);
         }
         return profileTag;
-    }
-
-    @Override
-    public String getName() {
-        return null;
     }
 
     @Override
