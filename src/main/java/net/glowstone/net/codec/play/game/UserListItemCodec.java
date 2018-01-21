@@ -1,12 +1,12 @@
 package net.glowstone.net.codec.play.game;
 
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import java.io.IOException;
 import java.util.List;
-import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.UserListItemMessage;
 import net.glowstone.net.message.play.game.UserListItemMessage.Action;
@@ -35,7 +35,7 @@ public final class UserListItemCodec implements Codec<UserListItemMessage> {
                     // this code is somewhat saddening
                     ByteBufUtils.writeUTF8(buf, entry.profile.getName());
                     ByteBufUtils.writeVarInt(buf, entry.profile.getProperties().size());
-                    for (PlayerProperty property : entry.profile.getProperties()) {
+                    for (ProfileProperty property : entry.profile.getProperties()) {
                         ByteBufUtils.writeUTF8(buf, property.getName());
                         ByteBufUtils.writeUTF8(buf, property.getValue());
                         buf.writeBoolean(property.isSigned());

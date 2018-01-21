@@ -1,13 +1,13 @@
 package net.glowstone.net;
 
+import com.destroystokyo.paper.profile.ProfileProperty;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.entity.meta.profile.PlayerProperty;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.UuidUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -45,7 +45,7 @@ public final class ProxyData {
     private UUID uuid;
 
     /** The player properties for the spoofed profile. */
-    private List<PlayerProperty> properties;
+    private List<ProfileProperty> properties;
 
     /**
      * Create a proxy data structure for a session from the given source text.
@@ -81,7 +81,7 @@ public final class ProxyData {
                     String propName = (String) prop.get("n");
                     String value = (String) prop.get("v");
                     String signature = (String) prop.get("s");
-                    properties.add(new PlayerProperty(propName, value, signature));
+                    properties.add(new ProfileProperty(propName, value, signature));
                 }
             } else {
                 properties = new ArrayList<>(0);
@@ -119,7 +119,7 @@ public final class ProxyData {
                 String propName = (String) propJson.get("name");
                 String value = (String) propJson.get("value");
                 String signature = (String) propJson.get("signature");
-                properties.add(new PlayerProperty(propName, value, signature));
+                properties.add(new ProfileProperty(propName, value, signature));
             }
         } else {
             properties = new ArrayList<>(0);
@@ -132,8 +132,8 @@ public final class ProxyData {
      * @param name The player name.
      * @return The spoofed profile.
      */
-    public PlayerProfile getProfile(String name) {
-        return new PlayerProfile(name, uuid, properties);
+    public GlowPlayerProfile getProfile(String name) {
+        return new GlowPlayerProfile(name, uuid, properties);
     }
 
     /**
@@ -142,10 +142,10 @@ public final class ProxyData {
      *
      * @return The spoofed profile.
      */
-    public PlayerProfile getProfile() {
+    public GlowPlayerProfile getProfile() {
         if (name == null) {
             return null;
         }
-        return new PlayerProfile(name, uuid, properties);
+        return new GlowPlayerProfile(name, uuid, properties);
     }
 }

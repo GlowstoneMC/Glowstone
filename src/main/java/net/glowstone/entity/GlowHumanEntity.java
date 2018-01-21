@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.ArmorConstants;
 import net.glowstone.inventory.EquipmentMonitor;
@@ -59,7 +59,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * The player profile with name and UUID information.
      */
     @Getter
-    private final PlayerProfile profile;
+    private final GlowPlayerProfile profile;
 
     /**
      * The inventory of this human.
@@ -129,7 +129,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * @param location The location.
      * @param profile The human's profile with name and UUID information.
      */
-    public GlowHumanEntity(Location location, PlayerProfile profile) {
+    public GlowHumanEntity(Location location, GlowPlayerProfile profile) {
         super(location);
         this.profile = profile;
         xpSeed = new Random().nextInt(); //TODO: use entity's random instance

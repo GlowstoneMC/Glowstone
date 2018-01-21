@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
@@ -25,6 +26,15 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     @Getter
     @Setter
     private boolean fromBottle;
+    @Getter
+    @Setter
+    private UUID sourceEntityId;
+    @Getter
+    @Setter
+    private UUID triggerEntityId;
+    @Getter
+    @Setter
+    private SpawnReason spawnReason;
     @Getter
     private int experience;
     private boolean tickSkipped = false;

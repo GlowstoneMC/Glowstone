@@ -743,6 +743,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                             GlowExperienceOrb orb = (GlowExperienceOrb) world
                                 .spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
                             orb.setExperience(exp);
+                            orb.setSourceEntityId(this.getUniqueId());
+                            if (getLastDamager() != null) {
+                                orb.setTriggerEntityId(getLastDamager().getUniqueId());
+                            }
                         }
                     }
                 }
