@@ -255,7 +255,7 @@ public abstract class GlowEntity implements Entity {
     /**
      * The properties annotation for this entity type.
      */
-    protected static EntityProperties properties;
+    protected EntityProperties properties;
     private Spigot spigot = new Spigot() {
         @Override
         public boolean isInvulnerable() {

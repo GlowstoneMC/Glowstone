@@ -230,7 +230,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * The sound data annotation for this entity type.
      */
-    private static Sounds soundData;
+    private Sounds soundData;
 
     /**
      * Creates a mob within the specified world.
