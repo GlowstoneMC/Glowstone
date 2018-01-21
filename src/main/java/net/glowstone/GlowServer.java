@@ -1655,8 +1655,7 @@ public final class GlowServer implements Server {
 
     @Override
     public boolean suggestPlayerNamesWhenNullTabCompletions() {
-        // TODO: Implementation (1.12.1)
-        return false;
+        return config.getBoolean(Key.SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS);
     }
 
     @Override

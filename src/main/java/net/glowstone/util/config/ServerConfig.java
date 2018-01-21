@@ -500,6 +500,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         LIBRARY_REPOSITORY_URL("advanced.library-repository-url",
                 "https://repo.glowstone.net/service/local/repositories/central/content/"),
         LIBRARY_DOWNLOAD_ATTEMPTS("advanced.library-download-attempts", 2, Validators.POSITIVE),
+        SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS(
+                "advanced.suggest-player-name-when-null-tab-completions", true),
 
         // query rcon etc
         QUERY_ENABLED("extras.query-enabled", false, Migrate.PROPS, "enable-query"),
