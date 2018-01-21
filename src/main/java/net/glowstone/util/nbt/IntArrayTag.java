@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import lombok.Getter;
+
 /**
  * The {@code TAG_Int_Array} tag.
  */
@@ -8,6 +10,7 @@ public final class IntArrayTag extends Tag<int[]> {
     /**
      * The value.
      */
+    @Getter
     private final int[] value;
 
     /**
@@ -18,11 +21,6 @@ public final class IntArrayTag extends Tag<int[]> {
     public IntArrayTag(int... value) {
         super(TagType.INT_ARRAY);
         this.value = value;
-    }
-
-    @Override
-    public int[] getValue() {
-        return value;
     }
 
     @Override

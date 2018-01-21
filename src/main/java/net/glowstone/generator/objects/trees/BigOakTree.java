@@ -3,6 +3,7 @@ package net.glowstone.generator.objects.trees;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
+import lombok.Data;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -166,34 +167,11 @@ public class BigOakTree extends GenericTree {
         return leafNodes;
     }
 
-    private static class LeafNode {
-
+    @Data
+    private static final class LeafNode {
         private final int x;
         private final int y;
         private final int z;
         private final int branchY;
-
-        public LeafNode(int x, int y, int z, int branchY) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.branchY = branchY;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public int getZ() {
-            return z;
-        }
-
-        public int getBranchY() {
-            return branchY;
-        }
     }
 }

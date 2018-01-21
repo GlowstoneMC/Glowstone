@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import lombok.Getter;
+
 /**
  * The {@code TAG_Byte_Array} tag.
  */
@@ -11,6 +13,7 @@ public final class ByteArrayTag extends Tag<byte[]> {
     /**
      * The value.
      */
+    @Getter
     private final byte[] value;
 
     /**
@@ -21,11 +24,6 @@ public final class ByteArrayTag extends Tag<byte[]> {
     public ByteArrayTag(byte... value) {
         super(TagType.BYTE_ARRAY);
         this.value = value;
-    }
-
-    @Override
-    public byte[] getValue() {
-        return value;
     }
 
     @Override

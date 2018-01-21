@@ -23,6 +23,8 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
     private static final int LIFETIME = 5 * 60 * 20;
 
+    @Getter
+    @Setter
     private boolean fromBottle;
     @Getter
     @Setter
@@ -104,24 +106,10 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     }
 
     @Override
-    public int getExperience() {
-        return experience;
-    }
-
-    @Override
     public void setExperience(int experience) {
         Preconditions.checkArgument(experience > 0, "Experience points cannot be negative.");
         this.experience = experience;
         refresh();
-    }
-
-    @Override
-    public boolean isFromBottle() {
-        return fromBottle;
-    }
-
-    public void setFromBottle(boolean fromBottle) {
-        this.fromBottle = fromBottle;
     }
 
     @Override

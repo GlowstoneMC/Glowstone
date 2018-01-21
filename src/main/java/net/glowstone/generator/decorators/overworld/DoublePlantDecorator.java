@@ -3,6 +3,7 @@ package net.glowstone.generator.decorators.overworld;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import lombok.Data;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.DoubleTallPlant;
 import org.bukkit.Chunk;
@@ -43,22 +44,9 @@ public class DoublePlantDecorator extends BlockDecorator {
         return null;
     }
 
-    public static class DoublePlantDecoration {
-
+    @Data
+    public static final class DoublePlantDecoration {
         private final DoublePlantSpecies species;
         private final int weight;
-
-        public DoublePlantDecoration(DoublePlantSpecies species, int weight) {
-            this.species = species;
-            this.weight = weight;
-        }
-
-        public DoublePlantSpecies getSpecies() {
-            return species;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
     }
 }

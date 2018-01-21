@@ -2,6 +2,7 @@ package net.glowstone.block.entity.state;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -18,6 +19,7 @@ import org.bukkit.event.block.NotePlayEvent;
 
 public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
+    @Getter
     private Note note;
 
     /**
@@ -155,11 +157,6 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             getBlockEntity().setNote(note);
         }
         return result;
-    }
-
-    @Override
-    public Note getNote() {
-        return note;
     }
 
     @Override
