@@ -145,7 +145,7 @@ public final class ConsoleManager {
     /**
      * Starts the console.
      *
-     * @param jline TODO: document this parameter
+     * @param jline whether the console should use JLine
      */
     public void startConsole(boolean jline) {
         this.jline = jline;
