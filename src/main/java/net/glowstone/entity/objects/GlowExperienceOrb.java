@@ -36,7 +36,6 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     @Setter
     private SpawnReason spawnReason;
     @Getter
-    @Setter
     private int experience;
     private boolean tickSkipped = false;
 
