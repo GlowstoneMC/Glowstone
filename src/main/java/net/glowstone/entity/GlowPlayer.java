@@ -53,6 +53,7 @@ import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
 import net.glowstone.constants.GlowSound;
+import net.glowstone.entity.annotation.EntityProperties;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -195,6 +196,7 @@ import org.json.simple.JSONObject;
  * @author Graham Edgecombe
  */
 @DelegateDeserialization(GlowOfflinePlayer.class)
+@EntityProperties(shouldSave = false)
 public class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
@@ -757,11 +759,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         clearBossBars();
         super.remove();
-    }
-
-    @Override
-    public boolean shouldSave() {
-        return false;
     }
 
     @Override

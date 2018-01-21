@@ -502,7 +502,7 @@ public abstract class GlowEntity implements Entity {
      * @return True if the entity should be saved.
      */
     public boolean shouldSave() {
-        return true;
+        return properties.shouldSave();
     }
 
     /**

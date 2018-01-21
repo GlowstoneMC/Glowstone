@@ -26,4 +26,11 @@ public @interface EntityProperties {
      * @return whether the entity is an arthropod.
      */
     boolean arthropod() default false;
+
+    /**
+     * Gets whether the entity should be saved as part of the world.
+     *
+     * @return True if the entity should be saved.
+     */
+    boolean shouldSave() default true;
 }

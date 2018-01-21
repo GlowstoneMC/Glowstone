@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.annotation.EntityProperties;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+@EntityProperties(shouldSave = false)
 public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
 
     @Getter
@@ -68,10 +70,5 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
     @Override
     public void resetMaxHealth() {
         parent.resetMaxHealth();
-    }
-
-    @Override
-    public boolean shouldSave() {
-        return false;
     }
 }
