@@ -43,7 +43,6 @@ import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
 import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
 import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.util.AnnotationUtil;
 import net.glowstone.util.Position;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -282,7 +281,7 @@ public abstract class GlowEntity implements Entity {
         server.getEntityIdManager().allocate(this);
         world.getEntityManager().register(this);
         previousLocation = location.clone();
-        properties = AnnotationUtil.getClassAnnotation(EntityProperties.class, getClass());
+        properties = getClass().getAnnotation(EntityProperties.class);
     }
 
     ////////////////////////////////////////////////////////////////////////////

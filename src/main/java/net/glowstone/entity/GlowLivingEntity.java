@@ -37,7 +37,6 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.EntityRemoveEffectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
-import net.glowstone.util.AnnotationUtil;
 import net.glowstone.util.ExperienceSplitter;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
@@ -254,7 +253,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         attributeManager.setProperty(Key.KEY_MAX_HEALTH, maxHealth);
         health = maxHealth;
         taskManager = new TaskManager(this);
-        soundData = AnnotationUtil.getClassAnnotation(Sounds.class, getClass());
+        soundData = getClass().getAnnotation(Sounds.class);
     }
 
     ////////////////////////////////////////////////////////////////////////////
