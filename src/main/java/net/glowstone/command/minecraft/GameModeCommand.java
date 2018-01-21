@@ -72,7 +72,6 @@ public class GameModeCommand extends VanillaCommand {
     private void updateGameMode(CommandSender sender, Player who, GameMode gameMode) {
         String gameModeName = GameModeUtils.prettyPrint(gameMode);
         who.setGameMode(gameMode);
-        who.setFallDistance(0);
         if (!sender.equals(who)) {
             sender.sendMessage(who.getDisplayName() + "'s game mode has been updated to " + ChatColor.GRAY + ""
                     + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
