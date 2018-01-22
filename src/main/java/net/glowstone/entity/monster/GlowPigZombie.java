@@ -2,6 +2,8 @@ package net.glowstone.entity.monster;
 
 import java.util.Random;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -10,21 +12,15 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 
+    @Getter
+    @Setter
     private int anger;
+    @Getter
+    @Setter
     private UUID hurtBy;
 
     public GlowPigZombie(Location loc) {
         super(loc, EntityType.PIG_ZOMBIE);
-    }
-
-    @Override
-    public int getAnger() {
-        return anger;
-    }
-
-    @Override
-    public void setAnger(int level) {
-        anger = level;
     }
 
     @Override
@@ -39,14 +35,6 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
         } else if (isAngry()) {
             anger = (int) (new Random().nextGaussian() * 400) + 400;
         }
-    }
-
-    public UUID getHurtBy() {
-        return hurtBy;
-    }
-
-    public void setHurtBy(UUID hurtBy) {
-        this.hurtBy = hurtBy;
     }
 
     @Override

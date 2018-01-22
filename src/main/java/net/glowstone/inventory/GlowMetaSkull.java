@@ -1,5 +1,8 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import com.destroystokyo.paper.profile.PlayerProfile;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -7,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,10 +20,10 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
-    private static final PlayerProfile UNKNOWN_PLAYER = new PlayerProfile("MHF_Steve",
+    private static final GlowPlayerProfile UNKNOWN_PLAYER = new GlowPlayerProfile("MHF_Steve",
             new UUID(0xc06f89064c8a4911L, 0x9c29ea1dbd1aab82L));
 
-    final AtomicReference<PlayerProfile> owner = new AtomicReference<>();
+    final AtomicReference<GlowPlayerProfile> owner = new AtomicReference<>();
 
     /**
      * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
@@ -58,7 +61,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     public static GlowMetaSkull deserialize(Map<String, Object> data) {
         GlowMetaSkull result = new GlowMetaSkull(null);
         if (data.containsKey("owner")) {
-            result.owner.set((PlayerProfile) data.get("owner"));
+            result.owner.set((GlowPlayerProfile) data.get("owner"));
         }
         return result;
     }
@@ -96,9 +99,9 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
         super.readNbt(tag);
         if (tag.containsKey("SkullOwner")) {
             if (tag.isString("SkullOwner")) {
-                owner.set(PlayerProfile.getProfile(tag.getString("SkullOwner")).join());
+                owner.set(GlowPlayerProfile.getProfile(tag.getString("SkullOwner")).join());
             } else if (tag.isCompound("SkullOwner")) {
-                owner.set(PlayerProfile.fromNbt(tag.getCompound("SkullOwner")).join());
+                owner.set(GlowPlayerProfile.fromNbt(tag.getCompound("SkullOwner")).join());
             }
         }
     }
@@ -118,12 +121,27 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     @Override
     public boolean setOwner(String name) {
-        PlayerProfile owner = PlayerProfile.getProfile(name).join();
+        GlowPlayerProfile owner = GlowPlayerProfile.getProfile(name).join();
         if (owner == null) {
             return false;
         }
         this.owner.set(owner);
         return true;
+    }
+
+    @Override
+    public void setPlayerProfile(PlayerProfile profile) {
+        if (profile == null) {
+            this.owner.set(UNKNOWN_PLAYER);
+            return;
+        }
+        checkArgument(profile instanceof GlowPlayerProfile);
+        this.owner.set((GlowPlayerProfile) profile);
+    }
+
+    @Override
+    public PlayerProfile getPlayerProfile() {
+        return this.owner.get();
     }
 
     @Override
@@ -153,9 +171,9 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
             this.owner.set(((GlowPlayer) owningPlayer).getProfile());
             return true;
         } else {
-            CompletableFuture<PlayerProfile> profileFuture = PlayerProfile
+            CompletableFuture<GlowPlayerProfile> profileFuture = GlowPlayerProfile
                     .getProfile(owningPlayer.getName());
-            PlayerProfile profile = profileFuture.getNow(null);
+            GlowPlayerProfile profile = profileFuture.getNow(null);
             if (profile != null) {
                 this.owner.set(profile);
                 return true;

@@ -1,5 +1,6 @@
 package net.glowstone.testutils;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
@@ -604,6 +605,21 @@ public class ServerShim implements Server {
     @Override
     public boolean suggestPlayerNamesWhenNullTabCompletions() {
         return false;
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id) {
+        return null;
+    }
+
+    @Override
+    public PlayerProfile createProfile(String name) {
+        return null;
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id, String name) {
+        return null;
     }
 
     @Override

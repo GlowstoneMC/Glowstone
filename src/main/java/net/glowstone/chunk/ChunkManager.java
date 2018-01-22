@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -49,7 +50,10 @@ public final class ChunkManager {
 
     /**
      * The chunk generator used to generate new chunks.
+     *
+     * @return the chunk generator
      */
+    @Getter
     private final ChunkGenerator generator;
 
     /**
@@ -81,16 +85,7 @@ public final class ChunkManager {
         biomeGrid = MapLayer.initialize(
                 world.getSeed(), world.getEnvironment(), world.getWorldType());
     }
-
-    /**
-     * Get the chunk generator.
-     *
-     * @return The chunk generator.
-     */
-    public ChunkGenerator getGenerator() {
-        return generator;
-    }
-
+    
     /**
      * Gets a chunk object representing the specified coordinates, which might not yet be loaded.
      *

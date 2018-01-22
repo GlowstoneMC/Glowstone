@@ -57,7 +57,7 @@ import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
@@ -203,8 +203,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public static final int SELF_ID = 0;
 
     /**
-     * This player's session.
+     * The network session attached to this player.
+     *
+     * @return The GlowSession of the player.
      */
+    @Getter
     private final GlowSession session;
 
     /**
@@ -252,19 +255,25 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The time the player first played, or 0 if unknown.
      */
+    @Getter
     private final long firstPlayed;
 
     /**
      * The time the player last played, or 0 if unknown.
      */
+    @Getter
     private final long lastPlayed;
     @Getter
     private final PlayerRecipeMonitor recipeMonitor;
     public Location teleportedTo = null;
+    @Setter
     public boolean affectsSpawning = true;
     /**
-     * The time the player joined.
+     * The time the player joined, in milliseconds, to be saved as last played time.
+     *
+     * @return The player's join time.
      */
+    @Getter
     private long joinTime;
     /**
      * The settings sent by the client.
@@ -289,34 +298,43 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Cumulative amount of experience points the player has collected.
      */
+    @Getter
     private int totalExperience;
     /**
      * The current level (or skill point amount) of the player.
      */
+    @Getter
     private int level;
     /**
      * The progress made to the next level, from 0 to 1.
      */
-    private float experience;
+    @Getter
+    private float exp;
     /**
      * The human entity's current food level.
      */
-    private int food = 20;
+    @Getter
+    private int foodLevel = 20;
     /**
      * The player's current exhaustion level.
      */
+    @Getter
+    @Setter
     private float exhaustion;
     /**
      * The player's current saturation level.
      */
+    @Getter
     private float saturation;
     /**
      * Whether to perform special scaling of the player's health.
      */
+    @Getter
     private boolean healthScaled;
     /**
      * The scale at which to display the player's health.
      */
+    @Getter
     private double healthScale = 20;
     /**
      * If this player has seen the end credits.
@@ -335,7 +353,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Whether the time offset is relative.
      */
-    private boolean timeRelative = true;
+    @Getter
+    private boolean playerTimeRelative = true;
     /**
      * The player-specific weather, or null for normal weather.
      */
@@ -343,6 +362,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The player's compass target.
      */
+    @Getter
     private Location compassTarget;
     /**
      * Whether this player's sleeping state is ignored when changing time.
@@ -358,7 +378,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private Location bedSpawn;
     /**
      * Whether to use the bed spawn even if there is no bed block.
+     *
+     * @return Whether the player is forced to spawn at their bed.
      */
+    @Getter
     private boolean bedSpawnForced;
     private final Player.Spigot spigot = new Player.Spigot() {
         @Override
@@ -435,14 +458,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Whether the player is currently flying.
      */
+    @Getter
     private boolean flying;
     /**
      * The player's base flight speed.
      */
+    @Getter
     private float flySpeed = 0.1f;
     /**
      * The player's base walking speed.
      */
+    @Getter
     private float walkSpeed = 0.2f;
     /**
      * The scoreboard the player is currently subscribed to.
@@ -455,6 +481,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * The one block the player is currently digging.
      */
+    @Getter
     private GlowBlock digging;
     /**
      * The number of ticks elapsed since the player started digging.
@@ -499,7 +526,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param profile The player's profile with name and UUID information.
      * @param reader The PlayerReader to be used to initialize the player.
      */
-    public GlowPlayer(GlowSession session, PlayerProfile profile, PlayerReader reader) {
+    public GlowPlayer(GlowSession session, GlowPlayerProfile profile, PlayerReader reader) {
         super(initLocation(session, reader), profile);
         setBoundingBox(0.6, 1.8);
         this.session = session;
@@ -689,24 +716,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
-     * Get the network session attached to this player.
-     *
-     * @return The GlowSession of the player.
-     */
-    public GlowSession getSession() {
-        return session;
-    }
-
-    /**
-     * Get the join time in milliseconds, to be saved as last played time.
-     *
-     * @return The player's join time.
-     */
-    public long getJoinTime() {
-        return joinTime;
-    }
-
-    /**
      * Kicks this player.
      */
     @Override
@@ -785,16 +794,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 sendHealth();
             } else if (world.getDifficulty() != Difficulty.PEACEFUL) {
                 FoodLevelChangeEvent event = EventFactory
-                        .callEvent(new FoodLevelChangeEvent(this, Math.max(food - 1, 0)));
+                        .callEvent(new FoodLevelChangeEvent(this, Math.max(foodLevel - 1, 0)));
                 if (!event.isCancelled()) {
-                    food = event.getFoodLevel();
+                    foodLevel = event.getFoodLevel();
                 }
                 sendHealth();
             }
         }
 
         if (getHealth() < getMaxHealth() && !isDead()) {
-            if (food >= 18 && ticksLived % 80 == 0
+            if (foodLevel >= 18 && ticksLived % 80 == 0
                     || world.getDifficulty() == Difficulty.PEACEFUL) {
 
                 EntityRegainHealthEvent event1
@@ -809,7 +818,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
 
-        if (food == 0 && getHealth() > 1 && ticksLived % 80 == 0) {
+        if (foodLevel == 0 && getHealth() > 1 && ticksLived % 80 == 0) {
             damage(1, DamageCause.STARVATION);
         }
 
@@ -1304,7 +1313,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean isWhitelisted() {
-        return server.getWhitelist().containsProfile(new PlayerProfile(getName(), getUniqueId()));
+        return server.getWhitelist().containsProfile(
+                new GlowPlayerProfile(getName(),getUniqueId()));
     }
 
     @Override
@@ -1312,7 +1322,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (value) {
             server.getWhitelist().add(this);
         } else {
-            server.getWhitelist().remove(new PlayerProfile(getName(), getUniqueId()));
+            server.getWhitelist().remove(new GlowPlayerProfile(getName(), getUniqueId()));
         }
     }
 
@@ -1330,16 +1340,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public long getFirstPlayed() {
-        return firstPlayed;
-    }
-
-    @Override
-    public long getLastPlayed() {
-        return lastPlayed;
-    }
-
-    @Override
     public boolean isOp() {
         return getServer().getOpsList().containsUuid(getUniqueId());
     }
@@ -1349,7 +1349,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (value) {
             getServer().getOpsList().add(this);
         } else {
-            getServer().getOpsList().remove(new PlayerProfile(getName(), getUniqueId()));
+            getServer().getOpsList().remove(new GlowPlayerProfile(getName(), getUniqueId()));
         }
         permissions.recalculatePermissions();
     }
@@ -1401,23 +1401,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public Location getCompassTarget() {
-        return compassTarget;
-    }
-
-    @Override
     public void setCompassTarget(Location loc) {
         compassTarget = loc;
         session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-    }
-
-    /**
-     * Returns whether the player spawns at their bed even if there is no bed block.
-     *
-     * @return Whether the player is forced to spawn at their bed.
-     */
-    public boolean isBedSpawnForced() {
-        return bedSpawnForced;
     }
 
     @Override
@@ -1481,6 +1467,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
 
             super.setGameMode(mode);
+            super.setFallDistance(0);
             updateUserListEntries(UserListItemMessage.gameModeOne(getUniqueId(), mode.getValue()));
             session.send(new StateChangeMessage(Reason.GAMEMODE, mode.getValue()));
         }
@@ -1562,30 +1549,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     // Experience and levelling
 
     @Override
-    public boolean isFlying() {
-        return flying;
-    }
-
-    @Override
     public void setFlying(boolean value) {
         flying = value && canFly;
         sendAbilities();
     }
 
     @Override
-    public float getFlySpeed() {
-        return flySpeed;
-    }
-
-    @Override
     public void setFlySpeed(float value) throws IllegalArgumentException {
         flySpeed = value;
         sendAbilities();
-    }
-
-    @Override
-    public float getWalkSpeed() {
-        return walkSpeed;
     }
 
     @Override
@@ -1602,19 +1574,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public int getLevel() {
-        return level;
-    }
-
-    @Override
     public void setLevel(int level) {
         this.level = Math.max(level, 0);
         sendExperience();
-    }
-
-    @Override
-    public int getTotalExperience() {
-        return totalExperience;
     }
 
     @Override
@@ -1630,13 +1592,24 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // gradually award levels based on xp points
         float value = 1.0f / getExpToLevel();
         for (int i = 0; i < xp; ++i) {
-            experience += value;
-            if (experience >= 1) {
-                experience -= 1;
+            exp += value;
+            if (exp >= 1) {
+                exp -= 1;
                 value = 1.0f / getExpToLevel(++level);
             }
         }
         sendExperience();
+    }
+
+    @Override
+    public void giveExp(int xp, boolean applyMending) {
+        // todo: implement applyMending
+        giveExp(xp);
+    }
+
+    @Override
+    public int applyMending(int amount) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -1645,13 +1618,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public float getExp() {
-        return experience;
-    }
-
-    @Override
     public void setExp(float percentToLevel) {
-        experience = Math.min(Math.max(percentToLevel, 0), 1);
+        exp = Math.min(Math.max(percentToLevel, 0), 1);
         sendExperience();
     }
 
@@ -1730,19 +1698,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public boolean isHealthScaled() {
-        return healthScaled;
-    }
-
-    @Override
     public void setHealthScaled(boolean scale) {
         healthScaled = scale;
         sendHealth();
-    }
-
-    @Override
-    public double getHealthScale() {
-        return healthScale;
     }
 
     @Override
@@ -1770,19 +1728,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param saturation the amount of food saturation (in half-icons of food it will save)
      */
     public void setFoodLevelAndSaturation(int food, float saturation) {
-        this.food = Math.max(Math.min(food, 20), 0);
-        this.saturation = Math.min(this.saturation + food * saturation * 2.0F, this.food);
+        this.foodLevel = Math.max(Math.min(food, 20), 0);
+        this.saturation = Math.min(this.saturation + food * saturation * 2.0F, this.foodLevel);
         sendHealth();
     }
 
     @Override
-    public int getFoodLevel() {
-        return food;
-    }
-
-    @Override
     public void setFoodLevel(int food) {
-        this.food = Math.min(food, 20);
+        this.foodLevel = Math.min(food, 20);
         sendHealth();
     }
 
@@ -1826,23 +1779,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public float getExhaustion() {
-        return exhaustion;
-    }
-
-    @Override
-    public void setExhaustion(float value) {
-        exhaustion = value;
-    }
-
-    @Override
-    public float getSaturation() {
-        return saturation;
-    }
-
-    @Override
     public void setSaturation(float value) {
-        saturation = Math.min(value, food);
+        saturation = Math.min(value, foodLevel);
         sendHealth();
     }
 
@@ -2162,11 +2100,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public boolean getAffectsSpawning() {
         return affectsSpawning;
-    }
-
-    @Override
-    public void setAffectsSpawning(boolean affects) {
-        affectsSpawning = affects;
     }
 
     @Override
@@ -3058,13 +2991,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setPlayerTime(long time, boolean relative) {
         timeOffset = (time % GlowWorld.DAY_LENGTH + GlowWorld.DAY_LENGTH) % GlowWorld.DAY_LENGTH;
-        timeRelative = relative;
+        playerTimeRelative = relative;
         sendTime();
     }
 
     @Override
     public long getPlayerTime() {
-        if (timeRelative) {
+        if (playerTimeRelative) {
             // add timeOffset ticks to current time
             return (world.getTime() + timeOffset) % GlowWorld.DAY_LENGTH;
         } else {
@@ -3079,11 +3012,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public boolean isPlayerTimeRelative() {
-        return timeRelative;
-    }
-
-    @Override
     public void resetPlayerTime() {
         setPlayerTime(0, true);
     }
@@ -3093,7 +3021,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void sendTime() {
         long time = getPlayerTime();
-        if (!timeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
+        if (!playerTimeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
             time *= -1; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));
@@ -3331,7 +3259,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         level -= clicked + 1;
         if (level < 0) {
             level = 0;
-            experience = 0;
+            exp = 0;
             totalExperience = 0;
         }
         setLevel(level);
@@ -3352,10 +3280,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void resetTitle() {
         currentTitle = new Title.Builder();
         session.send(new TitleMessage(Action.RESET));
-    }
-
-    public GlowBlock getDigging() {
-        return digging;
     }
 
     /**

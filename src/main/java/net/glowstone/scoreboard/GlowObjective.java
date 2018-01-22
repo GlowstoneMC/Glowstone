@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
+import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Criterias;
@@ -22,6 +23,7 @@ public final class GlowObjective implements Objective {
     private final String criteria;
     private final HashMap<String, GlowScore> scores = new HashMap<>();
     DisplaySlot displaySlot;
+    @Getter
     private GlowScoreboard scoreboard;
     private String displayName;
     private RenderType renderType;
@@ -40,11 +42,6 @@ public final class GlowObjective implements Objective {
         this.criteria = criteria;
         renderType = RenderType.INTEGER;
         displayName = name;
-    }
-
-    @Override
-    public GlowScoreboard getScoreboard() {
-        return scoreboard;
     }
 
     /**
