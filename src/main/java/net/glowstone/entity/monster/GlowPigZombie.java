@@ -4,12 +4,16 @@ import java.util.Random;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.entity.annotation.Sounds;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+@Sounds(hurt = Sound.ENTITY_ZOMBIE_PIG_HURT,
+        death = Sound.ENTITY_ZOMBIE_PIG_DEATH,
+        ambient = Sound.ENTITY_ZOMBIE_PIG_AMBIENT)
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Getter
@@ -35,21 +39,6 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
         } else if (isAngry()) {
             anger = (int) (new Random().nextGaussian() * 400) + 400;
         }
-    }
-
-    @Override
-    protected Sound getHurtSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_HURT;
-    }
-
-    @Override
-    protected Sound getDeathSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_DEATH;
-    }
-
-    @Override
-    protected Sound getAmbientSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_AMBIENT;
     }
 
     @Override

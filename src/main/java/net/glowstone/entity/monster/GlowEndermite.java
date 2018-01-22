@@ -1,10 +1,12 @@
 package net.glowstone.entity.monster;
 
+import net.glowstone.entity.annotation.EntityProperties;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Endermite;
 import org.bukkit.entity.EntityType;
 
+@EntityProperties(arthropod = true)
 public class GlowEndermite extends GlowMonster implements Endermite {
 
     private boolean playerSpawned;
@@ -35,10 +37,5 @@ public class GlowEndermite extends GlowMonster implements Endermite {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ENDERMITE_AMBIENT;
-    }
-
-    @Override
-    public boolean isArthropod() {
-        return true;
     }
 }

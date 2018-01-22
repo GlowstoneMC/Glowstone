@@ -16,6 +16,7 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.annotation.EntityProperties;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
@@ -33,6 +34,7 @@ import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+@EntityProperties(shouldSave = false)
 public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
     public GlowLeashHitch(Location location) {
@@ -131,13 +133,6 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
     @Override
     public void setFacingDirection(BlockFace blockFace) {
         setFacingDirection(blockFace, false);
-    }
-
-    @Override
-    public boolean shouldSave() {
-        // The GlowLeashHitch on its own should never be saved
-        // It is saved as part of the leashed living entity
-        return false;
     }
 
     @Override

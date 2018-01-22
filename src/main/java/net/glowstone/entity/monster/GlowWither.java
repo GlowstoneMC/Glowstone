@@ -2,6 +2,7 @@ package net.glowstone.entity.monster;
 
 import lombok.Getter;
 import net.glowstone.Explosion;
+import net.glowstone.entity.annotation.EntityProperties;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+@EntityProperties(undead = true)
 public class GlowWither extends GlowBoss implements Wither {
 
     @Getter
@@ -117,10 +119,5 @@ public class GlowWither extends GlowBoss implements Wither {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_WITHER_AMBIENT;
-    }
-
-    @Override
-    public boolean isUndead() {
-        return true;
     }
 }

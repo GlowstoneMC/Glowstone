@@ -22,6 +22,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.entity.annotation.EntityProperties;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
@@ -250,6 +251,10 @@ public abstract class GlowEntity implements Entity {
     @Getter
     @Setter
     private int portalCooldown;
+    /**
+     * The properties annotation for this entity type.
+     */
+    protected EntityProperties properties;
     private Spigot spigot = new Spigot() {
         @Override
         public boolean isInvulnerable() {
@@ -276,6 +281,7 @@ public abstract class GlowEntity implements Entity {
         server.getEntityIdManager().allocate(this);
         world.getEntityManager().register(this);
         previousLocation = location.clone();
+        properties = getClass().getAnnotation(EntityProperties.class);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -496,7 +502,7 @@ public abstract class GlowEntity implements Entity {
      * @return True if the entity should be saved.
      */
     public boolean shouldSave() {
-        return true;
+        return properties.shouldSave();
     }
 
     /**

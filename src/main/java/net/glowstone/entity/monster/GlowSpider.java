@@ -1,11 +1,13 @@
 package net.glowstone.entity.monster;
 
+import net.glowstone.entity.annotation.EntityProperties;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Spider;
 
+@EntityProperties(arthropod = true)
 public class GlowSpider extends GlowMonster implements Spider {
 
     public GlowSpider(Location loc) {
@@ -34,10 +36,5 @@ public class GlowSpider extends GlowMonster implements Spider {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SPIDER_AMBIENT;
-    }
-
-    @Override
-    public boolean isArthropod() {
-        return true;
     }
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.HostileMobState;
 import net.glowstone.entity.ai.MobState;
+import net.glowstone.entity.annotation.EntityProperties;
+import net.glowstone.entity.annotation.Sounds;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.util.SoundUtil;
 import org.bukkit.Location;
@@ -13,6 +15,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Zombie;
 
+@EntityProperties(undead = true)
+@Sounds(hurt = Sound.ENTITY_ZOMBIE_HURT,
+        death = Sound.ENTITY_ZOMBIE_DEATH,
+        ambient = Sound.ENTITY_ZOMBIE_AMBIENT)
 public class GlowZombie extends GlowMonster implements Zombie {
 
     private boolean canBreakDoors;
@@ -95,25 +101,5 @@ public class GlowZombie extends GlowMonster implements Zombie {
             return SoundUtil.randomReal(0.2F) + 1.5F;
         }
         return super.getSoundPitch();
-    }
-
-    @Override
-    protected Sound getHurtSound() {
-        return Sound.ENTITY_ZOMBIE_HURT;
-    }
-
-    @Override
-    protected Sound getDeathSound() {
-        return Sound.ENTITY_ZOMBIE_DEATH;
-    }
-
-    @Override
-    protected Sound getAmbientSound() {
-        return Sound.ENTITY_ZOMBIE_AMBIENT;
-    }
-
-    @Override
-    public boolean isUndead() {
-        return true;
     }
 }
