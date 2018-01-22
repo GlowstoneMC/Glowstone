@@ -2,7 +2,7 @@ package net.glowstone.command.minecraft;
 
 import java.util.Collections;
 import java.util.List;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.GlowServer;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ public class BanCommand extends VanillaCommand {
      */
     public BanCommand() {
         super("ban", "Bans a player from the server.", "/ban <player> [reason]",
-            Collections.emptyList());
+                Collections.emptyList());
         setPermission("minecraft.command.ban");
     }
 
@@ -26,20 +26,34 @@ public class BanCommand extends VanillaCommand {
             return false;
         }
         if (args.length > 0) {
-            if (PlayerProfile.getProfile(args[0]).join() == null) {
-                sender.sendMessage(ChatColor.RED + "Could not ban player " + args[0]);
-                return false;
-            }
-            if (args.length == 1) {
-                Bukkit.getBanList(BanList.Type.NAME).addBan(args[0], null, null, null);
-            } else {
-                StringBuilder reason = new StringBuilder();
-                for (int i = 1; i < args.length; i++) {
-                    reason.append(args[i]).append(" ");
+            String name = args[0];
+            GlowServer server = (GlowServer) Bukkit.getServer();
+            // asynchronously lookup player
+            server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
+                if (ex != null) {
+                    sender.sendMessage(ChatColor.RED + "Failed to ban " + name + ": "
+                            + ex.getMessage());
+                    ex.printStackTrace();
+                    return;
                 }
-                Bukkit.getBanList(BanList.Type.NAME).addBan(args[0], reason.toString(), null, null);
-            }
-            sender.sendMessage("Banned player " + args[0]);
+                if (player == null) {
+                    sender.sendMessage(ChatColor.RED + "Could not ban player " + args[0]);
+                    return;
+                }
+                if (args.length == 1) {
+                    Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(),
+                            null, null, null);
+                } else {
+                    StringBuilder reason = new StringBuilder();
+                    for (int i = 1; i < args.length; i++) {
+                        reason.append(args[i]).append(" ");
+                    }
+                    Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(),
+                            reason.toString(), null, null);
+                }
+                sender.sendMessage("Banned player " + player.getName());
+            });
+            // todo: asynchronous command callbacks?
             return true;
         }
         sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
@@ -48,7 +62,7 @@ public class BanCommand extends VanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 1) {
             super.tabComplete(sender, alias, args);
         }
