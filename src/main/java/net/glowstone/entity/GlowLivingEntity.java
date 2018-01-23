@@ -716,7 +716,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         double verticalMultiplier = cos(pitchRadians);
         double x = verticalMultiplier * sin(-yawRadians);
         double z = verticalMultiplier * cos(yawRadians);
-        double y = sin(-(Math.toRadians(location.getPitch() - pitchOffset));
+        double y = sin(-(Math.toRadians(location.getPitch() - pitchOffset)));
 
         T projectile = launchProjectile(type, location, x, y, z, velocity);
         projectile.getVelocity().add(originalVector);
