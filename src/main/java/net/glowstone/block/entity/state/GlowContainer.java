@@ -109,7 +109,7 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
 
     @Override
     public boolean isLocked() {
-        return false;
+        return lock != null;
     }
 
     @Override
