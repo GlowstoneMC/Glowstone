@@ -23,7 +23,6 @@ public class GlowSlime extends GlowMonster implements Slime {
         int size = 1 + ThreadLocalRandom.current().nextInt(3);
         setMaxHealth(size * size); // max health = size^2
         setHealth(maxHealth); // reset health to max
-        setBoundingBox(0.51000005 * size, 0.51000005 * size);
         setSize(size);
     }
 
@@ -36,6 +35,7 @@ public class GlowSlime extends GlowMonster implements Slime {
     public void setSize(int size) {
         checkArgument(size > 0);
         metadata.set(MetadataIndex.SLIME_SIZE, size);
+        setBoundingBox(0.51000005 * size, 0.51000005 * size);
     }
 
     @Override
