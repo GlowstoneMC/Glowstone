@@ -92,10 +92,6 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
             if (type != null) {
                 if (type.getContext().isAirApplicable()) {
                     type.rightClickAir(player, holding);
-                } else if (type instanceof ItemTimedUsage) {
-                    ((ItemTimedUsage) type).startUse(player, holding);
-                } else if (type instanceof ItemProjectile) {
-                    ((ItemProjectile) type).use(player, holding);
                 }
             }
 

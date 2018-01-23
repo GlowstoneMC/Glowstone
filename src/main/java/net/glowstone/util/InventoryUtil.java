@@ -104,4 +104,17 @@ public class InventoryUtil {
         return holding;
     }
 
+    /**
+     * Consumes 1 copy of the given item, which must be held by the given player.
+     *
+     * @param player the player holding the item
+     * @param item the item to consume
+     */
+    public static void consumeHeldItem(GlowPlayer player, ItemStack item) {
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+        } else {
+            player.getInventory().clear(player.getInventory().getHeldItemSlot());
+        }
+    }
 }

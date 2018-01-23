@@ -2,6 +2,7 @@ package net.glowstone.block.itemtype;
 
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -61,11 +62,7 @@ public class ItemFood extends ItemTimedUsage {
         if (!handleEat(player, item)) {
             return false;
         }
-        if (item.getAmount() > 1) {
-            item.setAmount(item.getAmount() - 1);
-        } else {
-            player.getInventory().clear(player.getInventory().getHeldItemSlot());
-        }
+        InventoryUtil.consumeHeldItem(player, item);
         return true;
     }
 
