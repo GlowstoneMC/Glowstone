@@ -250,6 +250,12 @@ public abstract class GlowEntity implements Entity {
     @Getter
     @Setter
     private int portalCooldown;
+    /**
+     * Whether this entity has operator permissions.
+     */
+    @Getter
+    @Setter
+    private boolean op;
     private Spigot spigot = new Spigot() {
         @Override
         public boolean isInvulnerable() {
@@ -1375,16 +1381,6 @@ public abstract class GlowEntity implements Entity {
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return null;
-    }
-
-    @Override
-    public boolean isOp() {
-        return false;
-    }
-
-    @Override
-    public void setOp(boolean b) {
-
     }
 
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
