@@ -18,8 +18,8 @@ import org.bukkit.util.Vector;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 
-    /** How many ticks an arrow lasts when stuck in a block */
-    private static final int TICKS_TO_LIVE_ON_GROUND = 20*60;
+    /** How many ticks an arrow lasts when stuck in a block. */
+    private static final int TICKS_TO_LIVE_ON_GROUND = 20 * 60;
     private volatile PickupStatus customPickupStatus = null;
     private final Arrow.Spigot spigot = new GlowArrow.Spigot();
     @Getter
