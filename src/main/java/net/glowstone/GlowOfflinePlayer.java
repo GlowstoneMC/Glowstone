@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import lombok.Getter;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import org.bukkit.BanList.Type;
@@ -23,13 +24,16 @@ import org.bukkit.entity.Player;
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
-    private final PlayerProfile profile;
-
+    @Getter
+    private final GlowPlayerProfile profile;
     private boolean hasPlayed;
+    @Getter
     private long firstPlayed;
+    @Getter
     private long lastPlayed;
     private String lastName;
-    private Location bedSpawn;
+    @Getter
+    private Location bedSpawnLocation;
 
     /**
      * Create a new offline player for the given name. If possible, the player's data will be
@@ -38,7 +42,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      * @param server The server of the offline player. Must not be null.
      * @param profile The profile associated with the player. Must not be null.
      */
-    public GlowOfflinePlayer(GlowServer server, PlayerProfile profile) {
+    public GlowOfflinePlayer(GlowServer server, GlowPlayerProfile profile) {
         checkNotNull(server, "server must not be null");
         checkNotNull(profile, "profile must not be null");
         this.server = server;
@@ -89,7 +93,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             if (hasPlayed) {
                 firstPlayed = reader.getFirstPlayed();
                 lastPlayed = reader.getLastPlayed();
-                bedSpawn = reader.getBedSpawnLocation();
+                bedSpawnLocation = reader.getBedSpawnLocation();
 
                 String lastName = reader.getLastKnownName();
                 if (lastName != null) {
@@ -137,27 +141,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return hasPlayed;
     }
 
-    @Override
-    public long getFirstPlayed() {
-        return firstPlayed;
-    }
-
-    @Override
-    public long getLastPlayed() {
-        return lastPlayed;
-    }
-
-    public PlayerProfile getProfile() {
-        return profile;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Ban, op, whitelist
-
-    @Override
-    public Location getBedSpawnLocation() {
-        return bedSpawn;
-    }
 
     @Override
     public boolean isBanned() {

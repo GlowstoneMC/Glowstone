@@ -43,7 +43,7 @@ public class AttributeManager {
         if (!needsUpdate) {
             return;
         }
-        messages.add(new EntityPropertyMessage(entity.id, properties));
+        messages.add(new EntityPropertyMessage(entity.entityId, properties));
         needsUpdate = false;
     }
 
@@ -56,7 +56,7 @@ public class AttributeManager {
         if (!needsUpdate) {
             return;
         }
-        int id = entity.id;
+        int id = entity.entityId;
         if (entity instanceof GlowPlayer) {
             GlowPlayer player = (GlowPlayer) entity;
             if (player.getUniqueId().equals(session.getPlayer().getUniqueId())) {
@@ -110,6 +110,7 @@ public class AttributeManager {
     }
 
     public Map<String, Property> getAllProperties() {
+        // TODO: Defensive copy
         return properties;
     }
 

@@ -9,16 +9,16 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class MinecartStore extends EntityStore<GlowMinecart> {
 
-    private GlowMinecart.MinecartType type;
+    private GlowMinecart.MinecartType minecartType;
 
-    public MinecartStore(GlowMinecart.MinecartType type) {
-        super(type.getMinecartClass(), type.getEntityType());
-        this.type = type;
+    public MinecartStore(GlowMinecart.MinecartType minecartType) {
+        super(minecartType.getMinecartClass(), minecartType.getEntityType());
+        this.minecartType = minecartType;
     }
 
     @Override
     public GlowMinecart createEntity(Location location, CompoundTag compound) {
-        Function<? super Location, ? extends GlowMinecart> creator = type.getCreator();
+        Function<? super Location, ? extends GlowMinecart> creator = minecartType.getCreator();
         return creator == null ? null : creator.apply(location);
     }
 
@@ -28,8 +28,8 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
         if (entity instanceof InventoryHolder) {
             InventoryHolder inv = (InventoryHolder) entity;
             if (inv.getInventory() != null && tag.isCompoundList("Items")) {
-                inv.getInventory().setContents(NbtSerialization
-                        .readInventory(tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
+                inv.getInventory().setContents(NbtSerialization.readInventory(
+                        tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
             }
         }
         // todo

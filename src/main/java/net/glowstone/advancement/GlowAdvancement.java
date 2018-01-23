@@ -1,6 +1,7 @@
 package net.glowstone.advancement;
 
 import com.flowpowered.network.util.ByteBufUtils;
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class GlowAdvancement implements Advancement {
 
     @Override
     public List<String> getCriteria() {
-        return criteriaIds;
+        return ImmutableList.copyOf(criteriaIds);
     }
 
     /**

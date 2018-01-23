@@ -1,5 +1,7 @@
 package net.glowstone.entity.monster;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -8,19 +10,13 @@ import org.bukkit.entity.Ghast;
 
 public class GlowGhast extends GlowMonster implements Ghast {
 
+    @Getter
+    @Setter
     private int explosionPower;
 
     public GlowGhast(Location loc) {
         super(loc, EntityType.GHAST, 10);
         setBoundingBox(4, 4);
-    }
-
-    public int getExplosionPower() {
-        return explosionPower;
-    }
-
-    public void setExplosionPower(int explosionPower) {
-        this.explosionPower = explosionPower;
     }
 
     public boolean isAttacking() {

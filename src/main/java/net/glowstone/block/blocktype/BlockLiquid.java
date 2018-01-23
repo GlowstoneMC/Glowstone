@@ -7,6 +7,7 @@ import static org.bukkit.block.BlockFace.SOUTH;
 import static org.bukkit.block.BlockFace.UP;
 import static org.bukkit.block.BlockFace.WEST;
 
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -28,6 +29,12 @@ public abstract class BlockLiquid extends BlockType {
 
     private static final int TICK_RATE_WATER = 4;
     private static final int TICK_RATE_LAVA = 20;
+    /**
+     * Get the bucket type to replace the empty bucket when the liquid has been collected.
+     *
+     * @return The associated bucket types material
+     */
+    @Getter
     private final Material bucketType;
 
     protected BlockLiquid(Material bucketType) {
@@ -74,15 +81,6 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     /**
-     * Get the bucket type to replace the empty bucket when the liquid has been collected.
-     *
-     * @return The associated bucket types material
-     */
-    public Material getBucketType() {
-        return bucketType;
-    }
-
-    /**
      * Check if the BlockState block is collectible by a bucket.
      *
      * @param block The block state to check
@@ -102,7 +100,7 @@ public abstract class BlockLiquid extends BlockType {
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
         Material oldType, byte oldData, Material newType, byte newData) {
-        if (block.getState().getFlowed() && !(isWater(newType) || newType == Material.LAVA
+        if (block.getState().isFlowed() && !(isWater(newType) || newType == Material.LAVA
             || newType == Material.STATIONARY_LAVA)) {
             block.getState().setFlowed(false);
         }
@@ -120,7 +118,7 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     private void calculateFlow(GlowBlock block) {
-        if (!block.getState().getFlowed()) {
+        if (!block.getState().isFlowed()) {
             GlowBlockState state = block.getState();
             // see if we can flow down
             if (block.getY() > 0) {
@@ -143,7 +141,7 @@ public abstract class BlockLiquid extends BlockType {
                             }
                         }
                         // if we already found a match at this radius, stop
-                        if (state.getFlowed()) {
+                        if (state.isFlowed()) {
                             return;
                         }
                     }

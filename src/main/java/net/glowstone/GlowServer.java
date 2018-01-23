@@ -1,7 +1,8 @@
 package net.glowstone;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
@@ -96,7 +97,8 @@ import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
@@ -122,7 +124,6 @@ import net.glowstone.scoreboard.GlowScoreboardManager;
 import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.GlowServerIcon;
 import net.glowstone.util.GlowUnsafeValues;
-import net.glowstone.util.LibraryManager;
 import net.glowstone.util.OpenCompute;
 import net.glowstone.util.SecurityUtils;
 import net.glowstone.util.ShutdownMonitorThread;
@@ -132,6 +133,8 @@ import net.glowstone.util.bans.UuidListFile;
 import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
+import net.glowstone.util.library.Library;
+import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.BanEntry;
@@ -498,8 +501,8 @@ public final class GlowServer implements Server {
                         .println("  --version, -v                  Shows version information and "
                                 + "exits.");
                 System.out
-                        .println("  --generate-config              Generates and loads configuration files, then "
-                                + "exits.");
+                        .println("  --generate-config              Generates and loads "
+                                + "configuration files, then exits.");
                 System.out
                         .println("  --configdir <directory>        Sets the configuration "
                                 + "directory.");
@@ -756,9 +759,11 @@ public final class GlowServer implements Server {
         }
 
         // Start loading plugins
+        List<Library> libraries = aggregateLibraries();
         new LibraryManager(config.getString(Key.LIBRARY_REPOSITORY_URL),
-                config.getString(Key.LIBRARIES_FOLDER), config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
-                config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS)).run();
+                config.getString(Key.LIBRARIES_FOLDER),
+                config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
+                config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS), libraries).run();
         loadPlugins();
         enablePlugins(PluginLoadOrder.STARTUP);
 
@@ -986,12 +991,22 @@ public final class GlowServer implements Server {
                         defaultIcon = new GlowServerIcon(serverIconFile);
                     }
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, "Failed to import '" + SERVER_ICON_FILE + "' from Vanilla", e);
+                    logger.log(Level.WARNING,
+                            "Failed to import '" + SERVER_ICON_FILE + "' from Vanilla", e);
                 }
             }
         } catch (Exception e) {
             logger.log(Level.WARNING, "Failed to load '" + SERVER_ICON_FILE + "'", e);
         }
+    }
+
+    /**
+     * Aggregates libraries from all relevant sources together.
+     */
+    private List<Library> aggregateLibraries() {
+        return config.getMapList(Key.LIBRARIES).stream()
+                .map(Library::fromConfigMap)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -1530,7 +1545,7 @@ public final class GlowServer implements Server {
      * @param online whether the player is online or offline
      */
     public void setPlayerOnline(GlowPlayer player, boolean online) {
-        Preconditions.checkNotNull(player);
+        checkNotNull(player);
         if (online) {
             onlinePlayers.add(player);
         } else {
@@ -1642,8 +1657,27 @@ public final class GlowServer implements Server {
 
     @Override
     public boolean suggestPlayerNamesWhenNullTabCompletions() {
-        // TODO: Implementation (1.12.1)
-        return false;
+        return config.getBoolean(Key.SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS);
+    }
+
+    @Override
+    public GlowPlayerProfile createProfile(UUID id) {
+        return createProfile(id, null);
+    }
+
+    @Override
+    public GlowPlayerProfile createProfile(String name) {
+        checkNotNull(name);
+        UUID id = ProfileCache.getUuid(name).join();
+        if (id == null) {
+            throw new IllegalArgumentException("Could not fetch UUID for username: " + name);
+        }
+        return createProfile(id, name);
+    }
+
+    @Override
+    public GlowPlayerProfile createProfile(UUID id, String name) {
+        return new GlowPlayerProfile(name, id);
     }
 
     @Override
@@ -1816,12 +1850,12 @@ public final class GlowServer implements Server {
     }
 
     /**
-     * Creates a new {@link GlowOfflinePlayer} instance for the given {@link PlayerProfile}.
+     * Creates a new {@link GlowOfflinePlayer} instance for the given {@link GlowPlayerProfile}.
      *
      * @param profile the player's profile.
      * @return a new {@link GlowOfflinePlayer} instance for the given profile.
      */
-    public OfflinePlayer getOfflinePlayer(PlayerProfile profile) {
+    public OfflinePlayer getOfflinePlayer(GlowPlayerProfile profile) {
         return new GlowOfflinePlayer(this, profile);
     }
 
@@ -1858,7 +1892,7 @@ public final class GlowServer implements Server {
         } catch (TimeoutException ex) {
             GlowServer.logger.log(Level.WARNING, "Profile lookup timeout: ", ex);
         }
-        return new GlowOfflinePlayer(this, new PlayerProfile(null, uuid));
+        return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid));
     }
 
     /**
@@ -1873,7 +1907,7 @@ public final class GlowServer implements Server {
             return CompletableFuture.completedFuture(onlinePlayer);
         }
 
-        return PlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
+        return GlowPlayerProfile.getProfile(name).thenApplyAsync((profile) -> {
             if (profile == null) {
                 return getOfflinePlayerFallback(name);
             } else {
@@ -1899,7 +1933,7 @@ public final class GlowServer implements Server {
     }
 
     private OfflinePlayer getOfflinePlayerFallback(String name) {
-        return getOfflinePlayer(new PlayerProfile(name, UUID
+        return getOfflinePlayer(new GlowPlayerProfile(name, UUID
                 .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
     }
 

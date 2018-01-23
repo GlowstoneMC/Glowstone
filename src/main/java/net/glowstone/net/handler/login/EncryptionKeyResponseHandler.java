@@ -1,5 +1,6 @@
 package net.glowstone.net.handler.login;
 
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.flowpowered.network.MessageHandler;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -19,8 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import lombok.AllArgsConstructor;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.entity.meta.profile.PlayerProperty;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.http.HttpCallback;
 import net.glowstone.net.http.HttpClient;
@@ -154,13 +154,13 @@ public final class EncryptionKeyResponseHandler implements
             JSONArray propsArray = (JSONArray) json.get("properties");
 
             // parse properties
-            List<PlayerProperty> properties = new ArrayList<>(propsArray.size());
+            List<ProfileProperty> properties = new ArrayList<>(propsArray.size());
             for (Object obj : propsArray) {
                 JSONObject propJson = (JSONObject) obj;
                 String propName = (String) propJson.get("name");
                 String value = (String) propJson.get("value");
                 String signature = (String) propJson.get("signature");
-                properties.add(new PlayerProperty(propName, value, signature));
+                properties.add(new ProfileProperty(propName, value, signature));
             }
 
             AsyncPlayerPreLoginEvent event = EventFactory
@@ -171,8 +171,8 @@ public final class EncryptionKeyResponseHandler implements
             }
 
             // spawn player
-            session.getServer().getScheduler()
-                .runTask(null, () -> session.setPlayer(new PlayerProfile(name, uuid, properties)));
+            session.getServer().getScheduler().runTask(null, () -> session.setPlayer(
+                    new GlowPlayerProfile(name, uuid, properties)));
         }
 
         @Override

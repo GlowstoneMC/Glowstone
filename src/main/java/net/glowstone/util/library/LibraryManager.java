@@ -1,4 +1,4 @@
-package net.glowstone.util;
+package net.glowstone.util.library;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +24,7 @@ import java.util.logging.Level;
 import javax.net.ssl.HttpsURLConnection;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.util.ClassPathAgent;
 import net.glowstone.util.config.ServerConfig;
 
 /**
@@ -32,39 +34,43 @@ public final class LibraryManager {
     /**
      * The Maven repository to download from.
      */
-    final String repository;
+    private final String defaultRepository;
 
     /**
      * The directory to store downloads in.
      */
-    final File directory;
+    private final File directory;
 
     /**
      * Whether the checksum of each library should be verified after being downloaded.
      */
-    final boolean validateChecksum;
+    private final boolean validateChecksum;
 
     /**
      * The maximum amount of attempts to download each library.
      */
-    final int maxDownloadAttempts;
+    private final int maxDownloadAttempts;
+
+    private final Collection<Library> libraries;
 
     private final ExecutorService downloaderService = Executors.newCachedThreadPool();
 
     /**
      * Creates the instance.
      *
-     * @param repository the repository to download the libraries from
+     * @param defaultRepository the repository to download the libraries from
      * @param directoryName the name of the directory to download the libraries to
      * @param validateChecksum whether or not checksum validation is enabled
      */
-    public LibraryManager(String repository, String directoryName, boolean validateChecksum, int maxDownloadAttempts) {
-        checkNotNull(repository);
+    public LibraryManager(String defaultRepository, String directoryName, boolean validateChecksum,
+            int maxDownloadAttempts, Collection<Library> libraries) {
+        checkNotNull(defaultRepository);
         checkNotNull(directoryName);
-        this.repository = repository;
+        this.defaultRepository = defaultRepository;
         this.directory = new File(directoryName);
         this.validateChecksum = validateChecksum;
         this.maxDownloadAttempts = maxDownloadAttempts;
+        this.libraries = libraries;
     }
 
     /**
@@ -76,21 +82,10 @@ public final class LibraryManager {
                     .log(Level.SEVERE, "Could not create libraries directory: " + directory);
         }
 
-        downloaderService.execute(new LibraryDownloader(
-                "org.xerial", "sqlite-jdbc", "3.21.0",
-                "347e4d1d3e1dff66d389354af8f0021e62344584", HashAlgorithm.SHA1));
-        downloaderService.execute(new LibraryDownloader(
-                "mysql", "mysql-connector-java", "5.1.44",
-                "61b6b998192c85bb581c6be90e03dcd4b9079db4", HashAlgorithm.SHA1));
-        downloaderService.execute(new LibraryDownloader(
-                "org.apache.logging.log4j", "log4j-api", "2.8.1",
-                "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72", HashAlgorithm.SHA1));
-        downloaderService.execute(new LibraryDownloader(
-                "org.apache.logging.log4j", "log4j-core", "2.8.1",
-                "4ac28ff2f1ddf05dae3043a190451e8c46b73c31", HashAlgorithm.SHA1));
-        downloaderService.execute(new LibraryDownloader(
-                "org.apache.commons", "commons-lang3", "3.5",
-                "6c6c702c89bfff3cd9e80b04d668c5e190d588c6", HashAlgorithm.SHA1));
+        for (Library library : libraries) {
+            downloaderService.execute(new LibraryDownloader(library));
+        }
+
         downloaderService.shutdown();
         try {
             if (!downloaderService.awaitTermination(1, TimeUnit.MINUTES)) {
@@ -102,30 +97,25 @@ public final class LibraryManager {
     }
 
     private class LibraryDownloader implements Runnable {
-
-        private final String group;
-        private final String library;
-        private final String version;
-        private final String checksum;
-        private final HashAlgorithm algorithm;
+        private final Library library;
+        private final String repository;
 
         /**
          * Creates an instance of the downloader for a library.
          *
-         * @param group the Maven group ID of the library
-         * @param library the Maven artifact ID of the library
-         * @param version the Maven artifact version of the library
-         * @param checksum the reference checksum of the library.
-         *                  See {@link LibraryDownloader#checksum(File, String, HashAlgorithm)}
-         * @param algorithm the algorithm used to validate the checksum.
-         *                   See {@link LibraryDownloader#checksum(File, String, HashAlgorithm)}
+         * @param library a {@link Library} instance representing a library
          */
-        LibraryDownloader(String group, String library, String version, String checksum, HashAlgorithm algorithm) {
-            this.group = group;
+        LibraryDownloader(Library library) {
             this.library = library;
-            this.version = version;
-            this.checksum = checksum;
-            this.algorithm = algorithm;
+
+            String repository = library.getRepository();
+            if (repository == null) {
+                repository = defaultRepository;
+            }
+            if (!repository.endsWith("/")) {
+                repository += "/";
+            }
+            this.repository = repository;
         }
 
         @Override
@@ -137,30 +127,33 @@ public final class LibraryManager {
                 while (attempts < maxDownloadAttempts) {
                     attempts++;
                     // download it
-                    GlowServer.logger.info("Downloading " + library + ' ' + version + "...");
+                    GlowServer.logger.info("Downloading " + library.toString() + "...");
                     try {
                         URL downloadUrl = new URL(
-                                repository + group.replace('.', '/') + '/'
-                                        + library + '/' + version + '/' + library + '-' + version + ".jar");
+                                repository + library.getGroupId().replace('.', '/') + '/'
+                                        + library.getArtifactId() + '/' + library.getVersion()
+                                        + '/' + library.getArtifactId() + '-'
+                                        + library.getVersion() + ".jar");
                         HttpsURLConnection connection = (HttpsURLConnection) downloadUrl
                                 .openConnection();
                         connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
                         try (ReadableByteChannel input = Channels
                                 .newChannel(connection.getInputStream());
-                             FileOutputStream output = new FileOutputStream(file)) {
+                                FileOutputStream output = new FileOutputStream(file)) {
                             output.getChannel().transferFrom(input, 0, Long.MAX_VALUE);
-                            GlowServer.logger.info("Downloaded " + library + ' ' + version + '.');
+                            GlowServer.logger.info("Downloaded " + library.toString() + '.');
                         }
 
-                        if (validateChecksum && algorithm != null && checksum != null
-                                && !checksum(file, checksum, algorithm)) {
+                        if (validateChecksum && library.getChecksumType() != null
+                                && library.getChecksumValue() != null
+                                && !checksum(file, library)) {
                             GlowServer.logger.severe("The checksum for the library '" + getLibrary()
                                     + "' does not match. "
-                                    + (attempts == maxDownloadAttempts ? "Restart the server to attempt "
-                                    + "downloading it again."
+                                    + (attempts == maxDownloadAttempts
+                                            ? "Restart the server to attempt downloading it again."
                                             : "Attempting download again ("
-                                                    + (attempts + 1) + "/" + maxDownloadAttempts + ")"));
+                                            + (attempts + 1) + "/" + maxDownloadAttempts + ")"));
                             file.delete();
                             if (attempts == maxDownloadAttempts) {
                                 return;
@@ -171,25 +164,29 @@ public final class LibraryManager {
                         break;
                     } catch (IOException e) {
                         GlowServer.logger.log(Level.WARNING,
-                                "Failed to download: " + library + ' ' + version, e);
+                                "Failed to download: " + library.toString(), e);
                         file.delete();
                         if (attempts == maxDownloadAttempts) {
                             GlowServer.logger.warning("Restart the server to attempt downloading '"
                                     + getLibrary() + "' again.");
                             return;
                         }
-                        GlowServer.logger.warning("Attempting download of '" + getLibrary() + "' again ("
-                                + (attempts + 1) + "/" + maxDownloadAttempts + ")");
+                        GlowServer.logger
+                                .warning("Attempting download of '" + getLibrary() + "' again ("
+                                        + (attempts + 1) + "/" + maxDownloadAttempts + ")");
                     }
                 }
-            } else if (validateChecksum && algorithm != null && checksum != null
-                    && !checksum(file, checksum, algorithm)) {
+            } else if (validateChecksum && library.getChecksumType() != null
+                    && library.getChecksumValue() != null
+                    && !checksum(file, library)) {
                 // The file is already downloaded, but validate the checksum as a warning only
                 GlowServer.logger.warning("The checksum for the library '" + getLibrary()
                         + "' does not match. "
                         + "Remove the library and restart the server to download it again.");
-                GlowServer.logger.warning("Additionally, you can disable this warning in the server "
-                        + "configuration, under '" + ServerConfig.Key.LIBRARY_CHECKSUM_VALIDATION.getPath() + "'.");
+                GlowServer.logger
+                        .warning("Additionally, you can disable this warning in the server "
+                                + "configuration, under '"
+                                + ServerConfig.Key.LIBRARY_CHECKSUM_VALIDATION.getPath() + "'.");
             }
 
             // hack it onto the classpath
@@ -205,7 +202,7 @@ public final class LibraryManager {
                 }
             } catch (Exception e) {
                 GlowServer.logger.log(Level.WARNING,
-                        "Failed to add to classpath: " + library + " " + version, e);
+                        "Failed to add to classpath: " + library.toString(), e);
             }
         }
 
@@ -215,7 +212,7 @@ public final class LibraryManager {
          * @return the name of the file the library will be saved to
          */
         String getLibrary() {
-            return library + '-' + version + ".jar";
+            return library.getArtifactId() + '-' + library.getVersion() + ".jar";
         }
 
         /**
@@ -223,19 +220,21 @@ public final class LibraryManager {
          *
          * <p>If the file does not exist, the checksum will be automatically invalidated.
          *
-         * <p>If the reference checksum or the algorithm are empty or null,
-         * the checksum will be automatically validated.
+         * <p>If the reference checksum or the algorithm are empty or null, the checksum will be
+         * automatically validated.
          *
          * @param file the file.
-         * @param checksum the reference checksum to validate the file's digest with.
-         * @param algorithm the {@link HashAlgorithm} used to compute the file's digest.
+         * @param library the {@link Library} instance containing the algorithm and the
+         *         checksum.
          * @return true if the checksum was validated, false otherwise.
          */
-        boolean checksum(File file, String checksum, HashAlgorithm algorithm) {
+        boolean checksum(File file, Library library) {
             checkNotNull(file);
             if (!file.exists()) {
                 return false;
             }
+            HashAlgorithm algorithm = library.getChecksumType();
+            String checksum = library.getChecksumValue();
             if (algorithm == null || checksum == null || checksum.isEmpty()) {
                 // assume everything is OK if no reference checksum is provided
                 return true;
@@ -245,7 +244,8 @@ public final class LibraryManager {
             try {
                 digest = Files.hash(file, algorithm.getFunction()).toString();
             } catch (IOException ex) {
-                GlowServer.logger.log(Level.SEVERE, "Failed to compute digest for '" + file.getName() + "'", ex);
+                GlowServer.logger.log(Level.SEVERE,
+                        "Failed to compute digest for '" + file.getName() + "'", ex);
                 return false;
             }
             return digest.equals(checksum);

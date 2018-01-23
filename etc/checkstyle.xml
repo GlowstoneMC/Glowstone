@@ -26,7 +26,6 @@
     <module name="CommentsIndentation"/>
 
     <module name="IllegalTokenText">
-      <property name="severity" value="warning"/>
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
       <property name="format"
         value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
@@ -34,7 +33,6 @@
         value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
     </module>
     <module name="AvoidEscapedUnicodeCharacters">
-      <property name="severity" value="warning"/>
       <property name="allowEscapesForControlCharacters" value="true"/>
       <property name="allowByTailComment" value="true"/>
       <property name="allowNonPrintableEscapes" value="true"/>
@@ -42,7 +40,6 @@
 
     <!-- Code -->
     <module name="LineLength">
-      <property name="severity" value="warning"/> <!-- TODO: line length wrapping -->
       <property name="max" value="100"/>
       <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
@@ -51,17 +48,12 @@
     <module name="NoLineWrap"/>
     <module name="OneStatementPerLine"/>
     <module name="ArrayTypeStyle"/>
-    <module name="MultipleVariableDeclarations">
-      <property name="severity" value="warning"/> <!-- TODO: no multi var declarations -->
-    </module>
-    <module name="MissingSwitchDefault">
-      <property name="severity" value="warning"/> <!-- TODO: switch defaults -->
-    </module>
+    <module name="MultipleVariableDeclarations"/>
+    <module name="MissingSwitchDefault"/>
     <module name="FallThrough"/>
     <module name="UpperEll"/>
     <module name="ModifierOrder"/>
     <module name="EmptyLineSeparator">
-      <property name="severity" value="warning"/> <!-- TODO: no multi var declarations -->
       <property name="allowNoEmptyLineBetweenFields" value="true"/>
     </module>
     <module name="SeparatorWrap">
@@ -81,11 +73,8 @@
     </module>
     <module name="NoFinalizer"/>
     <module name="OverloadMethodsDeclarationOrder"/>
-    <module name="VariableDeclarationUsageDistance">
-      <property name="severity" value="warning"/> <!-- TODO: variable usage distance -->
-    </module>
+    <module name="VariableDeclarationUsageDistance"/>
     <module name="OperatorWrap">
-      <property name="severity" value="warning"/> <!-- TODO: operators on new line -->
       <property name="option" value="NL"/>
       <property name="tokens"
         value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
@@ -104,20 +93,16 @@
     <module name="NonEmptyAtclauseDescription"/>
     <module name="JavadocTagContinuationIndentation"/>
     <module name="SummaryJavadoc">
-      <property name="severity" value="warning"/> <!-- TODO: Javadocs formatting -->
       <property name="forbiddenSummaryFragments"
         value="^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )"/>
     </module>
-    <module name="JavadocParagraph">
-      <property name="severity" value="warning"/> <!-- TODO: Javadocs formatting -->
-    </module>
+    <module name="JavadocParagraph"/>
     <module name="AtclauseOrder">
       <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
       <property name="target"
         value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
     </module>
     <module name="JavadocMethod">
-      <property name="severity" value="warning"/> <!-- TODO: Javadocs -->
       <property name="scope" value="public"/>
       <property name="allowMissingParamTags" value="true"/>
       <property name="allowMissingThrowsTags" value="true"/>
@@ -201,12 +186,10 @@
       <message key="name.invalidPattern" value="Type name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="MemberName">
-      <property name="severity" value="warning"/> <!-- TODO: fix naming capitalization -->
       <property name="format" value="^([a-z][a-z0-9][a-zA-Z0-9]*|[xyz])$"/>
       <message key="name.invalidPattern" value="Member name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="ParameterName">
-      <property name="severity" value="warning"/> <!-- TODO: fix naming capitalization -->
       <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
       <message key="name.invalidPattern"
         value="Parameter name ''{0}'' must match pattern ''{1}''."/>
@@ -217,7 +200,6 @@
         value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="LocalVariableName">
-      <property name="severity" value="warning"/> <!-- TODO: fix naming capitalization -->
       <property name="tokens" value="VARIABLE_DEF"/>
       <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
       <message key="name.invalidPattern"
@@ -239,7 +221,6 @@
         value="Interface type name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="AbbreviationAsWordInName">
-      <property name="severity" value="warning"/> <!-- TODO: fix naming capitalization -->
       <property name="ignoreFinal" value="false"/>
       <property name="allowedAbbreviationLength" value="1"/>
     </module>

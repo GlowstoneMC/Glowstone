@@ -11,19 +11,19 @@ import java.util.concurrent.CompletableFuture;
 public class ProfileCache {
 
     private static final Map<String, UUID> uuidCache = new HashMap<>();
-    private static final Map<UUID, PlayerProfile> profileCache = new HashMap<>();
+    private static final Map<UUID, GlowPlayerProfile> profileCache = new HashMap<>();
 
     /**
-     * Look up the PlayerProfile for a given UUID.
+     * Look up the GlowPlayerProfile for a given UUID.
      *
      * @param uuid The UUID to look up.
-     * @return A PlayerProfile future, contains a null name if the lookup failed.
+     * @return A GlowPlayerProfile future, contains a null name if the lookup failed.
      */
-    public static CompletableFuture<PlayerProfile> getProfile(UUID uuid) {
+    public static CompletableFuture<GlowPlayerProfile> getProfile(UUID uuid) {
         if (profileCache.containsKey(uuid)) {
             return CompletableFuture.completedFuture(profileCache.get(uuid));
         }
-        CompletableFuture<PlayerProfile> profileFuture = CompletableFuture
+        CompletableFuture<GlowPlayerProfile> profileFuture = CompletableFuture
                 .supplyAsync(() -> PlayerDataFetcher.getProfile(uuid));
         profileFuture.thenAccept(profile -> profileCache.put(uuid, profile));
         return profileFuture;
