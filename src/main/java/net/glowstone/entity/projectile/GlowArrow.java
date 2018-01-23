@@ -60,6 +60,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     public void setOnGround(boolean onGround) {
         super.setOnGround(onGround);
         if (onGround) {
+            setTicksLived(0); // Despawn timer only starts when we stick in a block
             setVelocity(new Vector(0, 0, 0));
         }
     }
@@ -90,7 +91,6 @@ public class GlowArrow extends GlowProjectile implements Arrow {
                 // do nothing
         }
         setOnGround(true);
-        setTicksLived(0);
     }
 
     @Override
