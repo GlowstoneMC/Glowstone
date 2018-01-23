@@ -25,6 +25,9 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Getter
     @Setter
     private int knockbackStrength;
+    @Getter
+    @Setter
+    private short life;
     /**
      * How long an entity burns after being shot with a burning arrow.
      */
@@ -60,7 +63,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     public void setOnGround(boolean onGround) {
         super.setOnGround(onGround);
         if (onGround) {
-            setTicksLived(0); // Despawn timer only starts when we stick in a block
+            setLife((short) 0); // Despawn timer only starts when we stick in a block
             setVelocity(new Vector(0, 0, 0));
         }
     }
@@ -68,7 +71,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Override
     public void pulse() {
         super.pulse();
-        if (isOnGround() && getTicksLived() >= TICKS_TO_LIVE_ON_GROUND) {
+        if (isOnGround() && getLife() >= TICKS_TO_LIVE_ON_GROUND) {
             remove();
         }
     }

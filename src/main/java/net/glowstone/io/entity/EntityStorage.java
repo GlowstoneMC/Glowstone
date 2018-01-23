@@ -27,7 +27,6 @@ import net.glowstone.entity.passive.GlowPolarBear;
 import net.glowstone.entity.passive.GlowSkeletonHorse;
 import net.glowstone.entity.passive.GlowSquid;
 import net.glowstone.entity.passive.GlowZombieHorse;
-import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowEgg;
 import net.glowstone.entity.projectile.GlowEnderPearl;
 import net.glowstone.entity.projectile.GlowFireball;
@@ -133,9 +132,6 @@ public final class EntityStorage {
         }
         bind(new ProjectileStore<>(GlowSnowball.class, "snowball"));
         bind(new ProjectileStore<>(GlowEgg.class, "egg"));
-        bind(new ProjectileStore<>(GlowArrow.class, "arrow"));
-        bind(new ProjectileStore<>(GlowTippedArrow.class, "arrow")); // tipped arrows use same ID
-        bind(new ProjectileStore<>(GlowSpectralArrow.class, "spectral_arrow"));
         bind(new ProjectileStore<>(GlowEnderPearl.class, "ender_pearl"));
         bind(new ProjectileStore<>(GlowSplashPotion.class, "splash_potion"));
         bind(new ProjectileStore<>(GlowLingeringPotion.class, "lingering_potion"));
@@ -143,9 +139,15 @@ public final class EntityStorage {
         bind(new ProjectileStore<>(GlowFireball.class, "fireball"));
         bind(new ProjectileStore<>(GlowFireball.class, "small_fireball"));
         bind(new ProjectileStore<>(GlowWitherSkull.class, "wither_skull"));
+        bind(new ArrowStore<>(GlowSpectralArrow.class, "spectral_arrow"));
         bind(new PaintingStore());
         bind(new ExperienceOrbStore());
         bind(new FireworkStore());
+
+        // Normal and tipped arrows use same storage
+        final NormalTippedArrowStore arrowStore = new NormalTippedArrowStore<>();
+        bind(arrowStore);
+        classTable.put(GlowTippedArrow.class, arrowStore);
     }
 
     private EntityStorage() {
