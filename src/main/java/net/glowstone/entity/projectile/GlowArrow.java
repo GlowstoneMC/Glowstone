@@ -18,6 +18,8 @@ import org.bukkit.util.Vector;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 
+    /** How many ticks an arrow lasts when stuck in a block */
+    private static final int TICKS_TO_LIVE_ON_GROUND = 20*60;
     private volatile PickupStatus customPickupStatus = null;
     private final Arrow.Spigot spigot = new GlowArrow.Spigot();
     @Getter
@@ -63,13 +65,32 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     }
 
     @Override
+    public void pulse() {
+        super.pulse();
+        if (isOnGround() && getTicksLived() >= TICKS_TO_LIVE_ON_GROUND) {
+            remove();
+        }
+    }
+
+    @Override
     public void collide(Block block) {
         setFireTicks(0); // Arrows stop burning when they land, and ignite only TNT
-        if (block.getType() == Material.TNT) {
-            BlockTnt.igniteBlock(block, false);
+        switch (block.getType()) {
+            case TNT:
+                BlockTnt.igniteBlock(block, false);
+                break;
+            case WOOD_BUTTON:
+            case STONE_BUTTON:
+            case WOOD_PLATE:
+            case STONE_PLATE:
+            case GOLD_PLATE:
+            case TRIPWIRE:
+                // TODO: Becomes powered as long as arrow is stuck
+            default:
+                // do nothing
         }
         setOnGround(true);
-        // TODO: Schedule despawn after 1 minute
+        setTicksLived(0);
     }
 
     @Override
