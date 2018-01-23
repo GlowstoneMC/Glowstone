@@ -13,6 +13,8 @@ import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
@@ -60,6 +62,13 @@ public class GlowEnderPearl extends GlowEntity implements EnderPearl {
         // If the EnderPearl collides with anything except air/fluids
         if (!location.getBlock().isLiquid() && !location.getBlock().isEmpty()
                 && shooter instanceof Entity) {
+            location.add(0, 1, 0);
+            location.setPitch(((Entity) shooter).getLocation().getPitch());
+            location.setYaw(((Entity) shooter).getLocation().getYaw());
+            if(shooter instanceof LivingEntity) {
+                ((LivingEntity) shooter).damage(5, DamageCause.FALL);
+            }
+
             ((Entity) shooter).teleport(location);
             this.remove();
         }
