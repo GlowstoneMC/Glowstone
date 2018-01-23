@@ -2,6 +2,7 @@ package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.objects.GlowExperienceOrb;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -10,6 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ThrownExpBottle;
 
 public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBottle {
+
     public GlowThrownExpBottle(Location location) {
         super(location);
     }
@@ -36,6 +38,6 @@ public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBott
 
     @Override
     protected int getObjectId() {
-        return 75;
+        return SpawnObjectMessage.EXPERIENCE_BOTTLE;
     }
 }

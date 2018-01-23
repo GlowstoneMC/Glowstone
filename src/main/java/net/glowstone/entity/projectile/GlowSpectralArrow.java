@@ -2,6 +2,7 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.SpectralArrow;
@@ -27,6 +28,6 @@ public class GlowSpectralArrow extends GlowArrow implements SpectralArrow {
 
     @Override
     protected int getObjectId() {
-        return 91;
+        return SpawnObjectMessage.SPECTRAL_ARROW;
     }
 }

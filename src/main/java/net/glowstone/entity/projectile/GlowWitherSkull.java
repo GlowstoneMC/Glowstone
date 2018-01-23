@@ -2,11 +2,11 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.entity.WitherSkull;
 
 public class GlowWitherSkull extends GlowFireball implements WitherSkull {
-    private static final int NETWORK_ID = 66;
     @Getter
     @Setter
     private boolean charged;
@@ -17,6 +17,6 @@ public class GlowWitherSkull extends GlowFireball implements WitherSkull {
     
     @Override
     protected int getObjectId() {
-        return NETWORK_ID;
+        return SpawnObjectMessage.WITHER_SKULL;
     }
 }

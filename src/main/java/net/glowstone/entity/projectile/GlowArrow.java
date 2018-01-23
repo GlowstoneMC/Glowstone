@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,7 +18,6 @@ import org.bukkit.util.Vector;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 
-    public static final int ARROW = 60;
     private volatile PickupStatus customPickupStatus = null;
     private final Arrow.Spigot spigot = new GlowArrow.Spigot();
     @Getter
@@ -92,7 +92,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     protected int getObjectId() {
-        return ARROW;
+        return SpawnObjectMessage.ARROW;
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.glowstone.entity.projectile;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.passive.GlowChicken;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Egg;
@@ -11,8 +12,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class GlowEgg extends GlowProjectile implements Egg {
-
-    private static final int NETWORK_ID = 62;
 
     /**
      * Creates an egg entity.
@@ -56,6 +55,6 @@ public class GlowEgg extends GlowProjectile implements Egg {
 
     @Override
     protected int getObjectId() {
-        return NETWORK_ID;
+        return SpawnObjectMessage.EGG;
     }
 }

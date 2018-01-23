@@ -18,6 +18,17 @@ public final class SpawnObjectMessage implements Message {
     public static final int ITEM_FRAME = 71;
     public static final int FIREWORK = 76;
     public static final int LEASH_HITCH = 77;
+    public static final int ARROW = 60;
+    public static final int EGG = 62;
+    public static final int GHAST_FIREBALL = 63;
+    public static final int ENDER_DRAGON_FIREBALL = 93;
+    /** Blaze fireball or Fire Charge. */
+    public static final int FIREBALL = 64;
+    public static final int SNOWBALL = 61;
+    public static final int SPECTRAL_ARROW = 91;
+    public static final int SPLASH_POTION = 73;
+    public static final int EXPERIENCE_BOTTLE = 75;
+    public static final int WITHER_SKULL = 66;
 
     private final int id;
     private final UUID uuid; // TODO: Handle UUID

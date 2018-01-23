@@ -2,6 +2,7 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderDragon;
@@ -51,11 +52,11 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     protected int getObjectId() {
         ProjectileSource shooter = getShooter();
         if (shooter instanceof Ghast) {
-            return 63;
+            return SpawnObjectMessage.GHAST_FIREBALL;
         } else if (shooter instanceof EnderDragon) {
-            return 93;
+            return SpawnObjectMessage.ENDER_DRAGON_FIREBALL;
         }
-        return 64;
+        return SpawnObjectMessage.FIREBALL;
     }
 
     @Override

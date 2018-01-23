@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -54,7 +55,7 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
 
     @Override
     protected int getObjectId() {
-        return 73;
+        return SpawnObjectMessage.SPLASH_POTION;
     }
 
     @Override
