@@ -85,7 +85,7 @@ public final class GlowScheduler implements BukkitScheduler {
      * Creates a new task scheduler.
      *
      * @param server The server that will use this scheduler.
-     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the servers
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's
      *         worlds.
      */
     public GlowScheduler(GlowServer server, WorldScheduler worlds) {
@@ -95,7 +95,8 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * Creates a new task scheduler.
      * @param server The server that will use this scheduler.
-     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the servers
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's
+     *         worlds.
      * @param sessionRegistry The {@link SessionRegistry} this scheduler will use to tick players
      */
     public GlowScheduler(Server server, WorldScheduler worlds,

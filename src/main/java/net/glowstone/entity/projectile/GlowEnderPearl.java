@@ -1,7 +1,5 @@
 package net.glowstone.entity.projectile;
 
-import static net.glowstone.net.message.play.entity.SpawnObjectMessage.THROWN_ENDERPEARL;
-
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +18,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
+
     private static final double ENDER_PEARL_DAMAGE = 5.0;
 
     /**
@@ -66,14 +65,14 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
 
     @Override
     protected int getObjectId() {
-        return THROWN_ENDERPEARL;
+        return SpawnObjectMessage.THROWN_ENDERPEARL;
     }
 
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
                 new SpawnObjectMessage(
-                        entityId, getUniqueId(), THROWN_ENDERPEARL, location),
+                        entityId, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
                 new EntityMetadataMessage(entityId, metadata.getEntryList()),
                 // These keep the client from assigning a random velocity
                 new EntityTeleportMessage(entityId, location),

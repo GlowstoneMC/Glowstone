@@ -84,7 +84,7 @@ public enum MetadataIndex {
 
     AREAEFFECTCLOUD_RADIUS(6, FLOAT, AreaEffectCloud.class),
     AREAEFFECTCLOUD_COLOR(7, INT, AreaEffectCloud.class),
-    AREAEFFECTCLOUD_UNKNOWN(8, BOOLEAN, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_POINT(8, BOOLEAN, AreaEffectCloud.class),
     AREAEFFECTCLOUD_PARTICLEID(9, INT, AreaEffectCloud.class),
     AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, AreaEffectCloud.class),
     AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, AreaEffectCloud.class),

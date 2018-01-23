@@ -175,6 +175,7 @@ public final class ItemTable {
     // Registration
 
     private void registerBuiltins() {
+        // Blocks:
         reg(Material.FLOWER_POT, new BlockFlowerPot());
         reg(Material.JUKEBOX, new BlockJukebox());
         reg(Material.NOTE_BLOCK, new BlockNote());
@@ -395,6 +396,8 @@ public final class ItemTable {
                 .YELLOW_GLAZED_TERRACOTTA));
         reg(Material.CHORUS_FLOWER, new BlockChorusFlower());
         reg(Material.CHORUS_PLANT, new BlockChorusPlant());
+
+        // Non-block and ItemPlaceAs items:
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));

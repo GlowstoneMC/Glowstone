@@ -659,8 +659,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
-        return launchProjectile(projectile,
+    public <T extends Projectile> T launchProjectile(Class<? extends T> type) {
+        return launchProjectile(type,
             getLocation().getDirection());  // todo: multiply by some speed
     }
 
@@ -668,57 +668,89 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Health
 
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector) {
+    public <T extends Projectile> T launchProjectile(Class<? extends T> type, Vector vector) {
         float offset = 0.0F;
-        float velocity = 1.5F;
-        T projectile = launchProjectile(clazz, vector, offset, velocity);
+        float speed = 1.5F;
+        T projectile = launchProjectile(type, vector, offset, speed);
         return projectile;
     }
 
     /**
      * Launches a projectile from this entity.
      *
-     * @param clazz the projectile class
-     * @param vector TODO: document this parameter
+     * @param type the projectile class
+     * @param vector the direction to shoot in
      * @param offset TODO: document this parameter
-     * @param velocity the velocity for the first flight tick
+     * @param speed the speed for the first flight tick
      * @param <T> the projectile class
      * @return the launched projectile
      */
-    public <T extends Projectile> T launchProjectile(Class<? extends T> clazz, Vector vector,
-            float offset, float velocity) {
+    public <T extends Projectile> T launchProjectile(Class<? extends T> type, Vector vector,
+            float offset, float speed) {
         if (vector == null) {
             vector = getVelocity();
         }
 
-        T projectile = throwProjectile(clazz, getEyeLocation().clone(), vector, offset, velocity);
+        T projectile = launchProjectile(type, getEyeLocation().clone(), vector, offset, speed);
         projectile.setShooter(this);
         return projectile;
     }
 
-    protected <T extends Projectile> T throwProjectile(Class<? extends T> type, Location location,
-            Vector originalVector, float offset, float velocity) {
-        double k = Math.toRadians(-1);
-        double x = cos(k * location.getPitch()) * sin(k * location.getYaw());
-        double y = sin(k * (location.getPitch() - offset));
-        double z = cos(location.getPitch() * k) * cos(location.getYaw() * k);
-        T projectile = throwProjectile(type, location, x, y, z, velocity);
+    /**
+     * Launches a projectile from this entity in the horizontal direction it is facing, relative to
+     * the given velocity vector.
+     *
+     * @param type the projectile class
+     * @param vector the direction to shoot in
+     * @param pitchOffset degrees to subtract from the pitch angle while calculating the y component
+     *         of the initial direction
+     * @param speed the speed for the first flight tick
+     * @param <T> the projectile class
+     * @return the launched projectile
+     */
+    protected <T extends Projectile> T launchProjectile(Class<? extends T> type, Location location,
+            Vector originalVector, float pitchOffset, float velocity) {
+        double negDegreesPerRadian = Math.toRadians(-1);
+
+        // convert pitch and yaw to a unit vector
+        double x = cos(negDegreesPerRadian * location.getPitch())
+                * sin(negDegreesPerRadian * location.getYaw());
+        double y = sin(negDegreesPerRadian * (location.getPitch() - pitchOffset));
+        double z = cos(location.getPitch() * negDegreesPerRadian)
+                * cos(location.getYaw() * negDegreesPerRadian);
+
+        T projectile = launchProjectile(type, location, x, y, z, velocity);
         projectile.getVelocity().add(originalVector);
         return projectile;
     }
 
-    private <T extends Projectile> T throwProjectile(Class<? extends T> clazz, Location location,
-            double x, double y, double z, float velocity) {
-        double k = Math.sqrt(x * x + y * y + z * z);
-        x += (x * (velocity - k)) / k;
-        y += (y * (velocity - k)) / k;
-        z += (z * (velocity - k)) / k;
+    /**
+     * Throws and returns a projectile, initializing its velocity.
+     *
+     * @param type a projectile class that can be passed to
+     *         {@link org.bukkit.World#spawn(Location, Class)}
+     * @param location initial location
+     * @param x x component of direction (doesn't need to be normalized)
+     * @param y y component of direction (doesn't need to be normalized)
+     * @param z z component of direction (doesn't need to be normalized)
+     * @param speed speed
+     * @param <T> the projectile class
+     * @return the newly launched projectile
+     */
+    private <T extends Projectile> T launchProjectile(Class<? extends T> type, Location location,
+            double x, double y, double z, float speed) {
+        double magnitude = Math.sqrt(x * x + y * y + z * z);
+        if (magnitude > 0) {
+            x += (x * (speed - magnitude)) / magnitude;
+            y += (y * (speed - magnitude)) / magnitude;
+            z += (z * (speed - magnitude)) / magnitude;
+        }
 
         location.add(location.getDirection());
         location.setPitch(0);
         location.setYaw(0);
 
-        T projectile = ((GlowWorld) location.getWorld()).spawn(location, clazz);
+        T projectile = ((GlowWorld) location.getWorld()).spawn(location, type);
         projectile.setVelocity(new Vector(x, y, z));
         ((GlowProjectile) projectile).setRawLocation(location);
         return projectile;

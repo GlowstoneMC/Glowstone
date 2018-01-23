@@ -985,9 +985,8 @@ public abstract class GlowEntity implements Entity {
                         velocity.setX(velocity.getX() * slipMultiplier);
                         velocity.setZ(velocity.getZ() * slipMultiplier);
                     } else {
-                        horizontalAirDrag = 0.91;
                         velocity.setX(velocity.getX() * horizontalAirDrag);
-                        velocity.setZ(velocity.getZ() * 0.91);
+                        velocity.setZ(velocity.getZ() * horizontalAirDrag);
                     }
                 }
             } else if (hasGravity() && !isOnGround()) {

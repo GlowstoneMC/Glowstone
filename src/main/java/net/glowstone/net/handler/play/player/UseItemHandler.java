@@ -14,7 +14,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.UseItemMessage;
 import net.glowstone.util.InventoryUtil;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -34,8 +33,9 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
     @Override
     public void handle(GlowSession session, UseItemMessage message) {
         GlowPlayer player = session.getPlayer();
-        EquipmentSlot slot = message.getEquipmentSlot();
-        ItemStack holding = InventoryUtil.itemOrEmpty(player.getInventory().getItem(slot));
+        ItemStack holding = InventoryUtil
+                .itemOrEmpty(player.getInventory().getItem(message.getEquipmentSlot()));
+
         handleRightClick(player, holding, message.getEquipmentSlot());
     }
 
@@ -92,16 +92,10 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
             if (type != null) {
                 if (type.getContext().isAirApplicable()) {
                     type.rightClickAir(player, holding);
-                } else {
-                    if ((holding.getType() == Material.WATER_BUCKET
-                            || holding.getType() == Material.LAVA_BUCKET)
-                            && player.getGameMode() != GameMode.CREATIVE) {
-                        holding.setType(Material.BUCKET);
-                    } else if (type instanceof ItemTimedUsage) {
-                        ((ItemTimedUsage) type).startUse(player, holding);
-                    } else if (type instanceof ItemProjectile) {
-                        ((ItemProjectile) type).use(player, holding);
-                    }
+                } else if (type instanceof ItemTimedUsage) {
+                    ((ItemTimedUsage) type).startUse(player, holding);
+                } else if (type instanceof ItemProjectile) {
+                    ((ItemProjectile) type).use(player, holding);
                 }
             }
 

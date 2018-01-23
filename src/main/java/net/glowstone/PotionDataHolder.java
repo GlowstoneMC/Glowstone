@@ -52,7 +52,7 @@ public interface PotionDataHolder {
     List<PotionEffect> getCustomEffects();
 
     /**
-     * Adds a custom potion effect to this arrow.
+     * Adds a custom potion effect to this object.
      *
      * @param potionEffect the potion effect to add
      * @param overwrite true if any existing effect of the same type should be
@@ -62,7 +62,7 @@ public interface PotionDataHolder {
     boolean addCustomEffect(PotionEffect potionEffect, boolean overwrite);
 
     /**
-     * Removes a custom potion effect from this arrow.
+     * Removes a custom potion effect from this object.
      *
      * @param potionEffectType the potion effect type to remove
      * @return true if the an effect was removed as a result of this call
@@ -71,7 +71,7 @@ public interface PotionDataHolder {
     boolean removeCustomEffect(PotionEffectType potionEffectType);
 
     /**
-     * Checks for a specific custom potion effect type on this arrow.
+     * Checks for a specific custom potion effect type on this object.
      *
      * @param potionEffectType the potion effect type to check for
      * @return true if the potion has this effect
@@ -79,16 +79,16 @@ public interface PotionDataHolder {
     boolean hasCustomEffect(PotionEffectType potionEffectType);
 
     /**
-     * Gets the color of this arrow.
+     * Gets the color of this object.
      *
-     * @return arrow color
+     * @return color
      */
     org.bukkit.Color getColor();
 
     /**
-     * Sets the color of this arrow. Will be applied as a tint to its particles.
+     * Sets the color of this object.
      *
-     * @param color arrow color
+     * @param color new color
      */
     void setColor(org.bukkit.Color color);
 
