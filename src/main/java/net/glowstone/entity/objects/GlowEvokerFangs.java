@@ -4,6 +4,8 @@ import com.flowpowered.network.Message;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.Position;
@@ -14,6 +16,8 @@ import org.bukkit.entity.LivingEntity;
 
 public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
 
+    @Getter
+    @Setter
     private LivingEntity owner;
 
     public GlowEvokerFangs(Location location) {
@@ -32,16 +36,6 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
         result.add(new SpawnObjectMessage(
                 entityId, UUID.randomUUID(), 79, x, y, z, pitch, yaw, 0, 0, 0, 0));
         return result;
-    }
-
-    @Override
-    public LivingEntity getOwner() {
-        return owner;
-    }
-
-    @Override
-    public void setOwner(LivingEntity owner) {
-        this.owner = owner;
     }
 
     @Override

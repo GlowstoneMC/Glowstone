@@ -49,46 +49,6 @@ public class GlowBat extends GlowAmbient implements Bat {
     }
 
     @Override
-    public boolean isGliding() {
-        return false;
-    }
-
-    @Override
-    public void setGliding(boolean b) {
-
-    }
-
-    @Override
-    public void setAI(boolean b) {
-
-    }
-
-    @Override
-    public boolean hasAI() {
-        return false;
-    }
-
-    @Override
-    public boolean isCollidable() {
-        return false;
-    }
-
-    @Override
-    public void setCollidable(boolean b) {
-
-    }
-
-    @Override
-    public int getArrowsStuck() {
-        return 0;
-    }
-
-    @Override
-    public void setArrowsStuck(int i) {
-
-    }
-
-    @Override
     protected Sound getHurtSound() {
         return Sound.ENTITY_BAT_HURT;
     }

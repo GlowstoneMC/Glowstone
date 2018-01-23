@@ -11,6 +11,7 @@ import io.netty.handler.codec.base64.Base64;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+import lombok.Getter;
 import org.bukkit.util.CachedServerIcon;
 
 /**
@@ -21,6 +22,7 @@ public final class GlowServerIcon implements CachedServerIcon {
     /**
      * The image data to be sent to the client, or null.
      */
+    @Getter
     private final String data;
 
     /**
@@ -59,13 +61,4 @@ public final class GlowServerIcon implements CachedServerIcon {
         data = "data:image/png;base64," + encoded.toString(Charsets.UTF_8);
         encoded.release();
     }
-
-    /**
-     * The image data to be sent to the client, or null.
-     */
-    @Override
-    public String getData() {
-        return data;
-    }
-
 }

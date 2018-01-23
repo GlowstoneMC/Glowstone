@@ -57,7 +57,7 @@ import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.inventory.GlowInventory;
@@ -526,7 +526,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param profile The player's profile with name and UUID information.
      * @param reader The PlayerReader to be used to initialize the player.
      */
-    public GlowPlayer(GlowSession session, PlayerProfile profile, PlayerReader reader) {
+    public GlowPlayer(GlowSession session, GlowPlayerProfile profile, PlayerReader reader) {
         super(initLocation(session, reader), profile);
         setBoundingBox(0.6, 1.8);
         this.session = session;
@@ -1313,7 +1313,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean isWhitelisted() {
-        return server.getWhitelist().containsProfile(new PlayerProfile(getName(), getUniqueId()));
+        return server.getWhitelist().containsProfile(
+                new GlowPlayerProfile(getName(),getUniqueId()));
     }
 
     @Override
@@ -1321,7 +1322,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (value) {
             server.getWhitelist().add(this);
         } else {
-            server.getWhitelist().remove(new PlayerProfile(getName(), getUniqueId()));
+            server.getWhitelist().remove(new GlowPlayerProfile(getName(), getUniqueId()));
         }
     }
 
@@ -1348,7 +1349,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (value) {
             getServer().getOpsList().add(this);
         } else {
-            getServer().getOpsList().remove(new PlayerProfile(getName(), getUniqueId()));
+            getServer().getOpsList().remove(new GlowPlayerProfile(getName(), getUniqueId()));
         }
         permissions.recalculatePermissions();
     }
@@ -1466,6 +1467,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
 
             super.setGameMode(mode);
+            super.setFallDistance(0);
             updateUserListEntries(UserListItemMessage.gameModeOne(getUniqueId(), mode.getValue()));
             session.send(new StateChangeMessage(Reason.GAMEMODE, mode.getValue()));
         }
@@ -1597,6 +1599,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
         sendExperience();
+    }
+
+    @Override
+    public void giveExp(int xp, boolean applyMending) {
+        // todo: implement applyMending
+        giveExp(xp);
+    }
+
+    @Override
+    public int applyMending(int amount) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override

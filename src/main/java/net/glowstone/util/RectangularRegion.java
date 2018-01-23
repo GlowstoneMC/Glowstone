@@ -3,9 +3,11 @@ package net.glowstone.util;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.AbstractIterator;
 import java.util.Iterator;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class RectangularRegion {
     private final Location lowCorner;
     private final Location highCorner;
@@ -38,26 +40,6 @@ public class RectangularRegion {
         this.widthX = highCorner.getBlockX() - lowCorner.getBlockX();
         this.widthY = highCorner.getBlockY() - lowCorner.getBlockY();
         this.widthZ = highCorner.getBlockZ() - lowCorner.getBlockZ();
-    }
-
-    public Location getLowCorner() {
-        return lowCorner;
-    }
-
-    public Location getHighCorner() {
-        return highCorner;
-    }
-
-    public int getWidthX() {
-        return widthX;
-    }
-
-    public int getWidthY() {
-        return widthY;
-    }
-
-    public int getWidthZ() {
-        return widthZ;
     }
 
     /**

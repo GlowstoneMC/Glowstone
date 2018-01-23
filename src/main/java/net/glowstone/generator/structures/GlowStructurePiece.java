@@ -12,7 +12,10 @@ import org.bukkit.util.Vector;
 
 public abstract class GlowStructurePiece {
 
+    @Getter
+    @Setter
     protected StructureBoundingBox boundingBox;
+    @Getter
     private BlockFace orientation;
     /**
      * The NBT data field "GD" described in
@@ -51,14 +54,6 @@ public abstract class GlowStructurePiece {
         createNewBoundingBox(location, size);
     }
 
-    public StructureBoundingBox getBoundingBox() {
-        return boundingBox;
-    }
-
-    public void setBoundingBox(StructureBoundingBox boundingBox) {
-        this.boundingBox = boundingBox;
-    }
-
     /**
      * Returns the orientation using the numeric code from NBT.
      *
@@ -84,10 +79,6 @@ public abstract class GlowStructurePiece {
      */
     public void setNumericOrientation(int orientation) {
         this.orientation = getOrientationFromOrdinal(orientation);
-    }
-
-    public BlockFace getOrientation() {
-        return orientation;
     }
 
     protected final BlockFace getRelativeFacing(BlockFace face) {

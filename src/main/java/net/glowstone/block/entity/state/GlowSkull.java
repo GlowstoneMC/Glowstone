@@ -6,7 +6,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.blocktype.BlockSkull;
 import net.glowstone.block.entity.SkullEntity;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -18,7 +18,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
 
     @Getter
     private SkullType skullType;
-    private PlayerProfile owner;
+    private GlowPlayerProfile owner;
     @Getter
     @Setter
     private BlockFace rotation;
@@ -68,7 +68,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
 
     @Override
     public boolean setOwner(String name) {
-        PlayerProfile owner = PlayerProfile.getProfile(name).join();
+        GlowPlayerProfile owner = GlowPlayerProfile.getProfile(name).join();
         if (owner == null) {
             return false;
         }
@@ -84,7 +84,7 @@ public class GlowSkull extends GlowBlockState implements Skull {
 
     @Override
     public void setOwningPlayer(OfflinePlayer offlinePlayer) {
-        this.owner = new PlayerProfile(offlinePlayer.getName(), offlinePlayer.getUniqueId());
+        this.owner = new GlowPlayerProfile(offlinePlayer.getName(), offlinePlayer.getUniqueId());
     }
 
     @Override

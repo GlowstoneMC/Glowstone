@@ -1,14 +1,12 @@
 package net.glowstone.io.anvil;
 
 import java.io.File;
+import lombok.Getter;
 import net.glowstone.GlowWorld;
-import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.FunctionIoService;
 import net.glowstone.io.PlayerDataService;
-import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.io.ScoreboardIoService;
 import net.glowstone.io.StructureDataService;
-import net.glowstone.io.WorldMetadataService;
 import net.glowstone.io.WorldStorageProvider;
 import net.glowstone.io.data.WorldFunctionIoService;
 import net.glowstone.io.json.JsonPlayerStatisticIoService;
@@ -22,24 +20,35 @@ import net.glowstone.io.nbt.NbtWorldMetadataService;
  */
 public class AnvilWorldStorageProvider implements WorldStorageProvider {
 
-    private final File dir;
+    @Getter
+    private final File folder;
     private final File dataDir;
     private GlowWorld world;
-    private AnvilChunkIoService service;
-    private NbtWorldMetadataService meta;
-    private StructureDataService structures;
-    private PlayerDataService players;
-    private ScoreboardIoService scoreboard;
-    private JsonPlayerStatisticIoService statistics;
-    private FunctionIoService functions;
+    @Getter
+    private AnvilChunkIoService chunkIoService;
+    @Getter
+    private NbtWorldMetadataService metadataService;
+    @Getter
+    private StructureDataService structureDataService;
+    @Getter(lazy = true)
+    private final PlayerDataService playerDataService
+            = new NbtPlayerDataService(world.getServer(), new File(folder, "playerdata"));
+    @Getter(lazy = true)
+    private final ScoreboardIoService scoreboardIoService
+            = new NbtScoreboardIoService(world.getServer(), new File(folder, "data"));
+    @Getter(lazy = true)
+    private final JsonPlayerStatisticIoService playerStatisticIoService
+            = new JsonPlayerStatisticIoService(world.getServer(), new File(folder, "stats"));
+    @Getter(lazy = true)
+    private final FunctionIoService functionIoService = new WorldFunctionIoService(world, dataDir);
 
     /**
      * Create an instance for the given root folder.
-     * @param dir the root folder
+     * @param folder the root folder
      */
-    public AnvilWorldStorageProvider(File dir) {
-        this.dir = dir;
-        this.dataDir = new File(dir, "data");
+    public AnvilWorldStorageProvider(File folder) {
+        this.folder = folder;
+        this.dataDir = new File(folder, "data");
         this.dataDir.mkdirs();
     }
 
@@ -49,63 +58,9 @@ public class AnvilWorldStorageProvider implements WorldStorageProvider {
             throw new IllegalArgumentException("World is already set");
         }
         this.world = world;
-        service = new AnvilChunkIoService(dir);
-        meta = new NbtWorldMetadataService(world, dir);
+        chunkIoService = new AnvilChunkIoService(folder);
+        metadataService = new NbtWorldMetadataService(world, folder);
         dataDir.mkdirs();
-        structures = new NbtStructureDataService(world, dataDir);
-        functions = new WorldFunctionIoService(world, dataDir);
-    }
-
-    @Override
-    public File getFolder() {
-        return dir;
-    }
-
-    @Override
-    public ChunkIoService getChunkIoService() {
-        return service;
-    }
-
-    @Override
-    public WorldMetadataService getMetadataService() {
-        return meta;
-    }
-
-    @Override
-    public StructureDataService getStructureDataService() {
-        return structures;
-    }
-
-    @Override
-    public PlayerDataService getPlayerDataService() {
-        if (players == null) {
-            players = new NbtPlayerDataService(world.getServer(), new File(dir, "playerdata"));
-        }
-        return players;
-    }
-
-    @Override
-    public ScoreboardIoService getScoreboardIoService() {
-        if (scoreboard == null) {
-            scoreboard = new NbtScoreboardIoService(world.getServer(), new File(dir, "data"));
-        }
-        return scoreboard;
-    }
-
-    @Override
-    public PlayerStatisticIoService getPlayerStatisticIoService() {
-        if (statistics == null) {
-            statistics = new JsonPlayerStatisticIoService(
-                    world.getServer(), new File(dir, "stats"));
-        }
-        return statistics;
-    }
-
-    @Override
-    public FunctionIoService getFunctionIoService() {
-        if (functions == null) {
-            functions = new WorldFunctionIoService(world, dataDir);
-        }
-        return functions;
+        structureDataService = new NbtStructureDataService(world, dataDir);
     }
 }

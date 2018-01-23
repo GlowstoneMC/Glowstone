@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -19,7 +20,9 @@ import org.bukkit.material.Dye;
 
 public class GlowSheep extends GlowAnimal implements Sheep {
 
+    @Getter
     private boolean sheared;
+    @Getter
     private DyeColor color;
 
     /**
@@ -49,19 +52,9 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     @Override
-    public boolean isSheared() {
-        return sheared;
-    }
-
-    @Override
     public void setSheared(boolean sheared) {
         this.sheared = sheared;
         metadata.set(MetadataIndex.SHEEP_DATA, getColorByte());
-    }
-
-    @Override
-    public DyeColor getColor() {
-        return color;
     }
 
     @Override
