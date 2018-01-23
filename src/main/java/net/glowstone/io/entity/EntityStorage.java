@@ -145,7 +145,7 @@ public final class EntityStorage {
         bind(new FireworkStore());
 
         // Normal and tipped arrows use same storage
-        final NormalTippedArrowStore arrowStore = new NormalTippedArrowStore<>();
+        final NormalTippedArrowStore arrowStore = new NormalTippedArrowStore();
         bind(arrowStore);
         classTable.put(GlowTippedArrow.class, arrowStore);
     }
