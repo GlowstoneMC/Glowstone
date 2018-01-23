@@ -17,6 +17,7 @@ import org.bukkit.util.Vector;
 
 public class GlowArrow extends GlowProjectile implements Arrow {
 
+    public static final int ARROW = 60;
     private volatile PickupStatus customPickupStatus = null;
     private final Arrow.Spigot spigot = new GlowArrow.Spigot();
     @Getter
@@ -68,7 +69,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
             BlockTnt.igniteBlock(block, false);
         }
         setOnGround(true);
-        // Don't despawn
+        // TODO: Schedule despawn after 1 minute
     }
 
     @Override
@@ -91,7 +92,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     protected int getObjectId() {
-        return 60;
+        return ARROW;
     }
 
     @Override
