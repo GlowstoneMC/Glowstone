@@ -710,14 +710,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      */
     protected <T extends Projectile> T launchProjectile(Class<? extends T> type, Location location,
             Vector originalVector, float pitchOffset, float velocity) {
-        double negDegreesPerRadian = Math.toRadians(-1);
+        double pitchRadians = Math.toRadians(location.getPitch());
+        double yawRadians = Math.toRadians(location.getYaw());
 
-        // convert pitch and yaw to a unit vector
-        double x = cos(negDegreesPerRadian * location.getPitch())
-                * sin(negDegreesPerRadian * location.getYaw());
-        double y = sin(negDegreesPerRadian * (location.getPitch() - pitchOffset));
-        double z = cos(location.getPitch() * negDegreesPerRadian)
-                * cos(location.getYaw() * negDegreesPerRadian);
+        double verticalMultiplier = cos(pitchRadians);
+        double x = verticalMultiplier * sin(-yawRadians);
+        double z = verticalMultiplier * cos(yawRadians);
+        double y = sin(-(Math.toRadians(location.getPitch() - pitchOffset));
 
         T projectile = launchProjectile(type, location, x, y, z, velocity);
         projectile.getVelocity().add(originalVector);
