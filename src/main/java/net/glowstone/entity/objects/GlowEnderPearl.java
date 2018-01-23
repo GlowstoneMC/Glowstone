@@ -65,7 +65,7 @@ public class GlowEnderPearl extends GlowEntity implements EnderPearl {
             location.add(0, 1, 0);
             location.setPitch(((Entity) shooter).getLocation().getPitch());
             location.setYaw(((Entity) shooter).getLocation().getYaw());
-            if(shooter instanceof LivingEntity) {
+            if (shooter instanceof LivingEntity) {
                 ((LivingEntity) shooter).damage(5, DamageCause.FALL);
             }
 
