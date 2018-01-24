@@ -105,12 +105,16 @@ public class InventoryUtil {
     }
 
     /**
-     * Consumes 1 copy of the given item, which must be held by the given player.
+     * Consumes 1 copy of the given item, which must be held by the given player, unless that player
+     * is in Creative mode.
      *
      * @param player the player holding the item
      * @param item the item to consume
      */
     public static void consumeHeldItem(GlowPlayer player, ItemStack item) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
         if (item.getAmount() > 1) {
             item.setAmount(item.getAmount() - 1);
         } else {
