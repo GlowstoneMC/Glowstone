@@ -9,8 +9,8 @@ import org.bukkit.util.Vector;
 
 public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
 
-    public static final String IS_INCENDIARY = "X-Glowstone-IsIncendiary";
-    public static final String YIELD = "X-Glowstone-Yield";
+    public static final String IS_INCENDIARY = "bukkitIsIncendiary";
+    public static final String YIELD = "bukkitYield";
 
     public FireballStore(Class<T> clazz, String id) {
         super(clazz, id);
