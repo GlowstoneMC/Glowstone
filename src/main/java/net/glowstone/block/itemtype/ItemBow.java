@@ -73,7 +73,13 @@ public class ItemBow extends ItemTimedUsage {
         }
         if (launchedArrow != null) {
             if (consumeArrow) {
-                InventoryUtil.consumeHeldItem(player, arrow);
+                int amount = arrow.getAmount();
+                if (amount <= 1) {
+                    arrow = InventoryUtil.createEmptyStack();
+                } else {
+                    arrow.setAmount(amount - 1);
+                }
+                slot.setItem(arrow);
             }
             double chargeFraction = Math.max(0.0,
                     1.0 - (TICKS_TO_FULLY_CHARGE - player.getUsageTime())
