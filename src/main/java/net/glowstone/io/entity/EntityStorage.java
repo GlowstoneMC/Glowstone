@@ -136,7 +136,8 @@ public final class EntityStorage {
         bind(new ProjectileStore<>(GlowSplashPotion.class, "splash_potion"));
         bind(new ProjectileStore<>(GlowLingeringPotion.class, "lingering_potion"));
         bind(new ProjectileStore<>(GlowThrownExpBottle.class, "xp_bottle"));
-        final FireballStore<GlowFireball> fireballStore = new FireballStore<>(GlowFireball.class, "fireball");
+        final FireballStore<GlowFireball> fireballStore
+                = new FireballStore<>(GlowFireball.class, "fireball");
         bind(fireballStore);
         idTable.put("small_fireball", fireballStore);
         bind(new FireballStore<>(GlowWitherSkull.class, "wither_skull"));
