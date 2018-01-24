@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import net.glowstone.GlowServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -18,7 +19,7 @@ public class DeopCommand extends VanillaCommand {
      */
     public DeopCommand() {
         super("deop", "Removes server operator status from a player.", "/deop <player>",
-            Collections.emptyList());
+                Collections.emptyList());
         setPermission("minecraft.command.deop");
     }
 
@@ -32,19 +33,30 @@ public class DeopCommand extends VanillaCommand {
             return false;
         }
         String name = args[0];
-        OfflinePlayer player = Bukkit.getOfflinePlayer(name);
-        if (player.isOp()) {
-            player.setOp(false);
-            sender.sendMessage("Deopped " + player.getName());
-        } else {
-            sender.sendMessage("Could not deop " + player.getName());
-        }
+        GlowServer server = (GlowServer) Bukkit.getServer();
+        // asynchronously lookup player
+        server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
+            if (ex != null) {
+                sender.sendMessage(ChatColor.RED + "Failed to deop " + name + ": "
+                        + ex.getMessage());
+                ex.printStackTrace();
+                return;
+            }
+            if (player.isOp()) {
+                player.setOp(false);
+                sender.sendMessage("Deopped " + player.getName());
+            } else {
+                sender.sendMessage(ChatColor.RED + "Could not deop " + player.getName()
+                        + ": not an operator");
+            }
+        });
+        // todo: asynchronous command callbacks?
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 1) {
             List<String> operators = new ArrayList<>();
             Bukkit.getOperators().stream().map(OfflinePlayer::getName)

@@ -6,10 +6,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowHumanEntity;
@@ -38,12 +39,36 @@ public class GlowVillager extends GlowAgeable implements Villager {
     private static final Profession[] PROFESSIONS = Profession.values();
     private static final MerchantRecipe DEFAULT_RECIPE
             = new MerchantRecipe(new ItemStack(Material.DIRT), 10);
-
+    @Getter
     private Career career;
+    @Getter
+    @Setter
     private int riches;
+    /**
+     * The trader this villager is currently trading with.
+     *
+     * @param trader the trader
+     */
+    @Getter
+    @Setter
     private GlowHumanEntity trader;
     private List<MerchantRecipe> recipes = new ArrayList<>();
+    /**
+     * Whether or not this villager is willing to mate.
+     *
+     * @param willing true if this villager is willing to mate, false otherwise
+     * @return true if this villager is willing to mate, false otherwise
+     */
+    @Getter
+    @Setter
     private boolean willing;
+
+    /**
+     * Get the current level of this villager's trading options.
+     *
+     * @return the current level of this villager's trading options
+     */
+    @Getter
     private int careerLevel;
 
     /**
@@ -75,12 +100,13 @@ public class GlowVillager extends GlowAgeable implements Villager {
     }
 
     @Override
-    public Career getCareer() {
-        return career;
+    public void setCareer(Career career) {
+        setCareer(career, true);
     }
 
     @Override
-    public void setCareer(Career career) {
+    public void setCareer(Career career, boolean resetTrades) {
+        // todo: implement resetTrades
         Profession profession = getProfession();
         if (profession == null || profession.isZombie()) {
             return;
@@ -136,57 +162,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public boolean isTrading() {
         return getTrader() != null;
-    }
-
-    @Override
-    public GlowHumanEntity getTrader() {
-        return trader;
-    }
-
-    /**
-     * Sets the trader this villager is currently trading with.
-     *
-     * @param trader the trader
-     */
-    public void setTrader(GlowHumanEntity trader) {
-        this.trader = trader;
-    }
-
-    @Override
-    public int getRiches() {
-        return riches;
-    }
-
-    @Override
-    public void setRiches(int riches) {
-        this.riches = riches;
-    }
-
-    /**
-     * Get whether or not this villager is willing to mate.
-     *
-     * @return true if this villager is willing to mate, false otherwise
-     */
-    public boolean isWilling() {
-        return willing;
-    }
-
-    /**
-     * Sets whether or not this villager is willing to mate.
-     *
-     * @param willing true if this villager is willing to mate, false otherwise
-     */
-    public void setWilling(boolean willing) {
-        this.willing = willing;
-    }
-
-    /**
-     * Get the current level of this villager's trading options.
-     *
-     * @return the current level of this villager's trading options
-     */
-    public int getCareerLevel() {
-        return careerLevel;
     }
 
     /**
@@ -289,28 +264,16 @@ public class GlowVillager extends GlowAgeable implements Villager {
         if (profession == null || profession.isZombie()) {
             this.career = null;
         } else {
-            Career[] careers = getCareersByProfession(profession);
-            this.career = careers[ThreadLocalRandom.current().nextInt(careers.length)];
+            List<Career> careers = profession.getCareers();
+            this.career = careers.get(ThreadLocalRandom.current().nextInt(careers.size()));
             this.careerLevel = 1;
         }
     }
 
     /**
-     * Gets all assignable careers for a given profession.
-     *
-     * @param profession the profession
-     * @return the assignable careers for the given profession
-     */
-    public static Career[] getCareersByProfession(Profession profession) {
-        return Arrays.stream(Career.values())
-                .filter(c -> c.getProfession() == profession)
-                .toArray(Career[]::new);
-    }
-
-    /**
      * Gets the career associated with a given ID and profession.
      *
-     * @param id the id of the career
+     * @param id         the id of the career
      * @param profession the profession
      * @return the career associated with the given ID and profession
      */
@@ -318,10 +281,23 @@ public class GlowVillager extends GlowAgeable implements Villager {
         if (profession == null || profession.isZombie()) {
             return null;
         }
-        return Arrays.stream(Career.values())
-                .filter(career -> career.getProfession() == profession)
-                .filter(career -> career.getId() == id)
-                .findFirst().orElse(null);
+        if (id >= profession.getCareers().size()) {
+            return null;
+        }
+        return profession.getCareers().get(id);
+    }
+
+    /**
+     * Gets the numerical ID of the given career.
+     *
+     * @param career the career
+     * @return the id of the career
+     */
+    public static int getCareerId(Career career) {
+        checkNotNull(career);
+
+        Profession profession = career.getProfession();
+        return profession.getCareers().indexOf(career);
     }
 
     /**

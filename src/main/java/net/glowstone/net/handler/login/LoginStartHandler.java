@@ -4,7 +4,7 @@ import com.flowpowered.network.MessageHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import net.glowstone.EventFactory;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.ProxyData;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
@@ -34,13 +34,13 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             // Send created request message and wait for the response
             session.send(new EncryptionKeyRequestMessage(sessionId, publicKey, verifyToken));
         } else {
-            PlayerProfile profile;
+            GlowPlayerProfile profile;
             ProxyData proxy = session.getProxyData();
 
             if (proxy == null) {
                 UUID uuid = UUID
                     .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
-                profile = new PlayerProfile(name, uuid);
+                profile = new GlowPlayerProfile(name, uuid);
             } else {
                 profile = proxy.getProfile();
                 if (profile == null) {
@@ -55,7 +55,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
                 return;
             }
 
-            PlayerProfile finalProfile = profile;
+            GlowPlayerProfile finalProfile = profile;
             session.getServer().getScheduler().runTask(null, () -> session.setPlayer(finalProfile));
         }
     }

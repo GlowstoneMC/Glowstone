@@ -62,7 +62,4 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
         session.get().onInboundThrowable(cause);
     }
 
-    public AtomicReference<GlowSession> getSession() {
-        return session;
-    }
 }

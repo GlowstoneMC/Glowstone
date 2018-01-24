@@ -86,7 +86,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
             tag.putInt("Profession", entity.getProfession().ordinal());
         }
         if (entity.getCareer() != null) {
-            tag.putInt("Career", entity.getCareer().getId());
+            tag.putInt("Career", GlowVillager.getCareerId(entity.getCareer()));
         }
         tag.putInt("Riches", entity.getRiches());
         tag.putBool("Willing", entity.isWilling());

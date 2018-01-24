@@ -1,8 +1,10 @@
 package net.glowstone.block.itemtype;
 
 import com.google.common.base.Preconditions;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -19,13 +21,29 @@ import org.bukkit.util.Vector;
 public class ItemType {
 
     private int id = -1;
+    /**
+     * Get the Material assigned to this ItemType.
+     *
+     * @return The corresponding Material.
+     */
+    @Getter
     private Material material;
 
+    /**
+     * The type of block to place when the item is used.
+     *
+     * @return the type of block to place
+     */
+    @Getter
     private BlockType placeAs;
 
     /**
      * The maximum stack size of the item.
+     *
+     * @return The maximum stack size.
      */
+    @Getter
+    @Setter(AccessLevel.PROTECTED)
     private int maxStackSize = 64;
 
     /**
@@ -57,15 +75,6 @@ public class ItemType {
         } else {
             setMaterial(mat);
         }
-    }
-
-    /**
-     * Get the Material assigned to this ItemType.
-     *
-     * @return The corresponding Material.
-     */
-    public final Material getMaterial() {
-        return material;
     }
 
     /**
@@ -108,37 +117,8 @@ public class ItemType {
      * @param placeAs The block to place as.
      */
     protected final void setPlaceAs(BlockType placeAs) {
+        // Cannot be Lombokified because of the overload
         this.placeAs = placeAs;
-    }
-
-    /**
-     * The type of block to place when the item is used.
-     *
-     * @return the type of block to place
-     */
-    public BlockType getPlaceAs() {
-        return placeAs;
-    }
-
-    /**
-     * Get the maximum stack size of the item.
-     *
-     * @return The maximum stack size.
-     */
-    public int getMaxStackSize() {
-        return maxStackSize;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Public accessors
-
-    /**
-     * Set the maximum stack size of the item.
-     *
-     * @param maxStackSize The new maximum stack size.
-     */
-    protected final void setMaxStackSize(int maxStackSize) {
-        this.maxStackSize = maxStackSize;
     }
 
     ////////////////////////////////////////////////////////////////////////////

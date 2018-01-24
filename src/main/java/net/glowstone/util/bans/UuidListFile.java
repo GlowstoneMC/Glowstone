@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import org.bukkit.OfflinePlayer;
 
@@ -33,11 +33,11 @@ public final class UuidListFile extends JsonListFile {
     }
 
     /**
-     * Returns a {@link PlayerProfile} for each player whose UUID is in the list file.
+     * Returns a {@link GlowPlayerProfile} for each player whose UUID is in the list file.
      *
-     * @return a list of {@link PlayerProfile} instances
+     * @return a list of {@link GlowPlayerProfile} instances
      */
-    public List<PlayerProfile> getProfiles() {
+    public List<GlowPlayerProfile> getProfiles() {
         return entries
                 .stream()
                 .parallel()
@@ -67,7 +67,7 @@ public final class UuidListFile extends JsonListFile {
      * @param profile the player whose UUID will be looked up
      * @return whether the player is on this list
      */
-    public boolean containsProfile(PlayerProfile profile) {
+    public boolean containsProfile(GlowPlayerProfile profile) {
         return containsUuid(profile.getUniqueId());
     }
 
@@ -92,7 +92,7 @@ public final class UuidListFile extends JsonListFile {
      *
      * @param profile the player to remove
      */
-    public void remove(PlayerProfile profile) {
+    public void remove(GlowPlayerProfile profile) {
         UUID playerUuid = profile.getUniqueId();
         entriesByUuid.remove(playerUuid);
         // FIXME: Unnecessary linear time
@@ -126,7 +126,7 @@ public final class UuidListFile extends JsonListFile {
 
         @Override
         public Map<String, String> write() {
-            PlayerProfile profile = ProfileCache.getProfile(uuid).join();
+            GlowPlayerProfile profile = ProfileCache.getProfile(uuid).join();
             String name = profile.getName() != null ? profile.getName() : fallbackName;
             Map<String, String> result = new HashMap<>(2);
             result.put("uuid", uuid.toString());

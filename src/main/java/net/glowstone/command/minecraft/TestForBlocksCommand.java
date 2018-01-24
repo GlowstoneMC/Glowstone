@@ -5,6 +5,8 @@ import static net.glowstone.util.RectangularRegion.IterationDirection.FORWARDS;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.command.CommandUtils;
@@ -17,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
 public class TestForBlocksCommand extends VanillaCommand {
+    @RequiredArgsConstructor
     public enum MatchMode {
         ALL("all") {
             @Override
@@ -31,15 +34,8 @@ public class TestForBlocksCommand extends VanillaCommand {
             }
         };
 
+        @Getter
         private final String commandName;
-
-        MatchMode(String commandName) {
-            this.commandName = commandName;
-        }
-
-        public String getCommandName() {
-            return commandName;
-        }
 
         /**
          * Returns the MatchMode with a given subcommand name, or null if none match.

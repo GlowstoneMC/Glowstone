@@ -31,12 +31,12 @@ class PlayerDataFetcher {
     private static final String UUID_URL = "https://api.mojang.com/profiles/minecraft";
 
     /**
-     * Look up the PlayerProfile for a given UUID.
+     * Look up the GlowPlayerProfile for a given UUID.
      *
      * @param uuid The UUID to look up.
-     * @return The resulting PlayerProfile, contains a null name on failure.
+     * @return The resulting GlowPlayerProfile, contains a null name on failure.
      */
-    public static PlayerProfile getProfile(UUID uuid) {
+    public static GlowPlayerProfile getProfile(UUID uuid) {
         InputStream is;
         try {
             URL url = new URL(PROFILE_URL + UuidUtils.toFlatString(uuid) + PROFILE_URL_SUFFIX);
@@ -45,7 +45,7 @@ class PlayerDataFetcher {
             is = conn.getInputStream();
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
-            return new PlayerProfile(null, uuid);
+            return new GlowPlayerProfile(null, uuid);
         }
 
         JSONObject json;
@@ -53,16 +53,16 @@ class PlayerDataFetcher {
             if (br.ready()) {
                 json = (JSONObject) new JSONParser().parse(br);
             } else {
-                return new PlayerProfile(null, uuid);
+                return new GlowPlayerProfile(null, uuid);
             }
         } catch (ParseException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to parse profile response", e);
-            return new PlayerProfile(null, uuid);
+            return new GlowPlayerProfile(null, uuid);
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
-            return new PlayerProfile(null, uuid);
+            return new GlowPlayerProfile(null, uuid);
         }
-        return PlayerProfile.fromJson(json);
+        return GlowPlayerProfile.fromJson(json);
     }
 
     /**
