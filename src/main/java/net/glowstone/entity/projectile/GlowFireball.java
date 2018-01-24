@@ -18,7 +18,7 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     private boolean incendiary;
     @Getter
     @Setter
-    private float yield;
+    private float yield = 1;
 
     /**
      * Creates a fireball.
