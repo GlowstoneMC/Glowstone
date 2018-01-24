@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
@@ -19,6 +20,12 @@ import org.bukkit.material.PistonBaseMaterial;
 public class BlockPiston extends BlockDirectional {
 
     private static final int PUSH_LIMIT = 12;
+    /**
+     * The piston is either non-sticky (default), or has a sticky behavior.
+     *
+     * @return true if the piston has a sticky base
+     */
+    @Getter
     private final boolean sticky;
 
     /** Creates the basic (non-sticky) piston block type. */
@@ -39,15 +46,6 @@ public class BlockPiston extends BlockDirectional {
         } else {
             setDrops(new ItemStack(Material.PISTON_BASE));
         }
-    }
-
-    /**
-     * The piston is either non-sticky (default), or has a sticky behavior.
-     *
-     * @return true if the piston has a sticky base
-     */
-    public boolean isSticky() {
-        return sticky;
     }
 
     @Override
