@@ -27,6 +27,7 @@ import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.entity.objects.GlowLeashHitch;
+import net.glowstone.entity.passive.GlowWolf;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
@@ -92,6 +93,21 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Getter
     @Setter
     private Player killer;
+
+    /**
+     * If been hit by a player within 5 seconds (100 game ticks).
+     */
+    @Getter
+    @Setter
+    private boolean isHitByPlayer;
+
+    /**
+     * Player hit countdown. 100 game ticks by default
+     */
+    @Getter
+    @Setter
+    private int hitByPlayerCountdown;
+
     /**
      * Whether entities can collide with this entity.
      */
@@ -256,6 +272,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void pulse() {
         super.pulse();
+
+        // decrease hitByPlayerCountdown and Reset isHitByPlayer if expired
+        if (isHitByPlayer && --hitByPlayerCountdown < 0) {
+            isHitByPlayer = false;
+            hitByPlayerCountdown = 0;
+        }
 
         if (isDead()) {
             deathTicks++;
@@ -730,7 +752,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 if (world.getGameRuleMap().getBoolean("doMobLoot")) {
                     LootData data = LootingManager.generate(this);
                     deathEvent.getDrops().addAll(data.getItems());
-                    if (data.getExperience() > 0) {
+                    // Only drop experience when hit by a player within 5 seconds (100 game ticks)
+                    if (isHitByPlayer && data.getExperience() > 0) {
                         // split experience
                         Integer[] values = ExperienceSplitter.cut(data.getExperience());
                         for (Integer exp : values) {
@@ -806,6 +829,40 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // apply damage
         amount = event.getFinalDamage();
         lastDamage = amount;
+
+        // If damaged directly by a player
+        // or damaged by a tnt ignited by a player in survival mode
+        // or damaged by a tamed wolf
+        if (
+                (source instanceof GlowPlayer
+                && ((GlowPlayer)source).getGameMode() == GameMode.SURVIVAL)
+                ||
+                (source instanceof GlowTntPrimed
+                && ((GlowTntPrimed)source).getPlayer() != null
+                && ((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.SURVIVAL)
+                ||
+                (source instanceof GlowWolf
+                && ((GlowWolf) source).isTamed())
+        ) {
+            isHitByPlayer = true;
+            hitByPlayerCountdown = 100;
+        }
+
+        if (health - amount <= 0) {
+            // If been killed by an ignited tnt
+            if (source instanceof GlowTntPrimed) {
+                killer = (Player)((GlowTntPrimed)source).getPlayer();
+            }
+            // If been killed by a player
+            else if (source instanceof GlowPlayer) {
+                killer = (Player)source;
+            }
+            // If been killed by a tamed wolf
+            else if (source instanceof GlowWolf) {
+                killer = (Player)((GlowWolf)source).getOwner();
+            }
+        }
+
         setHealth(health - amount);
         playEffect(EntityEffect.HURT);
 

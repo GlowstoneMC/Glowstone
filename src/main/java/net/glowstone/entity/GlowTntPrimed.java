@@ -24,6 +24,10 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     private int fuseTicks;
     private Entity source;
 
+    @Getter
+    @Setter
+    private GlowPlayer player;
+
     /**
      * Creates a primed TNT block.
      *
@@ -98,7 +102,11 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public final Entity getSource() {
-        return source.isValid() ? source : null;
+        if (source == null || !source.isValid()) {
+            return null;
+        } else {
+            return source;
+        }
     }
 
     @Override

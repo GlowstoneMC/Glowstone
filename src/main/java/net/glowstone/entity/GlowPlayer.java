@@ -146,6 +146,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -195,7 +196,7 @@ import org.json.simple.JSONObject;
  * @author Graham Edgecombe
  */
 @DelegateDeserialization(GlowOfflinePlayer.class)
-public class GlowPlayer extends GlowHumanEntity implements Player {
+public class GlowPlayer extends GlowHumanEntity implements Player, AnimalTamer {
 
     /**
      * A static entity id to use when telling the client about itself.
