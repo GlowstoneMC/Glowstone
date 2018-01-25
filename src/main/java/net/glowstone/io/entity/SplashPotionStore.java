@@ -3,7 +3,6 @@ package net.glowstone.io.entity;
 import net.glowstone.entity.projectile.GlowSplashPotion;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.inventory.ItemStack;
 
 public class SplashPotionStore<T extends GlowSplashPotion> extends ProjectileStore<T> {
     public SplashPotionStore(Class<T> clazz, String id) {
