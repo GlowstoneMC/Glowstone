@@ -100,7 +100,7 @@ public class InventoryUtil {
             if (player != null) {
                 EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
             }
-            return InventoryUtil.createEmptyStack();
+            return createEmptyStack();
         }
         return holding;
     }
