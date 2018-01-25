@@ -95,7 +95,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private Player killer;
 
     /**
-     * The tick that the entity got hit by a player
+     * The tick that the entity got hit by a player.
      */
     @Getter
     @Setter
@@ -850,10 +850,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * Checks if the incoming source of damage is a "Player Hit"
+     * Checks if the incoming source of damage is a "Player Hit".
      * @param source The incoming source of damage
      */
-	private boolean isPlayerHit(Entity source) {
+    private boolean isPlayerHit(Entity source) {
         // If directly damaged by a player
         if (source instanceof GlowPlayer) {
             return true;
@@ -864,7 +864,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 && (((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.SURVIVAL
                 || ((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.ADVENTURE);
         // If damaged by a tamed wolf
-        }else if (source instanceof GlowWolf) {
+        } else if (source instanceof GlowWolf) {
             return ((GlowWolf)source).isTamed();
         }
         return false;
@@ -874,7 +874,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * Determines the player who did the damage from source of damage.
      * @param source The incoming source of damage
      */
-    private Player determinePlayer(Entity source){
+    private Player determinePlayer(Entity source) {
         // If been killed by an ignited tnt
         if (source instanceof GlowTntPrimed) {
             return (Player)((GlowTntPrimed)source).getPlayer();
