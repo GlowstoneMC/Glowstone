@@ -38,7 +38,7 @@ public class BlockTnt extends BlockType {
      * @param ignitedByExplosion True if another explosion caused this ignition.
      */
     public static void igniteBlock(GlowBlock tntBlock, boolean ignitedByExplosion) {
-        igniteBlock(tntBlock, ignitedByExplosion);
+        igniteBlock(tntBlock, ignitedByExplosion, null);
     }
 
     @Override
