@@ -95,18 +95,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     private Player killer;
 
     /**
-     * If been hit by a player within 5 seconds (100 game ticks).
+     * The tick that the entity got hit by a player
      */
     @Getter
     @Setter
-    private boolean isHitByPlayer;
-
-    /**
-     * Player hit countdown. 100 game ticks by default
-     */
-    @Getter
-    @Setter
-    private int hitByPlayerCountdown;
+    private int playerDamageTick;
 
     /**
      * Whether entities can collide with this entity.
@@ -272,12 +265,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void pulse() {
         super.pulse();
-
-        // decrease hitByPlayerCountdown and Reset isHitByPlayer if expired
-        if (isHitByPlayer && --hitByPlayerCountdown < 0) {
-            isHitByPlayer = false;
-            hitByPlayerCountdown = 0;
-        }
 
         if (isDead()) {
             deathTicks++;
@@ -753,7 +740,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     LootData data = LootingManager.generate(this);
                     deathEvent.getDrops().addAll(data.getItems());
                     // Only drop experience when hit by a player within 5 seconds (100 game ticks)
-                    if (isHitByPlayer && data.getExperience() > 0) {
+                    if (ticksLived - playerDamageTick <= 100 && data.getExperience() > 0) {
                         // split experience
                         Integer[] values = ExperienceSplitter.cut(data.getExperience());
                         for (Integer exp : values) {
@@ -830,37 +817,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         amount = event.getFinalDamage();
         lastDamage = amount;
 
-        // If damaged directly by a player
-        // or damaged by a tnt ignited by a player in survival mode
-        // or damaged by a tamed wolf
-        if (
-                (source instanceof GlowPlayer
-                && ((GlowPlayer)source).getGameMode() == GameMode.SURVIVAL)
-                ||
-                (source instanceof GlowTntPrimed
-                && ((GlowTntPrimed)source).getPlayer() != null
-                && ((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.SURVIVAL)
-                ||
-                (source instanceof GlowWolf
-                && ((GlowWolf) source).isTamed())
-        ) {
-            isHitByPlayer = true;
-            hitByPlayerCountdown = 100;
+        if (isPlayerHit(source)) {
+            playerDamageTick = ticksLived;
         }
 
         if (health - amount <= 0) {
-            // If been killed by an ignited tnt
-            if (source instanceof GlowTntPrimed) {
-                killer = (Player)((GlowTntPrimed)source).getPlayer();
-            }
-            // If been killed by a player
-            else if (source instanceof GlowPlayer) {
-                killer = (Player)source;
-            }
-            // If been killed by a tamed wolf
-            else if (source instanceof GlowWolf) {
-                killer = (Player)((GlowWolf)source).getOwner();
-            }
+            killer = determinePlayer(source);
         }
 
         setHealth(health - amount);
@@ -885,6 +847,47 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
         }
         setLastDamager(source);
+    }
+
+    /**
+     * Checks if the incoming source of damage is a "Player Hit"
+     * @param source The incoming source of damage
+     */
+	private boolean isPlayerHit(Entity source) {
+        // If directly damaged by a player
+        if (source instanceof GlowPlayer) {
+            return true;
+        // If damaged by a TNT ignited by a player
+        } else if (source instanceof GlowTntPrimed) {
+            return
+                ((GlowTntPrimed)source).getPlayer() != null
+                && (((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.SURVIVAL
+                || ((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.ADVENTURE);
+        // If damaged by a tamed wolf
+        }else if (source instanceof GlowWolf) {
+            return ((GlowWolf)source).isTamed();
+        }
+        return false;
+    }
+
+    /**
+     * Determines the player who did the damage from source of damage.
+     * @param source The incoming source of damage
+     */
+    private Player determinePlayer(Entity source){
+        // If been killed by an ignited tnt
+        if (source instanceof GlowTntPrimed) {
+            return (Player)((GlowTntPrimed)source).getPlayer();
+        }
+        // If been killed by a player
+        else if (source instanceof GlowPlayer) {
+            return (Player)source;
+        }
+        // If been killed by a tamed wolf
+        else if (source instanceof GlowWolf) {
+            return (Player)((GlowWolf)source).getOwner();
+        }
+        return null;
     }
 
     @Override

@@ -24,6 +24,10 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     private int fuseTicks;
     private Entity source;
 
+    /**
+     * The player who ignited the TNT.
+     * null if not ignited by player.
+     */
     @Getter
     @Setter
     private GlowPlayer player;
