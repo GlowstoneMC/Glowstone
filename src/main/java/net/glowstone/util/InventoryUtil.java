@@ -11,6 +11,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -111,7 +112,7 @@ public class InventoryUtil {
      * @param player the player holding the item
      * @param item the item to consume
      */
-    public static void consumeHeldItem(GlowPlayer player, ItemStack item) {
+    public static void consumeHeldItem(HumanEntity player, ItemStack item) {
         if (player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
