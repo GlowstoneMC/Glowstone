@@ -21,7 +21,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
-import net.glowstone.PotionEffectHolder;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -90,8 +89,7 @@ import org.bukkit.util.Vector;
  *
  * @author Graham Edgecombe.
  */
-public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity,
-        PotionEffectHolder {
+public abstract class GlowLivingEntity extends GlowEntity implements LivingEntity {
 
     /**
      * The player that killed this entity, or null if not killed by a player.
@@ -1135,35 +1133,5 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         return false;
-    }
-
-    @Override
-    public boolean hasCustomEffects() {
-        return !getActivePotionEffects().isEmpty();
-    }
-
-    @Override
-    public List<PotionEffect> getCustomEffects() {
-        // Both defensive copy and conversion from Collection to List
-        return new ArrayList<>(potionEffects.values());
-    }
-
-    @Override
-    public boolean addCustomEffect(PotionEffect potionEffect, boolean overwrite) {
-        return addPotionEffect(potionEffect, overwrite);
-    }
-
-    @Override
-    public boolean removeCustomEffect(PotionEffectType potionEffectType) {
-        if (hasPotionEffect(potionEffectType)) {
-            removePotionEffect(potionEffectType);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean hasCustomEffect(PotionEffectType potionEffectType) {
-        return hasPotionEffect(potionEffectType);
     }
 }

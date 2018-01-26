@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public abstract class LivingEntityStore<T extends GlowLivingEntity> extends EntityStore<T> {
 
@@ -77,7 +78,28 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
 
         if (compound.isList("ActiveEffects", TagType.COMPOUND)) {
             for (CompoundTag effect : compound.getCompoundList("ActiveEffects")) {
-                NbtSerialization.readPotionEffect(entity, compound, effect);
+                // should really always have every field, but be forgiving if possible
+                if (!effect.isByte("Id") || !effect.isInt("Duration")) {
+                    continue;
+                }
+
+                PotionEffectType type = PotionEffectType.getById(effect.getByte("Id"));
+                int duration = effect.getInt("Duration");
+                if (type == null || duration < 0) {
+                    continue;
+                }
+                int amplifier = 0;
+                boolean ambient = false;
+
+                if (compound.isByte("Amplifier")) {
+                    amplifier = compound.getByte("Amplifier");
+                }
+                if (compound.isByte("Ambient")) {
+                    ambient = compound.getBool("Ambient");
+                }
+                // bool "ShowParticles"
+
+                entity.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
             }
         }
 
