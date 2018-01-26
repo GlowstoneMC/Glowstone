@@ -96,10 +96,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     /**
      * The tick that the entity got hit by a player.
+     * The default value was set to -101 rather than 0.
      */
     @Getter
     @Setter
-    private int playerDamageTick;
+    private int playerDamageTick = -101;
 
     /**
      * Whether entities can collide with this entity.
@@ -819,10 +820,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         if (isPlayerHit(source)) {
             playerDamageTick = ticksLived;
-        }
-
-        if (health - amount <= 0) {
-            killer = determinePlayer(source);
+            if (health - amount <= 0) {
+                killer = determinePlayer(source);
+            }
         }
 
         setHealth(health - amount);
@@ -850,45 +850,62 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     /**
-     * Checks if the incoming source of damage is a "Player Hit".
-     * @param source The incoming source of damage
+     * Checks if the source of damage was caused by a player.
+     *
+     * @param source The source of damage
+     * @return true if the source of damage was caused by a player, false otherwise.
      */
     private boolean isPlayerHit(Entity source) {
         // If directly damaged by a player
         if (source instanceof GlowPlayer) {
             return true;
-        // If damaged by a TNT ignited by a player
-        } else if (source instanceof GlowTntPrimed) {
-            return
-                ((GlowTntPrimed)source).getPlayer() != null
-                && (((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.SURVIVAL
-                || ((GlowTntPrimed)source).getPlayer().getGameMode() == GameMode.ADVENTURE);
-        // If damaged by a tamed wolf
-        } else if (source instanceof GlowWolf) {
-            return ((GlowWolf)source).isTamed();
         }
+
+        // If damaged by a TNT ignited by a player
+        if (source instanceof GlowTntPrimed) {
+            GlowPlayer player = (GlowPlayer)((GlowTntPrimed) source).getSource();
+            return
+                player != null
+                && (player.getGameMode() == GameMode.SURVIVAL
+                || player.getGameMode() == GameMode.ADVENTURE);
+        }
+
+        // If damaged by a tamed wolf
+        if (source instanceof GlowWolf) {
+            return ((GlowWolf) source).isTamed();
+        }
+
+        // All other cases
         return false;
     }
 
     /**
      * Determines the player who did the damage from source of damage.
+     *
      * @param source The incoming source of damage
+     * @return Player object if the source of damage was caused by a player, null otherwise.
      */
     private Player determinePlayer(Entity source) {
         // If been killed by an ignited tnt
         if (source instanceof GlowTntPrimed) {
-            return (Player)((GlowTntPrimed)source).getPlayer();
+            return (Player)((GlowTntPrimed) source).getSource();
         }
+
         // If been killed by a player
-        else if (source instanceof GlowPlayer) {
-            return (Player)source;
+        if (source instanceof GlowPlayer) {
+            return (Player) source;
         }
+
         // If been killed by a tamed wolf
-        else if (source instanceof GlowWolf) {
-            return (Player)((GlowWolf)source).getOwner();
+        if (source instanceof GlowWolf) {
+            return (Player)((GlowWolf) source).getOwner();
         }
+
+        // All other cases
         return null;
     }
+
+
 
     @Override
     public double getMaxHealth() {
