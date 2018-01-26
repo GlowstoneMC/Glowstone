@@ -64,6 +64,12 @@ public abstract class EntityStore<T extends GlowEntity> {
         }
     }
 
+    /** {@link Consumer<Float>} without the boxing. */
+    @FunctionalInterface
+    protected interface FloatConsumer {
+        void accept(float value);
+    }
+
     /**
      * Invokes the given method with the value of an int subtag, if that subtag is present.
      *
@@ -72,7 +78,7 @@ public abstract class EntityStore<T extends GlowEntity> {
      * @param consumer the method to be invoked with the int value if one is present
      */
     protected static void handleFloatIfPresent(
-            CompoundTag tag, String key, Consumer<Float> consumer) {
+            CompoundTag tag, String key, FloatConsumer consumer) {
         if (tag.isFloat(key)) {
             consumer.accept(tag.getFloat(key));
         }
