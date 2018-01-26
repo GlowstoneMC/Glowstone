@@ -3,6 +3,8 @@ package net.glowstone.io.entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import java.util.logging.Level;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +50,12 @@ public abstract class EntityStore<T extends GlowEntity> {
     // todo: the following tags
     // - bool "Invulnerable"
     // - int "PortalCooldown"
+
+    protected static void readIntIfPresent(CompoundTag tag, String key, IntConsumer consumer) {
+        if (tag.isInt(key)) {
+            consumer.accept(tag.getInt(key));
+        }
+    }
 
     /**
      * Load data into an existing entity of the appropriate type from the given compound tag.
@@ -137,6 +145,12 @@ public abstract class EntityStore<T extends GlowEntity> {
             }
         }
         return null;
+    }
+
+    protected static void readFloatIfPresent(CompoundTag tag, String key, Consumer<Float> consumer) {
+        if (tag.isFloat(key)) {
+            consumer.accept(tag.getFloat(key));
+        }
     }
 
     /**

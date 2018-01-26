@@ -1,8 +1,6 @@
 package net.glowstone.io.entity;
 
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 import net.glowstone.entity.GlowAreaEffectCloud;
 import net.glowstone.inventory.GlowMetaPotion;
@@ -18,28 +16,22 @@ import org.bukkit.projectiles.ProjectileSource;
 
 class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
 
-    public static final String DURATION = "Duration";
-    public static final String COLOR = "Color";
-    public static final String REAPPLICATION_DELAY = "ReapplicationDelay";
-    public static final String WAIT_TIME = "WaitTime";
-    public static final String OWNER_UUID_LEAST = "OwnerUUIDLeast";
-    public static final String OWNER_UUID_MOST = "OwnerUUIDMost";
-    public static final String DURATION_ON_USE = "DurationOnUse";
-    public static final String RADIUS = "Radius";
-    public static final String RADIUS_ON_USE = "RadiusOnUse";
-    public static final String RADIUS_PER_TICK = "RadiusPerTick";
-    public static final String PARTICLE = "Particle";
-    public static final String POTION = "Potion";
-    public static final String EFFECTS = "Effects";
+    private static final String DURATION = "Duration";
+    private static final String COLOR = "Color";
+    private static final String REAPPLICATION_DELAY = "ReapplicationDelay";
+    private static final String WAIT_TIME = "WaitTime";
+    private static final String OWNER_UUID_LEAST = "OwnerUUIDLeast";
+    private static final String OWNER_UUID_MOST = "OwnerUUIDMost";
+    private static final String DURATION_ON_USE = "DurationOnUse";
+    private static final String RADIUS = "Radius";
+    private static final String RADIUS_ON_USE = "RadiusOnUse";
+    private static final String RADIUS_PER_TICK = "RadiusPerTick";
+    private static final String PARTICLE = "Particle";
+    private static final String POTION = "Potion";
+    private static final String EFFECTS = "Effects";
 
     public AreaEffectCloudStore() {
         super(GlowAreaEffectCloud.class, EntityType.AREA_EFFECT_CLOUD);
-    }
-
-    private static void readIntIfPresent(CompoundTag tag, String key, IntConsumer consumer) {
-        if (tag.isInt(key)) {
-            consumer.accept(tag.getInt(key));
-        }
     }
 
     @Override
@@ -70,12 +62,6 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
                     .stream()
                     .map(GlowMetaPotion::fromNbt)
                     .forEach(effect -> entity.addCustomEffect(effect, false));
-        }
-    }
-
-    private static void readFloatIfPresent(CompoundTag tag, String key, Consumer<Float> consumer) {
-        if (tag.isFloat(key)) {
-            consumer.accept(tag.getFloat(key));
         }
     }
 
