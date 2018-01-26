@@ -52,8 +52,8 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
             try {
                 entity.setParticle(Particle.valueOf(particle));
             } catch (IllegalArgumentException e) {
-                Bukkit.getServer().getLogger().warning("Ignoring invalid particle type "
-                        + particle);
+                Bukkit.getServer().getLogger().warning(String.format(
+                        "Ignoring invalid particle type %s in tag %s", particle, tag));
             }
         }
         // TODO: Potion
