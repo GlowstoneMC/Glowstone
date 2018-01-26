@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import net.glowstone.GlowServer;
+import net.glowstone.PotionEffectHolder;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
@@ -14,6 +15,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 /**
@@ -236,4 +239,36 @@ public final class NbtSerialization {
         return Arrays.asList(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    /**
+     * Loads a potion effect from a compound tag and its optional sibling tags to a living entity.
+     *
+     * @param entity the entity to read the potion effect from
+     * @param parent
+     * @param effect
+     */
+    public static void readPotionEffect(
+            PotionEffectHolder entity, CompoundTag parent, CompoundTag effect) {
+        // should really always have every field, but be forgiving if possible
+        if (!effect.isByte("Id") || !effect.isInt("Duration")) {
+            return;
+        }
+
+        PotionEffectType type = PotionEffectType.getById(effect.getByte("Id"));
+        int duration = effect.getInt("Duration");
+        if (type == null || duration < 0) {
+            return;
+        }
+        int amplifier = 0;
+        boolean ambient = false;
+
+        if (parent.isByte("Amplifier")) {
+            amplifier = parent.getByte("Amplifier");
+        }
+        if (parent.isByte("Ambient")) {
+            ambient = parent.getBool("Ambient");
+        }
+        // bool "ShowParticles"
+
+        entity.addCustomEffect(new PotionEffect(type, duration, amplifier, ambient), true);
+    }
 }
