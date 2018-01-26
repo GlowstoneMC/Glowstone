@@ -24,7 +24,7 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
     public void save(GlowArrow entity, CompoundTag tag) {
         super.save(entity, tag);
         if (entity instanceof TippedArrow) {
-            PotionData potion = ((TippedArrow) entity).getBasePotionData()
+            PotionData potion = ((TippedArrow) entity).getBasePotionData();
             if (potion != null) {
                 tag.putString(POTION, GlowMetaPotion.dataToString(potion));
             }
