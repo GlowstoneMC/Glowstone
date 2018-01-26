@@ -64,7 +64,9 @@ public abstract class EntityStore<T extends GlowEntity> {
         }
     }
 
-    /** {@link Consumer}&lt;Float&gt; without the boxing. */
+    /**
+     * {@link Consumer}&lt;Float&gt; without the boxing.
+     */
     @FunctionalInterface
     protected interface FloatConsumer {
         void accept(float value);
