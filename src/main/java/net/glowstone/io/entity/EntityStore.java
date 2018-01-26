@@ -51,9 +51,30 @@ public abstract class EntityStore<T extends GlowEntity> {
     // - bool "Invulnerable"
     // - int "PortalCooldown"
 
+    /**
+     * Invokes the given method with the value of an int subtag, if that subtag is present.
+     *
+     * @param tag the parent tag
+     * @param key the subtag key
+     * @param consumer the method to be invoked with the int value if one is present
+     */
     protected static void readIntIfPresent(CompoundTag tag, String key, IntConsumer consumer) {
         if (tag.isInt(key)) {
             consumer.accept(tag.getInt(key));
+        }
+    }
+
+    /**
+     * Invokes the given method with the value of an int subtag, if that subtag is present.
+     *
+     * @param tag the parent tag
+     * @param key the subtag key
+     * @param consumer the method to be invoked with the int value if one is present
+     */
+    protected static void readFloatIfPresent(
+            CompoundTag tag, String key, Consumer<Float> consumer) {
+        if (tag.isFloat(key)) {
+            consumer.accept(tag.getFloat(key));
         }
     }
 
@@ -145,12 +166,6 @@ public abstract class EntityStore<T extends GlowEntity> {
             }
         }
         return null;
-    }
-
-    protected static void readFloatIfPresent(CompoundTag tag, String key, Consumer<Float> consumer) {
-        if (tag.isFloat(key)) {
-            consumer.accept(tag.getFloat(key));
-        }
     }
 
     /**

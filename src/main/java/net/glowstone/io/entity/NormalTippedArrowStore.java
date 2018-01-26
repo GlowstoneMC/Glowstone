@@ -9,7 +9,6 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
 
 public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
     private static final String COLOR = "Color";
