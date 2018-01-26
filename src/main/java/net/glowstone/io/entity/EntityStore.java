@@ -92,9 +92,7 @@ public abstract class EntityStore<T extends GlowEntity> {
             entity
                 .setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
         }
-        if (tag.isFloat("FallDistance")) {
-            entity.setFallDistance(tag.getFloat("FallDistance"));
-        }
+        handleFloatIfPresent(tag, "FallDistance", entity::setFallDistance);
         if (tag.isShort("Fire")) {
             entity.setFireTicks(tag.getShort("Fire"));
         }
@@ -118,9 +116,7 @@ public abstract class EntityStore<T extends GlowEntity> {
             entity.getCustomTags().clear();
             entity.getCustomTags().addAll(list);
         }
-        if (tag.isInt("PortalCooldown")) {
-            entity.setPortalCooldown(tag.getInt("PortalCooldown"));
-        }
+        handleIntIfPresent(tag, "PortalCooldown", entity::setPortalCooldown);
 
         if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
             UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
