@@ -26,11 +26,21 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     @Setter
     private Entity source;
 
+    /**
+     * Get the player that ignited the TNT.
+     *
+     * @return Player that ignited the TNT
+     */
     public GlowPlayer getPlayer() {
         Entity source = getSource();
         return (source instanceof GlowPlayer) ? (GlowPlayer) source : null;
     }
 
+    /**
+     * Set the player that ignited the TNT.
+     *
+     * @param player Player that ignited the TNT
+     */
     public void setPlayer(Player player) {
         source = player;
     }
