@@ -134,7 +134,7 @@ public enum MetadataIndex {
     //NO_AI(10, BYTE, Insentient.class),
     // TODO - 1.9 "Insentient extends Living". Need more information
 
-    BAT_HANGING(12, BYTE, Bat.class),
+    BAT_FLAGS(12, BYTE, Bat.class),
 
     AGE_ISBABY(12, BOOLEAN, Ageable.class),
 
@@ -300,5 +300,10 @@ public enum MetadataIndex {
         int IS_SITTING = 0x01;
         int WOLF_IS_ANGRY = 0x02;
         int IS_TAME = 0x04;
+    }
+
+    public interface BatFlags {
+
+        int IS_HANGING = 0x01;
     }
 }
