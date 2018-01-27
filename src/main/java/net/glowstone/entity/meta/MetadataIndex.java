@@ -164,7 +164,7 @@ public enum MetadataIndex {
 
     WOLF_HEALTH(15, FLOAT, Wolf.class),
     WOLF_BEGGING(16, BOOLEAN, Wolf.class),
-    WOLF_COLOR(21, BYTE, Wolf.class),
+    WOLF_COLOR(17, BYTE, Wolf.class),
 
     VILLAGER_PROFESSION(13, INT, Villager.class),
 
