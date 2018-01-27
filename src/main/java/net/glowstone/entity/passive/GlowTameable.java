@@ -15,37 +15,34 @@ import org.bukkit.entity.Tameable;
 
 public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
-    protected boolean tamed;
+    private static final MetadataIndex META_STATUS = MetadataIndex.TAMEABLEAANIMAL_STATUS;
+    private static final MetadataIndex META_OWNER = MetadataIndex.TAMEABLEANIMAL_OWNER;
+
     private AnimalTamer owner;
     @Getter
     private UUID ownerUuid;
-    private boolean sitting;
-    private MetadataIndex status = MetadataIndex.TAMEABLEAANIMAL_STATUS;
-    private MetadataIndex ownerMetadata = MetadataIndex.TAMEABLEANIMAL_OWNER;
 
     public GlowTameable(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
     }
 
     protected GlowTameable(Location location, EntityType type, double maxHealth,
-        AnimalTamer owner) {
+                           AnimalTamer owner) {
         super(location, type, maxHealth);
         if (owner != null) {
             this.owner = owner;
-            metadata.set(ownerMetadata, owner.getUniqueId());
+            metadata.set(META_OWNER, owner.getUniqueId());
         }
     }
 
     @Override
     public boolean isTamed() {
-        return tamed;
+        return metadata.getBit(META_STATUS, TameableFlags.IS_TAME);
     }
 
     @Override
     public void setTamed(boolean isTamed) {
-        metadata
-            .setBit(status, TameableFlags.IS_TAME, isTamed); //TODO 1.9 The flag might need change
-        tamed = isTamed;
+        metadata.setBit(META_STATUS, TameableFlags.IS_TAME, isTamed);
     }
 
     @Override
@@ -62,7 +59,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
         }
         owner = animalTamer;
         ownerUuid = animalTamer.getUniqueId();
-        metadata.set(ownerMetadata, owner.getUniqueId());
+        metadata.set(META_OWNER, owner.getUniqueId());
     }
 
     /**
@@ -92,7 +89,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * @return true if sitting
      */
     public boolean isSitting() {
-        return sitting;
+        return metadata.getBit(META_STATUS, TameableFlags.IS_SITTING);
     }
 
     /**
@@ -102,9 +99,6 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * @param isSitting true if sitting
      */
     public void setSitting(boolean isSitting) {
-        metadata.setBit(status, TameableFlags.IS_SITTING,
-            isSitting); //TODO 1.9 - This flag might need change
-        sitting = isSitting;
+        metadata.setBit(META_STATUS, TameableFlags.IS_SITTING, isSitting);
     }
-
 }
