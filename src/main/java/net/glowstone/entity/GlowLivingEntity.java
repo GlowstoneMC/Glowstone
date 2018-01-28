@@ -905,8 +905,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return null;
     }
 
-
-
     @Override
     public double getMaxHealth() {
         return attributeManager.getPropertyValue(Key.KEY_MAX_HEALTH);
