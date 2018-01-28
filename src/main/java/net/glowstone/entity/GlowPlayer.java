@@ -1479,6 +1479,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return false;
     }
 
+    @Override
+    public void setOnGround(boolean onGround) {
+        float fallDistance = getFallDistance();
+        if (onGround && fallDistance > 2.0F) {
+            int fallDistanceStatistic = (int) Math.round(fallDistance * 100.0D);
+            this.incrementStatistic(Statistic.FALL_ONE_CM, fallDistanceStatistic);
+        }
+        super.setOnGround(onGround);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Player capabilities
 
@@ -3341,6 +3351,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public boolean isInWater() {
         Material mat = getLocation().getBlock().getType();
+        return mat == Material.WATER || mat == Material.STATIONARY_WATER;
+    }
+
+    public boolean isEyeInWater() {
+        Material mat = getEyeLocation().getBlock().getType();
         return mat == Material.WATER || mat == Material.STATIONARY_WATER;
     }
 
