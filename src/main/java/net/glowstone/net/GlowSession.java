@@ -104,12 +104,11 @@ public class GlowSession extends BasicSession {
     private String verifyUsername;
 
     /**
-     * Set the hostname the player used to connect to the server.
-     *
-     * @param hostname Hostname in "addr:port" format.
+     * The hostname/port the player used to connect to the server.
      */
+    @Getter
     @Setter
-    private String hostname;
+    private InetSocketAddress virtualHost;
 
     /**
      * The version used to connect.
@@ -182,7 +181,8 @@ public class GlowSession extends BasicSession {
     public void setProxyData(ProxyData proxyData) {
         this.proxyData = proxyData;
         address = proxyData.getAddress();
-        hostname = proxyData.getHostname();
+        virtualHost = InetSocketAddress.createUnresolved(
+                proxyData.getHostname(), virtualHost.getPort());
     }
 
     /**
@@ -264,7 +264,7 @@ public class GlowSession extends BasicSession {
         }
 
         // login event
-        PlayerLoginEvent event = EventFactory.onPlayerLogin(player, hostname);
+        PlayerLoginEvent event = EventFactory.onPlayerLogin(player, virtualHost.toString());
         if (event.getResult() != Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;
