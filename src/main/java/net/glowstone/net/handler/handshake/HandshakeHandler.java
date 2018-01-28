@@ -1,6 +1,7 @@
 package net.glowstone.net.handler.handshake;
 
 import com.flowpowered.network.MessageHandler;
+import java.net.InetSocketAddress;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
@@ -23,7 +24,8 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
         }
 
         session.setVersion(message.getVersion());
-        session.setHostname(message.getAddress() + ":" + message.getPort());
+        session.setVirtualHost(InetSocketAddress.createUnresolved(
+                message.getAddress(), message.getPort()));
 
         // Proxies modify the hostname in the HandshakeMessage to contain
         // the client's UUID and (optionally) properties

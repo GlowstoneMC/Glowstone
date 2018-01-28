@@ -1289,13 +1289,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public int getProtocolVersion() {
-        return GlowServer.PROTOCOL_VERSION;
+        return session.getVersion();
     }
 
     @Nullable
     @Override
     public InetSocketAddress getVirtualHost() {
-        return session.getAddress();
+        return session.getVirtualHost();
     }
 
     @Override
