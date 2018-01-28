@@ -5,6 +5,10 @@ import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.objects.GlowBoat;
+import net.glowstone.entity.objects.GlowMinecart;
+import net.glowstone.entity.passive.GlowHorse;
+import net.glowstone.entity.passive.GlowPig;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
@@ -119,29 +123,54 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         delta.setX(Math.abs(delta.getX()));
         delta.setY(Math.abs(delta.getY()));
         delta.setZ(Math.abs(delta.getZ()));
-        int flatDistance = (int) Math.round(Math.sqrt(
-            NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ()))
-            * 100.0);
-        if (message.isOnGround()) {
-            if (flatDistance > 0) {
-                if (player.isSprinting()) {
-                    player.incrementStatistic(Statistic.SPRINT_ONE_CM, flatDistance);
-                } else if (player.isSneaking()) {
-                    player.incrementStatistic(Statistic.CROUCH_ONE_CM, flatDistance);
-                } else {
-                    player.incrementStatistic(Statistic.WALK_ONE_CM, flatDistance);
+        if (player.isInsideVehicle()) {
+            int cubeDistance = (int) Math.round(delta.length() * 100.0);
+            if (cubeDistance > 0) {
+                if (player.getVehicle() instanceof GlowMinecart) {
+                    player.incrementStatistic(Statistic.MINECART_ONE_CM, cubeDistance);
+                } else if (player.getVehicle() instanceof GlowBoat) {
+                    player.incrementStatistic(Statistic.BOAT_ONE_CM, cubeDistance);
+                } else if (player.getVehicle() instanceof GlowPig) {
+                    player.incrementStatistic(Statistic.PIG_ONE_CM, cubeDistance);
+                } else if (player.getVehicle() instanceof GlowHorse) {
+                    player.incrementStatistic(Statistic.HORSE_ONE_CM, cubeDistance);
                 }
             }
-        } else if (player.isFlying()) {
-            if (flatDistance > 0) {
-                player.incrementStatistic(Statistic.FLY_ONE_CM, flatDistance);
+        }
+        if (player.isEyeInWater()) {
+            int cubeDistance = (int) Math.round(delta.length() * 100.0);
+            if (cubeDistance > 0) {
+                player.incrementStatistic(Statistic.DIVE_ONE_CM, cubeDistance);
             }
-        } else if (player.isInWater()) {
-            if (flatDistance > 0) {
-                player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
+        } else {
+            int flatDistance = (int) Math.round(Math.sqrt(
+                    NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ()))
+                    * 100.0);
+            if (player.isInWater()) {
+                if (flatDistance > 0) {
+                    player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
+                }
+            }
+            if (message.isOnGround()) {
+                if (flatDistance > 0) {
+                    if (player.isSprinting()) {
+                        player.incrementStatistic(Statistic.SPRINT_ONE_CM, flatDistance);
+                    } else if (player.isSneaking()) {
+                        player.incrementStatistic(Statistic.CROUCH_ONE_CM, flatDistance);
+                    } else {
+                        player.incrementStatistic(Statistic.WALK_ONE_CM, flatDistance);
+                    }
+                }
+            } else if (player.isGliding()) {
+                int cubeDistance = (int) Math.round(delta.length() * 100.0);
+                if (cubeDistance > 0) {
+                    player.incrementStatistic(Statistic.AVIATE_ONE_CM, cubeDistance);
+                }
+            } else if (player.isFlying()) {
+                if (flatDistance > 0) {
+                    player.incrementStatistic(Statistic.FLY_ONE_CM, flatDistance);
+                }
             }
         }
-
-
     }
 }
