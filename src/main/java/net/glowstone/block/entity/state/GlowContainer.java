@@ -51,9 +51,9 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     }
 
     @Override
-    public String setLootTable(String s, long l) {
-        setLootTableSeed(l);
-        return lootTable.getAndSet(s);
+    public String setLootTable(String name, long seed) {
+        setLootTableSeed(seed);
+        return lootTable.getAndSet(name);
     }
 
     @Override
