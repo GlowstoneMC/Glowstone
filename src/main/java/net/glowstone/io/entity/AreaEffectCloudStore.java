@@ -1,13 +1,11 @@
 package net.glowstone.io.entity;
 
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowAreaEffectCloud;
 import net.glowstone.inventory.GlowMetaPotion;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
