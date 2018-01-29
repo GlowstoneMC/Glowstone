@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class ItemFishingRode extends ItemType {
+public class ItemFishingRod extends ItemType {
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
@@ -33,10 +33,5 @@ public class ItemFishingRode extends ItemType {
         loc.add(dx, 0, dz);
 
         return loc;
-    }
-
-    @Override
-    public boolean canOnlyUseSelf() {
-        return true;
     }
 }

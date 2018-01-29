@@ -115,7 +115,7 @@ import net.glowstone.block.itemtype.ItemFilledBucket;
 import net.glowstone.block.itemtype.ItemFirework;
 import net.glowstone.block.itemtype.ItemFishCooked;
 import net.glowstone.block.itemtype.ItemFishRaw;
-import net.glowstone.block.itemtype.ItemFishingRode;
+import net.glowstone.block.itemtype.ItemFishingRod;
 import net.glowstone.block.itemtype.ItemFlintAndSteel;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemFoodSeeds;
@@ -492,7 +492,7 @@ public final class ItemTable {
         reg(Material.FIREWORK, new ItemFirework());
         reg(Material.ENDER_PEARL, new ItemEnderPearl());
         reg(Material.KNOWLEDGE_BOOK, new ItemKnowledgeBook());
-        reg(Material.FISHING_ROD, new ItemFishingRode());
+        reg(Material.FISHING_ROD, new ItemFishingRod());
     }
 
     private void reg(Material material, ItemType type) {
