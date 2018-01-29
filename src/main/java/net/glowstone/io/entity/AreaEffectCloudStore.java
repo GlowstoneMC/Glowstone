@@ -3,6 +3,7 @@ package net.glowstone.io.entity;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowAreaEffectCloud;
 import net.glowstone.inventory.GlowMetaPotion;
 import net.glowstone.util.nbt.CompoundTag;
@@ -53,7 +54,7 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
             try {
                 entity.setParticle(Particle.valueOf(particle));
             } catch (IllegalArgumentException e) {
-                Bukkit.getServer().getLogger().log(Level.WARNING, String.format(
+                GlowServer.logger.warning(() -> String.format(
                         "Ignoring invalid particle type %s in tag %s", particle, tag));
             }
         }
