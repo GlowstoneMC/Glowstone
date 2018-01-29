@@ -103,11 +103,14 @@ import net.glowstone.block.blocktype.BlockWorkbench;
 import net.glowstone.block.itemtype.ItemArmorStand;
 import net.glowstone.block.itemtype.ItemBanner;
 import net.glowstone.block.itemtype.ItemBoat;
+import net.glowstone.block.itemtype.ItemBow;
 import net.glowstone.block.itemtype.ItemBucket;
 import net.glowstone.block.itemtype.ItemChorusFruit;
 import net.glowstone.block.itemtype.ItemDye;
+import net.glowstone.block.itemtype.ItemEgg;
 import net.glowstone.block.itemtype.ItemEndCrystal;
 import net.glowstone.block.itemtype.ItemEnderPearl;
+import net.glowstone.block.itemtype.ItemExperienceBottle;
 import net.glowstone.block.itemtype.ItemFilledBucket;
 import net.glowstone.block.itemtype.ItemFirework;
 import net.glowstone.block.itemtype.ItemFishCooked;
@@ -129,6 +132,7 @@ import net.glowstone.block.itemtype.ItemRottenFlesh;
 import net.glowstone.block.itemtype.ItemSeeds;
 import net.glowstone.block.itemtype.ItemShovel;
 import net.glowstone.block.itemtype.ItemSign;
+import net.glowstone.block.itemtype.ItemSnowball;
 import net.glowstone.block.itemtype.ItemSoup;
 import net.glowstone.block.itemtype.ItemSpawn;
 import net.glowstone.block.itemtype.ItemSpiderEye;
@@ -171,6 +175,7 @@ public final class ItemTable {
     // Registration
 
     private void registerBuiltins() {
+        // Blocks:
         reg(Material.FLOWER_POT, new BlockFlowerPot());
         reg(Material.JUKEBOX, new BlockJukebox());
         reg(Material.NOTE_BLOCK, new BlockNote());
@@ -392,6 +397,7 @@ public final class ItemTable {
         reg(Material.CHORUS_FLOWER, new BlockChorusFlower());
         reg(Material.CHORUS_PLANT, new BlockChorusPlant());
 
+        // Non-block and ItemPlaceAs items:
         reg(Material.FLINT_AND_STEEL, new ItemFlintAndSteel());
         reg(Material.SIGN, new ItemSign());
         reg(Material.REDSTONE, new ItemPlaceAs(Material.REDSTONE_WIRE));
@@ -470,6 +476,10 @@ public final class ItemTable {
         reg(Material.HOPPER_MINECART, new ItemMinecart(GlowMinecart.MinecartType.HOPPER));
         reg(Material.POWERED_MINECART, new ItemMinecart(GlowMinecart.MinecartType.FURNACE));
         reg(Material.STORAGE_MINECART, new ItemMinecart(GlowMinecart.MinecartType.CHEST));
+        reg(Material.SNOW_BALL, new ItemSnowball());
+        reg(Material.EGG, new ItemEgg());
+        reg(Material.BOW, new ItemBow());
+        reg(Material.EXP_BOTTLE, new ItemExperienceBottle());
         reg(Material.END_CRYSTAL, new ItemEndCrystal());
         reg(Material.BOAT, new ItemBoat(TreeSpecies.GENERIC));
         reg(Material.BOAT_SPRUCE, new ItemBoat(TreeSpecies.REDWOOD));

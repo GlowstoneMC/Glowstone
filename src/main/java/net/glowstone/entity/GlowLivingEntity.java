@@ -1,5 +1,8 @@
 package net.glowstone.entity;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -27,6 +31,7 @@ import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.entity.objects.GlowLeashHitch;
+import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.inventory.EquipmentMonitor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.AnimateEntityMessage;
@@ -654,8 +659,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
-        return launchProjectile(projectile,
+    public <T extends Projectile> T launchProjectile(Class<? extends T> type) {
+        return launchProjectile(type,
             getLocation().getDirection());  // todo: multiply by some speed
     }
 
@@ -663,11 +668,91 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     // Health
 
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile,
-        Vector velocity) {
-        T entity = world.spawn(getEyeLocation(), projectile);
-        entity.setVelocity(velocity);
-        return entity;
+    public <T extends Projectile> T launchProjectile(Class<? extends T> type, Vector vector) {
+        float offset = 0.0F;
+        float speed = 1.5F;
+        T projectile = launchProjectile(type, vector, offset, speed);
+        return projectile;
+    }
+
+    /**
+     * Launches a projectile from this entity.
+     *
+     * @param type the projectile class
+     * @param vector the direction to shoot in
+     * @param offset TODO: document this parameter
+     * @param speed the speed for the first flight tick
+     * @param <T> the projectile class
+     * @return the launched projectile
+     */
+    public <T extends Projectile> T launchProjectile(Class<? extends T> type, Vector vector,
+            float offset, float speed) {
+        if (vector == null) {
+            vector = getVelocity();
+        }
+
+        T projectile = launchProjectile(type, getEyeLocation().clone(), vector, offset, speed);
+        projectile.setShooter(this);
+        return projectile;
+    }
+
+    /**
+     * Launches a projectile from this entity in the horizontal direction it is facing, relative to
+     * the given velocity vector.
+     *
+     * @param type the projectile class
+     * @param vector the direction to shoot in
+     * @param pitchOffset degrees to subtract from the pitch angle while calculating the y component
+     *         of the initial direction
+     * @param speed the speed for the first flight tick
+     * @param <T> the projectile class
+     * @return the launched projectile
+     */
+    protected <T extends Projectile> T launchProjectile(Class<? extends T> type, Location location,
+            Vector originalVector, float pitchOffset, float velocity) {
+        double pitchRadians = Math.toRadians(location.getPitch());
+        double yawRadians = Math.toRadians(location.getYaw());
+
+        double verticalMultiplier = cos(pitchRadians);
+        double x = verticalMultiplier * sin(-yawRadians);
+        double z = verticalMultiplier * cos(yawRadians);
+        double y = sin(-(Math.toRadians(location.getPitch() - pitchOffset)));
+
+        T projectile = launchProjectile(type, location, x, y, z, velocity);
+        projectile.getVelocity().add(originalVector);
+        return projectile;
+    }
+
+    /**
+     * Throws and returns a projectile, initializing its velocity.
+     *
+     * @param type a projectile class that can be passed to
+     *         {@link org.bukkit.World#spawn(Location, Class)}
+     * @param location initial location
+     * @param x x component of direction (doesn't need to be normalized)
+     * @param y y component of direction (doesn't need to be normalized)
+     * @param z z component of direction (doesn't need to be normalized)
+     * @param speed speed
+     * @param <T> the projectile class
+     * @return the newly launched projectile
+     */
+    private <T extends Projectile> T launchProjectile(Class<? extends T> type, Location location,
+            double x, double y, double z, float speed) {
+        double magnitude = Math.sqrt(x * x + y * y + z * z);
+        if (magnitude > 0) {
+            x += (x * (speed - magnitude)) / magnitude;
+            y += (y * (speed - magnitude)) / magnitude;
+            z += (z * (speed - magnitude)) / magnitude;
+        }
+
+        location.add(location.getDirection());
+        location.setPitch(0);
+        location.setYaw(0);
+
+        T projectile = ((GlowWorld) location.getWorld()).spawn(location, type);
+        projectile.setVelocity(new Vector(x, y, z));
+        ((GlowProjectile) projectile).setRawLocation(location);
+        return projectile;
     }
 
     @Override

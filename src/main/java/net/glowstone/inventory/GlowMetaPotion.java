@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.PotionDataHolder;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
@@ -21,7 +22,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
+public class GlowMetaPotion extends GlowMetaItem implements PotionMeta, PotionDataHolder {
 
     @Getter
     @Setter
@@ -42,13 +43,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (!(meta instanceof PotionMeta)) {
             return;
         }
-
-        PotionMeta potion = (PotionMeta) meta;
-        if (potion.hasCustomEffects()) {
-            effects.addAll(potion instanceof GlowMetaPotion
-                    ? ((GlowMetaPotion) potion).effects : potion.getCustomEffects());
-        }
-        this.basePotionData = potion.getBasePotionData();
+        this.copyFrom((PotionMeta) meta);
     }
 
     /**
@@ -117,7 +112,7 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
                 .collect(Collectors.toList());
             tag.putCompoundList("CustomEffects", customEffects);
         }
-        tag.putString("Potion", dataToString());
+        tag.putString("Potion", dataToString(basePotionData));
         if (this.color != null) {
             tag.putInt("CustomPotionColor", this.color.asRGB());
         }
@@ -191,6 +186,11 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     }
 
     @Override
+    public void clearCustomEffects0() {
+        clearCustomEffects();
+    }
+
+    @Override
     public boolean setMainEffect(PotionEffectType type) {
         PotionEffect main = null;
         for (PotionEffect effect : effects) {
@@ -226,11 +226,12 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     }
 
     /**
-     * Converts the PotionData of this item meta to a Potion ID string.
+     * Converts a PotionData to a Potion ID string.
      *
+     * @param basePotionData the PotionData to convert
      * @return the Potion ID string
      */
-    private String dataToString() {
+    public static String dataToString(PotionData basePotionData) {
         String name = "minecraft:";
         if (basePotionData.isExtended()) {
             name += "long_";

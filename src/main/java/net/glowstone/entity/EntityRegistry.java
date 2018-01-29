@@ -68,9 +68,21 @@ import net.glowstone.entity.passive.GlowSquid;
 import net.glowstone.entity.passive.GlowVillager;
 import net.glowstone.entity.passive.GlowWolf;
 import net.glowstone.entity.passive.GlowZombieHorse;
+import net.glowstone.entity.projectile.GlowArrow;
+import net.glowstone.entity.projectile.GlowEgg;
+import net.glowstone.entity.projectile.GlowEnderPearl;
+import net.glowstone.entity.projectile.GlowFireball;
+import net.glowstone.entity.projectile.GlowLingeringPotion;
+import net.glowstone.entity.projectile.GlowSnowball;
+import net.glowstone.entity.projectile.GlowSpectralArrow;
+import net.glowstone.entity.projectile.GlowSplashPotion;
+import net.glowstone.entity.projectile.GlowThrownExpBottle;
+import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.io.entity.EntityStorage;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Boat;
@@ -80,9 +92,11 @@ import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Donkey;
+import org.bukkit.entity.Egg;
 import org.bukkit.entity.ElderGuardian;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Endermite;
 import org.bukkit.entity.Entity;
@@ -91,6 +105,7 @@ import org.bukkit.entity.Evoker;
 import org.bukkit.entity.EvokerFangs;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
@@ -102,6 +117,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.LingeringPotion;
 import org.bukkit.entity.Llama;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Mule;
@@ -120,11 +136,16 @@ import org.bukkit.entity.Silverfish;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.SkeletonHorse;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Snowman;
+import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.Spider;
+import org.bukkit.entity.SplashPotion;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Stray;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.ThrownExpBottle;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Vindicator;
@@ -145,8 +166,9 @@ public class EntityRegistry {
             ENTITIES
             = ImmutableBiMap.<Class<? extends Entity>, Class<? extends GlowEntity>>builder()
             .put(AbstractHorse.class, GlowAbstractHorse.class)
+            .put(AreaEffectCloud.class, GlowAreaEffectCloud.class)
             .put(ArmorStand.class, GlowArmorStand.class)
-            //TODO: Arrow
+            .put(Arrow.class, GlowArrow.class)
             .put(Bat.class, GlowBat.class)
             .put(Blaze.class, GlowBlaze.class)
             .put(Boat.class, GlowBoat.class)
@@ -156,11 +178,11 @@ public class EntityRegistry {
             .put(Cow.class, GlowCow.class)
             .put(Creeper.class, GlowCreeper.class)
             .put(Donkey.class, GlowDonkey.class)
-            //TODO: Egg
+            .put(Egg.class, GlowEgg.class)
             .put(ElderGuardian.class, GlowElderGuardian.class)
             .put(EnderCrystal.class, GlowEnderCrystal.class)
             .put(EnderDragon.class, GlowEnderDragon.class)
-            //TODO: Ender Pearl
+            .put(EnderPearl.class, GlowEnderPearl.class)
             //TODO: Ender Signal
             .put(Enderman.class, GlowEnderman.class)
             .put(Endermite.class, GlowEndermite.class)
@@ -168,7 +190,7 @@ public class EntityRegistry {
             .put(Evoker.class, GlowEvoker.class)
             .put(EvokerFangs.class, GlowEvokerFangs.class)
             .put(FallingBlock.class, GlowFallingBlock.class)
-            //TODO: Fireball
+            .put(Fireball.class, GlowFireball.class)
             .put(Firework.class, GlowFirework.class)
             //TODO: Fishing hook
             .put(Ghast.class, GlowGhast.class)
@@ -181,6 +203,7 @@ public class EntityRegistry {
             .put(ItemFrame.class, GlowItemFrame.class)
             .put(LeashHitch.class, GlowLeashHitch.class)
             .put(LightningStrike.class, GlowLightningStrike.class)
+            .put(LingeringPotion.class, GlowLingeringPotion.class)
             .put(Llama.class, GlowLlama.class)
             .put(MagmaCube.class, GlowMagmaCube.class)
             .put(GlowMinecart.MinecartType.RIDEABLE.getEntityClass(),
@@ -213,14 +236,15 @@ public class EntityRegistry {
             .put(Skeleton.class, GlowSkeleton.class)
             .put(SkeletonHorse.class, GlowSkeletonHorse.class)
             .put(Slime.class, GlowSlime.class)
-            //TODO: Fireball
-            //TODO: Snowball
+            .put(Snowball.class, GlowSnowball.class)
             .put(Snowman.class, GlowSnowman.class)
+            .put(SpectralArrow.class, GlowSpectralArrow.class)
             .put(Spider.class, GlowSpider.class)
-            //TODO: Splash potion
+            .put(SplashPotion.class, GlowSplashPotion.class)
             .put(Squid.class, GlowSquid.class)
             .put(Stray.class, GlowStray.class)
-            //TODO: Experience bottle
+            .put(ThrownExpBottle.class, GlowThrownExpBottle.class)
+            .put(TippedArrow.class, GlowTippedArrow.class)
             .put(Vex.class, GlowVex.class)
             .put(Villager.class, GlowVillager.class)
             .put(Vindicator.class, GlowVindicator.class)

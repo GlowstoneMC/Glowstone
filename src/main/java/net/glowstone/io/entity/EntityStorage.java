@@ -27,6 +27,16 @@ import net.glowstone.entity.passive.GlowPolarBear;
 import net.glowstone.entity.passive.GlowSkeletonHorse;
 import net.glowstone.entity.passive.GlowSquid;
 import net.glowstone.entity.passive.GlowZombieHorse;
+import net.glowstone.entity.projectile.GlowEgg;
+import net.glowstone.entity.projectile.GlowEnderPearl;
+import net.glowstone.entity.projectile.GlowFireball;
+import net.glowstone.entity.projectile.GlowLingeringPotion;
+import net.glowstone.entity.projectile.GlowSnowball;
+import net.glowstone.entity.projectile.GlowSpectralArrow;
+import net.glowstone.entity.projectile.GlowSplashPotion;
+import net.glowstone.entity.projectile.GlowThrownExpBottle;
+import net.glowstone.entity.projectile.GlowTippedArrow;
+import net.glowstone.entity.projectile.GlowWitherSkull;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -107,6 +117,7 @@ public final class EntityStorage {
         bind(new EnderDragonStore());
         bind(new ZombieVillagerStore());
 
+        bind(new AreaEffectCloudStore());
         bind(new ArmorStandStore());
         bind(new FallingBlockStore());
         bind(new ItemFrameStore());
@@ -119,9 +130,26 @@ public final class EntityStorage {
                 bind(new MinecartStore(type));
             }
         }
+        bind(new ProjectileStore<>(GlowSnowball.class, "snowball"));
+        bind(new ProjectileStore<>(GlowEgg.class, "egg"));
+        bind(new ProjectileStore<>(GlowEnderPearl.class, "ender_pearl"));
+        bind(new ProjectileStore<>(GlowThrownExpBottle.class, "xp_bottle"));
+        bind(new SplashPotionStore<>(GlowSplashPotion.class, "splash_potion"));
+        bind(new SplashPotionStore<>(GlowLingeringPotion.class, "lingering_potion"));
+        final FireballStore<GlowFireball> fireballStore
+                = new FireballStore<>(GlowFireball.class, "fireball");
+        bind(fireballStore);
+        idTable.put("small_fireball", fireballStore);
+        bind(new FireballStore<>(GlowWitherSkull.class, "wither_skull"));
+        bind(new ArrowStore<>(GlowSpectralArrow.class, "spectral_arrow"));
         bind(new PaintingStore());
         bind(new ExperienceOrbStore());
         bind(new FireworkStore());
+
+        // Normal and tipped arrows use same storage
+        final NormalTippedArrowStore arrowStore = new NormalTippedArrowStore();
+        bind(arrowStore);
+        classTable.put(GlowTippedArrow.class, arrowStore);
     }
 
     private EntityStorage() {
