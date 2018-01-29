@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 class EndermiteStore extends MonsterStore<GlowEndermite> {
 
     public EndermiteStore() {
-        super(GlowEndermite.class, EntityType.ENDERMITE);
+        super(GlowEndermite.class, EntityType.ENDERMITE, GlowEndermite::new);
     }
 
     @Override

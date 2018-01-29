@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 class CreeperStore extends MonsterStore<GlowCreeper> {
 
     public CreeperStore() {
-        super(GlowCreeper.class, EntityType.CREEPER);
+        super(GlowCreeper.class, EntityType.CREEPER, GlowCreeper::new);
     }
 
     @Override

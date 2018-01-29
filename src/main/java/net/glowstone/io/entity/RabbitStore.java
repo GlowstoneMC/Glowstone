@@ -30,7 +30,7 @@ class RabbitStore extends AgeableStore<GlowRabbit> {
         .build();
 
     public RabbitStore() {
-        super(GlowRabbit.class, EntityType.RABBIT);
+        super(GlowRabbit.class, EntityType.RABBIT, GlowRabbit::new);
     }
 
     @Override

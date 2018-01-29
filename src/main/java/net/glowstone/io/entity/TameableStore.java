@@ -1,16 +1,18 @@
 package net.glowstone.io.entity;
 
 import java.util.UUID;
+import java.util.function.Function;
 import net.glowstone.entity.passive.GlowTameable;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 
 abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
 
-    public TameableStore(Class<T> clazz, EntityType type) {
-        super(clazz, type);
+    public TameableStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
+        super(clazz, type, creator);
     }
 
     @Override

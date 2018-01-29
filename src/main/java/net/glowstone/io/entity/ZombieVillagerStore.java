@@ -17,7 +17,7 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
     private static final Villager.Profession[] PROFESSIONS = Villager.Profession.values();
 
     public ZombieVillagerStore() {
-        super(GlowZombieVillager.class, EntityType.ZOMBIE_VILLAGER);
+        super(GlowZombieVillager.class, EntityType.ZOMBIE_VILLAGER, GlowZombieVillager::new);
     }
 
     @Override
