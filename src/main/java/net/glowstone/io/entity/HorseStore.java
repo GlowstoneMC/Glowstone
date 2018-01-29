@@ -9,7 +9,7 @@ import org.bukkit.entity.Horse;
 public class HorseStore extends AbstractHorseStore<GlowHorse> {
 
     public HorseStore() {
-        super(GlowHorse.class, EntityType.HORSE);
+        super(GlowHorse.class, EntityType.HORSE, GlowHorse::new);
     }
 
     @Override

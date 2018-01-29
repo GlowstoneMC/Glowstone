@@ -6,6 +6,6 @@ import org.bukkit.entity.EntityType;
 public class EvokerStore extends MonsterStore<GlowEvoker> {
 
     public EvokerStore() {
-        super(GlowEvoker.class, EntityType.EVOKER);
+        super(GlowEvoker.class, EntityType.EVOKER, GlowEvoker::new);
     }
 }

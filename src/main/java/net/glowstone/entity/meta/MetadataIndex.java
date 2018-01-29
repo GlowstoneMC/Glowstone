@@ -20,6 +20,7 @@ import net.glowstone.entity.passive.GlowParrot;
 import net.glowstone.entity.passive.GlowTameable;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Bat;
@@ -54,6 +55,7 @@ import org.bukkit.entity.Slime;
 import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Spider;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.entity.Vex;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Vindicator;
@@ -80,16 +82,15 @@ public enum MetadataIndex {
     SILENT(4, BOOLEAN, Entity.class),
     NOGRAVITY(5, BOOLEAN, Entity.class),
 
-    //TODO 1.9-1.10 - Support this
-    //AREAEFFECTCLOUD_RADIUS(6, FLOAT, Entity.class),
-    //AREAEFFECTCLOUD_COLOR(7, INT, Entity.class),
-    //AREAEFFECTCLOUD_UNKNOWN(8, BOOLEAN, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLEID(9, INT, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, Entity.class),
+    AREAEFFECTCLOUD_RADIUS(6, FLOAT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_COLOR(7, INT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_POINT(8, BOOLEAN, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_PARTICLEID(9, INT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, AreaEffectCloud.class),
 
     ARROW_CRITICAL(6, BYTE, Arrow.class),
-    TIPPEDARROW_COLOR(7, INT, Arrow.class), //TODO Proper arrow class
+    TIPPEDARROW_COLOR(7, INT, TippedArrow.class),
 
     BOAT_HIT_TIME(6, INT, Boat.class),
     BOAT_DIRECTION(7, INT, Boat.class),
@@ -134,7 +135,7 @@ public enum MetadataIndex {
     //NO_AI(10, BYTE, Insentient.class),
     // TODO - 1.9 "Insentient extends Living". Need more information
 
-    BAT_HANGING(12, BYTE, Bat.class),
+    BAT_FLAGS(12, BYTE, Bat.class),
 
     AGE_ISBABY(12, BOOLEAN, Ageable.class),
 
@@ -164,7 +165,7 @@ public enum MetadataIndex {
 
     WOLF_HEALTH(15, FLOAT, Wolf.class),
     WOLF_BEGGING(16, BOOLEAN, Wolf.class),
-    WOLF_COLOR(21, BYTE, Wolf.class),
+    WOLF_COLOR(17, BYTE, Wolf.class),
 
     VILLAGER_PROFESSION(13, INT, Villager.class),
 
@@ -300,5 +301,10 @@ public enum MetadataIndex {
         int IS_SITTING = 0x01;
         int WOLF_IS_ANGRY = 0x02;
         int IS_TAME = 0x04;
+    }
+
+    public interface BatFlags {
+
+        int IS_HANGING = 0x01;
     }
 }

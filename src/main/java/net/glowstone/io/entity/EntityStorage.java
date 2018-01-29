@@ -27,6 +27,16 @@ import net.glowstone.entity.passive.GlowPolarBear;
 import net.glowstone.entity.passive.GlowSkeletonHorse;
 import net.glowstone.entity.passive.GlowSquid;
 import net.glowstone.entity.passive.GlowZombieHorse;
+import net.glowstone.entity.projectile.GlowEgg;
+import net.glowstone.entity.projectile.GlowEnderPearl;
+import net.glowstone.entity.projectile.GlowFireball;
+import net.glowstone.entity.projectile.GlowLingeringPotion;
+import net.glowstone.entity.projectile.GlowSnowball;
+import net.glowstone.entity.projectile.GlowSpectralArrow;
+import net.glowstone.entity.projectile.GlowSplashPotion;
+import net.glowstone.entity.projectile.GlowThrownExpBottle;
+import net.glowstone.entity.projectile.GlowTippedArrow;
+import net.glowstone.entity.projectile.GlowWitherSkull;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -65,15 +75,17 @@ public final class EntityStorage {
         bind(new OcelotStore());
         bind(new WolfStore());
         bind(new VillagerStore());
-        bind(new AgeableStore<>(GlowCow.class, EntityType.COW));
-        bind(new AgeableStore<>(GlowMooshroom.class, EntityType.MUSHROOM_COW));
-        bind(new WaterMobStore<>(GlowSquid.class, EntityType.SQUID));
-        bind(new AgeableStore<>(GlowPolarBear.class, EntityType.POLAR_BEAR));
-        bind(new AbstractHorseStore<>(GlowZombieHorse.class, EntityType.ZOMBIE_HORSE));
-        bind(new AbstractHorseStore<>(GlowSkeletonHorse.class, EntityType.SKELETON_HORSE));
-        bind(new ChestedHorseStore<>(GlowLlama.class, EntityType.LLAMA));
-        bind(new ChestedHorseStore<>(GlowMule.class, EntityType.MULE));
-        bind(new ChestedHorseStore<>(GlowDonkey.class, EntityType.DONKEY));
+        bind(new AgeableStore<>(GlowCow.class, EntityType.COW, GlowCow::new));
+        bind(new AgeableStore<>(GlowMooshroom.class, EntityType.MUSHROOM_COW, GlowMooshroom::new));
+        bind(new WaterMobStore<>(GlowSquid.class, EntityType.SQUID, GlowSquid::new));
+        bind(new AgeableStore<>(GlowPolarBear.class, EntityType.POLAR_BEAR, GlowPolarBear::new));
+        bind(new AbstractHorseStore<>(GlowZombieHorse.class, EntityType.ZOMBIE_HORSE,
+            GlowZombieHorse::new));
+        bind(new AbstractHorseStore<>(GlowSkeletonHorse.class, EntityType.SKELETON_HORSE,
+            GlowSkeletonHorse::new));
+        bind(new ChestedHorseStore<>(GlowLlama.class, EntityType.LLAMA, GlowLlama::new));
+        bind(new ChestedHorseStore<>(GlowMule.class, EntityType.MULE, GlowMule::new));
+        bind(new ChestedHorseStore<>(GlowDonkey.class, EntityType.DONKEY, GlowDonkey::new));
         bind(new HorseStore());
         bind(new ParrotStore());
 
@@ -84,21 +96,22 @@ public final class EntityStorage {
         bind(new GhastStore());
         bind(new GuardianStore());
         bind(new IronGolemStore());
-        bind(new SlimeStore<>(GlowSlime.class, EntityType.SLIME));
-        bind(new SlimeStore<>(GlowMagmaCube.class, EntityType.MAGMA_CUBE));
+        bind(new SlimeStore<>(GlowSlime.class, EntityType.SLIME, GlowSlime::new));
+        bind(new SlimeStore<>(GlowMagmaCube.class, EntityType.MAGMA_CUBE, GlowMagmaCube::new));
         bind(new ZombieStore<>());
-        bind(new ZombieStore<>(GlowHusk.class, EntityType.HUSK));
+        bind(new ZombieStore<>(GlowHusk.class, EntityType.HUSK, GlowHusk::new));
         bind(new PigZombieStore());
-        bind(new MonsterStore<>(GlowSkeleton.class, EntityType.SKELETON));
-        bind(new MonsterStore<>(GlowStray.class, EntityType.STRAY));
-        bind(new MonsterStore<>(GlowWitherSkeleton.class, EntityType.WITHER_SKELETON));
-        bind(new MonsterStore<>(GlowBlaze.class, EntityType.BLAZE));
-        bind(new MonsterStore<>(GlowCaveSpider.class, EntityType.CAVE_SPIDER));
-        bind(new MonsterStore<>(GlowSpider.class, EntityType.SPIDER));
-        bind(new MonsterStore<>(GlowSnowman.class, EntityType.SNOWMAN));
-        bind(new MonsterStore<>(GlowGiant.class, EntityType.GIANT));
-        bind(new MonsterStore<>(GlowSilverfish.class, EntityType.SILVERFISH));
-        bind(new MonsterStore<>(GlowWitch.class, EntityType.WITCH));
+        bind(new MonsterStore<>(GlowSkeleton.class, EntityType.SKELETON, GlowSkeleton::new));
+        bind(new MonsterStore<>(GlowStray.class, EntityType.STRAY, GlowStray::new));
+        bind(new MonsterStore<>(GlowWitherSkeleton.class, EntityType.WITHER_SKELETON,
+            GlowWitherSkeleton::new));
+        bind(new MonsterStore<>(GlowBlaze.class, EntityType.BLAZE, GlowBlaze::new));
+        bind(new MonsterStore<>(GlowCaveSpider.class, EntityType.CAVE_SPIDER, GlowCaveSpider::new));
+        bind(new MonsterStore<>(GlowSpider.class, EntityType.SPIDER, GlowSpider::new));
+        bind(new MonsterStore<>(GlowSnowman.class, EntityType.SNOWMAN, GlowSnowman::new));
+        bind(new MonsterStore<>(GlowGiant.class, EntityType.GIANT, GlowGiant::new));
+        bind(new MonsterStore<>(GlowSilverfish.class, EntityType.SILVERFISH, GlowSilverfish::new));
+        bind(new MonsterStore<>(GlowWitch.class, EntityType.WITCH, GlowWitch::new));
         bind(new ShulkerStore());
         bind(new WitherStore());
         bind(new VexStore());
@@ -107,6 +120,7 @@ public final class EntityStorage {
         bind(new EnderDragonStore());
         bind(new ZombieVillagerStore());
 
+        bind(new AreaEffectCloudStore());
         bind(new ArmorStandStore());
         bind(new FallingBlockStore());
         bind(new ItemFrameStore());
@@ -119,9 +133,26 @@ public final class EntityStorage {
                 bind(new MinecartStore(type));
             }
         }
+        bind(new ProjectileStore<>(GlowSnowball.class, "snowball"));
+        bind(new ProjectileStore<>(GlowEgg.class, "egg"));
+        bind(new ProjectileStore<>(GlowEnderPearl.class, "ender_pearl"));
+        bind(new ProjectileStore<>(GlowThrownExpBottle.class, "xp_bottle"));
+        bind(new SplashPotionStore<>(GlowSplashPotion.class, "splash_potion"));
+        bind(new SplashPotionStore<>(GlowLingeringPotion.class, "lingering_potion"));
+        final FireballStore<GlowFireball> fireballStore
+                = new FireballStore<>(GlowFireball.class, "fireball");
+        bind(fireballStore);
+        idTable.put("small_fireball", fireballStore);
+        bind(new FireballStore<>(GlowWitherSkull.class, "wither_skull"));
+        bind(new ArrowStore<>(GlowSpectralArrow.class, "spectral_arrow"));
         bind(new PaintingStore());
         bind(new ExperienceOrbStore());
         bind(new FireworkStore());
+
+        // Normal and tipped arrows use same storage
+        final NormalTippedArrowStore arrowStore = new NormalTippedArrowStore();
+        bind(arrowStore);
+        classTable.put(GlowTippedArrow.class, arrowStore);
     }
 
     private EntityStorage() {

@@ -35,12 +35,12 @@ public class GlowBat extends GlowAmbient implements Bat {
 
     @Override
     public boolean isAwake() {
-        return metadata.getByte(MetadataIndex.BAT_HANGING) == 1;
+        return !metadata.getBit(MetadataIndex.BAT_FLAGS, MetadataIndex.BatFlags.IS_HANGING);
     }
 
     @Override
     public void setAwake(boolean isAwake) {
-        metadata.set(MetadataIndex.BAT_HANGING, (byte) (isAwake ? 1 : 0));
+        metadata.setBit(MetadataIndex.BAT_FLAGS, MetadataIndex.BatFlags.IS_HANGING, !isAwake);
     }
 
     @Override

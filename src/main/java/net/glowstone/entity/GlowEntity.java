@@ -176,9 +176,15 @@ public abstract class GlowEntity implements Entity {
     @Getter
     protected boolean removed;
     /**
-     * Velocity reduction applied each tick in air.
+     * Velocity reduction applied each tick in air, y component.
      */
     protected double airDrag = 0.98;
+    /**
+     * Velocity reduction applied each tick in air, x and z components.
+     */
+    @Getter
+    @Setter
+    private double horizontalAirDrag = 0.91;
     /**
      * Velocity reduction applied each tick in liquids.
      */
@@ -223,6 +229,11 @@ public abstract class GlowEntity implements Entity {
      */
     @Setter
     private boolean gravity = true;
+    /**
+     * Whether friction applies to the entity.
+     */
+    @Setter
+    private boolean friction = true;
     /**
      * Whether this entity is invulnerable.
      */
@@ -950,7 +961,8 @@ public abstract class GlowEntity implements Entity {
 
     protected void pulsePhysics() {
         Location velLoc = location.clone().add(velocity);
-        if (velLoc.getBlock().getType().isOccluding()) {
+        final Block block = velLoc.getBlock();
+        if (block.getType().isOccluding()) {
             Location velLocY = location.clone().add(0, velocity.getY(), 0);
             if (velLocY.getBlock().getType().isOccluding()) {
                 velocity.setY(0);
@@ -963,26 +975,47 @@ public abstract class GlowEntity implements Entity {
             if (velLocZ.getBlock().getType().isOccluding()) {
                 velocity.setZ(0);
             }
+            collide(block);
         } else {
-            // apply friction and gravity
-            if (location.getBlock().getType() == Material.WATER) {
-                velocity.multiply(liquidDrag);
-                velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
-            } else if (location.getBlock().getType() == Material.LAVA) {
-                velocity.multiply(liquidDrag - 0.3);
-                velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
-            } else {
-                velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
-                if (isOnGround()) {
-                    velocity.setX(velocity.getX() * slipMultiplier);
-                    velocity.setZ(velocity.getZ() * slipMultiplier);
+            if (hasFriction()) {
+                // apply friction and gravity
+                if (location.getBlock().getType() == Material.WATER) {
+                    velocity.multiply(liquidDrag);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                } else if (location.getBlock().getType() == Material.LAVA) {
+                    velocity.multiply(liquidDrag - 0.3);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
                 } else {
-                    velocity.setX(velocity.getX() * 0.91);
-                    velocity.setZ(velocity.getZ() * 0.91);
+                    velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
+                    if (isOnGround()) {
+                        velocity.setX(velocity.getX() * slipMultiplier);
+                        velocity.setZ(velocity.getZ() * slipMultiplier);
+                    } else {
+                        velocity.setX(velocity.getX() * horizontalAirDrag);
+                        velocity.setZ(velocity.getZ() * horizontalAirDrag);
+                    }
+                }
+            } else if (hasGravity() && !isOnGround()) {
+                switch (location.getBlock().getType()) {
+                    case WATER:
+                    case LAVA:
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                        break;
+                    default:
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
                 }
             }
             setRawLocation(velLoc);
         }
+    }
+
+    /**
+     * Collide with the target block.
+     *
+     * @param block a block whose type {@link Material#isOccluding()}
+     */
+    public void collide(Block block) {
+        // No-op by default.
     }
 
     protected void updateBoundingBox() {
@@ -1240,6 +1273,10 @@ public abstract class GlowEntity implements Entity {
     @Override
     public boolean eject() {
         return !isEmpty() && setPassenger(null);
+    }
+
+    public boolean hasFriction() {
+        return friction;
     }
 
     @Override

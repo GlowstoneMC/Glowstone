@@ -11,7 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+import lombok.Getter;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.net.SessionRegistry;
+import net.glowstone.scheduler.GlowScheduler;
+import net.glowstone.scheduler.WorldScheduler;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -52,6 +56,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
+import org.mockito.Mockito;
 
 /**
  * Simple mocked Server implementation.
@@ -65,6 +70,17 @@ public class ServerShim implements Server {
     }
 
     // actual implementations
+
+    private final WorldScheduler worldScheduler = new WorldScheduler();
+    private final SessionRegistry sessionRegistry = new SessionRegistry();
+
+    @Getter
+    private final PluginManager pluginManager
+            = Mockito.mock(PluginManager.class, Mockito.RETURNS_SMART_NULLS);
+
+    @Getter
+    private final GlowScheduler scheduler
+            = new GlowScheduler(this, worldScheduler, sessionRegistry);
 
     @Override
     public String getName() {
@@ -225,16 +241,6 @@ public class ServerShim implements Server {
 
     @Override
     public Player getPlayer(UUID id) {
-        return null;
-    }
-
-    @Override
-    public PluginManager getPluginManager() {
-        return null;
-    }
-
-    @Override
-    public BukkitScheduler getScheduler() {
         return null;
     }
 
