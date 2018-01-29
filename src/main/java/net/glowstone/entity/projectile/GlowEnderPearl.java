@@ -49,9 +49,15 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
     public void collide(Block block) {
         ProjectileSource source = getShooter();
         if (source instanceof Entity) {
-            ((Entity) source).teleport(location, PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
+            Location location = getLocation();
+            location.add(0, 1, 0);
+            Entity entity = (Entity) source;
+            Location entityLocation = entity.getLocation();
+            location.setPitch(entityLocation.getPitch());
+            location.setYaw(entityLocation.getYaw());
+            entity.teleport(this.location, PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
             if (source instanceof LivingEntity) {
-                ((LivingEntity) source).damage(ENDER_PEARL_DAMAGE,
+                ((LivingEntity) entity).damage(ENDER_PEARL_DAMAGE,
                         EntityDamageEvent.DamageCause.FALL);
             }
         }

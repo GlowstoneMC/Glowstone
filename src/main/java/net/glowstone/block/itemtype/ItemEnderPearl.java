@@ -2,6 +2,7 @@ package net.glowstone.block.itemtype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
@@ -14,18 +15,25 @@ public class ItemEnderPearl extends ItemType {
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        throwEnderPearl(player);
+        throwEnderPearl(player, holding);
     }
 
     @Override
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        throwEnderPearl(player);
+        throwEnderPearl(player, holding);
     }
 
     @Override
     public Context getContext() {
         return Context.ANY;
+    }
+
+    private void throwEnderPearl(GlowPlayer player, ItemStack holding) {
+        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+            holding.setAmount(holding.getAmount() - 1);
+        }
+        throwEnderPearl(player);
     }
 
     private void throwEnderPearl(GlowPlayer player) {
