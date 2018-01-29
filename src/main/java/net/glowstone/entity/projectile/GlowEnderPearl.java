@@ -58,7 +58,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
             entity.teleport(this.location, PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
             if (source instanceof LivingEntity) {
                 ((LivingEntity) entity).damage(ENDER_PEARL_DAMAGE,
-                    EntityDamageEvent.DamageCause.FALL);
+                        EntityDamageEvent.DamageCause.FALL);
             }
         }
         remove();
