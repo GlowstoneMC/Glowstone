@@ -13,7 +13,6 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.Vector;
@@ -34,15 +33,6 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     public GlowPlayer getPlayer() {
         Entity source = getSource();
         return (source instanceof GlowPlayer) ? (GlowPlayer) source : null;
-    }
-
-    /**
-     * Set the player that ignited the TNT.
-     *
-     * @param player Player that ignited the TNT
-     */
-    public void setPlayer(Player player) {
-        source = player;
     }
 
     /**
