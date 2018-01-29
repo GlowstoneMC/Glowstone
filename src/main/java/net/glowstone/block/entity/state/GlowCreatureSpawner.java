@@ -53,6 +53,67 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
         delay = i;
     }
 
+    // TODO: mob spawner API
+    @Override
+    public int getMinSpawnDelay() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setMinSpawnDelay(int i) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public int getMaxSpawnDelay() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setMaxSpawnDelay(int i) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public int getSpawnCount() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setSpawnCount(int i) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public int getMaxNearbyEntities() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setMaxNearbyEntities(int i) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public int getRequiredPlayerRange() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setRequiredPlayerRange(int i) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public int getSpawnRange() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setSpawnRange(int i) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Spawned Type
 
