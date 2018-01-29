@@ -2,6 +2,8 @@ package net.glowstone.block.itemtype;
 
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.inventory.GlowInventorySlot;
@@ -34,7 +36,7 @@ public class ItemBow extends ItemTimedUsage {
         Optional<GlowInventorySlot> maybeArrow = findArrow(player);
         GlowInventorySlot slot = null;
         ItemStack arrow = null;
-        Material arrowType = Material.AIR;
+        final Material arrowType;
         Arrow launchedArrow = null;
         boolean consumeArrow = false;
         if (maybeArrow.isPresent()) {
@@ -46,6 +48,8 @@ public class ItemBow extends ItemTimedUsage {
             // Can fire without arrows in Creative
             arrowType = Material.ARROW;
             consumeArrow = false;
+        } else {
+            arrowType = Material.AIR;
         }
         switch (arrowType) {
             case ARROW:
@@ -66,9 +70,8 @@ public class ItemBow extends ItemTimedUsage {
                 // Not in creative mode and have no arrow
                 break;
             default:
-                player.getServer().getLogger()
-                        .severe(String.format("Attempt to fire a %s from a bow",
-                                arrowType));
+                GlowServer.logger.log(Level.SEVERE, () ->
+                        String.format("Attempt to fire %s from a bow", arrowType));
 
         }
         if (launchedArrow != null) {
