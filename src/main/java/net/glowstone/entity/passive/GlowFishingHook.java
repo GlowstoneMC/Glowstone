@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;
 import net.glowstone.entity.FishingRewardManager.RewardItem;
-import net.glowstone.entity.GlowProjectile;
+import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.InventoryUtil;
@@ -17,6 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -65,6 +66,18 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
         spawnMessage.add(new SpawnObjectMessage(this.getEntityId(), this.getUniqueId(), SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw, 0, velocity));
         return spawnMessage;
+    }
+
+    @Override public void collide(Block block) {
+        // TODO
+    }
+
+    @Override public void collide(LivingEntity entity) {
+        // No effect.
+    }
+
+    @Override protected int getObjectId() {
+        return SpawnObjectMessage.FISHING_HOOK;
     }
 
     @Override
