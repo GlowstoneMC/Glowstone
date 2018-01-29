@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 
 public class AbstractHorseStore<T extends GlowAbstractHorse> extends TameableStore<T> {
 
-    public AbstractHorseStore(Class<T> clazz, EntityType type, Function<Location, T> creator) {
+    public AbstractHorseStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
         super(clazz, type, creator);
     }
 
