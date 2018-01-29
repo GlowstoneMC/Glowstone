@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 class PigStore extends AgeableStore<GlowPig> {
 
     public PigStore() {
-        super(GlowPig.class, EntityType.PIG);
+        super(GlowPig.class, EntityType.PIG, GlowPig::new);
     }
 
     @Override

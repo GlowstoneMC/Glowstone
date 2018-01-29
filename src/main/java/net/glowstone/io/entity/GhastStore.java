@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 class GhastStore extends MonsterStore<GlowGhast> {
 
     public GhastStore() {
-        super(GlowGhast.class, EntityType.GHAST);
+        super(GlowGhast.class, EntityType.GHAST, GlowGhast::new);
     }
 
     @Override

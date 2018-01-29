@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 public class ShulkerStore extends MonsterStore<GlowShulker> {
 
     public ShulkerStore() {
-        super(GlowShulker.class, EntityType.SHULKER);
+        super(GlowShulker.class, EntityType.SHULKER, GlowShulker::new);
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 class IronGolemStore extends MonsterStore<GlowIronGolem> {
 
     public IronGolemStore() {
-        super(GlowIronGolem.class, EntityType.IRON_GOLEM);
+        super(GlowIronGolem.class, EntityType.IRON_GOLEM, GlowIronGolem::new);
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 class WolfStore extends TameableStore<GlowWolf> {
 
     public WolfStore() {
-        super(GlowWolf.class, EntityType.WOLF);
+        super(GlowWolf.class, EntityType.WOLF, GlowWolf::new);
     }
 
     @Override

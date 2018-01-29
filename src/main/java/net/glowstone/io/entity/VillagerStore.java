@@ -14,7 +14,7 @@ import org.bukkit.inventory.MerchantRecipe;
 class VillagerStore extends AgeableStore<GlowVillager> {
 
     public VillagerStore() {
-        super(GlowVillager.class, EntityType.VILLAGER);
+        super(GlowVillager.class, EntityType.VILLAGER, GlowVillager::new);
     }
 
     @Override

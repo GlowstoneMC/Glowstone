@@ -1,13 +1,15 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.monster.GlowSlime;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 class SlimeStore<T extends GlowSlime> extends MonsterStore<T> {
 
-    public SlimeStore(Class<T> clazz, EntityType type) {
-        super(clazz, type);
+    public SlimeStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
+        super(clazz, type, creator);
     }
 
     @Override

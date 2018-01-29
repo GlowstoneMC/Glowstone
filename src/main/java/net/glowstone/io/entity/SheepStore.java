@@ -12,7 +12,7 @@ class SheepStore extends AgeableStore<GlowSheep> {
     public static final String COLOR_KEY = "Color";
 
     public SheepStore() {
-        super(GlowSheep.class, EntityType.SHEEP);
+        super(GlowSheep.class, EntityType.SHEEP, GlowSheep::new);
     }
 
     @Override
