@@ -10,12 +10,14 @@ public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
     private final Function<Location, ? extends T> creator;
 
-    public MonsterStore(Class<? extends T> clazz, EntityType type, Function<Location, ? extends T> creator) {
+    public MonsterStore(Class<? extends T> clazz, EntityType type,
+            Function<Location, ? extends T> creator) {
         super(clazz, type);
         this.creator = creator;
     }
 
-    public MonsterStore(Class<? extends T> clazz, String type, Function<Location, ? extends T> creator) {
+    public MonsterStore(Class<? extends T> clazz, String type,
+            Function<Location, ? extends T> creator) {
         super(clazz, type);
         this.creator = creator;
     }
