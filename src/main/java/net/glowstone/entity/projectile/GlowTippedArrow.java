@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.PotionDataHolder;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -16,7 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 // TODO: stubs
-public class GlowTippedArrow extends GlowArrow implements TippedArrow, PotionDataHolder {
+public class GlowTippedArrow extends GlowArrow implements TippedArrow {
 
     @Getter
     @Setter
