@@ -146,11 +146,6 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 remove();
             } else {
                 placeFallingBlock();
-                if (material == Material.ANVIL) {
-                    ThreadLocalRandom random = ThreadLocalRandom.current();
-                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F
-                            + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
-                }
                 remove();
             }
         }
@@ -168,6 +163,11 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                     blockEntity.loadNbt(getBlockEntityCompoundTag());
                 }
             }
+        }
+        if (material == Material.ANVIL) {
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F
+                    + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
         }
     }
 
