@@ -8,7 +8,7 @@ import org.bukkit.entity.Ocelot;
 class OcelotStore extends TameableStore<GlowOcelot> {
 
     public OcelotStore() {
-        super(GlowOcelot.class, EntityType.OCELOT);
+        super(GlowOcelot.class, EntityType.OCELOT, GlowOcelot::new);
     }
 
     @Override

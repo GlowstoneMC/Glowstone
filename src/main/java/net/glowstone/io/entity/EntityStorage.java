@@ -75,12 +75,14 @@ public final class EntityStorage {
         bind(new OcelotStore());
         bind(new WolfStore());
         bind(new VillagerStore());
-        bind(new AgeableStore<>(GlowCow.class, EntityType.COW));
-        bind(new AgeableStore<>(GlowMooshroom.class, EntityType.MUSHROOM_COW));
+        bind(new AgeableStore<>(GlowCow.class, EntityType.COW, GlowCow::new));
+        bind(new AgeableStore<>(GlowMooshroom.class, EntityType.MUSHROOM_COW, GlowMooshroom::new));
         bind(new WaterMobStore<>(GlowSquid.class, EntityType.SQUID));
-        bind(new AgeableStore<>(GlowPolarBear.class, EntityType.POLAR_BEAR));
-        bind(new AbstractHorseStore<>(GlowZombieHorse.class, EntityType.ZOMBIE_HORSE));
-        bind(new AbstractHorseStore<>(GlowSkeletonHorse.class, EntityType.SKELETON_HORSE));
+        bind(new AgeableStore<>(GlowPolarBear.class, EntityType.POLAR_BEAR, GlowPolarBear::new));
+        bind(new AbstractHorseStore<>(GlowZombieHorse.class, EntityType.ZOMBIE_HORSE,
+            GlowZombieHorse::new));
+        bind(new AbstractHorseStore<>(GlowSkeletonHorse.class, EntityType.SKELETON_HORSE,
+            GlowSkeletonHorse::new));
         bind(new ChestedHorseStore<>(GlowLlama.class, EntityType.LLAMA));
         bind(new ChestedHorseStore<>(GlowMule.class, EntityType.MULE));
         bind(new ChestedHorseStore<>(GlowDonkey.class, EntityType.DONKEY));

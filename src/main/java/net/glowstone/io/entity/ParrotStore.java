@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 public class ParrotStore extends TameableStore<GlowParrot> {
 
     public ParrotStore() {
-        super(GlowParrot.class, EntityType.PARROT);
+        super(GlowParrot.class, EntityType.PARROT, GlowParrot::new);
     }
 
     @Override

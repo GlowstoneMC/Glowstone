@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 public class ChestedHorseStore<T extends GlowChestedHorse> extends AbstractHorseStore<T> {
 
     public ChestedHorseStore(Class<T> clazz, EntityType type) {
-        super(clazz, type);
+        super(clazz, type, clazz::new);
     }
 
     @Override
