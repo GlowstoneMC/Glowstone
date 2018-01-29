@@ -1,5 +1,5 @@
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
-[![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-738bd7.svg?style=flat-square)](https://discord.gg/TFJqhsC)
+[![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-7289da.svg?style=flat-square&logo=discord)](https://discord.gg/TFJqhsC)
 [![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev.svg?style=shield)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev)
 
 <img align="right" alt="Glowstone logo" width="100" src="etc/logo/logo.png">
