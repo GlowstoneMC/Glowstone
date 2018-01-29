@@ -11,7 +11,7 @@ import org.bukkit.entity.EntityType;
 
 abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
 
-    public TameableStore(Class<T> clazz, EntityType type, Function<Location, T> creator) {
+    public TameableStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
         super(clazz, type, creator);
     }
 

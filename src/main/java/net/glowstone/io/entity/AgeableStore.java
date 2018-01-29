@@ -1,6 +1,5 @@
 package net.glowstone.io.entity;
 
-import java.lang.reflect.Constructor;
 import java.util.function.Function;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.util.nbt.CompoundTag;
@@ -9,14 +8,14 @@ import org.bukkit.entity.EntityType;
 
 public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
 
-    private Function<Location, T> creator;
+    private Function<Location, ? extends T> creator;
 
-    public AgeableStore(Class<T> clazz, EntityType type, Function<Location, T> creator) {
+    public AgeableStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
         super(clazz, type);
         this.creator = creator;
     }
 
-    public AgeableStore(Class<T> clazz, String type) {
+    public AgeableStore(Class<T> clazz, String type, Function<Location, ? extends T> creator) {
         super(clazz, type);
         this.creator = creator;
     }
