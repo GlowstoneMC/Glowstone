@@ -61,7 +61,13 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -T 2 -B -s .circleci/maven.xml source:jar javadoc:jar deploy
+            # Ensure we are on the right repo before attempting a deploy
+            - run: |
+                if [ "${CIRCLE_PROJECT_USERNAME}" == "GlowstoneMC" ]; then
+                  mvn -T 2 -B -s .circleci/maven.xml source:jar javadoc:jar deploy
+                else
+                  mvn -T 2 -B package
+                fi
 
             - store_test_results:
                 path: target/surefire-reports
