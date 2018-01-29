@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 @Data
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public final class SpawnObjectMessage implements Message {
     public static final int SPLASH_POTION = 73;
     public static final int EXPERIENCE_BOTTLE = 75;
     public static final int WITHER_SKULL = 66;
+    public static final int FISHING_HOOK = 90;
 
     private final int id;
     private final UUID uuid; // TODO: Handle UUID
@@ -79,8 +81,16 @@ public final class SpawnObjectMessage implements Message {
                 Position.getIntPitch(location), Position.getIntYaw(location), data);
     }
 
-    public boolean hasFireball() {
+    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch, int yaw, int data, Vector vector) {
+        this(id, uuid, type, x, y, z, pitch, yaw, data,
+            convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
+    }
+
+    public boolean hasData() {
         return data != 0;
     }
 
+    private static int convert(double val) {
+        return (int) (val * 8000);
+    }
 }

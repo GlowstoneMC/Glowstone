@@ -34,6 +34,7 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Evoker;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Horse;
@@ -235,7 +236,12 @@ public enum MetadataIndex {
     MINECARTCOMMANDBLOCK_LAST_OUTPUT(13, CHAT, CommandMinecart.class),
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
-    TNT_PRIMED(6, INT, TNTPrimed.class),;
+    TNT_PRIMED(6, INT, TNTPrimed.class),
+
+    /**
+     * Hooked entity id + 1, or 0 if there is no hooked entity.
+     */
+    FISHING_HOOK_HOOKED_ENTITY(6, INT, FishHook.class);
 
     @Getter
     private final int index;

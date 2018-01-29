@@ -60,6 +60,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
+import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
@@ -520,6 +521,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private boolean forceStream = false;
 
     /**
+     * Current casted fishing hook
+     */
+    @Getter
+    private GlowFishingHook currentFishingHook;
+
+    /**
      * Creates a new player and adds it to the world.
      *
      * @param session The player's session.
@@ -894,6 +901,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                     .mapToInt(Entity::getEntityId).toArray()));
         }
         getAttributeManager().sendMessages(session);
+
+        if (currentFishingHook != null) {
+            // The line will disappear if the player wanders more than 32 blocks away from the bobber, or if the player stops holding a fishing rod.
+            if (getInventory().getItemInMainHand().getType() != Material.FISHING_ROD && getInventory().getItemInOffHand().getType() != Material.FISHING_ROD) {
+                setCurrentFishingHook(null);
+            }
+
+            if (currentFishingHook.location.distanceSquared(location) > 32 * 32) {
+                setCurrentFishingHook(null);
+            }
+        }
     }
 
     @Override
@@ -3387,5 +3405,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             return -1;
         }
         return invMonitor.getId();
+    }
+
+    public void setCurrentFishingHook(GlowFishingHook fishingHook) {
+        if (currentFishingHook != null && !currentFishingHook.isDead()) {
+            currentFishingHook.remove();
+        }
+
+        currentFishingHook = fishingHook;
     }
 }
