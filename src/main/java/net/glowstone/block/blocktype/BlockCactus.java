@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -7,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockCactus extends BlockType {
 
@@ -122,5 +126,18 @@ public class BlockCactus extends BlockType {
             default:
                 return true;
         }
+    }
+
+    /**
+     * Get the items that will be dropped by digging the block.
+     * Specially overriten for cactus to remove data from the dropped item.
+     *
+     * @param me The cactus block it self.
+     * @param tool The tool used or {@code null} if fists or no tool was used.
+     * @return The drops that should be returned.
+     */
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+        return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CACTUS)));
     }
 }
