@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
-
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
