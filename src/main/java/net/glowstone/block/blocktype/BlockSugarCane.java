@@ -49,7 +49,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
         }
 
         GlowBlock blockAbove = block.getRelative(BlockFace.UP);
-        // check it's the highest block of cactus
+        // check it's the highest block of sugar cane
         if (blockAbove.isEmpty()) {
             // check the current cane height
             Block blockBelow = block.getRelative(BlockFace.DOWN);
@@ -98,6 +98,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+        // Overridden for sugar cane to remove data from the dropped item
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SUGAR_CANE)));
     }
 }
