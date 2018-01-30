@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.PotionDataHolder;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
@@ -22,7 +21,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-public class GlowMetaPotion extends GlowMetaItem implements PotionMeta, PotionDataHolder {
+public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     @Getter
     @Setter
