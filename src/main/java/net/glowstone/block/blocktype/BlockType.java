@@ -1,9 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -12,7 +8,14 @@ import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.FurnaceEntity;
-import net.glowstone.block.function.BlockFunctions.*;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionAbsorb;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionDestroy;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionDestroyAfter;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionInteract;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionPhysics;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionPlaceAllow;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionStep;
+import net.glowstone.block.function.BlockFunctions.BlockFunctionTick;
 import net.glowstone.block.function.ItemFunction;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.GlowChunk;
@@ -25,7 +28,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Note;
 import org.bukkit.Sound;
+import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Jukebox;
@@ -41,6 +46,11 @@ import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Base class for specific types of blocks.
@@ -233,7 +243,8 @@ public class BlockType extends ItemType {
                 if (result) {
                     ((BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
                 } else {
-                    result = ((BlockFunctionInteract) function).apply(player, block, face, clickedLoc);
+                    result = ((BlockFunctionInteract) function).apply(player, block, face,
+                        clickedLoc);
                 }
             }
             return result;
@@ -562,12 +573,12 @@ public class BlockType extends ItemType {
 
         public static class Interact {
             /**
-             * Opens an anvil inventory
+             * Opens an anvil inventory.
              */
             public static final BlockFunctionInteract ANVIL = (player, block, face, clickedLoc) -> player.openInventory(new GlowAnvilInventory(player)) != null;
 
             /**
-             * Opens a chest
+             * Opens a chest.
              */
             public static final BlockFunctionInteract CHEST = (player, block, face, clickedLoc) -> {
                 Chest chest = (Chest) block.getState();
@@ -577,7 +588,7 @@ public class BlockType extends ItemType {
             };
 
             /**
-             * Plays a record
+             * Plays a record.
              */
             public static final BlockFunctionInteract JUKEBOX = (player, block, face, clickedLoc) -> {
                 Jukebox jukebox = (Jukebox) block.getState();
@@ -600,7 +611,7 @@ public class BlockType extends ItemType {
             };
 
             /**
-             * Tunes a note
+             * Tunes a note.
              */
             public static final BlockFunctionInteract NOTE = (player, block, face, clickedLoc) -> {
                 NoteBlock noteBlock = (NoteBlock) block.getState();

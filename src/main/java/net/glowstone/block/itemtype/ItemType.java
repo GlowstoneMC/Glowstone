@@ -176,7 +176,7 @@ public class ItemType {
     /**
      * Add this Glowstone default function to the item's behavior
      *
-     * Only for internal use. Use the addFunction in ItemTable instead.
+     * <p>Only for internal use. Use the addFunction in ItemTable instead.
      *
      * @see ItemTable#addFunction(ItemType, ItemFunction)
      *

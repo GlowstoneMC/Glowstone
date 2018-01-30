@@ -119,11 +119,14 @@ public class BlockCactus extends BlockType {
      * Builtin block functions specific to cactus.
      */
     public static class Functions {
+
         public static class PlaceAllow {
+
             /**
-             * Check for allowing place for cactus
+             * Check for allowing place for cactus.
              */
-            public static final BlockFunctions.BlockFunctionPlaceAllow CACTUS = (block, against) -> {
+            public static final BlockFunctions.BlockFunctionPlaceAllow CACTUS = (block,
+                against) -> {
                 Material below = block.getRelative(BlockFace.DOWN).getType();
                 boolean hasSurroundingBlocks = false;
                 for (BlockFace face : SIDES) {
@@ -132,7 +135,8 @@ public class BlockCactus extends BlockType {
                         break;
                     }
                 }
-                return ((below == Material.CACTUS) || below == Material.SAND) && !hasSurroundingBlocks;
+                return ((below == Material.CACTUS) || below == Material.SAND)
+                    && !hasSurroundingBlocks;
             };
         }
     }

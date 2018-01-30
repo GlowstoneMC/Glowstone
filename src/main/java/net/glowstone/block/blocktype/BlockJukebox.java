@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.JukeboxEntity;
@@ -9,8 +7,14 @@ import net.glowstone.block.entity.state.GlowJukebox;
 import net.glowstone.chunk.GlowChunk;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public class BlockJukebox extends BlockType {
 
+    /**
+     * Creates a block type with jukebox functionality.
+     */
     public BlockJukebox() {
         super();
         addFunction(Functions.Interact.JUKEBOX);

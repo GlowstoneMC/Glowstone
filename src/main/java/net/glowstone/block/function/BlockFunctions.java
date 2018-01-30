@@ -152,7 +152,8 @@ public class BlockFunctions {
 
     @FunctionalInterface
     public interface BlockFunctionNearChanged extends ItemFunction {
-        void apply(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData);
+        void apply(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType,
+                   byte oldData, Material newType, byte newData);
 
         @Override
         default String getFunctionality() {

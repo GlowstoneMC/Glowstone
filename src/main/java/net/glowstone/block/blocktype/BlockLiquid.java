@@ -1,12 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import static org.bukkit.block.BlockFace.DOWN;
-import static org.bukkit.block.BlockFace.EAST;
-import static org.bukkit.block.BlockFace.NORTH;
-import static org.bukkit.block.BlockFace.SOUTH;
-import static org.bukkit.block.BlockFace.UP;
-import static org.bukkit.block.BlockFace.WEST;
-
 import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -19,6 +12,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import static org.bukkit.block.BlockFace.*;
 
 public abstract class BlockLiquid extends BlockType {
 
@@ -248,16 +243,19 @@ public abstract class BlockLiquid extends BlockType {
                     int count = 0;
                     for (BlockFace face : faces) {
                         if (block.getRelative(face).getType() == block.getType()) {
-                            if (count < 2 && face != UP && Byte.compare(block.getRelative(face).getState().getRawData(), STRENGTH_SOURCE) == 0) {
+                            if (count < 2 && face != UP && Byte.compare(block.getRelative(face)
+                                .getState().getRawData(), STRENGTH_SOURCE) == 0) {
                                 count++;
                             }
-                            if (!connected && face == UP || Byte.compare(block.getRelative(face).getState().getRawData(), block.getState().getRawData()) < 0) {
+                            if (!connected && face == UP || Byte.compare(block.getRelative(face)
+                                .getState().getRawData(), block.getState().getRawData()) < 0) {
                                 connected = true;
                                 if (block.getWorld().getServer().getClassicWater()) {
                                     block.getState().setRawData(STRENGTH_SOURCE);
                                 }
                             }
-                            if (block.getWorld().getServer().getClassicWater() && Byte.compare(block.getRelative(face).getState().getRawData(), STRENGTH_SOURCE) == 0) {
+                            if (block.getWorld().getServer().getClassicWater() && Byte.compare(block
+                                .getRelative(face).getState().getRawData(), STRENGTH_SOURCE) == 0) {
                                 block.getRelative(face).setType(Material.AIR);
                             }
                         }
@@ -271,7 +269,10 @@ public abstract class BlockLiquid extends BlockType {
                         return;
                     }
                 }
-                if (!(Byte.compare(block.getState().getRawData(), isWater(block.getType()) || block.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) == 0) || block.getRelative(DOWN).getType() == Material.AIR) {
+                if (!(Byte.compare(block.getState().getRawData(), isWater(block.getType())
+                    || block.getBiome() == Biome.HELL
+                    ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) == 0)
+                    || block.getRelative(DOWN).getType() == Material.AIR) {
                     calculateFlow(block);
                 }
             };

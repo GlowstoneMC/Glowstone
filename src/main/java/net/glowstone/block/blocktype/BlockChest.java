@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -17,6 +15,9 @@ import org.bukkit.material.Chest;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class BlockChest extends BlockContainer {
 
     private final boolean isTrapped;
@@ -25,6 +26,11 @@ public class BlockChest extends BlockContainer {
         this(false);
     }
 
+    /**
+     * Creates a block type for chest functionality with optional trapped behavior.
+     *
+     * @param isTrapped If the chest uses the trapped behavior
+     */
     public BlockChest(boolean isTrapped) {
         super();
         this.isTrapped = isTrapped;
