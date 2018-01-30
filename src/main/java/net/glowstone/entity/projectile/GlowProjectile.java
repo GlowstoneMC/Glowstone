@@ -18,6 +18,10 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
+/**
+ * A projectile. Subclasses must call {@link #setBoundingBox(double, double)} if they are to collide
+ * with other entities.
+ */
 public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     @Getter
