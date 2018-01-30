@@ -1,14 +1,17 @@
 package net.glowstone.generator.objects;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.DirectionalContainer;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public class RandomItemsContent {
 
@@ -18,7 +21,15 @@ public class RandomItemsContent {
         content.put(item, weight);
     }
 
-    public boolean fillContainer(Random random, DirectionalContainer container, BlockState state, int maxStacks) {
+    /**
+     * Populates a container with random items.
+     *
+     * @param random the PRNG to use
+     * @param state the block state for a container block
+     * @param maxStacks the maximum number of slots to fill
+     * @return true if successful (currently always true)
+     */
+    public boolean fillContainer(Random random, BlockState state, int maxStacks) {
         if (state.getBlock().getState() instanceof InventoryHolder) {
             Inventory inventory = ((InventoryHolder) state.getBlock().getState()).getInventory();
             int size = inventory.getSize();
@@ -38,6 +49,12 @@ public class RandomItemsContent {
         return true;
     }
 
+    /**
+     * Choose a random {@link RandomAmountItem}.
+     *
+     * @param random the PRNG to use
+     * @return the random item
+     */
     public RandomAmountItem getRandomItem(Random random) {
         int totalWeight = 0;
         for (int i : content.values()) {
@@ -70,6 +87,12 @@ public class RandomItemsContent {
             this.maxAmount = maxAmount;
         }
 
+        /**
+         * Generate a random set of items.
+         *
+         * @param random the PRNG to use
+         * @return an immutable collection of randomly-generated items
+         */
         public Collection<ItemStack> getItemStacks(Random random) {
             int minAmount = stack.getAmount();
             int amount = random.nextInt(maxAmount - minAmount + 1) + minAmount;

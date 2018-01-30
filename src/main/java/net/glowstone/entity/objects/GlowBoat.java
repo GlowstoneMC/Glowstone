@@ -3,6 +3,7 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -11,7 +12,6 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
-import net.glowstone.util.Position;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,9 +26,15 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowBoat extends GlowEntity implements Boat {
 
+    @Getter
     private TreeSpecies woodType;
     private boolean workOnLand;
 
+    /**
+     * Creates a boat.
+     *
+     * @param location the boat's location
+     */
     public GlowBoat(Location location) {
         super(location);
         setSize(1.375f, 0.5625f);
@@ -42,16 +48,9 @@ public class GlowBoat extends GlowEntity implements Boat {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.BOAT, x, y, z, pitch, yaw),
-            new EntityMetadataMessage(id, metadata.getEntryList())
+            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.BOAT, location),
+            new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
 
@@ -133,12 +132,12 @@ public class GlowBoat extends GlowEntity implements Boat {
         return new ItemStack(type);
     }
 
-    private void setDamage(float damage) {
-        metadata.set(MetadataIndex.BOAT_DAMAGE_TAKEN, Math.max(damage, 0));
-    }
-
     private float getDamage() {
         return metadata.getFloat(MetadataIndex.BOAT_DAMAGE_TAKEN);
+    }
+
+    private void setDamage(float damage) {
+        metadata.set(MetadataIndex.BOAT_DAMAGE_TAKEN, Math.max(damage, 0));
     }
 
     private int getHitTime() {
@@ -147,11 +146,6 @@ public class GlowBoat extends GlowEntity implements Boat {
 
     private void setHitTime(int time) {
         metadata.set(MetadataIndex.BOAT_HIT_TIME, Math.max(time, 0));
-    }
-
-    @Override
-    public TreeSpecies getWoodType() {
-        return woodType;
     }
 
     @Override
@@ -200,19 +194,19 @@ public class GlowBoat extends GlowEntity implements Boat {
         this.workOnLand = workOnLand;
     }
 
-    public void setRightPaddleTurning(boolean rightPaddleTurning) {
-        metadata.set(MetadataIndex.BOAT_RIGHT_PADDLE_TURNING, rightPaddleTurning);
-    }
-
     public boolean getRightPaddleTurning() {
         return metadata.getBoolean(MetadataIndex.BOAT_RIGHT_PADDLE_TURNING);
     }
 
-    public void setLeftPaddleTurning(boolean leftPaddleTurning) {
-        metadata.set(MetadataIndex.BOAT_LEFT_PADDLE_TURNING, leftPaddleTurning);
+    public void setRightPaddleTurning(boolean rightPaddleTurning) {
+        metadata.set(MetadataIndex.BOAT_RIGHT_PADDLE_TURNING, rightPaddleTurning);
     }
 
     public boolean getLeftPaddleTurning() {
         return metadata.getBoolean(MetadataIndex.BOAT_LEFT_PADDLE_TURNING);
+    }
+
+    public void setLeftPaddleTurning(boolean leftPaddleTurning) {
+        metadata.set(MetadataIndex.BOAT_LEFT_PADDLE_TURNING, leftPaddleTurning);
     }
 }

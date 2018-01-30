@@ -1,26 +1,41 @@
 package net.glowstone.util.loot;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 import lombok.Data;
 import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.entity.LivingEntity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.*;
-
 @Data
 public class LootRandomValues {
 
-    private final Optional<Integer> min, max;
+    private final Optional<Integer> min;
+    private final Optional<Integer> max;
     private final Optional<String> reflectiveCount;
     private final Map<Integer, Double> probabilities = new HashMap<>();
 
+    /**
+     * Creates an instance for a given range.
+     *
+     * @param min the minimum number
+     * @param max the maximum number
+     */
     public LootRandomValues(int min, int max) {
         this.min = Optional.of(min);
         this.max = Optional.of(max);
         this.reflectiveCount = Optional.empty();
     }
 
+    /**
+     * Reads an instance from its JSON form.
+     *
+     * @param object a LootRandomValues instance in JSON form
+     */
     public LootRandomValues(JSONObject object) {
         if (!object.containsKey("count")) {
             this.min = Optional.empty();
@@ -60,7 +75,7 @@ public class LootRandomValues {
     }
 
     /**
-     * Selects a random value between min and max, inclusively
+     * Selects a random value between min and max, inclusively.
      *
      * @param random the random object to generate the number from
      * @param entity the entity
@@ -79,7 +94,8 @@ public class LootRandomValues {
             return 0;
         }
         if (reflectiveCount.isPresent()) {
-            return ((Number) new ReflectionProcessor(reflectiveCount.get(), entity).process()).intValue();
+            return ((Number) new ReflectionProcessor(reflectiveCount.get(), entity).process())
+                .intValue();
         }
         if (min.isPresent() && max.isPresent()) {
             if (Objects.equals(min.get(), max.get())) {

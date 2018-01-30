@@ -1,6 +1,7 @@
 package net.glowstone.inventory;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.entity.Entity;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 public class GlowEntityEquipment implements EntityEquipment {
 
     private Entry[] slots = new Entry[6];
+    @Getter
     private Entity holder;
 
     public GlowEntityEquipment(Entity holder) {
@@ -18,7 +20,8 @@ public class GlowEntityEquipment implements EntityEquipment {
     }
 
     /**
-     * Returns the ItemStack found in the slot at the given EquipmentSlot
+     * Returns the ItemStack found in the slot at the given EquipmentSlot.
+     *
      * @param slot The EquipmentSlot of the Slot's ItemStack to return
      * @return The ItemStack in the slot
      */
@@ -39,6 +42,7 @@ public class GlowEntityEquipment implements EntityEquipment {
 
     /**
      * Stores the ItemStack at the given index of the inventory.
+     *
      * @param slot The EquipmentSlot where to put the ItemStack
      * @param item The ItemStack to set
      */
@@ -223,13 +227,9 @@ public class GlowEntityEquipment implements EntityEquipment {
         setDropChance(EquipmentSlot.FEET, chance);
     }
 
-    @Override
-    public Entity getHolder() {
-        return this.holder;
-    }
-
     @AllArgsConstructor
     private class Entry {
+
         private ItemStack item;
         private float dropChance;
     }

@@ -1,16 +1,12 @@
 package net.glowstone.util.nbt;
 
+import static org.junit.Assert.assertTrue;
+
 import net.glowstone.GlowWorld;
-import net.glowstone.entity.passive.GlowPig;
-import org.bukkit.Location;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({GlowWorld.class})
@@ -125,10 +121,10 @@ public class CompoundTagTest {
     @Test
     public void testSingleByteArrayCompoundTagMatches() throws Exception {
         CompoundTag superCompoundTag = new CompoundTag();
-        superCompoundTag.putByteArray("foo", (byte)12, (byte)34);
+        superCompoundTag.putByteArray("foo", (byte) 12, (byte) 34);
 
         CompoundTag subCompoundTag = new CompoundTag();
-        subCompoundTag.putByteArray("foo", (byte)12, (byte)34);
+        subCompoundTag.putByteArray("foo", (byte) 12, (byte) 34);
 
         assertTrue(subCompoundTag.matches(superCompoundTag));
     }

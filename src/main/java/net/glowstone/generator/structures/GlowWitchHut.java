@@ -1,5 +1,6 @@
 package net.glowstone.generator.structures;
 
+import java.util.Random;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.generator.structures.util.StructureBuilder;
 import net.glowstone.util.BlockStateDelegate;
@@ -10,8 +11,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.Stairs;
 import org.bukkit.util.Vector;
-
-import java.util.Random;
 
 public class GlowWitchHut extends GlowTemplePiece {
 
@@ -33,15 +32,17 @@ public class GlowWitchHut extends GlowTemplePiece {
     }
 
     @Override
-    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox, BlockStateDelegate delegate) {
+    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox,
+        BlockStateDelegate delegate) {
         if (!super.generate(world, random, boundingBox, delegate)) {
             return false;
         }
 
-        adjustHPos(world);
+        adjustHorizPos(world);
 
         StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
-        builder.fill(new Vector(1, 1, 2), new Vector(5, 4, 7), Material.WOOD, 1, Material.AIR); // hut body
+        builder.fill(new Vector(1, 1, 2), new Vector(5, 4, 7), Material.WOOD, 1,
+            Material.AIR); // hut body
         builder.fill(new Vector(1, 1, 1), new Vector(5, 1, 1), Material.WOOD, 1); // hut steps
         builder.fill(new Vector(2, 1, 0), new Vector(4, 1, 0), Material.WOOD, 1); // hut steps
         builder.fill(new Vector(4, 2, 2), new Vector(4, 3, 2), Material.AIR); // hut door

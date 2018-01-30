@@ -21,10 +21,11 @@ public class BlockEndRod extends BlockDirectDrops {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
-        byte data = 0;
+        byte data;
         switch (face) {
             case DOWN:
                 data = FACING_DOWN;
@@ -44,6 +45,9 @@ public class BlockEndRod extends BlockDirectDrops {
             case EAST:
                 data = FACING_EAST;
                 break;
+            default:
+                // TODO: Should this raise a warning?
+                data = 0;
         }
         state.setRawData(data);
     }

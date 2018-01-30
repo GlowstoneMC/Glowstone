@@ -7,10 +7,15 @@ import org.json.simple.JSONObject;
 @Data
 public class LootItem {
 
+    private static final ConditionalLootItem[] NO_ITEMS = new ConditionalLootItem[0];
     private final DefaultLootItem defaultItem;
     private final ConditionalLootItem[] conditionalItems;
-    private static final ConditionalLootItem[] NO_ITEMS = new ConditionalLootItem[0];
 
+    /**
+     * Reads a LootItem from its JSON form.
+     *
+     * @param object a LootItem in JSON form
+     */
     public LootItem(JSONObject object) {
         defaultItem = new DefaultLootItem((JSONObject) object.get("default"));
         if (object.containsKey("conditions")) {

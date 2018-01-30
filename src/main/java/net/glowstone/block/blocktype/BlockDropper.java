@@ -8,6 +8,7 @@ import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 
 public class BlockDropper extends BlockDispenser {
+
     @Override
     public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
         return new DropperEntity(chunk.getBlock(cx, cy, cz));

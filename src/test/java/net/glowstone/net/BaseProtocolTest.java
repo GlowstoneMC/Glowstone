@@ -1,24 +1,23 @@
 package net.glowstone.net;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.service.CodecLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.glowstone.net.message.play.inv.HeldItemMessage;
-import net.glowstone.net.protocol.GlowProtocol;
-import net.glowstone.net.protocol.PlayProtocol;
-import net.glowstone.testutils.ServerShim;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import net.glowstone.net.message.play.inv.HeldItemMessage;
+import net.glowstone.net.protocol.GlowProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.testutils.ServerShim;
+import org.junit.Test;
 
 /**
  * Base tests for each {@link GlowProtocol}.
@@ -45,10 +44,20 @@ public abstract class BaseProtocolTest {
         ServerShim.install();
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T> T getField(Object object, Class<?> clazz, String name)
+        throws ReflectiveOperationException {
+        Field field = clazz.getDeclaredField(name);
+        field.setAccessible(true);
+        return (T) field.get(object);
+    }
+
     @Test
     public void testProtocol() throws Exception {
-        Map<Class<? extends Message>, Codec.CodecRegistration> inboundMap = getField(inboundCodecs, CodecLookupService.class, "messages");
-        Map<Class<? extends Message>, Codec.CodecRegistration> outboundMap = getField(outboundCodecs, CodecLookupService.class, "messages");
+        Map<Class<? extends Message>, Codec.CodecRegistration> inboundMap = getField(inboundCodecs,
+            CodecLookupService.class, "messages");
+        Map<Class<? extends Message>, Codec.CodecRegistration> outboundMap = getField(
+            outboundCodecs, CodecLookupService.class, "messages");
         Set<Class<? extends Message>> inboundSet = new HashSet<>(inboundMap.keySet());
         Set<Class<? extends Message>> outboundSet = new HashSet<>(outboundMap.keySet());
 
@@ -82,7 +91,8 @@ public abstract class BaseProtocolTest {
         assertThat("Did not test inbound classes: " + inboundSet, inboundSet.isEmpty(), is(true));
         // todo: enable the outbound check for PlayProtocol
         if (!(protocol instanceof PlayProtocol)) {
-            assertThat("Did not test outbound classes: " + outboundSet, outboundSet.isEmpty(), is(true));
+            assertThat("Did not test outbound classes: " + outboundSet, outboundSet.isEmpty(),
+                is(true));
         }
     }
 
@@ -95,16 +105,11 @@ public abstract class BaseProtocolTest {
             if (buffer.refCnt() > 0) {
                 buffer.release(buffer.refCnt());
             }
-            assertThat("Asymmetry for " + reg.getOpcode() + "/" + message.getClass().getName(), decoded, is(message));
+            assertThat("Asymmetry for " + reg.getOpcode() + "/" + message.getClass().getName(),
+                decoded, is(message));
         } catch (IOException e) {
-            throw new AssertionError("Error in I/O for " + reg.getOpcode() + "/" + message.getClass().getName(), e);
+            throw new AssertionError(
+                "Error in I/O for " + reg.getOpcode() + "/" + message.getClass().getName(), e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T getField(Object object, Class<?> clazz, String name) throws ReflectiveOperationException {
-        Field field = clazz.getDeclaredField(name);
-        field.setAccessible(true);
-        return (T) field.get(object);
     }
 }

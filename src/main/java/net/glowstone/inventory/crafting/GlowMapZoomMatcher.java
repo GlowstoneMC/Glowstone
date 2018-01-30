@@ -17,10 +17,14 @@ public class GlowMapZoomMatcher extends ItemMatcher {
             if (matrix[i] != null) {
                 switch (RECIPE.charAt(i)) {
                     case PAPER:
-                        if (matrix[i].getType() != Material.PAPER) return null;
+                        if (matrix[i].getType() != Material.PAPER) {
+                            return null;
+                        }
                         break;
                     case MAP:
-                        if (matrix[i].getType() != Material.MAP) return null;
+                        if (matrix[i].getType() != Material.MAP) {
+                            return null;
+                        }
                         original = matrix[i];
                         break;
                     default:
@@ -29,7 +33,9 @@ public class GlowMapZoomMatcher extends ItemMatcher {
             }
         }
 
-        if (original == null) return null; // No map
+        if (original == null) {
+            return null; // No map
+        }
 
         //TODO: Add zooming once maps are implemented
 

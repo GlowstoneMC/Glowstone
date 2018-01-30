@@ -6,6 +6,7 @@ import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 
 public abstract class GlowChestedHorse extends GlowAbstractHorse implements ChestedHorse {
+
     public GlowChestedHorse(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
     }

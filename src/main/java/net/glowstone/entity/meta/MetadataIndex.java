@@ -1,15 +1,77 @@
 package net.glowstone.entity.meta;
 
+import static net.glowstone.entity.meta.MetadataType.BLOCKID;
+import static net.glowstone.entity.meta.MetadataType.BOOLEAN;
+import static net.glowstone.entity.meta.MetadataType.BYTE;
+import static net.glowstone.entity.meta.MetadataType.CHAT;
+import static net.glowstone.entity.meta.MetadataType.DIRECTION;
+import static net.glowstone.entity.meta.MetadataType.FLOAT;
+import static net.glowstone.entity.meta.MetadataType.INT;
+import static net.glowstone.entity.meta.MetadataType.ITEM;
+import static net.glowstone.entity.meta.MetadataType.NBTTAG;
+import static net.glowstone.entity.meta.MetadataType.OPTPOSITION;
+import static net.glowstone.entity.meta.MetadataType.OPTUUID;
+import static net.glowstone.entity.meta.MetadataType.STRING;
+import static net.glowstone.entity.meta.MetadataType.VECTOR;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.passive.GlowParrot;
 import net.glowstone.entity.passive.GlowTameable;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.Blaze;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Evoker;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Guardian;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.PolarBear;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Shulker;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Snowman;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.TippedArrow;
+import org.bukkit.entity.Vex;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Vindicator;
+import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wither;
+import org.bukkit.entity.WitherSkull;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
+import org.bukkit.entity.ZombieVillager;
+import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.entity.minecart.PoweredMinecart;
-
-import static net.glowstone.entity.meta.MetadataType.*;
 
 /**
  * Index constants for entity metadata.
  */
+@RequiredArgsConstructor
 public enum MetadataIndex {
 
     //Entity
@@ -20,16 +82,15 @@ public enum MetadataIndex {
     SILENT(4, BOOLEAN, Entity.class),
     NOGRAVITY(5, BOOLEAN, Entity.class),
 
-    //TODO 1.9-1.10 - Support this
-    //AREAEFFECTCLOUD_RADIUS(6, FLOAT, Entity.class),
-    //AREAEFFECTCLOUD_COLOR(7, INT, Entity.class),
-    //AREAEFFECTCLOUD_UNKNOWN(8, BOOLEAN, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLEID(9, INT, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, Entity.class),
-    //AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, Entity.class),
+    AREAEFFECTCLOUD_RADIUS(6, FLOAT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_COLOR(7, INT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_POINT(8, BOOLEAN, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_PARTICLEID(9, INT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_PARTICLE_PARAM1(10, INT, AreaEffectCloud.class),
+    AREAEFFECTCLOUD_PARTICLE_PARAM2(11, INT, AreaEffectCloud.class),
 
     ARROW_CRITICAL(6, BYTE, Arrow.class),
-    TIPPEDARROW_COLOR(7, INT, Arrow.class), //TODO Proper arrow class
+    TIPPEDARROW_COLOR(7, INT, TippedArrow.class),
 
     BOAT_HIT_TIME(6, INT, Boat.class),
     BOAT_DIRECTION(7, INT, Boat.class),
@@ -71,9 +132,10 @@ public enum MetadataIndex {
     ARMORSTAND_LEFT_LEG_POSITION(16, VECTOR, ArmorStand.class),
     ARMORSTAND_RIGHT_LEG_POSITION(17, VECTOR, ArmorStand.class),
 
-    //NO_AI(10, BYTE, Insentient.class), TODO - 1.9 "Insentient extends Living". Need more information
+    //NO_AI(10, BYTE, Insentient.class),
+    // TODO - 1.9 "Insentient extends Living". Need more information
 
-    BAT_HANGING(12, BYTE, Bat.class),
+    BAT_FLAGS(12, BYTE, Bat.class),
 
     AGE_ISBABY(12, BOOLEAN, Ageable.class),
 
@@ -103,7 +165,7 @@ public enum MetadataIndex {
 
     WOLF_HEALTH(15, FLOAT, Wolf.class),
     WOLF_BEGGING(16, BOOLEAN, Wolf.class),
-    WOLF_COLOR(21, BYTE, Wolf.class),
+    WOLF_COLOR(17, BYTE, Wolf.class),
 
     VILLAGER_PROFESSION(13, INT, Villager.class),
 
@@ -141,7 +203,7 @@ public enum MetadataIndex {
     ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
 
     ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, ZombieVillager.class),
-    ZOMBIE_VILLAGER_PROFESSION(16, BOOLEAN, ZombieVillager.class),
+    ZOMBIE_VILLAGER_PROFESSION(16, INT, ZombieVillager.class),
 
     ENDERMAN_BLOCK(12, BLOCKID, Enderman.class),
     ENDERMAN_SCREAMING(13, BOOLEAN, Enderman.class),
@@ -169,25 +231,25 @@ public enum MetadataIndex {
 
     PARROT_VARIANT(15, INT, GlowParrot.class),
 
-    //TODO - 1.9 When Those minecarts are implemented, uncomment this
-    //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
-    //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
+    MINECARTCOMMANDBLOCK_COMMAND(12, STRING, CommandMinecart.class),
+    MINECARTCOMMANDBLOCK_LAST_OUTPUT(13, CHAT, CommandMinecart.class),
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
-    TNT_PRIMED(6, INT, TNTPrimed.class),
-    ;
+    TNT_PRIMED(6, INT, TNTPrimed.class),;
 
-
+    @Getter
     private final int index;
+    @Getter
     private final MetadataType type;
+    @Getter
     private final Class<? extends Entity> appliesTo;
 
-    MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
-        this.index = index;
-        this.type = type;
-        this.appliesTo = appliesTo;
-    }
-
+    /**
+     * Returns the first {@link MetadataIndex} with a given index and {@link MetadataType}.
+     * @param index the index to look up
+     * @param type the type to look up
+     * @return a {@link MetadataIndex} with that index and type, or null if none match
+     */
     public static MetadataIndex getIndex(int index, MetadataType type) {
         MetadataIndex output = null;
         for (MetadataIndex entry : values()) {
@@ -199,23 +261,12 @@ public enum MetadataIndex {
         return output;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public MetadataType getType() {
-        return type;
-    }
-
-    public Class<?> getAppliesTo() {
-        return appliesTo;
-    }
-
     public boolean appliesTo(Class<? extends Entity> clazz) {
         return appliesTo.isAssignableFrom(clazz);
     }
 
     public interface StatusFlags {
+
         int ON_FIRE = 0x01;
         int SNEAKING = 0x02;
         int SPRINTING = 0x08;
@@ -226,6 +277,7 @@ public enum MetadataIndex {
     }
 
     public interface ArmorStandFlags {
+
         int IS_SMALL = 0x01;
         int HAS_GRAVITY = 0x02;
         int HAS_ARMS = 0x04;
@@ -234,6 +286,7 @@ public enum MetadataIndex {
     }
 
     public interface HorseFlags {
+
         int IS_TAME = 0x02;
         int HAS_SADDLE = 0x04;
         int HAS_CHEST = 0x08;
@@ -244,8 +297,14 @@ public enum MetadataIndex {
     }
 
     public interface TameableFlags {
+
         int IS_SITTING = 0x01;
         int WOLF_IS_ANGRY = 0x02;
         int IS_TAME = 0x04;
+    }
+
+    public interface BatFlags {
+
+        int IS_HANGING = 0x01;
     }
 }

@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -12,18 +13,22 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
-import java.util.Collections;
-
 public class TellrawCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public TellrawCommand() {
-        super("tellraw", "Send a private JSON message to the given player", "/tellraw <player> <raw-json-message>", Collections.emptyList());
+        super("tellraw", "Send a private JSON message to the given player",
+            "/tellraw <player> <raw-json-message>", Collections.emptyList());
         setPermission("minecraft.command.tellraw");
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) return true;
+        if (!testPermission(sender)) {
+            return true;
+        }
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -38,7 +43,9 @@ public class TellrawCommand extends VanillaCommand {
             StringBuilder message = new StringBuilder();
 
             for (int i = 1; i < args.length; i++) {
-                if (i > 1) message.append(" ");
+                if (i > 1) {
+                    message.append(" ");
+                }
                 message.append(args[i]);
             }
 

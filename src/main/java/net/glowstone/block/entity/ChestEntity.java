@@ -26,19 +26,29 @@ public class ChestEntity extends ContainerEntity {
         return new GlowChest(block);
     }
 
+    /**
+     * Increments the count of viewing players, and plays the opening sound if this chest isn't
+     * already open.
+     */
     public void addViewer() {
         viewers++;
         if (viewers == 1) {
             updateInRange();
-            SoundUtil.playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 0.9F, 0.1F);
+            SoundUtil
+                .playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 0.9F, 0.1F);
         }
     }
 
+    /**
+     * Decrements the count of viewing players, and plays the chest closing sound if nobody else is
+     * holding the chest open.
+     */
     public void removeViewer() {
         viewers--;
         if (viewers == 0) {
             updateInRange();
-            SoundUtil.playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_CLOSE, 0.5F, 0.9F, 0.1F);
+            SoundUtil.playSoundPitchRange(block.getLocation(), Sound.BLOCK_CHEST_CLOSE, 0.5F, 0.9F,
+                0.1F);
         }
     }
 
@@ -46,6 +56,7 @@ public class ChestEntity extends ContainerEntity {
     public void update(GlowPlayer player) {
         super.update(player);
 
-        player.getSession().send(new BlockActionMessage(block.getX(), block.getY(), block.getZ(), 1, viewers == 0 ? 0 : 1, block.getTypeId()));
+        player.getSession().send(new BlockActionMessage(block.getX(), block.getY(), block.getZ(), 1,
+            viewers == 0 ? 0 : 1, block.getTypeId()));
     }
 }

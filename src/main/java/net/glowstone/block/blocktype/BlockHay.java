@@ -14,7 +14,8 @@ public class BlockHay extends BlockType {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         switch (face) {
@@ -30,6 +31,9 @@ public class BlockHay extends BlockType {
             case DOWN:
                 state.setRawData((byte) 0);
                 break;
+            default:
+                // do nothing
+                // TODO: should this raise a warning?
         }
     }
 }

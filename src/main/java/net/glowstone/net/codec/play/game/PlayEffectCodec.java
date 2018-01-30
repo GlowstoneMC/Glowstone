@@ -3,12 +3,12 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.PlayEffectMessage;
 
-import java.io.IOException;
-
 public final class PlayEffectCodec implements Codec<PlayEffectMessage> {
+
     @Override
     public PlayEffectMessage decode(ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode PlayEffectMessage");

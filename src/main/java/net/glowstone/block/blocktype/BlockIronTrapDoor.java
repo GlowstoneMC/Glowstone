@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class BlockIronTrapDoor extends BlockDirectDrops {
+
     private BlockTrapDoor trapDoor;
 
     public BlockIronTrapDoor() {
@@ -18,7 +19,8 @@ public class BlockIronTrapDoor extends BlockDirectDrops {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         trapDoor.placeBlock(player, state, face, holding, clickedLoc);
     }

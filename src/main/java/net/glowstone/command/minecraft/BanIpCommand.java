@@ -1,6 +1,8 @@
 package net.glowstone.command.minecraft;
 
 import com.google.common.net.InetAddresses;
+import java.util.Collections;
+import java.util.List;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,18 +10,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.List;
-
 public class BanIpCommand extends VanillaCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public BanIpCommand() {
-        super("ban-ip", "Bans an IP address from the server.", "/ban-ip <address|player> [reason]", Collections.emptyList());
+        super("ban-ip", "Bans an IP address from the server.", "/ban-ip <address|player> [reason]",
+            Collections.emptyList());
         setPermission("minecraft.command.ban-ip");
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) return false;
+        if (!testPermission(sender)) {
+            return false;
+        }
         if (args.length > 0) {
             String target = null;
             if (InetAddresses.isInetAddress(args[0])) {
@@ -38,12 +44,14 @@ public class BanIpCommand extends VanillaCommand {
                     for (int i = 1; i < args.length; i++) {
                         reason.append(args[i]).append(" ");
                     }
-                    Bukkit.getBanList(BanList.Type.IP).addBan(target, reason.toString(), null, null);
+                    Bukkit.getBanList(BanList.Type.IP)
+                        .addBan(target, reason.toString(), null, null);
                 }
                 sender.sendMessage("Banned IP address " + target);
                 return true;
             }
-            sender.sendMessage(ChatColor.RED + "You have entered an invalid IP address or a player that is not online");
+            sender.sendMessage(ChatColor.RED
+                + "You have entered an invalid IP address or a player that is not online");
             return false;
         }
         sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
@@ -51,7 +59,8 @@ public class BanIpCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
             super.tabComplete(sender, alias, args);
         }

@@ -1,5 +1,10 @@
 package net.glowstone.block.itemtype;
 
+import com.google.common.base.Preconditions;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -22,12 +27,29 @@ import java.util.Map;
 public class ItemType {
 
     private int id = -1;
+    /**
+     * Get the Material assigned to this ItemType.
+     *
+     * @return The corresponding Material.
+     */
+    @Getter
+    private Material material;
 
+    /**
+     * The type of block to place when the item is used.
+     *
+     * @return the type of block to place
+     */
+    @Getter
     private BlockType placeAs;
 
     /**
      * The maximum stack size of the item.
+     *
+     * @return The maximum stack size.
      */
+    @Getter
+    @Setter(AccessLevel.PROTECTED)
     private int maxStackSize = 64;
 
     /**
@@ -39,49 +61,50 @@ public class ItemType {
      * Get the id assigned to this ItemType.
      *
      * @return The corresponding id.
+     * @deprecated Magic value
      */
+    @Deprecated
     public final int getId() {
-        return id;
+        return material == null ? id : material.getId();
     }
 
     /**
-     * Assign an id number to this ItemType (for internal use only).
+     * Assign an item ID to this ItemType (for internal use only).
      *
      * @param id The internal item id for this item.
+     * @deprecated Magic value
      */
+    @Deprecated
     public final void setId(int id) {
-        if (this.id != -1) {
-            throw new IllegalStateException("Id is already set in " + this);
+        if (material != null && this.id != -1) {
+            throw new IllegalStateException("ID is already set in " + this);
         }
-        this.id = id;
+        Material mat = Material.getMaterial(id);
 
-        // pull a few defaults from Material if possible
-        Material mat = getMaterial();
-        if (mat != null) {
-            maxStackSize = mat.getMaxStackSize();
+        if (mat == null) {
+            this.id = id;
+        } else {
+            setMaterial(mat);
         }
     }
 
     /**
-     * Get the Material assigned to this ItemType.
+     * Assign a Material to this ItemType (for internal use only).
      *
-     * @return The corresponding Material.
+     * @param material The internal material for this item.
      */
-    public final Material getMaterial() {
-        return Material.getMaterial(getId());
+    public final void setMaterial(Material material) {
+        if (this.material != null && id != -1) {
+            throw new IllegalStateException("Material is already set in " + this);
+        }
+        Preconditions.checkNotNull(material);
+        this.material = material;
+        id = material.getId();
+        maxStackSize = material.getMaxStackSize();
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use
-
-    /**
-     * Set this item to act like the given block type when being placed.
-     *
-     * @param placeAs The block to place as.
-     */
-    protected final void setPlaceAs(BlockType placeAs) {
-        this.placeAs = placeAs;
-    }
 
     /**
      * Set this item to act like the given block type when being placed.
@@ -100,43 +123,23 @@ public class ItemType {
     }
 
     /**
-     * The type of block to place when the item is used.
+     * Set this item to act like the given block type when being placed.
      *
-     * @return the type of block to place
+     * @param placeAs The block to place as.
      */
-    public BlockType getPlaceAs() {
-        return placeAs;
-    }
-
-    /**
-     * Get the maximum stack size of the item.
-     *
-     * @return The maximum stack size.
-     */
-    public int getMaxStackSize() {
-        return maxStackSize;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Public accessors
-
-    /**
-     * Set the maximum stack size of the item.
-     *
-     * @param maxStackSize The new maximum stack size.
-     */
-    protected final void setMaxStackSize(int maxStackSize) {
-        this.maxStackSize = maxStackSize;
+    protected final void setPlaceAs(BlockType placeAs) {
+        // Cannot be Lombokified because of the overload
+        this.placeAs = placeAs;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Actions
 
     /**
-     * Called when a player right-clicks in midair while holding this item.
-     * Also called by default if rightClickBlock is not overridden.
+     * Called when a player right-clicks in midair while holding this item. Also called by default
+     * if rightClickBlock is not overridden.
      *
-     * @param player  The player
+     * @param player The player
      * @param holding The ItemStack the player was holding
      */
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
@@ -144,7 +147,8 @@ public class ItemType {
     }
 
     /**
-     * Get the context this item can be used in
+     * Get the context this item can be used in.
+     *
      * @return context of the item, default is {{@link Context#BLOCK}}
      */
     public Context getContext() {
@@ -154,15 +158,18 @@ public class ItemType {
     /**
      * Called when a player right-clicks on a block while holding this item.
      *
-     * @param player     The player
-     * @param target     The block the player right-clicked
-     * @param face       The face on which the click occurred
-     * @param holding    The ItemStack the player was holding
+     * @param player The player
+     * @param target The block the player right-clicked
+     * @param face The face on which the click occurred
+     * @param holding The ItemStack the player was holding
      * @param clickedLoc The coordinates at which the click occurred
      */
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
+        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         if (placeAs != null) {
-            placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            if (placeAs.getContext().isBlockApplicable()) {
+                placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            }
         }
     }
 
@@ -189,24 +196,31 @@ public class ItemType {
 
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "{" + getId() + " -> " + getMaterial() + "}";
+        return getClass().getSimpleName()
+                + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
     }
 
     /**
-     * Context of the Items interaction
+     * Context of the Items interaction.
      */
+    @AllArgsConstructor
     public enum Context {
         /**
-         * The item can only be used when clicking in the air
+         * The item can only be used when clicking in the air.
          */
-        AIR,
+        AIR(true, false),
         /**
-         * The item can only be used when clicking against a block
+         * The item can only be used when clicking against a block.
          */
-        BLOCK,
+        BLOCK(false, true),
         /**
-         * The item can be used on any click
+         * The item can be used on any click.
          */
-        ANY
+        ANY(true, true);
+
+        @Getter
+        private boolean airApplicable;
+        @Getter
+        private boolean blockApplicable;
     }
 }

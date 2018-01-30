@@ -1,5 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -9,11 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -25,7 +24,8 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, ThreadLocalRandom.current().nextInt(4)),
+            return Collections.unmodifiableList(
+                Arrays.asList(new ItemStack(Material.SEEDS, ThreadLocalRandom.current().nextInt(4)),
                     new ItemStack(Material.WHEAT, 1)));
         } else {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
@@ -46,8 +46,8 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     public void grow(GlowPlayer player, GlowBlock block) {
         GlowBlockState state = block.getState();
         int cropState = block.getData()
-                + ThreadLocalRandom.current().nextInt(CropState.MEDIUM.ordinal())
-                + CropState.VERY_SMALL.ordinal();
+            + ThreadLocalRandom.current().nextInt(CropState.MEDIUM.ordinal())
+            + CropState.VERY_SMALL.ordinal();
         if (cropState > CropState.RIPE.ordinal()) {
             cropState = CropState.RIPE.ordinal();
         }
@@ -68,10 +68,12 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
     public void updateBlock(GlowBlock block) {
         GlowBlockState state = block.getState();
         int cropState = block.getData();
-        // we check light level on the above block, meaning crops needs at least one free block above it
-        // in order to grow naturally (vanilla behavior)
-        if (cropState < CropState.RIPE.ordinal() && block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
-                ThreadLocalRandom.current().nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
+        // we check light level on the above block, meaning the crops need at least one free block
+        // above them in order to grow naturally (vanilla behavior)
+        if (cropState < CropState.RIPE.ordinal()
+                && block.getRelative(BlockFace.UP).getLightLevel() >= 9
+                && ThreadLocalRandom.current()
+                        .nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
             cropState++;
             if (cropState > CropState.RIPE.ordinal()) {
                 cropState = CropState.RIPE.ordinal();
@@ -95,7 +97,8 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
         // check for soil around (increase the chance modifier to 10 in the best conditions)
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
-                GlowBlock b = block.getWorld().getBlockAt(block.getX() + x, block.getY() - 1, block.getZ() + z);
+                GlowBlock b = block.getWorld()
+                    .getBlockAt(block.getX() + x, block.getY() - 1, block.getZ() + z);
                 float soilBonus = 0;
                 if (b.getType() == Material.SOIL) {
                     soilBonus = 1;
@@ -122,7 +125,9 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
                 if (x != 0 || z != 0) {
-                    if (block.getWorld().getBlockAt(block.getX() + x, block.getY(), block.getZ() + z).getType() == getMaterial()) {
+                    if (block.getWorld()
+                        .getBlockAt(block.getX() + x, block.getY(), block.getZ() + z).getType()
+                        == getMaterial()) {
                         if (x != 0 && z != 0) {
                             cropOnDiagonalBlock = true;
                         } else if (x == 0) {

@@ -1,14 +1,13 @@
 package net.glowstone.io.entity;
 
+import java.util.Arrays;
+import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
-
-import java.util.Arrays;
-import java.util.List;
 
 class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
@@ -73,16 +72,17 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
     private List<Float> toFloatList(EulerAngle angle) {
         return Arrays.asList(
-                (float) Math.toDegrees(angle.getX()),
-                (float) Math.toDegrees(angle.getY()),
-                (float) Math.toDegrees(angle.getZ())
+            (float) Math.toDegrees(angle.getX()),
+            (float) Math.toDegrees(angle.getY()),
+            (float) Math.toDegrees(angle.getZ())
         );
     }
 
     private EulerAngle readSafeAngle(CompoundTag tag, String key) {
         if (tag.isList(key, TagType.FLOAT)) {
             List<Float> list = tag.getList(key, TagType.FLOAT);
-            return new EulerAngle(Math.toRadians(list.get(0)), Math.toRadians(list.get(1)), Math.toRadians(list.get(2)));
+            return new EulerAngle(Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
+                Math.toRadians(list.get(2)));
         } else {
             return EulerAngle.ZERO;
         }

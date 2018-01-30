@@ -1,22 +1,28 @@
 package net.glowstone.inventory;
 
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Tracker for when the equipment of an entity is changed.
  */
+@RequiredArgsConstructor
 public final class EquipmentMonitor {
 
     /**
      * The entity whose equipment is being monitored.
+     *
+     * @param entity The entity whose equipment to monitor.
+     * @return The entity.
      */
+    @Getter
     private final LivingEntity entity;
 
     /**
@@ -35,18 +41,11 @@ public final class EquipmentMonitor {
     private boolean changesCalculated;
 
     /**
-     * Create a new monitor for the given entity.
-     *
-     * @param entity The entity whose equipment to monitor.
-     */
-    public EquipmentMonitor(LivingEntity entity) {
-        this.entity = entity;
-    }
-
-    /**
      * Get the item in the inventory.
-     * Slot 0 is the item in the hand.
-     * Slot 1 to 4 is armor (boots to helmet).
+     *
+     * <p>Slot 0 is the item in the hand.
+     *
+     * <p>Slot 1 to 4 is armor (boots to helmet).
      *
      * @return The item in that slot.
      */
@@ -56,7 +55,7 @@ public final class EquipmentMonitor {
             return null;
         }
         if (slot == 0) {
-            return equipment.getItemInHand();
+            return equipment.getItemInMainHand();
         } else if (slot == 1) {
             return equipment.getItemInOffHand();
         } else {
@@ -119,18 +118,10 @@ public final class EquipmentMonitor {
     }
 
     /**
-     * Get the entity whose equipment is being monitored.
-     *
-     * @return The entity equipment.
-     */
-    public LivingEntity getEntity() {
-        return entity;
-    }
-
-    /**
      * An entry which has been changed.
      */
     public static class Entry {
+
         public final int slot;
         public final ItemStack item;
 

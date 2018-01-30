@@ -1,5 +1,9 @@
 package net.glowstone.block.entity.state;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.List;
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BannerEntity;
@@ -7,19 +11,20 @@ import org.bukkit.DyeColor;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class GlowBanner extends GlowBlockState implements Banner {
 
-    private DyeColor base;
-    private List<Pattern> patterns = new ArrayList<>();
+    @Getter
+    private DyeColor baseColor;
+    private List<Pattern> patterns;
 
+    /**
+     * Creates an entity for the given banner block.
+     *
+     * @param block the block this banner occupies
+     */
     public GlowBanner(GlowBlock block) {
         super(block);
-        base = getBlockEntity().getBase();
+        baseColor = getBlockEntity().getBase();
         patterns = getBlockEntity().getPatterns();
     }
 
@@ -39,23 +44,20 @@ public class GlowBanner extends GlowBlockState implements Banner {
     }
 
     @Override
-    public DyeColor getBaseColor() {
-        return base;
-    }
-
-    @Override
     public void setBaseColor(DyeColor dyeColor) {
-        checkNotNull(base, "Base cannot be null");
-        base = dyeColor;
+        checkNotNull(baseColor, "Base cannot be null");
+        baseColor = dyeColor;
     }
 
     @Override
     public List<Pattern> getPatterns() {
+        // TODO: Defensive copy
         return patterns;
     }
 
     @Override
     public void setPatterns(List<Pattern> patterns) {
+        // TODO: Defensive copy
         this.patterns = patterns;
     }
 
@@ -80,7 +82,7 @@ public class GlowBanner extends GlowBlockState implements Banner {
         boolean result = super.update(force, applyPhysics);
         if (result) {
             BannerEntity banner = getBlockEntity();
-            banner.setBase(base);
+            banner.setBase(baseColor);
             banner.setPatterns(patterns);
             getBlockEntity().updateInRange();
         }
@@ -89,6 +91,6 @@ public class GlowBanner extends GlowBlockState implements Banner {
 
     @Override
     public boolean isPlaced() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

@@ -1,5 +1,8 @@
 package net.glowstone.generator.decorators;
 
+import java.util.Random;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,40 +12,24 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.generator.BlockPopulator;
 
-import java.util.Random;
-
 public class EntityDecorator extends BlockPopulator {
 
+    @Getter
     private EntityType[] entityTypes;
+    @Getter
+    @Setter
     private float rarity = 0.1f;
-    private int minGroup = 4, maxGroup = 4;
+    @Getter
+    private int minGroup = 4;
+    @Getter
+    private int maxGroup = 4;
 
     public EntityDecorator(EntityType... entityTypes) {
         this.entityTypes = entityTypes;
     }
 
-    public float getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(float rarity) {
-        this.rarity = rarity;
-    }
-
-    public EntityType[] getEntityTypes() {
-        return entityTypes;
-    }
-
     public void setEntityTypes(EntityType... entityTypes) {
         this.entityTypes = entityTypes;
-    }
-
-    public int getMinGroup() {
-        return minGroup;
-    }
-
-    public int getMaxGroup() {
-        return maxGroup;
     }
 
     public void setGroupSize(int minGroup, int maxGroup) {
@@ -61,8 +48,11 @@ public class EntityDecorator extends BlockPopulator {
         int sourceX = chunk.getX() << 4;
         int sourceZ = chunk.getZ() << 4;
         EntityType type = entityTypes[random.nextInt(entityTypes.length)];
-        int centerX = sourceX + random.nextInt(16), centerZ = sourceZ + random.nextInt(16);
-        int count = minGroup == maxGroup ? minGroup : random.nextInt(maxGroup - minGroup) + minGroup, range = 5;
+        int centerX = sourceX + random.nextInt(16);
+        int centerZ = sourceZ + random.nextInt(16);
+        int count = minGroup == maxGroup ? minGroup
+            : random.nextInt(maxGroup - minGroup) + minGroup;
+        int range = 5;
         int attempts = 5;
         for (int i = 0; i < count; i++) {
             if (attempts == 0) {
@@ -73,7 +63,9 @@ public class EntityDecorator extends BlockPopulator {
             double x = radius * Math.sin(angle) + centerX;
             double z = radius * Math.cos(angle) + centerZ;
             Block block = world.getHighestBlockAt(new Location(world, x, 0, z));
-            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
+            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER
+                || block.getType() == Material.LAVA
+                || block.getType() == Material.STATIONARY_LAVA) {
                 i--;
                 attempts--;
                 continue;

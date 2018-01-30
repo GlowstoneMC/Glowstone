@@ -1,5 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowItemFactory;
@@ -14,16 +18,14 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 public class BlockCauldron extends BlockNeedsTool {
-    private static final Collection<ItemStack> DROP = Arrays.asList(new ItemStack(Material.CAULDRON_ITEM));
+
+    private static final Collection<ItemStack> DROP = Arrays
+        .asList(new ItemStack(Material.CAULDRON_ITEM));
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         if (player.getItemInHand() == null) {
             return super.blockInteract(player, block, face, clickedLoc);
         }
@@ -66,9 +68,11 @@ public class BlockCauldron extends BlockNeedsTool {
             block.setData((byte) (block.getData() - 1));
 
             if (player.getGameMode() != GameMode.CREATIVE) {
-                Map<Integer, ItemStack> drops = player.getInventory().addItem(new ItemStack(Material.POTION));
+                Map<Integer, ItemStack> drops = player.getInventory()
+                    .addItem(new ItemStack(Material.POTION));
                 if (!drops.isEmpty()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.POTION));
+                    player.getWorld()
+                        .dropItemNaturally(player.getLocation(), new ItemStack(Material.POTION));
                 }
 
                 player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
@@ -77,8 +81,9 @@ public class BlockCauldron extends BlockNeedsTool {
     }
 
     private boolean bleachBanner(GlowPlayer player, GlowBlock block) {
-        if (player.getGameMode() == GameMode.CREATIVE)
+        if (player.getGameMode() == GameMode.CREATIVE) {
             return false;
+        }
 
         if (block.getData() > 0) {
             ItemStack inHand = player.getItemInHand();

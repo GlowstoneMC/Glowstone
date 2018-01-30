@@ -5,7 +5,9 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.CraftingBookDataMessage;
 
-public final class CraftingBookDataHandler implements MessageHandler<GlowSession, CraftingBookDataMessage> {
+public final class CraftingBookDataHandler implements
+    MessageHandler<GlowSession, CraftingBookDataMessage> {
+
     @Override
     public void handle(GlowSession session, CraftingBookDataMessage message) {
         GlowPlayer player = session.getPlayer();
@@ -15,6 +17,8 @@ public final class CraftingBookDataHandler implements MessageHandler<GlowSession
             return;
         }
         // TODO: Support crafting book data
-        session.getServer().getLogger().warning("Received crafting book data from " + session.getPlayer().getName() + ", not currently supported: " + message.toString());
+        session.getServer().getLogger().warning(
+            "Received crafting book data from " + session.getPlayer().getName()
+                + ", not currently supported: " + message.toString());
     }
 }

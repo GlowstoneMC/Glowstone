@@ -12,7 +12,7 @@ class SheepStore extends AgeableStore<GlowSheep> {
     public static final String COLOR_KEY = "Color";
 
     public SheepStore() {
-        super(GlowSheep.class, EntityType.SHEEP);
+        super(GlowSheep.class, EntityType.SHEEP, GlowSheep::new);
     }
 
     @Override
@@ -20,6 +20,7 @@ class SheepStore extends AgeableStore<GlowSheep> {
         return new GlowSheep(location);
     }
 
+    @Override
     public void load(GlowSheep entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.isByte(COLOR_KEY)) {
@@ -35,6 +36,7 @@ class SheepStore extends AgeableStore<GlowSheep> {
         }
     }
 
+    @Override
     public void save(GlowSheep entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putByte(COLOR_KEY, entity.getColor().ordinal());

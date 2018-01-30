@@ -1,16 +1,20 @@
 package net.glowstone.command.minecraft;
 
 import com.google.common.net.InetAddresses;
+import java.util.Collections;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
-import java.util.Collections;
-
 public class PardonIpCommand extends VanillaCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public PardonIpCommand() {
-        super("pardon-ip", "Unbans an IP address from the server.", "/pardon-ip <address>", Collections.emptyList());
+        super("pardon-ip", "Unbans an IP address from the server.", "/pardon-ip <address>",
+            Collections.emptyList());
         setPermission("minecraft.command.pardon-ip");
     }
 

@@ -1,6 +1,16 @@
 package net.glowstone.inventory.crafting;
 
 import com.google.common.collect.Iterators;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowCraftingInventory;
@@ -9,15 +19,14 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.*;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
-import java.util.Map.Entry;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 /**
- * Manager for crafting and smelting recipes
+ * Manager for crafting and smelting recipes.
  */
 public final class CraftingManager implements Iterable<Recipe> {
 
@@ -27,16 +36,37 @@ public final class CraftingManager implements Iterable<Recipe> {
     private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
     private final Map<Material, Integer> furnaceFuels = new HashMap<>();
 
+    /**
+     * Get the amount of layers in the crafting matrix.
+     *
+     * <p>This assumes all Minecraft recipes have an item stack of 1 for all items in the recipe.
+     *
+     * @param items The items in the crafting matrix.
+     * @return The number of stacks for a recipe.
+     */
+    public static int getLayers(ItemStack... items) {
+        int layers = 0;
+        for (ItemStack item : items) {
+            if (!InventoryUtil.isEmpty(item) && (item.getAmount() < layers || layers == 0)) {
+                layers = item.getAmount();
+            }
+        }
+        return layers;
+    }
+
+    /**
+     * Loads all recipes.
+     */
     public void initialize() {
         resetRecipes();
 
         // Report stats
-        GlowServer.logger.info("Recipes: " +
-                shapedRecipes.size() + " shaped, " +
-                shapelessRecipes.size() + " shapeless, " +
-                furnaceRecipes.size() + " furnace, " +
-                dynamicRecipes.size() + " dynamic, " +
-                furnaceFuels.size() + " fuels.");
+        GlowServer.logger.info("Recipes: "
+                + shapedRecipes.size() + " shaped, "
+                + shapelessRecipes.size() + " shapeless, "
+                + furnaceRecipes.size() + " furnace, "
+                + dynamicRecipes.size() + " dynamic, "
+                + furnaceFuels.size() + " fuels.");
     }
 
     /**
@@ -91,7 +121,7 @@ public final class CraftingManager implements Iterable<Recipe> {
      * Remove a layer of items from the crafting matrix and recipe result.
      *
      * @param items The items to remove the ingredients from.
-     * @param inv   The inventory to remove the items from.
+     * @param inv The inventory to remove the items from.
      */
     public void removeItems(ItemStack[] items, GlowCraftingInventory inv) {
         this.removeItems(items, inv, 1);
@@ -100,12 +130,15 @@ public final class CraftingManager implements Iterable<Recipe> {
     /**
      * Remove a specific amount of layers from the crafting matrix and recipe result.
      *
-     * @param items  The items to remove the ingredients from.
-     * @param inv    The inventory to remove the items from.
+     * @param items The items to remove the ingredients from.
+     * @param inv The inventory to remove the items from.
      * @param amount The amount of items you want to remove.
      */
-    public void removeItems(final ItemStack[] items, final GlowCraftingInventory inv, final int amount) {
-        if (amount < 0) throw new IllegalArgumentException("Can not remove negative amount of layers.");
+    public void removeItems(final ItemStack[] items, final GlowCraftingInventory inv,
+            final int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Can not remove negative amount of layers.");
+        }
 
         for (int i = 0; i < items.length; i++) {
             if (!InventoryUtil.isEmpty(items[i])) {
@@ -121,26 +154,10 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     /**
-     * Get the amount of layers in the crafting matrix.
-     * This assumes all Minecraft recipes have an item stack of 1 for all items in the recipe.
-     *
-     * @param items The items in the crafting matrix.
-     * @return The number of stacks for a recipe.
-     */
-    public static int getLayers(ItemStack... items) {
-        int layers = 0;
-        for (ItemStack item : items) {
-            if (!InventoryUtil.isEmpty(item) && (item.getAmount() < layers || layers == 0)) {
-                layers = item.getAmount();
-            }
-        }
-        return layers;
-    }
-
-    /**
      * Get a crafting recipe from the crafting manager.
      *
-     * @param items An array of items with null being empty slots. Length should be a perfect square.
+     * @param items An array of items with null being empty slots. Length should be a perfect
+     *         square.
      * @return The Recipe that matches the input, or null if none match.
      */
     public Recipe getCraftingRecipe(ItemStack... items) {
@@ -151,11 +168,11 @@ public final class CraftingManager implements Iterable<Recipe> {
             }
         }
 
-
         int size = (int) Math.sqrt(items.length);
 
         if (size * size != items.length) {
-            throw new IllegalArgumentException("ItemStack list was not square (was " + items.length + ")");
+            throw new IllegalArgumentException(
+                    "ItemStack list was not square (was " + items.length + ")");
         }
 
         ShapedRecipe result = getShapedRecipe(size, items);
@@ -193,24 +210,28 @@ public final class CraftingManager implements Iterable<Recipe> {
             Map<Character, ItemStack> ingredients = recipe.getIngredientMap();
             String[] shape = recipe.getShape();
 
-            int rows = shape.length, cols = 0;
+            int rows = shape.length;
+            int cols = 0;
             for (String row : shape) {
                 if (row.length() > cols) {
                     cols = row.length();
                 }
             }
 
-            if (rows == 0 || cols == 0) continue;
+            if (rows == 0 || cols == 0) {
+                continue;
+            }
 
             // outer loop: try at each possible starting position
-            for (int rStart = 0; rStart <= size - rows; ++rStart) {
+            for (int rowStart = 0; rowStart <= size - rows; ++rowStart) {
                 position:
-                for (int cStart = 0; cStart <= size - cols; ++cStart) {
+                for (int colStart = 0; colStart <= size - cols; ++colStart) {
                     // inner loop: verify recipe against this position
                     for (int row = 0; row < rows; ++row) {
                         for (int col = 0; col < cols; ++col) {
-                            ItemStack given = items[(rStart + row) * size + cStart + col];
-                            char ingredientChar = shape[row].length() > col ? shape[row].charAt(col) : ' ';
+                            ItemStack given = items[(rowStart + row) * size + colStart + col];
+                            char ingredientChar =
+                                    shape[row].length() > col ? shape[row].charAt(col) : ' ';
                             ItemStack expected = ingredients.get(ingredientChar);
 
                             // check for mismatch in presence of an item in that slot at all
@@ -235,8 +256,9 @@ public final class CraftingManager implements Iterable<Recipe> {
                     for (int row = 0; row < size; row++) {
                         for (int col = 0; col < size; col++) {
                             // if this position is outside the recipe and non-null, fail
-                            if ((row < rStart || row >= rStart + rows || col < cStart || col >= cStart + cols) &&
-                                    items[row * size + col] != null) {
+                            if ((row < rowStart || row >= rowStart + rows || col < colStart
+                                            || col >= colStart + cols)
+                                    && items[row * size + col] != null) {
                                 continue position;
                             }
                         }
@@ -291,7 +313,8 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     @Override
     public Iterator<Recipe> iterator() {
-        return Iterators.concat(shapedRecipes.iterator(), shapelessRecipes.iterator(), dynamicRecipes.iterator(), furnaceRecipes.iterator());
+        return Iterators.concat(shapedRecipes.iterator(), shapelessRecipes.iterator(),
+                dynamicRecipes.iterator(), furnaceRecipes.iterator());
     }
 
     private boolean isWildcard(short data) {
@@ -300,12 +323,17 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     private boolean matchesWildcard(ItemStack expected, ItemStack actual) {
-        return actual != null && expected.getType() == actual.getType() && (isWildcard(expected.getDurability()) || expected.getDurability() == actual.getDurability());
+        return actual != null && expected.getType() == actual.getType() && (
+                isWildcard(expected.getDurability()) || expected.getDurability() == actual
+                        .getDurability());
     }
 
     /**
-     * Get a list of all recipes for a given item. The stack size is ignored
-     * in comparisons. If the durability is -1, it will match any data value.
+     * Get a list of all recipes for a given item.
+     *
+     * <p>The stack size is ignored in comparisons.
+     *
+     * <p>If the durability is -1, it will match any data value.
      *
      * @param result The item whose recipes you want
      * @return The list of recipes
@@ -326,7 +354,13 @@ public final class CraftingManager implements Iterable<Recipe> {
         return recipes;
     }
 
+    /**
+     * Look up a recipe.
+     * @param key the key to look up
+     * @return the recipe with the given key, or null if none match
+     */
     public Recipe getRecipeByKey(NamespacedKey key) {
+        // FIXME: Linear time; use Map<NamespacedKey,?> instances instead
         for (ShapedRecipe shapedRecipe : shapedRecipes) {
             if (shapedRecipe.getKey().equals(key)) {
                 return shapedRecipe;
@@ -429,7 +463,8 @@ public final class CraftingManager implements Iterable<Recipe> {
             return;
         }
 
-        ConfigurationSection config = YamlConfiguration.loadConfiguration(new InputStreamReader(in));
+        ConfigurationSection config = YamlConfiguration
+                .loadConfiguration(new InputStreamReader(in));
 
         // shaped
         for (Map<?, ?> data : config.getMapList("shaped")) {
@@ -439,7 +474,8 @@ public final class CraftingManager implements Iterable<Recipe> {
             List<String> shape = (List<String>) data.get("shape");
             recipe.shape(shape.toArray(new String[shape.size()]));
 
-            Map<String, Map<String, Object>> ingredients = (Map<String, Map<String, Object>>) data.get("ingredients");
+            Map<String, Map<String, Object>> ingredients = (Map<String, Map<String, Object>>) data
+                    .get("ingredients");
             for (Entry<String, Map<String, Object>> entry : ingredients.entrySet()) {
                 ItemStack stack = ItemStack.deserialize(entry.getValue());
                 recipe.setIngredient(entry.getKey().charAt(0), stack.getData());
@@ -467,7 +503,9 @@ public final class CraftingManager implements Iterable<Recipe> {
             ItemStack inputStack = ItemStack.deserialize((Map<String, Object>) data.get("input"));
             ItemStack resultStack = ItemStack.deserialize((Map<String, Object>) data.get("result"));
             float xp = ((Number) data.get("xp")).floatValue();
-            furnaceRecipes.add(new FurnaceRecipe(resultStack, inputStack.getType(), inputStack.getDurability(), xp));
+            furnaceRecipes.add(
+                    new FurnaceRecipe(resultStack, inputStack.getType(), inputStack.getDurability(),
+                            xp));
         }
     }
 
@@ -478,10 +516,12 @@ public final class CraftingManager implements Iterable<Recipe> {
             if (keyRaw.indexOf(':') == -1) {
                 key = new NamespacedKey(NamespacedKey.MINECRAFT, keyRaw);
             } else {
-                key = new NamespacedKey(keyRaw.substring(0, keyRaw.indexOf(':')), keyRaw.substring(keyRaw.indexOf(':') + 1, keyRaw.length()));
+                key = new NamespacedKey(keyRaw.substring(0, keyRaw.indexOf(':')),
+                        keyRaw.substring(keyRaw.indexOf(':') + 1, keyRaw.length()));
             }
         } else {
-            // todo: remove ambiguity of items with 'data/damage' values inside recipes.yml (will take a long time...)
+            // todo: remove ambiguity of items with 'data/damage' values inside recipes.yml (will
+            // take a long time...)
             key = NamespacedKey.minecraft(ItemIds.getName(result.getType()));
         }
         return key;

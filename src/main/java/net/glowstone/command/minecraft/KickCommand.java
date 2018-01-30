@@ -1,5 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,18 +9,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.List;
-
 public class KickCommand extends VanillaCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public KickCommand() {
-        super("kick", "Removes a player from the server.", "/kick <player> [reason]", Collections.emptyList());
+        super("kick", "Removes a player from the server.", "/kick <player> [reason]",
+            Collections.emptyList());
         setPermission("minecraft.command.kick");
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) return false;
+        if (!testPermission(sender)) {
+            return false;
+        }
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -41,7 +47,8 @@ public class KickCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return super.tabComplete(sender, alias, args);
         }

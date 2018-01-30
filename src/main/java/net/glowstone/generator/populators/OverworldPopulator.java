@@ -1,19 +1,46 @@
 package net.glowstone.generator.populators;
 
-import net.glowstone.generator.populators.overworld.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import net.glowstone.generator.populators.overworld.BiomePopulator;
+import net.glowstone.generator.populators.overworld.BirchForestMountainsPopulator;
+import net.glowstone.generator.populators.overworld.BirchForestPopulator;
+import net.glowstone.generator.populators.overworld.DesertMountainsPopulator;
+import net.glowstone.generator.populators.overworld.DesertPopulator;
+import net.glowstone.generator.populators.overworld.ExtremeHillsPlusPopulator;
+import net.glowstone.generator.populators.overworld.ExtremeHillsPopulator;
+import net.glowstone.generator.populators.overworld.FlowerForestPopulator;
+import net.glowstone.generator.populators.overworld.ForestPopulator;
+import net.glowstone.generator.populators.overworld.IcePlainsPopulator;
+import net.glowstone.generator.populators.overworld.IcePlainsSpikesPopulator;
+import net.glowstone.generator.populators.overworld.JungleEdgePopulator;
+import net.glowstone.generator.populators.overworld.JunglePopulator;
+import net.glowstone.generator.populators.overworld.MegaSpruceTaigaPopulator;
+import net.glowstone.generator.populators.overworld.MegaTaigaPopulator;
+import net.glowstone.generator.populators.overworld.MesaForestPopulator;
+import net.glowstone.generator.populators.overworld.MesaPopulator;
+import net.glowstone.generator.populators.overworld.MushroomIslandPopulator;
+import net.glowstone.generator.populators.overworld.OceanPopulator;
+import net.glowstone.generator.populators.overworld.PlainsPopulator;
+import net.glowstone.generator.populators.overworld.RoofedForestPopulator;
+import net.glowstone.generator.populators.overworld.SavannaMountainsPopulator;
+import net.glowstone.generator.populators.overworld.SavannaPopulator;
+import net.glowstone.generator.populators.overworld.SunflowerPlainsPopulator;
+import net.glowstone.generator.populators.overworld.SwamplandPopulator;
+import net.glowstone.generator.populators.overworld.TaigaPopulator;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 public class OverworldPopulator extends BlockPopulator {
 
     private final Map<Biome, BiomePopulator> biomePopulators = new HashMap<>();
 
+    /**
+     * Creates a populator with biome populators for all vanilla overworld biomes.
+     */
     public OverworldPopulator() {
         registerBiomePopulator(new BiomePopulator()); // defaults applied to all biomes
         registerBiomePopulator(new PlainsPopulator());

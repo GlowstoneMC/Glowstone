@@ -1,5 +1,9 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 import net.glowstone.generator.objects.Flower;
 import net.glowstone.generator.objects.FlowerType;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
@@ -8,18 +12,18 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.util.noise.OctaveGenerator;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
 public class FlowerForestPopulator extends ForestPopulator {
 
-    public static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.POPPY, FlowerType.DANDELION, FlowerType.ALLIUM,
-            FlowerType.HOUSTONIA, FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE, FlowerType.TULIP_PINK,
-            FlowerType.OXEYE_DAISY};
+    public static final FlowerType[] FLOWERS = {FlowerType.POPPY, FlowerType.POPPY,
+        FlowerType.DANDELION, FlowerType.ALLIUM,
+        FlowerType.HOUSTONIA, FlowerType.TULIP_RED, FlowerType.TULIP_ORANGE, FlowerType.TULIP_WHITE,
+        FlowerType.TULIP_PINK,
+        FlowerType.OXEYE_DAISY};
     private final OctaveGenerator noiseGen;
 
+    /**
+     * Creates a populator for flower forests.
+     */
     public FlowerForestPopulator() {
         treeDecorator.setAmount(6);
         flowerDecorator.setAmount(0);

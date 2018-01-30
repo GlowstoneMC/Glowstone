@@ -7,8 +7,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 
 public class HorseStore extends AbstractHorseStore<GlowHorse> {
+
     public HorseStore() {
-        super(GlowHorse.class, EntityType.HORSE);
+        super(GlowHorse.class, EntityType.HORSE, GlowHorse::new);
     }
 
     @Override
@@ -25,10 +26,12 @@ public class HorseStore extends AbstractHorseStore<GlowHorse> {
             entity.setTemper(compound.getInt("Temper"));
         }
         if (compound.containsKey("ArmorItem")) {
-            entity.getInventory().setArmor(NbtSerialization.readItem(compound.getCompound("ArmorItem")));
+            entity.getInventory()
+                .setArmor(NbtSerialization.readItem(compound.getCompound("ArmorItem")));
         }
         if (compound.containsKey("SaddleItem")) {
-            entity.getInventory().setSaddle(NbtSerialization.readItem(compound.getCompound("SaddleItem")));
+            entity.getInventory()
+                .setSaddle(NbtSerialization.readItem(compound.getCompound("SaddleItem")));
         }
     }
 
@@ -36,13 +39,16 @@ public class HorseStore extends AbstractHorseStore<GlowHorse> {
     public void save(GlowHorse entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putBool("EatingHaystack", entity.isEatingHay());
-        tag.putInt("Variant", entity.getStyle().ordinal() << 8 | entity.getColor().ordinal() & 0xFF);
+        tag.putInt("Variant",
+            entity.getStyle().ordinal() << 8 | entity.getColor().ordinal() & 0xFF);
         tag.putInt("Temper", entity.getTemper());
         if (entity.getInventory().getArmor() != null) {
-            tag.putCompound("ArmorItem", NbtSerialization.writeItem(entity.getInventory().getArmor(), -1));
+            tag.putCompound("ArmorItem",
+                NbtSerialization.writeItem(entity.getInventory().getArmor(), -1));
         }
         if (entity.getInventory().getSaddle() != null) {
-            tag.putCompound("SaddleItem", NbtSerialization.writeItem(entity.getInventory().getSaddle(), -1));
+            tag.putCompound("SaddleItem",
+                NbtSerialization.writeItem(entity.getInventory().getSaddle(), -1));
         }
     }
 }

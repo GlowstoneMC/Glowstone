@@ -1,18 +1,23 @@
 package net.glowstone.util;
 
-import org.bukkit.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.Achievement;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Statistic;
+import org.bukkit.UnsafeValues;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Implementation of Bukkit's internal-use UnsafeValues. In CraftBukkit, this
- * uses Mojang identifiers, but here we just stick to Bukkit's. The
- * implementation may be a bit sketchy but this isn't a problem since the
- * behavior of this class isn't strictly specified.
+ * Implementation of Bukkit's internal-use UnsafeValues.
+ *
+ * <p>In CraftBukkit, this uses Mojang identifiers, but here we just stick to Bukkit's.
+ *
+ * <p>The implementation may be a bit sketchy but this isn't a problem since the behavior of this
+ * class isn't strictly specified.
  */
 @Deprecated
 public final class GlowUnsafeValues implements UnsafeValues {
@@ -59,7 +64,8 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
-    public List<String> tabCompleteInternalStatisticOrAchievementName(String token, List<String> completions) {
+    public List<String> tabCompleteInternalStatisticOrAchievementName(
+            String token, List<String> completions) {
         Statistic[] stats = Statistic.values();
         Achievement[] achievements = Achievement.values();
         List<String> names = new ArrayList<>(stats.length + achievements.length);

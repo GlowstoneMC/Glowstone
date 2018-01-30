@@ -1,14 +1,15 @@
 package net.glowstone.util.collection;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
+import com.google.common.collect.ImmutableList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 /**
  * Tests for {@link SuperSet}.
@@ -42,10 +43,12 @@ public class SuperSetTest {
         for (int i = 0; i < 2 * CASES; i++) {
             if (i < CASES) {
                 // Half true
-                assertThat("SuperSet.contains returned false for " + prefix + " iteration " + i, set, hasItem(prefix + i));
+                assertThat("SuperSet.contains returned false for " + prefix + " iteration " + i,
+                    set, hasItem(prefix + i));
             } else {
                 // Half false
-                assertThat("SuperSet.contains returned true for set " + prefix + " iteration " + i, set, not(hasItem(prefix + i)));
+                assertThat("SuperSet.contains returned true for set " + prefix + " iteration " + i,
+                    set, not(hasItem(prefix + i)));
             }
         }
     }

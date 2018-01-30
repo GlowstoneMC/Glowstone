@@ -2,6 +2,7 @@ package net.glowstone.io;
 
 import java.io.IOException;
 import java.util.UUID;
+import lombok.Data;
 
 /**
  * Provider of I/O for world metadata.
@@ -9,8 +10,8 @@ import java.util.UUID;
 public interface WorldMetadataService {
 
     /**
-     * Reads the world's metadata from storage, including final values such as
-     * seed and UUID that are only set on first load.
+     * Reads the world's metadata from storage, including final values such as seed and UUID that
+     * are only set on first load.
      *
      * @return A {@link WorldFinalValues} with the seed and UUID.
      */
@@ -24,24 +25,12 @@ public interface WorldMetadataService {
     void writeWorldData() throws IOException;
 
     /**
-     * A structure representing properties stored about a world that cannot be
-     * changed after its initialization, namely seed and UUID.
+     * A structure representing properties stored about a world that cannot be changed after its
+     * initialization, namely seed and UUID.
      */
+    @Data
     class WorldFinalValues {
         private final long seed;
         private final UUID uuid;
-
-        public WorldFinalValues(long seed, UUID uuid) {
-            this.seed = seed;
-            this.uuid = uuid;
-        }
-
-        public long getSeed() {
-            return seed;
-        }
-
-        public UUID getUuid() {
-            return uuid;
-        }
     }
 }

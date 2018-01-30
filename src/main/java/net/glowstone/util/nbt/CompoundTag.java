@@ -1,20 +1,28 @@
 package net.glowstone.util.nbt;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Getter;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 
 /**
  * The {@code TAG_Compound} tag.
  */
-public final class CompoundTag extends Tag<Map<String, Tag>> {
+public final class CompoundTag extends Tag<Map<String, Tag>>
+        implements DynamicallyTypedMapWithDoubles<String> {
 
     /**
      * The value.
      */
+    @Getter
     private final Map<String, Tag> value = new LinkedHashMap<>();
 
     /**
@@ -25,15 +33,11 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     @Override
-    public Map<String, Tag> getValue() {
-        return value;
-    }
-
-    @Override
     protected void valueToString(StringBuilder builder) {
         builder.append(value.size()).append(" entries\n{\n");
         for (Entry<String, Tag> entry : value.entrySet()) {
-            builder.append("    ").append(entry.getKey()).append(": ").append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
+            builder.append("    ").append(entry.getKey()).append(": ")
+                    .append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
         }
         builder.append("}");
     }
@@ -61,8 +65,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     /**
      * Checks to see if this tag is a strict, deep submap of the given CompoundTag.
+     *
      * @param other The CompoundTag that should contain our values.
-     * @return
      */
     public boolean matches(CompoundTag other) {
         for (Entry<String, Tag> entry : value.entrySet()) {
@@ -83,11 +87,13 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
                         return false;
                     }
                 } else if (value instanceof IntArrayTag) {
-                    if (!Arrays.equals(((IntArrayTag) value).getValue(), ((IntArrayTag) otherValue).getValue())) {
+                    if (!Arrays.equals(((IntArrayTag) value).getValue(),
+                            ((IntArrayTag) otherValue).getValue())) {
                         return false;
                     }
                 } else if (value instanceof ByteArrayTag) {
-                    if (!Arrays.equals(((ByteArrayTag) value).getValue(), ((ByteArrayTag) otherValue).getValue())) {
+                    if (!Arrays.equals(((ByteArrayTag) value).getValue(),
+                            ((ByteArrayTag) otherValue).getValue())) {
                         return false;
                     }
                 } else if (!value.equals(otherValue)) {
@@ -99,6 +105,22 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return true;
     }
 
+    /**
+     * Merges the contents of this compound into the supplied compound.
+     *
+     * @param other the other compound to merge into.
+     * @param overwrite whether keys already set in the other compound should be
+     *         overwritten.
+     */
+    public void mergeInto(CompoundTag other, boolean overwrite) {
+        for (String key : value.keySet()) {
+            if (!overwrite && other.containsKey(key)) {
+                continue;
+            }
+            other.put(key, value.get(key));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Simple gets
 
@@ -106,6 +128,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return containsKey(key) && getByte(key) != 0;
     }
 
+    /**
+     * Returns the value of a {@code byte} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public byte getByte(String key) {
         if (isInt(key)) {
             return (byte) getInt(key);
@@ -113,6 +141,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return get(key, ByteTag.class);
     }
 
+    /**
+     * Returns the value of a {@code short} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public short getShort(String key) {
         if (isInt(key)) {
             return (short) getInt(key);
@@ -120,6 +154,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return get(key, ShortTag.class);
     }
 
+    /**
+     * Returns the value of an {@code int} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public int getInt(String key) {
         if (isByte(key)) {
             return (int) getByte(key);
@@ -131,6 +171,17 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return get(key, IntTag.class);
     }
 
+    @Override
+    public boolean getBoolean(String key) {
+        return getByte(key) != 0;
+    }
+
+    /**
+     * Returns the value of a {@code long} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public long getLong(String key) {
         if (isInt(key)) {
             return (long) getInt(key);
@@ -138,6 +189,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return get(key, LongTag.class);
     }
 
+    /**
+     * Returns the value of a {@code float} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public float getFloat(String key) {
         if (isDouble(key)) {
             return (float) getDouble(key);
@@ -147,6 +204,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return get(key, FloatTag.class);
     }
 
+    /**
+     * Returns the value of a {@code double} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public double getDouble(String key) {
         if (isFloat(key)) {
             return (double) getFloat(key);
@@ -156,14 +219,32 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return get(key, DoubleTag.class);
     }
 
+    /**
+     * Returns the value of a {@code byte[]} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public byte[] getByteArray(String key) {
         return get(key, ByteArrayTag.class);
     }
 
+    /**
+     * Returns the value of a {@link String} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public String getString(String key) {
         return get(key, StringTag.class);
     }
 
+    /**
+     * Returns the value of an {@code int[]} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public int[] getIntArray(String key) {
         return get(key, IntArrayTag.class);
     }
@@ -171,18 +252,38 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     ////////////////////////////////////////////////////////////////////////////
     // Fancy gets
 
+    /**
+     * Returns the value of a {@link List} subtag.
+     *
+     * @param key the key to look up
+     * @param <V> the list element type
+     * @return the tag value
+     */
     @SuppressWarnings("unchecked")
     public <V> List<V> getList(String key, TagType type) {
         List<? extends Tag> original = getTagList(key, type);
         List<V> result = new ArrayList<>(original.size());
-        result.addAll(original.stream().map(item -> (V) item.getValue()).collect(Collectors.toList()));
+        result.addAll(
+                original.stream().map(item -> (V) item.getValue()).collect(Collectors.toList()));
         return result;
     }
 
+    /**
+     * Returns the value of a compound subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     public CompoundTag getCompound(String key) {
         return getTag(key, CompoundTag.class);
     }
 
+    /**
+     * Returns the value of a list subtag with CompoundTag elements.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
     @SuppressWarnings("unchecked")
     public List<CompoundTag> getCompoundList(String key) {
         return (List<CompoundTag>) getTagList(key, TagType.COMPOUND);
@@ -191,38 +292,92 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     ////////////////////////////////////////////////////////////////////////////
     // Simple is
 
+    /**
+     * Test whether the subtag with the given key is of {@code byte} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@code byte}; false otherwise
+     */
     public boolean isByte(String key) {
         return is(key, ByteTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code short} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@code short}; false otherwise
+     */
     public boolean isShort(String key) {
         return is(key, ShortTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code int} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is an {@code int}; false otherwise
+     */
     public boolean isInt(String key) {
         return is(key, IntTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code long} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@code long}; false otherwise
+     */
     public boolean isLong(String key) {
         return is(key, LongTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code float} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@code float}; false otherwise
+     */
     public boolean isFloat(String key) {
         return is(key, FloatTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code double} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@code double}; false otherwise
+     */
     public boolean isDouble(String key) {
         return is(key, DoubleTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code byte[]} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@code byte[]}; false otherwise
+     */
     public boolean isByteArray(String key) {
         return is(key, ByteArrayTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@link String} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@link String}; false otherwise
+     */
     public boolean isString(String key) {
         return is(key, StringTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code int[]} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is an {@code int[]}; false otherwise
+     */
     public boolean isIntArray(String key) {
         return is(key, IntArrayTag.class);
     }
@@ -230,14 +385,41 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     ////////////////////////////////////////////////////////////////////////////
     // Fancy is
 
+    /**
+     * Test whether the subtag with the given key is of {@link List} type.
+     *
+     * @param key the key to look up
+     * @param type the {@link TagType} of the list's elements
+     * @return true if the subtag exists and is a {@link List}; false otherwise
+     */
     public boolean isList(String key, TagType type) {
-        if (!is(key, ListTag.class)) return false;
+        if (!is(key, ListTag.class)) {
+            return false;
+        }
         ListTag tag = getTag(key, ListTag.class);
         return tag.getChildType() == type;
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@link CompoundTag} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@link CompoundTag}; false otherwise
+     */
     public boolean isCompound(String key) {
         return is(key, CompoundTag.class);
+    }
+
+    /**
+     * Test whether the subtag with the given key is of {@link List} type with elements of type
+     * {@link CompoundTag}.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is a {@link List} with elements of type
+     *         {@link CompoundTag}; false otherwise
+     */
+    public boolean isCompoundList(String key) {
+        return isList(key, TagType.COMPOUND);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -286,6 +468,14 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     ////////////////////////////////////////////////////////////////////////////
     // Fancy sets
 
+    /**
+     * Adds or replaces a list subtag, converting the list entries to tags.
+     *
+     * @param key the key to write to
+     * @param type the list elements' tag type
+     * @param value the list contents, as objects to convert to tags
+     * @param <V> the list elements' Java type
+     */
     public <V> void putList(String key, TagType type, List<V> value) {
         // the reflection here is really gross but I'm not sure a good way around it
         try {
@@ -312,7 +502,9 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     // Accessor helpers
 
     private <T extends Tag<?>> boolean is(String key, Class<T> clazz) {
-        if (!containsKey(key)) return false;
+        if (!containsKey(key)) {
+            return false;
+        }
         Tag tag = value.get(key);
         return tag != null && clazz == tag.getClass();
     }
@@ -330,7 +522,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     @SuppressWarnings("unchecked")
     private <T extends Tag<?>> T getTag(String key, Class<T> clazz) {
         if (!is(key, clazz)) {
-            throw new IllegalArgumentException("Compound does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
+            throw new IllegalArgumentException(
+                    "Compound does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
         }
         return (T) value.get(key);
     }
@@ -342,7 +535,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
             return Arrays.asList();
         }
         if (tag.getChildType() != type) {
-            throw new IllegalArgumentException("List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
+            throw new IllegalArgumentException(
+                    "List \"" + key + "\" contains " + tag.getChildType() + ", not " + type);
         }
         return tag.getValue();
     }

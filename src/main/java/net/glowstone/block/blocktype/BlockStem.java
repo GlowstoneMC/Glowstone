@@ -1,5 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -11,15 +15,15 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Pumpkin;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class BlockStem extends BlockCrops {
+
     private Material fruitType;
     private Material seedsType;
 
+    /**
+     * Creates a block type for a stem whose fruit is horizontally adjacent (pumpkin or melon).
+     * @param plantType the plant type.
+     */
     public BlockStem(Material plantType) {
         if (plantType == Material.MELON_STEM) {
             fruitType = Material.MELON_BLOCK;
@@ -38,7 +42,8 @@ public class BlockStem extends BlockCrops {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getState().getRawData() >= CropState.RIPE.ordinal()) {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(seedsType, ThreadLocalRandom.current().nextInt(4))));
+            return Collections.unmodifiableList(
+                Arrays.asList(new ItemStack(seedsType, ThreadLocalRandom.current().nextInt(4))));
         } else {
             return BlockDropless.EMPTY_STACK;
         }
@@ -63,8 +68,8 @@ public class BlockStem extends BlockCrops {
     public void grow(GlowPlayer player, GlowBlock block) {
         GlowBlockState state = block.getState();
         int cropState = block.getData()
-                + ThreadLocalRandom.current().nextInt(CropState.MEDIUM.ordinal())
-                + CropState.VERY_SMALL.ordinal();
+            + ThreadLocalRandom.current().nextInt(CropState.MEDIUM.ordinal())
+            + CropState.VERY_SMALL.ordinal();
         if (cropState > CropState.RIPE.ordinal()) {
             cropState = CropState.RIPE.ordinal();
         }
@@ -78,18 +83,20 @@ public class BlockStem extends BlockCrops {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        // we check light level on the above block, meaning stems needs at least one free block above it
-        // in order to grow naturally (vanilla behavior)
-        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 &&
-                ThreadLocalRandom.current().nextInt((int) (25.0F / getGrowthRateModifier(block)) + 1) == 0) {
+        // we check light level on the above block, meaning a stem needs at least one free block
+        // above it in order to grow naturally (vanilla behavior)
+        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9
+                && ThreadLocalRandom.current().nextInt(
+                        (int) (25.0F / getGrowthRateModifier(block)) + 1)
+                == 0) {
 
             int cropState = block.getData();
             if (cropState >= CropState.RIPE.ordinal()) {
                 // check around there's not already a fruit
                 if (block.getRelative(BlockFace.EAST).getType() == fruitType
-                        || block.getRelative(BlockFace.WEST).getType() == fruitType
-                        || block.getRelative(BlockFace.NORTH).getType() == fruitType
-                        || block.getRelative(BlockFace.SOUTH).getType() == fruitType) {
+                    || block.getRelative(BlockFace.WEST).getType() == fruitType
+                    || block.getRelative(BlockFace.NORTH).getType() == fruitType
+                    || block.getRelative(BlockFace.SOUTH).getType() == fruitType) {
                     return;
                 }
                 // produce a fruit if possible
@@ -112,9 +119,9 @@ public class BlockStem extends BlockCrops {
                 GlowBlockState targetBlockState = targetBlock.getState();
                 GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
                 if (targetBlock.getType() == Material.AIR
-                        && (belowTargetBlock.getType() == Material.SOIL
-                        || belowTargetBlock.getType() == Material.DIRT
-                        || belowTargetBlock.getType() == Material.GRASS)) {
+                    && (belowTargetBlock.getType() == Material.SOIL
+                    || belowTargetBlock.getType() == Material.DIRT
+                    || belowTargetBlock.getType() == Material.GRASS)) {
                     targetBlockState.setType(fruitType);
                     if (fruitType == Material.PUMPKIN) {
                         targetBlockState.setData(new Pumpkin(face.getOppositeFace()));

@@ -1,5 +1,11 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -8,9 +14,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.*;
-
 public class BlockRails extends BlockNeedsAttached {
+
     private static final int NORTH = 0;
     private static final int SOUTH = 1;
     private static final int EAST = 2;
@@ -20,36 +25,10 @@ public class BlockRails extends BlockNeedsAttached {
     private static final int ASCENDING_EAST = 6;
     private static final int ASCENDING_WEST = 7;
 
-    @Override
-    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Arrays.asList(new ItemStack(block.getType()));
-    }
-
-    @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        super.placeBlock(player, state, face, holding, clickedLoc);
-
-        GlowBlock block = state.getBlock();
-        RailDirection direction = getRailDirection(block);
-
-        state.setRawData((byte) direction.ordinal());
-        state.update(true, false);
-
-        updateNeighbors(block, direction);
-    }
-
-    private void updateNeighbors(GlowBlock block, RailDirection direction) {
-        direction.getNeighborRails(block).forEach(rail -> {
-            // check if the rail is stable
-            if (isUnstable(rail, block) && !isConnected(rail, block)) {
-                rail.setData((byte) getRailDirection(rail).ordinal());
-            }
-        });
-    }
-
     private static boolean isConnected(GlowBlock rail, GlowBlock neighborRail) {
         return RailDirection.getRailDirection(rail).getNeighborRails(rail).contains(neighborRail)
-                && RailDirection.getRailDirection(neighborRail).getNeighborRails(neighborRail).contains(rail);
+            && RailDirection.getRailDirection(neighborRail).getNeighborRails(neighborRail)
+            .contains(rail);
     }
 
     private static boolean isUnstable(GlowBlock block, GlowBlock neighborRail) {
@@ -57,58 +36,81 @@ public class BlockRails extends BlockNeedsAttached {
             return false;
         }
 
-        Set<GlowBlock> neighborRails = RailDirection.getRailDirection(block).getNeighborRails(block);
+        Set<GlowBlock> neighborRails = RailDirection.getRailDirection(block)
+            .getNeighborRails(block);
 
         // equals because blocks at the same location are not the same at the moment.
         // TODO: !rail.equals(neighborRail) -> rail != neighborRail
-        return neighborRails.stream().filter(rail -> !rail.equals(neighborRail) && isConnected(block, rail)).count() != 2;
+        return neighborRails.stream()
+            .filter(rail -> !rail.equals(neighborRail) && isConnected(block, rail)).count() != 2;
     }
 
     private static RailDirection getRailDirection(GlowBlock rail) {
-        // north - 0, south - 1, east - 2, west - 3, ascending_north - 4, ascending_south - 5, ascending_east - 6, ascending_west - 7
+        // north - 0, south - 1, east - 2, west - 3, ascending_north - 4, ascending_south - 5,
+        // ascending_east - 6, ascending_west - 7
         boolean[] unstableRails = new boolean[8];
-
         GlowBlock north = rail.getRelative(BlockFace.NORTH);
+        unstableRails[NORTH] =
+            isUnstable(north, rail) || isUnstable(north.getRelative(BlockFace.DOWN), rail);
         GlowBlock south = rail.getRelative(BlockFace.SOUTH);
+        unstableRails[SOUTH] =
+            isUnstable(south, rail) || isUnstable(south.getRelative(BlockFace.DOWN), rail);
         GlowBlock east = rail.getRelative(BlockFace.EAST);
+        unstableRails[EAST] =
+            isUnstable(east, rail) || isUnstable(east.getRelative(BlockFace.DOWN), rail);
         GlowBlock west = rail.getRelative(BlockFace.WEST);
-
-        unstableRails[NORTH] = isUnstable(north, rail) || isUnstable(north.getRelative(BlockFace.DOWN), rail);
-        unstableRails[SOUTH] = isUnstable(south, rail) || isUnstable(south.getRelative(BlockFace.DOWN), rail);
-        unstableRails[EAST] = isUnstable(east, rail) || isUnstable(east.getRelative(BlockFace.DOWN), rail);
-        unstableRails[WEST] = isUnstable(west, rail) || isUnstable(west.getRelative(BlockFace.DOWN), rail);
+        unstableRails[WEST] =
+            isUnstable(west, rail) || isUnstable(west.getRelative(BlockFace.DOWN), rail);
         unstableRails[ASCENDING_NORTH] = isUnstable(north.getRelative(BlockFace.UP), rail);
         unstableRails[ASCENDING_SOUTH] = isUnstable(south.getRelative(BlockFace.UP), rail);
         unstableRails[ASCENDING_WEST] = isUnstable(east.getRelative(BlockFace.UP), rail);
         unstableRails[ASCENDING_EAST] = isUnstable(west.getRelative(BlockFace.UP), rail);
 
-        // north && east || ascending_north && ascending_east || north && ascending_east || ascending_north && east
-        if (unstableRails[NORTH] && unstableRails[EAST] || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_EAST] || unstableRails[NORTH] && unstableRails[ASCENDING_EAST] || unstableRails[ASCENDING_NORTH] && unstableRails[EAST]) {
+        // north && east || ascending_north && ascending_east || north && ascending_east
+        //         || ascending_north && east
+        if (unstableRails[NORTH] && unstableRails[EAST]
+            || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_EAST]
+            || unstableRails[NORTH] && unstableRails[ASCENDING_EAST]
+            || unstableRails[ASCENDING_NORTH] && unstableRails[EAST]) {
             return RailDirection.NORTH_EAST;
         }
 
-        // north && west || ascending_north && ascending_west || north && ascending_west || ascending_north && west
-        if (unstableRails[NORTH] && unstableRails[WEST] || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_WEST] || unstableRails[NORTH] && unstableRails[ASCENDING_WEST] || unstableRails[ASCENDING_NORTH] && unstableRails[WEST]) {
+        // north && west || ascending_north && ascending_west || north && ascending_west
+        //         || ascending_north && west
+        if (unstableRails[NORTH] && unstableRails[WEST]
+            || unstableRails[ASCENDING_NORTH] && unstableRails[ASCENDING_WEST]
+            || unstableRails[NORTH] && unstableRails[ASCENDING_WEST]
+            || unstableRails[ASCENDING_NORTH] && unstableRails[WEST]) {
             return RailDirection.NORTH_WEST;
         }
 
-        // south && west || ascending_south && ascending_west || south && ascending_west || ascending_south && west
-        if (unstableRails[SOUTH] && unstableRails[WEST] || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_WEST] || unstableRails[SOUTH] && unstableRails[ASCENDING_WEST] || unstableRails[ASCENDING_SOUTH] && unstableRails[WEST]) {
+        // south && west || ascending_south && ascending_west || south && ascending_west
+        //         || ascending_south && west
+        if (unstableRails[SOUTH] && unstableRails[WEST]
+            || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_WEST]
+            || unstableRails[SOUTH] && unstableRails[ASCENDING_WEST]
+            || unstableRails[ASCENDING_SOUTH] && unstableRails[WEST]) {
             return RailDirection.SOUTH_WEST;
         }
 
-        // south && east || ascending_south && ascending_east || south && ascending_east || ascending_south && east
-        if (unstableRails[SOUTH] && unstableRails[EAST] || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_EAST] || unstableRails[SOUTH] && unstableRails[ASCENDING_EAST] || unstableRails[ASCENDING_SOUTH] && unstableRails[EAST]) {
+        // south && east || ascending_south && ascending_east || south && ascending_east
+        //         || ascending_south && east
+        if (unstableRails[SOUTH] && unstableRails[EAST]
+            || unstableRails[ASCENDING_SOUTH] && unstableRails[ASCENDING_EAST]
+            || unstableRails[SOUTH] && unstableRails[ASCENDING_EAST]
+            || unstableRails[ASCENDING_SOUTH] && unstableRails[EAST]) {
             return RailDirection.SOUTH_EAST;
         }
 
         // ascending_north && south || ascending_north
-        if (unstableRails[ASCENDING_NORTH] && unstableRails[SOUTH] || unstableRails[ASCENDING_NORTH]) {
+        if (unstableRails[ASCENDING_NORTH] && unstableRails[SOUTH]
+            || unstableRails[ASCENDING_NORTH]) {
             return RailDirection.ASCENDING_NORTH;
         }
 
         // ascending_south && north || ascending_south
-        if (unstableRails[ASCENDING_SOUTH] && unstableRails[NORTH] || unstableRails[ASCENDING_SOUTH]) {
+        if (unstableRails[ASCENDING_SOUTH] && unstableRails[NORTH]
+            || unstableRails[ASCENDING_SOUTH]) {
             return RailDirection.ASCENDING_SOUTH;
         }
 
@@ -137,6 +139,34 @@ public class BlockRails extends BlockNeedsAttached {
 
     private static boolean isRailBlock(GlowBlock block) {
         return block.getType() == Material.RAILS;
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        return Arrays.asList(new ItemStack(block.getType()));
+    }
+
+    @Override
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
+        super.placeBlock(player, state, face, holding, clickedLoc);
+
+        GlowBlock block = state.getBlock();
+        RailDirection direction = getRailDirection(block);
+
+        state.setRawData((byte) direction.ordinal());
+        state.update(true, false);
+
+        updateNeighbors(block, direction);
+    }
+
+    private void updateNeighbors(GlowBlock block, RailDirection direction) {
+        direction.getNeighborRails(block).forEach(rail -> {
+            // check if the rail is stable
+            if (isUnstable(rail, block) && !isConnected(rail, block)) {
+                rail.setData((byte) getRailDirection(rail).ordinal());
+            }
+        });
     }
 
     private enum RailDirection {
@@ -210,7 +240,8 @@ public class BlockRails extends BlockNeedsAttached {
                 Set<GlowBlock> rails = new HashSet<>();
 
                 GlowBlock west = rail.getRelative(BlockFace.WEST);
-                GlowBlock ascendingEast = rail.getRelative(BlockFace.EAST).getRelative(BlockFace.UP);
+                GlowBlock ascendingEast = rail.getRelative(BlockFace.EAST)
+                    .getRelative(BlockFace.UP);
                 GlowBlock descendingWest = west.getRelative(BlockFace.DOWN);
 
                 if (isRailBlock(ascendingEast)) {
@@ -236,7 +267,8 @@ public class BlockRails extends BlockNeedsAttached {
                 Set<GlowBlock> rails = new HashSet<>();
 
                 GlowBlock east = rail.getRelative(BlockFace.EAST);
-                GlowBlock ascendingWest = rail.getRelative(BlockFace.WEST).getRelative(BlockFace.UP);
+                GlowBlock ascendingWest = rail.getRelative(BlockFace.WEST)
+                    .getRelative(BlockFace.UP);
                 GlowBlock descendingEast = east.getRelative(BlockFace.DOWN);
 
                 if (isRailBlock(ascendingWest)) {
@@ -262,7 +294,8 @@ public class BlockRails extends BlockNeedsAttached {
                 Set<GlowBlock> rails = new HashSet<>();
 
                 GlowBlock south = rail.getRelative(BlockFace.SOUTH);
-                GlowBlock ascendingNorth = rail.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP);
+                GlowBlock ascendingNorth = rail.getRelative(BlockFace.NORTH)
+                    .getRelative(BlockFace.UP);
                 GlowBlock descendingSouth = south.getRelative(BlockFace.DOWN);
 
                 if (isRailBlock(ascendingNorth)) {
@@ -288,7 +321,8 @@ public class BlockRails extends BlockNeedsAttached {
                 Set<GlowBlock> rails = new HashSet<>();
 
                 GlowBlock north = rail.getRelative(BlockFace.NORTH);
-                GlowBlock ascendingSouth = rail.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP);
+                GlowBlock ascendingSouth = rail.getRelative(BlockFace.SOUTH)
+                    .getRelative(BlockFace.UP);
                 GlowBlock descendingNorth = north.getRelative(BlockFace.DOWN);
 
                 if (isRailBlock(ascendingSouth)) {
@@ -445,10 +479,10 @@ public class BlockRails extends BlockNeedsAttached {
             }
         }
 
-        public abstract Set<GlowBlock> getNeighborRails(GlowBlock rail);
-
         public static RailDirection getRailDirection(GlowBlock rail) {
             return dataValues.get(rail.getData());
         }
+
+        public abstract Set<GlowBlock> getNeighborRails(GlowBlock rail);
     }
 }

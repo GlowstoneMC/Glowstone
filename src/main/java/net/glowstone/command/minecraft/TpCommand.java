@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
@@ -10,12 +11,16 @@ import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-
 public class TpCommand extends VanillaCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public TpCommand() {
         super("tp", "Teleports an entity to another entity or to specific coordinates.",
-                "/tp [target entity] <destination player> OR /tp [target entity] <x> <y> <z> [<yaw> <pitch>]", Collections.emptyList());
+            "/tp [target entity] <destination player> "
+                    + "OR /tp [target entity] <x> <y> <z> [<yaw> <pitch>]",
+            Collections.emptyList());
         setPermission("minecraft.command.tp");
     }
 
@@ -38,7 +43,8 @@ public class TpCommand extends VanillaCommand {
                     return false;
                 }
                 String name = args[0];
-                if (name.startsWith("@") && !name.startsWith("@e") && name.length() >= 2 && CommandUtils.isPhysical(sender)) {
+                if (name.startsWith("@") && !name.startsWith("@e") && name.length() >= 2
+                    && CommandUtils.isPhysical(sender)) {
                     Location location = from.getLocation();
                     CommandTarget target = new CommandTarget(sender, name);
                     Entity[] matched = target.getMatched(location);
@@ -48,7 +54,9 @@ public class TpCommand extends VanillaCommand {
                     }
                     for (Entity entity : matched) {
                         from.teleport(entity);
-                        sender.sendMessage("Teleported " + CommandUtils.getName(from) + " to " + CommandUtils.getName(entity));
+                        sender.sendMessage(
+                            "Teleported " + CommandUtils.getName(from) + " to " + CommandUtils
+                                .getName(entity));
                     }
                     return true;
                 } else {
@@ -58,63 +66,76 @@ public class TpCommand extends VanillaCommand {
                         return false;
                     } else {
                         from.teleport(player);
-                        sender.sendMessage("Teleported " + CommandUtils.getName(from) + " to " + player.getName());
+                        sender.sendMessage(
+                            "Teleported " + CommandUtils.getName(from) + " to " + player.getName());
                         return true;
                     }
                 }
             } else {
                 Entity destination;
-                String fromName = args[0], destName = args[1];
-                if (fromName.startsWith("@") && fromName.length() >= 2 && CommandUtils.isPhysical(sender)) {
+                String fromName = args[0];
+                String destName = args[1];
+                if (fromName.startsWith("@") && fromName.length() >= 2 && CommandUtils
+                    .isPhysical(sender)) {
                     Location location = CommandUtils.getLocation(sender);
                     CommandTarget target = new CommandTarget(sender, fromName);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
-                        sender.sendMessage(ChatColor.RED + "Selector " + fromName + " found nothing");
+                        sender
+                            .sendMessage(ChatColor.RED + "Selector " + fromName + " found nothing");
                         return false;
                     }
                     for (Entity entity : matched) {
-                        if (destName.startsWith("@") && !destName.startsWith("@e") && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
+                        if (destName.startsWith("@") && !destName.startsWith("@e")
+                            && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
                             Location location2 = CommandUtils.getLocation(sender);
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                sender.sendMessage(ChatColor.RED + "Selector " + destName + " found nothing");
+                                sender.sendMessage(
+                                    ChatColor.RED + "Selector " + destName + " found nothing");
                                 return false;
                             }
                             destination = matched2[0];
                         } else {
                             Player player = Bukkit.getPlayerExact(destName);
                             if (player == null) {
-                                sender.sendMessage(ChatColor.RED + "Player '" + destName + "' is not online");
+                                sender.sendMessage(
+                                    ChatColor.RED + "Player '" + destName + "' is not online");
                                 return false;
                             } else {
                                 destination = player;
                             }
                         }
                         entity.teleport(destination);
-                        sender.sendMessage("Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils.getName(destination));
+                        sender.sendMessage(
+                            "Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils
+                                .getName(destination));
                     }
                     return true;
                 } else {
                     Player player = Bukkit.getPlayerExact(fromName);
                     if (player == null) {
-                        sender.sendMessage(ChatColor.RED + "Player '" + fromName + "' is not online");
+                        sender
+                            .sendMessage(ChatColor.RED + "Player '" + fromName + "' is not online");
                         return false;
                     } else {
-                        if (destName.startsWith("@") && !destName.startsWith("@e") && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
+                        if (destName.startsWith("@") && !destName.startsWith("@e")
+                            && destName.length() >= 2 && CommandUtils.isPhysical(sender)) {
                             Location location2 = CommandUtils.getLocation(sender);
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                sender.sendMessage(ChatColor.RED + "Selector " + destName + " found nothing");
+                                sender.sendMessage(
+                                    ChatColor.RED + "Selector " + destName + " found nothing");
                                 return false;
                             }
                             destination = matched2[0];
                         } else {
                             Player player2 = Bukkit.getPlayerExact(destName);
                             if (player2 == null) {
-                                sender.sendMessage(ChatColor.RED + "Player '" + destName + "' is not online");
+                                sender.sendMessage(
+                                    ChatColor.RED + "Player '" + destName + "' is not online");
                                 return false;
                             } else {
                                 destination = player2;
@@ -122,12 +143,14 @@ public class TpCommand extends VanillaCommand {
                         }
                     }
                     player.teleport(destination);
-                    sender.sendMessage("Teleported " + player.getName() + " to " + CommandUtils.getName(destination));
+                    sender.sendMessage("Teleported " + player.getName() + " to " + CommandUtils
+                        .getName(destination));
                     return true;
                 }
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "Coordinate-based teleporting is not supported yet!");
+            sender
+                .sendMessage(ChatColor.RED + "Coordinate-based teleporting is not supported yet!");
             return false;
         }
     }

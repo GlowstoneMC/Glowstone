@@ -1,16 +1,15 @@
 package net.glowstone.io.entity;
 
+import java.util.UUID;
 import net.glowstone.entity.monster.GlowPigZombie;
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 
-import java.util.UUID;
-
 class PigZombieStore extends ZombieStore<GlowPigZombie> {
 
     public PigZombieStore() {
-        super(GlowPigZombie.class, EntityType.PIG_ZOMBIE);
+        super(GlowPigZombie.class, EntityType.PIG_ZOMBIE, GlowPigZombie::new);
     }
 
     @Override

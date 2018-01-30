@@ -18,20 +18,25 @@ import org.bukkit.util.Vector;
 public class ItemFirework extends ItemType {
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        spawnFirework(player, holding, target.getLocation().add(clickedLoc), player.getUniqueId(), null);
+    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
+        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+        spawnFirework(player, holding, target.getLocation().add(clickedLoc), player.getUniqueId(),
+            null);
     }
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
-        if (InventoryUtil.isEmpty(player.getEquipment().getChestplate()) || player.getEquipment().getChestplate().getType() != Material.ELYTRA || !player.isGliding()) {
+        if (InventoryUtil.isEmpty(player.getEquipment().getChestplate())
+            || player.getEquipment().getChestplate().getType() != Material.ELYTRA || !player
+            .isGliding()) {
             return;
         }
 
         spawnFirework(player, holding, player.getLocation(), player.getUniqueId(), player);
     }
 
-    private void spawnFirework(GlowPlayer player, ItemStack item, Location location, UUID spawner, LivingEntity boostedEntity) {
+    private void spawnFirework(GlowPlayer player, ItemStack item, Location location, UUID spawner,
+        LivingEntity boostedEntity) {
         if (item.getType() != Material.FIREWORK || !(item.getItemMeta() instanceof FireworkMeta)) {
             return;
         }

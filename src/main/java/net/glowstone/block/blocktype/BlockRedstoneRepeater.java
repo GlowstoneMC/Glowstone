@@ -18,7 +18,8 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         Diode diode = (Diode) block.getState().getData();
         diode.setDelay(diode.getDelay() == 4 ? 1 : diode.getDelay() + 1);
         block.setData(diode.getData());
@@ -26,21 +27,24 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (data instanceof Diode) {
-            ((Diode) data).setFacingDirection(player.getDirection());
+            ((Diode) data).setFacingDirection(player.getCardinalFacing());
             state.setData(data);
         } else {
             warnMaterialData(Diode.class, data);
@@ -55,9 +59,12 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
         Diode diode = (Diode) me.getState().getData();
         GlowBlock target = me.getRelative(diode.getFacing().getOppositeFace());
 
-        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered() || target.getType() == Material.REDSTONE_WIRE
-                && target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(diode.getFacing())
-                || target.getType() == Material.DIODE_BLOCK_ON && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
+        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered()
+            || target.getType() == Material.REDSTONE_WIRE
+            && target.getData() > 0 && BlockRedstone.calculateConnections(target)
+            .contains(diode.getFacing())
+            || target.getType() == Material.DIODE_BLOCK_ON
+            && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
         if (powered != (me.getType() == Material.DIODE_BLOCK_ON)) {
             me.getWorld().requestPulse(me);
@@ -71,10 +78,12 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
         if (target.getType().isSolid()) {
             for (BlockFace face2 : ADJACENT) {
                 GlowBlock target2 = target.getRelative(face2);
-                BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                BlockType notifyType = itemTable.getBlock(target2.getType());
                 if (notifyType != null) {
                     if (target2.getFace(block) == null) {
-                        notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                        notifyType
+                            .onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(),
+                                block.getData(), block.getType(), block.getData());
                     }
                     notifyType.onRedstoneUpdate(target2);
                 }
@@ -87,9 +96,12 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
         Diode diode = (Diode) block.getState().getData();
         GlowBlock target = block.getRelative(diode.getFacing().getOppositeFace());
 
-        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered() || target.getType() == Material.REDSTONE_WIRE
-                && target.getData() > 0 && BlockRedstone.calculateConnections(target).contains(diode.getFacing())
-                || target.getType() == Material.DIODE_BLOCK_ON && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
+        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered()
+            || target.getType() == Material.REDSTONE_WIRE
+            && target.getData() > 0 && BlockRedstone.calculateConnections(target)
+            .contains(diode.getFacing())
+            || target.getType() == Material.DIODE_BLOCK_ON
+            && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
         if (!powered && block.getType() == Material.DIODE_BLOCK_ON) {
             block.setTypeIdAndData(Material.DIODE_BLOCK_OFF.getId(), block.getData(), true);

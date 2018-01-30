@@ -161,7 +161,8 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
 
         // bukkit
         CompoundTag bukkit = new CompoundTag();
-        bukkit.putLong("firstPlayed", entity.getFirstPlayed() == 0 ? entity.getJoinTime() : entity.getFirstPlayed());
+        bukkit.putLong("firstPlayed",
+            entity.getFirstPlayed() == 0 ? entity.getJoinTime() : entity.getFirstPlayed());
         bukkit.putLong("lastPlayed", entity.getJoinTime());
         bukkit.putString("lastKnownName", entity.getName());
         tag.putCompound("bukkit", bukkit);

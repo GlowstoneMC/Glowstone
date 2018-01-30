@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType;
 class ChickenStore extends AgeableStore<GlowChicken> {
 
     public ChickenStore() {
-        super(GlowChicken.class, EntityType.CHICKEN);
+        super(GlowChicken.class, EntityType.CHICKEN, GlowChicken::new);
     }
 
     @Override

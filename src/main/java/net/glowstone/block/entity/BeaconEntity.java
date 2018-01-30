@@ -1,12 +1,22 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.util.nbt.CompoundTag;
 
 public class BeaconEntity extends BlockEntity {
 
     private String lock = null; // todo: support item locks
-    private int levels = 0, primaryId = 0, secondaryId = 0;
+    @Getter
+    @Setter
+    private int levels = 0;
+    @Getter
+    @Setter
+    private int primaryId = 0;
+    @Getter
+    @Setter
+    private int secondaryId = 0;
 
     public BeaconEntity(GlowBlock block) {
         super(block);
@@ -33,29 +43,5 @@ public class BeaconEntity extends BlockEntity {
         tag.putInt("Levels", levels);
         tag.putInt("Primary", primaryId);
         tag.putInt("Secondary", secondaryId);
-    }
-
-    public int getLevels() {
-        return levels;
-    }
-
-    public void setLevels(int levels) {
-        this.levels = levels;
-    }
-
-    public int getPrimaryId() {
-        return primaryId;
-    }
-
-    public void setPrimaryId(int primaryId) {
-        this.primaryId = primaryId;
-    }
-
-    public int getSecondaryId() {
-        return secondaryId;
-    }
-
-    public void setSecondaryId(int secondaryId) {
-        this.secondaryId = secondaryId;
     }
 }

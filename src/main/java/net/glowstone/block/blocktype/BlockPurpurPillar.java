@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -10,9 +12,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Collection;
-import java.util.Collections;
-
 public class BlockPurpurPillar extends BlockNeedsTool {
 
     private static final byte AXIS_X = 0x4;
@@ -20,7 +19,8 @@ public class BlockPurpurPillar extends BlockNeedsTool {
     private static final byte AXIS_Z = 0x8;
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         byte data = 0;
@@ -37,6 +37,9 @@ public class BlockPurpurPillar extends BlockNeedsTool {
             case WEST:
                 data = AXIS_X;
                 break;
+            default:
+                // do nothing
+                // TODO: should this raise a warning?
         }
         state.setRawData(data);
     }

@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
  * An Iterator which delegates in other iterators.
  */
 public class SuperListIterator<E> implements ListIterator<E> {
+
     private final ListIterator<List<E>> parentIterator;
     private ListIterator<E> childIterator;
     private int index;
@@ -20,6 +21,12 @@ public class SuperListIterator<E> implements ListIterator<E> {
         this.parentIterator = parentIterator;
     }
 
+    /**
+     * Creates an instance.
+     *
+     * @param parents a list of lists to iterate in a flattened manner
+     * @param index the initial index
+     */
     public SuperListIterator(List<List<E>> parents, int index) {
         this(parents);
         this.index = index;

@@ -1,15 +1,17 @@
 package net.glowstone.inventory;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import net.glowstone.testutils.ServerShim;
 import net.glowstone.util.IsFloatCloseTo;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for GlowPlayerInventory.
@@ -22,11 +24,16 @@ public class PlayerInventoryTest {
     private static final ItemStack TEST_LEGGINGS = new ItemStack(Material.AIR, 0);
     private static final ItemStack TEST_CHESTPLATE = new ItemStack(Material.LEATHER_CHESTPLATE);
     private static final ItemStack TEST_HELMET = new ItemStack(Material.IRON_HELMET);
-    private static final ItemStack[] TEST_ARMOR = new ItemStack[] {
-            TEST_BOOTS, TEST_LEGGINGS, TEST_CHESTPLATE, TEST_HELMET
+    private static final ItemStack[] TEST_ARMOR = new ItemStack[]{
+        TEST_BOOTS, TEST_LEGGINGS, TEST_CHESTPLATE, TEST_HELMET
     };
 
     private GlowPlayerInventory inventory;
+
+    @BeforeClass
+    public static void initShim() {
+        ServerShim.install();
+    }
 
     @Before
     public void setup() {
@@ -43,15 +50,19 @@ public class PlayerInventoryTest {
     @Test
     public void testSlotTypes() {
         for (int i = 0; i < 9; ++i) {
-            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i), is(SlotType.QUICKBAR));
+            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i),
+                is(SlotType.QUICKBAR));
         }
         for (int i = 9; i < SIZE - 5; ++i) {
-            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i), is(SlotType.CONTAINER));
+            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i),
+                is(SlotType.CONTAINER));
         }
         for (int i = SIZE - 4; i < SIZE - 1; ++i) {
-            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i), is(SlotType.ARMOR));
+            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i),
+                is(SlotType.ARMOR));
         }
-        assertThat("Slot type for offhand (40) was wrong", inventory.getSlotType(40), is(SlotType.CONTAINER));
+        assertThat("Slot type for offhand (40) was wrong", inventory.getSlotType(40),
+            is(SlotType.CONTAINER));
     }
 
     /**
@@ -82,10 +93,14 @@ public class PlayerInventoryTest {
 
     @Test
     public void testDropChance() {
-        assertThat("Wrong boots drop chance", inventory.getBootsDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
-        assertThat("Wrong leggings drop chance", inventory.getLeggingsDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
-        assertThat("Wrong chestplate drop chance", inventory.getChestplateDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
-        assertThat("Wrong helmet drop chance", inventory.getHelmetDropChance(), IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong boots drop chance", inventory.getBootsDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong leggings drop chance", inventory.getLeggingsDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong chestplate drop chance", inventory.getChestplateDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong helmet drop chance", inventory.getHelmetDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
     }
 
     @Test(expected = UnsupportedOperationException.class)

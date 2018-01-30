@@ -1,46 +1,36 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-import java.lang.reflect.Constructor;
-
 public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
 
-    private Constructor<T> constructor;
+    private Function<Location, ? extends T> creator;
 
-    public AgeableStore(Class<T> clazz, EntityType type) {
-        super(clazz, type.getName());
-        init(clazz);
-    }
-
-    public AgeableStore(Class<T> clazz, String type) {
+    public AgeableStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
         super(clazz, type);
-        init(clazz);
+        this.creator = creator;
     }
 
-    private void init(Class<T> clazz) {
-        Constructor<T> ctor = null;
-        try {
-            ctor = clazz.getConstructor(Location.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        constructor = ctor;
+    public AgeableStore(Class<T> clazz, String type, Function<Location, ? extends T> creator) {
+        super(clazz, type);
+        this.creator = creator;
     }
 
     @Override
     public T createEntity(Location location, CompoundTag compound) {
         try {
-            return constructor.newInstance(location);
+            return creator.apply(location);
         } catch (Exception e) {
             e.printStackTrace();
             throw new UnsupportedOperationException("Not implemented yet.");
         }
     }
 
+    @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.containsKey("Age")) {
@@ -57,6 +47,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         }
     }
 
+    @Override
     public void save(T entity, CompoundTag tag) {
         super.save(entity, tag);
         tag.putInt("Age", entity.getAge());

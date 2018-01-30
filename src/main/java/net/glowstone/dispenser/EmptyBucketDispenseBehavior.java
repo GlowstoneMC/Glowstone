@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class EmptyBucketDispenseBehavior extends DefaultDispenseBehavior {
-    private DefaultDispenseBehavior defaultBehavior = new DefaultDispenseBehavior();
 
     @Override
     protected ItemStack dispenseStack(GlowBlock block, ItemStack stack) {
@@ -30,7 +29,7 @@ public class EmptyBucketDispenseBehavior extends DefaultDispenseBehavior {
             ItemStack toPlace = new ItemStack(bucket);
             ItemStack remaining = dispenser.placeInDispenser(toPlace);
             if (remaining != null) {
-                defaultBehavior.dispense(block, remaining);
+                INSTANCE.dispense(block, remaining);
             }
         }
 

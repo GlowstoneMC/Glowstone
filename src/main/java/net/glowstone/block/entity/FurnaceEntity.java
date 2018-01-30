@@ -1,5 +1,7 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
@@ -20,7 +22,11 @@ import org.bukkit.inventory.Recipe;
 
 public class FurnaceEntity extends ContainerEntity {
 
+    @Getter
+    @Setter
     private short burnTime;
+    @Getter
+    @Setter
     private short cookTime;
     private short burnTimeFuel;
 
@@ -37,7 +43,8 @@ public class FurnaceEntity extends ContainerEntity {
     @Override
     public void update(GlowPlayer player) {
         super.update(player);
-        player.sendBlockChange(getBlock().getLocation(), getBurnTime() > 0 ? Material.BURNING_FURNACE : Material.FURNACE, getBlock().getData());
+        player.sendBlockChange(getBlock().getLocation(),
+            getBurnTime() > 0 ? Material.BURNING_FURNACE : Material.FURNACE, getBlock().getData());
     }
 
     @Override
@@ -58,22 +65,9 @@ public class FurnaceEntity extends ContainerEntity {
         }
     }
 
-    public short getBurnTime() {
-        return burnTime;
-    }
-
-    public void setBurnTime(short burnTime) {
-        this.burnTime = burnTime;
-    }
-
-    public short getCookTime() {
-        return cookTime;
-    }
-
-    public void setCookTime(short cookTime) {
-        this.cookTime = cookTime;
-    }
-
+    /**
+     * Advances the cooking process for the tick.
+     */
     // TODO: Change block on burning
     public void burn() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
@@ -99,7 +93,8 @@ public class FurnaceEntity extends ContainerEntity {
         if (burnTime == 0) {
             if (isBurnable) {
                 CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
-                FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, inv.getFuel(), cm.getFuelTime(inv.getFuel().getType()));
+                FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, inv.getFuel(),
+                    cm.getFuelTime(inv.getFuel().getType()));
                 EventFactory.callEvent(burnEvent);
                 if (!burnEvent.isCancelled() && burnEvent.isBurning()) {
                     burnTime = (short) burnEvent.getBurnTime();
@@ -136,16 +131,21 @@ public class FurnaceEntity extends ContainerEntity {
             CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
             Recipe recipe = cm.getFurnaceRecipe(inv.getSmelting());
             if (recipe != null) {
-                FurnaceSmeltEvent smeltEvent = new FurnaceSmeltEvent(block, inv.getSmelting(), recipe.getResult());
+                FurnaceSmeltEvent smeltEvent = new FurnaceSmeltEvent(block, inv.getSmelting(),
+                    recipe.getResult());
                 EventFactory.callEvent(smeltEvent);
                 if (!smeltEvent.isCancelled()) {
-                    if (inv.getSmelting().getType().equals(Material.SPONGE) && inv.getSmelting().getData().getData() == 1 && inv.getFuel() != null && inv.getFuel().getType().equals(Material.BUCKET) && inv.getFuel().getAmount() == 1) {
+                    if (inv.getSmelting().getType().equals(Material.SPONGE)
+                        && inv.getSmelting().getData().getData() == 1 && inv.getFuel() != null
+                        && inv.getFuel().getType().equals(Material.BUCKET)
+                        && inv.getFuel().getAmount() == 1) {
                         inv.setFuel(new ItemStack(Material.WATER_BUCKET));
                     }
                     if (inv.getResult() == null || inv.getResult().getType().equals(Material.AIR)) {
                         inv.setResult(smeltEvent.getResult());
                     } else if (inv.getResult().getType().equals(smeltEvent.getResult().getType())) {
-                        inv.getResult().setAmount(inv.getResult().getAmount() + smeltEvent.getResult().getAmount());
+                        inv.getResult().setAmount(
+                            inv.getResult().getAmount() + smeltEvent.getResult().getAmount());
                     }
                     if (inv.getSmelting().getAmount() == 1) {
                         inv.setSmelting(null);
@@ -174,14 +174,19 @@ public class FurnaceEntity extends ContainerEntity {
 
     private boolean isBurnable() {
         GlowFurnaceInventory inv = (GlowFurnaceInventory) getInventory();
-        if ((burnTime != 0 || !InventoryUtil.isEmpty(inv.getFuel())) && !InventoryUtil.isEmpty(inv.getSmelting())) {
-            if ((InventoryUtil.isEmpty(inv.getFuel()) || InventoryUtil.isEmpty(inv.getSmelting())) && burnTime == 0) {
+        if ((burnTime != 0 || !InventoryUtil.isEmpty(inv.getFuel())) && !InventoryUtil
+            .isEmpty(inv.getSmelting())) {
+            if ((InventoryUtil.isEmpty(inv.getFuel()) || InventoryUtil.isEmpty(inv.getSmelting()))
+                && burnTime == 0) {
                 return false;
             }
             CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
             if (burnTime != 0 || cm.isFuel(inv.getFuel().getType())) {
                 Recipe recipe = cm.getFurnaceRecipe(inv.getSmelting());
-                if (recipe != null && (InventoryUtil.isEmpty(inv.getResult()) || inv.getResult().getType().equals(recipe.getResult().getType()) && inv.getResult().getAmount() + recipe.getResult().getAmount() <= recipe.getResult().getMaxStackSize())) {
+                if (recipe != null && (InventoryUtil.isEmpty(inv.getResult())
+                    || inv.getResult().getType().equals(recipe.getResult().getType())
+                    && inv.getResult().getAmount() + recipe.getResult().getAmount() <= recipe
+                    .getResult().getMaxStackSize())) {
                     return true;
                 }
             }

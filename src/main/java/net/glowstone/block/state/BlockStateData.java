@@ -1,15 +1,16 @@
 package net.glowstone.block.state;
 
 import com.google.common.collect.Maps;
-
 import java.util.Map;
+import lombok.Getter;
 
 public class BlockStateData {
 
     private final Map<String, String> map = Maps.newHashMap();
-    private final int numericValue;
+    @Getter
+    private final byte numericValue;
 
-    public BlockStateData(int numericValue) {
+    public BlockStateData(byte numericValue) {
         this.numericValue = numericValue;
     }
 
@@ -35,10 +36,6 @@ public class BlockStateData {
 
     public boolean isNumeric() {
         return numericValue != -1;
-    }
-
-    public int getNumericValue() {
-        return numericValue;
     }
 
     @Override

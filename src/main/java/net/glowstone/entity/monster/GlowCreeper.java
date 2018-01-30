@@ -1,20 +1,27 @@
 package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-
-import java.util.List;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class GlowCreeper extends GlowMonster implements Creeper {
 
+    @Getter
+    @Setter
     private int explosionRadius;
-    private int fuse;
+    @Getter
+    @Setter
+    private int maxFuseTicks;
+    @Getter
+    @Setter
     private boolean ignited;
 
     public GlowCreeper(Location loc) {
@@ -36,30 +43,6 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     @Override
     public void setPowered(boolean value) {
         metadata.set(MetadataIndex.CREEPER_POWERED, value);
-    }
-
-    public int getExplosionRadius() {
-        return explosionRadius;
-    }
-
-    public void setExplosionRadius(int explosionRadius) {
-        this.explosionRadius = explosionRadius;
-    }
-
-    public int getFuse() {
-        return fuse;
-    }
-
-    public void setFuse(int fuse) {
-        this.fuse = fuse;
-    }
-
-    public boolean isIgnited() {
-        return ignited;
-    }
-
-    public void setIgnited(boolean ignited) {
-        this.ignited = ignited;
     }
 
     @Override

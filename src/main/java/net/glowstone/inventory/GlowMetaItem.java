@@ -1,6 +1,17 @@
 package net.glowstone.inventory;
 
 import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
@@ -8,19 +19,19 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
  */
 public class GlowMetaItem implements ItemMeta {
 
+    @Getter
+    @Setter
     private String displayName;
     private List<String> lore;
     private Map<Enchantment, Integer> enchants;
     private int hideFlag;
+    @Getter
+    @Setter
     private boolean unbreakable;
 
     /**
@@ -28,24 +39,30 @@ public class GlowMetaItem implements ItemMeta {
      *
      * @param meta The meta to copy from, or null.
      */
-    public GlowMetaItem(GlowMetaItem meta) {
+    public GlowMetaItem(ItemMeta meta) {
         if (meta == null) {
             return;
         }
 
-        displayName = meta.displayName;
+        displayName = meta.getDisplayName();
 
         if (meta.hasLore()) {
-            lore = new ArrayList<>(meta.lore);
+            lore = new ArrayList<>(meta.getLore());
         }
         if (meta.hasEnchants()) {
-            enchants = new HashMap<>(meta.enchants);
+            enchants = new HashMap<>(meta.getEnchants());
         }
-
-        hideFlag = meta.hideFlag;
+        if (meta instanceof GlowMetaItem) {
+            hideFlag = ((GlowMetaItem) meta).hideFlag;
+        } else {
+            for (ItemFlag flag : meta.getItemFlags()) {
+                addItemFlags(flag);
+            }
+        }
     }
 
-    protected static void serializeEnchants(String name, Map<String, Object> map, Map<Enchantment, Integer> enchants) {
+    protected static void serializeEnchants(String name, Map<String, Object> map,
+        Map<Enchantment, Integer> enchants) {
         Map<String, Object> enchantList = new HashMap<>();
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
@@ -55,7 +72,8 @@ public class GlowMetaItem implements ItemMeta {
         map.put(name, enchantList);
     }
 
-    protected static void writeNbtEnchants(String name, CompoundTag to, Map<Enchantment, Integer> enchants) {
+    protected static void writeNbtEnchants(String name, CompoundTag to,
+        Map<Enchantment, Integer> enchants) {
         List<CompoundTag> ench = new ArrayList<>();
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
@@ -76,7 +94,9 @@ public class GlowMetaItem implements ItemMeta {
             for (CompoundTag enchantmentTag : enchs) {
                 if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
                     Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
-                    if (result == null) result = new HashMap<>(4);
+                    if (result == null) {
+                        result = new HashMap<>(4);
+                    }
                     result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
                 }
             }
@@ -128,7 +148,8 @@ public class GlowMetaItem implements ItemMeta {
         }
 
         if (hideFlag != 0) {
-            Set<String> hideFlags = getItemFlags().stream().map(Enum::name).collect(Collectors.toSet());
+            Set<String> hideFlags = getItemFlags().stream().map(Enum::name)
+                .collect(Collectors.toSet());
             if (hideFlags.isEmpty()) {
                 result.put("ItemFlags", hideFlags);
             }
@@ -174,10 +195,11 @@ public class GlowMetaItem implements ItemMeta {
         //TODO currently ignoring level restriction, is that right?
         Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
         if (tagEnchants != null) {
-            if (enchants == null)
+            if (enchants == null) {
                 enchants = tagEnchants;
-            else
+            } else {
                 enchants.putAll(tagEnchants);
+            }
         }
 
         if (tag.isInt("HideFlags")) {
@@ -200,16 +222,6 @@ public class GlowMetaItem implements ItemMeta {
     @Override
     public boolean hasDisplayName() {
         return !Strings.isNullOrEmpty(displayName);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    @Override
-    public void setDisplayName(String name) {
-        displayName = name;
     }
 
     // TODO: support localization
@@ -236,23 +248,15 @@ public class GlowMetaItem implements ItemMeta {
 
     @Override
     public List<String> getLore() {
+        // TODO: Defensive copy
         return lore;
     }
 
     @Override
     public void setLore(List<String> lore) {
         // todo: fancy validation things
+        // TODO: Defensive copy
         this.lore = lore;
-    }
-
-    @Override
-    public boolean isUnbreakable() {
-        return unbreakable;
-    }
-
-    @Override
-    public void setUnbreakable(boolean unbreakable) {
-        this.unbreakable = unbreakable;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -284,7 +288,8 @@ public class GlowMetaItem implements ItemMeta {
             enchants = new HashMap<>(4);
         }
 
-        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench.getMaxLevel()) {
+        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench
+            .getMaxLevel()) {
             Integer old = enchants.put(ench, level);
             return old == null || old != level;
         }
@@ -298,11 +303,14 @@ public class GlowMetaItem implements ItemMeta {
 
     @Override
     public boolean hasConflictingEnchant(Enchantment ench) {
-        if (!hasEnchants()) return false;
+        if (!hasEnchants()) {
+            return false;
+        }
 
         for (Enchantment e : enchants.keySet()) {
-            if (e.conflictsWith(ench))
+            if (e.conflictsWith(ench)) {
                 return true;
+            }
         }
 
         return false;

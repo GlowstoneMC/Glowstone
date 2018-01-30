@@ -9,6 +9,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Hanging;
 
 public abstract class GlowHangingEntity extends GlowEntity implements Hanging {
+
     protected HangingFace facing = HangingFace.SOUTH;
 
     public GlowHangingEntity(Location location, BlockFace clickedface) {
@@ -47,7 +48,6 @@ public abstract class GlowHangingEntity extends GlowEntity implements Hanging {
         NORTH(BlockFace.NORTH),
         EAST(BlockFace.EAST);
 
-        private BlockFace blockFace;
         private static final Map<BlockFace, HangingFace> byBlockFace = new HashMap<>();
 
         static {
@@ -55,6 +55,8 @@ public abstract class GlowHangingEntity extends GlowEntity implements Hanging {
                 byBlockFace.put(hangingFace.blockFace, hangingFace);
             }
         }
+
+        private BlockFace blockFace;
 
         public static HangingFace getByBlockFace(BlockFace by) {
             return byBlockFace.getOrDefault(by, SOUTH);

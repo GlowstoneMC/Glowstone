@@ -1,12 +1,24 @@
 package net.glowstone.entity;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowLeashHitch;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
@@ -15,11 +27,20 @@ import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.objects.GlowItemFrame;
+import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.entity.objects.GlowPainting;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.entity.physics.EntityBoundingBox;
 import net.glowstone.net.GlowSession;
-import net.glowstone.net.message.play.entity.*;
+import net.glowstone.net.message.play.entity.AttachEntityMessage;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.entity.EntityRotationMessage;
+import net.glowstone.net.message.play.entity.EntityStatusMessage;
+import net.glowstone.net.message.play.entity.EntityTeleportMessage;
+import net.glowstone.net.message.play.entity.EntityVelocityMessage;
+import net.glowstone.net.message.play.entity.RelativeEntityPositionMessage;
+import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessage;
+import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
 import org.bukkit.EntityEffect;
@@ -54,10 +75,6 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import java.util.*;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Represents some entity in the world such as an item on the floor or a player.
  *
@@ -69,9 +86,11 @@ public abstract class GlowEntity implements Entity {
      * The metadata store for entities.
      */
     private static final MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();
+    private static final Vector zeroG = new Vector();
     /**
      * The server this entity belongs to.
      */
+    @Getter
     protected final GlowServer server;
     /**
      * The entity's metadata.
@@ -90,9 +109,33 @@ public abstract class GlowEntity implements Entity {
      */
     protected final Vector velocity = new Vector();
     /**
-     * The world this entity belongs to.
+     * A list of entities currently riding this entity.
      */
+    private final List<Entity> passengers = new ArrayList<>();
+    /**
+     * The original location of this entity.
+     */
+    @Getter
+    private final Location origin;
+    /**
+     * All entities that currently have this entity as leash holder.
+     */
+    @Getter
+    private final List<GlowEntity> leashedEntities = Lists.newArrayList();
+    /**
+     * List of custom String data for the entity.
+     */
+    @Getter
+    private final List<String> customTags = Lists.newArrayList();
+    /**
+     * The world this entity belongs to. Guarded by {@link #worldLock}.
+     */
+    @Getter
     protected GlowWorld world;
+    /**
+     * Lock to prevent concurrent modifications affected by switching worlds.
+     */
+    protected final ReadWriteLock worldLock = new ReentrantReadWriteLock();
     /**
      * A flag indicating if this entity is currently active.
      */
@@ -100,99 +143,136 @@ public abstract class GlowEntity implements Entity {
     /**
      * This entity's current identifier for its world.
      */
-    protected int id;
+    @Getter
+    protected int entityId;
     /**
      * Whether the entity should have its position resent as if teleported.
      */
+    @Getter
     protected boolean teleported;
     /**
      * Whether the entity should have its velocity resent.
      */
     protected boolean velocityChanged;
     /**
-     * A counter of how long this entity has existed
+     * A counter of how long this entity has existed.
      */
+    @Getter
+    @Setter
     protected int ticksLived;
     /**
-     * Vehicle
+     * The entity this entity is currently riding.
      */
+    @Getter
     protected GlowEntity vehicle;
-    /**
-     * This entity's unique id.
-     */
-    private UUID uuid;
     /**
      * The entity's bounding box, or null if it has no physical presence.
      */
     protected EntityBoundingBox boundingBox;
-    /**
-     * An EntityDamageEvent representing the last damage cause on this entity.
-     */
-    private EntityDamageEvent lastDamageCause;
-    /**
-     * A flag indicting if the entity is on the ground
-     */
-    private boolean onGround = true;
-    /**
-     * The distance the entity is currently falling without touching the ground.
-     */
-    private float fallDistance;
-    /**
-     * How long the entity has been on fire, or 0 if it is not.
-     */
-    private int fireTicks;
-    /**
-     * Passenger
-     */
-    private final List<Entity> passengers = new ArrayList<>();
     protected boolean passengerChanged;
-    /**
-     * Whether gravity applies to the entity.
-     */
-    private boolean gravity = true;
-    /**
-     * Whether this entity is invulnerable.
-     */
-    private boolean invulnerable;
     /**
      * Whether this entity was forcibly removed from the world.
      */
     @Getter
     protected boolean removed;
-
     /**
-     * The original location of this entity.
+     * Velocity reduction applied each tick in air, y component.
+     */
+    protected double airDrag = 0.98;
+    /**
+     * Velocity reduction applied each tick in air, x and z components.
      */
     @Getter
-    private final Location origin;
-
+    @Setter
+    private double horizontalAirDrag = 0.91;
     /**
-     * All entities that currently have this entity as leash holder
+     * Velocity reduction applied each tick in liquids.
+     */
+    protected double liquidDrag = 0.8;
+    /**
+     * Gravity acceleration applied each tick.
+     */
+    @Setter
+    protected Vector gravityAccel = new Vector(0, -0.04, 0);
+    /**
+     * The slipperiness multiplier applied according to the block this entity was on.
+     */
+    protected double slipMultiplier = 0.6;
+    /**
+     * This entity's unique id.
+     */
+    private UUID uuid;
+    /**
+     * An EntityDamageEvent representing the last damage cause on this entity.
      */
     @Getter
-    private final List<GlowEntity> leashedEntities = Lists.newArrayList();
-
+    @Setter
+    private EntityDamageEvent lastDamageCause;
+    /**
+     * A flag indicting if the entity is on the ground.
+     */
+    @Getter
+    private boolean onGround = true;
+    /**
+     * The distance the entity is currently falling without touching the ground.
+     */
+    @Getter
+    private float fallDistance;
+    /**
+     * How long the entity has been on fire, or 0 if it is not.
+     */
+    @Getter
+    @Setter
+    private int fireTicks;
+    /**
+     * Whether gravity applies to the entity.
+     */
+    @Setter
+    private boolean gravity = true;
+    /**
+     * Whether friction applies to the entity.
+     */
+    @Setter
+    private boolean friction = true;
+    /**
+     * Whether this entity is invulnerable.
+     */
+    @Getter
+    @Setter
+    private boolean invulnerable;
     /**
      * The leash holders uuid of the entity. Will be null after the entities first tick.
      */
-    private UUID leashHolderUniqueID;
+    private UUID leashHolderUniqueId;
     /**
      * Has the leash holder of the entity changed.
      */
     private boolean leashHolderChanged;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Command sender
     /**
      * The leash holder of the entity.
      */
     private GlowEntity leashHolder;
     /**
-     * List of custom String data for the entity.
-     */
-    @Getter
-    private final List<String> customTags = Lists.newArrayList();
-    /**
      * The Nether portal cooldown for the entity.
      */
+    @Getter
+    @Setter
     private int portalCooldown;
+    /**
+     * Whether this entity has operator permissions.
+     */
+    @Getter
+    @Setter
+    private boolean op;
+    private Spigot spigot = new Spigot() {
+        @Override
+        public boolean isInvulnerable() {
+            return GlowEntity.this.isInvulnerable();
+        }
+    };
 
     /**
      * Creates an entity and adds it to the specified world.
@@ -203,7 +283,8 @@ public abstract class GlowEntity implements Entity {
         // this is so dirty I washed my hands after writing it.
         if (this instanceof GlowPlayer) {
             // spawn location event
-            location = EventFactory.callEvent(new PlayerSpawnLocationEvent((Player) this, location)).getSpawnLocation();
+            location = EventFactory.callEvent(new PlayerSpawnLocationEvent((Player) this, location))
+                    .getSpawnLocation();
         }
         this.origin = location.clone();
         this.location = location.clone();
@@ -214,6 +295,9 @@ public abstract class GlowEntity implements Entity {
         previousLocation = location.clone();
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Core properties
+
     @Override
     public String toString() {
         return getClass().getSimpleName();
@@ -221,40 +305,21 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void sendMessage(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Command sender
 
     @Override
     public void sendMessage(String[] strings) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public final GlowServer getServer() {
-        return server;
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
     public String getName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public final GlowWorld getWorld() {
-        return world;
+        return getType().getName();
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Core properties
-
-    @Override
-    public final int getEntityId() {
-        return id;
-    }
+    // Location stuff
 
     @Override
     public UUID getUniqueId() {
@@ -269,7 +334,7 @@ public abstract class GlowEntity implements Entity {
      *
      * @param uuid The new UUID. Must not be null.
      * @throws IllegalArgumentException if the passed UUID is null.
-     * @throws IllegalStateException    if a UUID has already been set.
+     * @throws IllegalStateException if a UUID has already been set.
      */
     public void setUniqueId(UUID uuid) {
         checkNotNull(uuid, "uuid must not be null");
@@ -289,11 +354,8 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public boolean isValid() {
-        return world.getEntityManager().getEntity(id) == this;
+        return world.getEntityManager().getEntity(entityId) == this;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Location stuff
 
     @Override
     public Location getLocation() {
@@ -310,7 +372,7 @@ public abstract class GlowEntity implements Entity {
      *
      * @return The cardinal BlockFace of this entity.
      */
-    public BlockFace getDirection() {
+    public BlockFace getCardinalFacing() {
         double rot = getLocation().getYaw() % 360;
         if (rot < 0) {
             rot += 360.0;
@@ -351,10 +413,11 @@ public abstract class GlowEntity implements Entity {
         velocityChanged = true;
     }
 
-    public void setGravityAccel(Vector gravity) {
-        this.gravityAccel = gravity;
-    }
-
+    /**
+     * Returns the change in velocity per physics tick due to gravity.
+     *
+     * @return the change in velocity per physics tick due to gravity
+     */
     public Vector getGravityAccel() {
         if (this.gravity) {
             return this.gravityAccel;
@@ -363,6 +426,16 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Internals
+
+    /**
+     * Sets the velocity multiplier due to drag. For example, if the multiplier is 0.98, the entity
+     * will lose 2% of its velocity each physics tick. Set to 1.0 to disable drag.
+     *
+     * @param drag the new drag rate
+     * @param liquid true to set liquid drag; false to set air drag
+     */
     public void setDrag(double drag, boolean liquid) {
         if (liquid) {
             liquidDrag = drag;
@@ -375,11 +448,15 @@ public abstract class GlowEntity implements Entity {
     public boolean teleport(Location location) {
         checkNotNull(location, "location cannot be null");
         checkNotNull(location.getWorld(), "location's world cannot be null");
-
-        if (location.getWorld() != world) {
-            world.getEntityManager().unregister(this);
-            world = (GlowWorld) location.getWorld();
-            world.getEntityManager().register(this);
+        worldLock.writeLock().lock();
+        try {
+            if (location.getWorld() != world) {
+                world.getEntityManager().unregister(this);
+                world = (GlowWorld) location.getWorld();
+                world.getEntityManager().register(this);
+            }
+        } finally {
+            worldLock.writeLock().unlock();
         }
         setRawLocation(location, false);
         teleported = true;
@@ -401,37 +478,33 @@ public abstract class GlowEntity implements Entity {
         return teleport(destination.getLocation(), cause);
     }
 
-    public boolean isTeleported() {
-        return teleported;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Internals
-
     /**
      * Checks if this entity is within the visible radius of another.
      *
      * @param other The other entity.
-     * @return {@code true} if the entities can see each other, {@code false} if
-     * not.
+     * @return {@code true} if the entities can see each other, {@code false} if not.
      */
     public boolean isWithinDistance(GlowEntity other) {
         if (other instanceof GlowLivingEntity) {
-            return ((GlowLivingEntity) other).getDeathTicks() <= 20 && isWithinDistance(other.location);
-        } else return !other.isDead() && (isWithinDistance(other.location) || other instanceof GlowLightningStrike);
+            return ((GlowLivingEntity) other).getDeathTicks() <= 20
+                    && isWithinDistance(other.location);
+        } else {
+            return !other.isDead() && (isWithinDistance(other.location)
+                    || other instanceof GlowLightningStrike);
+        }
     }
 
     /**
      * Checks if this entity is within the visible radius of a location.
      *
      * @param loc The location.
-     * @return {@code true} if the entities can see each other, {@code false} if
-     * not.
+     * @return {@code true} if the entities can see each other, {@code false} if not.
      */
     public boolean isWithinDistance(Location loc) {
         double dx = Math.abs(location.getX() - loc.getX());
         double dz = Math.abs(location.getZ() - loc.getZ());
-        return loc.getWorld() == getWorld() && dx <= server.getViewDistance() * GlowChunk.WIDTH && dz <= server.getViewDistance() * GlowChunk.HEIGHT;
+        return loc.getWorld() == getWorld() && dx <= server.getViewDistance() * GlowChunk.WIDTH
+                && dz <= server.getViewDistance() * GlowChunk.HEIGHT;
     }
 
     /**
@@ -444,8 +517,8 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Called every game cycle. Subclasses should implement this to implement
-     * periodic functionality e.g. mob AI.
+     * Called every game cycle. Subclasses should implement this to implement periodic functionality
+     * e.g. mob AI.
      */
     public void pulse() {
         ticksLived++;
@@ -458,14 +531,16 @@ public abstract class GlowEntity implements Entity {
         }
         metadata.setBit(MetadataIndex.STATUS, StatusFlags.ON_FIRE, fireTicks > 0);
 
-        // resend position if it's been a while, causes ItemFrames to disappear and GlowPaintings to dislocate.
+        // resend position if it's been a while, causes ItemFrames to disappear and GlowPaintings
+        // to dislocate.
         if (ticksLived % (30 * 20) == 0) {
             if (!(this instanceof GlowItemFrame || this instanceof GlowPainting)) {
                 teleported = true;
             }
         }
 
-        if (this instanceof GlowLivingEntity && !isDead() && ((GlowLivingEntity) this).hasAI() && this.getLocation().getChunk().isLoaded()) {
+        if (this instanceof GlowLivingEntity && !isDead() && ((GlowLivingEntity) this).hasAI()
+                && this.getLocation().getChunk().isLoaded()) {
             GlowLivingEntity entity = (GlowLivingEntity) this;
             entity.getTaskManager().pulse();
         }
@@ -477,7 +552,8 @@ public abstract class GlowEntity implements Entity {
         if (hasMoved()) {
             Block currentBlock = location.getBlock();
             if (currentBlock.getType() == Material.ENDER_PORTAL) {
-                EventFactory.callEvent(new EntityPortalEnterEvent(this, currentBlock.getLocation()));
+                EventFactory
+                        .callEvent(new EntityPortalEnterEvent(this, currentBlock.getLocation()));
                 if (server.getAllowEnd()) {
                     Location previousLocation = location.clone();
                     boolean success;
@@ -487,7 +563,10 @@ public abstract class GlowEntity implements Entity {
                         success = teleportToEnd();
                     }
                     if (success) {
-                        EntityPortalExitEvent e = EventFactory.callEvent(new EntityPortalExitEvent(this, previousLocation, location.clone(), velocity.clone(), new Vector()));
+                        EntityPortalExitEvent e = EventFactory
+                                .callEvent(new EntityPortalExitEvent(this, previousLocation,
+                                        location
+                                        .clone(), velocity.clone(), new Vector()));
                         if (!e.getAfter().equals(velocity)) {
                             setVelocity(e.getAfter());
                         }
@@ -496,16 +575,14 @@ public abstract class GlowEntity implements Entity {
             }
         }
 
-        if (leashHolderUniqueID != null && ticksLived < 2) {
-            Optional<GlowEntity> any = world.getEntityManager().getAll()
-                .stream()
-                .filter(e -> leashHolderUniqueID.equals(e.getUniqueId()))
-                .findAny();
+        if (leashHolderUniqueId != null && ticksLived < 2) {
+            Optional<GlowEntity> any = world.getEntityManager().getAll().stream()
+                    .filter(e -> leashHolderUniqueId.equals(e.getUniqueId())).findAny();
             if (!any.isPresent()) {
                 world.dropItemNaturally(location, new ItemStack(Material.LEASH));
             }
             setLeashHolder(any.orElse(null));
-            leashHolderUniqueID = null;
+            leashHolderUniqueId = null;
         }
     }
 
@@ -524,11 +601,13 @@ public abstract class GlowEntity implements Entity {
         // TODO: Physics are not right
         // For example, gravity is not respected
 
-        // Leashes break when the distance between leashholder and leashedentity is greater than 10 blocks
+        // Leashes break when the distance between leashholder and leashedentity is greater than
+        // 10 blocks
         if (distanceSquared > 10 * 10) {
             // break leashitch, if the entity is the only one left attached
             // will also destroy all remaining leashes
-            if (EntityType.LEASH_HITCH.equals(leashHolder.getType()) && leashHolder.leashedEntities.size() == 1) {
+            if (EntityType.LEASH_HITCH.equals(leashHolder.getType())
+                    && leashHolder.leashedEntities.size() == 1) {
                 leashHolder.remove();
             } else {
                 // break leash
@@ -567,11 +646,13 @@ public abstract class GlowEntity implements Entity {
      * Sets this entity's location.
      *
      * @param location The new location.
-     * @param fall     Whether to calculate fall damage or not.
+     * @param fall Whether to calculate fall damage or not.
      */
     public void setRawLocation(Location location, boolean fall) {
         if (location.getWorld() != world) {
-            throw new IllegalArgumentException("Cannot setRawLocation to a different world (got " + location.getWorld() + ", expected " + world + ")");
+            throw new IllegalArgumentException(
+                    "Cannot setRawLocation to a different world (got " + location.getWorld()
+                            + ", expected " + world + ")");
         }
 
         if (Objects.equals(location, previousLocation)) {
@@ -589,17 +670,16 @@ public abstract class GlowEntity implements Entity {
 
         Material type = location.getBlock().getType();
 
-        if (!fall || type == Material.LADDER // todo: horses are not affected
-                || type == Material.VINE // todo: horses are not affected
-                || type == Material.WATER
-                || type == Material.STATIONARY_WATER
-                || type == Material.WEB
-                || type == Material.TRAP_DOOR
-                || type == Material.IRON_TRAPDOOR
-                || onGround) {
-            fallDistance = 0;
-        } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
-            fallDistance += previousLocation.getY() - location.getY();
+        if (hasMoved()) {
+            if (!fall || type == Material.LADDER // todo: horses are not affected
+                    || type == Material.VINE // todo: horses are not affected
+                    || type == Material.WATER || type == Material.STATIONARY_WATER
+                    || type == Material.WEB || type == Material.TRAP_DOOR
+                    || type == Material.IRON_TRAPDOOR || onGround) {
+                setFallDistance(0);
+            } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
+                setFallDistance((float) (fallDistance + previousLocation.getY() - location.getY()));
+            }
         }
 
         if (fall && !(this instanceof GlowPlayer)) {
@@ -617,15 +697,16 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Creates a {@link Message} which can be sent to a client to spawn this
-     * entity.
+     * Creates a list of {@link Message}s which can be sent to a client to spawn this entity.
+     * Implementations in concrete subclasses may return a shallowly immutable list.
      *
-     * @return A message which can spawn this entity.
+     * @return A list of messages which can spawn this entity.
      */
     public abstract List<Message> createSpawnMessage();
 
     /**
-     * Creates a List of {@link Message} which can be sent to a client directly after the entity is spawned.
+     * Creates a List of {@link Message} which can be sent to a client directly after the entity is
+     * spawned.
      *
      * @param session Session to update this entity for
      * @return A message which can spawn this entity.
@@ -634,10 +715,15 @@ public abstract class GlowEntity implements Entity {
         List<Message> result = Lists.newArrayList();
 
         GlowPlayer player = session.getPlayer();
+        if (player == null) {
+            // Player disconnected while this task was pending
+            return result;
+        }
         boolean visible = player.canSeeEntity(this);
         for (GlowEntity leashedEntity : leashedEntities) {
             if (visible && player.canSeeEntity(leashedEntity)) {
-                int attached = player.getEntityId() == this.getEntityId() ? 0 : leashedEntity.getEntityId();
+                int attached = player.getEntityId() == this.getEntityId() ? 0
+                        : leashedEntity.getEntityId();
                 int holder = this.getEntityId();
 
                 result.add(new AttachEntityMessage(attached, holder));
@@ -655,16 +741,12 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Creates a {@link Message} which can be sent to a client to update this
-     * entity.
+     * Creates a {@link Message} which can be sent to a client to update this entity.
      *
      * @param session Session to update this entity for
      * @return A message which can update this entity.
      */
     public List<Message> createUpdateMessage(GlowSession session) {
-        boolean moved = hasMoved();
-        boolean rotated = hasRotated();
-
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
@@ -677,31 +759,39 @@ public abstract class GlowEntity implements Entity {
         dy *= 128;
         dz *= 128;
 
-        boolean teleport = dx > Short.MAX_VALUE || dy > Short.MAX_VALUE || dz > Short.MAX_VALUE || dx < Short.MIN_VALUE || dy < Short.MIN_VALUE || dz < Short.MIN_VALUE;
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
+        boolean teleport = dx > Short.MAX_VALUE || dy > Short.MAX_VALUE || dz > Short.MAX_VALUE
+                || dx < Short.MIN_VALUE || dy < Short.MIN_VALUE || dz < Short.MIN_VALUE;
 
         List<Message> result = new LinkedList<>();
+
+        boolean moved = hasMoved();
+        boolean rotated = hasRotated();
+
         if (teleported || moved && teleport) {
-            result.add(new EntityTeleportMessage(id, x, y, z, yaw, pitch));
-        } else if (moved && rotated) {
-            result.add(new RelativeEntityPositionRotationMessage(id, (short) dx, (short) dy, (short) dz, yaw, pitch));
-        } else if (moved) {
-            result.add(new RelativeEntityPositionMessage(id, (short) dx, (short) dy, (short) dz));
+            result.add(new EntityTeleportMessage(entityId, location));
         } else if (rotated) {
-            result.add(new EntityRotationMessage(id, yaw, pitch));
+            int yaw = Position.getIntYaw(location);
+            int pitch = Position.getIntPitch(location);
+            if (moved) {
+                result.add(new RelativeEntityPositionRotationMessage(entityId,
+                        (short) dx, (short) dy, (short) dz, yaw, pitch));
+            } else {
+                result.add(new EntityRotationMessage(entityId, yaw, pitch));
+            }
+        } else if (moved) {
+            result.add(new RelativeEntityPositionMessage(
+                    entityId, (short) dx, (short) dy, (short) dz));
         }
 
         // send changed metadata
         List<Entry> changes = metadata.getChanges();
         if (!changes.isEmpty()) {
-            result.add(new EntityMetadataMessage(id, changes));
+            result.add(new EntityMetadataMessage(entityId, changes));
         }
 
         // send velocity if needed
         if (velocityChanged) {
-            result.add(new EntityVelocityMessage(id, velocity));
+            result.add(new EntityVelocityMessage(entityId, velocity));
         }
 
         if (passengerChanged) {
@@ -716,15 +806,19 @@ public abstract class GlowEntity implements Entity {
                     passengerIds.add(e.getEntityId());
                 }
             });
-            result.add(new SetPassengerMessage(getEntityId(), passengerIds.stream().mapToInt(Integer::intValue).toArray()));
+            result.add(new SetPassengerMessage(getEntityId(), passengerIds.stream()
+                    .mapToInt(Integer::intValue).toArray()));
             passengerChanged = false;
         }
 
         if (leashHolderChanged) {
-            int attached = isLeashed() && session.getPlayer().getEntityId() == leashHolder.getEntityId() ? 0 : this.getEntityId();
+            int attached =
+                    isLeashed() && session.getPlayer().getEntityId() == leashHolder.getEntityId()
+                            ? 0 : this.getEntityId();
             int holder = !isLeashed() ? -1 : leashHolder.getEntityId();
 
-            // When the leashHolder is not visible, the AttachEntityMessage will be created in createAfterSpawnMessage()
+            // When the leashHolder is not visible, the AttachEntityMessage will be created in
+            // createAfterSpawnMessage()
             if (!isLeashed() || session.getPlayer().canSeeEntity(leashHolder)) {
                 result.add(new AttachEntityMessage(attached, holder));
             }
@@ -752,15 +846,16 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Teleport this entity to the spawn point of the main world.
-     * This is used to teleport out of the End.
+     * Teleport this entity to the spawn point of the main world. This is used to teleport out of
+     * the End.
      *
      * @return {@code true} if the teleport was successful.
      */
     protected boolean teleportToSpawn() {
         Location target = server.getWorlds().get(0).getSpawnLocation();
 
-        EntityPortalEvent event = EventFactory.callEvent(new EntityPortalEvent(this, location.clone(), target, null));
+        EntityPortalEvent event = EventFactory
+                .callEvent(new EntityPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
         }
@@ -770,9 +865,11 @@ public abstract class GlowEntity implements Entity {
         return true;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Physics stuff
+
     /**
-     * Teleport this entity to the End.
-     * If no End world is loaded this does nothing.
+     * Teleport this entity to the End. If no End world is loaded this does nothing.
      *
      * @return {@code true} if the teleport was successful.
      */
@@ -791,7 +888,8 @@ public abstract class GlowEntity implements Entity {
             return false;
         }
 
-        EntityPortalEvent event = EventFactory.callEvent(new EntityPortalEvent(this, location.clone(), target, null));
+        EntityPortalEvent event = EventFactory
+                .callEvent(new EntityPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
         }
@@ -807,8 +905,10 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Determine if this entity is intersecting a block of the specified type.
-     * If the entity has a defined bounding box, that is used to check for
-     * intersection. Otherwise,
+     *
+     * <p>If the entity has a defined bounding box, that is used to check for intersection.
+     * Otherwise, a less accurate calculation using only the entity's location and its surrounding
+     * blocks are used.
      *
      * @param material The material to check for.
      * @return True if the entity is intersecting
@@ -816,15 +916,17 @@ public abstract class GlowEntity implements Entity {
     public boolean isTouchingMaterial(Material material) {
         if (boundingBox == null) {
             // less accurate calculation if no bounding box is present
-            for (BlockFace face : new BlockFace[]{BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.DOWN, BlockFace.SELF,
-                    BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST}) {
+            for (BlockFace face : new BlockFace[]{BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH,
+                BlockFace.NORTH, BlockFace.DOWN, BlockFace.SELF, BlockFace.NORTH_EAST,
+                BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST}) {
                 if (getLocation().getBlock().getRelative(face).getType() == material) {
                     return true;
                 }
             }
         } else {
             // bounding box-based calculation
-            Vector min = boundingBox.minCorner, max = boundingBox.maxCorner;
+            Vector min = boundingBox.minCorner;
+            Vector max = boundingBox.maxCorner;
             for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
                 for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
                     for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
@@ -853,36 +955,14 @@ public abstract class GlowEntity implements Entity {
         return boundingBox.getSize().getY();
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Physics stuff
-
     public boolean intersects(BoundingBox box) {
         return boundingBox != null && boundingBox.intersects(box);
     }
 
-    /**
-     * Velocity reduction applied each tick in air.
-     */
-    protected double airDrag = 0.98;
-
-    /**
-     * Velocity reduction applied each tick in liquids.
-     */
-    protected double liquidDrag = 0.8;
-
-    /**
-     * Gravity acceleration applied each tick.
-     */
-    protected Vector gravityAccel = new Vector(0, -0.04, 0);
-    private static final Vector zeroG = new Vector();
-    /**
-     * The slipperiness multiplier applied according to the block this entity was on.
-     */
-    protected double slipMultiplier = 0.6;
-
     protected void pulsePhysics() {
         Location velLoc = location.clone().add(velocity);
-        if (velLoc.getBlock().getType().isOccluding()) {
+        final Block block = velLoc.getBlock();
+        if (block.getType().isOccluding()) {
             Location velLocY = location.clone().add(0, velocity.getY(), 0);
             if (velLocY.getBlock().getType().isOccluding()) {
                 velocity.setY(0);
@@ -895,26 +975,47 @@ public abstract class GlowEntity implements Entity {
             if (velLocZ.getBlock().getType().isOccluding()) {
                 velocity.setZ(0);
             }
+            collide(block);
         } else {
-            location.add(velocity);
-            // apply friction and gravity
-            if (location.getBlock().getType() == Material.WATER) {
-                velocity.multiply(liquidDrag);
-                velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
-            } else if (location.getBlock().getType() == Material.LAVA) {
-                velocity.multiply(liquidDrag - 0.3);
-                velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
-            } else {
-                velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
-                if (isOnGround()) {
-                    velocity.setX(velocity.getX() * slipMultiplier);
-                    velocity.setZ(velocity.getZ() * slipMultiplier);
+            if (hasFriction()) {
+                // apply friction and gravity
+                if (location.getBlock().getType() == Material.WATER) {
+                    velocity.multiply(liquidDrag);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                } else if (location.getBlock().getType() == Material.LAVA) {
+                    velocity.multiply(liquidDrag - 0.3);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
                 } else {
-                    velocity.setX(velocity.getX() * 0.91);
-                    velocity.setZ(velocity.getZ() * 0.91);
+                    velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
+                    if (isOnGround()) {
+                        velocity.setX(velocity.getX() * slipMultiplier);
+                        velocity.setZ(velocity.getZ() * slipMultiplier);
+                    } else {
+                        velocity.setX(velocity.getX() * horizontalAirDrag);
+                        velocity.setZ(velocity.getZ() * horizontalAirDrag);
+                    }
+                }
+            } else if (hasGravity() && !isOnGround()) {
+                switch (location.getBlock().getType()) {
+                    case WATER:
+                    case LAVA:
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                        break;
+                    default:
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
                 }
             }
+            setRawLocation(velLoc);
         }
+    }
+
+    /**
+     * Collide with the target block.
+     *
+     * @param block a block whose type {@link Material#isOccluding()}
+     */
+    public void collide(Block block) {
+        // No-op by default.
     }
 
     protected void updateBoundingBox() {
@@ -924,18 +1025,8 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
-    @Override
-    public int getFireTicks() {
-        return fireTicks;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Various properties
-
-    @Override
-    public void setFireTicks(int ticks) {
-        fireTicks = ticks;
-    }
 
     @Override
     public int getMaxFireTicks() {
@@ -943,50 +1034,24 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public float getFallDistance() {
-        return fallDistance;
-    }
-
-    @Override
     public void setFallDistance(float distance) {
         fallDistance = Math.max(distance, 0);
     }
 
-    @Override
-    public EntityDamageEvent getLastDamageCause() {
-        return lastDamageCause;
-    }
-
-    @Override
-    public void setLastDamageCause(EntityDamageEvent event) {
-        lastDamageCause = event;
-    }
-
-    @Override
-    public int getTicksLived() {
-        return ticksLived;
-    }
-
-    @Override
-    public void setTicksLived(int value) {
-        ticksLived = value;
-    }
-
-    @Override
-    public boolean isOnGround() {
-        return onGround;
-    }
-
+    /**
+     * Sets the on-ground flag and clears fall distance.
+     *
+     * @param onGround true if this entity is now on the ground; false otherwise
+     */
     public void setOnGround(boolean onGround) {
-        if (onGround) {
+        if (this.onGround != onGround) {
             setFallDistance(0);
         }
         this.onGround = onGround;
     }
 
     /**
-     * Destroys this entity by removing it from the world and marking it as not
-     * being active.
+     * Destroys this entity by removing it from the world and marking it as not being active.
      */
     @Override
     public void remove() {
@@ -997,21 +1062,22 @@ public abstract class GlowEntity implements Entity {
         server.getEntityIdManager().deallocate(this);
         this.setPassenger(null);
 
-        ImmutableList.copyOf(this.leashedEntities).forEach(e -> unleash(e, UnleashReason.HOLDER_GONE));
+        ImmutableList.copyOf(this.leashedEntities)
+                .forEach(e -> unleash(e, UnleashReason.HOLDER_GONE));
 
         if (isLeashed()) {
             unleash(this, UnleashReason.HOLDER_GONE);
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Miscellaneous actions
+
     private void unleash(GlowEntity entity, UnleashReason reason) {
         EventFactory.callEvent(new EntityUnleashEvent(entity, reason));
         world.dropItemNaturally(entity.location, new ItemStack(Material.LEASH));
         entity.setLeashHolder(null);
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Miscellaneous actions
 
     @Override
     public List<Entity> getNearbyEntities(double x, double y, double z) {
@@ -1034,8 +1100,9 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void playEffect(EntityEffect type) {
-        EntityStatusMessage message = new EntityStatusMessage(id, type);
-        world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this)).forEach(player -> player.getSession().send(message));
+        EntityStatusMessage message = new EntityStatusMessage(entityId, type);
+        world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
+                .forEach(player -> player.getSession().send(message));
     }
 
     @Override
@@ -1043,23 +1110,21 @@ public abstract class GlowEntity implements Entity {
         return EntityType.UNKNOWN;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Entity stacking
+
     @Override
     public boolean isInsideVehicle() {
         return getVehicle() != null;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Entity stacking
 
     @Override
     public boolean leaveVehicle() {
         return isInsideVehicle() && vehicle.removePassenger(this);
     }
 
-    @Override
-    public Entity getVehicle() {
-        return vehicle;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // Custom name
 
     @Override
     public String getCustomName() {
@@ -1069,9 +1134,6 @@ public abstract class GlowEntity implements Entity {
         }
         return name;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Custom name
 
     @Override
     public void setCustomName(String name) {
@@ -1092,8 +1154,8 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public void setGlowing(boolean glowing) {
-        metadata.setBit(MetadataIndex.STATUS, StatusFlags.GLOWING, glowing);
+    public void setCustomNameVisible(boolean flag) {
+        metadata.set(MetadataIndex.SHOW_NAME_TAG, flag);
     }
 
     @Override
@@ -1102,18 +1164,8 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public void setInvulnerable(boolean invulnerable) {
-        this.invulnerable = invulnerable;
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return invulnerable;
-    }
-
-    @Override
-    public void setCustomNameVisible(boolean flag) {
-        metadata.set(MetadataIndex.SHOW_NAME_TAG, flag);
+    public void setGlowing(boolean glowing) {
+        metadata.setBit(MetadataIndex.STATUS, StatusFlags.GLOWING, glowing);
     }
 
     @Override
@@ -1133,7 +1185,9 @@ public abstract class GlowEntity implements Entity {
     public boolean removePassenger(Entity passenger) {
         Preconditions.checkArgument(!this.equals(passenger), "Entity cannot ride itself.");
 
-        if (passenger == null || !passengers.contains(passenger)) return false; // nothing changed
+        if (passenger == null || !passengers.contains(passenger)) {
+            return false; // nothing changed
+        }
 
         if (EventFactory.callEvent(new EntityDismountEvent(passenger, this)).isCancelled()) {
             return false;
@@ -1157,7 +1211,9 @@ public abstract class GlowEntity implements Entity {
     public boolean addPassenger(Entity passenger) {
         Preconditions.checkArgument(!this.equals(passenger), "Entity cannot ride itself.");
 
-        if (passenger == null || passengers.contains(passenger)) return false; // nothing changed
+        if (passenger == null || passengers.contains(passenger)) {
+            return false; // nothing changed
+        }
 
         if (!(passenger instanceof GlowEntity)) {
             return false;
@@ -1184,18 +1240,18 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
-    public boolean setPassenger(Entity bPassenger) {
-        Preconditions.checkArgument(!this.equals(bPassenger), "Entity cannot ride itself.");
+    public boolean setPassenger(Entity newPassenger) {
+        Preconditions.checkArgument(!this.equals(newPassenger), "Entity cannot ride itself.");
 
         boolean result = false;
         for (Entity passenger : Lists.newArrayList(passengers)) {
-            if (!Objects.equals(passenger, bPassenger)) {
+            if (!Objects.equals(passenger, newPassenger)) {
                 result = !removePassenger(passenger);
             }
         }
 
-        if (bPassenger != null && passengers.size() == 0) {
-            result = !addPassenger(bPassenger);
+        if (newPassenger != null && passengers.size() == 0) {
+            result = !addPassenger(newPassenger);
         }
 
         return !result;
@@ -1219,24 +1275,13 @@ public abstract class GlowEntity implements Entity {
         return !isEmpty() && setPassenger(null);
     }
 
+    public boolean hasFriction() {
+        return friction;
+    }
+
     @Override
     public boolean hasGravity() {
         return gravity;
-    }
-
-    @Override
-    public void setGravity(boolean gravity) {
-        this.gravity = gravity;
-    }
-
-    @Override
-    public int getPortalCooldown() {
-        return portalCooldown;
-    }
-
-    @Override
-    public void setPortalCooldown(int cooldown) {
-        this.portalCooldown = cooldown;
     }
 
     @Override
@@ -1296,11 +1341,11 @@ public abstract class GlowEntity implements Entity {
         damage(amount, null, cause);
     }
 
-    public void damage(double amount, Entity source, DamageCause cause) {
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Metadata
+
+    public void damage(double amount, Entity source, DamageCause cause) {
+    }
 
     @Override
     public List<MetadataValue> getMetadata(String metadataKey) {
@@ -1317,13 +1362,13 @@ public abstract class GlowEntity implements Entity {
         bukkitMetadata.removeMetadata(this, metadataKey, owningPlugin);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Permissions
+
     @Override
     public boolean isPermissionSet(String s) {
         return false;
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Permissions
 
     @Override
     public boolean isPermissionSet(Permission permission) {
@@ -1375,27 +1420,10 @@ public abstract class GlowEntity implements Entity {
         return null;
     }
 
-    @Override
-    public boolean isOp() {
-        return false;
-    }
-
-    @Override
-    public void setOp(boolean b) {
-
-    }
-
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         // Override in subclasses to implement behavior
         return false;
     }
-
-    private Spigot spigot = new Spigot() {
-        @Override
-        public boolean isInvulnerable() {
-            return GlowEntity.this.isInvulnerable();
-        }
-    };
 
     public Spigot spigot() {
         return spigot;
@@ -1405,36 +1433,37 @@ public abstract class GlowEntity implements Entity {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + id;
+        result = prime * result + entityId;
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        GlowEntity other = (GlowEntity) obj;
-        return id == other.id;
-    }
-
-    /**
-     * The metadata store class for entities.
-     */
-    private static class EntityMetadataStore extends MetadataStoreBase<Entity> implements MetadataStore<Entity> {
-        @Override
-        protected String disambiguate(Entity subject, String metadataKey) {
-            return subject.getUniqueId() + ":" + metadataKey;
         }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        GlowEntity other = (GlowEntity) obj;
+        return entityId == other.entityId;
     }
 
     public boolean isLeashed() {
         return leashHolder != null;
     }
 
+    /**
+     * Gets the entity that is currently leading this entity.
+     *
+     * @return the entity holding the leash
+     * @throws IllegalStateException if not currently leashed
+     *
+     * @see org.bukkit.entity.LivingEntity#getLeashHolder()
+     */
     public Entity getLeashHolder() throws IllegalStateException {
         if (!isLeashed()) {
             throw new IllegalStateException("Entity not leashed");
@@ -1443,6 +1472,17 @@ public abstract class GlowEntity implements Entity {
         return leashHolder;
     }
 
+    /**
+     * Sets the leash on this entity to be held by the supplied entity.
+     *
+     * <p>This method has no effect on EnderDragons, Withers, Players, or Bats. Non-living entities
+     * excluding leashes will not persist as leash holders.
+     *
+     * @param holder the entity to leash this entity to
+     * @return whether the operation was successful
+     *
+     * @see org.bukkit.entity.LivingEntity#setLeashHolder(Entity)
+     */
     public boolean setLeashHolder(Entity holder) {
         // "This method has no effect on EnderDragons, Withers, Players, or Bats"
         if (!GlowLeashHitch.isAllowedLeashHolder(this.getType())) {
@@ -1471,14 +1511,24 @@ public abstract class GlowEntity implements Entity {
     }
 
     /**
-     * Set the unique ID of this entities leash holder.
-     * Only useful during load of the entity.
-     * @param uniqueID
+     * Set the unique ID of this entities leash holder. Only useful during load of the entity.
      */
-    public void setLeashHolderUniqueID(UUID uniqueID) {
+    public void setLeashHolderUniqueId(UUID uniqueId) {
         if (ticksLived > 1 || isLeashed()) {
             return;
         }
-        this.leashHolderUniqueID = uniqueID;
+        this.leashHolderUniqueId = uniqueId;
+    }
+
+    /**
+     * The metadata store class for entities.
+     */
+    private static class EntityMetadataStore extends MetadataStoreBase<Entity>
+            implements MetadataStore<Entity> {
+
+        @Override
+        protected String disambiguate(Entity subject, String metadataKey) {
+            return subject.getUniqueId() + ":" + metadataKey;
+        }
     }
 }

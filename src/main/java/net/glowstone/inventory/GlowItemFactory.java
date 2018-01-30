@@ -46,7 +46,8 @@ public final class GlowItemFactory implements ItemFactory {
     public boolean equals(ItemMeta meta1, ItemMeta meta2) throws IllegalArgumentException {
         // todo: be nicer about comparisons without involving serialization
         // and the extra new objects for null arguments
-        GlowMetaItem glow1, glow2;
+        GlowMetaItem glow1;
+        GlowMetaItem glow2;
         if (meta1 == null) {
             glow1 = new GlowMetaItem(null);
         } else {
@@ -87,16 +88,34 @@ public final class GlowItemFactory implements ItemFactory {
         return null;
     }
 
+    /**
+     * Writes an {@link ItemMeta} to an NBT tag.
+     *
+     * @param meta an {@link ItemMeta}
+     * @return a compound tag that can become the "tag" subtag of an item NBT tag, or null if
+     *          {@code meta} matches an item with no "tag" subtag
+     */
     public CompoundTag writeNbt(ItemMeta meta) {
         CompoundTag result = new CompoundTag();
         toGlowMeta(meta).writeNbt(result);
         return result.isEmpty() ? null : result;
     }
 
+    /**
+     * Reads an {@link ItemMeta} from an NBT tag.
+     *
+     * @param material the material
+     * @param tag the "tag" subtag of an item NBT tag
+     * @return the tag's contents as an {@link ItemMeta}
+     */
     public ItemMeta readNbt(Material material, CompoundTag tag) {
-        if (tag == null) return null;
+        if (tag == null) {
+            return null;
+        }
         GlowMetaItem meta = makeMeta(material, null);
-        if (meta == null) return null;
+        if (meta == null) {
+            return null;
+        }
         meta.readNbt(tag);
         return meta;
     }
@@ -111,7 +130,8 @@ public final class GlowItemFactory implements ItemFactory {
         if (meta instanceof GlowMetaItem) {
             return (GlowMetaItem) meta;
         }
-        throw new IllegalArgumentException("Item meta " + meta + " was not created by GlowItemFactory");
+        throw new IllegalArgumentException(
+            "Item meta " + meta + " was not created by GlowItemFactory");
     }
 
     /**
@@ -149,6 +169,8 @@ public final class GlowItemFactory implements ItemFactory {
                 return new GlowMetaSpawn(meta);
             case SHIELD:
                 return new GlowMetaShield(meta);
+            case KNOWLEDGE_BOOK:
+                return new GlowMetaKnowledgeBook(meta);
             default:
                 return new GlowMetaItem(meta);
         }

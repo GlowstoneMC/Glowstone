@@ -1,5 +1,8 @@
 package net.glowstone.inventory;
 
+import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.ChatColor;
@@ -13,16 +16,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Objects;
-
 public class GlowAnvilInventory extends GlowInventory implements AnvilInventory {
 
     private static final int FIRST_ITEM_SLOT = 0;
     private static final int SECOND_ITEM_SLOT = 1;
     private static final int RESULT_SLOT = 2;
-    private String rename = "";
+    @Getter
+    private String renameText = "";
+    @Getter
+    @Setter
     private int repairCost;
 
+    /**
+     * Creates an instance for the given player.
+     * @param holder the player
+     */
     public GlowAnvilInventory(InventoryHolder holder) {
         super(holder, InventoryType.ANVIL);
 
@@ -49,7 +57,8 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+        ItemStack clickedItem) {
         if (getSlotType(view.convertSlot(clickedSlot)) == SlotType.RESULT) {
             // If the player clicked on the result give it to them
             ItemStack forged = getForged();
@@ -63,7 +72,8 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
             // Place the item in the player's inventory (right to left)
             player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         } else {
-            // Clicked in the crafting grid, no special handling required (just place them left to right)
+            // Clicked in the crafting grid, no special handling required (just place them left to
+            // right)
             clickedItem = player.getInventory().tryToFillSlots(clickedItem, 9, 36, 0, 9);
             view.setItem(clickedSlot, clickedItem);
         }
@@ -88,6 +98,14 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         }
     }
 
+    /**
+     * Returns the item that will result when this anvil is applied to the currently loaded items,
+     * combining them, provided that two items which can be combined are loaded. A return of null
+     * doesn't imply that the anvil cannot be activated, since it may still be able to repair/name a
+     * single item.
+     *
+     * @return the resulting item, or null if two items that can be combined are not loaded
+     */
     public ItemStack getForged() {
         if (InventoryUtil.isEmpty(getFirstItem()) || InventoryUtil.isEmpty(getSecondItem())) {
             return null;
@@ -101,7 +119,8 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
                 result = getResultItem();
             }
             book.getStoredEnchants().forEach((enchantment, level) -> {
-                if (enchantment.canEnchantItem(result) || result.getType() == Material.ENCHANTED_BOOK) {
+                if (enchantment.canEnchantItem(result)
+                    || result.getType() == Material.ENCHANTED_BOOK) {
                     result.addUnsafeEnchantment(enchantment, level);
                 }
             });
@@ -110,14 +129,14 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
         return null;
     }
 
-    @Override
-    public String getRenameText() {
-        return rename;
-    }
-
+    /**
+     * Sets the name of the next item to be modified on this anvil.
+     *
+     * @param name the item name
+     */
     public void setRenameText(String name) {
-        rename = name;
-        if (rename.isEmpty()) {
+        renameText = name;
+        if (renameText.isEmpty()) {
             setItem(FIRST_ITEM_SLOT, getFirstItem());
             setItem(SECOND_ITEM_SLOT, getSecondItem());
         } else {
@@ -128,20 +147,10 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
                 }
                 // rename the item
                 ItemMeta m = result.getItemMeta();
-                m.setDisplayName(ChatColor.ITALIC + rename);
+                m.setDisplayName(ChatColor.ITALIC + renameText);
                 result.setItemMeta(m);
                 setItem(RESULT_SLOT, result);
             }
         }
-    }
-
-    @Override
-    public int getRepairCost() {
-        return repairCost;
-    }
-
-    @Override
-    public void setRepairCost(int levels) {
-        repairCost = levels;
     }
 }

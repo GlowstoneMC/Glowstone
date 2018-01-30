@@ -1,13 +1,12 @@
 package net.glowstone.generator.ground;
 
+import java.util.Random;
 import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.material.MaterialData;
-
-import java.util.Random;
 
 public class GroundGenerator {
 
@@ -31,7 +30,19 @@ public class GroundGenerator {
         setGroundMaterial(DIRT);
     }
 
-    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z, Biome biome, double surfaceNoise) {
+    /**
+     * Generates a terrain column.
+     *
+     * @param chunkData the affected chunk
+     * @param world the affected world
+     * @param random the PRNG to use
+     * @param x the chunk X coordinate
+     * @param z the chunk Z coordinate
+     * @param biome the biome this column is in
+     * @param surfaceNoise the amplitude of random variation in surface height
+     */
+    public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x, int z,
+        Biome biome, double surfaceNoise) {
 
         int seaLevel = world.getSeaLevel();
 
@@ -43,7 +54,8 @@ public class GroundGenerator {
         x &= 0xF;
         z &= 0xF;
 
-        int surfaceHeight = Math.max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
+        int surfaceHeight = Math
+            .max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
         int deep = -1;
         for (int y = 255; y >= 0; y--) {
             if (y <= random.nextInt(5)) {
@@ -78,8 +90,8 @@ public class GroundGenerator {
                             groundMat = SANDSTONE;
                         }
                     }
-                } else if (mat == Material.STATIONARY_WATER && y == seaLevel - 2 &&
-                        GlowBiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
+                } else if (mat == Material.STATIONARY_WATER && y == seaLevel - 2
+                        && GlowBiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
                     chunkData.setBlock(x, y, z, Material.ICE);
                 }
             }

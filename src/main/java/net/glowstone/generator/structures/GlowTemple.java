@@ -1,19 +1,28 @@
 package net.glowstone.generator.structures;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
+/**
+ * Desert temple, jungle temple, or witch hut.
+ */
 public class GlowTemple extends GlowStructure {
 
     private static final int MIN_DISTANCE = 8;
     private static final int MAX_DISTANCE = 32;
     private final Map<Biome, TempleType> types = new HashMap<>();
 
+    /**
+     * Creates a structure with no pieces.
+     *
+     * @param world the world to generate in
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     */
     public GlowTemple(World world, int chunkX, int chunkZ) {
         super(world, chunkX, chunkZ);
         types.put(Biome.DESERT, TempleType.DESERT_TEMPLE);
@@ -23,6 +32,14 @@ public class GlowTemple extends GlowStructure {
         types.put(Biome.SWAMPLAND, TempleType.WITCH_HUT);
     }
 
+    /**
+     * Creates a random temple or witch hut.
+     *
+     * @param world the world to generate in
+     * @param random the PRNG that will choose this temple's orientation
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     */
     public GlowTemple(World world, Random random, int chunkX, int chunkZ) {
         this(world, chunkX, chunkZ);
 
@@ -33,13 +50,16 @@ public class GlowTemple extends GlowStructure {
         if (types.containsKey(biome)) {
             switch (types.get(biome)) {
                 case JUNGLE_TEMPLE:
-                    addPiece(new GlowJungleTemple(random, new Location(world, x, world.getSeaLevel(), z)));
+                    addPiece(new GlowJungleTemple(random,
+                        new Location(world, x, world.getSeaLevel(), z)));
                     break;
                 case WITCH_HUT:
-                    addPiece(new GlowWitchHut(random, new Location(world, x, world.getSeaLevel(), z)));
+                    addPiece(
+                        new GlowWitchHut(random, new Location(world, x, world.getSeaLevel(), z)));
                     break;
                 default:
-                    addPiece(new GlowDesertTemple(random, new Location(world, x, world.getSeaLevel(), z)));
+                    addPiece(new GlowDesertTemple(random,
+                        new Location(world, x, world.getSeaLevel(), z)));
             }
             wrapAllPieces();
         }

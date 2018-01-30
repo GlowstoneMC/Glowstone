@@ -1,5 +1,7 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
@@ -13,26 +15,28 @@ import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class GiveCommand extends VanillaCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public GiveCommand() {
-        super("give", "Gives an item to a player.", "/give <player> <item> [amount]", Collections.emptyList());
+        super("give", "Gives an item to a player.", "/give <player> <item> [amount]",
+            Collections.emptyList());
         setPermission("minecraft.command.give");
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) return false;
+        if (!testPermission(sender)) {
+            return false;
+        }
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
-        String name = args[0], itemName = args[1];
+        String itemName = args[1];
         if (!itemName.startsWith("minecraft:")) {
             itemName = "minecraft:" + itemName;
         }
@@ -47,10 +51,12 @@ public class GiveCommand extends VanillaCommand {
             try {
                 int amount = Integer.valueOf(amountString);
                 if (amount > 64) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount + ") is too big, it must be at most 64");
+                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount
+                        + ") is too big, it must be at most 64");
                     return false;
                 } else if (amount < 1) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount + ") is too small, it must be at least 1");
+                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount
+                        + ") is too small, it must be at least 1");
                     return false;
                 }
                 stack.setAmount(amount);
@@ -59,8 +65,10 @@ public class GiveCommand extends VanillaCommand {
                 return false;
             }
         }
+        String name = args[0];
         if (name.startsWith("@") && name.length() >= 2 && CommandUtils.isPhysical(sender)) {
-            Location location = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
+            Location location = sender instanceof Entity ? ((Entity) sender).getLocation()
+                : ((BlockCommandSender) sender).getBlock().getLocation();
             CommandTarget target = new CommandTarget(sender, name);
             Entity[] matched = target.getMatched(location);
             for (Entity entity : matched) {
@@ -83,21 +91,19 @@ public class GiveCommand extends VanillaCommand {
 
     private void giveItem(CommandSender sender, Player player, ItemStack stack) {
         player.getInventory().addItem(stack);
-        sender.sendMessage("Given [" + ItemIds.getName(stack.getType()) + "] * " + stack.getAmount() + " to " + player.getName());
+        sender.sendMessage(
+            "Given [" + ItemIds.getName(stack.getType()) + "] * " + stack.getAmount() + " to "
+                + player.getName());
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return super.tabComplete(sender, alias, args);
         }
         if (args.length == 2) {
-            String start = args[1];
-            if (!"minecraft:".startsWith(start)) {
-                int colon = start.indexOf(':');
-                start = "minecraft:" + start.substring(colon == -1 ? 0 : (colon + 1));
-            }
-            return (List) StringUtil.copyPartialMatches(start, ItemIds.getIds(), new ArrayList(ItemIds.getIds().size()));
+            return ItemIds.getTabCompletion(args[1]);
         }
         return Collections.emptyList();
     }

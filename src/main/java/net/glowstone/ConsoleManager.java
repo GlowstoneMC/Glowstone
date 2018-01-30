@@ -1,7 +1,28 @@
 package net.glowstone;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
+import lombok.Getter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -19,15 +40,9 @@ import org.fusesource.jansi.Ansi.Attribute;
 import org.fusesource.jansi.Ansi.Color;
 import org.fusesource.jansi.AnsiConsole;
 
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.*;
-import java.util.logging.Formatter;
-
 /**
- * A meta-class to handle all logging and input-related console improvements.
- * Portions are heavily based on CraftBukkit.
+ * A meta-class to handle all logging and input-related console improvements. Portions are heavily
+ * based on CraftBukkit.
  */
 public final class ConsoleManager {
 
@@ -40,11 +55,22 @@ public final class ConsoleManager {
     private final ChatColor[] colors = ChatColor.values();
 
     private ConsoleReader reader;
+    /**
+     * Returns this ConsoleManager's console as a ConsoleCommandSender.
+     *
+     * @return the ConsoleCommandSender instance for this ConsoleManager's console
+     */
+    @Getter
     private ConsoleCommandSender sender;
 
     private boolean running = true;
-    private boolean jLine;
+    private boolean jline;
 
+    /**
+     * Creates the instance for the given server.
+     *
+     * @param server the server
+     */
     public ConsoleManager(GlowServer server) {
         this.server = server;
 
@@ -71,36 +97,58 @@ public final class ConsoleManager {
         System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
 
         // set up colorization replacements
-        replacements.put(ChatColor.BLACK, Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).boldOff().toString());
-        replacements.put(ChatColor.DARK_BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).boldOff().toString());
-        replacements.put(ChatColor.DARK_AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).boldOff().toString());
-        replacements.put(ChatColor.DARK_RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).boldOff().toString());
-        replacements.put(ChatColor.DARK_PURPLE, Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).boldOff().toString());
-        replacements.put(ChatColor.GOLD, Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).boldOff().toString());
-        replacements.put(ChatColor.GRAY, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GRAY, Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).bold().toString());
-        replacements.put(ChatColor.BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).bold().toString());
-        replacements.put(ChatColor.GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).bold().toString());
-        replacements.put(ChatColor.AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).bold().toString());
-        replacements.put(ChatColor.RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).bold().toString());
-        replacements.put(ChatColor.LIGHT_PURPLE, Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).bold().toString());
-        replacements.put(ChatColor.YELLOW, Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).bold().toString());
-        replacements.put(ChatColor.WHITE, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).bold().toString());
+        replacements.put(ChatColor.BLACK,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).boldOff().toString());
+        replacements.put(ChatColor.DARK_BLUE,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GREEN,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).boldOff().toString());
+        replacements.put(ChatColor.DARK_AQUA,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).boldOff().toString());
+        replacements.put(ChatColor.DARK_RED,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.RED).boldOff().toString());
+        replacements.put(ChatColor.DARK_PURPLE,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).boldOff().toString());
+        replacements.put(ChatColor.GOLD,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).boldOff().toString());
+        replacements.put(ChatColor.GRAY,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GRAY,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).bold().toString());
+        replacements
+                .put(ChatColor.BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).bold()
+                        .toString());
+        replacements
+                .put(ChatColor.GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).bold()
+                        .toString());
+        replacements
+                .put(ChatColor.AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).bold()
+                        .toString());
+        replacements
+                .put(ChatColor.RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).bold().toString());
+        replacements.put(ChatColor.LIGHT_PURPLE,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).bold().toString());
+        replacements.put(ChatColor.YELLOW,
+                Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).bold().toString());
+        replacements
+                .put(ChatColor.WHITE, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).bold()
+                        .toString());
         replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Attribute.BLINK_SLOW).toString());
         replacements.put(ChatColor.BOLD, Ansi.ansi().a(Attribute.UNDERLINE_DOUBLE).toString());
-        replacements.put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
+        replacements
+                .put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
         replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Attribute.UNDERLINE).toString());
         replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Attribute.ITALIC).toString());
         replacements.put(ChatColor.RESET, Ansi.ansi().a(Attribute.RESET).toString());
     }
 
-    public ConsoleCommandSender getSender() {
-        return sender;
-    }
-
-    public void startConsole(boolean jLine) {
-        this.jLine = jLine;
+    /**
+     * Starts the console.
+     *
+     * @param jline whether the console should use JLine
+     */
+    public void startConsole(boolean jline) {
+        this.jline = jline;
 
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
@@ -116,6 +164,11 @@ public final class ConsoleManager {
         thread.start();
     }
 
+    /**
+     * Adds a console-log handler writing to the given file.
+     *
+     * @param logfile the file path
+     */
     public void startFile(String logfile) {
         File parent = new File(logfile).getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
@@ -127,6 +180,9 @@ public final class ConsoleManager {
         logger.addHandler(fileHandler);
     }
 
+    /**
+     * Stops all console-log handlers.
+     */
     public void stop() {
         running = false;
         for (Handler handler : logger.getHandlers()) {
@@ -136,9 +192,9 @@ public final class ConsoleManager {
     }
 
     private String colorize(String string) {
-        if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
+        if (string == null || string.indexOf(ChatColor.COLOR_CHAR) < 0) {
             return string;  // no colors in the message
-        } else if (!jLine || !reader.getTerminal().isAnsiSupported()) {
+        } else if (!jline || !reader.getTerminal().isAnsiSupported()) {
             return ChatColor.stripColor(string);  // color not supported
         } else {
             // colorize or strip all colors
@@ -154,6 +210,7 @@ public final class ConsoleManager {
     }
 
     private static class LoggerOutputStream extends ByteArrayOutputStream {
+
         private final String separator = System.getProperty("line.separator");
         private final Level level;
 
@@ -174,6 +231,7 @@ public final class ConsoleManager {
     }
 
     private static class RotatingFileHandler extends StreamHandler {
+
         private final SimpleDateFormat dateFormat;
         private final String template;
         private final boolean rotate;
@@ -229,10 +287,12 @@ public final class ConsoleManager {
     }
 
     private class CommandCompleter implements Completer {
+
         @Override
         public int complete(String buffer, int cursor, List<CharSequence> candidates) {
             try {
-                List<String> completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, buffer));
+                List<String> completions = server.getScheduler()
+                        .syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, buffer));
                 if (completions == null) {
                     return cursor;  // no completions
                 }
@@ -248,19 +308,21 @@ public final class ConsoleManager {
     }
 
     private class ConsoleCommandThread extends Thread {
+
         @Override
         public void run() {
             String command = "";
             while (running) {
                 try {
-                    if (jLine) {
+                    if (jline) {
                         command = reader.readLine(CONSOLE_PROMPT, null);
                     } else {
                         command = reader.readLine();
                     }
 
-                    if (command == null || command.trim().isEmpty())
+                    if (command == null || command.trim().isEmpty()) {
                         continue;
+                    }
 
                     server.getScheduler().runTask(null, new CommandTask(command.trim()));
                 } catch (CommandException ex) {
@@ -273,6 +335,7 @@ public final class ConsoleManager {
     }
 
     private class CommandTask implements Runnable {
+
         private final String command;
 
         public CommandTask(String command) {
@@ -281,7 +344,8 @@ public final class ConsoleManager {
 
         @Override
         public void run() {
-            ServerCommandEvent event = EventFactory.callEvent(new ServerCommandEvent(sender, command));
+            ServerCommandEvent event = EventFactory
+                    .callEvent(new ServerCommandEvent(sender, command));
             if (!event.isCancelled()) {
                 server.dispatchCommand(sender, event.getCommand());
             }
@@ -289,16 +353,11 @@ public final class ConsoleManager {
     }
 
     private class ColoredCommandSender implements ConsoleCommandSender {
+
         private final PermissibleBase perm = new PermissibleBase(this);
 
         ////////////////////////////////////////////////////////////////////////
         // CommandSender
-
-        @Override
-        public String getName() {
-            return "CONSOLE";
-        }
-
         private Spigot spigot = new Spigot() {
             @Override
             public void sendMessage(BaseComponent component) {
@@ -310,6 +369,11 @@ public final class ConsoleManager {
                 ColoredCommandSender.this.sendMessage(components);
             }
         };
+
+        @Override
+        public String getName() {
+            return "CONSOLE";
+        }
 
         @Override
         public Spigot spigot() {
@@ -340,7 +404,8 @@ public final class ConsoleManager {
 
         @Override
         public void setOp(boolean value) {
-            throw new UnsupportedOperationException("Cannot change operator status of server console");
+            throw new UnsupportedOperationException(
+                    "Cannot change operator status of server console");
         }
 
         ////////////////////////////////////////////////////////////////////////
@@ -377,7 +442,8 @@ public final class ConsoleManager {
         }
 
         @Override
-        public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+        public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
+                int ticks) {
             return perm.addAttachment(plugin, name, value, ticks);
         }
 
@@ -425,7 +491,8 @@ public final class ConsoleManager {
         }
 
         @Override
-        public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+        public void abandonConversation(Conversation conversation,
+                ConversationAbandonedEvent details) {
 
         }
 
@@ -436,6 +503,7 @@ public final class ConsoleManager {
     }
 
     private class FancyConsoleHandler extends ConsoleHandler {
+
         public FancyConsoleHandler() {
             setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
             setOutputStream(System.out);
@@ -444,7 +512,7 @@ public final class ConsoleManager {
         @Override
         public synchronized void flush() {
             try {
-                if (jLine) {
+                if (jline) {
                     reader.print(ConsoleReader.RESET_LINE + "");
                     reader.flush();
                     super.flush();
@@ -464,6 +532,7 @@ public final class ConsoleManager {
     }
 
     private class DateOutputFormatter extends Formatter {
+
         private final SimpleDateFormat date;
         private final boolean color;
 

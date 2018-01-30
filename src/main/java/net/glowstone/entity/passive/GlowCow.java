@@ -24,24 +24,35 @@ public class GlowCow extends GlowAnimal implements Cow {
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
         if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR))
+            if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode()
+                .equals(GameMode.SPECTATOR)) {
                 return false;
+            }
 
-            if (!isAdult()) return false;
-            ItemStack hand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+            if (!isAdult()) {
+                return false;
+            }
+            ItemStack hand = InventoryUtil
+                .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
-            if (!hand.getType().equals(Material.BUCKET)) return false;
+            if (!hand.getType().equals(Material.BUCKET)) {
+                return false;
+            }
 
             if (hand.getAmount() > 1) {
                 hand.setAmount(hand.getAmount() - 1);
                 player.getInventory().setItem(message.getHandSlot(), hand);
             } else {
-                player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                player.getInventory()
+                    .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
             }
 
             if (player.getInventory().firstEmpty() == -1) {
-                GlowItem item = player.getWorld().dropItem(player.getLocation().clone().add(0, 1, 0), new ItemStack(Material.MILK_BUCKET, 1));
-                item.setVelocity(getLocation().add(0, -1, 0).clone().toVector().subtract(player.getLocation().clone().add(0, 1, 0).toVector()).multiply(0.3));
+                GlowItem item = player.getWorld()
+                    .dropItem(player.getLocation().clone().add(0, 1, 0),
+                        new ItemStack(Material.MILK_BUCKET, 1));
+                item.setVelocity(getLocation().add(0, -1, 0).clone().toVector()
+                    .subtract(player.getLocation().clone().add(0, 1, 0).toVector()).multiply(0.3));
             } else {
                 player.getInventory().addItem(new ItemStack(Material.MILK_BUCKET, 1));
             }

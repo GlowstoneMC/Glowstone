@@ -1,13 +1,18 @@
 package net.glowstone.generator.biomegrid;
 
-import net.glowstone.constants.GlowBiome;
+import static org.bukkit.block.Biome.DEEP_OCEAN;
+import static org.bukkit.block.Biome.FROZEN_RIVER;
+import static org.bukkit.block.Biome.ICE_FLATS;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
+import static org.bukkit.block.Biome.OCEAN;
+import static org.bukkit.block.Biome.RIVER;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static org.bukkit.block.Biome.*;
+import net.glowstone.constants.GlowBiome;
 
 public class RiverMapLayer extends MapLayer {
 
@@ -21,8 +26,10 @@ public class RiverMapLayer extends MapLayer {
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
 
         SPECIAL_RIVERS.put(GlowBiome.getId(ICE_FLATS), GlowBiome.getId(FROZEN_RIVER));
-        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
-        SPECIAL_RIVERS.put(GlowBiome.getId(MUSHROOM_ISLAND_SHORE), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
+        SPECIAL_RIVERS
+            .put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
+        SPECIAL_RIVERS
+            .put(GlowBiome.getId(MUSHROOM_ISLAND_SHORE), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
     }
 
     private final MapLayer belowLayer;
@@ -32,6 +39,13 @@ public class RiverMapLayer extends MapLayer {
         this(seed, belowLayer, null);
     }
 
+    /**
+     * Creates a map layer that generates rivers.
+     *
+     * @param seed the layer's PRNG seed
+     * @param belowLayer the layer to apply before this one
+     * @param mergeLayer TODO: document this parameter
+     */
     public RiverMapLayer(long seed, MapLayer belowLayer, MapLayer mergeLayer) {
         super(seed);
         this.belowLayer = belowLayer;
@@ -63,7 +77,8 @@ public class RiverMapLayer extends MapLayer {
                 int leftVal = values[j + (i + 1) * gridSizeX] & 1;
                 int rightVal = values[j + 2 + (i + 1) * gridSizeX] & 1;
                 int val = CLEAR_VALUE;
-                if (centerVal != upperVal || centerVal != lowerVal || centerVal != leftVal || centerVal != rightVal) {
+                if (centerVal != upperVal || centerVal != lowerVal || centerVal != leftVal
+                    || centerVal != rightVal) {
                     val = RIVER_VALUE;
                 }
                 finalValues[j + i * sizeX] = val;
@@ -74,16 +89,16 @@ public class RiverMapLayer extends MapLayer {
 
     private int[] mergeRivers(int x, int z, int sizeX, int sizeZ) {
         int[] values = belowLayer.generateValues(x, z, sizeX, sizeZ);
-        int[] mValues = mergeLayer.generateValues(x, z, sizeX, sizeZ);
+        int[] mergeValues = mergeLayer.generateValues(x, z, sizeX, sizeZ);
 
         int[] finalValues = new int[sizeX * sizeZ];
         for (int i = 0; i < sizeX * sizeZ; i++) {
-            int val = mValues[i];
-            if (OCEANS.contains(mValues[i])) {
-                val = mValues[i];
+            int val = mergeValues[i];
+            if (OCEANS.contains(mergeValues[i])) {
+                val = mergeValues[i];
             } else if (values[i] == RIVER_VALUE) {
-                if (SPECIAL_RIVERS.containsKey(mValues[i])) {
-                    val = SPECIAL_RIVERS.get(mValues[i]);
+                if (SPECIAL_RIVERS.containsKey(mergeValues[i])) {
+                    val = SPECIAL_RIVERS.get(mergeValues[i]);
                 } else {
                     val = GlowBiome.getId(RIVER);
                 }

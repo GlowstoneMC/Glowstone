@@ -1,14 +1,14 @@
 package net.glowstone.generator.decorators.overworld;
 
-import net.glowstone.generator.decorators.BlockDecorator;
-import net.glowstone.generator.objects.DoubleTallPlant;
-import org.bukkit.Chunk;
-import org.bukkit.material.types.DoublePlantSpecies;
-import org.bukkit.World;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import lombok.Data;
+import net.glowstone.generator.decorators.BlockDecorator;
+import net.glowstone.generator.objects.DoubleTallPlant;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 public class DoublePlantDecorator extends BlockDecorator {
 
@@ -28,7 +28,8 @@ public class DoublePlantDecorator extends BlockDecorator {
         new DoubleTallPlant(species).generate(world, random, sourceX, sourceY, sourceZ);
     }
 
-    private DoublePlantSpecies getRandomDoublePlant(Random random, List<DoublePlantDecoration> decorations) {
+    private DoublePlantSpecies getRandomDoublePlant(Random random,
+        List<DoublePlantDecoration> decorations) {
         int totalWeight = 0;
         for (DoublePlantDecoration decoration : decorations) {
             totalWeight += decoration.getWeight();
@@ -43,22 +44,9 @@ public class DoublePlantDecorator extends BlockDecorator {
         return null;
     }
 
-    public static class DoublePlantDecoration {
-
+    @Data
+    public static final class DoublePlantDecoration {
         private final DoublePlantSpecies species;
         private final int weight;
-
-        public DoublePlantDecoration(DoublePlantSpecies species, int weight) {
-            this.species = species;
-            this.weight = weight;
-        }
-
-        public DoublePlantSpecies getSpecies() {
-            return species;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
     }
 }

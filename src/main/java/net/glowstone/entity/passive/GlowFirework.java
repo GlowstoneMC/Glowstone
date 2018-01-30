@@ -31,6 +31,7 @@ import org.bukkit.util.Vector;
 
 public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
+    private static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK);
     @Getter
     @Setter
     private UUID spawningEntity;
@@ -42,14 +43,22 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     @Getter
     @Setter
     private int lifeTime;
-    private static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK);
 
     public GlowFirework(Location location) {
         super(location);
         setSize(0.25f, 0.25f);
     }
 
-    public GlowFirework(Location location, UUID spawningEntity, LivingEntity boostedEntity, ItemStack item) {
+    /**
+     * Creates an instance.
+     *
+     * @param location the location
+     * @param spawningEntity TODO: document this parameter
+     * @param boostedEntity TODO: document this parameter
+     * @param item the firework rocket as an item
+     */
+    public GlowFirework(Location location, UUID spawningEntity, LivingEntity boostedEntity,
+        ItemStack item) {
         super(location);
         this.spawningEntity = spawningEntity;
         setBoostedEntity(boostedEntity);
@@ -75,8 +84,9 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         double z = location.getZ();
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, UUID.randomUUID(), SpawnObjectMessage.FIREWORK, x, y, z, 0, 0),
-            new EntityMetadataMessage(id, metadata.getEntryList())
+            new SpawnObjectMessage(
+                    entityId, UUID.randomUUID(), SpawnObjectMessage.FIREWORK, x, y, z, 0, 0),
+            new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
 
@@ -111,8 +121,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     }
 
     /**
-     * Set the firework item of this firework entity.
-     * If an empty ItemStack, or none of the type {{@link Material#FIREWORK}} was given, a new Firework ItemStack will be created.
+     * Set the firework item of this firework entity. If an empty ItemStack, or none of the type
+     * {{@link Material#FIREWORK}} was given, a new Firework ItemStack will be created.
      *
      * @param item FireWork Item this entity should use
      */
@@ -141,7 +151,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         super.pulse();
 
         if (ticksLived == 1) {
-            world.playSound(this.location, Sound.ENTITY_FIREWORK_LAUNCH, SoundCategory.AMBIENT, 3, 1);
+            world.playSound(this.location, Sound.ENTITY_FIREWORK_LAUNCH, SoundCategory.AMBIENT, 3,
+                1);
         }
 
         if (ticksLived > lifeTime) {
@@ -168,8 +179,10 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
                         continue;
                     }
 
-                    // "The explosion of firework rockets deals 2.5 hearts of damage, per firework star."
-                    ((LivingEntity) nearbyEntity).damage((effectsSize * 5), DamageCause.ENTITY_EXPLOSION);
+                    // "The explosion of firework rockets deals 2.5 hearts of damage, per firework
+                    // star."
+                    ((LivingEntity) nearbyEntity)
+                        .damage((effectsSize * 5), DamageCause.ENTITY_EXPLOSION);
                 }
             }
         }

@@ -1,26 +1,34 @@
 package net.glowstone.scoreboard;
 
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTOutputStream;
-import net.glowstone.util.nbt.TagType;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Team;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NbtOutputStream;
+import net.glowstone.util.nbt.TagType;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Team;
 
 public class NbtScoreboardIoWriter {
-    public static void writeMainScoreboard(File path, GlowScoreboard scoreboard) throws IOException {
+
+    /**
+     * Saves a scoreboard to a compressed NBT file.
+     *
+     * @param path the file path to write to
+     * @param scoreboard the scoreboard to save
+     * @throws IOException if the file cannot be written
+     */
+    public static void writeMainScoreboard(File path, GlowScoreboard scoreboard)
+        throws IOException {
         CompoundTag root = new CompoundTag();
         CompoundTag data = new CompoundTag();
         root.putCompound("data", data);
-        try (NBTOutputStream nbt = new NBTOutputStream(getDataOutputStream(path), true)) {
+        try (NbtOutputStream nbt = new NbtOutputStream(getDataOutputStream(path), true)) {
             writeObjectives(data, scoreboard);
             writeScores(data, scoreboard);
             writeTeams(data, scoreboard);
@@ -75,7 +83,8 @@ public class NbtScoreboardIoWriter {
             CompoundTag teamNbt = new CompoundTag();
             teamNbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
             teamNbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);
-            teamNbt.putString("NameTagVisibility", team.getOption(Team.Option.NAME_TAG_VISIBILITY).name().toLowerCase());
+            teamNbt.putString("NameTagVisibility",
+                team.getOption(Team.Option.NAME_TAG_VISIBILITY).name().toLowerCase());
             switch (team.getOption(Team.Option.DEATH_MESSAGE_VISIBILITY)) {
                 case NEVER:
                     teamNbt.putString("DeathMessageVisibility", "never");

@@ -1,26 +1,17 @@
 package net.glowstone.util;
 
+import static org.bukkit.Material.DIRT;
+import static org.bukkit.Material.GRASS;
+import static org.bukkit.Material.GRAVEL;
+import static org.bukkit.Material.STONE;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import net.glowstone.block.ItemTable;
 import org.bukkit.Material;
 import org.junit.Test;
 
-import static org.bukkit.Material.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 public class VariableValueArrayTest {
-
-    /**
-     * Gets an ID for the given block.
-     *
-     * @param material The material for the block.
-     * @param metadata The metadata to give the block.
-     * @return The ID as put in an array for the given block.
-     */
-    private static int block(Material material, int metadata) {
-        int id = ItemTable.instance().getBlock(material).getId();
-        return (id << 4 | metadata);
-    }
 
     private static final int[] SAMPLE_BLOCKS = {
         block(GRASS, 0),
@@ -34,13 +25,25 @@ public class VariableValueArrayTest {
         block(GRAVEL, 0),
         block(STONE, 0)
     };
-
     /**
      * The expected values for the backing array.
      */
     private static final long
-            EXPECTED_BACKING_1 = 0b00000001_0000__000000011_0001__000000011_0000__000000011_0000__000000010_0000L,
-            EXPECTED_BACKING_2 = 0b0000001_0000__000001101_0000__000001101_0000__000000001_0011__000000001_0000__0L;
+        EXPECTED_BACKING_1 = 0b00000001_0000__000000011_0001__000000011_0000__000000011_0000__000000010_0000L,
+        EXPECTED_BACKING_2 = 0b0000001_0000__000001101_0000__000001101_0000__000000001_0011__000000001_0000__0L;
+
+    /**
+     * Gets an ID for the given block.
+     *
+     * @param material The material for the block.
+     * @param metadata The metadata to give the block.
+     * @return The ID as put in an array for the given block.
+     */
+    private static int block(Material material, int metadata) {
+        int id = ItemTable.instance().getBlock(material).getId();
+        return (id << 4 | metadata);
+    }
+
     @Test
     public void testBacking() {
         // The sample case given on wiki.vg

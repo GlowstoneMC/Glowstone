@@ -1,5 +1,6 @@
 package net.glowstone.entity.passive;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -7,9 +8,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Llama;
 import org.bukkit.inventory.LlamaInventory;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class GlowLlama extends GlowChestedHorse implements Llama {
+
+    /**
+     * Creates a llama entity.
+     *
+     * @param location the entity's location
+     */
     public GlowLlama(Location location) {
         super(location, EntityType.LLAMA, 22);
         this.setColor(Color.values()[ThreadLocalRandom.current().nextInt(Color.values().length)]);

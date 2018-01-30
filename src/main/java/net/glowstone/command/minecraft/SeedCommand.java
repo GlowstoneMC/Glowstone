@@ -1,13 +1,13 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
-import java.util.Collections;
-
 public class SeedCommand extends VanillaCommand {
+
     public SeedCommand() {
         super("seed", "Displays the world seed.", "/seed", Collections.emptyList());
         setPermission("minecraft.command.seed");
@@ -15,7 +15,9 @@ public class SeedCommand extends VanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) return false;
+        if (!testPermission(sender)) {
+            return false;
+        }
 
         final World world = CommandUtils.getWorld(sender);
         sender.sendMessage("Seed: " + world.getSeed());

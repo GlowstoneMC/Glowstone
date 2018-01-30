@@ -3,16 +3,15 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.glowstone.net.message.play.player.CameraMessage;
-
 import java.io.IOException;
+import net.glowstone.net.message.play.player.CameraMessage;
 
 public final class CameraCodec implements Codec<CameraMessage> {
 
     @Override
     public CameraMessage decode(ByteBuf buffer) throws IOException {
-        int cameraID = ByteBufUtils.readVarInt(buffer);
-        return new CameraMessage(cameraID);
+        int cameraId = ByteBufUtils.readVarInt(buffer);
+        return new CameraMessage(cameraId);
     }
 
     @Override

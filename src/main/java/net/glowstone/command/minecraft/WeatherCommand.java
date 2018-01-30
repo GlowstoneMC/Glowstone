@@ -1,5 +1,9 @@
 package net.glowstone.command.minecraft;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
@@ -7,17 +11,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public class WeatherCommand extends VanillaCommand {
 
     private static final List<String> WEATHER = Arrays.asList("clear", "rain", "thunder");
 
+    /**
+     * Creates the instance for this command.
+     */
     public WeatherCommand() {
-        super("weather", "Changes the weather in the world.", "/weather <clear|rain|thunder> [duration in seconds]", Collections.emptyList());
+        super("weather", "Changes the weather in the world.",
+            "/weather <clear|rain|thunder> [duration in seconds]", Collections.emptyList());
         setPermission("minecraft.command.weather");
     }
 
@@ -41,10 +44,12 @@ public class WeatherCommand extends VanillaCommand {
                 return false;
             }
             if (duration < 1) {
-                sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1] + ") is too small, it must be at least 1");
+                sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1]
+                    + ") is too small, it must be at least 1");
                 return false;
             } else if (duration > 1000000) {
-                sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1] + ") is too big, it must be at most 1000000");
+                sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1]
+                    + ") is too big, it must be at most 1000000");
                 return false;
             }
         }
@@ -68,9 +73,11 @@ public class WeatherCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], WEATHER, new ArrayList(WEATHER.size()));
+            return (List) StringUtil
+                .copyPartialMatches(args[0], WEATHER, new ArrayList(WEATHER.size()));
         }
         return Collections.emptyList();
     }

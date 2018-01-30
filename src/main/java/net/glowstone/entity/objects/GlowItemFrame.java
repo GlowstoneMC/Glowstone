@@ -1,6 +1,8 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import java.util.Arrays;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
@@ -20,17 +22,25 @@ import org.bukkit.Rotation;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.List;
-
 
 public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
+    /**
+     * Creates an item frame entity, and consumes the item frame item if a player is hanging it.
+     *
+     * @param player the player who is hanging this item frame if it was an item before, or null if
+     *         it wasn't (e.g. it's from the saved world or a /summon command)
+     * @param location the item frame's location
+     * @param facing the direction this item frame is facing
+     */
     public GlowItemFrame(GlowPlayer player, Location location, BlockFace facing) {
 
         super(location, facing);
@@ -55,7 +65,8 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if (message.getAction() == Action.INTERACT.ordinal() && message.getHandSlot() == EquipmentSlot.HAND) {
+        if (message.getAction() == Action.INTERACT.ordinal()
+            && message.getHandSlot() == EquipmentSlot.HAND) {
             if (InventoryUtil.isEmpty(getItem())) {
                 ItemStack isInHand = player.getItemInHand();
                 if (isInHand != null) {
@@ -76,15 +87,23 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         }
         if (message.getAction() == Action.ATTACK.ordinal()) {
             if (isEmpty()) {
-                // TODO: use correct RemoveCause
-                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.DEFAULT)).isCancelled()) {
+                if (EventFactory.callEvent(new HangingBreakByEntityEvent(this, player))
+                    .isCancelled()) {
                     return false;
+                }
+                if (player.getGameMode() != GameMode.CREATIVE) {
+                    world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
                 }
                 remove();
             } else {
-                world.dropItemNaturally(location, getItem().clone());
+                if (EventFactory.callEvent(new EntityDamageByEntityEvent(
+                        player, this, DamageCause.ENTITY_ATTACK, 0)).isCancelled()) {
+                    return false;
+                }
+                if (player.getGameMode() != GameMode.CREATIVE) {
+                    world.dropItemNaturally(location, getItem().clone());
+                }
                 setItem(InventoryUtil.createEmptyStack());
-                setRotation(Rotation.NONE);
             }
         }
         return true;
@@ -97,7 +116,8 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         if (ticksLived % (20 * 5) == 0) {
 
             if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
-                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
+                if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
+                    .isCancelled()) {
                     return;
                 }
                 world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));
@@ -119,8 +139,10 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         int yaw = getYaw();
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM_FRAME, location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw, HangingFace.getByBlockFace(getFacing()).ordinal()),
-            new EntityMetadataMessage(id, metadata.getEntryList())
+            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.ITEM_FRAME,
+                location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw,
+                HangingFace.getByBlockFace(getFacing()).ordinal()),
+            new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
 
@@ -146,15 +168,19 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
             case SOUTH:
                 zoffset = 32;
                 break;
+            default:
+                // TODO: should this raise a warning
+                // do nothing
         }
 
-        Key key = GlowChunk.ChunkKeyStore.get(location.getChunk().getX(), location.getChunk().getZ());
+        Key key = GlowChunk.Key.of(location.getBlockX() >> 4, location.getBlockZ() >> 4);
         for (GlowPlayer player : getWorld().getRawPlayers()) {
             if (player.canSeeChunk(key)) {
                 double x = location.getX();
                 double y = location.getY();
                 double z = location.getZ();
-                player.getSession().send(new EntityTeleportMessage(id, x + xoffset, y, z + zoffset, yaw, 0));
+                player.getSession()
+                    .send(new EntityTeleportMessage(entityId, x + xoffset, y, z + zoffset, yaw, 0));
             }
         }
     }
@@ -166,13 +192,16 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
     }
 
     @Override
-    public Location getOrigin() {
-        return null;
+    public ItemStack getItem() {
+        return metadata.getItem(MetadataIndex.ITEM_FRAME_ITEM);
     }
 
     @Override
-    public ItemStack getItem() {
-        return metadata.getItem(MetadataIndex.ITEM_FRAME_ITEM);
+    public void setItem(ItemStack is) {
+        is = InventoryUtil.itemOrEmpty(is).clone();
+        is.setAmount(1);
+
+        metadata.set(MetadataIndex.ITEM_FRAME_ITEM, is);
     }
 
     @Override
@@ -186,15 +215,6 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
     public void setFacingDirection(BlockFace blockface) {
         facing = HangingFace.getByBlockFace(blockface);
         createTeleportMessage(blockface);
-    }
-
-    @Override
-    public void setItem(ItemStack is) {
-        is = InventoryUtil.itemOrEmpty(is).clone();
-        is.setAmount(1);
-
-        metadata.set(MetadataIndex.ITEM_FRAME_ITEM, is);
-        setRotation(Rotation.NONE);
     }
 
     @Override

@@ -1,5 +1,15 @@
 package net.glowstone.command;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -7,19 +17,21 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-
 public class CommandTarget {
 
     private final CommandSender sender;
+    /**
+     * The type of selector (target).
+     *
+     * @return the type of selector of this target
+     */
+    @Getter
     private final SelectorType selector;
     private final HashMap<String, SelectorValue> arguments;
 
     /**
-     * Parses the target of the command with the given argument.
-     * For example, a target could be "@r[c=5]", which would get 5 random players
+     * Parses the target of the command with the given argument. For example, a target could be
+     * "@r[c=5]", which would get 5 random players.
      *
      * @param sender the sender that used this target selector
      * @param target the un-parsed command target
@@ -33,8 +45,9 @@ public class CommandTarget {
             for (String arg : args) {
                 String key = arg.split("=")[0];
                 String valueRaw = "";
-                if (arg.split("=").length > 1)
+                if (arg.split("=").length > 1) {
                     valueRaw = arg.split("=")[1];
+                }
                 SelectorValue value = new SelectorValue(valueRaw);
                 this.arguments.put(key, value);
             }
@@ -42,20 +55,12 @@ public class CommandTarget {
     }
 
     /**
-     * The type of selector (target)
-     *
-     * @return the type of selector of this target
-     */
-    public SelectorType getSelector() {
-        return selector;
-    }
-
-    /**
-     * The arguments of the selector (target)
+     * The arguments of the selector (target).
      *
      * @return the arguments of the selector of this target
      */
     public HashMap<String, SelectorValue> getArguments() {
+        // TODO: Defensive copy
         return arguments;
     }
 
@@ -66,8 +71,9 @@ public class CommandTarget {
         if (arguments.containsKey("c")) {
             return Integer.valueOf(arguments.get("c").getValue());
         }
-        if (selector == SelectorType.RANDOM || selector == SelectorType.NEAREST_PLAYER)
+        if (selector == SelectorType.RANDOM || selector == SelectorType.NEAREST_PLAYER) {
             return 1;
+        }
         return null;
     }
 
@@ -112,7 +118,9 @@ public class CommandTarget {
             if (!value.isInverted() && !value.getValue().equals("-1")) {
                 return Arrays.asList(GameMode.getByValue(Integer.valueOf(value.getValue())));
             } else {
-                return Arrays.stream(GameMode.values()).filter(mode -> mode.getValue() != Integer.valueOf(value.getValue())).collect(Collectors.toList());
+                return Arrays.stream(GameMode.values())
+                    .filter(mode -> mode.getValue() != Integer.valueOf(value.getValue()))
+                    .collect(Collectors.toList());
             }
         }
         return null;
@@ -162,7 +170,7 @@ public class CommandTarget {
     }
 
     /**
-     * Gets all the matched entities from the target
+     * Gets all the matched entities from the target.
      *
      * @param source the location from which the targets should be found
      * @return the entities matching the query
@@ -231,8 +239,9 @@ public class CommandTarget {
             entities.add(entity);
         }
         Collections.sort(entities, new EntityDistanceComparator(count < 0, source));
-        if (count > entities.size())
+        if (count > entities.size()) {
             count = entities.size();
+        }
         List<Entity> matched = new ArrayList<>();
         List<Integer> used = new ArrayList<>();
         for (int i = 0; i < count; i++) {
@@ -253,7 +262,58 @@ public class CommandTarget {
     }
 
     /**
-     * Compares the distance of two entities, in order to sort them
+     * Types of selectors, namely @p (closest player), @r (random player), @a (all players), @e
+     * (all entities).
+     */
+    @RequiredArgsConstructor
+    enum SelectorType {
+        NEAREST_PLAYER('p'),
+        RANDOM('r'),
+        ALL_PLAYERS('a'),
+        ALL_ENTITIES('e'),
+        SENDER('s');
+
+        @Getter
+        private final char selector;
+
+        public static SelectorType get(char selector) {
+            for (SelectorType selectorType : values()) {
+                if (selector == selectorType.getSelector()) {
+                    return selectorType;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Represents the value of a selector argument.
+     */
+    public static class SelectorValue {
+
+        /** The value of the argument. */
+        @Getter
+        private String value;
+        /** Whether the argument is inverted (functionality should be done in reverse). */
+        @Getter
+        private boolean inverted = false;
+
+        /**
+         * Parses the arguments value from the given string.
+         *
+         * @param value the un-parsed value
+         */
+        public SelectorValue(String value) {
+            if (value.startsWith("!")) {
+                value = value.substring(1);
+                this.inverted = true;
+            }
+            this.value = value;
+        }
+    }
+
+    /**
+     * Compares the distance of two entities, in order to sort them.
      */
     private class EntityDistanceComparator implements Comparator<Entity> {
 
@@ -267,78 +327,12 @@ public class CommandTarget {
 
         @Override
         public int compare(Entity e1, Entity e2) {
-            int r = ((Double) (e1.getLocation().distanceSquared(source))).compareTo(e2.getLocation().distanceSquared(source));
-            if (reversed)
+            int r = ((Double) (e1.getLocation().distanceSquared(source)))
+                .compareTo(e2.getLocation().distanceSquared(source));
+            if (reversed) {
                 r = -r;
+            }
             return r;
-        }
-    }
-
-    /**
-     * Represents the value of a selector argument
-     */
-    public static class SelectorValue {
-        private String value;
-        private boolean inverted = false;
-
-        /**
-         * Parses the arguments value from the given string
-         *
-         * @param value the un-parsed value
-         */
-        public SelectorValue(String value) {
-            if (value.startsWith("!")) {
-                value = value.substring(1);
-                this.inverted = true;
-            }
-            this.value = value;
-        }
-
-        /**
-         * The value of the argument
-         *
-         * @return the value of the argument
-         */
-        public String getValue() {
-            return value;
-        }
-
-        /**
-         * Whether the argument is inverted (functionality should be done in reverse)
-         *
-         * @return true if the argument is inverted, false otherwise
-         */
-        public boolean isInverted() {
-            return inverted;
-        }
-    }
-
-    /**
-     * Types of selectors, namely @p (closest player), @r (random player), @a (all players), @e (all entities)
-     */
-    enum SelectorType {
-        NEAREST_PLAYER('p'),
-        RANDOM('r'),
-        ALL_PLAYERS('a'),
-        ALL_ENTITIES('e'),
-        SENDER('s');
-
-        private char selector;
-
-        SelectorType(char selector) {
-            this.selector = selector;
-        }
-
-        public char getSelector() {
-            return selector;
-        }
-
-        public static SelectorType get(char selector) {
-            for (SelectorType selectorType : values()) {
-                if (selector == selectorType.getSelector())
-                    return selectorType;
-            }
-            return null;
         }
     }
 }

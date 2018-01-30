@@ -1,16 +1,25 @@
 package net.glowstone.util;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.EventFactory;
+import net.glowstone.entity.GlowPlayer;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class InventoryUtil {
 
     public static final ItemStack[] NO_ITEMS = new ItemStack[0];
+    public static final Collection<ItemStack> NO_ITEMS_COLLECTION = Collections.emptyList();
     public static final ImmutableItemStack EMPTY_STACK = new ImmutableItemStack(Material.AIR, 0);
 
     /**
@@ -20,7 +29,7 @@ public class InventoryUtil {
      * @return whether the given ItemStack is empty
      */
     public static boolean isEmpty(ItemStack stack) {
-        return stack == null || stack.equals(EMPTY_STACK) || stack.getType() == Material.AIR || stack.getAmount() == 0;
+        return stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0;
     }
 
     /**
@@ -45,8 +54,8 @@ public class InventoryUtil {
     /**
      * Get a random slot index in an Inventory.
      *
-     * @param random      a Random instance
-     * @param inventory   the inventory
+     * @param random a Random instance
+     * @param inventory the inventory
      * @param ignoreEmpty whether to skip empty items in the inventory
      * @return the index of a random slot in the inventory, -1 if no possible slot was found
      */
@@ -64,5 +73,53 @@ public class InventoryUtil {
             return -1;
         }
         return notEmpty.get(random.nextInt(notEmpty.size()));
+    }
+
+    /**
+     * Inflicts damage to an item. Unbreaking enchantment is applied if present.
+     *
+     * @param player the player holding the item, or null if held by a dispenser
+     * @param holding the item
+     *
+     * @return the updated item stack
+     */
+    public static ItemStack damageItem(GlowPlayer player, ItemStack holding) {
+        if (player != null && player.getGameMode() == GameMode.CREATIVE) {
+            return holding;
+        }
+
+        // Apply unbreaking enchantment.
+        // TODO: Armor has a different formula for chance to avoid damage
+        int durability = holding.getEnchantmentLevel(Enchantment.DURABILITY);
+        if (durability > 0 && ThreadLocalRandom.current().nextDouble() < 1 / (durability + 1)) {
+            return holding;
+        }
+
+        holding.setDurability((short) (holding.getDurability() + 1));
+        if (holding.getDurability() == holding.getType().getMaxDurability() + 1) {
+            if (player != null) {
+                EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
+            }
+            return createEmptyStack();
+        }
+        return holding;
+    }
+
+    /**
+     * Consumes 1 copy of the given item, which must be held by the given player, unless that player
+     * is in Creative mode.
+     *
+     * @param player the player holding the item
+     * @param item the item to consume
+     */
+    public static void consumeHeldItem(HumanEntity player, ItemStack item) {
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+        } else {
+            player.getInventory().clear(player.getInventory().getHeldItemSlot());
+        }
     }
 }

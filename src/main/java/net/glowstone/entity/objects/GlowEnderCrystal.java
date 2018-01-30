@@ -12,7 +12,6 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
-import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
@@ -27,6 +26,11 @@ import org.bukkit.util.BlockVector;
 
 public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
+    /**
+     * Creates an instance at the given location.
+     *
+     * @param location the ender crystal's location
+     */
     public GlowEnderCrystal(Location location) {
         super(location);
         setSize(2f, 2f);
@@ -41,16 +45,10 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
-
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, x, y, z, pitch, yaw),
-            new EntityMetadataMessage(id, metadata.getEntryList())
+            new SpawnObjectMessage(entityId,
+                    getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, location),
+            new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
 
@@ -85,11 +83,14 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         }
 
         if (cause != DamageCause.ENTITY_EXPLOSION) {
-            ExplosionPrimeEvent event = EventFactory.callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
+            ExplosionPrimeEvent event = EventFactory
+                .callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
 
             if (!event.isCancelled()) {
                 Location location = getLocation();
-                double x = location.getX(), y = location.getY(), z = location.getZ();
+                double x = location.getX();
+                double y = location.getY();
+                double z = location.getZ();
                 world.createExplosion(this, x, y, z, event.getRadius(), event.getFire(), true);
             }
         }
@@ -120,9 +121,11 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         if (location == null) {
             metadata.set(MetadataIndex.ENDERCRYSTAL_BEAM_TARGET, (BlockVector) null);
         } else if (!location.getWorld().equals(getWorld())) {
-            throw new IllegalArgumentException("Cannot set beam target location to different world");
+            throw new IllegalArgumentException(
+                "Cannot set beam target location to different world");
         } else {
-            metadata.set(MetadataIndex.ENDERCRYSTAL_BEAM_TARGET, new BlockVector(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+            metadata.set(MetadataIndex.ENDERCRYSTAL_BEAM_TARGET,
+                new BlockVector(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
         }
     }
 }

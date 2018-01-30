@@ -1,5 +1,7 @@
 package net.glowstone.block.entity.state;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.FlowerPotEntity;
@@ -8,8 +10,15 @@ import org.bukkit.material.MaterialData;
 
 public class GlowFlowerPot extends GlowBlockState implements FlowerPot {
 
+    @Getter
+    @Setter
     private MaterialData contents;
 
+    /**
+     * Creates an instance for the given block.
+     *
+     * @param block the flowerpot block
+     */
     public GlowFlowerPot(GlowBlock block) {
         super(block);
         // Pre-1.7 uses block data and post-1.7 uses NBT data for flower pot contents.
@@ -26,16 +35,6 @@ public class GlowFlowerPot extends GlowBlockState implements FlowerPot {
 
     private boolean hasFlowerPotData() {
         return getData() instanceof org.bukkit.material.FlowerPot;
-    }
-
-    @Override
-    public MaterialData getContents() {
-        return contents;
-    }
-
-    @Override
-    public void setContents(MaterialData contents) {
-        this.contents = contents;
     }
 
     @Override

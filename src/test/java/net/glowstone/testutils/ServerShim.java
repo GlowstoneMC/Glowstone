@@ -1,20 +1,53 @@
 package net.glowstone.testutils;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
+import lombok.Getter;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.net.SessionRegistry;
+import net.glowstone.scheduler.GlowScheduler;
+import net.glowstone.scheduler.WorldScheduler;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.*;
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
+import org.bukkit.UnsafeValues;
+import org.bukkit.Warning;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.command.*;
+import org.bukkit.command.CommandException;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFactory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -23,11 +56,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.*;
-import java.util.logging.Logger;
+import org.mockito.Mockito;
 
 /**
  * Simple mocked Server implementation.
@@ -41,6 +70,17 @@ public class ServerShim implements Server {
     }
 
     // actual implementations
+
+    private final WorldScheduler worldScheduler = new WorldScheduler();
+    private final SessionRegistry sessionRegistry = new SessionRegistry();
+
+    @Getter
+    private final PluginManager pluginManager
+            = Mockito.mock(PluginManager.class, Mockito.RETURNS_SMART_NULLS);
+
+    @Getter
+    private final GlowScheduler scheduler
+            = new GlowScheduler(this, worldScheduler, sessionRegistry);
 
     @Override
     public String getName() {
@@ -205,16 +245,6 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public PluginManager getPluginManager() {
-        return null;
-    }
-
-    @Override
-    public BukkitScheduler getScheduler() {
-        return null;
-    }
-
-    @Override
     public ServicesManager getServicesManager() {
         return null;
     }
@@ -280,7 +310,8 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {
+    public boolean dispatchCommand(CommandSender sender, String commandLine)
+        throws CommandException {
         return false;
     }
 
@@ -435,12 +466,14 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public Inventory createInventory(InventoryHolder owner, int size) throws IllegalArgumentException {
+    public Inventory createInventory(InventoryHolder owner, int size)
+        throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public Inventory createInventory(InventoryHolder owner, int size, String title) throws IllegalArgumentException {
+    public Inventory createInventory(InventoryHolder owner, int size, String title)
+        throws IllegalArgumentException {
         return null;
     }
 
@@ -510,13 +543,13 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public void setIdleTimeout(int threshold) {
-
+    public int getIdleTimeout() {
+        return 0;
     }
 
     @Override
-    public int getIdleTimeout() {
-        return 0;
+    public void setIdleTimeout(int threshold) {
+
     }
 
     @Override
@@ -525,7 +558,8 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle, BarFlag... barFlags) {
+    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle,
+        BarFlag... barFlags) {
         return null;
     }
 
@@ -577,6 +611,21 @@ public class ServerShim implements Server {
     @Override
     public boolean suggestPlayerNamesWhenNullTabCompletions() {
         return false;
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id) {
+        return null;
+    }
+
+    @Override
+    public PlayerProfile createProfile(String name) {
+        return null;
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id, String name) {
+        return null;
     }
 
     @Override

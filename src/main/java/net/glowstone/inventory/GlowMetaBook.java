@@ -1,36 +1,48 @@
 package net.glowstone.inventory;
 
 import com.google.common.collect.ImmutableList;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.BookMeta;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.TagType;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * The ItemMeta for book and quill and written book items.
  */
 class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
+    @Getter
     private String title;
+    @Getter
+    @Setter
     private String author;
     private List<String> pages;
     private Integer generation;
 
-    public GlowMetaBook(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link BookMeta}, its title, author, pages and generation are copied; otherwise, the new book
+     * is blank.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaBook(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaBook)) {
+        if (!(meta instanceof BookMeta)) {
             return;
         }
-        GlowMetaBook book = (GlowMetaBook) meta;
-        title = book.title;
-        author = book.author;
+        BookMeta book = (BookMeta) meta;
+        title = book.getTitle();
+        author = book.getAuthor();
         if (book.hasPages()) {
-            pages = new ArrayList<>(book.pages);
+            pages = new ArrayList<>(book instanceof GlowMetaBook
+                    ? ((GlowMetaBook) book).pages : book.getPages());
             filterPages();
         }
         if (hasGeneration()) {
@@ -40,6 +52,12 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
     ////////////////////////////////////////////////////////////////////////////
     // Internal stuff
+
+    @Override
+    public BookMeta.Spigot spigot() {
+        return new BookMeta.Spigot() {
+        };
+    }
 
     @Override
     public BookMeta clone() {
@@ -111,11 +129,6 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     }
 
     @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
     public boolean setTitle(String title) {
         if (title != null && title.length() > 16) {
             title = title.substring(0, 16);
@@ -127,16 +140,6 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     @Override
     public boolean hasAuthor() {
         return author != null && !author.isEmpty();
-    }
-
-    @Override
-    public String getAuthor() {
-        return author;
-    }
-
-    @Override
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     @Override

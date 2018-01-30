@@ -1,6 +1,11 @@
 package net.glowstone.net.handler.status;
 
 import com.flowpowered.network.MessageHandler;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
@@ -13,13 +18,8 @@ import org.bukkit.util.CachedServerIcon;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-public final class StatusRequestHandler implements MessageHandler<GlowSession, StatusRequestMessage> {
+public final class StatusRequestHandler implements
+    MessageHandler<GlowSession, StatusRequestMessage> {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -29,7 +29,8 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
         int online = server.getOnlinePlayers().size();
         InetAddress address = session.getAddress().getAddress();
 
-        StatusEvent event = new StatusEvent(address, server.getMotd(), online, server.getMaxPlayers());
+        StatusEvent event = new StatusEvent(address, server.getMotd(), online,
+            server.getMaxPlayers());
         event.players = new ArrayList<>(server.getOnlinePlayers());
         event.icon = server.getServerIcon();
         event.serverType = server.getServerType();
@@ -51,7 +52,8 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
         players.put("online", online);
 
         if (!event.players.isEmpty()) {
-            event.players = event.players.subList(0, Math.min(event.players.size(), server.getPlayerSampleCount()));
+            event.players = event.players
+                .subList(0, Math.min(event.players.size(), server.getPlayerSampleCount()));
             Collections.shuffle(event.players);
             JSONArray playersSample = new JSONArray();
 
@@ -102,7 +104,8 @@ public final class StatusRequestHandler implements MessageHandler<GlowSession, S
         }
 
         @Override
-        public void setServerIcon(CachedServerIcon icon) throws IllegalArgumentException, UnsupportedOperationException {
+        public void setServerIcon(CachedServerIcon icon)
+            throws IllegalArgumentException, UnsupportedOperationException {
             if (!(icon instanceof GlowServerIcon)) {
                 throw new IllegalArgumentException("Icon not provided by this implementation");
             }

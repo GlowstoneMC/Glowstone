@@ -1,5 +1,8 @@
 package net.glowstone.entity.passive;
 
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowAnimal;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,33 +11,24 @@ import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class GlowChicken extends GlowAnimal implements Chicken {
 
+    @Getter
+    @Setter
     private boolean chickenJockey;
+    @Getter
+    @Setter
     private int eggLayTime;
 
+    /**
+     * Creates a chicken.
+     *
+     * @param location the chicken's location
+     */
     public GlowChicken(Location location) {
         super(location, EntityType.CHICKEN, 4);
         setSize(0.4F, 0.7F);
         generateEggLayDelay();
-    }
-
-    public boolean isChickenJockey() {
-        return chickenJockey;
-    }
-
-    public void setChickenJockey(boolean chickenJockey) {
-        this.chickenJockey = chickenJockey;
-    }
-
-    public int getEggLayTime() {
-        return eggLayTime;
-    }
-
-    public void setEggLayTime(int eggLayTime) {
-        this.eggLayTime = eggLayTime;
     }
 
     private void generateEggLayDelay() {

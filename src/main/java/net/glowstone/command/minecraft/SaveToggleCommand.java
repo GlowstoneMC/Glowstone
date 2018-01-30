@@ -1,17 +1,24 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Collections;
+import java.util.List;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
-import java.util.Collections;
-import java.util.List;
-
 public class SaveToggleCommand extends VanillaCommand {
+
     private final boolean on;
 
+    /**
+     * Creates the instance for the {@code /save-on} or {@code /save-off} command.
+     *
+     * @param on true for {@code /save-on}; false for {@code /save-off}
+     */
     public SaveToggleCommand(boolean on) {
-        super(on ? "save-on" : "save-off", on ? "Enables automatic server saves." : "Disables automatic sever saves.", on ? "/save-on" : "/save-off", Collections.emptyList());
+        super(on ? "save-on" : "save-off",
+            on ? "Enables automatic server saves." : "Disables automatic sever saves.",
+            on ? "/save-on" : "/save-off", Collections.emptyList());
         this.on = on;
         setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off");
     }
@@ -29,7 +36,8 @@ public class SaveToggleCommand extends VanillaCommand {
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         return Collections.emptyList();
     }
 }

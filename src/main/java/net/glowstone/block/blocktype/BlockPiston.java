@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
@@ -14,17 +17,26 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonBaseMaterial;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BlockPiston extends BlockDirectional {
+
     private static final int PUSH_LIMIT = 12;
+    /**
+     * The piston is either non-sticky (default), or has a sticky behavior.
+     *
+     * @return true if the piston has a sticky base
+     */
+    @Getter
     private final boolean sticky;
 
+    /** Creates the basic (non-sticky) piston block type. */
     public BlockPiston() {
         this(false);
     }
 
+    /**
+     * Creates a piston block type.
+     * @param sticky true for the sticky-piston type; false for the basic piston type
+     */
     public BlockPiston(boolean sticky) {
         super(false);
         this.sticky = sticky;
@@ -36,21 +48,13 @@ public class BlockPiston extends BlockDirectional {
         }
     }
 
-    /**
-     * The piston is either non-sticky (default), or has a sticky behavior
-     *
-     * @return true if the piston has a sticky base
-     */
-    public boolean isSticky() {
-        return sticky;
-    }
-
     @Override
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         if (block.getType() == Material.PISTON_BASE) {
             // break piston extension if extended
             if (isPistonExtended(block)) {
-                block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing()).setType(Material.AIR);
+                block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing())
+                    .setType(Material.AIR);
             }
         }
 
@@ -62,17 +66,19 @@ public class BlockPiston extends BlockDirectional {
         PistonBaseMaterial piston = (PistonBaseMaterial) me.getState().getData();
         BlockFace pistonBlockFace = piston.getFacing();
         int rawFace = BlockDirectional.getRawFace(pistonBlockFace);
-        BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(), me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getTypeId());
+        BlockActionMessage message = new BlockActionMessage(me.getX(), me.getY(), me.getZ(),
+            me.isBlockIndirectlyPowered() ? 0 : 1, rawFace, me.getTypeId());
 
         GlowChunk chunk = me.getChunk();
-        GlowChunk.Key chunkKey = GlowChunk.ChunkKeyStore.get(chunk.getX(), chunk.getZ());
+        GlowChunk.Key chunkKey = GlowChunk.Key.of(chunk.getX(), chunk.getZ());
         GlowWorld world = me.getWorld();
 
         if (me.isBlockIndirectlyPowered() && !isPistonExtended(me)) {
             List<Block> blocks = new ArrayList<>();
 
             // get all blocks to be pushed by piston
-            // add 2 to push limit to compensate for i starting at 1 and also to get the block after the push limit
+            // add 2 to push limit to compensate for i starting at 1 and also to get the block after
+            // the push limit
             for (int i = 1; i < PUSH_LIMIT + 2; i++) {
                 Block block = me.getRelative(pistonBlockFace, i);
 
@@ -90,8 +96,10 @@ public class BlockPiston extends BlockDirectional {
                 blocks.add(block);
             }
 
-            world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.getSession().send(message));
-            world.playSound(me.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f, 0.75f);
+            world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey))
+                .forEach(player -> player.getSession().send(message));
+            world.playSound(me.getLocation(), Sound.BLOCK_PISTON_EXTEND, SoundCategory.BLOCKS, 0.5f,
+                0.75f);
 
             // extended state for piston base
             me.setData((byte) (me.getData() | 0x08));
@@ -112,8 +120,10 @@ public class BlockPiston extends BlockDirectional {
             return;
         }
 
-        world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey)).forEach(player -> player.getSession().send(message));
-        world.playSound(me.getLocation(), Sound.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f, 0.75f);
+        world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey))
+            .forEach(player -> player.getSession().send(message));
+        world.playSound(me.getLocation(), Sound.BLOCK_PISTON_CONTRACT, SoundCategory.BLOCKS, 0.5f,
+            0.75f);
 
         // normal state for piston
         setType(me, me.getTypeId(), me.getData() & ~0x08);
@@ -138,8 +148,10 @@ public class BlockPiston extends BlockDirectional {
     }
 
     private boolean isPistonExtended(Block block) {
-        // TODO: check direction of piston_extension to make sure that the extension is attached to piston
-        Block pistonHead = block.getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing());
+        // TODO: check direction of piston_extension to make sure that the extension is attached to
+        // piston
+        Block pistonHead = block
+            .getRelative(((PistonBaseMaterial) block.getState().getData()).getFacing());
         return pistonHead.getType() == Material.PISTON_EXTENSION;
     }
 
@@ -149,8 +161,8 @@ public class BlockPiston extends BlockDirectional {
         int x = block.getX();
         int y = block.getY();
         int z = block.getZ();
-
-        ((GlowChunk) world.getChunkAt(block)).setType(x & 0xf, z & 0xf, y, type);
-        ((GlowChunk) world.getChunkAt(block)).setMetaData(x & 0xf, z & 0xf, y, data);
+        GlowChunk chunk = (GlowChunk) world.getChunkAt(block);
+        chunk.setType(x & 0xf, z & 0xf, y, type);
+        chunk.setMetaData(x & 0xf, z & 0xf, y, data);
     }
 }

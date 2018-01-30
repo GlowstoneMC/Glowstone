@@ -1,11 +1,19 @@
 package net.glowstone.entity.passive;
 
+import static net.glowstone.entity.passive.GlowParrot.Shoulder.LEFT;
+import static net.glowstone.entity.passive.GlowParrot.Shoulder.RIGHT;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Parrot;
@@ -13,21 +21,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static net.glowstone.entity.passive.GlowParrot.Shoulder.LEFT;
-import static net.glowstone.entity.passive.GlowParrot.Shoulder.RIGHT;
-
 public class GlowParrot extends GlowTameable implements Parrot {
-    public enum Shoulder {
-        LEFT,
-        RIGHT
-    }
 
     public static final Variant[] VARIANTS = Variant.values();
     private int endOfLife = 0;
 
+    /**
+     * Creates a parrot of a random variant.
+     *
+     * @param location the initial location
+     */
     public GlowParrot(Location location) {
         super(location, EntityType.PARROT, 6);
         setBoundingBox(0.5, 1.0);
@@ -62,14 +65,26 @@ public class GlowParrot extends GlowTameable implements Parrot {
 
     }
 
+    /**
+     * Returns the owner, if this parrot is sitting on its owner's shoulder.
+     *
+     * @return the owner, if this parrot is sitting on its owner's shoulder, or null otherwise
+     */
     public Player getSittingOn() {
         Player player = ((Player) getOwner());
-        if (Objects.equals(this, player.getShoulderEntityRight()) || Objects.equals(this, player.getShoulderEntityLeft())) {
+        if (Objects.equals(this, player.getShoulderEntityRight()) || Objects
+            .equals(this, player.getShoulderEntityLeft())) {
             return player;
         }
         return null;
     }
 
+    /**
+     * Sits on the given player's shoulder.
+     *
+     * @param player the player whose shoulder to sit on
+     * @param shoulder which shoulder to sit on
+     */
     public void setSittingOn(Player player, Shoulder shoulder) {
         if (shoulder == LEFT) {
             player.setShoulderEntityLeft(this);
@@ -89,7 +104,8 @@ public class GlowParrot extends GlowTameable implements Parrot {
             if (result) {
                 return false;
             }
-            ItemStack hand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+            ItemStack hand = InventoryUtil
+                .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
             if (hand.getType() == Material.COOKIE) {
                 damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                 world.spawnParticle(Particle.SPELL, location, 1);
@@ -97,7 +113,8 @@ public class GlowParrot extends GlowTameable implements Parrot {
                     hand.setAmount(hand.getAmount() - 1);
                     player.getInventory().setItem(message.getHandSlot(), hand);
                 } else {
-                    player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                    player.getInventory()
+                        .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
                 }
             } else if (!isTamed() && hand.getType() == Material.SEEDS) {
                 if (ThreadLocalRandom.current().nextInt(3) == 0) {
@@ -105,18 +122,22 @@ public class GlowParrot extends GlowTameable implements Parrot {
                     setOwner(player);
                     world.spawnParticle(Particle.HEART, location, 1);
                 }
-                world.playSound(getLocation(), Sound.ENTITY_PARROT_EAT, 1.0F, SoundUtil.randomReal(0.2F) + 1F);
+                world.playSound(getLocation(), Sound.ENTITY_PARROT_EAT, 1.0F,
+                    SoundUtil.randomReal(0.2F) + 1F);
                 if (hand.getAmount() > 1) {
                     hand.setAmount(hand.getAmount() - 1);
                     player.getInventory().setItem(message.getHandSlot(), hand);
                 } else {
-                    player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                    player.getInventory()
+                        .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
                 }
                 return true;
             }
             // TODO: sitting only happens on crouch
-            if (isTamed() && getOwnerUUID() != null && getOwnerUUID().equals(player.getUniqueId())) {
-                if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag().isEmpty()) {
+            if (isTamed() && getOwnerUuid() != null && getOwnerUuid()
+                .equals(player.getUniqueId())) {
+                if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag()
+                    .isEmpty()) {
                     return super.entityInteract(player, message);
                 }
                 if (player.getLeftShoulderTag().isEmpty()) {
@@ -143,5 +164,10 @@ public class GlowParrot extends GlowTameable implements Parrot {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_PARROT_AMBIENT;
+    }
+
+    public enum Shoulder {
+        LEFT,
+        RIGHT
     }
 }

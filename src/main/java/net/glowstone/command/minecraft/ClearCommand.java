@@ -1,5 +1,9 @@
 package net.glowstone.command.minecraft;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
@@ -15,16 +19,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class ClearCommand extends VanillaCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public ClearCommand() {
-        super("clear", "Clears the content of a player's inventory.", "/clear [player] [item] [data] [maxCount]", Collections.emptyList());
+        super("clear", "Clears the content of a player's inventory.",
+            "/clear [player] [item] [data] [maxCount]", Collections.emptyList());
         setPermission("minecraft.command.clear");
     }
 
@@ -38,14 +41,16 @@ public class ClearCommand extends VanillaCommand {
                 Player player = (Player) sender;
                 return clearAll(sender, player, null, -1, -1);
             } else {
-                sender.sendMessage(ChatColor.RED + "Usage: /clear <player> [item] [data] [maxCount]");
+                sender
+                    .sendMessage(ChatColor.RED + "Usage: /clear <player> [item] [data] [maxCount]");
                 return false;
             }
         }
         String name = args[0];
         List<Player> players = new ArrayList<>();
         if (name.startsWith("@") && name.length() >= 2 && CommandUtils.isPhysical(sender)) {
-            Location location = sender instanceof Entity ? ((Entity) sender).getLocation() : ((BlockCommandSender) sender).getBlock().getLocation();
+            Location location = sender instanceof Entity ? ((Entity) sender).getLocation()
+                : ((BlockCommandSender) sender).getBlock().getLocation();
             CommandTarget target = new CommandTarget(sender, name);
             Entity[] matched = target.getMatched(location);
             for (Entity entity : matched) {
@@ -82,11 +87,13 @@ public class ClearCommand extends VanillaCommand {
                 try {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + "'" + dataString + "' is not a valid number");
+                    sender
+                        .sendMessage(ChatColor.RED + "'" + dataString + "' is not a valid number");
                     return false;
                 }
                 if (data < -1) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + data + ") is too small, it must be at least -1");
+                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + data
+                        + ") is too small, it must be at least -1");
                     return false;
                 }
                 if (args.length >= 4) {
@@ -95,15 +102,18 @@ public class ClearCommand extends VanillaCommand {
                     try {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(ChatColor.RED + "'" + amountString + "' is not a valid number");
+                        sender.sendMessage(
+                            ChatColor.RED + "'" + amountString + "' is not a valid number");
                         return false;
                     }
                     if (amount < -1) {
-                        sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount + ") is too small, it must be at least -1");
+                        sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount
+                            + ") is too small, it must be at least -1");
                         return false;
                     }
                     if (args.length >= 5) {
-                        sender.sendMessage(ChatColor.RED + "Sorry, item data-tags are not supported yet.");
+                        sender.sendMessage(
+                            ChatColor.RED + "Sorry, item data-tags are not supported yet.");
                         return false;
                     } else {
                         boolean success = true;
@@ -145,11 +155,14 @@ public class ClearCommand extends VanillaCommand {
 
     private int countAllItems(Inventory inventory, Material material, int data, int maxCount) {
         if (material == null) {
-            return Arrays.stream(inventory.getContents()).filter(stack -> !InventoryUtil.isEmpty(stack)).mapToInt(ItemStack::getAmount).sum();
+            return Arrays.stream(inventory.getContents())
+                .filter(stack -> !InventoryUtil.isEmpty(stack)).mapToInt(ItemStack::getAmount)
+                .sum();
         }
         int count = 0;
         for (ItemStack stack : inventory.getContents()) {
-            if (stack.getType() == material && (data == -1 || data == stack.getData().getData()) && (maxCount == -1 || maxCount == 0 || count < maxCount)) {
+            if (stack.getType() == material && (data == -1 || data == stack.getData().getData())
+                && (maxCount == -1 || maxCount == 0 || count < maxCount)) {
                 if (maxCount == -1 || maxCount == 0) {
                     count += stack.getAmount();
                 } else {
@@ -166,10 +179,13 @@ public class ClearCommand extends VanillaCommand {
         return count;
     }
 
-    private boolean clearAll(CommandSender sender, Player player, Material material, int data, int maxCount) {
+    private boolean clearAll(CommandSender sender, Player player, Material material, int data,
+        int maxCount) {
         int count = countAllItems(player.getInventory(), material, data, maxCount);
         if (count == 0 && maxCount != 0) {
-            sender.sendMessage(ChatColor.RED + "Could not clear the inventory of " + player.getName() + ", no items to remove");
+            sender.sendMessage(
+                ChatColor.RED + "Could not clear the inventory of " + player.getName()
+                    + ", no items to remove");
             return false;
         } else {
             if (material == null) {
@@ -177,12 +193,14 @@ public class ClearCommand extends VanillaCommand {
             } else {
                 int remaining = maxCount;
                 for (ItemStack stack : player.getInventory().getContents()) {
-                    if (stack.getType() == material && (data == -1 || data == stack.getData().getData())) {
+                    if (stack.getType() == material && (data == -1 || data == stack.getData()
+                        .getData())) {
                         // matches type and data
                         if (maxCount == -1) {
                             player.getInventory().remove(stack);
                         } else if (maxCount == 0) {
-                            sender.sendMessage(player.getName() + " has " + count + " items that match the criteria");
+                            sender.sendMessage(player.getName() + " has " + count
+                                + " items that match the criteria");
                             return true;
                         } else {
                             for (int i = 0; i < stack.getAmount(); i++) {
@@ -195,23 +213,20 @@ public class ClearCommand extends VanillaCommand {
                     }
                 }
             }
-            sender.sendMessage("Cleared the inventory of " + player.getName() + ", removing " + count + " items");
+            sender.sendMessage(
+                "Cleared the inventory of " + player.getName() + ", removing " + count + " items");
             return true;
         }
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
             return super.tabComplete(sender, alias, args);
         }
         if (args.length == 2) {
-            String start = args[1];
-            if (!"minecraft:".startsWith(start)) {
-                int colon = start.indexOf(':');
-                start = "minecraft:" + start.substring(colon == -1 ? 0 : (colon + 1));
-            }
-            return (List) StringUtil.copyPartialMatches(start, ItemIds.getIds(), new ArrayList(ItemIds.getIds().size()));
+            return ItemIds.getTabCompletion(args[1]);
         }
         return Collections.emptyList();
     }

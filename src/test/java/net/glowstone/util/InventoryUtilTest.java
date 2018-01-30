@@ -1,5 +1,9 @@
 package net.glowstone.util;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Random;
 import net.glowstone.inventory.GlowInventory;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
@@ -8,12 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.hamcrest.number.OrderingComparison;
 import org.junit.Test;
 
-import java.util.Random;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 public class InventoryUtilTest {
+
     @Test
     public void testEmptyStack() {
         ItemStack empty = InventoryUtil.createEmptyStack();
@@ -37,10 +37,12 @@ public class InventoryUtilTest {
         Random random = new Random();
         Inventory inventory = new GlowInventory(null, InventoryType.CHEST);
         assertThat(-1, is(InventoryUtil.getRandomSlot(random, inventory, true)));
-        assertThat(InventoryUtil.getRandomSlot(random, inventory, false), OrderingComparison.greaterThanOrEqualTo(0));
+        assertThat(InventoryUtil.getRandomSlot(random, inventory, false),
+            OrderingComparison.greaterThanOrEqualTo(0));
         inventory.setItem(0, new ItemStack(Material.APPLE));
         assertThat(0, is(InventoryUtil.getRandomSlot(random, inventory, true)));
         inventory.setItem(1, new ItemStack(Material.CARROT_ITEM));
-        assertThat(InventoryUtil.getRandomSlot(random, inventory, true), OrderingComparison.greaterThanOrEqualTo(0));
+        assertThat(InventoryUtil.getRandomSlot(random, inventory, true),
+            OrderingComparison.greaterThanOrEqualTo(0));
     }
 }

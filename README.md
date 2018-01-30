@@ -1,6 +1,6 @@
 ![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
-[![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-738bd7.svg?style=flat-square)](https://discord.gg/TFJqhsC)
-[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master.png)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master)
+[![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-7289da.svg?style=flat-square&logo=discord)](https://discord.gg/TFJqhsC)
+[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev.svg?style=shield)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/dev)
 
 <img align="right" alt="Glowstone logo" width="100" src="etc/logo/logo.png">
 
@@ -51,9 +51,10 @@ However, there are several drawbacks:
 For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features).
 
 ## Downloads
-[![Build Status](https://circleci.com/gh/GlowstoneMC/Glowstone.svg?style=svg)](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master)
 
-If you don't want to build from source, pre-built jar files are available to download from [**CircleCI**](https://circleci.com/gh/GlowstoneMC/Glowstone/tree/master) - click the latest build and then open the "Artifacts" tab **(you must be logged in for this to show)**. The `glowstone.jar` artifact will be under `tmp/circle-artifacts.#######/`.
+The latest LTS and monthly releases, as well as a direct link to our latest build can be found on [our website](https://glowstone.net/#downloads).
+
+Older releases can be found on [GitHub](https://github.com/GlowstoneMC/Glowstone/releases).
 
 ## Building
 
@@ -70,7 +71,7 @@ cd Glowstone
 ### 2. Build
 
 ```sh
-./setup.sh
+./scripts/build.sh
 ```
 
 The final jar will be placed in `target/` named `glowstone.jar`.
@@ -106,7 +107,6 @@ The best place to receive support is on [GitHub issues](https://github.com/Glows
 When reporting bugs, please retest and include whether the problem reproduces on:
 
 * Earlier [builds](https://circleci.com/gh/GlowstoneMC/Glowstone) of Glowstone
-* [Glowstone Legacy](https://github.com/GlowstoneMC/Glowstone-Legacy), if applicable
 
 Javadocs for Glowstone can be found [here](https://glowstone.net/jd/glowstone/).
 

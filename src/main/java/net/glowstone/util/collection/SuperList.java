@@ -1,6 +1,10 @@
 package net.glowstone.util.collection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * List which delegates to other lists.
@@ -216,7 +220,8 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        // Kinda slow. If this is ever going to be used heavily, you'll probably want to implement a "SubList" class, since neither Java nor Guava provides a public implementation.
+        // Kinda slow. If this is ever going to be used heavily, you'll probably want to implement a
+        // "SubList" class, since neither Java nor Guava provides a public implementation.
         return asClone().subList(fromIndex, toIndex);
     }
 }

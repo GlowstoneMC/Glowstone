@@ -1,16 +1,20 @@
 package net.glowstone.generator.objects.trees;
 
-import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.Location;
-
 import java.util.Random;
+import net.glowstone.util.BlockStateDelegate;
+import org.bukkit.World;
 
 public class MegaRedwoodTree extends MegaJungleTree {
 
     protected int leavesHeight;
 
-    public MegaRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    /**
+     * Initializes this tree with a random height, preparing it to attempt to generate.
+     *  @param random the PRNG
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     */
+    public MegaRedwoodTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setHeight(random.nextInt(15) + random.nextInt(3) + 13);
         setTypes(1, 1);
         setLeavesHeight(random.nextInt(5) + (random.nextBoolean() ? 3 : 13));
@@ -21,34 +25,35 @@ public class MegaRedwoodTree extends MegaJungleTree {
     }
 
     @Override
-    public boolean generate() {
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+    public boolean generate(World world, Random random, int blockX, int blockY, int blockZ) {
+        if (cannotGenerateAt(blockX, blockY, blockZ, world)) {
             return false;
         }
 
         // generates the leaves
         int previousRadius = 0;
-        for (int y = loc.getBlockY() + height - leavesHeight; y <= loc.getBlockY() + height; y++) {
-            int n = loc.getBlockY() + height - y;
+        for (int y = blockY + height - leavesHeight; y <= blockY + height; y++) {
+            int n = blockY + height - y;
             int radius = (int) Math.floor((float) n / leavesHeight * 3.5F);
             if (radius == previousRadius && n > 0 && y % 2 == 0) {
                 radius++;
             }
-            generateLeaves(loc.getBlockX(), y, loc.getBlockZ(), radius, false);
+            generateLeaves(blockX, y, blockZ, radius, false, world);
             previousRadius = radius;
         }
 
         // generates the trunk
-        generateTrunk();
+        generateTrunk(world, blockX, blockY, blockZ);
 
         // blocks below trunk are always dirt
-        generateDirtBelowTrunk();
+        generateDirtBelowTrunk(world, blockX, blockY, blockZ);
 
         return true;
     }
 
     @Override
-    protected void generateDirtBelowTrunk() {
+    protected void generateDirtBelowTrunk(World world, int blockX, int blockY,
+            int blockZ) {
         // mega redwood tree does not replaces blocks below (surely to preserves podzol)
     }
 }

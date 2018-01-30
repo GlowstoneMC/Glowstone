@@ -14,7 +14,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Bed;
 import org.bukkit.material.MaterialData;
@@ -138,7 +142,8 @@ public class BlockBed extends BlockType {
     }
 
     /**
-     * Returns an 'empty' block next to the bed used to put the player at when they exit a bed / respawn.
+     * Returns an 'empty' block next to the bed used to put the player at when they exit a bed or
+     * respawn.
      *
      * @param head head of the bed
      * @param foot foot of the bed
@@ -177,9 +182,11 @@ public class BlockBed extends BlockType {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
-        if (state.getBlock().getRelative(direction).getType() == Material.AIR && state.getBlock().getRelative(direction).getRelative(BlockFace.DOWN).getType().isSolid()) {
+        if (state.getBlock().getRelative(direction).getType() == Material.AIR && state.getBlock()
+            .getRelative(direction).getRelative(BlockFace.DOWN).getType().isSolid()) {
             super.placeBlock(player, state, face, holding, clickedLoc);
             MaterialData data = state.getData();
             if (data instanceof Bed) {
@@ -198,7 +205,8 @@ public class BlockBed extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         if (block.getType() == Material.BED_BLOCK) {
             GlowBed bed = (GlowBed) block.getState();
             bed.setColor(DyeColor.getByWoolData(holding.getData().getData()));
@@ -217,7 +225,8 @@ public class BlockBed extends BlockType {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         GlowWorld world = player.getWorld();
         MaterialData data = block.getState().getData();
         if (!(data instanceof Bed)) {
@@ -252,7 +261,8 @@ public class BlockBed extends BlockType {
 
         for (LivingEntity e : world.getLivingEntities()) {
             // Check for hostile mobs relative to the block below the head of the bed
-            if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e).isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
+            if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e)
+                .isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
                 player.sendMessage("You may not rest now, there are monsters nearby");
                 return true;
             }
@@ -266,16 +276,16 @@ public class BlockBed extends BlockType {
      * Checks whether the entity is within the specified distance from the block.
      *
      * @param entity the entity
-     * @param block  the block
-     * @param x      maximum distance on x axis
-     * @param y      maximum distance on y axis
-     * @param z      maximum distance on z axis
+     * @param block the block
+     * @param x maximum distance on x axis
+     * @param y maximum distance on y axis
+     * @param z maximum distance on z axis
      * @return Whether the entity is within distance
      */
     private boolean isWithinDistance(Entity entity, Block block, int x, int y, int z) {
         Location loc = entity.getLocation();
         return Math.abs(loc.getX() - block.getX()) <= x
-                && Math.abs(loc.getY() - block.getY()) <= y
-                && Math.abs(loc.getZ() - block.getZ()) <= z;
+            && Math.abs(loc.getY() - block.getY()) <= y
+            && Math.abs(loc.getZ() - block.getZ()) <= z;
     }
 }

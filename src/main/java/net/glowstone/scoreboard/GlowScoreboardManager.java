@@ -1,9 +1,8 @@
 package net.glowstone.scoreboard;
 
+import java.io.IOException;
 import net.glowstone.GlowServer;
 import org.bukkit.scoreboard.ScoreboardManager;
-
-import java.io.IOException;
 
 /**
  * ScoreboardManager implementation.
@@ -17,6 +16,7 @@ public final class GlowScoreboardManager implements ScoreboardManager {
         this.server = server;
     }
 
+    @Override
     public GlowScoreboard getMainScoreboard() {
         if (mainScoreboard == null) {
             GlowScoreboard newScoreboard;
@@ -31,6 +31,7 @@ public final class GlowScoreboardManager implements ScoreboardManager {
 
     }
 
+    @Override
     public GlowScoreboard getNewScoreboard() {
         return new GlowScoreboard();
     }

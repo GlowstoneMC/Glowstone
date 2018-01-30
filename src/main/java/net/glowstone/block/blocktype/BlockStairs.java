@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -11,18 +13,16 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Stairs;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public class BlockStairs extends BlockType {
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
         if (data instanceof Stairs) {
-            ((Stairs) data).setFacingDirection(player.getDirection());
+            ((Stairs) data).setFacingDirection(player.getCardinalFacing());
 
             if (face == BlockFace.DOWN || face != BlockFace.UP && clickedLoc.getY() >= 0.5) {
                 ((Stairs) data).setInverted(true);
@@ -36,8 +36,8 @@ public class BlockStairs extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (isWoodenStair(block.getType()) ||
-                tool != null && ToolType.PICKAXE.matches(tool.getType())) {
+        if (isWoodenStair(block.getType())
+            || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;

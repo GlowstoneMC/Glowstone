@@ -1,15 +1,14 @@
 package net.glowstone.util.nbt;
 
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
 
 /**
- * Tests for {@link NBTOutputStream} and constructing {@link CompoundTag}s.
+ * Tests for {@link NbtOutputStream} and constructing {@link CompoundTag}s.
  */
 public class NbtOutputTest {
 
@@ -77,11 +76,11 @@ public class NbtOutputTest {
 
     private CompoundTag saveLoad(CompoundTag tag) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        try (NBTOutputStream out = new NBTOutputStream(bytesOut)) {
+        try (NbtOutputStream out = new NbtOutputStream(bytesOut)) {
             out.writeTag(tag);
         }
         ByteArrayInputStream bytesIn = new ByteArrayInputStream(bytesOut.toByteArray());
-        try (NBTInputStream in = new NBTInputStream(bytesIn)) {
+        try (NbtInputStream in = new NbtInputStream(bytesIn)) {
             return in.readCompound();
         }
     }

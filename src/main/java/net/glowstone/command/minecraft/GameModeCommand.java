@@ -1,5 +1,8 @@
 package net.glowstone.command.minecraft;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.command.GameModeUtils;
@@ -13,20 +16,22 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class GameModeCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public GameModeCommand() {
-        super("gamemode", "Change the game mode of a player.", "/gamemode <mode> [player]", Collections.emptyList());
+        super("gamemode", "Change the game mode of a player.", "/gamemode <mode> [player]",
+            Collections.emptyList());
         setPermission("minecraft.command.gamemode");
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) return false;
+        if (!testPermission(sender)) {
+            return false;
+        }
         if (args.length == 0 || args.length == 1 && !(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -69,15 +74,21 @@ public class GameModeCommand extends VanillaCommand {
         String gameModeName = GameModeUtils.prettyPrint(gameMode);
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
-            sender.sendMessage(who.getDisplayName() + "'s game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
+            sender.sendMessage(
+                who.getDisplayName() + "'s game mode has been updated to " + ChatColor.GRAY + ""
+                    + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
         }
-        who.sendMessage("Your game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
+        who.sendMessage(
+            "Your game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC
+                + gameModeName + " Mode" + ChatColor.RESET);
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], GameModeUtils.GAMEMODE_NAMES, new ArrayList(GameModeUtils.GAMEMODE_NAMES.size()));
+            return (List) StringUtil.copyPartialMatches(args[0], GameModeUtils.GAMEMODE_NAMES,
+                new ArrayList(GameModeUtils.GAMEMODE_NAMES.size()));
         }
         return super.tabComplete(sender, alias, args);
     }

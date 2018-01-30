@@ -4,21 +4,29 @@ default:
   lightOpacity: 255
   flameResistance: -1
   fireResistance: -1
+  baseMapColor: 44
 values:
+  # Incomplete:
+  # hardness, blastResistance, lightOpacity, flameResistance, fireResistance, baseMapColor
   AIR:
     lightOpacity: 0
+    baseMapColor: 0
   STONE:
     blastResistance: 30
     hardness: 1.5
+    baseMapColor: 44
   GRASS:
     blastResistance: 3
     hardness: 0.6
+    baseMapColor: 4
   DIRT:
     blastResistance: 2.5
     hardness: 0.5
+    baseMapColor: 40
   COBBLESTONE:
     blastResistance: 30
     hardness: 2
+    baseMapColor: 44
   WOOD:
     flameResistance: 5
     fireResistance: 20
@@ -34,6 +42,7 @@ values:
     lightOpacity: 3
     hardness: 100
     blastResistance: 500
+    baseMapColor: 48
   STATIONARY_WATER:
     lightOpacity: 3
     hardness: 100

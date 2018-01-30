@@ -4,6 +4,9 @@ import com.flowpowered.network.MessageHandler;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.inventory.GlowAnvilInventory;
 import net.glowstone.net.GlowBufUtils;
@@ -15,11 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-
 public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
+
     @Override
     public void handle(GlowSession session, PluginMessage message) {
         String channel = message.getChannel();
@@ -40,7 +40,8 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
             // internal Minecraft channels
             handleInternal(session, channel, message.getData());
         } else {
-            session.getServer().getMessenger().dispatchIncomingMessage(session.getPlayer(), channel, message.getData());
+            session.getServer().getMessenger()
+                .dispatchIncomingMessage(session.getPlayer(), channel, message.getData());
         }
     }
 
@@ -75,16 +76,19 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 try {
                     brand = ByteBufUtils.readUTF8(buf);
                 } catch (IOException e) {
-                    GlowServer.logger.log(Level.WARNING, "Error reading client brand of " + session, e);
+                    GlowServer.logger
+                        .log(Level.WARNING, "Error reading client brand of " + session, e);
                 }
                 if (brand != null && !brand.equals("vanilla")) {
-                    GlowServer.logger.info("Client brand of " + session.getPlayer().getName() + " is: " + brand);
+                    GlowServer.logger
+                        .info("Client brand of " + session.getPlayer().getName() + " is: " + brand);
                 }
                 break;
             case "MC|BEdit": {
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
-                //GlowServer.logger.info("BookEdit [" + session.getPlayer().getName() + "]: " + item);
+                //GlowServer.logger.info(
+                //        "BookEdit [" + session.getPlayer().getName() + "]: " + item);
                 if (item == null || item.getType() != Material.BOOK_AND_QUILL) {
                     return;
                 }
@@ -117,7 +121,8 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
             case "MC|BSign":
                 // read and verify stack
                 ItemStack item = GlowBufUtils.readSlot(buf);
-                //GlowServer.logger.info("BookSign [" + session.getPlayer().getName() + "]: " + item);
+                //GlowServer.logger.info(
+                //        "BookSign [" + session.getPlayer().getName() + "]: " + item);
                 if (item == null || item.getType() != Material.WRITTEN_BOOK) {
                     return;
                 }
@@ -162,10 +167,12 @@ public final class PluginMessageHandler implements MessageHandler<GlowSession, P
                 try {
                     name = ByteBufUtils.readUTF8(buf);
                 } catch (IOException e) {
-                    GlowServer.logger.log(Level.WARNING, "Error reading anvil item name by " + session, e);
+                    GlowServer.logger
+                        .log(Level.WARNING, "Error reading anvil item name by " + session, e);
                     break;
                 }
-                ((GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory()).setRenameText(name);
+                ((GlowAnvilInventory) session.getPlayer().getOpenInventory().getTopInventory())
+                    .setRenameText(name);
                 break;
             default:
                 GlowServer.logger.info(session + " used unknown Minecraft channel: " + channel);

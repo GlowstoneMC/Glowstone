@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -23,6 +24,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Painting;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.ItemStack;
@@ -30,9 +32,6 @@ import org.bukkit.inventory.ItemStack;
 public class GlowPainting extends GlowHangingEntity implements Painting {
 
     private static final double PAINTING_DEPTH = 0.0625;
-    private Art art;
-    private Location center;
-
     private static final Art DEFAULT_ART = Art.KEBAB;
     private static final Map<Art, String> TITLE_BY_ART = new HashMap<>();
     private static final Map<String, Art> ART_BY_TITLE = new HashMap<>();
@@ -68,22 +67,33 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         TITLE_BY_ART.forEach((art, title) -> ART_BY_TITLE.put(title, art));
     }
 
+    @Getter
+    private Art art;
+    @Getter
+    private Location artCenter;
+
     public GlowPainting(Location center) {
         this(center, BlockFace.SOUTH);
     }
 
+    /**
+     * Creates a painting with the default art.
+     *
+     * @param center the center of the painting
+     * @param facing the direction for the painting to face
+     */
     public GlowPainting(Location center, BlockFace facing) {
         super(center, facing);
-        this.center = center;
+        this.artCenter = center;
         setArtInternal(DEFAULT_ART);
-    }
-
-    public String getArtTitle() {
-        return TITLE_BY_ART.get(art);
     }
 
     public static Art getArtFromTitle(String title) {
         return ART_BY_TITLE.get(title);
+    }
+
+    public String getArtTitle() {
+        return TITLE_BY_ART.get(art);
     }
 
     @Override
@@ -94,8 +104,8 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (message.getAction() == Action.ATTACK.ordinal()) {
-            // TODO: use correct RemoveCause
-            if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.DEFAULT)).isCancelled()) {
+            if (EventFactory.callEvent(new HangingBreakByEntityEvent(this, player))
+                .isCancelled()) {
                 return false;
             }
             if (player.getGameMode() != GameMode.CREATIVE) {
@@ -108,19 +118,15 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     @Override
     public List<Message> createSpawnMessage() {
-        int x = center.getBlockX();
-        int y = center.getBlockY();
-        int z = center.getBlockZ();
+        int x = artCenter.getBlockX();
+        int y = artCenter.getBlockY();
+        int z = artCenter.getBlockZ();
         String title = getArtTitle();
 
         return Collections.singletonList(
-            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z, facing.ordinal())
+            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z,
+                facing.ordinal())
         );
-    }
-
-    @Override
-    public Art getArt() {
-        return art;
     }
 
     @Override
@@ -149,12 +155,15 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     /**
      * Refreshes the painting for nearby clients.
-     * This will first destroy, and then spawn the painting again using its current art and facing value.
+     *
+     * <p>This will first destroy, and then spawn the painting again using its current art and
+     * facing value.
      */
     public void refresh() {
-        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(Collections.singletonList(this.getEntityId()));
+        DestroyEntitiesMessage destroyMessage = new DestroyEntitiesMessage(
+            Collections.singletonList(this.getEntityId()));
         List<Message> spawnMessages = this.createSpawnMessage();
-        Message[] messages = new Message[] {destroyMessage, spawnMessages.get(0)};
+        Message[] messages = new Message[]{destroyMessage, spawnMessages.get(0)};
 
         getWorld()
             .getRawPlayers()
@@ -164,9 +173,12 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     /**
-     * Sets the art of this painting, regardless of available space <br>
-     * This matches the behaviour of {@link #setArt(Art, boolean) setArt(art, true)}, but the painting does not get refreshed. <br>
-     * Null values are ignored.
+     * Sets the art of this painting, regardless of available space.
+     *
+     * <p>This matches the behaviour of {@link #setArt(Art, boolean) setArt(art, true)},
+     * but the painting does not get refreshed.
+     *
+     * <p>Null values are ignored.
      *
      * @param art the Art of the painting
      */
@@ -231,13 +243,13 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         super.pulse();
 
         if (ticksLived % (20 * 5) == 0 && isObstructed()) {
-            if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
+            if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
+                .isCancelled()) {
                 return;
             }
-            if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
-                world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
-                remove();
-            }
+
+            world.dropItemNaturally(location, new ItemStack(Material.PAINTING));
+            remove();
         }
     }
 
@@ -247,15 +259,16 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     /**
-     * Check if the painting can survive at the current location.<br>
-     * Survivability is defined as:
+     * Check if the painting is obstructed at the current location.
+     *
+     * <p>Survivability is defined as:
      * <ul>
-     * <li>The wall behind the painting is completely solid</li>
-     * <li>The painting is not inside a block</li>
-     * <li>The painting is not inside another entity</li>
+     *     <li>The wall behind the painting is completely solid</li>
+     *     <li>The painting is not inside a block</li>
+     *     <li>The painting is not inside another entity</li>
      * </ul>
      *
-     * @return true if the painting can survive, false otherwise
+     * @return true if the painting should drop, false otherwise
      */
     public boolean isObstructed() {
         Location current = getTopLeftCorner();
@@ -272,10 +285,12 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
             current = current.getBlock().getRelative(BlockFace.DOWN).getLocation();
 
             // reset x and z
-            current.subtract(right.getModX() * art.getBlockWidth(), 0, right.getModZ() * art.getBlockWidth());
+            current.subtract(right.getModX() * art.getBlockWidth(), 0,
+                right.getModZ() * art.getBlockWidth());
         }
 
-        List<Entity> entitiesInside = this.world.getEntityManager().getEntitiesInside(this.boundingBox, this);
+        List<Entity> entitiesInside = this.world.getEntityManager()
+            .getEntitiesInside(this.boundingBox, this);
         return entitiesInside.stream().anyMatch(e -> e instanceof Hanging);
     }
 
@@ -291,7 +306,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     private Location getTopLeftCorner() {
         BlockFace left = getLeftFace();
-        Location topLeft = center.clone();
+        Location topLeft = artCenter.clone();
         int topMod = (int) getArtHeight();
         int widthMod = (int) getArtWidth();
 
@@ -327,10 +342,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         return art.getBlockHeight() / 2;
     }
 
-    public Location getArtCenter() {
-        return this.center;
-    }
-
+    @Override
     protected void updateBoundingBox() {
         BlockFace rightFace = getRightFace();
         double modX = Math.abs(rightFace.getModX() * art.getBlockWidth());
@@ -360,9 +372,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public void setRawLocation(Location location, boolean fall) {
         // Also try to move the center of the painting along
-        Location difference = location.subtract(center);
+        Location difference = location.subtract(artCenter);
         super.setRawLocation(location, fall);
 
-        center = location.clone().subtract(difference);
+        artCenter = location.clone().subtract(difference);
     }
 }

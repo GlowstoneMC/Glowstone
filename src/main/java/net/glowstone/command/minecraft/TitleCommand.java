@@ -3,6 +3,10 @@ package net.glowstone.command.minecraft;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.TitleMessage;
 import org.bukkit.Bukkit;
@@ -13,16 +17,37 @@ import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 public class TitleCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public TitleCommand() {
-        super("title", "Sends a title to the specified player(s)", "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
+        super("title", "Sends a title to the specified player(s)",
+                "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
         setPermission("minecraft.command.title");
+    }
+
+    private static ChatColor toColor(String name) {
+        if (name.equals("obfuscated")) {
+            return ChatColor.MAGIC;
+        }
+
+        if (name.equals("underlined")) {
+            return ChatColor.UNDERLINE;
+        }
+
+        // Loop to avoid exceptions, we'll just return null if it can't be parsed
+        for (ChatColor color : ChatColor.values()) {
+            if (color == ChatColor.MAGIC) {
+                continue; // This isn't a valid value for color anyways
+            }
+
+            if (color.name().equalsIgnoreCase(name.toUpperCase())) {
+                return color;
+            }
+        }
+        return null;
     }
 
     /**
@@ -33,23 +58,29 @@ public class TitleCommand extends VanillaCommand {
      * @return the colored string, or null
      */
     public String convertJson(Map<String, Object> json) {
-        if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String))
+        if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String)) {
             return null; // We can't even parse this
+        }
 
         ChatColor color = ChatColor.WHITE;
         List<ChatColor> style = new ArrayList<>();
 
         for (Object key : json.keySet()) {
-            if (!(key instanceof String))
+            if (!(key instanceof String)) {
                 continue;
+            }
 
             String keyString = (String) key;
 
             if (keyString.equalsIgnoreCase("color")) {
-                if (!(json.get("color") instanceof String)) return null;
+                if (!(json.get("color") instanceof String)) {
+                    return null;
+                }
                 color = toColor((String) json.get(keyString));
             } else if (!keyString.equalsIgnoreCase("text")) {
-                if (toColor(keyString) == null) return null;
+                if (toColor(keyString) == null) {
+                    return null;
+                }
                 style.add(toColor(keyString));
             }
         }
@@ -65,26 +96,11 @@ public class TitleCommand extends VanillaCommand {
         return text;
     }
 
-    private static ChatColor toColor(String name) {
-        if (name.equals("obfuscated"))
-            return ChatColor.MAGIC;
-
-        if (name.equals("underlined"))
-            return ChatColor.UNDERLINE;
-
-        // Loop to avoid exceptions, we'll just return null if it can't be parsed
-        for (ChatColor color : ChatColor.values()) {
-            if (color == ChatColor.MAGIC) continue; // This isn't a valid value for color anyways
-
-            if (color.name().equalsIgnoreCase(name.toUpperCase()))
-                return color;
-        }
-        return null;
-    }
-
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) return true;
+        if (!testPermission(sender)) {
+            return true;
+        }
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
@@ -107,7 +123,8 @@ public class TitleCommand extends VanillaCommand {
             sender.sendMessage("Reset " + player.getName() + "'s title");
         } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                sender.sendMessage(
+                        ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
@@ -119,7 +136,9 @@ public class TitleCommand extends VanillaCommand {
 
             String raw = message.toString().trim();
             if (!validJson(raw)) {
-                sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                sender
+                        .sendMessage(
+                                ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
                 return false;
             }
 
@@ -135,7 +154,8 @@ public class TitleCommand extends VanillaCommand {
             sender.sendMessage("Updated " + player.getName() + "'s title");
         } else if (action.equalsIgnoreCase("subtitle")) {
             if (args.length < 3) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                sender.sendMessage(
+                        ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
@@ -147,7 +167,9 @@ public class TitleCommand extends VanillaCommand {
 
             String raw = message.toString().trim();
             if (!validJson(raw)) {
-                sender.sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                sender
+                        .sendMessage(
+                                ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
                 return false;
             }
 
@@ -162,7 +184,8 @@ public class TitleCommand extends VanillaCommand {
             sender.sendMessage("Updated " + player.getName() + "'s subtitle");
         } else if (action.equalsIgnoreCase("times")) {
             if (args.length != 5) {
-                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action + " <fade in> <stay time> <fade out>");
+                sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action
+                        + " <fade in> <stay time> <fade out>");
                 return false;
             }
 
@@ -179,7 +202,9 @@ public class TitleCommand extends VanillaCommand {
                 return false;
             }
 
-            ((GlowPlayer) player).updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]), toInt(args[4]));
+            ((GlowPlayer) player)
+                    .updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]),
+                            toInt(args[4]));
 
             sender.sendMessage("Updated " + player.getName() + "'s times");
         } else {
@@ -223,39 +248,47 @@ public class TitleCommand extends VanillaCommand {
         for (Map.Entry<String, Object> entry : json.entrySet()) {
             Object value = entry.getValue();
 
-            if (entry.getKey() == null)
+            if (entry.getKey() == null) {
                 return false; // The key is empty, meaning that it is not valid
+            }
 
             String keyString = entry.getKey();
 
             switch (keyString) {
                 case "text":
-                    if (!(value instanceof String))
+                    if (!(value instanceof String)) {
                         return false; // The value is not a valid type
+                    }
                     break;
                 case "color":
-                    if (!(value instanceof String))
+                    if (!(value instanceof String)) {
                         return false; // The value is not a valid type
+                    }
                     break;
                 case "bold":
-                    if (!(value instanceof Boolean))
+                    if (!(value instanceof Boolean)) {
                         return false; // The value is not a valid type
+                    }
                     break;
                 case "italic":
-                    if (!(value instanceof Boolean))
+                    if (!(value instanceof Boolean)) {
                         return false; // The value is not a valid type
+                    }
                     break;
                 case "underlined":
-                    if (!(value instanceof Boolean))
+                    if (!(value instanceof Boolean)) {
                         return false; // The value is not a valid type
+                    }
                     break;
                 case "strikethrough":
-                    if (!(value instanceof Boolean))
+                    if (!(value instanceof Boolean)) {
                         return false; // The value is not a valid type
+                    }
                     break;
                 case "obfuscated":
-                    if (!(value instanceof Boolean))
+                    if (!(value instanceof Boolean)) {
                         return false; // The value is not a valid type
+                    }
                     break;
                 default:
                     // The key is not in the list of valid keys,

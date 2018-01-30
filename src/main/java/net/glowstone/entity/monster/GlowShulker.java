@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -9,18 +10,30 @@ import org.bukkit.entity.Shulker;
 import org.bukkit.util.BlockVector;
 
 public class GlowShulker extends GlowMonster implements Shulker {
+
+    @Getter
     private Location attachment;
 
+    /**
+     * Creates a shulker facing down.
+     *
+     * @param loc the location
+     */
     public GlowShulker(Location loc) {
-        super(loc, EntityType.SHULKER, 30);
-        setDirection(Facing.DOWN);
-        setShieldHeight((byte) 0);
-        setAttachment(loc);
+        this(loc, Facing.DOWN);
     }
 
+    /**
+     * Creates a shulker facing the given direction.
+     *
+     * @param loc the location
+     * @param direction the direction to initially face
+     */
     public GlowShulker(Location loc, Facing direction) {
-        this(loc);
+        super(loc, EntityType.SHULKER, 30);
         setDirection(direction);
+        setShieldHeight((byte) 0);
+        setAttachment(loc);
     }
 
     public Facing getFacingDirection() {
@@ -39,14 +52,16 @@ public class GlowShulker extends GlowMonster implements Shulker {
         this.metadata.set(MetadataIndex.SHULKER_SHIELD_HEIGHT, shieldHeight);
     }
 
-    public Location getAttachment() {
-        return attachment;
-    }
-
+    /**
+     * Sets the point where this shulker is attached, or null to detach the shulker.
+     *
+     * @param attachment the new attachment point, or null to detach
+     */
     public void setAttachment(Location attachment) {
         this.attachment = attachment;
         if (attachment != null) {
-            this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, new BlockVector(attachment.toVector()));
+            this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION,
+                new BlockVector(attachment.toVector()));
         } else {
             this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, null);
         }

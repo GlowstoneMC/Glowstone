@@ -1,5 +1,9 @@
 package net.glowstone.command.minecraft;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
@@ -8,16 +12,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public class DifficultyCommand extends VanillaCommand {
-    private static final List<String> DIFFICULTIES = Arrays.asList("peaceful", "easy", "normal", "hard");
 
+    private static final List<String> DIFFICULTIES = Arrays
+        .asList("peaceful", "easy", "normal", "hard");
+
+    /**
+     * Creates the instance for this command.
+     */
     public DifficultyCommand() {
-        super("difficulty", "Sets the difficulty level.", "/difficulty <difficulty>", Collections.emptyList());
+        super("difficulty", "Sets the difficulty level.", "/difficulty <difficulty>",
+            Collections.emptyList());
         setPermission("minecraft.command.difficulty");
     }
 
@@ -54,20 +59,22 @@ public class DifficultyCommand extends VanillaCommand {
             case "3":
                 difficulty = Difficulty.HARD;
                 break;
-        }
-        if (difficulty == null) {
-            sender.sendMessage(ChatColor.RED + "Unknown difficulty: '" + difficultyId + "'");
-            return false;
+            default:
+                sender.sendMessage(ChatColor.RED + "Unknown difficulty: '" + difficultyId + "'");
+                return false;
         }
         world.setDifficulty(difficulty);
-        sender.sendMessage("Set difficulty of world '" + world.getName() + "' to " + DIFFICULTIES.get(difficulty.ordinal()));
+        sender.sendMessage("Set difficulty of world '" + world.getName() + "' to " + DIFFICULTIES
+            .get(difficulty.ordinal()));
         return true;
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], DIFFICULTIES, new ArrayList<>(DIFFICULTIES.size()));
+            return StringUtil
+                .copyPartialMatches(args[0], DIFFICULTIES, new ArrayList<>(DIFFICULTIES.size()));
         }
         return super.tabComplete(sender, alias, args);
     }

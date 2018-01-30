@@ -1,26 +1,30 @@
 package net.glowstone.generator.populators.overworld;
 
-import net.glowstone.generator.objects.OreType;
-import net.glowstone.generator.objects.OreVein;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.material.types.StoneType;
-import org.bukkit.World;
-import org.bukkit.generator.BlockPopulator;
-import org.bukkit.material.Stone;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import net.glowstone.generator.objects.OreType;
+import net.glowstone.generator.objects.OreVein;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.material.Stone;
+import org.bukkit.material.types.StoneType;
 
 /**
- * Populates the world with ores.
+ * Populates the world with ores. To get the complete set, we must also use
+ * {@link net.glowstone.generator.decorators.overworld.EmeraldOreDecorator}.
  */
 public class OrePopulator extends BlockPopulator {
 
     private final Map<OreType, Integer> ores = new LinkedHashMap<>();
 
+    /**
+     * Creates a populator for dirt, gravel, andesite, diorite, granite; and coal, iron, gold,
+     * redstone, diamond and lapis lazuli ores.
+     */
     public OrePopulator() {
         ores.put(new OreType(Material.DIRT, 0, 256, 32), 10);
         ores.put(new OreType(Material.GRAVEL, 0, 256, 32), 8);
@@ -47,12 +51,11 @@ public class OrePopulator extends BlockPopulator {
 
                 int sourceX = cx + random.nextInt(16);
                 int sourceZ = cz + random.nextInt(16);
-                int sourceY = oreType.getMinY() == oreType.getMaxY() ?
-                        random.nextInt(oreType.getMinY()) + random.nextInt(oreType.getMinY()) :
-                        random.nextInt(oreType.getMaxY() - oreType.getMinY()) + oreType.getMinY();
+                int sourceY = oreType.getRandomHeight(random);
 
                 new OreVein(oreType).generate(world, random, sourceX, sourceY, sourceZ);
             }
         }
     }
+
 }

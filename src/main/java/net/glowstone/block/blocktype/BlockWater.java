@@ -17,15 +17,17 @@ public class BlockWater extends BlockLiquid {
 
     @Override
     public boolean isCollectible(GlowBlockState target) {
-        return (target.getType() == Material.WATER || target.getType() == Material.STATIONARY_WATER) &&
-                (target.getRawData() == 0 || target.getRawData() == 8); // 8 for backwards compatibility
+        return (target.getType() == Material.WATER || target.getType() == Material.STATIONARY_WATER)
+            &&
+            (target.getRawData() == 0 || target.getRawData() == 8); // 8 for backwards compatibility
     }
 
     @Override
     public void updateBlock(GlowBlock block) {
         super.updateBlock(block);
         if (block.getLightFromBlocks() <= 11 - block.getMaterialValues().getLightOpacity()) {
-            if (block.getRelative(BlockFace.UP).isEmpty() && hasNearSolidBlock(block) && GlowBiomeClimate.isCold(block)) {
+            if (block.getRelative(BlockFace.UP).isEmpty() && hasNearSolidBlock(block)
+                && GlowBiomeClimate.isCold(block)) {
                 GlowBlockState state = block.getState();
                 state.setType(Material.ICE);
                 state.setData(new MaterialData(Material.ICE));

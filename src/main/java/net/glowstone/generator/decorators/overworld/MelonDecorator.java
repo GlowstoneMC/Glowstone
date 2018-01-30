@@ -1,13 +1,12 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.material.MaterialData;
-
-import java.util.Random;
 
 public class MelonDecorator extends BlockPopulator {
 
@@ -22,8 +21,8 @@ public class MelonDecorator extends BlockPopulator {
             int z = sourceZ + random.nextInt(8) - random.nextInt(8);
             int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
-            if (world.getBlockAt(x, y, z).getType() == Material.AIR &&
-                    world.getBlockAt(x, y - 1, z).getType() == Material.GRASS) {
+            if (world.getBlockAt(x, y, z).getType() == Material.AIR
+                    && world.getBlockAt(x, y - 1, z).getType() == Material.GRASS) {
                 BlockState state = world.getBlockAt(x, y, z).getState();
                 state.setType(Material.MELON_BLOCK);
                 state.setData(new MaterialData(Material.MELON_BLOCK));

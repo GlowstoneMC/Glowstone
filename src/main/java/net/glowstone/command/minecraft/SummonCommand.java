@@ -1,6 +1,10 @@
 package net.glowstone.command.minecraft;
 
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.CustomEntityDescriptor;
@@ -19,24 +23,26 @@ import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public class SummonCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public SummonCommand() {
-        super("summon", "Summons an entity.", "/summon <EntityName> [x] [y] [z] [dataTag]", Collections.<String>emptyList());
+        super("summon", "Summons an entity.", "/summon <EntityName> [x] [y] [z] [dataTag]",
+            Collections.<String>emptyList());
         setPermission("minecraft.command.summon");
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) return true;
+        if (!testPermission(sender)) {
+            return true;
+        }
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("This command can only be executed by a player or via command blocks.");
+            sender.sendMessage(
+                "This command can only be executed by a player or via command blocks.");
             return true;
         }
 
@@ -54,7 +60,8 @@ public class SummonCommand extends VanillaCommand {
 
         CompoundTag tag = null;
         if (args.length >= 5) {
-            String data = String.join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
+            String data = String
+                .join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
@@ -68,10 +75,13 @@ public class SummonCommand extends VanillaCommand {
         }
         GlowEntity entity;
         if (EntityType.fromName(entityName) != null) {
-            entity = (GlowEntity) location.getWorld().spawnEntity(location, EntityType.fromName(entityName));
+            entity = (GlowEntity) location.getWorld()
+                .spawnEntity(location, EntityType.fromName(entityName));
         } else {
-            Class<? extends GlowEntity> clazz = EntityRegistry.getCustomEntityDescriptor(entityName).getEntityClass();
-            entity = ((GlowWorld) location.getWorld()).spawn(location, clazz, CreatureSpawnEvent.SpawnReason.CUSTOM);
+            Class<? extends GlowEntity> clazz = EntityRegistry.getCustomEntityDescriptor(entityName)
+                .getEntityClass();
+            entity = ((GlowWorld) location.getWorld())
+                .spawn(location, clazz, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
         if (tag != null) {
             EntityStorage.load(entity, tag);
@@ -89,29 +99,37 @@ public class SummonCommand extends VanillaCommand {
         if (entityType == null && EntityRegistry.isCustomEntityRegistered(type)) {
             CustomEntityDescriptor descriptor = EntityRegistry.getCustomEntityDescriptor(type);
             if (!descriptor.isSummonable()) {
-                sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' cannot be summoned.");
+                sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName()
+                    + "' cannot be summoned.");
                 return false;
             }
             return true;
         }
         if (entityType != null && EntityRegistry.getEntity(entityType) == null) {
-            if (sender != null)
-                sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' is not implemented yet.");
+            if (sender != null) {
+                sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName()
+                    + "' is not implemented yet.");
+            }
             return false;
-        } else if (entityType != null && (!entityType.isSpawnable() && !Summonable.class.isAssignableFrom(EntityRegistry.getEntity(entityType)))) {
-                if (sender != null)
-                    sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName() + "' cannot be summoned.");
+        } else if (entityType != null && (!entityType.isSpawnable() && !Summonable.class
+            .isAssignableFrom(EntityRegistry.getEntity(entityType)))) {
+            if (sender != null) {
+                sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName()
+                    + "' cannot be summoned.");
+            }
             return false;
         } else if (entityType == null && !EntityRegistry.isCustomEntityRegistered(type)) {
-            if (sender != null)
+            if (sender != null) {
                 sender.sendMessage(ChatColor.RED + "The entity '" + type + "' does not exist.");
+            }
             return false;
         }
         return true;
     }
 
     @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+        throws IllegalArgumentException {
         Preconditions.checkNotNull(sender, "Sender cannot be null");
         Preconditions.checkNotNull(args, "Arguments cannot be null");
         Preconditions.checkNotNull(alias, "Alias cannot be null");
@@ -119,13 +137,15 @@ public class SummonCommand extends VanillaCommand {
             String arg = args[0];
             ArrayList<String> completion = new ArrayList<>();
             for (EntityType type : EntityType.values()) {
-                if (checkSummon(null, type.getName()) && type.getName().toLowerCase().startsWith(arg)) {
+                if (checkSummon(null, type.getName()) && type.getName().toLowerCase()
+                    .startsWith(arg)) {
                     completion.add(type.getName());
                 }
             }
             EntityRegistry.getRegisteredCustomEntities().forEach((d) -> {
-                if (d.getId().toLowerCase().startsWith(arg))
+                if (d.getId().toLowerCase().startsWith(arg)) {
                     completion.add(d.getId().toLowerCase());
+                }
             });
             return completion;
         } else {

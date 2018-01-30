@@ -10,10 +10,16 @@ public class GlowSign extends GlowBlockState implements Sign {
 
     private final String[] lines;
 
+    /**
+     * Creates the instance for the given sign block.
+     *
+     * @param block a sign block (wall or post)
+     */
     public GlowSign(GlowBlock block) {
         super(block);
         if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
-            throw new IllegalArgumentException("GlowSign: expected WALL_SIGN or SIGN_POST, got " + block.getType());
+            throw new IllegalArgumentException(
+                "GlowSign: expected WALL_SIGN or SIGN_POST, got " + block.getType());
         }
         lines = getBlockEntity().getLines();
     }
@@ -24,7 +30,7 @@ public class GlowSign extends GlowBlockState implements Sign {
 
     @Override
     public String[] getLines() {
-        return lines;
+        return lines.clone();
     }
 
     @Override

@@ -37,9 +37,12 @@ public class GlowPig extends GlowAnimal implements Pig {
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
         if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            if (!isAdult()) return false;
+            if (!isAdult()) {
+                return false;
+            }
             if (!hasSaddle()) {
-                ItemStack hand = InventoryUtil.itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+                ItemStack hand = InventoryUtil
+                    .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
                 if (hand.getType() == Material.SADDLE) {
                     setSaddle(true);
                     if (player.getGameMode() != GameMode.CREATIVE) {
@@ -47,7 +50,8 @@ public class GlowPig extends GlowAnimal implements Pig {
                             hand.setAmount(hand.getAmount() - 1);
                             player.getInventory().setItem(message.getHandSlot(), hand);
                         } else {
-                            player.getInventory().setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                            player.getInventory()
+                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
                         }
                     }
                     return true;

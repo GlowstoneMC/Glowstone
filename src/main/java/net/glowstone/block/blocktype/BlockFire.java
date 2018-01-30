@@ -1,5 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -16,17 +20,14 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class BlockFire extends BlockNeedsAttached {
 
-    private static final BlockFace[] RAIN_FACES = {BlockFace.SELF, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+    private static final BlockFace[] RAIN_FACES = {BlockFace.SELF, BlockFace.NORTH, BlockFace.SOUTH,
+        BlockFace.EAST, BlockFace.WEST};
     private static final int TICK_RATE = 20;
     private static final int MAX_FIRE_AGE = 15;
-    private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP = new LinkedHashMap<>();
+    private static final LinkedHashMap<BlockFace, Integer> BURNRESISTANCE_MAP
+            = new LinkedHashMap<>();
 
     static {
         BURNRESISTANCE_MAP.put(BlockFace.EAST, 300);
@@ -43,7 +44,8 @@ public class BlockFire extends BlockNeedsAttached {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.setRawData((byte) 0);
         state.getBlock().getWorld().requestPulse(state.getBlock());
@@ -56,7 +58,8 @@ public class BlockFire extends BlockNeedsAttached {
 
     @Override
     protected BlockFace getAttachedFace(GlowBlock me) {
-        for (BlockFace face : new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH}) {
+        for (BlockFace face : new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.EAST,
+            BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH}) {
             if (!me.getRelative(face).isEmpty()) {
                 return face;
             }
@@ -77,7 +80,7 @@ public class BlockFire extends BlockNeedsAttached {
 
         GlowWorld world = block.getWorld();
         Material type = block.getRelative(BlockFace.DOWN).getType();
-        boolean isInfiniteFire;
+        boolean isInfiniteFire = false;
         switch (type) {
             case NETHERRACK:
             case MAGMA:
@@ -86,10 +89,9 @@ public class BlockFire extends BlockNeedsAttached {
             case BEDROCK:
                 if (world.getEnvironment() == Environment.THE_END) {
                     isInfiniteFire = true;
-                    break;
                 }
+                break;
             default:
-                isInfiniteFire = false;
                 break;
         }
         if (!isInfiniteFire && world.hasStorm() && isRainingAround(block)) {
@@ -114,7 +116,8 @@ public class BlockFire extends BlockNeedsAttached {
                     block.breakNaturally();
                     world.cancelPulse(block);
                 }
-            } else if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable() && ThreadLocalRandom.current().nextInt(4) == 0) {
+            } else if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable()
+                && ThreadLocalRandom.current().nextInt(4) == 0) {
                 // if fire reached max age, bottom block is not flammable, 25% chance to stop fire
                 block.breakNaturally();
                 world.cancelPulse(block);
@@ -124,7 +127,8 @@ public class BlockFire extends BlockNeedsAttached {
                 // burn blocks around
                 boolean isWet = GlowBiomeClimate.isWet(block);
                 for (Entry<BlockFace, Integer> entry : BURNRESISTANCE_MAP.entrySet()) {
-                    burnBlock(block.getRelative(entry.getKey()), entry.getValue() - (isWet ? 50 : 0), age);
+                    burnBlock(block.getRelative(entry.getKey()), block,
+                        entry.getValue() - (isWet ? 50 : 0), age);
                 }
 
                 Difficulty difficulty = world.getDifficulty();
@@ -149,25 +153,30 @@ public class BlockFire extends BlockNeedsAttached {
                     for (int z = -1; z <= 1; z++) {
                         for (int y = -1; y <= 4; y++) {
                             if (x != 0 || z != 0 || y != 0) {
-                                GlowBlock propagationBlock = world.getBlockAt(block.getLocation().add(x, y, z));
+                                GlowBlock propagationBlock = world
+                                    .getBlockAt(block.getLocation().add(x, y, z));
                                 int flameResistance = getFlameResistance(propagationBlock);
                                 if (flameResistance > 0) {
-                                    int resistance = (40 + difficultyModifier + flameResistance) / (30 + age);
+                                    int resistance =
+                                        (40 + difficultyModifier + flameResistance) / (30 + age);
                                     if (isWet) {
                                         resistance /= 2;
                                     }
                                     if ((!world.hasStorm() || !isRainingAround(propagationBlock))
-                                            && resistance > 0 && ThreadLocalRandom.current().nextInt(y > 1 ? 100 + 100 * (y - 1) : 100) <= resistance) {
-                                        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(propagationBlock, IgniteCause.SPREAD, block);
+                                        && resistance > 0 && ThreadLocalRandom.current()
+                                        .nextInt(y > 1 ? 100 + 100 * (y - 1) : 100) <= resistance) {
+                                        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(
+                                            propagationBlock, IgniteCause.SPREAD, block);
                                         EventFactory.callEvent(igniteEvent);
                                         if (!igniteEvent.isCancelled()) {
                                             if (propagationBlock.getType() == Material.TNT) {
-                                                BlockTNT.igniteBlock(propagationBlock, false);
+                                                BlockTnt.igniteBlock(propagationBlock, false);
                                             } else {
                                                 int increasedAge = increaseFireAge(age);
                                                 state = propagationBlock.getState();
                                                 state.setType(Material.FIRE);
-                                                state.setRawData((byte) (increasedAge > MAX_FIRE_AGE ? MAX_FIRE_AGE : increasedAge));
+                                                state.setRawData((byte) (increasedAge > MAX_FIRE_AGE
+                                                    ? MAX_FIRE_AGE : increasedAge));
                                                 state.update(true);
                                                 world.requestPulse(propagationBlock);
                                             }
@@ -203,7 +212,8 @@ public class BlockFire extends BlockNeedsAttached {
         } else {
             int flameResistance = 0;
             for (BlockFace face : ADJACENT) {
-                flameResistance = Math.max(flameResistance, block.getRelative(face).getMaterialValues().getFlameResistance());
+                flameResistance = Math.max(flameResistance,
+                    block.getRelative(face).getMaterialValues().getFlameResistance());
             }
             return flameResistance;
         }
@@ -219,19 +229,22 @@ public class BlockFire extends BlockNeedsAttached {
         return false;
     }
 
-    private void burnBlock(GlowBlock block, int burnResistance, int fireAge) {
-        if (ThreadLocalRandom.current().nextInt(burnResistance) < block.getMaterialValues().getFireResistance()) {
-            BlockBurnEvent burnEvent = new BlockBurnEvent(block);
+    private void burnBlock(GlowBlock block, GlowBlock from, int burnResistance, int fireAge) {
+        if (ThreadLocalRandom.current().nextInt(burnResistance) < block.getMaterialValues()
+            .getFireResistance()) {
+            BlockBurnEvent burnEvent = new BlockBurnEvent(block, from);
             EventFactory.callEvent(burnEvent);
             if (!burnEvent.isCancelled()) {
                 if (block.getType() == Material.TNT) {
-                    BlockTNT.igniteBlock(block, false);
+                    BlockTnt.igniteBlock(block, false);
                 } else {
                     GlowBlockState state = block.getState();
-                    if (ThreadLocalRandom.current().nextInt(10 + fireAge) < 5 && !GlowBiomeClimate.isRainy(block)) {
+                    if (ThreadLocalRandom.current().nextInt(10 + fireAge) < 5 && !GlowBiomeClimate
+                        .isRainy(block)) {
                         int increasedAge = increaseFireAge(fireAge);
                         state.setType(Material.FIRE);
-                        state.setRawData((byte) (increasedAge > MAX_FIRE_AGE ? MAX_FIRE_AGE : increasedAge));
+                        state.setRawData(
+                            (byte) (increasedAge > MAX_FIRE_AGE ? MAX_FIRE_AGE : increasedAge));
                     } else {
                         state.setType(Material.AIR);
                         state.setRawData((byte) 0);

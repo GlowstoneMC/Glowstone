@@ -1,6 +1,8 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
+import java.util.Collection;
+import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -14,7 +16,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.DiggingMessage;
-import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -25,18 +26,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
-
-import java.util.Collection;
-import java.util.Objects;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
+
     @Override
     public void handle(GlowSession session, DiggingMessage message) {
-        //Todo: Implement SHOOT_ARROW_FINISH_EATING
-        //Todo: Implement SWAP_ITEM_IN_HAND
         GlowPlayer player = session.getPlayer();
         GlowWorld world = player.getWorld();
         GlowBlock block = world.getBlockAt(message.getX(), message.getY(), message.getZ());
@@ -54,11 +53,13 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // call interact event
             Action action = Action.LEFT_CLICK_BLOCK;
             Block eventBlock = block;
-            if (player.getLocation().distanceSquared(block.getLocation()) > 36 || block.getTypeId() == 0) {
+            if (player.getLocation().distanceSquared(block.getLocation()) > 36
+                || block.getTypeId() == 0) {
                 action = Action.LEFT_CLICK_AIR;
                 eventBlock = null;
             }
-            PlayerInteractEvent interactEvent = EventFactory.onPlayerInteract(player, action, eventBlock, face);
+            PlayerInteractEvent interactEvent = EventFactory
+                .onPlayerInteract(player, action, EquipmentSlot.HAND, eventBlock, face);
 
             // blocks don't get interacted with on left click, so ignore that
             // attempt to use item in hand, that is, dig up the block
@@ -68,9 +69,12 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             } else if (player.getGameMode() != GameMode.SPECTATOR) {
                 player.setDigging(null);
                 // emit damage event - cancel by default if holding a sword
-                boolean instaBreak = player.getGameMode() == GameMode.CREATIVE || block.getMaterialValues().getHardness() == 0;
-                BlockDamageEvent damageEvent = new BlockDamageEvent(player, block, player.getItemInHand(), instaBreak);
-                if (player.getGameMode() == GameMode.CREATIVE && holding != null && EnchantmentTarget.WEAPON.includes(holding.getType())) {
+                boolean instaBreak = player.getGameMode() == GameMode.CREATIVE
+                    || block.getMaterialValues().getHardness() == 0;
+                BlockDamageEvent damageEvent = new BlockDamageEvent(player, block,
+                    player.getItemInHand(), instaBreak);
+                if (player.getGameMode() == GameMode.CREATIVE && holding != null
+                    && EnchantmentTarget.WEAPON.includes(holding.getType())) {
                     damageEvent.setCancelled(true);
                 }
                 EventFactory.callEvent(damageEvent);
@@ -96,7 +100,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // todo: verification against malicious clients
             blockBroken = block.equals(player.getDigging());
 
-            if (blockBroken && holding.getType().getMaxDurability() != 0 && holding.getType() != Material.AIR && holding.getDurability() != holding.getType().getMaxDurability()) {
+            if (blockBroken && holding.getType().getMaxDurability() != 0
+                && holding.getType() != Material.AIR && holding.getDurability() != holding.getType()
+                .getMaxDurability()) {
                 switch (block.getType()) {
                     case GRASS:
                     case DIRT:
@@ -153,9 +159,12 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                         holding.setDurability((short) (holding.getDurability() + 2));
                         break;
                 }
-                if (holding.getType().getMaxDurability() != 0 && holding.getDurability() >= holding.getType().getMaxDurability()) {
-                    player.getItemInHand().setType(Material.AIR);
+                if (holding.getType().getMaxDurability() != 0 && holding.getDurability() >= holding
+                    .getType().getMaxDurability()) {
+                    holding.setType(Material.AIR);
                 }
+                // Force-update item
+                player.setItemInHand(holding);
             }
             player.setDigging(null);
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
@@ -164,7 +173,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEMSTACK) {
             player.dropItemInHand(true);
             return;
-        } else if (message.getState() == DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING && player.getUsageItem() != null) {
+        } else if (message.getState() == DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING
+            && player.getUsageItem() != null) {
             if (Objects.equals(player.getUsageItem(), holding)) {
                 ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
                 if (type != null && type instanceof ItemTimedUsage) {
@@ -198,7 +208,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
             MaterialData data = block.getState().getData();
             if (data instanceof DoublePlant) {
-                if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX && block.getRelative(BlockFace.DOWN).getState().getData() instanceof DoublePlant) {
+                if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX && block
+                    .getRelative(BlockFace.DOWN).getState().getData() instanceof DoublePlant) {
                     block = block.getRelative(BlockFace.DOWN);
                 }
             }
@@ -209,9 +220,12 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
 
             // destroy the block
-            if (!block.isEmpty() && !block.isLiquid() && (player.getGameMode() != GameMode.CREATIVE || blockType instanceof BlockContainer) && world.getGameRuleMap().getBoolean("doTileDrops")) {
+            if (!block.isEmpty() && !block.isLiquid() && (player.getGameMode() != GameMode.CREATIVE
+                || blockType instanceof BlockContainer) && world.getGameRuleMap()
+                .getBoolean("doTileDrops")) {
                 Collection<ItemStack> drops = blockType.getDrops(block, holding);
-                if (blockType instanceof BlockContainer && player.getGameMode() == GameMode.CREATIVE) {
+                if (blockType instanceof BlockContainer
+                    && player.getGameMode() == GameMode.CREATIVE) {
                     drops = ((BlockContainer) blockType).getContentDrops(block);
                 }
                 for (ItemStack drop : drops) {
@@ -224,7 +238,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             player.addExhaustion(0.005f);
 
             // STEP_SOUND actually is the block break particles
-            world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64, player);
+            world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64,
+                player);
             GlowBlockState state = block.getState();
             block.setType(Material.AIR);
             if (blockType != null) {

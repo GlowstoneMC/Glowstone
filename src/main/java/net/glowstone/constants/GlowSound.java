@@ -1,23 +1,27 @@
 package net.glowstone.constants;
 
 import com.google.common.collect.ImmutableMap;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 
 public class GlowSound {
 
     private static final Map<String, SoundCategory> SOUNDS = new HashMap<>();
+    private static final ImmutableMap<String, Sound> VANILLA_SOUNDS;
 
     static {
+        ImmutableMap.Builder<String, Sound> vanillaSounds = ImmutableMap.builder();
         // register vanilla sounds
         // as of 1.11, sounds do not have a default category
         // instead, the category of the sound playing is determined by the source of the sound
         for (Sound sound : Sound.values()) {
-            reg(getVanillaId(sound), SoundCategory.MASTER);
+            String vanillaId = getVanillaId(sound);
+            reg(vanillaId, SoundCategory.MASTER);
+            vanillaSounds.put(vanillaId, sound);
         }
+        VANILLA_SOUNDS = vanillaSounds.build();
     }
 
     public static void reg(String id, SoundCategory category) {
@@ -32,15 +36,14 @@ public class GlowSound {
         return "minecraft:" + sound.name().toLowerCase().replaceAll("_", ".");
     }
 
+    /**
+     * Returns a vanilla Minecraft sound with the given ID, or null if none exists.
+     *
+     * @param id the id
+     * @return the sound, or null if none match
+     */
     public static Sound getVanillaSound(String id) {
-        if (id.startsWith("minecraft:")) {
-            for (Sound sound : Sound.values()) {
-                if (getVanillaId(sound).equals(id)) {
-                    return sound;
-                }
-            }
-        }
-        return null;
+        return VANILLA_SOUNDS.get(id);
     }
 
     public static SoundCategory getCategory(int category) {
@@ -48,6 +51,6 @@ public class GlowSound {
     }
 
     public static Map<String, SoundCategory> getSounds() {
-        return (Map) ImmutableMap.builder().putAll(SOUNDS).build();
+        return ImmutableMap.<String, SoundCategory>builder().putAll(SOUNDS).build();
     }
 }

@@ -1,14 +1,25 @@
 package net.glowstone.generator.biomegrid;
 
-import net.glowstone.constants.GlowBiome;
+import static org.bukkit.block.Biome.DESERT;
+import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
+import static org.bukkit.block.Biome.ICE_FLATS;
+import static org.bukkit.block.Biome.JUNGLE;
+import static org.bukkit.block.Biome.JUNGLE_EDGE;
+import static org.bukkit.block.Biome.MESA;
+import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MESA_ROCK;
+import static org.bukkit.block.Biome.PLAINS;
+import static org.bukkit.block.Biome.REDWOOD_TAIGA;
+import static org.bukkit.block.Biome.SWAMPLAND;
+import static org.bukkit.block.Biome.TAIGA;
+import static org.bukkit.block.Biome.TAIGA_COLD;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import static org.bukkit.block.Biome.*;
+import net.glowstone.constants.GlowBiome;
 
 public class BiomeEdgeMapLayer extends MapLayer {
 
@@ -33,7 +44,8 @@ public class BiomeEdgeMapLayer extends MapLayer {
         EDGES.put(MESA_EDGES, null);
         EDGES.put(MEGA_TAIGA_EDGES, null);
         EDGES.put(DESERT_EDGES, Arrays.asList(GlowBiome.getId(ICE_FLATS)));
-        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(TAIGA_COLD), GlowBiome.getId(ICE_FLATS)));
+        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(TAIGA_COLD),
+            GlowBiome.getId(ICE_FLATS)));
         EDGES.put(SWAMP2_EDGES, Arrays.asList(GlowBiome.getId(JUNGLE)));
     }
 
@@ -65,12 +77,18 @@ public class BiomeEdgeMapLayer extends MapLayer {
                         int lowerVal = values[j + 1 + (i + 2) * gridSizeX];
                         int leftVal = values[j + (i + 1) * gridSizeX];
                         int rightVal = values[j + 2 + (i + 1) * gridSizeX];
-                        if (entry.getValue() == null && (!map.containsKey(upperVal) || !map.containsKey(lowerVal) ||
-                                !map.containsKey(leftVal) || !map.containsKey(rightVal))) {
+                        if (entry.getValue() == null && (
+                                !map.containsKey(upperVal)
+                                || !map.containsKey(lowerVal)
+                                || !map.containsKey(leftVal)
+                                || !map.containsKey(rightVal))) {
                             val = map.get(centerVal);
                             break;
-                        } else if (entry.getValue() != null && (entry.getValue().contains(upperVal) || entry.getValue().contains(lowerVal) ||
-                                entry.getValue().contains(leftVal) || entry.getValue().contains(rightVal))) {
+                        } else if (entry.getValue() != null && (
+                                entry.getValue().contains(upperVal)
+                                || entry.getValue().contains(lowerVal)
+                                || entry.getValue().contains(leftVal)
+                                || entry.getValue().contains(rightVal))) {
                             val = map.get(centerVal);
                             break;
                         }
