@@ -1,23 +1,18 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class BlockAnvil extends BlockFalling {
 
     public BlockAnvil() {
         super(Material.ANVIL);
         addFunction(Functions.Interact.ANVIL);
-    }
-
-    @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
-        return player.openInventory(new GlowAnvilInventory(player)) != null;
     }
 
     @Override
