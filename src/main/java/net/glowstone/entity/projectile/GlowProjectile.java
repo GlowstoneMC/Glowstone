@@ -59,12 +59,14 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     @Override
     protected void pulsePhysics() {
-        Vector size = boundingBox.getSize();
-        for (Entity entity : world.getNearbyEntities(
+        if (boundingBox == null) {
+            Vector size = boundingBox.getSize();
+            for (Entity entity : world.getNearbyEntities(
                 location, size.getX(), size.getY(), size.getZ())) {
-            if (entity instanceof LivingEntity && !(entity.equals(shooter))) {
-                collide((LivingEntity) entity);
-                break;
+                if (entity instanceof LivingEntity && !(entity.equals(shooter))) {
+                    collide((LivingEntity) entity);
+                    break;
+                }
             }
         }
         super.pulsePhysics();
