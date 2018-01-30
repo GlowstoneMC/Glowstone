@@ -128,16 +128,9 @@ public class BlockCactus extends BlockType {
         }
     }
 
-    /**
-     * Get the items that will be dropped by digging the block.
-     * Specially overriten for cactus to remove data from the dropped item.
-     *
-     * @param me The cactus block it self.
-     * @param tool The tool used or {@code null} if fists or no tool was used.
-     * @return The drops that should be returned.
-     */
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+        // Overridden for cactus to remove data from the dropped item
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CACTUS)));
     }
 }
