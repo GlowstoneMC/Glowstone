@@ -41,7 +41,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
     // Mocks
-    protected final Logger log = Logger.getLogger(getClass().getSimpleName());
     protected final GlowWorld world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
     protected final GlowServer server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_SMART_NULLS);
     @Mock
@@ -50,6 +49,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected GlowChunk chunk;
 
     // Real objects
+    protected final Logger log = Logger.getLogger(getClass().getSimpleName());
     protected Location location;
     protected final EntityIdManager idManager = new EntityIdManager();
     protected final EntityManager entityManager = new EntityManager();
