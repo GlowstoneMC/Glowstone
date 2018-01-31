@@ -49,24 +49,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class GlowPlayerTest {
     private static final Logger LOG = Logger.getLogger(GlowPlayerTest.class.getSimpleName());
 
-    private final EntityIdManager idManager = new EntityIdManager();
-    private final EntityManager entityManager = new EntityManager();
-
     // PowerMock mocks
     private final GlowWorld world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_MOCKS);
     private final GlowServer server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_MOCKS);
     private final ChunkManager chunkManager
             = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
 
-    private GlowPlayer player;
-    private Location origin;
-    private final GlowPlayerProfile profile
-            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID());
-    private GlowScheduler scheduler;
-    private final SessionRegistry sessionRegistry = new SessionRegistry();
-    private File opsListFile;
-    private UuidListFile opsList;
-
+    // Mockito mocks
     @Mock(answer = RETURNS_SMART_NULLS)
     private GlowSession session;
     @Mock(answer = RETURNS_SMART_NULLS)
@@ -79,6 +68,20 @@ public class GlowPlayerTest {
     private PluginManager pluginManager;
     @Mock(answer = RETURNS_SMART_NULLS)
     private GlowChunk chunk;
+
+    // Real objects
+    private final EntityIdManager idManager = new EntityIdManager();
+    private final EntityManager entityManager = new EntityManager();
+    private Location origin;
+    private final GlowPlayerProfile profile
+            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID());
+    private GlowScheduler scheduler;
+    private final SessionRegistry sessionRegistry = new SessionRegistry();
+    private File opsListFile;
+    private UuidListFile opsList;
+
+    // Finally, the star of the show
+    private GlowPlayer player;
 
     @Before
     public void setUp() throws IOException {
