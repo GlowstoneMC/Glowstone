@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.constants.GlowBiomeClimate;
@@ -64,7 +65,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     @Override
     public List<Message> createSpawnMessage() {
-        List<Message> spawnMessage = super.createSpawnMessage();
+        List<Message> spawnMessage = new ArrayList<>(super.createSpawnMessage());
 
         double x = location.getX();
         double y = location.getY();
