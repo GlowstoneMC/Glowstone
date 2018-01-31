@@ -183,6 +183,8 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         double rewardCategoryChance = rewardCategory.getChance()
                 + rewardCategory.getModifier() * level;
         double random;
+        // This loop is needed because rounding errors make the probabilities add up to less than
+        // 100%. It will rarely iterate more than once.
         do {
             random = ThreadLocalRandom.current().nextDouble(100);
 
