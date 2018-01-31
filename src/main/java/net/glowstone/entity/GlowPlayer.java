@@ -911,7 +911,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         getAttributeManager().sendMessages(session);
 
-        if (currentFishingHook != null) {
+        GlowFishingHook hook = currentFishingHook.get();
+        if (hook != null) {
             // The line will disappear if the player wanders more than 32 blocks away from the
             // bobber, or if the player stops holding a fishing rod.
             if (getInventory().getItemInMainHand().getType() != Material.FISHING_ROD
@@ -919,7 +920,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 setCurrentFishingHook(null);
             }
 
-            if (currentFishingHook.location.distanceSquared(location) > 32 * 32) {
+            if (hook.location.distanceSquared(location) > 32 * 32) {
                 setCurrentFishingHook(null);
             }
         }
