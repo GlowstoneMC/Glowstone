@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.entity.EntityTest;
+import net.glowstone.entity.GlowEntityTest;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.monster.GlowCreeper;
@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.GreaterThan;
 
-public class GlowFishingHookTest extends EntityTest<GlowFishingHook> {
+public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
     private static final BaseMatcher<ItemStack> IS_NON_EMPTY_ITEM_STACK
             = new BaseMatcher<ItemStack>() {

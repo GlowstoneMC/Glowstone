@@ -32,12 +32,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
- * Superclass for tests of entity classes. Doesn't contain tests of its own; instead, configures
- * necessary mocks for subclasses.
+ * Superclass for tests of entity classes. Configures necessary mocks for subclasses.
+ *
+ * @param <T> the class under test
  */
 @PrepareForTest({GlowWorld.class, GlowServer.class})
 @RunWith(PowerMockRunner.class)
-public abstract class EntityTest<T extends GlowEntity> {
+public abstract class GlowEntityTest<T extends GlowEntity> {
 
     // Mocks
     protected final Logger log = Logger.getLogger(getClass().getSimpleName());
@@ -54,7 +55,7 @@ public abstract class EntityTest<T extends GlowEntity> {
     protected final EntityManager entityManager = new EntityManager();
     protected final Function<Location, ? extends T> entityCreator;
 
-    protected EntityTest(Function<Location, ? extends T> entityCreator) {
+    protected GlowEntityTest(Function<Location, ? extends T> entityCreator) {
         this.entityCreator = entityCreator;
     }
 
