@@ -66,7 +66,7 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
         if (boundingBox == null) {
             Vector size = boundingBox.getSize();
             for (Entity entity : world.getNearbyEntities(
-                location, size.getX(), size.getY(), size.getZ())) {
+                    location, size.getX(), size.getY(), size.getZ())) {
                 if (entity instanceof LivingEntity && entity != this && !(entity.equals(shooter))) {
                     collide((LivingEntity) entity);
                     break;
