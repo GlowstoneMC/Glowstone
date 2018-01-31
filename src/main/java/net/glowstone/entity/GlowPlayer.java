@@ -524,7 +524,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * Current casted fishing hook.
      */
-    private AtomicReference<GlowFishingHook> currentFishingHook;
+    private final AtomicReference<GlowFishingHook> currentFishingHook = new AtomicReference<>(null);
 
     /**
      * Returns the current fishing hook.
