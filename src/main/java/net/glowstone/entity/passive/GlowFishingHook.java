@@ -6,8 +6,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;
 import net.glowstone.entity.FishingRewardManager.RewardItem;
-import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
@@ -23,14 +23,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
+
     private int lived;
     private int lifeTime;
-    private ItemStack itemStack;
+    private final ItemStack itemStack;
 
     public GlowFishingHook(Location location) {
         this(location, null);
     }
 
+    /**
+     * Creates a fishing bob.
+     *
+     * @param location the location
+     * @param itemStack the fishing rod (used to handle enchantments) or null (equivalent to
+     *         unenchanted rod)
+     */
     public GlowFishingHook(Location location, ItemStack itemStack) {
         super(location);
         setSize(0.25f, 0.25f);
@@ -44,7 +52,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     }
 
     private int calculateLifeTime() {
-        // "There will be a period where the player must wait, randomly chosen from 5 to 45 seconds."
+        // Waiting time is 5-45 seconds
         int lifeTime = ThreadLocalRandom.current().nextInt(5, 46);
 
         int level = getEnchantmentLevel(Enchantment.LURE);
@@ -64,19 +72,23 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int intPitch = Position.getIntPitch(location);
         int intHeadYaw = Position.getIntHeadYaw(location.getYaw());
 
-        spawnMessage.add(new SpawnObjectMessage(this.getEntityId(), this.getUniqueId(), SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw, 0, velocity));
+        spawnMessage.add(new SpawnObjectMessage(getEntityId(), getUniqueId(),
+                SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw, 0, velocity));
         return spawnMessage;
     }
 
-    @Override public void collide(Block block) {
+    @Override
+    public void collide(Block block) {
         // TODO
     }
 
-    @Override public void collide(LivingEntity entity) {
+    @Override
+    public void collide(LivingEntity entity) {
         // No effect.
     }
 
-    @Override protected int getObjectId() {
+    @Override
+    protected int getObjectId() {
         return SpawnObjectMessage.FISHING_HOOK;
     }
 
@@ -97,20 +109,20 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     }
 
     private Entity getHookedEntity() {
-        int entityID = metadata.getInt(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY);
-        return world.getEntityManager().getEntity(entityID - 1);
+        return world.getEntityManager().getEntity(
+                metadata.getInt(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY) - 1);
     }
 
     private void setHookedEntity(Entity entity) {
-        metadata.set(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY, entity.getEntityId() + 1);
+        metadata.set(MetadataIndex.FISHING_HOOK_HOOKED_ENTITY,
+                entity == null ? 0 : entity.getEntityId() + 1);
     }
 
     @Override
     public void pulse() {
         super.pulse();
-
         // TODO: Particles
-        // TODO: Boper movement
+        // TODO: Bopper movement
         if (location.getBlock().getType() == Material.WATER) {
             increaseTimeLived();
 
@@ -125,7 +137,8 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             lived = 0;
         }
 
-        // "If the bobber is not directly exposed to sun or moonlight,[note 1] the wait time will be approximately doubled.[note 2]"
+        // "If the bobber is not directly exposed to sun or moonlight,[note 1] the wait time will
+        // be approximately doubled.[note 2]"
         Block highestBlockAt = world.getHighestBlockAt(location);
         if (location.getY() < highestBlockAt.getLocation().getY()) {
             if (ThreadLocalRandom.current().nextDouble(100) < 50) {
@@ -142,6 +155,9 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         lived++;
     }
 
+    /**
+     * Removes this fishing hook. Drops loot and xp if a player is fishing.
+     */
     public void reelIn() {
         if (location.getBlock().getType() == Material.WATER) {
             if (getShooter() instanceof Player) {
@@ -157,25 +173,47 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         RewardCategory rewardCategory = getRewardCategory();
         int level = getEnchantmentLevel(Enchantment.LUCK);
 
-        if (rewardCategory == null || world.getServer().getFishingRewardManager().getCategoryItems(rewardCategory).isEmpty()) {
+        if (rewardCategory == null || world.getServer().getFishingRewardManager()
+                .getCategoryItems(rewardCategory).isEmpty()) {
             return InventoryUtil.createEmptyStack();
         }
-        double rewardCategoryChance = rewardCategory.getChance() + rewardCategory.getModifier() * level;
+        double rewardCategoryChance = rewardCategory.getChance()
+                + rewardCategory.getModifier() * level;
         double random = ThreadLocalRandom.current().nextDouble(100);
 
-        for (RewardItem rewardItem : world.getServer().getFishingRewardManager().getCategoryItems(rewardCategory)) {
+        for (RewardItem rewardItem : world.getServer().getFishingRewardManager()
+                .getCategoryItems(rewardCategory)) {
             random -= rewardItem.getChance() * rewardCategoryChance / 100.0;
             if (random < 0) {
-                // TODO: enchantments and damage on book, bow, and fishingrode
-                return rewardItem.getItem().clone();
+                ItemStack reward = rewardItem.getItem().clone();
+                int enchantLevel = rewardItem.getMinEnchantmentLevel();
+                int maxEnchantLevel = rewardItem.getMaxEnchantmentLevel();
+                if (maxEnchantLevel > enchantLevel) {
+                    enchantLevel = ThreadLocalRandom.current().nextInt(
+                            enchantLevel, maxEnchantLevel + 1);
+                }
+                enchant(reward, enchantLevel);
+                return reward;
             }
         }
 
         return InventoryUtil.createEmptyStack();
     }
 
+    /**
+     * Adds a random set of enchantments, which may include treasure enchantments, to an item.
+     *
+     * @param reward the item to enchant
+     * @param enchantLevel the level of enchantment to use
+     */
+    private static void enchant(ItemStack reward, int enchantLevel) {
+        // TODO
+    }
+
     private int getEnchantmentLevel(Enchantment enchantment) {
-        return !InventoryUtil.isEmpty(itemStack) && itemStack.getType() == Material.FISHING_ROD ? itemStack.getEnchantmentLevel(enchantment) : 0;
+        return !InventoryUtil.isEmpty(itemStack) && itemStack.getType() == Material.FISHING_ROD
+                ? itemStack.getEnchantmentLevel(enchantment)
+                : 0;
     }
 
     private RewardCategory getRewardCategory() {

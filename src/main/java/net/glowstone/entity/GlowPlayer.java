@@ -29,6 +29,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -521,10 +522,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private boolean forceStream = false;
 
     /**
-     * Current casted fishing hook
+     * Current casted fishing hook.
      */
-    @Getter
-    private GlowFishingHook currentFishingHook;
+    private AtomicReference<GlowFishingHook> currentFishingHook;
+
+    /**
+     * Returns the current fishing hook.
+     *
+     * @return the current fishing hook, or null if not fishing
+     */
+    public GlowFishingHook getCurrentFishingHook() {
+        return currentFishingHook.get();
+    }
 
     /**
      * Creates a new player and adds it to the world.
@@ -903,8 +912,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         getAttributeManager().sendMessages(session);
 
         if (currentFishingHook != null) {
-            // The line will disappear if the player wanders more than 32 blocks away from the bobber, or if the player stops holding a fishing rod.
-            if (getInventory().getItemInMainHand().getType() != Material.FISHING_ROD && getInventory().getItemInOffHand().getType() != Material.FISHING_ROD) {
+            // The line will disappear if the player wanders more than 32 blocks away from the
+            // bobber, or if the player stops holding a fishing rod.
+            if (getInventory().getItemInMainHand().getType() != Material.FISHING_ROD
+                    && getInventory().getItemInOffHand().getType() != Material.FISHING_ROD) {
                 setCurrentFishingHook(null);
             }
 
@@ -1332,7 +1343,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public boolean isWhitelisted() {
         return server.getWhitelist().containsProfile(
-                new GlowPlayerProfile(getName(),getUniqueId()));
+                new GlowPlayerProfile(getName(), getUniqueId()));
     }
 
     @Override
@@ -3407,11 +3418,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return invMonitor.getId();
     }
 
+    /**
+     * Removes the current fishing hook, if any, and sets a new one.
+     *
+     * @param fishingHook the new fishing hook, or null to stop fishing
+     */
     public void setCurrentFishingHook(GlowFishingHook fishingHook) {
-        if (currentFishingHook != null && !currentFishingHook.isDead()) {
-            currentFishingHook.remove();
+        GlowFishingHook oldHook = currentFishingHook.getAndSet(fishingHook);
+        if (oldHook != null && !(oldHook.equals(fishingHook)) && !oldHook.isDead()) {
+            oldHook.remove();
         }
-
-        currentFishingHook = fishingHook;
     }
 }

@@ -16,12 +16,21 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Generates fishing loot.
+ */
 public class FishingRewardManager {
-    private final Multimap<RewardCategory, RewardItem> values = MultimapBuilder.enumKeys(RewardCategory.class).arrayListValues().build();
 
+    private final Multimap<RewardCategory, RewardItem> values = MultimapBuilder
+            .enumKeys(RewardCategory.class).arrayListValues().build();
+
+    /**
+     * Creates the instance.
+     */
     public FishingRewardManager() {
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(
-            new InputStreamReader(getClass().getClassLoader().getResourceAsStream("builtin/fishingRewards.yml")));
+                new InputStreamReader(getClass().getClassLoader()
+                        .getResourceAsStream("builtin/fishingRewards.yml")));
 
         registerBuiltins(builtinValues);
     }
@@ -43,32 +52,37 @@ public class FishingRewardManager {
     }
 
     @Getter
+    @AllArgsConstructor
     public enum RewardCategory {
         FISH(85.0, -1.15),
         TREASURE(5.0, 2.1),
         TRASH(10.0, -1.95);
 
-        private double chance;
+        private final double chance;
 
         /**
-         * Each level of the "Luck of the Sea" enchantment will modify this categories chance by modifier amount
+         * Additional chance per level of "Luck of the Sea" enchantment.
          */
-        private double modifier;
-
-        RewardCategory(double chance, double modifier) {
-            this.chance = chance;
-            this.modifier = modifier;
-        }
+        private final double modifier;
     }
 
     @Getter
     @AllArgsConstructor
     public static class RewardItem implements ConfigurationSerializable {
+
         private ItemStack item;
         /**
-         * Chance to get this item in his category
+         * Chance to get this item in this category.
          */
         private double chance;
+        /**
+         * Minimum enchantment level, or zero for unenchanted item.
+         */
+        private int minEnchantmentLevel;
+        /**
+         * Maximum enchantment level, or zero for unenchanted item.
+         */
+        private int maxEnchantmentLevel;
 
         private RewardItem() {
 
@@ -82,18 +96,43 @@ public class FishingRewardManager {
             return args;
         }
 
-        public static RewardItem deserialize(Map<String, Object> args) {
-            if (args == null) {
+        private static int getAsIntOrDefault(Map<String, ?> args, String key, int defaultValue) {
+            Object value = args.get(key);
+            if (value == null) {
+                return defaultValue;
+            }
+            try {
+                return Integer.decode(value.toString());
+            } catch (NumberFormatException e) {
+                return defaultValue;
+            }
+        }
+
+        /**
+         * Reads a RewardItem from a YAML tag.
+         *
+         * @param itemYaml a YAML tag deserialized as a map
+         * @return {@code itemYaml} as a RewardItem, or null if {@code itemYaml} is null
+         */
+        public static RewardItem deserialize(Map<String, Object> itemYaml) {
+            if (itemYaml == null) {
                 return null;
             }
 
             RewardItem result = new RewardItem();
-            if (args.containsKey("item")) {
-                result.item = ItemStack.deserialize((Map<String, Object>) args.get("item"));
+            if (itemYaml.containsKey("item")) {
+                result.item = ItemStack.deserialize((Map<String, Object>) itemYaml.get("item"));
             }
 
-            if (args.containsKey("chance")) {
-                result.chance = Double.parseDouble(Objects.toString(args.get("chance"), "0"));
+            if (itemYaml.containsKey("chance")) {
+                result.chance = Double.parseDouble(Objects.toString(itemYaml.get("chance"), "0"));
+            }
+
+            if (itemYaml.containsKey("enchantment_level_min")) {
+                result.minEnchantmentLevel = getAsIntOrDefault(
+                        itemYaml, "enchantment_level_min", 0);
+                result.maxEnchantmentLevel = getAsIntOrDefault(
+                        itemYaml, "enchantment_level_max", result.minEnchantmentLevel);
             }
 
             return result;

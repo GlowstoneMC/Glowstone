@@ -29,6 +29,7 @@ rewards:
       chance: 2.4
       item: 
         type: FISHING_ROD
+        damage: 32  # TODO: Randomize
     - 
       chance: 12
       item: 
@@ -37,6 +38,7 @@ rewards:
       chance: 12
       item: 
         type: LEATHER_BOOTS
+        durability: 33  # TODO: Randomize
     - 
       chance: 12
       item: 
@@ -72,14 +74,22 @@ rewards:
       chance: 16.67
       item: 
         type: BOW
+        damage: 192  # TODO: Randomize
+      enchantment_level_min: 22
+      enchantment_level_max: 30
     - 
       chance: 16.67
-      item: 
+      item:
         type: ENCHANTED_BOOK
+      enchantment_level_min: 30
+      enchantment_level_max: 30
     - 
       chance: 16.67
       item: 
         type: FISHING_ROD
+        damage: 32  # TODO: Randomize
+      enchantment_level_min: 22
+      enchantment_level_max: 30
     - 
       chance: 16.67
       item: 
