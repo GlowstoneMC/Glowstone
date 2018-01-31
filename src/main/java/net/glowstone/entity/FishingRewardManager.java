@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -67,6 +68,7 @@ public class FishingRewardManager {
     }
 
     @Getter
+    @ToString
     @AllArgsConstructor
     public static class RewardItem implements ConfigurationSerializable {
 

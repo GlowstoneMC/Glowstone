@@ -97,12 +97,14 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         return false;
     }
 
+    @Deprecated
     @Override
     public double getBiteChance() {
         // Not supported in newer mc versions anymore
         return 0;
     }
 
+    @Deprecated
     @Override
     public void setBiteChance(double v) throws IllegalArgumentException {
         // Not supported in newer mc versions anymore
@@ -181,8 +183,8 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
                 + rewardCategory.getModifier() * level;
         double random = ThreadLocalRandom.current().nextDouble(100);
 
-        for (RewardItem rewardItem : world.getServer().getFishingRewardManager()
-                .getCategoryItems(rewardCategory)) {
+        for (RewardItem rewardItem
+                : world.getServer().getFishingRewardManager().getCategoryItems(rewardCategory)) {
             random -= rewardItem.getChance() * rewardCategoryChance / 100.0;
             if (random < 0) {
                 ItemStack reward = rewardItem.getItem().clone();
@@ -192,7 +194,9 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
                     enchantLevel = ThreadLocalRandom.current().nextInt(
                             enchantLevel, maxEnchantLevel + 1);
                 }
-                enchant(reward, enchantLevel);
+                if (enchantLevel > 0) {
+                    enchant(reward, enchantLevel);
+                }
                 return reward;
             }
         }
