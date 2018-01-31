@@ -81,7 +81,8 @@ public final class SpawnObjectMessage implements Message {
                 Position.getIntPitch(location), Position.getIntYaw(location), data);
     }
 
-    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch, int yaw, int data, Vector vector) {
+    public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
+            int yaw, int data, Vector vector) {
         this(id, uuid, type, x, y, z, pitch, yaw, data,
             convert(vector.getX()), convert(vector.getY()), convert(vector.getZ()));
     }
