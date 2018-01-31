@@ -182,25 +182,29 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         }
         double rewardCategoryChance = rewardCategory.getChance()
                 + rewardCategory.getModifier() * level;
-        double random = ThreadLocalRandom.current().nextDouble(100);
+        double random;
+        do {
+            random = ThreadLocalRandom.current().nextDouble(100);
 
-        for (RewardItem rewardItem
-                : world.getServer().getFishingRewardManager().getCategoryItems(rewardCategory)) {
-            random -= rewardItem.getChance() * rewardCategoryChance / 100.0;
-            if (random < 0) {
-                ItemStack reward = rewardItem.getItem().clone();
-                int enchantLevel = rewardItem.getMinEnchantmentLevel();
-                int maxEnchantLevel = rewardItem.getMaxEnchantmentLevel();
-                if (maxEnchantLevel > enchantLevel) {
-                    enchantLevel = ThreadLocalRandom.current().nextInt(
-                            enchantLevel, maxEnchantLevel + 1);
+            for (RewardItem rewardItem
+                    : world.getServer().getFishingRewardManager()
+                    .getCategoryItems(rewardCategory)) {
+                random -= rewardItem.getChance() * rewardCategoryChance / 100.0;
+                if (random < 0) {
+                    ItemStack reward = rewardItem.getItem().clone();
+                    int enchantLevel = rewardItem.getMinEnchantmentLevel();
+                    int maxEnchantLevel = rewardItem.getMaxEnchantmentLevel();
+                    if (maxEnchantLevel > enchantLevel) {
+                        enchantLevel = ThreadLocalRandom.current().nextInt(
+                                enchantLevel, maxEnchantLevel + 1);
+                    }
+                    if (enchantLevel > 0) {
+                        enchant(reward, enchantLevel);
+                    }
+                    return reward;
                 }
-                if (enchantLevel > 0) {
-                    enchant(reward, enchantLevel);
-                }
-                return reward;
             }
-        }
+        } while (random >= 0);
 
         return InventoryUtil.createEmptyStack();
     }
