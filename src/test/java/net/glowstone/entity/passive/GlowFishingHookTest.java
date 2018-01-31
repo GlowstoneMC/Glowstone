@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.GreaterThan;
 
-public class GlowFishingHookTest extends EntityTest {
+public class GlowFishingHookTest extends EntityTest<GlowFishingHook> {
 
     private static final BaseMatcher<ItemStack> IS_NON_EMPTY_ITEM_STACK
             = new BaseMatcher<ItemStack>() {
@@ -49,6 +49,10 @@ public class GlowFishingHookTest extends EntityTest {
 
     private FishingRewardManager fishingRewardManager;
 
+    public GlowFishingHookTest() {
+        super(GlowFishingHook::new);
+    }
+
     @Before
     @Override
     public void setUp() throws IOException {
@@ -58,13 +62,13 @@ public class GlowFishingHookTest extends EntityTest {
         when(block.getType()).thenReturn(Material.WATER);
         fishingRewardManager = new FishingRewardManager();
         when(server.getFishingRewardManager()).thenReturn(fishingRewardManager);
-        when(player.getLocation()).thenReturn(origin);
+        when(player.getLocation()).thenReturn(location);
     }
 
     @Test
     public void testReelInNotPlayer() {
-        GlowFishingHook hook = new GlowFishingHook(origin);
-        hook.setShooter(new GlowCreeper(origin));
+        GlowFishingHook hook = new GlowFishingHook(location);
+        hook.setShooter(new GlowCreeper(location));
         hook.reelIn();
         assertTrue(hook.isRemoved());
         verify(world, never()).dropItemNaturally(any(Location.class), any(ItemStack.class));
@@ -72,19 +76,19 @@ public class GlowFishingHookTest extends EntityTest {
 
     @Test
     public void testReelIn() {
-        GlowFishingHook hook = new GlowFishingHook(origin);
+        GlowFishingHook hook = new GlowFishingHook(location);
         hook.setShooter(player);
         hook.reelIn();
         assertTrue(hook.isRemoved());
         verify(player).giveExp(intThat(new GreaterThan<>(0)));
-        verify(world).dropItemNaturally(eq(origin),
+        verify(world).dropItemNaturally(eq(location),
                 argThat(IS_NON_EMPTY_ITEM_STACK));
     }
 
     @Test
     public void testReelInNotInWater() {
         when(block.getType()).thenReturn(Material.DIRT);
-        GlowFishingHook hook = new GlowFishingHook(origin);
+        GlowFishingHook hook = new GlowFishingHook(location);
         hook.setShooter(player);
         hook.reelIn();
         assertTrue(hook.isRemoved());

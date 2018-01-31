@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.function.Supplier;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -39,16 +40,16 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 @PrepareForTest({GlowServer.class, GlowWorld.class, ChunkManager.class})
-public class GlowPlayerTest extends EntityTest {
+public class GlowPlayerTest extends EntityTest<GlowPlayer> {
 
     private final ChunkManager chunkManager
             = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
 
     // Mockito mocks
     @Mock(answer = RETURNS_SMART_NULLS)
-    private GlowSession session;
+    private static GlowSession session;
     @Mock(answer = RETURNS_SMART_NULLS)
-    private PlayerReader reader;
+    private static PlayerReader reader;
     @Mock(answer = RETURNS_SMART_NULLS)
     private GlowBlock block;
     @Mock(answer = RETURNS_SMART_NULLS)
@@ -62,7 +63,7 @@ public class GlowPlayerTest extends EntityTest {
 
     // Real objects
 
-    private final GlowPlayerProfile profile
+    private static final GlowPlayerProfile profile
             = new GlowPlayerProfile("TestPlayer", UUID.randomUUID());
     private GlowScheduler scheduler;
     private final SessionRegistry sessionRegistry = new SessionRegistry();
@@ -71,6 +72,10 @@ public class GlowPlayerTest extends EntityTest {
 
     // Finally, the star of the show
     private GlowPlayer player;
+
+    public GlowPlayerTest() {
+        super(ignoredLocation -> new GlowPlayer(session, profile, reader));
+    }
 
     @Before
     @Override
@@ -85,21 +90,21 @@ public class GlowPlayerTest extends EntityTest {
         when(server.getScheduler()).thenReturn(scheduler);
         when(server.getOpsList()).thenReturn(opsList);
         when(server.getPlayerStatisticIoService()).thenReturn(statisticIoService);
-        when(world.getSpawnLocation()).thenReturn(origin);
+        when(world.getSpawnLocation()).thenReturn(location);
         when(world.getBlockAt(anyInt(), anyInt(), anyInt())).thenReturn(block);
         when(world.getBlockAt(any(Location.class))).thenReturn(block);
         when(world.getChunkManager()).thenReturn(chunkManager);
         when(world.newChunkLock(anyString())).thenReturn(chunkLock);
         when(block.getType()).thenReturn(Material.AIR);
         when(block.getRelative(any(BlockFace.class))).thenReturn(block);
-        player = new GlowPlayer(session, profile, reader);
+        player = entityCreator.apply(location);
         player.setItemInHand(new ItemStack(Material.FISHING_ROD));
         when(session.getPlayer()).thenReturn(player);
     }
 
     @Test
     public void testFishingContinues() {
-        final GlowFishingHook fishingHook = new GlowFishingHook(origin);
+        final GlowFishingHook fishingHook = new GlowFishingHook(location);
         player.setCurrentFishingHook(fishingHook);
         player.pulse();
         assertSame(fishingHook, player.getCurrentFishingHook());
@@ -107,7 +112,7 @@ public class GlowPlayerTest extends EntityTest {
 
     @Test
     public void testFishingStopsAtDistance() {
-        player.setCurrentFishingHook(new GlowFishingHook(origin));
+        player.setCurrentFishingHook(new GlowFishingHook(location));
         player.teleport(new Location(world, 33, 0, 0));
         player.endTeleport();
         player.pulse();
@@ -116,9 +121,17 @@ public class GlowPlayerTest extends EntityTest {
 
     @Test
     public void testFishingStopsWhenNoPoleHeld() {
-        player.setCurrentFishingHook(new GlowFishingHook(origin));
+        player.setCurrentFishingHook(new GlowFishingHook(location));
         player.setItemInHand(InventoryUtil.createEmptyStack());
         player.pulse();
         assertNull(player.getCurrentFishingHook());
+    }
+
+    private static class PlayerSupplier implements Supplier<GlowPlayer> {
+
+        @Override
+        public GlowPlayer get() {
+            return new GlowPlayer(session, profile, reader);
+        }
     }
 }

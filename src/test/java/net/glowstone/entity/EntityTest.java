@@ -1,13 +1,17 @@
 package net.glowstone.entity;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Answers.RETURNS_SMART_NULLS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import com.flowpowered.network.Message;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.function.Supplier;
+import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -33,7 +37,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  */
 @PrepareForTest({GlowWorld.class, GlowServer.class})
 @RunWith(PowerMockRunner.class)
-public abstract class EntityTest {
+public abstract class EntityTest<T extends GlowEntity> {
 
     // Mocks
     protected final Logger log = Logger.getLogger(getClass().getSimpleName());
@@ -45,9 +49,14 @@ public abstract class EntityTest {
     protected GlowChunk chunk;
 
     // Real objects
-    protected Location origin;
+    protected Location location;
     protected final EntityIdManager idManager = new EntityIdManager();
     protected final EntityManager entityManager = new EntityManager();
+    protected final Function<Location, ? extends T> entityCreator;
+
+    protected EntityTest(Function<Location, ? extends T> entityCreator) {
+        this.entityCreator = entityCreator;
+    }
 
     @Before
     public void setUp() throws IOException {
@@ -56,7 +65,7 @@ public abstract class EntityTest {
             Bukkit.setServer(server);
         }
         MockitoAnnotations.initMocks(this);
-        origin = new Location(world, 0, 0, 0);
+        location = new Location(world, 0, 0, 0);
         when(world.getServer()).thenReturn(server);
         when(world.getEntityManager()).thenReturn(entityManager);
         when(world.getChunkAt(any(Location.class))).thenReturn(chunk);
@@ -69,5 +78,14 @@ public abstract class EntityTest {
         // ensureServerConversions returns its argument
         when(itemFactory.ensureServerConversions(any(ItemStack.class)))
                 .thenAnswer(invocation -> invocation.getArguments()[0]);
+    }
+
+    @Test
+    public void testCreateSpawnMessage() {
+        T entity = entityCreator.apply(location);
+        List<Message> messages = entity.createSpawnMessage();
+        assertFalse(messages.isEmpty());
+        // Should start with an instance of one of the Spawn*Message classes
+        assertTrue(messages.get(0).getClass().getSimpleName().startsWith("Spawn"));
     }
 }
