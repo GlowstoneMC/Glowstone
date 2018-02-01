@@ -7,6 +7,7 @@ import net.glowstone.entity.GlowTntPrimed;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +22,7 @@ public class BlockTnt extends BlockType {
      * @param player The player who ignited the TNT.
      */
     public static void igniteBlock(
-        GlowBlock tntBlock, boolean ignitedByExplosion, GlowPlayer player) {
+        Block tntBlock, boolean ignitedByExplosion, GlowPlayer player) {
         tntBlock.setType(Material.AIR);
         World world = tntBlock.getWorld();
         GlowTntPrimed tnt = (GlowTntPrimed) world
@@ -37,7 +38,7 @@ public class BlockTnt extends BlockType {
      * @param tntBlock The block to ignite.
      * @param ignitedByExplosion True if another explosion caused this ignition.
      */
-    public static void igniteBlock(GlowBlock tntBlock, boolean ignitedByExplosion) {
+    public static void igniteBlock(Block tntBlock, boolean ignitedByExplosion) {
         igniteBlock(tntBlock, ignitedByExplosion, null);
     }
 
