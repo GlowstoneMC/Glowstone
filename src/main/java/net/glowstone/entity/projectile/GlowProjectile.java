@@ -18,6 +18,10 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
+/**
+ * A projectile. Subclasses must call {@link #setBoundingBox(double, double)} if they are to collide
+ * with other entities.
+ */
 public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     @Getter
@@ -59,12 +63,14 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
 
     @Override
     protected void pulsePhysics() {
-        Vector size = boundingBox.getSize();
-        for (Entity entity : world.getNearbyEntities(
-                location, size.getX(), size.getY(), size.getZ())) {
-            if (entity instanceof LivingEntity && !(entity.equals(shooter))) {
-                collide((LivingEntity) entity);
-                break;
+        if (boundingBox != null) {
+            Vector size = boundingBox.getSize();
+            for (Entity entity : world.getNearbyEntities(
+                    location, size.getX(), size.getY(), size.getZ())) {
+                if (entity instanceof LivingEntity && entity != this && !(entity.equals(shooter))) {
+                    collide((LivingEntity) entity);
+                    break;
+                }
             }
         }
         super.pulsePhysics();
