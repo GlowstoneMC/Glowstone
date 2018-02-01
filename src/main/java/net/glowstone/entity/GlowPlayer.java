@@ -845,7 +845,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 break;
             }
             default: {
-                // Do nothing when there're other game difficulties.
+                // Do nothing when there are other game difficulties.
             }
         }
 
