@@ -819,24 +819,33 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         // Process food level and starvation based on difficulty.
-        if (world.getDifficulty().equals(Difficulty.PEACEFUL)) {
-            if (foodLevel < 20 && ticksLived % 20 == 0) {
-                foodLevel++;
+        switch (world.getDifficulty()) {
+            case PEACEFUL: {
+                if (foodLevel < 20 && ticksLived % 20 == 0) {
+                    foodLevel++;
+                }
+                break;
             }
-        }
-        if (world.getDifficulty().equals(Difficulty.EASY)) {
-            if (foodLevel == 0 && getHealth() > 10 && ticksLived % 80 == 0) {
-                damage(1, DamageCause.STARVATION);
+            case EASY: {
+                if (foodLevel == 0 && getHealth() > 10 && ticksLived % 80 == 0) {
+                    damage(1, DamageCause.STARVATION);
+                }
+                break;
             }
-        }
-        if (world.getDifficulty().equals(Difficulty.NORMAL)) {
-            if (foodLevel == 0 && getHealth() > 1 && ticksLived % 80 == 0) {
-                damage(1, DamageCause.STARVATION);
+            case NORMAL: {
+                if (foodLevel == 0 && getHealth() > 1 && ticksLived % 80 == 0) {
+                    damage(1, DamageCause.STARVATION);
+                }
+                break;
             }
-        }
-        if (world.getDifficulty().equals(Difficulty.HARD)) {
-            if (foodLevel == 0 && ticksLived % 80 == 0) {
-                damage(1, DamageCause.STARVATION);
+            case HARD: {
+                if (foodLevel == 0 && ticksLived % 80 == 0) {
+                    damage(1, DamageCause.STARVATION);
+                }
+                break;
+            }
+            default: {
+                // Do nothing when there're other game difficulties.
             }
         }
 
