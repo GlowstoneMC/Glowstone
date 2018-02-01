@@ -818,8 +818,26 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
         }
 
-        if (foodLevel == 0 && getHealth() > 1 && ticksLived % 80 == 0) {
-            damage(1, DamageCause.STARVATION);
+        // Process food level and starvation based on difficulty.
+        if (world.getDifficulty().equals(Difficulty.PEACEFUL)) {
+            if (foodLevel < 20 && ticksLived % 20 == 0) {
+                foodLevel++;
+            }
+        }
+        if (world.getDifficulty().equals(Difficulty.EASY)) {
+            if (foodLevel == 0 && getHealth() > 10 && ticksLived % 80 == 0) {
+                damage(1, DamageCause.STARVATION);
+            }
+        }
+        if (world.getDifficulty().equals(Difficulty.NORMAL)) {
+            if (foodLevel == 0 && getHealth() > 1 && ticksLived % 80 == 0) {
+                damage(1, DamageCause.STARVATION);
+            }
+        }
+        if (world.getDifficulty().equals(Difficulty.HARD)) {
+            if (foodLevel == 0 && ticksLived % 80 == 0) {
+                damage(1, DamageCause.STARVATION);
+            }
         }
 
         // stream world
