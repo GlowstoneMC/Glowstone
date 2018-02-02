@@ -226,7 +226,7 @@ public final class EventFactory {
 
     /**
      * Runs an EntityDamageEvent and updates {@link org.bukkit.entity.Entity#setLastDamageCause} and
-     * {@link org.bukkit.entity.Entity#setLastDamage}.
+     * {@link org.bukkit.entity.LivingEntity#setLastDamage(double)}.
      *
      * @param event the event to run
      * @param <T> the event's type
