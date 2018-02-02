@@ -124,7 +124,7 @@ public final class EventFactory {
      * @return the completed event
      */
     public static PlayerLoginEvent onPlayerLogin(GlowPlayer player, String hostname) {
-        GlowServer server = player.getServer();
+        Server server = player.getServer();
         InetAddress address = player.getAddress().getAddress();
         String addressString = address.getHostAddress();
         PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, address);
