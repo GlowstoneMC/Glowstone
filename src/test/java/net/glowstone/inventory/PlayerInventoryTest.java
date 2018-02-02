@@ -2,6 +2,7 @@ package net.glowstone.inventory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import net.glowstone.testutils.ServerShim;
 import net.glowstone.util.IsFloatCloseTo;
@@ -9,9 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for GlowPlayerInventory.
@@ -30,12 +31,12 @@ public class PlayerInventoryTest {
 
     private GlowPlayerInventory inventory;
 
-    @BeforeClass
+    @BeforeAll
     public static void initShim() {
         ServerShim.install();
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         inventory = new GlowPlayerInventory(null);
     }
@@ -103,9 +104,10 @@ public class PlayerInventoryTest {
             IsFloatCloseTo.closeTo(1f, 0.001f));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetDropChance() {
-        inventory.setChestplateDropChance(0.5f);
+        assertThrows(UnsupportedOperationException.class,
+                () -> inventory.setChestplateDropChance(0.5f));
     }
 
 }

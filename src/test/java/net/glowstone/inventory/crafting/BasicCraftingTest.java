@@ -8,14 +8,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.hamcrest.core.IsNull;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class BasicCraftingTest {
 
     static CraftingManager cm;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() {
         // do this @BeforeClass and not @Before since it's 10x as slow as some other test cases due to loading and parsing all the recipes
         ServerShim.install();

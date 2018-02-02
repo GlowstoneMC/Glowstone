@@ -8,7 +8,7 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Material;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 

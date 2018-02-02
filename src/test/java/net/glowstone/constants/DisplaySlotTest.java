@@ -4,7 +4,7 @@ import static org.junit.Assert.assertThat;
 
 import org.bukkit.scoreboard.DisplaySlot;
 import org.hamcrest.number.OrderingComparison;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the {@link GlowDisplaySlot} class.

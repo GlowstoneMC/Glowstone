@@ -14,8 +14,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -32,7 +32,7 @@ public class SetWorldSpawnCommandTest {
 
     private Command command;
 
-    @Before
+    @BeforeEach
     public void before() {
         sender = PowerMockito.mock(CommandSender.class);
         opSender = PowerMockito.mock(CommandSender.class);

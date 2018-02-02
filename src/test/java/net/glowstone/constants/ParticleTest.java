@@ -8,7 +8,7 @@ import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 

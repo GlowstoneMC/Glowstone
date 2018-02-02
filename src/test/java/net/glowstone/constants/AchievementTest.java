@@ -6,7 +6,7 @@ import java.util.Collection;
 import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Achievement;
 import org.hamcrest.core.IsNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 

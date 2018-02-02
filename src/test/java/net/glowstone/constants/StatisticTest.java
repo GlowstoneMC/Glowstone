@@ -7,7 +7,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Collection;
 import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Statistic;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 

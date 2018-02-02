@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.bukkit.GameMode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GameModeUtilsTest {
 

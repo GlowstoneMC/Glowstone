@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.hamcrest.number.OrderingComparison;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InventoryUtilTest {
 

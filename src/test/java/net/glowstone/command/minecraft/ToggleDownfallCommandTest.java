@@ -10,8 +10,8 @@ import net.glowstone.command.CommandUtils;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -28,7 +28,7 @@ public class ToggleDownfallCommandTest {
 
     private CommandSender sender, opSender;
 
-    @Before
+    @BeforeEach
     public void before() {
         world = PowerMockito.mock(GlowWorld.class);
         command = new ToggleDownfallCommand();

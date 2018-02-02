@@ -27,9 +27,9 @@ import net.glowstone.util.Convert;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
@@ -72,7 +72,7 @@ public class QueryTest {
     private InetSocketAddress address;
     private boolean queryPlugins;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         glowServer = mock(GlowServer.class);
         CountDownLatch latch = new CountDownLatch(1);
@@ -84,7 +84,7 @@ public class QueryTest {
         address = InetSocketAddress.createUnresolved("somehost", 12345);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         server.shutdown();
     }

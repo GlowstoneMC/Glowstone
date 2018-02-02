@@ -12,8 +12,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -27,7 +27,7 @@ public class TestForBlocksCommandTest {
     private Player opPlayer;
     private GlowWorld world;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         command = new TestForBlocksCommand();
         blockStorage = new InMemoryBlockStorage();
