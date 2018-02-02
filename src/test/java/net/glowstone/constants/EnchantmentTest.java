@@ -11,8 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -30,7 +30,7 @@ public class EnchantmentTest {
         this.field = field;
     }
 
-    @BeforeAll
+    @BeforeClass
     public static void staticSetup() {
         GlowEnchantment.register();
     }

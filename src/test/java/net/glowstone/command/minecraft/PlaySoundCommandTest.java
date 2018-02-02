@@ -21,8 +21,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -43,7 +43,7 @@ public class PlaySoundCommandTest {
 
     private Command command;
 
-    @BeforeEach
+    @Before
     public void before() {
         command = new PlaySoundCommand();
         sender = PowerMockito.mock(CommandSender.class);

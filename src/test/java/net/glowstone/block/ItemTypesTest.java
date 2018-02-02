@@ -10,8 +10,8 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Material;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -28,7 +28,7 @@ public class ItemTypesTest {
         this.material = material;
     }
 
-    @BeforeAll
+    @BeforeClass
     public static void staticSetup() {
         table = ItemTable.instance();
     }

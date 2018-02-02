@@ -9,7 +9,7 @@ import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.Tag;
 import net.glowstone.util.nbt.TagType;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
