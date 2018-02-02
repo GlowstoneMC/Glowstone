@@ -33,6 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -182,7 +183,7 @@ public class QueryTest {
     /**
      * Matches the content (nothing else) of two {@link DatagramPacket}s.
      */
-    private static class DatagramPacketMatcher extends BaseMatcher<DatagramPacket> {
+    private static class DatagramPacketMatcher implements ArgumentMatcher<DatagramPacket> {
 
         private final byte[] content;
 
@@ -191,18 +192,12 @@ public class QueryTest {
         }
 
         @Override
-        public boolean matches(Object obj) {
+        public boolean matches(DatagramPacket obj) {
             ByteBuf buf = ((DatagramPacket) obj).content();
             byte[] array = new byte[buf.readableBytes()];
             buf.readBytes(array);
             buf.readerIndex(buf.readerIndex() - array.length);
             return Arrays.equals(array, content);
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText(
-                "DatagramPacket(" + ByteBufUtil.hexDump(Unpooled.wrappedBuffer(content)) + ")");
         }
     }
 }

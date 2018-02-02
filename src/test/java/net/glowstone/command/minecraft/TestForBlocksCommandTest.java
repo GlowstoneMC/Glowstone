@@ -37,7 +37,7 @@ public class TestForBlocksCommandTest {
         when(opPlayer.hasPermission("minecraft.command.testforblocks")).thenReturn(true);
         when(opPlayer.getWorld()).thenReturn(world);
         when(world.getBlockAt(any(Location.class))).then((invocation) -> {
-            Location location = invocation.getArgumentAt(0, Location.class);
+            Location location = invocation.getArgument(0);
             return blockStorage.getBlockAt(location);
         });
     }
