@@ -74,7 +74,7 @@ public class AttributeManager {
      * @param value the new value
      */
     public void setProperty(Key key, double value) {
-        setProperty(key.toString(), Math.max(0, Math.min(value, key.max)), null);
+        setProperty(key.toString(), Math.min(value, key.max), null);
     }
 
     /**
