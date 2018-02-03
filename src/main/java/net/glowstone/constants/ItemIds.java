@@ -238,7 +238,7 @@ public final class ItemIds {
         both(205, "purpur_slab");
         both(206, "end_bricks");
         block(207, "beetroots");
-        block(208, "grass_path");
+        both(208, "grass_path");
         block(209, "end_gateway");
         block(210, "repeating_command_block");
         block(211, "chain_command_block");
