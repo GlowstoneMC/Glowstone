@@ -30,19 +30,19 @@ public class MojangsonParseTest {
 
     @MethodSource("getCases")
     @ParameterizedTest
-    public void canParseType(TagType key, String value) {
+    public void canParseType(TagType key, String json) {
         try {
-            CompoundTag compound = Mojangson.parseCompound(value);
+            CompoundTag compound = Mojangson.parseCompound(json);
             Tag value = compound.getValue().get("value");
 
             // Checks if the TagType of the case and the parsed type are equal.
             if (value.getType() != key) {
                 fail("Incorrect type parsing for case " + key.getName() + " (Got "
-                    + value.getType().getName() + ") for Mojansgon: " + value);
+                    + value.getType().getName() + ") for Mojansgon: " + json);
             }
         } catch (MojangsonParseException e) {
             // Catches a parse failure.
-            fail("Could not parse case for " + key.getName() + "( " + value + "): "
+            fail("Could not parse case for " + key.getName() + "( " + json + "): "
                     + e.getMessage());
         }
     }
