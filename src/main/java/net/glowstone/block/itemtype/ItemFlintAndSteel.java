@@ -27,7 +27,7 @@ public class ItemFlintAndSteel extends ItemTool {
             return true;
         }
         if (target.getType() == Material.TNT) {
-            fireTnt(target);
+            fireTnt(target, player);
             return true;
         }
         if (target.isFlammable() || target.getType().isOccluding()) {
@@ -49,8 +49,8 @@ public class ItemFlintAndSteel extends ItemTool {
         }
     }
 
-    private void fireTnt(GlowBlock tnt) {
-        BlockTnt.igniteBlock(tnt, false);
+    private void fireTnt(GlowBlock tnt,GlowPlayer player) {
+        BlockTnt.igniteBlock(tnt, false, player);
     }
 
     private boolean setBlockOnFire(GlowPlayer player, GlowBlock clicked, BlockFace face,

@@ -15,18 +15,31 @@ import org.bukkit.inventory.ItemStack;
 public class BlockTnt extends BlockType {
 
     /**
+     * Convert a TNT block into a primed TNT entity with the player who ignited the TNT.
+     *
+     * @param tntBlock The block to ignite.
+     * @param ignitedByExplosion True if another explosion caused this ignition.
+     * @param player The player who ignited the TNT.
+     */
+    public static void igniteBlock(
+        Block tntBlock, boolean ignitedByExplosion, GlowPlayer player) {
+        tntBlock.setType(Material.AIR);
+        World world = tntBlock.getWorld();
+        GlowTntPrimed tnt = (GlowTntPrimed) world
+            .spawnEntity(tntBlock.getLocation().add(0.5, 0, 0.5), EntityType.PRIMED_TNT);
+        tnt.setSource(player);
+        tnt.setIgnitedByExplosion(ignitedByExplosion);
+        world.playSound(tntBlock.getLocation(), Sound.ENTITY_TNT_PRIMED, 1, 1);
+    }
+
+    /**
      * Convert a TNT block into a primed TNT entity.
      *
      * @param tntBlock The block to ignite.
      * @param ignitedByExplosion True if another explosion caused this ignition.
      */
     public static void igniteBlock(Block tntBlock, boolean ignitedByExplosion) {
-        tntBlock.setType(Material.AIR);
-        World world = tntBlock.getWorld();
-        GlowTntPrimed tnt = (GlowTntPrimed) world
-            .spawnEntity(tntBlock.getLocation().add(0.5, 0, 0.5), EntityType.PRIMED_TNT);
-        tnt.setIgnitedByExplosion(ignitedByExplosion);
-        world.playSound(tntBlock.getLocation(), Sound.ENTITY_TNT_PRIMED, 1, 1);
+        igniteBlock(tntBlock, ignitedByExplosion, null);
     }
 
     @Override
@@ -44,7 +57,7 @@ public class BlockTnt extends BlockType {
     @Override
     public void updatePhysics(GlowBlock me) {
         if (me.isBlockIndirectlyPowered()) {
-            igniteBlock(me, false);
+            igniteBlock(me, false, null);
         }
     }
 
