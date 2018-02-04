@@ -1,8 +1,5 @@
 package net.glowstone.entity;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -11,7 +11,12 @@ public class ClassPathAgent {
         inst = instrumentation;
     }
 
-    static void addJarFile(JarFile file) {
+    /**
+     * Adds a JAR file to the system class loader.
+     *
+     * @param file The JAR file to add to the class loader.
+     */
+    public static void addJarFile(JarFile file) {
         if (inst != null) {
             inst.appendToSystemClassLoaderSearch(file);
         }
