@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -25,11 +28,36 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
     private static final Profession[] PROFESSIONS = Profession.values();
 
+    @Getter
     private Career career;
+    @Getter
+    @Setter
     private int riches;
+    /**
+     * The trader this villager is currently trading with.
+     *
+     * @param trader the trader
+     */
+    @Getter
+    @Setter
     private GlowHumanEntity trader;
     private List<MerchantRecipe> recipes = new ArrayList<>();
+    /**
+     * Whether or not this villager is willing to mate.
+     *
+     * @param willing true if this villager is willing to mate, false otherwise
+     * @return true if this villager is willing to mate, false otherwise
+     */
+    @Getter
+    @Setter
     private boolean willing;
+    /**
+     * Get the current level of this villager's trading options.
+     *
+     * @return the current level of this villager's trading options
+     */
+    @Getter
+    @Setter
     private int careerLevel;
 
     /**
@@ -54,11 +82,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
 
         metadata.set(MetadataIndex.VILLAGER_PROFESSION, profession.ordinal());
         assignCareer();
-    }
-
-    @Override
-    public Career getCareer() {
-        return career;
     }
 
     @Override
@@ -118,68 +141,6 @@ public class GlowVillager extends GlowAgeable implements Villager {
     @Override
     public boolean isTrading() {
         return getTrader() != null;
-    }
-
-    @Override
-    public GlowHumanEntity getTrader() {
-        return trader;
-    }
-
-    /**
-     * Sets the trader this villager is currently trading with.
-     *
-     * @param trader the trader
-     */
-    public void setTrader(GlowHumanEntity trader) {
-        this.trader = trader;
-    }
-
-    @Override
-    public int getRiches() {
-        return riches;
-    }
-
-    @Override
-    public void setRiches(int riches) {
-        this.riches = riches;
-    }
-
-    /**
-     * Get whether or not this villager is willing to mate.
-     *
-     * @return true if this villager is willing to mate, false otherwise
-     */
-    public boolean isWilling() {
-        return willing;
-    }
-
-    /**
-     * Sets whether or not this villager is willing to mate.
-     *
-     * @param willing true if this villager is willing to mate, false otherwise
-     */
-    public void setWilling(boolean willing) {
-        this.willing = willing;
-    }
-
-    /**
-     * Get the current level of this villager's trading options.
-     *
-     * @return the current level of this villager's trading options
-     */
-    public int getCareerLevel() {
-        return careerLevel;
-    }
-
-    /**
-     * Set the current level of this villager's trading options.
-     *
-     * <p>If 0, the next trade will assign a new career and set the career level to 1.
-     *
-     * @param careerLevel the level of this villager's trading options
-     */
-    public void setCareerLevel(int careerLevel) {
-        this.careerLevel = careerLevel;
     }
 
     @Override
