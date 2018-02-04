@@ -320,6 +320,11 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.0.3</version>
           </dependency>
+          <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>4.12.3</version>
+          </dependency>
         </dependencies>
         <executions>
           <execution>
