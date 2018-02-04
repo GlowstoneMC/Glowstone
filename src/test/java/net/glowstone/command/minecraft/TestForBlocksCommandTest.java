@@ -36,10 +36,8 @@ public class TestForBlocksCommandTest {
 
         when(opPlayer.hasPermission("minecraft.command.testforblocks")).thenReturn(true);
         when(opPlayer.getWorld()).thenReturn(world);
-        when(world.getBlockAt(any(Location.class))).then((invocation) -> {
-            Location location = invocation.getArgumentAt(0, Location.class);
-            return blockStorage.getBlockAt(location);
-        });
+        when(world.getBlockAt(any(Location.class))).then(
+                (invocation) -> blockStorage.getBlockAt(invocation.getArgument(0)));
     }
 
     public void createCubeAt(int x, int y, int z) {
