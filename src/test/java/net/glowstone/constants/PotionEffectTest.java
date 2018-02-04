@@ -24,12 +24,6 @@ public class PotionEffectTest {
 
     private static final int STATIC_FINAL = Modifier.STATIC | Modifier.FINAL;
 
-    private final Field field;
-
-    public PotionEffectTest(Field field) {
-        this.field = field;
-    }
-
     @BeforeAll
     public static void staticSetup() {
         GlowPotionEffect.register();
@@ -49,7 +43,7 @@ public class PotionEffectTest {
 
     @MethodSource("data")
     @ParameterizedTest
-    public void effect() throws ReflectiveOperationException {
+    public void effect(Field field) throws ReflectiveOperationException {
         PotionEffectTypeWrapper wrapper = (PotionEffectTypeWrapper) field.get(null);
         GlowPotionEffect effect = (GlowPotionEffect) wrapper.getType();
         assertThat("missing potion effect for " + field.getName(), effect, notNullValue());
