@@ -22,25 +22,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.GreaterThan;
 
 public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
-
-    private static final BaseMatcher<ItemStack> IS_NON_EMPTY_ITEM_STACK
-            = new BaseMatcher<ItemStack>() {
-        @Override
-        public boolean matches(Object item) {
-            return item instanceof ItemStack && !InventoryUtil.isEmpty((ItemStack) item);
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("a non-empty ItemStack");
-        }
-    };
 
     @Mock
     private GlowPlayer player;
@@ -82,7 +70,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         assertTrue(hook.isRemoved());
         verify(player).giveExp(intThat(new GreaterThan<>(0)));
         verify(world).dropItemNaturally(eq(location),
-                argThat(IS_NON_EMPTY_ITEM_STACK));
+                argThat(itemStack -> !InventoryUtil.isEmpty(itemStack)));
     }
 
     @Test
