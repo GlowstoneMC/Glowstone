@@ -2,6 +2,7 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -81,7 +82,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
         setFireTicks(0); // Arrows stop burning when they land, and ignite only TNT
         switch (block.getType()) {
             case TNT:
-                BlockTnt.igniteBlock(block, false);
+                BlockTnt.igniteBlock((GlowBlock) block, false);
                 break;
             case WOOD_BUTTON:
             case STONE_BUTTON:
