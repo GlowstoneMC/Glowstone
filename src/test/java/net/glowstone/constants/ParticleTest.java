@@ -21,15 +21,10 @@ public class ParticleTest {
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
     public static Collection<Effect> getCases() {
-        System.err.println("getCases() called");
-        try {
             return Stream.of(Effect.values())
                     .parallel()
                     .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
                     .collect(Collectors.toList());
-        } finally {
-            System.err.println("getCases() returning");
-        }
     }
 
     @MethodSource("getCases")
