@@ -25,7 +25,8 @@ public class ParticleTest {
                     .filter(effect -> effect.getType() == Effect.Type.PARTICLE);
         } finally {
             // Necessary due to https://github.com/junit-team/junit5/issues/1283
-            System.err.println();
+            // and needs a parameter for some reason
+            System.err.println("");
         }
     }
 
