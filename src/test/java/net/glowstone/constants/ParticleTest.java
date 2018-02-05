@@ -6,8 +6,6 @@ import org.bukkit.material.MaterialData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -20,12 +18,11 @@ public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
-    public static Collection<Effect> getCases() {
+    public static Stream<Effect> getCases() {
         try {
             return Stream.of(Effect.values())
                     .parallel()
-                    .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
-                    .collect(Collectors.toList());
+                    .filter(effect -> effect.getType() == Effect.Type.PARTICLE);
         } finally {
             // Necessary due to https://github.com/junit-team/junit5/issues/1283
             System.err.println();
