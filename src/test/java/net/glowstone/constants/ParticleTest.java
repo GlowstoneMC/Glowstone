@@ -23,7 +23,7 @@ public class ParticleTest {
         return Stream.of(Effect.values())
                 .parallel()
                 .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
-                .limit(0);
+                .limit(1); // Temporary debug -- do not merge
     }
 
     @MethodSource("getCases")
