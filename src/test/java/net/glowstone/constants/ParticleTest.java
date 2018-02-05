@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -16,13 +19,14 @@ public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
-    @EnumSource(Effect.class)
+    public static final Stream<Effect> getCases() {
+        return Stream.of(Effect.values())
+                .filter(particle -> particle.getType() == Effect.Type.PARTICLE);
+    }
+
+    @MethodSource("getCases")
     @ParameterizedTest
     public void testGetData(Effect particle) {
-        if (particle.getType() != Effect.Type.PARTICLE) {
-            return; // this only tests particle effects
-        }
-
         switch (particle) {
             case ITEM_BREAK:
                 assertThat("Wrong data for " + particle, particle.getData() != null, is(true));
