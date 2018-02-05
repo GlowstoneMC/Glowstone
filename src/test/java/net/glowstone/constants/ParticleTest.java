@@ -27,8 +27,8 @@ public class ParticleTest {
                     .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
                     .collect(Collectors.toList());
         } finally {
-            // Probably a JUnit bug, since parameterized tests in Jupiter are experimental
-            System.err.println("FIXME: Test times out without this println statement");
+            // Necessary due to https://github.com/junit-team/junit5/issues/1283
+            System.err.println();
         }
     }
 
