@@ -22,6 +22,9 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
     private final double[][][] density = new double[3][3][33];
 
+    /**
+     * Creates a chunk generator for the End.
+     */
     public TheEndGenerator() {
         super(new TheEndPopulator());
 
@@ -36,7 +39,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
 
     @Override
     public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ,
-        BiomeGrid biomes) {
+            BiomeGrid biomes) {
         return generateRawTerrain(world, chunkX, chunkZ);
     }
 
@@ -92,10 +95,11 @@ public class TheEndGenerator extends GlowChunkGenerator {
                         for (int m = 0; m < 8; m++) {
                             double dens = d9;
                             for (int n = 0; n < 8; n++) {
-                                // any density higher than 0 is ground, any density lower or equal to 0 is air.
+                                // any density higher than 0 is ground, any density lower or
+                                // equal to 0 is air.
                                 if (dens > 0) {
                                     chunkData.setBlock(m + (i << 3), l + (k << 2), n + (j << 3),
-                                        Material.ENDER_STONE);
+                                            Material.ENDER_STONE);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 8;
@@ -121,26 +125,27 @@ public class TheEndGenerator extends GlowChunkGenerator {
     private void generateTerrainDensity(World world, int x, int z) {
         Map<String, OctaveGenerator> octaves = getWorldOctaves(world);
         double[] roughnessNoise = ((PerlinOctaveGenerator) octaves.get("roughness"))
-            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+                .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
         double[] roughnessNoise2 = ((PerlinOctaveGenerator) octaves.get("roughness2"))
-            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+                .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
         double[] detailNoise = ((PerlinOctaveGenerator) octaves.get("detail"))
-            .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
+                .getFractalBrownianMotion(x, 0, z, 0.5D, 2.0D);
 
         int index = 0;
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                double nH = 100.0D - Math.sqrt((x + i) * (x + i) + (z + j) * (z + j)) * 8.0D;
-                nH = Math.max(-100.0D, Math.min(80.0D, nH));
+                double noiseHeight =
+                        100.0D - Math.sqrt((x + i) * (x + i) + (z + j) * (z + j)) * 8.0D;
+                noiseHeight = Math.max(-100.0D, Math.min(80.0D, noiseHeight));
                 for (int k = 0; k < 33; k++) {
                     double noiseR = roughnessNoise[index] / 512.0D;
                     double noiseR2 = roughnessNoise2[index] / 512.0D;
                     double noiseD = (detailNoise[index] / 10.0D + 1.0D) / 2.0D;
                     // linear interpolation
                     double dens = noiseD < 0 ? noiseR
-                        : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
-                    dens = dens - 8.0D + nH;
+                            : noiseD > 1 ? noiseR2 : noiseR + (noiseR2 - noiseR) * noiseD;
+                    dens = dens - 8.0D + noiseHeight;
                     index++;
                     if (k < 8) {
                         double lowering = (8 - k) / 7;

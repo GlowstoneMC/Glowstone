@@ -1,6 +1,8 @@
 package net.glowstone.entity.meta;
 
 import java.util.UUID;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +12,7 @@ import org.bukkit.util.EulerAngle;
 /**
  * The types of values that entity metadata can contain.
  */
+@RequiredArgsConstructor
 public enum MetadataType {
     BYTE(Byte.class, false),
     INT(Integer.class, false),
@@ -26,27 +29,16 @@ public enum MetadataType {
     BLOCKID(Integer.class, false),
     NBTTAG(CompoundTag.class, false),;
 
+    @Getter
     private final Class<?> dataType;
+    @Getter
     private final boolean optional;
-
-    MetadataType(Class<?> dataType, boolean optional) {
-        this.dataType = dataType;
-        this.optional = optional;
-    }
 
     public static MetadataType byId(int id) {
         return values()[id];
     }
 
-    public Class<?> getDataType() {
-        return dataType;
-    }
-
     public int getId() {
         return ordinal();
-    }
-
-    public boolean isOptional() {
-        return optional;
     }
 }

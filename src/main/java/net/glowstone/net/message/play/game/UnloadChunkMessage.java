@@ -8,5 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class UnloadChunkMessage implements Message {
 
-    private final int chunkX, chunkZ;
+    private final int chunkX;
+    private final int chunkZ;
 }

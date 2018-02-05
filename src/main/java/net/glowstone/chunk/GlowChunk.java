@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -60,14 +62,17 @@ public final class GlowChunk implements Chunk {
     /**
      * The world of this chunk.
      */
+    @Getter
     private final GlowWorld world;
     /**
      * The x-coordinate of this chunk.
      */
+    @Getter
     private final int x;
     /**
      * The z-coordinate of this chunk.
      */
+    @Getter
     private final int z;
     /**
      * The block entities that reside in this chunk.
@@ -79,7 +84,10 @@ public final class GlowChunk implements Chunk {
     private final Set<GlowEntity> entities = ConcurrentHashMap.newKeySet(4);
     /**
      * The array of chunk sections this chunk contains, or null if it is unloaded.
+     *
+     * @return The chunk sections array.
      */
+    @Getter
     private ChunkSection[] sections;
     /**
      * The array of biomes this chunk contains, or null if it is unloaded.
@@ -92,7 +100,12 @@ public final class GlowChunk implements Chunk {
     private byte[] heightMap;
     /**
      * Whether the chunk has been populated by special features. Used in map generation.
+     *
+     * @param populated Population status.
+     * @return Population status.
      */
+    @Getter
+    @Setter
     private boolean populated;
 
     /**
@@ -112,21 +125,6 @@ public final class GlowChunk implements Chunk {
     @Override
     public String toString() {
         return "GlowChunk{world=" + world.getName() + ",x=" + x + ",z=" + z + '}';
-    }
-
-    @Override
-    public GlowWorld getWorld() {
-        return world;
-    }
-
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getZ() {
-        return z;
     }
 
     @Override
@@ -195,15 +193,6 @@ public final class GlowChunk implements Chunk {
      */
     public boolean isPopulated() {
         return populated;
-    }
-
-    /**
-     * Sets the population status of this chunk.
-     *
-     * @param populated Population status.
-     */
-    public void setPopulated(boolean populated) {
-        this.populated = populated;
     }
 
     @Override
@@ -398,15 +387,6 @@ public final class GlowChunk implements Chunk {
             return null;
         }
         return sections[idx];
-    }
-
-    /**
-     * Get all ChunkSection of this chunk.
-     *
-     * @return The chunk sections array.
-     */
-    public ChunkSection[] getSections() {
-        return sections;
     }
 
     /**

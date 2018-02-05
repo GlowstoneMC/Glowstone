@@ -11,7 +11,8 @@ import org.bukkit.block.BlockFace;
 
 public class TaxicabBlockIterator implements Iterator<Block> {
 
-    private static final BlockFace[] VALID_FACES = new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
+    private static final BlockFace[] VALID_FACES = new BlockFace[]{BlockFace.DOWN, BlockFace.UP,
+        BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
 
     private final Queue<Object> pendingAnalysis = new LinkedList<>();
     private final Queue<Block> nextValidBlocks = new LinkedList<>();
@@ -23,6 +24,11 @@ public class TaxicabBlockIterator implements Iterator<Block> {
     private int maxBlocks = Integer.MAX_VALUE;
     private Validator<Block> validator;
 
+    /**
+     * Creates an instance.
+     *
+     * @param origin the origin to start iterating around
+     */
     public TaxicabBlockIterator(Block origin) {
         pendingAnalysis.add(origin);
         pendingAnalysis.add(DistanceMarker.INSTANCE);
@@ -51,19 +57,24 @@ public class TaxicabBlockIterator implements Iterator<Block> {
             return false;
         }
 
-        // Keep going till the valid block queue contains something, we reach the distance limit, or we empty the pending analysis queue.
-        // Note that the pending analysis queue will always contain at least one element: the end of distance marker.
-        while (nextValidBlocks.isEmpty() && currentDistance <= maxDistance && pendingAnalysis.size() >= 2) {
+        // Keep going till the valid block queue contains something, we reach the distance limit,
+        // or we empty the pending analysis queue.
+        // Note that the pending analysis queue will always contain at least one element: the end
+        // of distance marker.
+        while (nextValidBlocks.isEmpty() && currentDistance <= maxDistance
+                && pendingAnalysis.size() >= 2) {
             Object object = pendingAnalysis.remove();
 
-            // If we find the end of distance marker, we'll increase the distance, and then we'll re-add it to the end.
+            // If we find the end of distance marker, we'll increase the distance, and then we'll
+            // re-add it to the end.
             if (object == DistanceMarker.INSTANCE) {
                 pendingAnalysis.add(object);
                 currentDistance++;
                 continue;
             }
 
-            // If it wasn't the EoD marker, it must be a block. We'll look now for valid blocks around it.
+            // If it wasn't the EoD marker, it must be a block. We'll look now for valid blocks
+            // around it.
             Block block = (Block) object;
             for (BlockFace face : VALID_FACES) {
                 Block near = block.getRelative(face);

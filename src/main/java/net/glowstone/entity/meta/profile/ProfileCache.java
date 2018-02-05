@@ -35,12 +35,12 @@ public class ProfileCache {
      * @param playerName The name to look up.
      * @return A UUID future, UUID may be null on failure.
      */
-    public static CompletableFuture<UUID> getUUID(String playerName) {
+    public static CompletableFuture<UUID> getUuid(String playerName) {
         if (uuidCache.containsKey(playerName)) {
             return CompletableFuture.completedFuture(uuidCache.get(playerName));
         }
         CompletableFuture<UUID> uuidFuture = CompletableFuture
-                .supplyAsync(() -> PlayerDataFetcher.getUUID(playerName));
+                .supplyAsync(() -> PlayerDataFetcher.getUuid(playerName));
         uuidFuture.thenAccept(uid -> uuidCache.put(playerName, uid));
         return uuidFuture;
     }

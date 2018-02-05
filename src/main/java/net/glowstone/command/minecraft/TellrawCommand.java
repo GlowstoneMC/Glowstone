@@ -15,6 +15,9 @@ import org.json.simple.parser.ParseException;
 
 public class TellrawCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public TellrawCommand() {
         super("tellraw", "Send a private JSON message to the given player",
             "/tellraw <player> <raw-json-message>", Collections.emptyList());

@@ -19,9 +19,12 @@ import org.json.simple.JSONValue;
 
 public class TitleCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public TitleCommand() {
         super("title", "Sends a title to the specified player(s)",
-            "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
+                "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
         setPermission("minecraft.command.title");
     }
 
@@ -48,7 +51,8 @@ public class TitleCommand extends VanillaCommand {
     }
 
     /**
-     * Converts a valid JSON chat component to a basic colored string. This does not parse components like hover or click events. This returns null on parse failure.
+     * Converts a valid JSON chat component to a basic colored string. This does not parse
+     * components like hover or click events. This returns null on parse failure.
      *
      * @param json the json chat component
      * @return the colored string, or null
@@ -120,7 +124,7 @@ public class TitleCommand extends VanillaCommand {
         } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
                 sender.sendMessage(
-                    ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                        ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
@@ -133,7 +137,8 @@ public class TitleCommand extends VanillaCommand {
             String raw = message.toString().trim();
             if (!validJson(raw)) {
                 sender
-                    .sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                        .sendMessage(
+                                ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
                 return false;
             }
 
@@ -150,7 +155,7 @@ public class TitleCommand extends VanillaCommand {
         } else if (action.equalsIgnoreCase("subtitle")) {
             if (args.length < 3) {
                 sender.sendMessage(
-                    ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
+                        ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
             }
 
@@ -163,7 +168,8 @@ public class TitleCommand extends VanillaCommand {
             String raw = message.toString().trim();
             if (!validJson(raw)) {
                 sender
-                    .sendMessage(ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
+                        .sendMessage(
+                                ChatColor.RED + "Invalid JSON: Could not parse, invalid format?");
                 return false;
             }
 
@@ -179,7 +185,7 @@ public class TitleCommand extends VanillaCommand {
         } else if (action.equalsIgnoreCase("times")) {
             if (args.length != 5) {
                 sender.sendMessage(ChatColor.RED + "Usage: /title <player> " + action
-                    + " <fade in> <stay time> <fade out>");
+                        + " <fade in> <stay time> <fade out>");
                 return false;
             }
 
@@ -197,8 +203,8 @@ public class TitleCommand extends VanillaCommand {
             }
 
             ((GlowPlayer) player)
-                .updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]),
-                    toInt(args[4]));
+                    .updateTitle(TitleMessage.Action.TIMES, toInt(args[2]), toInt(args[3]),
+                            toInt(args[4]));
 
             sender.sendMessage("Updated " + player.getName() + "'s times");
         } else {

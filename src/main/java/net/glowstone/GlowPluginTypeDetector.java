@@ -31,6 +31,9 @@ public class GlowPluginTypeDetector {
         this.directory = directory;
     }
 
+    /**
+     * Scans all jars in the plugin directory for their types.
+     */
     public void scan() {
         GlowServer.logger.info("Scanning plugins...");
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
@@ -42,7 +45,15 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        GlowServer.logger.info("PluginTypeDetector: found " + bukkitPlugins.size() + " Bukkit, " + spongePlugins.size() + " Sponge, " + (forgefPlugins.size() + forgenPlugins.size()) + " Forge, " + canaryPlugins.size() + " Canary, " + unrecognizedPlugins.size() + " unknown plugins (total " + files.length + ")");
+        GlowServer.logger.info(String.format(
+                "PluginTypeDetector: found %d Bukkit, %d Sponge, %d Forge, %d Canary, "
+                        + "%d unknown plugins (total %d)",
+                bukkitPlugins.size(),
+                spongePlugins.size(),
+                forgefPlugins.size() + forgenPlugins.size(),
+                canaryPlugins.size(),
+                unrecognizedPlugins.size(),
+                files.length));
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
@@ -84,7 +95,8 @@ public class GlowPluginTypeDetector {
                     // Analyze class file
                     ClassReader classReader = new ClassReader(zip.getInputStream(entryIn));
                     GlowVisitor visitor = new GlowVisitor();
-                    classReader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+                    classReader.accept(visitor, ClassReader.SKIP_CODE
+                            | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
                     if (visitor.isSponge) {
                         isSponge = true;
@@ -146,6 +158,8 @@ public class GlowPluginTypeDetector {
                 case "Lnet/minecraftforge/fml/common/Mod;":  // newer
                     isForgeN = true;
                     break;
+                default:
+                    // do nothing
             }
 
             return null;

@@ -8,5 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class SetCooldownMessage implements Message {
 
-    private final int itemID, cooldownTicks;
+    private final int itemId;
+    private final int cooldownTicks;
 }

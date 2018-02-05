@@ -30,6 +30,9 @@ public class TaigaPopulator extends BiomePopulator {
     protected final MushroomDecorator taigaRedMushroomDecorator = new MushroomDecorator(
         Material.RED_MUSHROOM);
 
+    /**
+     * Creates a populator specialized for Taiga, Taiga Hills and Taiga M, and their Cold variants.
+     */
     public TaigaPopulator() {
         doublePlantDecorator.setAmount(7);
         doublePlantDecorator.setDoublePlants(DOUBLE_PLANTS);

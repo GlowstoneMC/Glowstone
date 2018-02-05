@@ -80,6 +80,9 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
             case SET_WARNING_BLOCKS:
                 ByteBufUtils.writeVarInt(buf, message.getWarningBlocks());
                 break;
+            default:
+                // TODO: Should this raise a warning?
+                // do nothing
         }
         return buf;
     }

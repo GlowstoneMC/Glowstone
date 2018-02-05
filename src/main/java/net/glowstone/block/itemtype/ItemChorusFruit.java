@@ -43,32 +43,32 @@ public class ItemChorusFruit extends ItemFood {
     }
 
     private Location getSafeLocation(Location loc) {
-        int yCoord = loc.getBlockY();
+        int blockY = loc.getBlockY();
         World world = loc.getWorld();
-        if (yCoord > world.getHighestBlockYAt(loc)) {
-            yCoord = world.getHighestBlockYAt(loc) + 1;
+        if (blockY > world.getHighestBlockYAt(loc)) {
+            blockY = world.getHighestBlockYAt(loc) + 1;
         }
         boolean found = false;
         boolean hadSpace = false;
-        while (yCoord > 0) {
-            Block current = world.getBlockAt(loc.getBlockX(), yCoord, loc.getBlockZ());
+        while (blockY > 0) {
+            Block current = world.getBlockAt(loc.getBlockX(), blockY, loc.getBlockZ());
             if (current.isEmpty() && current.getRelative(BlockFace.UP).isEmpty()) {
                 hadSpace = true;
             } else if (hadSpace) {
                 if (current.getType().isSolid()) {
                     found = true;
-                    yCoord++;
+                    blockY++;
                     break;
                 } else {
                     hadSpace = false;
                 }
             }
-            yCoord--;
+            blockY--;
         }
         if (found) {
-            loc.setY(yCoord);
-            loc.setX(loc.getBlockX()
-                + 0.5); //TODO: Do a proper bounding box check instead of just centering the location
+            loc.setY(blockY);
+            loc.setX(loc.getBlockX() + 0.5);
+            //TODO: Do a proper bounding box check instead of just centering the location
             loc.setZ(loc.getBlockZ() + 0.5);
             return loc;
         } else {

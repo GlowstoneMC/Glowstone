@@ -15,7 +15,8 @@ public interface PlayerDataService {
     /**
      * Begin reading player data for online or offline player loading.
      *
-     * <p>Some attributes may be read before or without constructing a player entity, see {@link PlayerReader} for more information.
+     * <p>Some attributes may be read before or without constructing a player entity, see {@link
+     * PlayerReader} for more information.
      *
      * <p>When finished with the PlayerReader, {@link PlayerReader#close()} should be called.
      *
@@ -41,23 +42,27 @@ public interface PlayerDataService {
     /**
      * Get a collection of all known offline players.
      *
-     * <p>Currently online players may or may not be included, but if they are, they will be included in OfflinePlayer form.
+     * <p>Currently online players may or may not be included, but if they are, they will be
+     * included in OfflinePlayer form.
      *
      * @return All known offline players.
      */
     CompletableFuture<Collection<OfflinePlayer>> getOfflinePlayers();
 
     /**
-     * A piecewise reader for initializing new players. See {@link PlayerDataService#beginReadingData}.
+     * A piecewise reader for initializing new players. See
+     * {@link PlayerDataService#beginReadingData}.
      */
     interface PlayerReader extends AutoCloseable {
 
         /**
          * Check whether the player has played before.
          *
-         * <p>If the player has not played before, most of the rest of the fields will have their default values.
+         * <p>If the player has not played before, most of the rest of the fields will have their
+         * default values.
          *
-         * <p>If the player has played before, some fields may still not have meaningful values, depending on the data.
+         * <p>If the player has played before, some fields may still not have meaningful values,
+         * depending on the data.
          *
          * @return True if the player has played before.
          */

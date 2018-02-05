@@ -2,16 +2,14 @@ package net.glowstone.util.noise;
 
 import java.util.Random;
 
-/*
- * A speed-improved simplex noise algorithm
+/**
+ * A speed-improved simplex noise algorithm.
  *
- * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
+ * <p>Based on example code by Stefan Gustavson (stegu@itn.liu.se).
  * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
  * Better rank ordering method by Stefan Gustavson in 2012.
  *
- * This could be sped up even further, but it's useful as is.
- *
- * Version 2012-03-09
+ * <p>This could be sped up even further, but it's useful as is.
  */
 public class SimplexNoise extends PerlinNoise {
 
@@ -29,6 +27,11 @@ public class SimplexNoise extends PerlinNoise {
         new Grad(0, 1, 1), new Grad(0, -1, 1), new Grad(0, 1, -1), new Grad(0, -1, -1)};
     protected final int[] permMod12 = new int[512];
 
+    /**
+     * Creates a simplex noise generator.
+     *
+     * @param rand the PRNG to use
+     */
     public SimplexNoise(Random rand) {
         super(rand);
         for (int i = 0; i < 512; i++) {
@@ -100,10 +103,10 @@ public class SimplexNoise extends PerlinNoise {
         int i = floor(xin + s);
         int j = floor(yin + s);
         double t = (i + j) * G2;
-        double dX0 = i - t; // Unskew the cell origin back to (x,y) space
-        double dY0 = j - t;
-        double x0 = xin - dX0; // The x,y distances from the cell origin
-        double y0 = yin - dY0;
+        double dx0 = i - t; // Unskew the cell origin back to (x,y) space
+        double dy0 = j - t;
+        double x0 = xin - dx0; // The x,y distances from the cell origin
+        double y0 = yin - dy0;
 
         // For the 2D case, the simplex shape is an equilateral triangle.
 
@@ -174,9 +177,9 @@ public class SimplexNoise extends PerlinNoise {
         int j = floor(yin + s);
         int k = floor(zin + s);
         double t = (i + j + k) * G3;
-        double dX0 = i - t; // Unskew the cell origin back to (x,y,z) space
-        double dY0 = j - t;
-        double dZ0 = k - t;
+        double dx0 = i - t; // Unskew the cell origin back to (x,y,z) space
+        double dy0 = j - t;
+        double dz0 = k - t;
 
         // For the 3D case, the simplex shape is a slightly irregular tetrahedron.
 
@@ -187,9 +190,9 @@ public class SimplexNoise extends PerlinNoise {
         int j2;
         int k2;
 
-        double x0 = xin - dX0; // The x,y,z distances from the cell origin
-        double y0 = yin - dY0;
-        double z0 = zin - dZ0;
+        double x0 = xin - dx0; // The x,y,z distances from the cell origin
+        double y0 = yin - dy0;
+        double z0 = zin - dz0;
         // Determine which simplex we are in
         if (x0 >= y0) {
             if (y0 >= z0) {

@@ -1,6 +1,8 @@
 package net.glowstone.entity.monster;
 
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -8,8 +10,15 @@ import org.bukkit.entity.Vex;
 
 public class GlowVex extends GlowMonster implements Vex {
 
+    @Getter
+    @Setter
     private int lifeTicks;
 
+    /**
+     * Creates a vex with a random lifespan.
+     *
+     * @param loc the location
+     */
     public GlowVex(Location loc) {
         super(loc, EntityType.VEX, 14);
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -25,14 +34,6 @@ public class GlowVex extends GlowMonster implements Vex {
             damage(1.0);
             lifeTicks = 20;
         }
-    }
-
-    public int getLifeTicks() {
-        return lifeTicks;
-    }
-
-    public void setLifeTicks(int lifeTicks) {
-        this.lifeTicks = lifeTicks;
     }
 
     @Override

@@ -161,11 +161,11 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM, location),
-                new EntityMetadataMessage(id, metadata.getEntryList()),
+                new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.ITEM, location),
+                new EntityMetadataMessage(entityId, metadata.getEntryList()),
                 // these keep the client from assigning a random velocity
-                new EntityTeleportMessage(id, location),
-                new EntityVelocityMessage(id, getVelocity())
+                new EntityTeleportMessage(entityId, location),
+                new EntityVelocityMessage(entityId, getVelocity())
         );
     }
 

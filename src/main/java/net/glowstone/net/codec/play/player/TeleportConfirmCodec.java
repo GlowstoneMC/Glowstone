@@ -16,7 +16,7 @@ public class TeleportConfirmCodec implements Codec<TeleportConfirmMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, TeleportConfirmMessage message) throws IOException {
-        ByteBufUtils.writeVarInt(buf, message.getTeleportID());
+        ByteBufUtils.writeVarInt(buf, message.getTeleportId());
         return buf;
     }
 }

@@ -44,7 +44,8 @@ import org.bukkit.Bukkit;
  */
 public class RegionFileCache {
 
-    private static final int MAX_CACHE_SIZE = ((GlowServer) Bukkit.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
+    private static final int MAX_CACHE_SIZE =
+            ((GlowServer) Bukkit.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
 
     private static final RemovalListener<File, RegionFile> removalListener = removal -> {
         try {
@@ -55,15 +56,15 @@ public class RegionFileCache {
     };
 
     private LoadingCache<File, RegionFile> regions = CacheBuilder.newBuilder()
-        .expireAfterAccess(5, TimeUnit.MINUTES)
-        .maximumSize(MAX_CACHE_SIZE)
-        .removalListener(removalListener)
-        .build(new CacheLoader<File, RegionFile>() {
-            @Override
-            public RegionFile load(File file) throws Exception {
-                return new RegionFile(file);
-            }
-        });
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .maximumSize(MAX_CACHE_SIZE)
+            .removalListener(removalListener)
+            .build(new CacheLoader<File, RegionFile>() {
+                @Override
+                public RegionFile load(File file) throws Exception {
+                    return new RegionFile(file);
+                }
+            });
 
     private final String extension;
     private final File regionDir;
@@ -73,11 +74,20 @@ public class RegionFileCache {
         regionDir = new File(basePath, "region");
     }
 
+    /**
+     * Returns the region file where a chunk is stored, opening it if necessary. Both the region
+     * file and the directory containing it will be created if they don't exist.
+     *
+     * @param chunkX the absolute chunk X coordinate
+     * @param chunkZ the absolute chunk Z coordinate
+     * @return the region file
+     */
     public RegionFile getRegionFile(int chunkX, int chunkZ) {
         if (!regionDir.isDirectory() && !regionDir.mkdirs()) {
             GlowServer.logger.warning("Failed to create directory: " + regionDir);
         }
-        return regions.getUnchecked(new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension));
+        return regions.getUnchecked(
+                new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension));
     }
 
     public void clear() throws RejectedExecutionException {

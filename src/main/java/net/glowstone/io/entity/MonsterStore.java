@@ -1,6 +1,6 @@
 package net.glowstone.io.entity;
 
-import java.lang.reflect.Constructor;
+import java.util.function.Function;
 import net.glowstone.entity.monster.GlowMonster;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -8,32 +8,24 @@ import org.bukkit.entity.EntityType;
 
 public class MonsterStore<T extends GlowMonster> extends EntityStore<T> {
 
-    private Constructor<? extends T> constructor;
+    private final Function<Location, ? extends T> creator;
 
-    public MonsterStore(Class<? extends T> clazz, EntityType type) {
+    public MonsterStore(Class<? extends T> clazz, EntityType type,
+            Function<Location, ? extends T> creator) {
         super(clazz, type);
-        init(clazz);
+        this.creator = creator;
     }
 
-    public MonsterStore(Class<? extends T> clazz, String type) {
+    public MonsterStore(Class<? extends T> clazz, String type,
+            Function<Location, ? extends T> creator) {
         super(clazz, type);
-        init(clazz);
-    }
-
-    private void init(Class<? extends T> clazz) {
-        Constructor<? extends T> ctor = null;
-        try {
-            ctor = clazz.getConstructor(Location.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        constructor = ctor;
+        this.creator = creator;
     }
 
     @Override
     public T createEntity(Location location, CompoundTag compound) {
         try {
-            return constructor.newInstance(location);
+            return creator.apply(location);
         } catch (Exception e) {
             e.printStackTrace();
             throw new UnsupportedOperationException("Not implemented yet.");

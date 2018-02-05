@@ -3,6 +3,7 @@ package net.glowstone.generator.decorators.overworld;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import lombok.Data;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.Flower;
 import net.glowstone.generator.objects.FlowerType;
@@ -45,22 +46,9 @@ public class FlowerDecorator extends BlockDecorator {
         return null;
     }
 
-    public static class FlowerDecoration {
-
+    @Data
+    public static final class FlowerDecoration {
         private final FlowerType flower;
         private final int weight;
-
-        public FlowerDecoration(FlowerType flower, int weight) {
-            this.flower = flower;
-            this.weight = weight;
-        }
-
-        public FlowerType getFlower() {
-            return flower;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
     }
 }

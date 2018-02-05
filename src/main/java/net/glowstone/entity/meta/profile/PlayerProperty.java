@@ -29,14 +29,28 @@ public class PlayerProperty {
      * The signature of the value for validation.
      */
     @Getter
-    private String signature;
+    private final String signature;
 
+    /**
+     * Creates a non-secure instance.
+     *
+     * @param name the property name
+     * @param value the property value
+     */
     public PlayerProperty(String name, String value) {
         this.name = name;
         this.value = value;
         isSigned = false;
+        signature = null;
     }
 
+    /**
+     * Creates a signed instance.
+     *
+     * @param name the property name
+     * @param value the property value
+     * @param signature the signature
+     */
     public PlayerProperty(String name, String value, String signature) {
         this.name = name;
         this.value = value;

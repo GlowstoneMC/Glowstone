@@ -8,7 +8,6 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemType;
-import net.glowstone.block.itemtype.ItemType.Context;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
@@ -101,7 +100,9 @@ public final class BlockPlacementHandler implements
         handleRightClickBlock(player, holding, message.getHandSlot(), clicked, face, clickedLoc);
     }
 
-    static void handleRightClickBlock(GlowPlayer player, ItemStack holding, EquipmentSlot slot, GlowBlock clicked, BlockFace face, Vector clickedLoc) {
+    static void handleRightClickBlock(
+            GlowPlayer player, ItemStack holding, EquipmentSlot slot, GlowBlock clicked,
+            BlockFace face, Vector clickedLoc) {
         // call interact event
         PlayerInteractEvent event = EventFactory.onPlayerInteract(
                 player, Action.RIGHT_CLICK_BLOCK, slot, clicked, face);
@@ -124,8 +125,8 @@ public final class BlockPlacementHandler implements
         // follows ALLOW/DENY: default to if no block was interacted with
         if (selectResult(event.useItemInHand(), !useInteractedBlock)) {
             ItemType type = ItemTable.instance().getItem(holding.getType());
-            if (holding.getType() != Material.AIR && (
-                type.getContext() == Context.BLOCK || type.getContext() == Context.ANY)) {
+            if (holding.getType() != Material.AIR
+                && type.getContext().isBlockApplicable()) {
                 type.rightClickBlock(player, clicked, face, holding, clickedLoc, slot);
             }
         }

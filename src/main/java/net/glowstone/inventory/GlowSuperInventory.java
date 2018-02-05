@@ -58,6 +58,7 @@ public class GlowSuperInventory extends GlowInventory {
     }
 
     public List<GlowInventory> getParents() {
+        // TODO: Replace with a facade
         return parents;
     }
 }

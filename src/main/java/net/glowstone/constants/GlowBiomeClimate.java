@@ -63,6 +63,7 @@ import static org.bukkit.block.Biome.values;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import lombok.Data;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -168,6 +169,7 @@ public class GlowBiomeClimate {
         }
     }
 
+    @Data
     private static class BiomeClimate {
 
         public static final BiomeClimate DEFAULT = new BiomeClimate(0.5D, 0.5D, true);
@@ -195,23 +197,5 @@ public class GlowBiomeClimate {
         private final double temperature;
         private final double humidity;
         private final boolean rainy;
-
-        public BiomeClimate(double temperature, double humidity, boolean rainy) {
-            this.temperature = temperature;
-            this.humidity = humidity;
-            this.rainy = rainy;
-        }
-
-        public double getTemperature() {
-            return temperature;
-        }
-
-        public double getHumidity() {
-            return humidity;
-        }
-
-        public boolean isRainy() {
-            return rainy;
-        }
     }
 }

@@ -3,6 +3,8 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
@@ -16,6 +18,8 @@ import org.bukkit.util.Vector;
 
 public class GlowEnderPearl extends GlowEntity implements EnderPearl {
 
+    @Getter
+    @Setter
     private ProjectileSource shooter;
     private float speed;
 
@@ -40,18 +44,8 @@ public class GlowEnderPearl extends GlowEntity implements EnderPearl {
     }
 
     @Override
-    public ProjectileSource getShooter() {
-        return this.shooter;
-    }
-
-    @Override
     public void setBounce(boolean bounce) {
         // TODO: Auto-generated method stub
-    }
-
-    @Override
-    public void setShooter(ProjectileSource source) {
-        this.shooter = source;
     }
 
     @Override
@@ -75,11 +69,11 @@ public class GlowEnderPearl extends GlowEntity implements EnderPearl {
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
                 new SpawnObjectMessage(
-                        id, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
-                new EntityMetadataMessage(id, metadata.getEntryList()),
+                        entityId, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
+                new EntityMetadataMessage(entityId, metadata.getEntryList()),
                 // These keep the client from assigning a random velocity
-                new EntityTeleportMessage(id, location),
-                new EntityVelocityMessage(id, getVelocity())
+                new EntityTeleportMessage(entityId, location),
+                new EntityVelocityMessage(entityId, getVelocity())
             );
     }
 }

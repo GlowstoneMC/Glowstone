@@ -1,5 +1,6 @@
 package net.glowstone.entity.passive;
 
+import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -9,17 +10,18 @@ import org.bukkit.entity.Ocelot;
 
 public class GlowOcelot extends GlowTameable implements Ocelot {
 
+    @Getter
     private Type catType;
 
+    /**
+     * Creates a wild ocelot.
+     *
+     * @param location the location
+     */
     public GlowOcelot(Location location) {
         super(location, EntityType.OCELOT, 10);
         setCatType(Type.WILD_OCELOT);
         setBoundingBox(0.6, 0.8);
-    }
-
-    @Override
-    public Type getCatType() {
-        return catType;
     }
 
     @Override

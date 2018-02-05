@@ -24,8 +24,8 @@ public class SugarCane implements TerrainObject {
         boolean adjacentWater = false;
         for (BlockFace face : FACES) {
             // needs a directly adjacent water block
-            if (block.getRelative(face).getType() == Material.STATIONARY_WATER ||
-                block.getRelative(face).getType() == Material.WATER) {
+            Material blockType = block.getRelative(face).getType();
+            if (blockType == Material.STATIONARY_WATER || blockType == Material.WATER) {
                 adjacentWater = true;
                 break;
             }

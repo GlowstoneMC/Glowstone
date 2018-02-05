@@ -241,6 +241,9 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 
 public class PlayProtocol extends GlowProtocol {
 
+    /**
+     * Creates the instance for the game's main network protocol.
+     */
     public PlayProtocol() {
         super("PLAY", 0x4F);
 

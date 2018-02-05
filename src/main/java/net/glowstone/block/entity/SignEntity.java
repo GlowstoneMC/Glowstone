@@ -13,6 +13,11 @@ public class SignEntity extends BlockEntity {
 
     private final TextMessage[] lines = new TextMessage[4];
 
+    /**
+     * Creates the entity for the given sign block.
+     *
+     * @param block a sign block (wall or post)
+     */
     public SignEntity(GlowBlock block) {
         super(block);
         setSaveId("minecraft:sign");

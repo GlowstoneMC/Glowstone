@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.WorldBorderMessage;
 import org.bukkit.Location;
@@ -9,15 +11,35 @@ import org.bukkit.WorldBorder;
 public class GlowWorldBorder implements WorldBorder {
 
     private final World world;
+    @Getter
     private double size;
-    private double futureSize;
+    /**
+     * The target side length the world border is being resized to, in blocks.
+     *
+     * @return the target side length the world border is being resized to.
+     */
+    @Getter
+    private double sizeLerpTarget;
     private double step;
+    @Getter
     private Location center;
+    @Getter
+    @Setter
     private double damageBuffer;
-    private double damagePerBlock;
+    @Getter
+    @Setter
+    private double damageAmount;
+    @Getter
     private int warningTime;
+    @Getter
     private int warningDistance;
-    private long time;
+    /**
+     * The delay in ticks until the world border's sides should reach the target length.
+     *
+     * @return the delay until the world border's sides should reach the target length.
+     */
+    @Getter
+    private long sizeLerpTime;
     private long lastWorldTick;
 
     /**
@@ -29,23 +51,27 @@ public class GlowWorldBorder implements WorldBorder {
         this.world = world;
         lastWorldTick = world.getFullTime();
         size = 60000000;
-        time = 0;
-        futureSize = size;
+        sizeLerpTime = 0;
+        sizeLerpTarget = size;
         step = 0;
         center = new Location(world, 0, 0, 0);
         damageBuffer = 5;
-        damagePerBlock = 0.2;
+        damageAmount = 0.2;
         warningTime = 15;
         warningDistance = 5;
     }
 
     /**
-     * Creates a {@link WorldBorderMessage} containing information to initialize the world border on the client-side.
+     * Creates a {@link WorldBorderMessage} containing information to initialize the world border on
+     * the client-side.
      *
      * @return a new {@link WorldBorderMessage} for this world border.
      */
     public WorldBorderMessage createMessage() {
-        return new WorldBorderMessage(WorldBorderMessage.Action.INITIALIZE, center.getX(), center.getZ(), size, futureSize, time * 1000, 29999984, warningTime, warningDistance);
+        return new WorldBorderMessage(
+                WorldBorderMessage.Action.INITIALIZE, center.getX(), center.getZ(),
+                size, sizeLerpTarget, sizeLerpTime * 1000, 29999984,
+                warningTime, warningDistance);
     }
 
     /**
@@ -61,10 +87,10 @@ public class GlowWorldBorder implements WorldBorder {
         lastWorldTick = world.getFullTime();
         if (step != 0) {
             size += step;
-            if (Math.abs(size - futureSize) < 1) {
+            if (Math.abs(size - sizeLerpTarget) < 1) {
                 // completed
-                size = futureSize;
-                time = 0;
+                size = sizeLerpTarget;
+                sizeLerpTime = 0;
                 step = 0;
             }
         }
@@ -73,8 +99,8 @@ public class GlowWorldBorder implements WorldBorder {
     @Override
     public void reset() {
         setSize(60000000);
-        time = 0;
-        futureSize = size;
+        sizeLerpTime = 0;
+        sizeLerpTarget = size;
         step = 0;
         setCenter(new Location(world, 0, 0, 0));
         setDamageBuffer(5);
@@ -84,14 +110,9 @@ public class GlowWorldBorder implements WorldBorder {
     }
 
     @Override
-    public double getSize() {
-        return size;
-    }
-
-    @Override
     public void setSize(double size) {
         this.size = size;
-        this.futureSize = size;
+        this.sizeLerpTarget = size;
         broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_SIZE, size));
     }
 
@@ -103,20 +124,17 @@ public class GlowWorldBorder implements WorldBorder {
         }
         long ticks = seconds * 20;
         step = (size - this.size) / (double) ticks;
-        futureSize = size;
-        time = seconds;
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.LERP_SIZE, this.size, futureSize, time * 1000));
-    }
-
-    @Override
-    public Location getCenter() {
-        return center;
+        sizeLerpTarget = size;
+        sizeLerpTime = seconds;
+        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.LERP_SIZE,
+                this.size, sizeLerpTarget, sizeLerpTime * 1000));
     }
 
     @Override
     public void setCenter(Location location) {
         center = location.clone();
-        broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_CENTER, center.getX(), center.getZ()));
+        broadcast(new WorldBorderMessage(
+                WorldBorderMessage.Action.SET_CENTER, center.getX(), center.getZ()));
     }
 
     @Override
@@ -125,39 +143,9 @@ public class GlowWorldBorder implements WorldBorder {
     }
 
     @Override
-    public double getDamageBuffer() {
-        return damageBuffer;
-    }
-
-    @Override
-    public void setDamageBuffer(double blocks) {
-        this.damageBuffer = blocks;
-    }
-
-    @Override
-    public double getDamageAmount() {
-        return damagePerBlock;
-    }
-
-    @Override
-    public void setDamageAmount(double damage) {
-        this.damagePerBlock = damage;
-    }
-
-    @Override
-    public int getWarningTime() {
-        return warningTime;
-    }
-
-    @Override
     public void setWarningTime(int seconds) {
         this.warningTime = seconds;
         broadcast(new WorldBorderMessage(WorldBorderMessage.Action.SET_WARNING_TIME, seconds));
-    }
-
-    @Override
-    public int getWarningDistance() {
-        return warningDistance;
     }
 
     @Override
@@ -170,25 +158,8 @@ public class GlowWorldBorder implements WorldBorder {
     public boolean isInside(Location location) {
         Location max = center.clone().add(size / 2, 0, size / 2);
         Location min = center.clone().subtract(size / 2, 0, size / 2);
-        return location.getX() <= max.getX() && location.getZ() <= max.getZ() && location.getX() >= min.getX() && location.getZ() >= min.getZ();
-    }
-
-    /**
-     * The target side length the world border is being resized to, in blocks.
-     *
-     * @return the target side length the world border is being resized to.
-     */
-    public double getSizeLerpTarget() {
-        return futureSize;
-    }
-
-    /**
-     * The delay in ticks until the world border's sides should reach the target length.
-     *
-     * @return the delay until the world border's sides should reach the target length.
-     */
-    public long getSizeLerpTime() {
-        return time;
+        return location.getX() <= max.getX() && location.getZ() <= max.getZ()
+                && location.getX() >= min.getX() && location.getZ() >= min.getZ();
     }
 
     private void broadcast(WorldBorderMessage message) {

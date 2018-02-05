@@ -15,8 +15,8 @@ import net.glowstone.io.StructureDataService;
 import net.glowstone.io.structure.StructureStorage;
 import net.glowstone.io.structure.StructureStore;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Bukkit;
 
 public class NbtStructureDataService implements StructureDataService {
@@ -25,6 +25,12 @@ public class NbtStructureDataService implements StructureDataService {
     private final File structureDir;
     private final GlowServer server;
 
+    /**
+     * Creates the instance for the given world's structures.
+     *
+     * @param world the world
+     * @param structureDir the world's structure-data folder, which is created if it doesn't exist
+     */
     public NbtStructureDataService(GlowWorld world, File structureDir) {
         this.world = world;
         this.structureDir = structureDir;
@@ -41,7 +47,7 @@ public class NbtStructureDataService implements StructureDataService {
         for (StructureStore<?> store : StructureStorage.getStructureStores()) {
             File structureFile = new File(structureDir, store.getId() + ".dat");
             if (structureFile.exists()) {
-                try (NBTInputStream in = new NBTInputStream(new FileInputStream(structureFile))) {
+                try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = new CompoundTag();
                     data = in.readCompound();
                     if (data.isCompound("data")) {
@@ -74,7 +80,6 @@ public class NbtStructureDataService implements StructureDataService {
     public void writeStructuresData(Map<Integer, GlowStructure> structures) {
         for (GlowStructure structure : structures.values()) {
             if (structure.isDirty()) {
-                CompoundTag root = new CompoundTag();
                 CompoundTag data = new CompoundTag();
                 CompoundTag features = new CompoundTag();
                 CompoundTag feature = new CompoundTag();
@@ -82,7 +87,7 @@ public class NbtStructureDataService implements StructureDataService {
                     .saveStructure(structure, feature);
                 File structureFile = new File(structureDir, store.getId() + ".dat");
                 if (structureFile.exists()) {
-                    try (NBTInputStream in = new NBTInputStream(
+                    try (NbtInputStream in = new NbtInputStream(
                         new FileInputStream(structureFile))) {
                         data = new CompoundTag();
                         data = in.readCompound();
@@ -100,8 +105,9 @@ public class NbtStructureDataService implements StructureDataService {
                 String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);
                 data.putCompound("Features", features);
+                CompoundTag root = new CompoundTag();
                 root.putCompound("data", data);
-                try (NBTOutputStream nbtOut = new NBTOutputStream(
+                try (NbtOutputStream nbtOut = new NbtOutputStream(
                     new FileOutputStream(structureFile))) {
                     nbtOut.writeTag(root);
                 } catch (IOException e) {

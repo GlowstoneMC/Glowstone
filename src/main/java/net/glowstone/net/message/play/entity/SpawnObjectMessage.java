@@ -22,8 +22,15 @@ public final class SpawnObjectMessage implements Message {
     private final int id;
     private final UUID uuid; // TODO: Handle UUID
     private final int type;
-    private final double x, y, z;
-    private final int pitch, yaw, data, velX, velY, velZ;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final int pitch;
+    private final int yaw;
+    private final int data;
+    private final int velX;
+    private final int velY;
+    private final int velZ;
 
     public SpawnObjectMessage(int id, UUID uuid, int type, double x, double y, double z, int pitch,
         int yaw) {

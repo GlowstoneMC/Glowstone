@@ -72,7 +72,9 @@ public final class InteractEntityHandler implements
                     target.setFireTicks(target.getFireTicks()
                         + itemInHand.getEnchantmentLevel(Enchantment.FIRE_ASPECT) * 80);
                 }
-                boolean showMagicCrit = false; // Shows the "magic crit" particles (blue) if the weapon was a sword or an axe (and with a damaging enchantment)
+                boolean showMagicCrit = false;
+                // Shows the "magic crit" particles (blue) if the weapon was a sword or an axe (and
+                // with a damaging enchantment)
                 // Apply other enchantments that amplify damage
                 if (itemInHand.containsEnchantment(Enchantment.DAMAGE_ALL)) {
                     // Sharpness
@@ -85,12 +87,14 @@ public final class InteractEntityHandler implements
                     }
                 }
                 if (itemInHand.containsEnchantment(Enchantment.DAMAGE_ARTHROPODS)) {
-                    // Bane of Arthropods (applies to Spiders, Cave Spiders, Silverfish and Endermites)
+                    // Bane of Arthropods (applies to Spiders, Cave Spiders, Silverfish and
+                    // Endermites)
                     if (target.isArthropod()) {
                         int level = itemInHand.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS);
                         if (level > 0) {
                             damage += level * 2.5F;
-                            // TODO: add Slowness potion effect (after damaging and checking for event-cancellation)
+                            // TODO: add Slowness potion effect (after damaging and checking for
+                            // event-cancellation)
                         }
                     }
                     if (!showMagicCrit) {

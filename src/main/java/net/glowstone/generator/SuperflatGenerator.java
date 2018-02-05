@@ -28,8 +28,18 @@ public class SuperflatGenerator extends GlowChunkGenerator {
         return chunkData;
     }
 
+    /**
+     * Generates a terrain column.
+     *
+     * @param chunkData the chunk in which to generate
+     * @param world the world (ignored)
+     * @param random the PRNG (ignored)
+     * @param x the column x coordinate
+     * @param z the column z coordinate
+     */
     public void generateTerrainColumn(ChunkData chunkData, World world, Random random, int x,
         int z) {
+        // TODO: Handle superflat configurations.
         x = x & 0xF;
         z = z & 0xF;
 

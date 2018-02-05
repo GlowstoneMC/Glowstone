@@ -9,6 +9,9 @@ public class OceanPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.DEEP_OCEAN, Biome.OCEAN};
 
+    /**
+     * Creates a populator specialized for the ocean.
+     */
     public OceanPopulator() {
         surfaceCaveDecorator.setAmount(0);
         entityDecorators.clear();

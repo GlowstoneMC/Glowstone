@@ -3,6 +3,7 @@ package net.glowstone.io.structure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import lombok.Data;
 import net.glowstone.GlowWorld;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.generator.structures.GlowStructurePiece;
@@ -16,26 +17,15 @@ import org.bukkit.util.Vector;
  *
  * @param <T> The type of structure being stored.
  */
+@Data
 public abstract class StructureStore<T extends GlowStructure> {
 
+    private final Class<T> type;
     private final String id;
-    private final Class<T> clazz;
-
-    public StructureStore(Class<T> clazz, String id) {
-        this.id = id;
-        this.clazz = clazz;
-    }
-
-    public final String getId() {
-        return id;
-    }
-
-    public final Class<T> getType() {
-        return clazz;
-    }
 
     /**
-     * Create a structure of this store's type in the given world. The load method will be called separately.
+     * Create a structure of this store's type in the given world. The load method will be called
+     * separately.
      *
      * @param world The target world.
      * @param chunkX The structure chunk X.
@@ -45,7 +35,8 @@ public abstract class StructureStore<T extends GlowStructure> {
     public abstract T createStructure(GlowWorld world, int chunkX, int chunkZ);
 
     /**
-     * Create a new structure of this store's type in the given world. The load method will be called separately.
+     * Create a new structure of this store's type in the given world. The load method will be
+     * called separately.
      *
      * @param world The target world.
      * @param random The seeded random.
@@ -66,7 +57,7 @@ public abstract class StructureStore<T extends GlowStructure> {
             int[] bb = compound.getIntArray("BB");
             if (bb.length == 6) {
                 StructureBoundingBox boundingBox = new StructureBoundingBox(
-                    new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
+                        new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structure.setBoundingBox(boundingBox);
             }
         }

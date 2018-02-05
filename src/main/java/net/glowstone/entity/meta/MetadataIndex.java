@@ -3,6 +3,7 @@ package net.glowstone.entity.meta;
 import static net.glowstone.entity.meta.MetadataType.BLOCKID;
 import static net.glowstone.entity.meta.MetadataType.BOOLEAN;
 import static net.glowstone.entity.meta.MetadataType.BYTE;
+import static net.glowstone.entity.meta.MetadataType.CHAT;
 import static net.glowstone.entity.meta.MetadataType.DIRECTION;
 import static net.glowstone.entity.meta.MetadataType.FLOAT;
 import static net.glowstone.entity.meta.MetadataType.INT;
@@ -13,6 +14,8 @@ import static net.glowstone.entity.meta.MetadataType.OPTUUID;
 import static net.glowstone.entity.meta.MetadataType.STRING;
 import static net.glowstone.entity.meta.MetadataType.VECTOR;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.passive.GlowParrot;
 import net.glowstone.entity.passive.GlowTameable;
 import org.bukkit.entity.AbstractHorse;
@@ -60,11 +63,13 @@ import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
+import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.entity.minecart.PoweredMinecart;
 
 /**
  * Index constants for entity metadata.
  */
+@RequiredArgsConstructor
 public enum MetadataIndex {
 
     //Entity
@@ -126,9 +131,10 @@ public enum MetadataIndex {
     ARMORSTAND_LEFT_LEG_POSITION(16, VECTOR, ArmorStand.class),
     ARMORSTAND_RIGHT_LEG_POSITION(17, VECTOR, ArmorStand.class),
 
-    //NO_AI(10, BYTE, Insentient.class), TODO - 1.9 "Insentient extends Living". Need more information
+    //NO_AI(10, BYTE, Insentient.class),
+    // TODO - 1.9 "Insentient extends Living". Need more information
 
-    BAT_HANGING(12, BYTE, Bat.class),
+    BAT_FLAGS(12, BYTE, Bat.class),
 
     AGE_ISBABY(12, BOOLEAN, Ageable.class),
 
@@ -158,7 +164,7 @@ public enum MetadataIndex {
 
     WOLF_HEALTH(15, FLOAT, Wolf.class),
     WOLF_BEGGING(16, BOOLEAN, Wolf.class),
-    WOLF_COLOR(21, BYTE, Wolf.class),
+    WOLF_COLOR(17, BYTE, Wolf.class),
 
     VILLAGER_PROFESSION(13, INT, Villager.class),
 
@@ -196,7 +202,7 @@ public enum MetadataIndex {
     ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
 
     ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, ZombieVillager.class),
-    ZOMBIE_VILLAGER_PROFESSION(16, BOOLEAN, ZombieVillager.class),
+    ZOMBIE_VILLAGER_PROFESSION(16, INT, ZombieVillager.class),
 
     ENDERMAN_BLOCK(12, BLOCKID, Enderman.class),
     ENDERMAN_SCREAMING(13, BOOLEAN, Enderman.class),
@@ -224,24 +230,25 @@ public enum MetadataIndex {
 
     PARROT_VARIANT(15, INT, GlowParrot.class),
 
-    //TODO - 1.9 When Those minecarts are implemented, uncomment this
-    //MINECARTCOMMANDBLOCK_COMMAND(11, STRING, Minecart.class), //TODO 1.9 - Command block minecraft addition
-    //MINECARTCOMMANDBLOCK_LAST_OUTPUT(12, CHAT, Minecart.class), //TODO 1.9 - Command block minecraft addition
+    MINECARTCOMMANDBLOCK_COMMAND(12, STRING, CommandMinecart.class),
+    MINECARTCOMMANDBLOCK_LAST_OUTPUT(13, CHAT, CommandMinecart.class),
 
     FURNACE_MINECART_POWERED(12, BOOLEAN, PoweredMinecart.class),
     TNT_PRIMED(6, INT, TNTPrimed.class),;
 
-
+    @Getter
     private final int index;
+    @Getter
     private final MetadataType type;
+    @Getter
     private final Class<? extends Entity> appliesTo;
 
-    MetadataIndex(int index, MetadataType type, Class<? extends Entity> appliesTo) {
-        this.index = index;
-        this.type = type;
-        this.appliesTo = appliesTo;
-    }
-
+    /**
+     * Returns the first {@link MetadataIndex} with a given index and {@link MetadataType}.
+     * @param index the index to look up
+     * @param type the type to look up
+     * @return a {@link MetadataIndex} with that index and type, or null if none match
+     */
     public static MetadataIndex getIndex(int index, MetadataType type) {
         MetadataIndex output = null;
         for (MetadataIndex entry : values()) {
@@ -251,18 +258,6 @@ public enum MetadataIndex {
             }
         }
         return output;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public MetadataType getType() {
-        return type;
-    }
-
-    public Class<?> getAppliesTo() {
-        return appliesTo;
     }
 
     public boolean appliesTo(Class<? extends Entity> clazz) {
@@ -305,5 +300,10 @@ public enum MetadataIndex {
         int IS_SITTING = 0x01;
         int WOLF_IS_ANGRY = 0x02;
         int IS_TAME = 0x04;
+    }
+
+    public interface BatFlags {
+
+        int IS_HANGING = 0x01;
     }
 }

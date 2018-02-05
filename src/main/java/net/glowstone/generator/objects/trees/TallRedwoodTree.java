@@ -2,15 +2,21 @@ package net.glowstone.generator.objects.trees;
 
 import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.material.Dirt;
 import org.bukkit.material.types.DirtType;
 
 public class TallRedwoodTree extends RedwoodTree {
 
-    public TallRedwoodTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    /**
+     * Initializes this tree with a random height and radius, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and
+     */
+    public TallRedwoodTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setOverridables(
             Material.AIR,
             Material.LEAVES,
@@ -27,26 +33,26 @@ public class TallRedwoodTree extends RedwoodTree {
     }
 
     @Override
-    public boolean generate() {
-        if (!canHeightFit() || !canPlaceOn() || !canPlace()) {
+    public boolean generate(World world, Random random, int blockX, int blockY, int blockZ) {
+        if (cannotGenerateAt(blockX, blockY, blockZ, world)) {
             return false;
         }
 
         // generate the leaves
         int radius = 0;
-        for (int y = loc.getBlockY() + height; y >= loc.getBlockY() + leavesHeight; y--) {
+        for (int y = blockY + height; y >= blockY + leavesHeight; y--) {
             // leaves are built from top to bottom
-            for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
-                for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
-                    if ((Math.abs(x - loc.getBlockX()) != radius
-                        || Math.abs(z - loc.getBlockZ()) != radius || radius <= 0) &&
-                        blockTypeAt(x, y, z) == Material.AIR) {
-                        delegate.setTypeAndRawData(loc.getWorld(), x, y, z, Material.LEAVES,
+            for (int x = blockX - radius; x <= blockX + radius; x++) {
+                for (int z = blockZ - radius; z <= blockZ + radius; z++) {
+                    if ((Math.abs(x - blockX) != radius
+                                    || Math.abs(z - blockZ) != radius || radius <= 0)
+                            && blockTypeAt(x, y, z, world) == Material.AIR) {
+                        delegate.setTypeAndRawData(world, x, y, z, Material.LEAVES,
                             leavesType);
                     }
                 }
             }
-            if (radius >= 1 && y == loc.getBlockY() + leavesHeight + 1) {
+            if (radius >= 1 && y == blockY + leavesHeight + 1) {
                 radius--;
             } else if (radius < maxRadius) {
                 radius++;
@@ -55,14 +61,14 @@ public class TallRedwoodTree extends RedwoodTree {
 
         // generate the trunk
         for (int y = 0; y < height - 1; y++) {
-            replaceIfAirOrLeaves(loc.getBlockX(),
-                    loc.getBlockY() + y, loc.getBlockZ(), Material.LOG, logType);
+            replaceIfAirOrLeaves(blockX,
+                    blockY + y, blockZ, Material.LOG, logType, world);
         }
 
         // block below trunk is always dirt
         Dirt dirt = new Dirt(DirtType.NORMAL);
         delegate
-            .setTypeAndData(loc.getWorld(), loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(),
+            .setTypeAndData(world, blockX, blockY - 1, blockZ,
                 Material.DIRT, dirt);
 
         return true;

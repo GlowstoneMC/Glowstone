@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.Potion;
@@ -145,7 +147,8 @@ public final class GlowPotionEffect extends PotionEffectType {
     /**
      * Pulse this potion effect on a specified entity.
      *
-     * <p>If the potion effect is not applicable, nothing happens. For instant effects, will only have an effect if 'ticks' is 0.
+     * <p>If the potion effect is not applicable, nothing happens. For instant effects, will only
+     * have an effect if 'ticks' is 0.
      *
      * @param entity The entity to pulse on.
      * @param effect Information on the effect's state.
@@ -158,6 +161,7 @@ public final class GlowPotionEffect extends PotionEffectType {
         }
     }
 
+    @RequiredArgsConstructor
     private enum Impl {
         SPEED(1, false, 1.0, "minecraft:speed"),
         SLOW(2, false, 0.5, "minecraft:slowness"),
@@ -190,18 +194,8 @@ public final class GlowPotionEffect extends PotionEffectType {
         private final int id;
         private final boolean instant;
         private final double modifier;
+        @Getter
         private final String vanillaId;
-
-        Impl(int id, boolean instant, double modifier, String vanillaId) {
-            this.id = id;
-            this.instant = instant;
-            this.modifier = modifier;
-            this.vanillaId = vanillaId;
-        }
-
-        public String getVanillaId() {
-            return vanillaId;
-        }
 
         protected void pulse(LivingEntity entity, int amplifier, int ticks) {
             // TODO implement potion pulse

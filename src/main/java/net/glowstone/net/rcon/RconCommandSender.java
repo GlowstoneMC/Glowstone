@@ -1,9 +1,9 @@
 package net.glowstone.net.rcon;
 
 import java.util.Set;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Server;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 public class RconCommandSender implements RemoteConsoleCommandSender {
 
+    @Getter
     private final GlowServer server;
     private final StringBuffer buffer = new StringBuffer();
     private final PermissibleBase perm = new PermissibleBase(this);
@@ -32,15 +33,18 @@ public class RconCommandSender implements RemoteConsoleCommandSender {
         this.server = server;
     }
 
+    /**
+     * Empties the buffer and returns its contents.
+     *
+     * @return the previous contents of the buffer.
+     */
     public String flush() {
-        String result = buffer.toString();
-        buffer.setLength(0);
+        String result;
+        synchronized (buffer) {
+            result = buffer.toString();
+            buffer.setLength(0);
+        }
         return result;
-    }
-
-    @Override
-    public Server getServer() {
-        return server;
     }
 
     @Override

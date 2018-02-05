@@ -5,6 +5,10 @@ import org.bukkit.util.noise.PerlinNoiseGenerator;
 
 public class PerlinNoise extends PerlinNoiseGenerator {
 
+    /**
+     * Creates an instance using the given PRNG.
+     * @param rand the PRNG used to generate the seed permutation
+     */
     public PerlinNoise(Random rand) {
         offsetX = rand.nextDouble() * 256;
         offsetY = rand.nextDouble() * 256;
@@ -13,8 +17,8 @@ public class PerlinNoise extends PerlinNoiseGenerator {
         // on at least 3 different sources that the permutation table should initially be
         // populated with indices.
         // "The permutation table is his answer to the issue of random numbers.
-        // First take an array of decent length, usually 256 values. Fill it sequentially
-        // with each number in that range: so index 1 gets 1, index 8 gets 8, index 251 gets 251, etc...
+        // First take an array of decent length, usually 256 values. Fill it sequentially with each
+        // number in that range: so index 1 gets 1, index 8 gets 8, index 251 gets 251, etc...
         // Then randomly shuffle the values so you have a table of 256 random values, but only
         // contains the values between 0 and 255."
         // source: https://code.google.com/p/fractalterraingeneration/wiki/Perlin_Noise
@@ -31,10 +35,26 @@ public class PerlinNoise extends PerlinNoiseGenerator {
     }
 
     public static int floor(double x) {
-        int iX = (int) x;
-        return x < iX ? iX - 1 : iX;
+        int floored = (int) x;
+        return x < floored ? floored - 1 : floored;
     }
 
+    /**
+     * Generates a rectangular section of this generator's noise.
+     *
+     * @param noise the output of the previous noise layer
+     * @param x the X offset
+     * @param y the Y offset
+     * @param z the Z offset
+     * @param sizeX the size on the X axis
+     * @param sizeY the size on the Y axis
+     * @param sizeZ the size on the Z axis
+     * @param scaleX the X scale parameter
+     * @param scaleY the Y scale parameter
+     * @param scaleZ the Z scale parameter
+     * @param amplitude the amplitude parameter
+     * @return {@code noise} with this layer of noise added
+     */
     public double[] getNoise(double[] noise, double x, double y, double z, int sizeX, int sizeY,
         int sizeZ, double scaleX, double scaleY, double scaleZ, double amplitude) {
         if (sizeY == 1) {
@@ -49,26 +69,26 @@ public class PerlinNoise extends PerlinNoiseGenerator {
         double scaleX, double scaleZ, double amplitude) {
         int index = 0;
         for (int i = 0; i < sizeX; i++) {
-            double dX = x + offsetX + i * scaleX;
-            int floorX = floor(dX);
-            int iX = floorX & 255;
-            dX -= floorX;
-            double fX = fade(dX);
+            double dx = x + offsetX + i * scaleX;
+            int floorX = floor(dx);
+            int ix = floorX & 255;
+            dx -= floorX;
+            double fx = fade(dx);
             for (int j = 0; j < sizeZ; j++) {
-                double dZ = z + offsetZ + j * scaleZ;
-                int floorZ = floor(dZ);
-                int iZ = floorZ & 255;
-                dZ -= floorZ;
-                double fZ = fade(dZ);
+                double dz = z + offsetZ + j * scaleZ;
+                int floorZ = floor(dz);
+                int iz = floorZ & 255;
+                dz -= floorZ;
+                double fz = fade(dz);
                 // Hash coordinates of the square corners
-                int a = perm[iX];
-                int aa = perm[a] + iZ;
-                int b = perm[iX + 1];
-                int ba = perm[b] + iZ;
-                double x1 = lerp(fX, grad(perm[aa], dX, 0, dZ), grad(perm[ba], dX - 1, 0, dZ));
-                double x2 = lerp(fX, grad(perm[aa + 1], dX, 0, dZ - 1),
-                    grad(perm[ba + 1], dX - 1, 0, dZ - 1));
-                noise[index++] += lerp(fZ, x1, x2) * amplitude;
+                int a = perm[ix];
+                int aa = perm[a] + iz;
+                int b = perm[ix + 1];
+                int ba = perm[b] + iz;
+                double x1 = lerp(fx, grad(perm[aa], dx, 0, dz), grad(perm[ba], dx - 1, 0, dz));
+                double x2 = lerp(fx, grad(perm[aa + 1], dx, 0, dz - 1),
+                    grad(perm[ba + 1], dx - 1, 0, dz - 1));
+                noise[index++] += lerp(fz, x1, x2) * amplitude;
             }
         }
         return noise;
@@ -83,44 +103,44 @@ public class PerlinNoise extends PerlinNoiseGenerator {
         double x4 = 0;
         int index = 0;
         for (int i = 0; i < sizeX; i++) {
-            double dX = x + offsetX + i * scaleX;
-            int floorX = floor(dX);
-            int iX = floorX & 255;
-            dX -= floorX;
-            double fX = fade(dX);
+            double dx = x + offsetX + i * scaleX;
+            int floorX = floor(dx);
+            int ix = floorX & 255;
+            dx -= floorX;
+            double fx = fade(dx);
             for (int j = 0; j < sizeZ; j++) {
-                double dZ = z + offsetZ + j * scaleZ;
-                int floorZ = floor(dZ);
-                int iZ = floorZ & 255;
-                dZ -= floorZ;
-                double fZ = fade(dZ);
+                double dz = z + offsetZ + j * scaleZ;
+                int floorZ = floor(dz);
+                int iz = floorZ & 255;
+                dz -= floorZ;
+                double fz = fade(dz);
                 for (int k = 0; k < sizeY; k++) {
-                    double dY = y + offsetY + k * scaleY;
-                    int floorY = floor(dY);
-                    int iY = floorY & 255;
-                    dY -= floorY;
-                    double fY = fade(dY);
-                    if (k == 0 || iY != n) {
-                        n = iY;
+                    double dy = y + offsetY + k * scaleY;
+                    int floorY = floor(dy);
+                    int iy = floorY & 255;
+                    dy -= floorY;
+                    double fy = fade(dy);
+                    if (k == 0 || iy != n) {
+                        n = iy;
                         // Hash coordinates of the cube corners
-                        int a = perm[iX] + iY;
-                        int aa = perm[a] + iZ;
-                        int ab = perm[a + 1] + iZ;
-                        int b = perm[iX + 1] + iY;
-                        int ba = perm[b] + iZ;
-                        int bb = perm[b + 1] + iZ;
-                        x1 = lerp(fX, grad(perm[aa], dX, dY, dZ), grad(perm[ba], dX - 1, dY, dZ));
-                        x2 = lerp(fX, grad(perm[ab], dX, dY - 1, dZ),
-                            grad(perm[bb], dX - 1, dY - 1, dZ));
-                        x3 = lerp(fX, grad(perm[aa + 1], dX, dY, dZ - 1),
-                            grad(perm[ba + 1], dX - 1, dY, dZ - 1));
-                        x4 = lerp(fX, grad(perm[ab + 1], dX, dY - 1, dZ - 1),
-                            grad(perm[bb + 1], dX - 1, dY - 1, dZ - 1));
+                        int a = perm[ix] + iy;
+                        int aa = perm[a] + iz;
+                        int ab = perm[a + 1] + iz;
+                        int b = perm[ix + 1] + iy;
+                        int ba = perm[b] + iz;
+                        int bb = perm[b + 1] + iz;
+                        x1 = lerp(fx, grad(perm[aa], dx, dy, dz), grad(perm[ba], dx - 1, dy, dz));
+                        x2 = lerp(fx, grad(perm[ab], dx, dy - 1, dz),
+                            grad(perm[bb], dx - 1, dy - 1, dz));
+                        x3 = lerp(fx, grad(perm[aa + 1], dx, dy, dz - 1),
+                            grad(perm[ba + 1], dx - 1, dy, dz - 1));
+                        x4 = lerp(fx, grad(perm[ab + 1], dx, dy - 1, dz - 1),
+                            grad(perm[bb + 1], dx - 1, dy - 1, dz - 1));
                     }
-                    double y1 = lerp(fY, x1, x2);
-                    double y2 = lerp(fY, x3, x4);
+                    double y1 = lerp(fy, x1, x2);
+                    double y2 = lerp(fy, x3, x4);
 
-                    noise[index++] += lerp(fZ, y1, y2) * amplitude;
+                    noise[index++] += lerp(fz, y1, y2) * amplitude;
                 }
             }
         }

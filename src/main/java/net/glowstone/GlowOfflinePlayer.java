@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import lombok.Getter;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -23,16 +24,21 @@ import org.bukkit.entity.Player;
 public final class GlowOfflinePlayer implements OfflinePlayer {
 
     private final GlowServer server;
+    @Getter
     private final PlayerProfile profile;
 
     private boolean hasPlayed;
+    @Getter
     private long firstPlayed;
+    @Getter
     private long lastPlayed;
     private String lastName;
-    private Location bedSpawn;
+    @Getter
+    private Location bedSpawnLocation;
 
     /**
-     * Create a new offline player for the given name. If possible, the player's data will be loaded.
+     * Create a new offline player for the given name. If possible, the player's data will be
+     * loaded.
      *
      * @param server The server of the offline player. Must not be null.
      * @param profile The profile associated with the player. Must not be null.
@@ -46,18 +52,28 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     }
 
     /**
-     * Returns a Future for a GlowOfflinePlayer by UUID. If possible, the player's data (including name) will be loaded based on the UUID.
+     * Returns a Future for a GlowOfflinePlayer by UUID. If possible, the player's data (including
+     * name) will be loaded based on the UUID.
      *
      * @param server The server of the offline player. Must not be null.
      * @param uuid The UUID of the player. Must not be null.
      * @return A {@link GlowOfflinePlayer} future.
      */
-    public static CompletableFuture<GlowOfflinePlayer> getOfflinePlayer(GlowServer server, UUID uuid) {
+    public static CompletableFuture<GlowOfflinePlayer> getOfflinePlayer(GlowServer server,
+            UUID uuid) {
         checkNotNull(server, "server must not be null");
         checkNotNull(uuid, "UUID must not be null");
-        return ProfileCache.getProfile(uuid).thenApplyAsync((profile) -> new GlowOfflinePlayer(server, profile));
+        return ProfileCache.getProfile(uuid)
+                .thenApplyAsync((profile) -> new GlowOfflinePlayer(server, profile));
     }
 
+    /**
+     * Required method for configuration serialization.
+     *
+     * @param val map to deserialize
+     * @return deserialized player record
+     * @see org.bukkit.configuration.serialization.ConfigurationSerializable
+     */
     @SuppressWarnings("UnusedDeclaration")
     public static OfflinePlayer deserialize(Map<String, Object> val) {
         if (val.get("name") != null) {
@@ -78,7 +94,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             if (hasPlayed) {
                 firstPlayed = reader.getFirstPlayed();
                 lastPlayed = reader.getLastPlayed();
-                bedSpawn = reader.getBedSpawnLocation();
+                bedSpawnLocation = reader.getBedSpawnLocation();
 
                 String lastName = reader.getLastKnownName();
                 if (lastName != null) {
@@ -126,27 +142,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return hasPlayed;
     }
 
-    @Override
-    public long getFirstPlayed() {
-        return firstPlayed;
-    }
-
-    @Override
-    public long getLastPlayed() {
-        return lastPlayed;
-    }
-
-    public PlayerProfile getProfile() {
-        return profile;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Ban, op, whitelist
-
-    @Override
-    public Location getBedSpawnLocation() {
-        return bedSpawn;
-    }
 
     @Override
     public boolean isBanned() {
@@ -169,7 +166,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public boolean isOp() {
-        return server.getOpsList().containsUUID(getUniqueId());
+        return server.getOpsList().containsUuid(getUniqueId());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -191,6 +188,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
         return ret;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

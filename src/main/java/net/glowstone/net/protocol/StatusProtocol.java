@@ -11,6 +11,10 @@ import net.glowstone.net.message.status.StatusResponseMessage;
 
 public final class StatusProtocol extends GlowProtocol {
 
+    /**
+     * Creates the protocol instance for {@link StatusPingMessage}, {@link StatusRequestMessage} and
+     * {@link StatusResponseMessage}.
+     */
     public StatusProtocol() {
         super("STATUS", 2);
 

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
@@ -43,6 +44,12 @@ public class BlockType extends ItemType {
 
     protected List<ItemStack> drops;
 
+    /**
+     * Gets the sound that will be played when a player places the block.
+     *
+     * @return The sound to be played
+     */
+    @Getter
     protected SoundInfo placeSound = new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
 
     ////////////////////////////////////////////////////////////////////////////
@@ -107,15 +114,6 @@ public class BlockType extends ItemType {
         } else {
             return Collections.unmodifiableList(drops);
         }
-    }
-
-    /**
-     * Gets the sound that will be played when a player places the block.
-     *
-     * @return The sound to be played
-     */
-    public SoundInfo getPlaceSound() {
-        return placeSound;
     }
 
     /**

@@ -26,6 +26,9 @@ public class MushroomIslandPopulator extends BiomePopulator {
     protected final MushroomDecorator islandRedMushroomDecorator = new MushroomDecorator(
         Material.RED_MUSHROOM);
 
+    /**
+     * Creates a populator for the mushroom island biome.
+     */
     public MushroomIslandPopulator() {
         treeDecorator.setAmount(1);
         treeDecorator.setTrees(TREES);

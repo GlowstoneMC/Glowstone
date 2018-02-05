@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import java.util.UUID;
+import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
@@ -14,57 +15,51 @@ import org.bukkit.entity.Tameable;
 
 public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
-    protected boolean tamed;
+    private static final MetadataIndex META_STATUS = MetadataIndex.TAMEABLEAANIMAL_STATUS;
+    private static final MetadataIndex META_OWNER = MetadataIndex.TAMEABLEANIMAL_OWNER;
+
     private AnimalTamer owner;
-    private UUID ownerUUId;
-    private boolean sitting;
-    private MetadataIndex status = MetadataIndex.TAMEABLEAANIMAL_STATUS;
-    private MetadataIndex ownerMetadata = MetadataIndex.TAMEABLEANIMAL_OWNER;
+    @Getter
+    private UUID ownerUuid;
 
     public GlowTameable(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
     }
 
     protected GlowTameable(Location location, EntityType type, double maxHealth,
-        AnimalTamer owner) {
+                           AnimalTamer owner) {
         super(location, type, maxHealth);
         if (owner != null) {
             this.owner = owner;
-            metadata.set(ownerMetadata, owner.getUniqueId());
+            metadata.set(META_OWNER, owner.getUniqueId());
         }
     }
 
     @Override
     public boolean isTamed() {
-        return tamed;
+        return metadata.getBit(META_STATUS, TameableFlags.IS_TAME);
     }
 
     @Override
     public void setTamed(boolean isTamed) {
-        metadata
-            .setBit(status, TameableFlags.IS_TAME, isTamed); //TODO 1.9 The flag might need change
-        tamed = isTamed;
+        metadata.setBit(META_STATUS, TameableFlags.IS_TAME, isTamed);
     }
 
     @Override
     public AnimalTamer getOwner() {
-        return owner instanceof Player ? owner : Bukkit.getPlayer(ownerUUId);
+        return owner instanceof Player ? owner : Bukkit.getPlayer(ownerUuid);
     }
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
         if (animalTamer == null) {
             owner = null;
-            ownerUUId = null;
+            ownerUuid = null;
             return;
         }
         owner = animalTamer;
-        ownerUUId = animalTamer.getUniqueId();
-        metadata.set(ownerMetadata, owner.getUniqueId());
-    }
-
-    public UUID getOwnerUUID() {
-        return ownerUUId;
+        ownerUuid = animalTamer.getUniqueId();
+        metadata.set(META_OWNER, owner.getUniqueId());
     }
 
     /**
@@ -72,29 +67,38 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      *
      * <p>The UUID's are validated through offline player checking.
      *
-     * <p>If a player with the specified UUID has not played on the server before, the owner is not set.
+     * <p>If a player with the specified UUID has not played on the server before, the owner is not
+     * set.
      *
-     * @param ownerUUID The player UUID of the owner.
+     * @param ownerUuid The player UUID of the owner.
      */
-    public void setOwnerUUID(UUID ownerUUID) {
-        if (ownerUUID == null) {
-            ownerUUId = null;
+    public void setOwnerUuid(UUID ownerUuid) {
+        if (ownerUuid == null) {
+            this.ownerUuid = null;
             return;
         }
-        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUUID);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUuid);
         if (player != null && player.hasPlayedBefore()) {
-            ownerUUId = ownerUUID;
+            this.ownerUuid = ownerUuid;
         }
     }
 
+    /**
+     * Checks if this animal is sitting.
+     *
+     * @return true if sitting
+     */
     public boolean isSitting() {
-        return sitting;
+        return metadata.getBit(META_STATUS, TameableFlags.IS_SITTING);
     }
 
+    /**
+     * Sets if this animal is sitting. Will remove any path that the animal
+     * was following beforehand.
+     *
+     * @param isSitting true if sitting
+     */
     public void setSitting(boolean isSitting) {
-        metadata.setBit(status, TameableFlags.IS_SITTING,
-            isSitting); //TODO 1.9 - This flag might need change
-        sitting = isSitting;
+        metadata.setBit(META_STATUS, TameableFlags.IS_SITTING, isSitting);
     }
-
 }

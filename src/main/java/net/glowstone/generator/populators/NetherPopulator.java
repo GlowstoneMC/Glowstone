@@ -30,6 +30,9 @@ public class NetherPopulator extends BlockPopulator {
         Material.RED_MUSHROOM);
     private final LavaDecorator lavaDecorator = new LavaDecorator();
 
+    /**
+     * Creates a populator specialized for the Nether.
+     */
     public NetherPopulator() {
         inGroundPopulators.add(orePopulator);
 

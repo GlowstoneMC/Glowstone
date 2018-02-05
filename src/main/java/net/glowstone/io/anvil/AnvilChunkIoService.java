@@ -19,8 +19,8 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -62,7 +62,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         DataInputStream in = region.getChunkDataInputStream(regionX, regionZ);
 
         CompoundTag levelTag;
-        try (NBTInputStream nbt = new NBTInputStream(in, false)) {
+        try (NbtInputStream nbt = new NbtInputStream(in, false)) {
             CompoundTag root = nbt.readCompound();
             levelTag = root.getCompound("Level");
         }
@@ -269,7 +269,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         CompoundTag levelOut = new CompoundTag();
         levelOut.putCompound("Level", levelTags);
 
-        try (NBTOutputStream nbt = new NBTOutputStream(
+        try (NbtOutputStream nbt = new NbtOutputStream(
             region.getChunkDataOutputStream(regionX, regionZ), false)) {
             nbt.writeTag(levelOut);
         }

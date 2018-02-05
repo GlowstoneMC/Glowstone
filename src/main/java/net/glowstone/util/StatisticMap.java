@@ -41,15 +41,19 @@ public final class StatisticMap {
 
     private String name(Statistic stat, Material mat) {
         if (mat.isBlock()) {
-            checkArgument(stat.getType() == Type.BLOCK, "Statistic " + stat + " is not a block statistic");
+            checkArgument(
+                    stat.getType() == Type.BLOCK,
+                    "Statistic " + stat + " is not a block statistic");
         } else {
-            checkArgument(stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
+            checkArgument(
+                    stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
         }
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private String name(Statistic stat, EntityType type) {
-        checkArgument(stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
+        checkArgument(
+                stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -104,6 +108,7 @@ public final class StatisticMap {
     }
 
     public Map<String, Integer> getValues() {
+        // TODO: Replace with facade
         return values;
     }
 }

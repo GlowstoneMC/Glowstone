@@ -4,6 +4,8 @@ import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -15,19 +17,39 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.Vector;
 
-public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
+public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
 
+    @Getter
+    @Setter
     private int fuseTicks;
+    @Setter
     private Entity source;
 
-    public GlowTNTPrimed(Location location, Entity source) {
+    /**
+     * Get the player that ignited the TNT.
+     *
+     * @return Player that ignited the TNT
+     */
+    public GlowPlayer getPlayer() {
+        Entity source = getSource();
+        return (source instanceof GlowPlayer) ? (GlowPlayer) source : null;
+    }
+
+    /**
+     * Creates a primed TNT block.
+     *
+     * @param location the location
+     * @param source the entity that ignited this
+     */
+    public GlowTntPrimed(Location location, Entity source) {
         super(location, Explosion.POWER_TNT);
         setSize(0.98f, 0.98f);
 
         fuseTicks = 0;
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         int multiplier = rand.nextBoolean() ? 1 : -1;
-        double x = 0, z = 0;
+        double x = 0;
+        double z = 0;
         double mag = rand.nextDouble(0, 0.02);
         if (rand.nextBoolean()) {
             x = multiplier * mag;
@@ -38,9 +60,16 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
         this.source = source;
     }
 
+    /**
+     * Sets whether this TNT was ignited by an explosion or not. This is not tracked, but affects
+     * the fuse length.
+     *
+     * @param ignitedByExplosion whether this TNT was ignited by an explosion
+     */
     public void setIgnitedByExplosion(boolean ignitedByExplosion) {
         if (ignitedByExplosion) {
-            // if ignited by an explosion, the fuseTicks should be a random number between 10 and 30 ticks
+            // if ignited by an explosion, the fuseTicks should be a random number between 10 and 30
+            // ticks
             fuseTicks = ThreadLocalRandom.current().nextInt(10, 31);
         } else {
             fuseTicks = 80;
@@ -64,8 +93,9 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
         if (!event.isCancelled()) {
             Location location = getLocation();
-            double x = location.getX(), y = location.getY() + 0.06125, z = location.getZ();
-            world.createExplosion(this, x, y, z, event.getRadius(), event.getFire(), true);
+            world.createExplosion(this,
+                    location.getX(), location.getY() + 0.06125, location.getZ(),
+                    event.getRadius(), event.getFire(), true);
         }
 
         remove();
@@ -73,22 +103,13 @@ public class GlowTNTPrimed extends GlowExplosive implements TNTPrimed {
 
     @Override
     public List<Message> createSpawnMessage() {
-        return Collections.singletonList(new SpawnObjectMessage(id, getUniqueId(), 50, location));
-    }
-
-    @Override
-    public final int getFuseTicks() {
-        return fuseTicks;
-    }
-
-    @Override
-    public final void setFuseTicks(int i) {
-        fuseTicks = i;
+        return Collections.singletonList(new SpawnObjectMessage(
+                entityId, getUniqueId(), 50, location));
     }
 
     @Override
     public final Entity getSource() {
-        return source.isValid() ? source : null;
+        return (source != null && source.isValid()) ? source : null;
     }
 
     @Override

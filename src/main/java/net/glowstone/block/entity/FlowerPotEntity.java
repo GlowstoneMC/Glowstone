@@ -1,5 +1,7 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.state.GlowFlowerPot;
@@ -11,20 +13,13 @@ import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
 public class FlowerPotEntity extends BlockEntity {
-
+    @Getter
+    @Setter
     private MaterialData contents;
 
     public FlowerPotEntity(GlowBlock block) {
         super(block);
         setSaveId("minecraft:flower_pot");
-    }
-
-    public MaterialData getContents() {
-        return contents;
-    }
-
-    public void setContents(MaterialData contents) {
-        this.contents = contents;
     }
 
     @Override

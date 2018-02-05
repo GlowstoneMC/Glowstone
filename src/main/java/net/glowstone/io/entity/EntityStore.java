@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.nbt.NbtSerialization;
@@ -18,27 +20,16 @@ import org.bukkit.entity.EntityType;
  *
  * @param <T> The type of entity being stored.
  */
+@Data
+@RequiredArgsConstructor
 public abstract class EntityStore<T extends GlowEntity> {
 
-    protected final Class<? extends T> clazz;
-    protected final String type;
+    protected final Class<? extends T> type;
+    protected final String entityType;
 
-    public EntityStore(Class<? extends T> clazz, EntityType type) {
-        this.clazz = clazz;
-        this.type = type.getName();
-    }
-
-    public EntityStore(Class<? extends T> clazz, String name) {
-        this.type = name;
-        this.clazz = clazz;
-    }
-
-    public final String getEntityType() {
-        return type;
-    }
-
-    public final Class<? extends T> getType() {
-        return clazz;
+    public EntityStore(Class<? extends T> type, EntityType entityType) {
+        this.type = type;
+        this.entityType = entityType.getName();
     }
 
     /**
@@ -155,7 +146,7 @@ public abstract class EntityStore<T extends GlowEntity> {
      * @param tag The target tag.
      */
     public void save(T entity, CompoundTag tag) {
-        tag.putString("id", "minecraft:" + type);
+        tag.putString("id", "minecraft:" + entityType);
 
         // write world info, Pos, Rotation, and Motion
         Location loc = entity.getLocation();

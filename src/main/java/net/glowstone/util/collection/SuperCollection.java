@@ -4,28 +4,61 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * Generic super collection. This is an abstract collection which delegates (ie redirects operations) to other collections (its children).
- * This class is employed to reduce the overhead of copying objects from several collections to create a new larger one.
+ * Generic super collection. This is an abstract collection which delegates (ie redirects
+ * operations) to other collections (its children). This class is employed to reduce the overhead of
+ * copying objects from several collections to create a new larger one.
  *
- * <p>This class is a generic collection which serves as a base for other super collections.
- * It handles non-indexed accesses to collections like additions, removals, contains...
+ * <p>This class is a generic collection which serves as a base for other super collections. It
+ * handles non-indexed accesses to collections like additions, removals, contains...
  *
- * <p>Note that because this collection holds references to other collections, modifications to children will be reflected here.
- * Also, modifications to this collection will affect its children.
+ * <p>Note that because this collection holds references to other collections, modifications to
+ * children will be reflected here. Also, modifications to this collection will affect its
+ * children.
  *
- * <p>If you need a collection that has the very same contents but isn't affected by operations to children,
- * you can employ the {@link #asClone()} method, which returns a new collection with the same contents.
+ * <p>If you need a collection that has the very same contents but isn't affected by operations to
+ * children, you can employ the {@link #asClone()} method, which returns a new collection with the
+ * same contents.
  *
- * <p>Since there are several children and not all may return the same return value for certain operations,
- * you can control how this class behaves by means of the {@link #setResultMode(ResultMode)} method.
- * It defaults to ANY, so operations that return booleans will return true as long as at least one children succeeded.
+ * <p>Since there are several children and not all may return the same return value for certain
+ * operations, you can control how this class behaves by means of the {@link
+ * #setResultMode(ResultMode)} method. It defaults to ANY, so operations that return booleans will
+ * return true as long as at least one children succeeded.
  */
 public abstract class SuperCollection<E> implements Collection<E> {
 
     private final List<? extends Collection<E>> parents;
+    /**
+     * Current result mode.
+     *
+     * <p>If mode is set to ANY, operations will return "true" as long as the parents returned
+     * "true" at least once.
+     *
+     * <p>If mode is set to ALL, operations will only return "true" if all parents also returned
+     * "true".
+     *
+     * @param resultMode Result mode.
+     * @return Result mode.
+     */
+    @Getter
+    @Setter
     private ResultMode resultMode = ResultMode.ANY;
+    /**
+     * Determines how this collection will behave to additions.
+     *
+     * <p>If mode is set to ALL, the addition will be performed on every parent. Default for sets.
+     *
+     * <p>If mode is set to LAST, the operation will be performed on the last parent only. Default
+     * for lists.
+     *
+     * @param additionMode Addition mode.
+     * @return Addition mode.
+     */
+    @Getter
+    @Setter
     private AdditionMode additionMode;
 
     public SuperCollection(AdditionMode additionMode) {
@@ -43,51 +76,8 @@ public abstract class SuperCollection<E> implements Collection<E> {
      * @return Parent list.
      */
     public List<? extends Collection<E>> getParents() {
+        // TODO: Replace with facade
         return parents;
-    }
-
-    /**
-     * Returns current result mode.
-     *
-     * @return Result mode.
-     */
-    public ResultMode getResultMode() {
-        return resultMode;
-    }
-
-    /**
-     * Sets what will this collection returns for certain operations.
-     *
-     * <p>If mode is set to ANY, operations will return "true" as long as the parents returned "true" at least once.
-     *
-     * <p>If mode is set to ALL, operations will only return "true" if all parents also returned "true".
-     *
-     * @param resultMode Result mode.
-     */
-    public void setResultMode(ResultMode resultMode) {
-        this.resultMode = resultMode;
-    }
-
-    /**
-     * Returns current addition mode.
-     *
-     * @return Addition mode.
-     */
-    public AdditionMode getAdditionMode() {
-        return additionMode;
-    }
-
-    /**
-     * Sets how this collection will behave to additions.
-     *
-     * <p>If mode is set to ALL, the addition will be performed on every parent. Default for sets.
-     *
-     * <p>If mode is set to LAST, the operation will be performed on the last parent only. Default for lists.
-     *
-     * @param additionMode Addition mode.
-     */
-    public void setAdditionMode(AdditionMode additionMode) {
-        this.additionMode = additionMode;
     }
 
     /**
@@ -111,9 +101,9 @@ public abstract class SuperCollection<E> implements Collection<E> {
 
             case ALL:
                 return modified >= parents.size();
+            default:
+                return false;
         }
-
-        return false;
     }
 
     @Override
@@ -132,9 +122,10 @@ public abstract class SuperCollection<E> implements Collection<E> {
 
             case LAST:
                 return parents.get(parents.size() - 1).add(object);
+            default:
+                throw new IllegalStateException(
+                        "This SuperCollection has an invalid addition mode!");
         }
-
-        throw new IllegalStateException("This SuperCollection has an invalid addition mode!");
     }
 
     @Override
@@ -154,9 +145,10 @@ public abstract class SuperCollection<E> implements Collection<E> {
 
             case LAST:
                 return parents.get(parents.size() - 1).addAll(objects);
+            default:
+                throw new IllegalStateException(
+                        "This SuperCollection has an invalid addition mode!");
         }
-
-        throw new IllegalStateException("This SuperCollection has an invalid addition mode!");
     }
 
     @Override
@@ -292,7 +284,9 @@ public abstract class SuperCollection<E> implements Collection<E> {
 
     @Override
     public String toString() {
-        // This is as other methods that call the asClone method, but since it's only used for eventual debugging, its performance doesn't really matter, so don't lose your time overriding and implementing it in subclasses.
+        // This is as other methods that call the asClone method, but since it's only used for
+        // eventual debugging, its performance doesn't really matter, so don't lose your time
+        // overriding and implementing it in subclasses.
         return asClone().toString();
     }
 

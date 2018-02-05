@@ -5,6 +5,12 @@ import org.bukkit.util.Vector;
 
 public class RayUtil {
 
+    /**
+     * Maps {0, 0, 0} to {0, 1, 0} and all other vectors to their normalized form.
+     *
+     * @param ray the ray to transform
+     * @return a ray of length 1
+     */
     public static Vector getVelocityRay(Vector ray) {
         Vector velocityRay = ray.clone();
         if (velocityRay.lengthSquared() == 0) {

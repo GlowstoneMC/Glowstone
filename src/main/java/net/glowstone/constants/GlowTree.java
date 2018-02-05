@@ -17,10 +17,11 @@ import static org.bukkit.TreeType.TALL_BIRCH;
 import static org.bukkit.TreeType.TALL_REDWOOD;
 import static org.bukkit.TreeType.TREE;
 
-import java.lang.reflect.Constructor;
+import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.BiFunction;
 import net.glowstone.generator.objects.trees.AcaciaTree;
 import net.glowstone.generator.objects.trees.BigTree;
 import net.glowstone.generator.objects.trees.BirchTree;
@@ -38,47 +39,53 @@ import net.glowstone.generator.objects.trees.SwampTree;
 import net.glowstone.generator.objects.trees.TallBirchTree;
 import net.glowstone.generator.objects.trees.TallRedwoodTree;
 import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.Location;
 import org.bukkit.TreeType;
 
 public final class GlowTree {
 
+    private static final ImmutableMap<TreeType,
+            BiFunction<Random, BlockStateDelegate, ? extends GenericTree>> CONSTRUCTORS =
+            ImmutableMap
+                    .<TreeType, BiFunction<Random, BlockStateDelegate, ? extends GenericTree>>
+                            builder()
+                    .put(TREE, GenericTree::new)
+                    .put(BIG_TREE, BigTree::new)
+                    .put(REDWOOD, RedwoodTree::new)
+                    .put(TALL_REDWOOD, TallRedwoodTree::new)
+                    .put(BIRCH, BirchTree::new)
+                    .put(JUNGLE, MegaJungleTree::new)
+                    .put(SMALL_JUNGLE, JungleTree::new)
+                    .put(COCOA_TREE, CocoaTree::new)
+                    .put(JUNGLE_BUSH, JungleBush::new)
+                    .put(RED_MUSHROOM, RedMushroomTree::new)
+                    .put(BROWN_MUSHROOM, BrownMushroomTree::new)
+                    .put(SWAMP, SwampTree::new)
+                    .put(ACACIA, AcaciaTree::new)
+                    .put(DARK_OAK, DarkOakTree::new)
+                    .put(MEGA_REDWOOD, MegaRedwoodTree::new)
+                    .put(TALL_BIRCH, TallBirchTree::new)
+            .build();
+
     private static final Map<TreeType, Class<? extends GenericTree>> classTable = new HashMap<>();
 
     static {
-        set(TREE, GenericTree.class);
-        set(BIG_TREE, BigTree.class);
-        set(REDWOOD, RedwoodTree.class);
-        set(TALL_REDWOOD, TallRedwoodTree.class);
-        set(BIRCH, BirchTree.class);
-        set(JUNGLE, MegaJungleTree.class);
-        set(SMALL_JUNGLE, JungleTree.class);
-        set(COCOA_TREE, CocoaTree.class);
-        set(JUNGLE_BUSH, JungleBush.class);
-        set(RED_MUSHROOM, RedMushroomTree.class);
-        set(BROWN_MUSHROOM, BrownMushroomTree.class);
-        set(SWAMP, SwampTree.class);
-        set(ACACIA, AcaciaTree.class);
-        set(DARK_OAK, DarkOakTree.class);
-        set(MEGA_REDWOOD, MegaRedwoodTree.class);
-        set(TALL_BIRCH, TallBirchTree.class);
+
     }
 
     private GlowTree() {
     }
 
-    public static GenericTree newInstance(TreeType type, Random random, Location loc,
-        BlockStateDelegate delegate) {
-        try {
-            Constructor<? extends GenericTree> c = classTable.get(type)
-                .getConstructor(Random.class, Location.class, BlockStateDelegate.class);
-            return c.newInstance(random, loc, delegate);
-        } catch (Exception ex) {
-            return new GenericTree(random, loc, delegate);
-        }
-    }
-
-    private static void set(TreeType type, Class<? extends GenericTree> clazz) {
-        classTable.put(type, clazz);
+    /**
+     * Creates a tree of any vanilla type.
+     *
+     * @param type the tree type
+     * @param random the PRNG
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     *     blocks
+     * @return a new tree of {@code type}
+     */
+    public static GenericTree newInstance(TreeType type, Random random,
+            BlockStateDelegate delegate) {
+        return CONSTRUCTORS.getOrDefault(type, GenericTree::new).apply(random, delegate);
     }
 }

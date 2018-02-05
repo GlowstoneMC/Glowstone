@@ -6,7 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.glowstone.GlowServer;
 import net.glowstone.command.CommandUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -16,11 +18,14 @@ import org.bukkit.util.StringUtil;
 public class WhitelistCommand extends VanillaCommand {
 
     private static final List<String> SUBCOMMANDS = Arrays
-        .asList("on", "off", "list", "add", "remove", "reload");
+            .asList("on", "off", "list", "add", "remove", "reload");
 
+    /**
+     * Creates the instance for this command.
+     */
     public WhitelistCommand() {
         super("whitelist", "Manage the server whitelist.",
-            "/whitelist <on|off|list|add|remove|reload>", Collections.emptyList());
+                "/whitelist <on|off|list|add|remove|reload>", Collections.emptyList());
         setPermission("minecraft.command.whitelist");
     }
 
@@ -34,6 +39,7 @@ public class WhitelistCommand extends VanillaCommand {
             return false;
         }
         String subcommand = args[0];
+        GlowServer server = (GlowServer) Bukkit.getServer();
         if (subcommand.equals("on")) {
             sender.getServer().setWhitelist(true);
             sender.sendMessage("Turned on the whitelist");
@@ -61,9 +67,16 @@ public class WhitelistCommand extends VanillaCommand {
                 return false;
             }
             String name = args[1];
-            OfflinePlayer player = sender.getServer().getOfflinePlayer(name);
-            player.setWhitelisted(true);
-            sender.sendMessage("Added " + name + " to the whitelist");
+            server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
+                if (ex != null) {
+                    sender.sendMessage(ChatColor.RED + "Failed to add " + name
+                            + " to the whitelist: " + ex.getMessage());
+                    ex.printStackTrace();
+                    return;
+                }
+                player.setWhitelisted(true);
+                sender.sendMessage("Added " + player.getName() + " to the whitelist");
+            });
             return true;
         }
         if (subcommand.equals("remove")) {
@@ -72,10 +85,16 @@ public class WhitelistCommand extends VanillaCommand {
                 return false;
             }
             String name = args[1];
-            OfflinePlayer player = sender.getServer().getOfflinePlayer(name);
-            player.setWhitelisted(false);
-            sender.sendMessage("Removed " + name + " to the whitelist");
-            return true;
+            server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
+                if (ex != null) {
+                    sender.sendMessage(ChatColor.RED + "Failed to remove " + name
+                            + " from the whitelist: " + ex.getMessage());
+                    ex.printStackTrace();
+                    return;
+                }
+                player.setWhitelisted(false);
+                sender.sendMessage("Removed " + player.getName() + " from the whitelist");
+            });
         }
         if (subcommand.equals("reload")) {
             sender.getServer().reloadWhitelist();
@@ -88,10 +107,10 @@ public class WhitelistCommand extends VanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 1) {
             return (List) StringUtil
-                .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
+                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
         }
         if (args.length > 1) {
             String subcommand = args[0];
@@ -101,9 +120,9 @@ public class WhitelistCommand extends VanillaCommand {
             if (subcommand.equals("remove")) {
                 Set<OfflinePlayer> whitelistedPlayers = sender.getServer().getWhitelistedPlayers();
                 List<String> names = whitelistedPlayers.stream().map(OfflinePlayer::getName)
-                    .collect(Collectors.toList());
+                        .collect(Collectors.toList());
                 return (List) StringUtil
-                    .copyPartialMatches(args[1], names, new ArrayList(names.size()));
+                        .copyPartialMatches(args[1], names, new ArrayList(names.size()));
             }
             return Collections.emptyList();
         }

@@ -3,6 +3,7 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -25,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class GlowBoat extends GlowEntity implements Boat {
 
+    @Getter
     private TreeSpecies woodType;
     private boolean workOnLand;
 
@@ -47,8 +49,8 @@ public class GlowBoat extends GlowEntity implements Boat {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.BOAT, location),
-            new EntityMetadataMessage(id, metadata.getEntryList())
+            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.BOAT, location),
+            new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
 
@@ -144,11 +146,6 @@ public class GlowBoat extends GlowEntity implements Boat {
 
     private void setHitTime(int time) {
         metadata.set(MetadataIndex.BOAT_HIT_TIME, Math.max(time, 0));
-    }
-
-    @Override
-    public TreeSpecies getWoodType() {
-        return woodType;
     }
 
     @Override

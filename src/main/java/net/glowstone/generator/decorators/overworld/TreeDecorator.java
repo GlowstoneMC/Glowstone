@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import lombok.Data;
 import net.glowstone.generator.decorators.BlockDecorator;
 import net.glowstone.generator.objects.trees.GenericTree;
 import net.glowstone.util.BlockStateDelegate;
@@ -47,9 +48,9 @@ public class TreeDecorator extends BlockDecorator {
                     .getConstructor(Random.class, Location.class, BlockStateDelegate.class);
                 tree = c.newInstance(random, sourceBlock.getLocation(), delegate);
             } catch (Exception ex) {
-                tree = new GenericTree(random, sourceBlock.getLocation(), delegate);
+                tree = new GenericTree(random, delegate);
             }
-            if (tree.generate()) {
+            if (tree.generate(sourceBlock.getLocation())) {
                 delegate.updateBlockStates();
             }
         }
@@ -71,22 +72,9 @@ public class TreeDecorator extends BlockDecorator {
         return null;
     }
 
-    public static class TreeDecoration {
-
+    @Data
+    public static final class TreeDecoration {
         private final Class<? extends GenericTree> tree;
         private final int weight;
-
-        public TreeDecoration(Class<? extends GenericTree> tree, int weight) {
-            this.tree = tree;
-            this.weight = weight;
-        }
-
-        public Class<? extends GenericTree> getTree() {
-            return tree;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
     }
 }

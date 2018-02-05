@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
@@ -16,7 +18,10 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
+    @Getter
     private String title;
+    @Getter
+    @Setter
     private String author;
     private List<String> pages;
     private Integer generation;
@@ -124,11 +129,6 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     }
 
     @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
     public boolean setTitle(String title) {
         if (title != null && title.length() > 16) {
             title = title.substring(0, 16);
@@ -140,16 +140,6 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     @Override
     public boolean hasAuthor() {
         return author != null && !author.isEmpty();
-    }
-
-    @Override
-    public String getAuthor() {
-        return author;
-    }
-
-    @Override
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     @Override

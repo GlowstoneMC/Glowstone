@@ -1,32 +1,19 @@
 package net.glowstone.util.nbt;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Represents a single NBT tag.
  */
+@RequiredArgsConstructor
 public abstract class Tag<T> {
 
     /**
      * The type of this tag.
      */
+    @Getter
     private final TagType type;
-
-    /**
-     * Creates the tag with the specified type.
-     *
-     * @param type The type.
-     */
-    protected Tag(TagType type) {
-        this.type = type;
-    }
-
-    /**
-     * Gets the type of this tag.
-     *
-     * @return The type of this tag.
-     */
-    public final TagType getType() {
-        return type;
-    }
 
     /**
      * Gets the value of this tag.

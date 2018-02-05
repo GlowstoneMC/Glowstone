@@ -54,8 +54,8 @@ public class ItemMinecart extends ItemType {
             case WEST:
                 return 90f;
             case SOUTH:
+            default:
                 return 0f;
         }
-        return getYaw(BlockFace.SOUTH);
     }
 }

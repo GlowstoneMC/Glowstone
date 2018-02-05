@@ -10,17 +10,24 @@ import org.bukkit.World;
 public class UnderwaterDecorator extends BlockDecorator {
 
     private final Material type;
-    private int hRadius;
-    private int vRadius;
+    private int horizRadius;
+    private int vertRadius;
     private Material[] overridables;
 
     public UnderwaterDecorator(Material type) {
         this.type = type;
     }
 
-    public final UnderwaterDecorator setRadii(int hRadius, int vRadius) {
-        this.hRadius = hRadius;
-        this.vRadius = vRadius;
+    /**
+     * Updates the size of this decorator.
+     *
+     * @param horizRadius the maximum radius on the horizontal plane
+     * @param vertRadius the depth above and below the center
+     * @return this, updated
+     */
+    public final UnderwaterDecorator setRadii(int horizRadius, int vertRadius) {
+        this.horizRadius = horizRadius;
+        this.vertRadius = vertRadius;
         return this;
     }
 
@@ -43,7 +50,7 @@ public class UnderwaterDecorator extends BlockDecorator {
         }
         Material material = world.getBlockAt(sourceX, sourceY, sourceZ).getType();
         if (material == Material.STATIONARY_WATER || material == Material.WATER) {
-            new BlockPatch(type, hRadius, vRadius, overridables)
+            new BlockPatch(type, horizRadius, vertRadius, overridables)
                 .generate(world, random, sourceX, sourceY, sourceZ);
         }
     }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -11,11 +13,16 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Tracker for when the equipment of an entity is changed.
  */
+@RequiredArgsConstructor
 public final class EquipmentMonitor {
 
     /**
      * The entity whose equipment is being monitored.
+     *
+     * @param entity The entity whose equipment to monitor.
+     * @return The entity.
      */
+    @Getter
     private final LivingEntity entity;
 
     /**
@@ -32,15 +39,6 @@ public final class EquipmentMonitor {
      * Whether the {@link #changes} have been calculated for this tick.
      */
     private boolean changesCalculated;
-
-    /**
-     * Create a new monitor for the given entity.
-     *
-     * @param entity The entity whose equipment to monitor.
-     */
-    public EquipmentMonitor(LivingEntity entity) {
-        this.entity = entity;
-    }
 
     /**
      * Get the item in the inventory.
@@ -117,15 +115,6 @@ public final class EquipmentMonitor {
         for (int i = 0; i < 6; i++) {
             updateItem(i);
         }
-    }
-
-    /**
-     * Get the entity whose equipment is being monitored.
-     *
-     * @return The entity equipment.
-     */
-    public LivingEntity getEntity() {
-        return entity;
     }
 
     /**

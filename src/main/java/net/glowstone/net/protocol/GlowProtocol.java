@@ -22,6 +22,12 @@ public abstract class GlowProtocol extends AbstractProtocol {
     private final CodecLookupService outboundCodecs;
     private final HandlerLookupService handlers;
 
+    /**
+     * Creates an instance.
+     *
+     * @param name the name of the protocol
+     * @param highestOpcode the highest opcode this protocol will use
+     */
     public GlowProtocol(String name, int highestOpcode) {
         super(name);
         inboundCodecs = new CodecLookupService(highestOpcode + 1);
@@ -29,7 +35,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
         handlers = new HandlerLookupService();
     }
 
-    protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> void inbound(
+    protected <M extends Message, C extends Codec<? super M>,
+            H extends MessageHandler<?, ? super M>> void inbound(
         int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
         try {
             inboundCodecs.bind(message, codec, opcode);

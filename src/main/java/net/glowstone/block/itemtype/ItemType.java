@@ -1,6 +1,10 @@
 package net.glowstone.block.itemtype;
 
 import com.google.common.base.Preconditions;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -17,13 +21,29 @@ import org.bukkit.util.Vector;
 public class ItemType {
 
     private int id = -1;
+    /**
+     * Get the Material assigned to this ItemType.
+     *
+     * @return The corresponding Material.
+     */
+    @Getter
     private Material material;
 
+    /**
+     * The type of block to place when the item is used.
+     *
+     * @return the type of block to place
+     */
+    @Getter
     private BlockType placeAs;
 
     /**
      * The maximum stack size of the item.
+     *
+     * @return The maximum stack size.
      */
+    @Getter
+    @Setter(AccessLevel.PROTECTED)
     private int maxStackSize = 64;
 
     /**
@@ -55,15 +75,6 @@ public class ItemType {
         } else {
             setMaterial(mat);
         }
-    }
-
-    /**
-     * Get the Material assigned to this ItemType.
-     *
-     * @return The corresponding Material.
-     */
-    public final Material getMaterial() {
-        return material;
     }
 
     /**
@@ -106,44 +117,16 @@ public class ItemType {
      * @param placeAs The block to place as.
      */
     protected final void setPlaceAs(BlockType placeAs) {
+        // Cannot be Lombokified because of the overload
         this.placeAs = placeAs;
-    }
-
-    /**
-     * The type of block to place when the item is used.
-     *
-     * @return the type of block to place
-     */
-    public BlockType getPlaceAs() {
-        return placeAs;
-    }
-
-    /**
-     * Get the maximum stack size of the item.
-     *
-     * @return The maximum stack size.
-     */
-    public int getMaxStackSize() {
-        return maxStackSize;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Public accessors
-
-    /**
-     * Set the maximum stack size of the item.
-     *
-     * @param maxStackSize The new maximum stack size.
-     */
-    protected final void setMaxStackSize(int maxStackSize) {
-        this.maxStackSize = maxStackSize;
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Actions
 
     /**
-     * Called when a player right-clicks in midair while holding this item.
+     * Called when a player right-clicks in midair while holding this item. Also called by default
+     * if rightClickBlock is not overridden.
      *
      * @param player The player
      * @param holding The ItemStack the player was holding
@@ -153,7 +136,7 @@ public class ItemType {
     }
 
     /**
-     * Get the context this item can be used in
+     * Get the context this item can be used in.
      *
      * @return context of the item, default is {{@link Context#BLOCK}}
      */
@@ -172,8 +155,10 @@ public class ItemType {
      */
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
-        if (placeAs != null && (placeAs.getContext() == Context.ANY || placeAs.getContext() == Context.BLOCK)) {
-            placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+        if (placeAs != null) {
+            if (placeAs.getContext().isBlockApplicable()) {
+                placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
+            }
         }
     }
 
@@ -182,24 +167,31 @@ public class ItemType {
 
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
+        return getClass().getSimpleName()
+                + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
     }
 
     /**
-     * Context of the Items interaction
+     * Context of the Items interaction.
      */
+    @AllArgsConstructor
     public enum Context {
         /**
-         * The item can only be used when clicking in the air
+         * The item can only be used when clicking in the air.
          */
-        AIR,
+        AIR(true, false),
         /**
-         * The item can only be used when clicking against a block
+         * The item can only be used when clicking against a block.
          */
-        BLOCK,
+        BLOCK(false, true),
         /**
-         * The item can be used on any click
+         * The item can be used on any click.
          */
-        ANY
+        ANY(true, true);
+
+        @Getter
+        private boolean airApplicable;
+        @Getter
+        private boolean blockApplicable;
     }
 }

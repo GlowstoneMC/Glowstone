@@ -1,13 +1,32 @@
 package net.glowstone.entity.ai;
 
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.entity.GlowLivingEntity;
 
 public abstract class EntityTask implements Comparable<EntityTask> {
 
+    /**
+     * The name of this EntityTask. Must be unique to each EntityTask implementation.
+     *
+     * @return the name of this EntityTask.
+     */
+    @Getter
     private final String name;
+    /**
+     * Whether this task is currently being executed.
+     *
+     * @return true if this task is being executed, false otherwise.
+     */
+    @Getter
     private boolean executing = false;
     private int duration = 0;
+    /**
+     * Whether this task is paused.
+     *
+     * @return whether this task is paused.
+     */
+    @Getter
     private boolean paused = false;
 
     public EntityTask(String name) {
@@ -63,24 +82,6 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     }
 
     /**
-     * Whether this task is currently being executed.
-     *
-     * @return true if this task is being executed, false otherwise.
-     */
-    public final boolean isExecuting() {
-        return executing;
-    }
-
-    /**
-     * Whether this task is paused.
-     *
-     * @return whether this task is paused.
-     */
-    public final boolean isPaused() {
-        return paused;
-    }
-
-    /**
      * Resumes the previously paused task for this entity.
      *
      * @param entity the entity in question.
@@ -103,15 +104,6 @@ public abstract class EntityTask implements Comparable<EntityTask> {
         }
         reset(entity);
         paused = true;
-    }
-
-    /**
-     * The name of this EntityTask. Must be unique to each EntityTask implementation.
-     *
-     * @return the name of this EntityTask.
-     */
-    public String getName() {
-        return name;
     }
 
     /**

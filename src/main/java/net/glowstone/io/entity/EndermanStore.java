@@ -10,7 +10,7 @@ import org.bukkit.material.MaterialData;
 class EndermanStore extends MonsterStore<GlowEnderman> {
 
     public EndermanStore() {
-        super(GlowEnderman.class, EntityType.ENDERMAN);
+        super(GlowEnderman.class, EntityType.ENDERMAN, GlowEnderman::new);
     }
 
     @Override

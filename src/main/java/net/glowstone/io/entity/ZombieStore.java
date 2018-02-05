@@ -1,17 +1,19 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.monster.GlowZombie;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
 
     public ZombieStore() {
-        super(GlowZombie.class, EntityType.ZOMBIE);
+        super(GlowZombie.class, EntityType.ZOMBIE, GlowZombie::new);
     }
 
-    public ZombieStore(Class<T> clazz, EntityType type) {
-        super(clazz, type);
+    public ZombieStore(Class<T> clazz, EntityType type, Function<Location, T> creator) {
+        super(clazz, type, creator);
     }
 
     @Override

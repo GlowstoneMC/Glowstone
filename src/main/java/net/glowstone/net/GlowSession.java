@@ -20,6 +20,7 @@ import java.util.Queue;
 import java.util.logging.Level;
 import javax.crypto.SecretKey;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -56,7 +57,10 @@ public class GlowSession extends BasicSession {
 
     /**
      * The server this session belongs to.
+     *
+     * @return The server.
      */
+    @Getter
     private final GlowServer server;
 
     /**
@@ -72,26 +76,39 @@ public class GlowSession extends BasicSession {
     /**
      * The remote address of the connection.
      */
+    @Getter
     private InetSocketAddress address;
 
     /**
-     * The state of the connection
+     * The state of the connection.
+     *
+     * @return true if this session's state is online
      */
+    @Getter
     private boolean online;
     /**
-     * The verify token used in authentication
+     * The randomly-generated verify token used in authentication for this session.
+     *
+     * @param verifyToken the verify token
+     * @return The verify token
      */
+    @Getter
+    @Setter
     private byte[] verifyToken;
 
     /**
-     * The verify username used in authentication
+     * The verify username used in authentication.
      */
+    @Getter
+    @Setter
     private String verifyUsername;
 
     /**
-     * The hostname used to connect.
+     * The hostname/port the player used to connect to the server.
      */
-    private String hostname;
+    @Getter
+    @Setter
+    private InetSocketAddress virtualHost;
 
     /**
      * The version used to connect.
@@ -100,17 +117,22 @@ public class GlowSession extends BasicSession {
     private int version = -1;
 
     /**
-     * Data regarding a user who has connected through a proxy,
-     * used to provide online-mode UUID and properties and
-     * other data even if the server is running in offline mode.
+     * Data regarding a user who has connected through a proxy, used to provide online-mode UUID and
+     * properties and other data even if the server is running in offline mode.
      *
      * <p>Null for non-proxied sessions.
+     *
+     * @return The proxy data to use, or null for an unproxied connection.
      */
+    @Getter
     private ProxyData proxyData;
 
     /**
      * The player associated with this session (if there is one).
+     *
+     * @return The player, or {@code null} if no player is associated with this session.
      */
+    @Getter
     private GlowPlayer player;
 
     /**
@@ -124,12 +146,12 @@ public class GlowSession extends BasicSession {
     private int previousPlacementTicks;
 
     /**
-     * If the connection has been disconnected
+     * If the connection has been disconnected.
      */
     private boolean disconnected;
 
     /**
-     * If compression packet has been sent
+     * If compression packet has been sent.
      */
     private boolean compresssionSent;
 
@@ -138,7 +160,8 @@ public class GlowSession extends BasicSession {
      *
      * @param server The server this session belongs to.
      * @param channel The channel associated with this session.
-     * @param connectionManager The connection manager to manage connections for this session.
+     * @param connectionManager The connection manager to manage connections for this
+     *         session.
      */
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());
@@ -147,62 +170,8 @@ public class GlowSession extends BasicSession {
         address = super.getAddress();
     }
 
-    /**
-     * Gets the server associated with this session.
-     *
-     * @return The server.
-     */
-    public GlowServer getServer() {
-        return server;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Auxiliary state
-
-    /**
-     * Get the randomly-generated verify token for this session.
-     *
-     * @return The verify token
-     */
-    public byte[] getVerifyToken() {
-        return verifyToken;
-    }
-
-    /**
-     * Sets the verify token of this session.
-     *
-     * @param verifyToken The verify token.
-     */
-    public void setVerifyToken(byte... verifyToken) {
-        this.verifyToken = verifyToken;
-    }
-
-    /**
-     * Gets the verify username for this session.
-     *
-     * @return The verify username.
-     */
-    public String getVerifyUsername() {
-        return verifyUsername;
-    }
-
-    /**
-     * Sets the verify username for this session.
-     *
-     * @param verifyUsername The verify username.
-     */
-    public void setVerifyUsername(String verifyUsername) {
-        this.verifyUsername = verifyUsername;
-    }
-
-    /**
-     * Get the {@link ProxyData} for this session if available.
-     *
-     * @return The proxy data to use, or null for an unproxied connection.
-     */
-    public ProxyData getProxyData() {
-        return proxyData;
-    }
 
     /**
      * Set the {@link ProxyData} for this session.
@@ -212,18 +181,16 @@ public class GlowSession extends BasicSession {
     public void setProxyData(ProxyData proxyData) {
         this.proxyData = proxyData;
         address = proxyData.getAddress();
-        hostname = proxyData.getHostname();
+        virtualHost = InetSocketAddress.createUnresolved(
+                proxyData.getHostname(), virtualHost.getPort());
     }
 
     /**
-     * Set the hostname the player used to connect to the server.
+     * Sets the version. Must only be called once.
      *
-     * @param hostname Hostname in "addr:port" format.
+     * @param version the version
+     * @throws IllegalStateException if the version has already been set
      */
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
-    }
-
     public void setVersion(int version) {
         if (this.version != -1) {
             throw new IllegalStateException("Cannot set version twice");
@@ -254,37 +221,15 @@ public class GlowSession extends BasicSession {
         }
     }
 
-    @Override
-    public InetSocketAddress getAddress() {
-        return address;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
     // Player and state management
-
-    /**
-     * Get session online state
-     *
-     * @return true if this session's state is online
-     */
-    public boolean isOnline() {
-        return online;
-    }
-
-    /**
-     * Gets the player associated with this session.
-     *
-     * @return The player, or {@code null} if no player is associated with it.
-     */
-    public GlowPlayer getPlayer() {
-        return player;
-    }
 
     /**
      * Sets the player associated with this session.
      *
      * @param profile The player's profile with name and UUID information.
-     * @throws IllegalStateException if there is already a player associated with this session.
+     * @throws IllegalStateException if there is already a player associated with this
+     *         session.
      */
     public void setPlayer(PlayerProfile profile) {
         if (player != null) {
@@ -319,7 +264,7 @@ public class GlowSession extends BasicSession {
         }
 
         // login event
-        PlayerLoginEvent event = EventFactory.onPlayerLogin(player, hostname);
+        PlayerLoginEvent event = EventFactory.onPlayerLogin(player, virtualHost.toString());
         if (event.getResult() != Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;
@@ -332,7 +277,8 @@ public class GlowSession extends BasicSession {
 
         online = true;
 
-        GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: " + player.getUniqueId());
+        GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: " + player
+                .getUniqueId());
 
         // message and user list
         String message = EventFactory.onPlayerJoin(player).getJoinMessage();
@@ -410,7 +356,8 @@ public class GlowSession extends BasicSession {
         }
 
         // perform the kick, sending a kick message if possible
-        if (isActive() && (getProtocol() instanceof LoginProtocol || getProtocol() instanceof PlayProtocol)) {
+        if (isActive() && (getProtocol() instanceof LoginProtocol
+                || getProtocol() instanceof PlayProtocol)) {
             // channel is both currently connected and in a protocol state allowing kicks
             ChannelFuture future = sendWithFuture(new KickMessage(reason));
             if (future != null) {
@@ -485,7 +432,8 @@ public class GlowSession extends BasicSession {
                 if (!other.canSee(player)) {
                     continue;
                 }
-                other.getSession().send(new DestroyEntitiesMessage(Collections.singletonList(player.getEntityId())));
+                other.getSession().send(new DestroyEntitiesMessage(Collections
+                        .singletonList(player.getEntityId())));
             }
             player = null; // in case we are disposed twice
         }
@@ -506,6 +454,11 @@ public class GlowSession extends BasicSession {
     ////////////////////////////////////////////////////////////////////////////
     // Pipeline management
 
+    /**
+     * Sets the protocol for this session.
+     *
+     * @param protocol the new protocol
+     */
     public void setProtocol(ProtocolType protocol) {
         getChannel().flush();
 
@@ -514,10 +467,20 @@ public class GlowSession extends BasicSession {
         setProtocol(proto);
     }
 
+    /**
+     * Enables encryption or changes the session key.
+     *
+     * @param sharedSecret the new session key
+     */
     public void enableEncryption(SecretKey sharedSecret) {
         updatePipeline("encryption", new EncryptionHandler(sharedSecret));
     }
 
+    /**
+     * Enables compression if not already enabled.
+     *
+     * @param threshold the minimum message size in bytes to compress
+     */
     public void enableCompression(int threshold) {
         // set compression can only be sent once
         if (!compresssionSent) {
@@ -575,7 +538,9 @@ public class GlowSession extends BasicSession {
     public void onHandlerThrowable(Message message, MessageHandler<?, ?> handle, Throwable t) {
         //TODO disconnect on error
         // can be safely logged and the connection maintained
-        GlowServer.logger.log(Level.SEVERE, "Error while handling " + message + " (handler: " + handle.getClass().getSimpleName() + ")", t);
+        GlowServer.logger.log(Level.SEVERE,
+                "Error while handling " + message + " (handler: " + handle.getClass()
+                        .getSimpleName() + ")", t);
     }
 
     @Override

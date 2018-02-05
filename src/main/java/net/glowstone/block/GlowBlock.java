@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.MaterialValueManager.ValueCollection;
@@ -54,9 +55,13 @@ public final class GlowBlock implements Block {
      */
     private static final MetadataStore<Block> metadata = new BlockMetadataStore();
     private static final Map<GlowBlock, List<Long>> counterMap = new HashMap<>();
+    @Getter
     private final int x;
+    @Getter
     private final int y;
+    @Getter
     private final int z;
+    @Getter
     private GlowWorld world;
 
     /**
@@ -77,28 +82,8 @@ public final class GlowBlock implements Block {
     ////////////////////////////////////////////////////////////////////////////
     // Basics
     @Override
-    public GlowWorld getWorld() {
-        return world;
-    }
-
-    @Override
     public GlowChunk getChunk() {
         return (GlowChunk) world.getChunkAt(this);
-    }
-
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    @Override
-    public int getZ() {
-        return z;
     }
 
     @Override

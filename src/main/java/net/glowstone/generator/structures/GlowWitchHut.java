@@ -38,7 +38,7 @@ public class GlowWitchHut extends GlowTemplePiece {
             return false;
         }
 
-        adjustHPos(world);
+        adjustHorizPos(world);
 
         StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
         builder.fill(new Vector(1, 1, 2), new Vector(5, 4, 7), Material.WOOD, 1,

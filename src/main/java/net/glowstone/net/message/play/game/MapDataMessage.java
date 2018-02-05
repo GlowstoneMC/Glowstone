@@ -12,7 +12,8 @@ import lombok.ToString;
 @Data
 public final class MapDataMessage implements Message {
 
-    private final int id, scale;
+    private final int id;
+    private final int scale;
     private final List<Icon> icons;
     private final Section section;
 
@@ -21,16 +22,30 @@ public final class MapDataMessage implements Message {
     @EqualsAndHashCode
     public static class Icon {
 
-        public final int type, facing, x, y;
+        public final int type;
+        public final int facing;
+        public final int x;
+        public final int y;
     }
 
     @ToString
     @EqualsAndHashCode
     public static class Section {
 
-        public final int width, height, x, y;
+        public final int width;
+        public final int height;
+        public final int x;
+        public final int y;
         public final byte[] data;
 
+        /**
+         * Creates an instance.
+         * @param width the section width
+         * @param height the section height
+         * @param x the x offset
+         * @param y the y offset
+         * @param data the data
+         */
         public Section(int width, int height, int x, int y, byte... data) {
             checkArgument(width * height == data.length, "width * height == data.length");
             this.width = width;

@@ -9,6 +9,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class PardonIpCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public PardonIpCommand() {
         super("pardon-ip", "Unbans an IP address from the server.", "/pardon-ip <address>",
             Collections.emptyList());

@@ -10,6 +10,9 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public class MeCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public MeCommand() {
         super("me", "Displays a message about yourself.", "/me <action ...>",
             Collections.emptyList());

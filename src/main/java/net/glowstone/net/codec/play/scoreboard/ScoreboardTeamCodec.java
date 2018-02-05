@@ -11,10 +11,12 @@ import org.bukkit.ChatColor;
 
 public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
 
+    @Override
     public ScoreboardTeamMessage decode(ByteBuf buf) throws IOException {
         throw new UnsupportedOperationException("Cannot decode ScoreboardTeamMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, ScoreboardTeamMessage message) throws IOException {
         Action action = message.getAction();
 

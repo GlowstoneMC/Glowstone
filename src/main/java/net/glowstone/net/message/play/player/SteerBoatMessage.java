@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 public class SteerBoatMessage implements Message {
 
-    private final boolean isRightPaddleTurning, isLeftPaddleTurning;
+    private final boolean isRightPaddleTurning;
+    private final boolean isLeftPaddleTurning;
 }

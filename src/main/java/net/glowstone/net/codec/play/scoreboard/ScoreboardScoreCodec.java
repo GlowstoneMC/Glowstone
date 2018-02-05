@@ -8,10 +8,12 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 
 public final class ScoreboardScoreCodec implements Codec<ScoreboardScoreMessage> {
 
+    @Override
     public ScoreboardScoreMessage decode(ByteBuf buf) throws IOException {
         throw new UnsupportedOperationException("Cannot decode ScoreboardScoreMessage");
     }
 
+    @Override
     public ByteBuf encode(ByteBuf buf, ScoreboardScoreMessage message) throws IOException {
         boolean remove = message.isRemove();
         ByteBufUtils.writeUTF8(buf, message.getTarget());

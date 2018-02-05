@@ -12,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import lombok.Getter;
 import net.glowstone.GlowServer;
 
 public abstract class GlowSocketServer extends GlowNetworkServer {
@@ -19,8 +20,16 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     protected final EventLoopGroup bossGroup;
     protected final EventLoopGroup workerGroup;
     protected final ServerBootstrap bootstrap;
+    @Getter
     protected Channel channel;
 
+    /**
+     * Creates an instance for the specified server.
+     *
+     * @param server the associated GlowServer
+     * @param latch The countdown latch used during server startup to wait for network server
+     *         binding.
+     */
     public GlowSocketServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
         boolean epoll = Epoll.isAvailable();
@@ -35,10 +44,7 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
             .childOption(ChannelOption.SO_KEEPALIVE, true);
     }
 
-    public Channel getChannel() {
-        return channel;
-    }
-
+    @Override
     public ChannelFuture bind(InetSocketAddress address) {
         ChannelFuture cfuture = this.bootstrap.bind(address).addListener(future -> {
             if (future.isSuccess()) {
@@ -51,6 +57,7 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
         return cfuture;
     }
 
+    @Override
     public void shutdown() {
         channel.close();
         bootstrap.config().childGroup().shutdownGracefully();

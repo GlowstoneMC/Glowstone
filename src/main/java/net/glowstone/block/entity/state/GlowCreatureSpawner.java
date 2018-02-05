@@ -1,5 +1,7 @@
 package net.glowstone.block.entity.state;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.MobSpawnerEntity;
@@ -8,7 +10,10 @@ import org.bukkit.entity.EntityType;
 
 public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawner {
 
-    private EntityType spawned;
+    @Getter
+    @Setter
+    private EntityType spawnedType;
+    @Getter
     private int delay;
 
     /**
@@ -20,7 +25,7 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
         super(block);
 
         MobSpawnerEntity spawner = getBlockEntity();
-        spawned = spawner.getSpawning();
+        spawnedType = spawner.getSpawning();
         delay = spawner.getDelay();
     }
 
@@ -33,16 +38,11 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
         boolean result = super.update(force, applyPhysics);
         if (result) {
             MobSpawnerEntity spawner = getBlockEntity();
-            spawner.setSpawning(spawned);
+            spawner.setSpawning(spawnedType);
             spawner.setDelay(delay);
             spawner.updateInRange();
         }
         return result;
-    }
-
-    @Override
-    public int getDelay() {
-        return delay;
     }
 
     @Override
@@ -57,26 +57,16 @@ public class GlowCreatureSpawner extends GlowBlockState implements CreatureSpawn
     // Spawned Type
 
     @Override
-    public EntityType getSpawnedType() {
-        return spawned;
-    }
-
-    @Override
-    public void setSpawnedType(EntityType creatureType) {
-        spawned = creatureType;
-    }
-
-    @Override
     public void setCreatureTypeByName(String creatureType) {
         EntityType type = EntityType.fromName(creatureType);
         if (type != null) {
-            spawned = type;
+            spawnedType = type;
         }
     }
 
     @Override
     public String getCreatureTypeName() {
-        return spawned.getName();
+        return spawnedType.getName();
     }
 
 }

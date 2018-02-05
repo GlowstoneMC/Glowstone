@@ -2,6 +2,7 @@ package net.glowstone.block.entity.state;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.ArmorDispenseBehavior;
@@ -11,7 +12,7 @@ import net.glowstone.dispenser.DispenseBehavior;
 import net.glowstone.dispenser.DispenseBehaviorRegistry;
 import net.glowstone.dispenser.EmptyBucketDispenseBehavior;
 import net.glowstone.dispenser.FlintAndSteelDispenseBehavior;
-import net.glowstone.dispenser.TNTDispenseBehavior;
+import net.glowstone.dispenser.TntDispenseBehavior;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -24,15 +25,12 @@ import org.bukkit.util.Vector;
 
 public class GlowDispenser extends GlowContainer implements Dispenser, BlockProjectileSource {
 
+    @Getter
     private static final DispenseBehaviorRegistry dispenseBehaviorRegistry =
             new DispenseBehaviorRegistry();
 
     public GlowDispenser(GlowBlock block) {
         super(block);
-    }
-
-    public static DispenseBehaviorRegistry getDispenseBehaviorRegistry() {
-        return dispenseBehaviorRegistry;
     }
 
     /**
@@ -47,7 +45,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
             .putBehavior(Material.BUCKET, new EmptyBucketDispenseBehavior());
         getDispenseBehaviorRegistry()
             .putBehavior(Material.FLINT_AND_STEEL, new FlintAndSteelDispenseBehavior());
-        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TNTDispenseBehavior());
+        getDispenseBehaviorRegistry().putBehavior(Material.TNT, new TntDispenseBehavior());
 
         ArmorDispenseBehavior armorDispenseBehavior = new ArmorDispenseBehavior();
         getDispenseBehaviorRegistry().putBehavior(Material.LEATHER_BOOTS, armorDispenseBehavior);

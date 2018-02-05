@@ -18,6 +18,9 @@ public class SavannaPopulator extends BiomePopulator {
     private static final TreeDecoration[] TREES = {new TreeDecoration(AcaciaTree.class, 4),
         new TreeDecoration(GenericTree.class, 1)};
 
+    /**
+     * Creates a populator specialized for the Savanna and Savanna Plateau biomes.
+     */
     public SavannaPopulator() {
         doublePlantDecorator.setAmount(7);
         doublePlantDecorator.setDoublePlants(DOUBLE_PLANTS);

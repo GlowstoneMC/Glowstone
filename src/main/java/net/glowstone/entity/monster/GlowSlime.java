@@ -1,5 +1,7 @@
 package net.glowstone.entity.monster;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
@@ -7,6 +9,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
 
+// TODO: Split when killed
 public class GlowSlime extends GlowMonster implements Slime {
 
     private boolean onGround;
@@ -17,26 +20,10 @@ public class GlowSlime extends GlowMonster implements Slime {
 
     protected GlowSlime(Location loc, EntityType type) {
         super(loc, type, 1);
-        byte size = 1;
-        double health = 1;
-        switch (ThreadLocalRandom.current().nextInt(3)) {
-            case 0:
-                size = 1;
-                health = 1;
-                break;
-            case 1:
-                size = 2;
-                health = 4;
-                break;
-            case 2:
-                size = 4;
-                health = 16;
-                break;
-        }
-        setBoundingBox(0.51000005 * size, 0.51000005 * size);
+        int size = 1 + ThreadLocalRandom.current().nextInt(3);
+        setMaxHealth(size * size); // max health = size^2
+        setHealth(maxHealth); // reset health to max
         setSize(size);
-        setMaxHealth(health);
-        setHealth(health);
     }
 
     @Override
@@ -45,8 +32,10 @@ public class GlowSlime extends GlowMonster implements Slime {
     }
 
     @Override
-    public void setSize(int sz) {
-        metadata.set(MetadataIndex.SLIME_SIZE, sz);
+    public void setSize(int size) {
+        checkArgument(size > 0);
+        metadata.set(MetadataIndex.SLIME_SIZE, size);
+        setBoundingBox(0.51000005 * size, 0.51000005 * size);
     }
 
     @Override

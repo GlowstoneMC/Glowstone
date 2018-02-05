@@ -45,6 +45,10 @@ public final class PlayerActionHandler implements MessageHandler<GlowSession, Pl
                     && hasElytra) {
                     player.setGliding(true);
                 }
+                break;
+            default:
+                // TODO: Should this raise a warning?
+                // do nothing
         }
     }
 }

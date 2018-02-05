@@ -24,7 +24,9 @@ public class ItemKnowledgeBook extends ItemType {
     }
 
     @Override
-    public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+    public void rightClickBlock(
+            GlowPlayer player, GlowBlock target, BlockFace face, ItemStack holding,
+            Vector clickedLoc, EquipmentSlot hand) {
         rightClickBook(player, holding);
     }
 

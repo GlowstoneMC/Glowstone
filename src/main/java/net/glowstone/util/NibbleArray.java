@@ -3,15 +3,24 @@ package net.glowstone.util;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.Arrays;
+import lombok.Getter;
 
 /**
  * An array of nibbles (4-bit values) stored efficiently as a byte array of half the size.
  *
- * <p>The even indices are stored in the least significant nibble and the odd indices in the most significant bits. For example, [1 5 8 15] is stored as [0x51 0xf8].
+ * <p>The even indices are stored in the least significant nibble and the odd indices in the most
+ * significant bits. For example, [1 5 8 15] is stored as [0x51 0xf8].
  */
 public final class NibbleArray {
 
-    private final byte[] data;
+    /**
+     * Get the raw bytes of this nibble array. Modifying the returned array will modify the internal
+     * representation of this nibble array.
+     *
+     * @return The raw bytes.
+     */
+    @Getter
+    private final byte[] rawData;
 
     /**
      * Construct a new NibbleArray with the given size in nibbles.
@@ -24,7 +33,8 @@ public final class NibbleArray {
     }
 
     /**
-     * Construct a new NibbleArray with the given size in nibble, filled with the specified nibble value.
+     * Construct a new NibbleArray with the given size in nibble, filled with the specified nibble
+     * value.
      *
      * @param size The number of nibbles in the array.
      * @param value The value to fill the array with.
@@ -32,7 +42,7 @@ public final class NibbleArray {
      */
     public NibbleArray(int size, byte value) {
         checkArgument(size > 0 && size % 2 == 0, "size must be positive even number, not " + size);
-        data = new byte[size / 2];
+        rawData = new byte[size / 2];
         if (value != 0) {
             fill(value);
         }
@@ -41,10 +51,10 @@ public final class NibbleArray {
     /**
      * Construct a new NibbleArray using the given underlying bytes. No copy is created.
      *
-     * @param data The raw data to use.
+     * @param rawData The raw data to use.
      */
-    public NibbleArray(byte... data) {
-        this.data = data;
+    public NibbleArray(byte... rawData) {
+        this.rawData = rawData;
     }
 
     /**
@@ -53,7 +63,7 @@ public final class NibbleArray {
      * @return The size in nibbles.
      */
     public int size() {
-        return 2 * data.length;
+        return 2 * rawData.length;
     }
 
     /**
@@ -62,7 +72,7 @@ public final class NibbleArray {
      * @return The size in bytes.
      */
     public int byteSize() {
-        return data.length;
+        return rawData.length;
     }
 
     /**
@@ -72,7 +82,7 @@ public final class NibbleArray {
      * @return The value of the nibble at that index.
      */
     public byte get(int index) {
-        byte val = data[index / 2];
+        byte val = rawData[index / 2];
         if (index % 2 == 0) {
             return (byte) (val & 0x0f);
         } else {
@@ -89,11 +99,11 @@ public final class NibbleArray {
     public void set(int index, byte value) {
         value &= 0xf;
         int half = index / 2;
-        byte previous = data[half];
+        byte previous = rawData[half];
         if (index % 2 == 0) {
-            data[half] = (byte) (previous & 0xf0 | value);
+            rawData[half] = (byte) (previous & 0xf0 | value);
         } else {
-            data[half] = (byte) (previous & 0x0f | value << 4);
+            rawData[half] = (byte) (previous & 0x0f | value << 4);
         }
     }
 
@@ -104,16 +114,7 @@ public final class NibbleArray {
      */
     public void fill(byte value) {
         value &= 0xf;
-        Arrays.fill(data, (byte) (value << 4 | value));
-    }
-
-    /**
-     * Get the raw bytes of this nibble array. Modifying the returned array will modify the internal representation of this nibble array.
-     *
-     * @return The raw bytes.
-     */
-    public byte[] getRawData() {
-        return data;
+        Arrays.fill(rawData, (byte) (value << 4 | value));
     }
 
     /**
@@ -123,8 +124,10 @@ public final class NibbleArray {
      * @throws IllegalArgumentException If source is not the correct length.
      */
     public void setRawData(byte... source) {
-        checkArgument(source.length == data.length, "expected byte array of length " + data.length + ", not " + source.length);
-        System.arraycopy(source, 0, data, 0, source.length);
+        checkArgument(
+                source.length == rawData.length,
+                "expected byte array of length " + rawData.length + ", not " + source.length);
+        System.arraycopy(source, 0, rawData, 0, source.length);
     }
 
     /**
@@ -133,6 +136,6 @@ public final class NibbleArray {
      * @return The snapshot NibbleArray.
      */
     public NibbleArray snapshot() {
-        return new NibbleArray(data.clone());
+        return new NibbleArray(rawData.clone());
     }
 }

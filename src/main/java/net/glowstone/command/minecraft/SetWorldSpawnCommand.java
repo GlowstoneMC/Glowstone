@@ -13,6 +13,9 @@ import org.bukkit.entity.Entity;
 
 public class SetWorldSpawnCommand extends VanillaCommand {
 
+    /**
+     * Creates the instance for this command.
+     */
     public SetWorldSpawnCommand() {
         super("setworldspawn", "Sets the world spawn.",
             "/setworldspawn OR /setworldspawn <x> <y> <z>", Collections.emptyList());

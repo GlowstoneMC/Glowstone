@@ -8,23 +8,23 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
-import org.bukkit.entity.Villager.Profession;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
 class VillagerStore extends AgeableStore<GlowVillager> {
 
     public VillagerStore() {
-        super(GlowVillager.class, EntityType.VILLAGER);
+        super(GlowVillager.class, EntityType.VILLAGER, GlowVillager::new);
     }
 
     @Override
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.isInt("Profession")) {
-            entity.setProfession(Profession.values()[compound.getInt("Profession")]);
-        } else {
-            entity.setProfession(Profession.FARMER);
+            int professionId = compound.getInt("Profession");
+            if (GlowVillager.isValidProfession(professionId)) {
+                entity.setProfession(GlowVillager.getProfessionById(professionId));
+            }
         }
         if (compound.isInt("Career")) {
             int id = compound.getInt("Career");
@@ -51,11 +51,9 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                 entity.clearRecipes();
                 List<CompoundTag> recipesList = offers.getList("Recipes", TagType.COMPOUND);
                 for (CompoundTag recipeTag : recipesList) {
-                    boolean experienceReward = recipeTag.getBool("rewardExp");
-                    int uses = recipeTag.getInt("uses");
-                    int maxUses = recipeTag.getInt("maxUses");
-                    CompoundTag sellTag = recipeTag.getCompound("sell"), buy1tag = recipeTag
-                        .getCompound("buy"), buy2tag = null;
+                    CompoundTag sellTag = recipeTag.getCompound("sell");
+                    CompoundTag buy1tag = recipeTag.getCompound("buy");
+                    CompoundTag buy2tag = null;
                     if (recipeTag.isCompound("buyB")) {
                         buy2tag = recipeTag.getCompound("buyB");
                     }
@@ -66,6 +64,9 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                     if (buy2tag != null) {
                         ingredients.add(NbtSerialization.readItem(buy2tag));
                     }
+                    boolean experienceReward = recipeTag.getBool("rewardExp");
+                    int uses = recipeTag.getInt("uses");
+                    int maxUses = recipeTag.getInt("maxUses");
                     MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
                         experienceReward);
                     recipe.setIngredients(ingredients);
@@ -80,7 +81,9 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     @Override
     public void save(GlowVillager entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putInt("Profession", entity.getProfession().ordinal());
+        if (entity.getProfession() != null && entity.getProfession() != Villager.Profession.HUSK) {
+            tag.putInt("Profession", entity.getProfession().ordinal());
+        }
         if (entity.getCareer() != null) {
             tag.putInt("Career", entity.getCareer().getId());
         }

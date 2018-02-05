@@ -4,6 +4,8 @@ import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
@@ -19,11 +21,18 @@ import org.bukkit.util.Vector;
 
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
+    @Getter
+    @Setter
     private Material material;
     private boolean canHurtEntities;
+    @Setter
     private boolean dropItem;
+    @Getter
+    @Setter
     private byte blockData;
     private Location sourceLocation;
+    @Getter
+    @Setter
     private CompoundTag blockEntityCompoundTag;
 
     // todo: implement falling block damage
@@ -67,25 +76,6 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     }
 
     @Override
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
-    }
-
-    @Override
-    public boolean getDropItem() {
-        return dropItem;
-    }
-
-    @Override
-    public void setDropItem(boolean dropItem) {
-        this.dropItem = dropItem;
-    }
-
-    @Override
     public boolean canHurtEntities() {
         return canHurtEntities;
     }
@@ -96,25 +86,13 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     }
 
     @Override
-    public byte getBlockData() {
-        return blockData;
-    }
-
-    public void setBlockData(byte blockData) {
-        this.blockData = blockData;
-    }
-
-    public CompoundTag getBlockEntityCompoundTag() {
-        return blockEntityCompoundTag;
-    }
-
-    public void setBlockEntityCompoundTag(CompoundTag blockEntityCompoundTag) {
-        this.blockEntityCompoundTag = blockEntityCompoundTag;
+    public int getBlockId() {
+        return material.getId();
     }
 
     @Override
-    public int getBlockId() {
-        return material.getId();
+    public boolean getDropItem() {
+        return dropItem;
     }
 
     @Override
@@ -125,7 +103,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         int blockIdData = getBlockId() | getBlockData() << 12;
 
         return Collections.singletonList(
-            new SpawnObjectMessage(id, getUniqueId(), 70, location, blockIdData)
+            new SpawnObjectMessage(entityId, getUniqueId(), 70, location, blockIdData)
         );
     }
 
@@ -168,11 +146,6 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 remove();
             } else {
                 placeFallingBlock();
-                if (material == Material.ANVIL) {
-                    ThreadLocalRandom random = ThreadLocalRandom.current();
-                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F
-                            + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
-                }
                 remove();
             }
         }
@@ -190,6 +163,11 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                     blockEntity.loadNbt(getBlockEntityCompoundTag());
                 }
             }
+        }
+        if (material == Material.ANVIL) {
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F
+                    + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
         }
     }
 

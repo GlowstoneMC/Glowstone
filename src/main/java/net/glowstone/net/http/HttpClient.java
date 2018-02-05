@@ -35,6 +35,13 @@ public class HttpClient {
         Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class,
         DefaultDnsServerAddressStreamProvider.INSTANCE);
 
+    /**
+     * Opens a URL.
+     *
+     * @param url the URL to download
+     * @param eventLoop an {@link EventLoop} that will receive the response body
+     * @param callback a callback to handle the response or any error
+     */
     public static void connect(String url, EventLoop eventLoop, HttpCallback callback) {
 
         URI uri = URI.create(url);

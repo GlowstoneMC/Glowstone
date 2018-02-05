@@ -8,12 +8,22 @@ import lombok.Data;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.util.TextMessage;
 
+/**
+ * Documented at http://wiki.vg/Protocol#Player_List_Item
+ */
 @Data
 public final class UserListItemMessage implements Message {
 
     private final Action action;
     private final List<Entry> entries;
 
+    /**
+     * Creates an instance.
+     *
+     * @param action the action code: 0 = add player; 1 = update gamemode; 2 = update latency;
+     *         3 = update display name; 4 = remove player
+     * @param entries the players to add, update or remove
+     */
     public UserListItemMessage(Action action, List<Entry> entries) {
         this.action = action;
         this.entries = entries;
@@ -21,7 +31,7 @@ public final class UserListItemMessage implements Message {
         for (Entry entry : entries) {
             if (entry.action != action) {
                 throw new IllegalArgumentException(
-                    "Entries must be " + action + ", not " + entry.action);
+                        "Entries must be " + action + ", not " + entry.action);
             }
         }
     }
@@ -36,11 +46,20 @@ public final class UserListItemMessage implements Message {
         return add(profile, 0, 0, null);
     }
 
+    /**
+     * Adds a player to this message.
+     *
+     * @param profile the player to add
+     * @param gameMode the player's game mode's value (see {@link org.bukkit.GameMode})
+     * @param ping the player's ping time in milliseconds (TODO: is this up, down, or round-trip?)
+     * @param displayName the name to display for the player
+     * @return
+     */
     public static Entry add(PlayerProfile profile, int gameMode, int ping,
-        TextMessage displayName) {
+            TextMessage displayName) {
         // TODO measure ping
         return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName,
-            Action.ADD_PLAYER);
+                Action.ADD_PLAYER);
     }
 
     public static UserListItemMessage addOne(PlayerProfile profile) {

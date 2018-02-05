@@ -39,6 +39,13 @@ public class RiverMapLayer extends MapLayer {
         this(seed, belowLayer, null);
     }
 
+    /**
+     * Creates a map layer that generates rivers.
+     *
+     * @param seed the layer's PRNG seed
+     * @param belowLayer the layer to apply before this one
+     * @param mergeLayer TODO: document this parameter
+     */
     public RiverMapLayer(long seed, MapLayer belowLayer, MapLayer mergeLayer) {
         super(seed);
         this.belowLayer = belowLayer;
@@ -82,16 +89,16 @@ public class RiverMapLayer extends MapLayer {
 
     private int[] mergeRivers(int x, int z, int sizeX, int sizeZ) {
         int[] values = belowLayer.generateValues(x, z, sizeX, sizeZ);
-        int[] mValues = mergeLayer.generateValues(x, z, sizeX, sizeZ);
+        int[] mergeValues = mergeLayer.generateValues(x, z, sizeX, sizeZ);
 
         int[] finalValues = new int[sizeX * sizeZ];
         for (int i = 0; i < sizeX * sizeZ; i++) {
-            int val = mValues[i];
-            if (OCEANS.contains(mValues[i])) {
-                val = mValues[i];
+            int val = mergeValues[i];
+            if (OCEANS.contains(mergeValues[i])) {
+                val = mergeValues[i];
             } else if (values[i] == RIVER_VALUE) {
-                if (SPECIAL_RIVERS.containsKey(mValues[i])) {
-                    val = SPECIAL_RIVERS.get(mValues[i]);
+                if (SPECIAL_RIVERS.containsKey(mergeValues[i])) {
+                    val = SPECIAL_RIVERS.get(mergeValues[i]);
                 } else {
                     val = GlowBiome.getId(RIVER);
                 }

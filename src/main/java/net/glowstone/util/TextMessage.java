@@ -21,7 +21,8 @@ public final class TextMessage {
     /**
      * The formatting ChatColors.
      */
-    private static final ChatColor[] FORMATTING = {ChatColor.MAGIC, ChatColor.BOLD, ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC};
+    private static final ChatColor[] FORMATTING = {ChatColor.MAGIC, ChatColor.BOLD,
+        ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC};
 
     /**
      * The JSON structure of this text message.
@@ -29,7 +30,8 @@ public final class TextMessage {
     private final JSONObject object;
 
     /**
-     * Construct a new chat message from a simple text string. Handles style and colors in the original string, converting them to the new format.
+     * Construct a new chat message from a simple text string. Handles style and colors in the
+     * original string, converting them to the new format.
      *
      * @param text The text of the message.
      */
@@ -175,7 +177,8 @@ public final class TextMessage {
     }
 
     @SuppressWarnings("unchecked")
-    private static void append(List<JSONObject> items, StringBuilder current, ChatColor color, Set<ChatColor> formatting) {
+    private static void append(List<JSONObject> items, StringBuilder current, ChatColor color,
+            Set<ChatColor> formatting) {
         if (current.length() == 0) {
             return;
         }

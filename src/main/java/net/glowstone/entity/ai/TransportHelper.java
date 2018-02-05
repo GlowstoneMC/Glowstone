@@ -10,6 +10,13 @@ public class TransportHelper {
         moveTowards(entity, direction, 0.3);
     }
 
+    /**
+     * Starts an entity moving horizontally toward a location (may overshoot).
+     *
+     * @param entity the entity to move
+     * @param direction the destination to move toward
+     * @param speed the speed to move
+     */
     public static void moveTowards(GlowLivingEntity entity, Location direction, double speed) {
         Location location = entity.getLocation();
         double deltaX = (direction.getX() - location.getX());

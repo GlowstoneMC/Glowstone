@@ -9,13 +9,14 @@ import net.glowstone.scoreboard.NbtScoreboardIoReader;
 import net.glowstone.scoreboard.NbtScoreboardIoWriter;
 
 /**
- * An implementation of the {@link ScoreboardIoService} which reads and writes scoreboards in NBT form
+ * An implementation of the {@link ScoreboardIoService} which reads and writes scoreboards in NBT
+ * form.
  */
 public final class NbtScoreboardIoService implements ScoreboardIoService {
 
     private static final String SCOREBOARD_SAVE_FILE = "scoreboard.dat";
     /**
-     * The root directory of the scoreboard
+     * The root directory of the scoreboard.
      */
     private final File dir;
     private final GlowServer server;

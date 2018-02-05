@@ -25,6 +25,9 @@ public class JunglePopulator extends BiomePopulator {
 
     private final MelonDecorator melonDecorator = new MelonDecorator();
 
+    /**
+     * Creates a populator specialized for jungles.
+     */
     public JunglePopulator() {
         treeDecorator.setAmount(65);
         treeDecorator.setTrees(TREES);
@@ -50,8 +53,8 @@ public class JunglePopulator extends BiomePopulator {
             int y = world.getHighestBlockYAt(x, z);
             Block sourceBlock = world.getBlockAt(x, y, z);
             BlockStateDelegate delegate = new BlockStateDelegate();
-            JungleBush bush = new JungleBush(random, sourceBlock.getLocation(), delegate);
-            if (bush.generate()) {
+            JungleBush bush = new JungleBush(random, delegate);
+            if (bush.generate(sourceBlock.getLocation())) {
                 delegate.updateBlockStates();
             }
         }

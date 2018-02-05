@@ -26,14 +26,14 @@ public class StructurePopulator extends BlockPopulator {
             int cz = source.getZ();
 
             random.setSeed(world.getSeed());
-            long xRand = random.nextLong();
-            long zRand = random.nextLong();
+            long randX = random.nextLong();
+            long randZ = random.nextLong();
 
             boolean placed = false;
             for (int x = cx - 8; x <= cx + 8 && !placed; x++) {
                 for (int z = cz - 8; z <= cz + 8 && !placed; z++) {
                     if (world.getChunkAt(x, z).isLoaded() || world.getChunkAt(x, z).load(true)) {
-                        random.setSeed(x * xRand + z * zRand ^ world.getSeed());
+                        random.setSeed(x * randX + z * randZ ^ world.getSeed());
                         Map<Integer, GlowStructure> structures = ((GlowWorld) world)
                             .getStructures();
                         int key = GlowChunk.Key.of(x, z).hashCode();
@@ -62,8 +62,8 @@ public class StructurePopulator extends BlockPopulator {
                 GlowStructure structure = it.next().getValue();
                 if (structure.getBoundingBox().intersectsWith(x, z, x + 15, z + 15)) {
                     BlockStateDelegate delegate = new BlockStateDelegate();
-                    if (structure.generate(random, x, z,
-                        delegate)) { // maybe later trigger a StructureGeneratedEvent event and cancel
+                    if (structure.generate(random, x, z, delegate)) {
+                        // maybe later trigger a StructureGeneratedEvent event and cancel
                         delegate.updateBlockStates();
                     } else {
                         delegate.rollbackBlockStates();

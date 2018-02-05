@@ -15,6 +15,9 @@ public class TeleportCommand extends VanillaCommand {
 
     private static final Entity[] NO_ENTITY = new Entity[0];
 
+    /**
+     * Creates the instance for this command.
+     */
     public TeleportCommand() {
         super("teleport",
             "Teleports entities to coordinates relative to the sender",
@@ -54,10 +57,13 @@ public class TeleportCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + "There's no entity matching the target.");
         } else {
             for (Entity target : targets) {
-                String x = args[1], y = args[2], z = args[3];
+                String x = args[1];
+                String y = args[2];
+                String z = args[3];
                 Location targetLocation = CommandUtils.getLocation(location, x, y, z);
                 if (args.length > 4) {
-                    String yaw = args[4], pitch = args[5];
+                    String yaw = args[4];
+                    String pitch = args[5];
                     targetLocation = CommandUtils.getRotation(target.getLocation(), yaw, pitch);
                 } else {
                     targetLocation.setYaw(target.getLocation().getYaw());

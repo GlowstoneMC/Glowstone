@@ -1,12 +1,14 @@
 package net.glowstone.util.bans;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import org.bukkit.OfflinePlayer;
@@ -16,53 +18,88 @@ import org.bukkit.OfflinePlayer;
  */
 public final class UuidListFile extends JsonListFile {
 
+    private Map<UUID, Entry> entriesByUuid = new ConcurrentHashMap<>();
+
+    @Override
+    public void load() {
+        super.load();
+        for (BaseEntry entry : entries) {
+            entriesByUuid.put(((Entry) entry).uuid, (Entry) entry);
+        }
+    }
+
     public UuidListFile(File file) {
         super(file);
     }
 
+    /**
+     * Returns a {@link PlayerProfile} for each player whose UUID is in the list file.
+     *
+     * @return a list of {@link PlayerProfile} instances
+     */
     public List<PlayerProfile> getProfiles() {
-        List<PlayerProfile> result = new ArrayList<>(entries.size());
-        for (BaseEntry baseEntry : entries) {
-            Entry entry = (Entry) baseEntry;
-            PlayerProfile profile = ProfileCache.getProfile(entry.uuid).join();
-            if (profile.getName() == null) {
-                profile = new PlayerProfile(entry.fallbackName, entry.uuid);
-            }
-            result.add(profile);
-        }
-        return result;
+        return entries
+                .stream()
+                .parallel()
+                .map(entry -> {
+                    try {
+                        return ProfileCache.getProfile(((Entry) entry).uuid).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
-    public boolean containsUUID(UUID uuid) {
-        for (BaseEntry baseEntry : entries) {
-            if (uuid.equals(((Entry) baseEntry).uuid)) {
-                return true;
-            }
-        }
-        return false;
+    /**
+     * Searches for a UUID.
+     *
+     * @param uuid the UUID to search for
+     * @return true if the UUID is present; false otherwise
+     */
+    public boolean containsUuid(UUID uuid) {
+        return entriesByUuid.containsKey(uuid);
     }
 
+    /**
+     * Checks whether the player with a given UUID is in this list.
+     *
+     * @param profile the player whose UUID will be looked up
+     * @return whether the player is on this list
+     */
     public boolean containsProfile(PlayerProfile profile) {
-        for (BaseEntry baseEntry : entries) {
-            if (profile.getUniqueId().equals(((Entry) baseEntry).uuid)) {
-                return true;
-            }
-        }
-        return false;
+        return containsUuid(profile.getUniqueId());
     }
 
+    /**
+     * If the given player is not already on this list, adds that player and saves the change to
+     * disk.
+     *
+     * @param player the player to add
+     */
     public void add(OfflinePlayer player) {
-        if (!containsUUID(player.getUniqueId())) {
-            entries.add(new Entry(player.getUniqueId(), player.getName()));
+        UUID playerUuid = player.getUniqueId();
+        if (!containsUuid(playerUuid)) {
+            Entry newEntry = new Entry(playerUuid, player.getName());
+            entries.add(newEntry);
+            entriesByUuid.put(playerUuid, newEntry);
             save();
         }
     }
 
+    /**
+     * If the given player is on this list, removes that player and saves the change to disk.
+     *
+     * @param profile the player to remove
+     */
     public void remove(PlayerProfile profile) {
+        UUID playerUuid = profile.getUniqueId();
+        entriesByUuid.remove(playerUuid);
+        // FIXME: Unnecessary linear time
         Iterator<BaseEntry> iter = entries.iterator();
         boolean modified = false;
         while (iter.hasNext()) {
-            if (((Entry) iter.next()).uuid.equals(profile.getUniqueId())) {
+            if (((Entry) iter.next()).uuid.equals(playerUuid)) {
                 iter.remove();
                 modified = true;
             }

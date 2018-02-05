@@ -175,6 +175,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
      *
      * @return true if the enchantment is a treasure, otherwise false
      */
+    @Override
     public boolean isTreasure() {
         return impl.treasure;
     }

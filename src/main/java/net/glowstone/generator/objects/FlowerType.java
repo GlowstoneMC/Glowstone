@@ -1,7 +1,10 @@
 package net.glowstone.generator.objects;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 
+@RequiredArgsConstructor
 public enum FlowerType {
     DANDELION(Material.YELLOW_FLOWER, 0),
     POPPY(Material.RED_ROSE, 0),
@@ -14,20 +17,9 @@ public enum FlowerType {
     TULIP_PINK(Material.RED_ROSE, 7),
     OXEYE_DAISY(Material.RED_ROSE, 8);
 
+    @Getter
     private final Material type;
+    @Getter
     private final int data;
-
-    FlowerType(Material type, int data) {
-        this.type = type;
-        this.data = data;
-    }
-
-    public Material getType() {
-        return type;
-    }
-
-    public int getData() {
-        return data;
-    }
 }
 

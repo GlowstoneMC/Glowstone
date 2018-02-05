@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -15,12 +17,13 @@ import org.yaml.snakeyaml.error.YAMLException;
 /**
  * Utilities for handling the server configuration files.
  */
-public final class WorldConfig {
+public final class WorldConfig implements DynamicallyTypedMapWithDoubles<WorldConfig.Key> {
 
     /**
      * The directory configurations are stored in.
      */
-    private final File configDir;
+    @Getter
+    private final File directory;
 
     /**
      * The main configuration file.
@@ -30,6 +33,7 @@ public final class WorldConfig {
     /**
      * The actual configuration data.
      */
+    @Getter
     private final YamlConfiguration config = new YamlConfiguration();
 
     /**
@@ -40,15 +44,15 @@ public final class WorldConfig {
     /**
      * Initialize a new ServerConfig and associated settings.
      *
-     * @param configDir The config directory, or null for default.
+     * @param directory The config directory, or null for default.
      * @param configFile The config file, or null for default.
      */
-    public WorldConfig(File configDir, File configFile) {
-        checkNotNull(configDir);
+    public WorldConfig(File directory, File configFile) {
+        checkNotNull(directory);
         checkNotNull(configFile);
         checkNotNull(cache);
 
-        this.configDir = configDir;
+        this.directory = directory;
         this.configFile = configFile;
     }
 
@@ -81,6 +85,7 @@ public final class WorldConfig {
     ////////////////////////////////////////////////////////////////////////////
     // Value getters
 
+    @Override
     public String getString(Key key) {
         if (cache.containsKey(key)) {
             return cache.get(key).toString();
@@ -90,6 +95,7 @@ public final class WorldConfig {
         return string;
     }
 
+    @Override
     public int getInt(Key key) {
         if (cache.containsKey(key)) {
             return (Integer) cache.get(key);
@@ -99,6 +105,7 @@ public final class WorldConfig {
         return integer;
     }
 
+    @Override
     public double getDouble(Key key) {
         if (cache.containsKey(key)) {
             return (Double) cache.get(key);
@@ -108,6 +115,12 @@ public final class WorldConfig {
         return doub;
     }
 
+    @Override
+    public float getFloat(Key key) {
+        return (float) getDouble(key);
+    }
+
+    @Override
     public boolean getBoolean(Key key) {
         if (cache.containsKey(key)) {
             return (Boolean) cache.get(key);
@@ -118,15 +131,12 @@ public final class WorldConfig {
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    // Fancy stuff
-
-    public File getDirectory() {
-        return configDir;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
     // Load and internals
 
+    /**
+     * Loads the configuration from disk if it exists. Creates it if it doesn't exist, creating the
+     * folder if necessary. Completes and saves the configuration if it's incomplete.
+     */
     public void load() {
         boolean changed = false;
 
@@ -135,8 +145,8 @@ public final class WorldConfig {
             GlowServer.logger.info("Creating default world config: " + configFile);
 
             // create config directory
-            if (!configDir.isDirectory() && !configDir.mkdirs()) {
-                GlowServer.logger.severe("Cannot create directory: " + configDir);
+            if (!directory.isDirectory() && !directory.mkdirs()) {
+                GlowServer.logger.severe("Cannot create directory: " + directory);
                 return;
             }
 
@@ -177,12 +187,8 @@ public final class WorldConfig {
             GlowServer.logger.severe("Config file " + file + " isn't valid!");
         } else {
             GlowServer.logger
-                .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
+                    .log(Level.SEVERE, "Cannot load " + file + ": " + e.getCause().getClass(), e);
         }
-    }
-
-    public YamlConfiguration getConfig() {
-        return config;
     }
 
     /**

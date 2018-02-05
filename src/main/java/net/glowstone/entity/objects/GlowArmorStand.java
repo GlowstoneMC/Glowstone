@@ -356,16 +356,18 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public List<Message> createSpawnMessage() {
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, UUID.randomUUID(), 78, location),
+            new SpawnObjectMessage(entityId, UUID.randomUUID(), 78, location),
             // TODO: once UUID is documented, actually use the appropriate ID here
-            new EntityMetadataMessage(id, metadata.getEntryList()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.OFF_HAND,
+            new EntityMetadataMessage(entityId, metadata.getEntryList()),
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.HELD_ITEM, getItemInHand()),
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.OFF_HAND,
                 equipment.getItemInOffHand()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.LEGGINGS_SLOT, getLeggings()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.CHESTPLATE_SLOT, getChestplate()),
-            new EntityEquipmentMessage(id, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.BOOTS_SLOT, getBoots()),
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.LEGGINGS_SLOT,
+                    getLeggings()),
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.CHESTPLATE_SLOT,
+                    getChestplate()),
+            new EntityEquipmentMessage(entityId, EntityEquipmentMessage.HELMET_SLOT, getHelmet())
         );
     }
 
@@ -373,7 +375,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public List<Message> createUpdateMessage(GlowSession session) {
         List<Message> messages = super.createUpdateMessage(session);
         if (needsKill) {
-            messages.add(new DestroyEntitiesMessage(Collections.singletonList(id)));
+            messages.add(new DestroyEntitiesMessage(Collections.singletonList(entityId)));
         }
 
         return messages;

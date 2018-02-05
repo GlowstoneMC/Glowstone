@@ -10,7 +10,9 @@ import org.bukkit.Location;
 public final class SpawnXpOrbMessage implements Message {
 
     private final int id;
-    private final double x, y, z;
+    private final double x;
+    private final double y;
+    private final double z;
     private final short count;
 
     public SpawnXpOrbMessage(int id, Location location, short count) {

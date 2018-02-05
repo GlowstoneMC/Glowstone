@@ -56,6 +56,7 @@ public class GlowAdvancement implements Advancement {
         requirements.add(criteria);
     }
 
+    @Override
     public List<String> getCriteria() {
         return criteriaIds;
     }

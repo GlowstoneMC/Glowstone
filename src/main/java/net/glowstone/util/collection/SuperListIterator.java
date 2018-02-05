@@ -21,6 +21,12 @@ public class SuperListIterator<E> implements ListIterator<E> {
         this.parentIterator = parentIterator;
     }
 
+    /**
+     * Creates an instance.
+     *
+     * @param parents a list of lists to iterate in a flattened manner
+     * @param index the initial index
+     */
     public SuperListIterator(List<List<E>> parents, int index) {
         this(parents);
         this.index = index;

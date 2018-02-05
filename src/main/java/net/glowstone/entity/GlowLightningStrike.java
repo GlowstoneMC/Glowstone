@@ -125,7 +125,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
-        return Collections.singletonList(new SpawnLightningStrikeMessage(id, x, y, z));
+        return Collections.singletonList(new SpawnLightningStrikeMessage(entityId, x, y, z));
     }
 
     @Override
@@ -161,6 +161,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
         }
     }
 
+    @Override
     public LightningStrike.Spigot spigot() {
         return spigot;
     }

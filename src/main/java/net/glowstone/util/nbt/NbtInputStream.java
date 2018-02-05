@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 /**
- * This class reads NBT, or Named Binary Tag streams, and produces an object graph of subclasses of the {@link Tag} object.
+ * This class reads NBT, or Named Binary Tag streams, and produces an object graph of subclasses of
+ * the {@link Tag} object.
  *
  * <p>The NBT format was created by Markus Persson, and the specification may be found at <a href="http://www.minecraft.net/docs/NBT.txt"> http://www.minecraft.net/docs/NBT.txt</a>.
  */
-public final class NBTInputStream implements Closeable {
+public final class NbtInputStream implements Closeable {
 
     /**
      * The data input stream.
@@ -28,7 +29,7 @@ public final class NBTInputStream implements Closeable {
      * @param is The input stream.
      * @throws IOException if an I/O error occurs.
      */
-    public NBTInputStream(InputStream is) throws IOException {
+    public NbtInputStream(InputStream is) throws IOException {
         this(is, true);
     }
 
@@ -42,7 +43,7 @@ public final class NBTInputStream implements Closeable {
      * @throws IOException if an I/O error occurs.
      */
     @SuppressWarnings("resource")
-    public NBTInputStream(InputStream is, boolean compressed) throws IOException {
+    public NbtInputStream(InputStream is, boolean compressed) throws IOException {
         this.is = new DataInputStream(compressed ? new GZIPInputStream(is) : is);
     }
 
@@ -53,7 +54,7 @@ public final class NBTInputStream implements Closeable {
      * @throws IOException if an I/O error occurs.
      */
     public CompoundTag readCompound() throws IOException {
-        return readCompound(NBTReadLimiter.UNLIMITED);
+        return readCompound(NbtReadLimiter.UNLIMITED);
     }
 
     /**
@@ -63,7 +64,7 @@ public final class NBTInputStream implements Closeable {
      * @return The tag that was read.
      * @throws IOException if an I/O error occurs.
      */
-    public CompoundTag readCompound(NBTReadLimiter readLimiter) throws IOException {
+    public CompoundTag readCompound(NbtReadLimiter readLimiter) throws IOException {
         // read type
         TagType type = TagType.byIdOrError(is.readUnsignedByte());
         if (type != TagType.COMPOUND) {
@@ -78,7 +79,7 @@ public final class NBTInputStream implements Closeable {
         return (CompoundTag) readTagPayload(type, 0, readLimiter);
     }
 
-    private CompoundTag readCompound(int depth, NBTReadLimiter readLimiter) throws IOException {
+    private CompoundTag readCompound(int depth, NbtReadLimiter readLimiter) throws IOException {
         CompoundTag result = new CompoundTag();
 
         while (true) {
@@ -110,7 +111,7 @@ public final class NBTInputStream implements Closeable {
      * @throws IOException if an I/O error occurs.
      */
     @SuppressWarnings("unchecked")
-    private Tag readTagPayload(TagType type, int depth, NBTReadLimiter readLimiter)
+    private Tag readTagPayload(TagType type, int depth, NbtReadLimiter readLimiter)
         throws IOException {
 
         if (depth > 512) {

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import jline.console.ConsoleReader;
 import jline.console.completer.Completer;
+import lombok.Getter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -54,6 +55,12 @@ public final class ConsoleManager {
     private final ChatColor[] colors = ChatColor.values();
 
     private ConsoleReader reader;
+    /**
+     * Returns this ConsoleManager's console as a ConsoleCommandSender.
+     *
+     * @return the ConsoleCommandSender instance for this ConsoleManager's console
+     */
+    @Getter
     private ConsoleCommandSender sender;
 
     private boolean running = true;
@@ -136,18 +143,9 @@ public final class ConsoleManager {
     }
 
     /**
-     * Returns this ConsoleManager's console as a ConsoleCommandSender.
-     *
-     * @return the ConsoleCommandSender instance for this ConsoleManager's console
-     */
-    public ConsoleCommandSender getSender() {
-        return sender;
-    }
-
-    /**
      * Starts the console.
      *
-     * @param jline TODO: document this parameter
+     * @param jline whether the console should use JLine
      */
     public void startConsole(boolean jline) {
         this.jline = jline;

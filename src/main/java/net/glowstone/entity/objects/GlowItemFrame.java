@@ -139,10 +139,10 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         int yaw = getYaw();
 
         return Arrays.asList(
-            new SpawnObjectMessage(id, getUniqueId(), SpawnObjectMessage.ITEM_FRAME,
+            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.ITEM_FRAME,
                 location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw,
                 HangingFace.getByBlockFace(getFacing()).ordinal()),
-            new EntityMetadataMessage(id, metadata.getEntryList())
+            new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
 
@@ -180,7 +180,7 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
                 double y = location.getY();
                 double z = location.getZ();
                 player.getSession()
-                    .send(new EntityTeleportMessage(id, x + xoffset, y, z + zoffset, yaw, 0));
+                    .send(new EntityTeleportMessage(entityId, x + xoffset, y, z + zoffset, yaw, 0));
             }
         }
     }
