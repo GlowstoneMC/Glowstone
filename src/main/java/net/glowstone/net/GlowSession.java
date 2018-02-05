@@ -10,6 +10,15 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.logging.Level;
+import java.net.InetSocketAddress;
+import javax.crypto.SecretKey;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -38,12 +47,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-
-import javax.crypto.SecretKey;
-import java.net.InetSocketAddress;
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.logging.Level;
 
 /**
  * A single connection to the server, which may or may not be associated with a player.
