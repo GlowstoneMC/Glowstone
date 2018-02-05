@@ -21,10 +21,15 @@ public class ParticleTest {
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
     public static Collection<Effect> getCases() {
+        try {
             return Stream.of(Effect.values())
                     .parallel()
                     .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
                     .collect(Collectors.toList());
+        } finally {
+            // Probably a JUnit bug, since parameterized tests in Jupiter are experimental
+            System.err.println("FIXME: Test times out without this println statement");
+        }
     }
 
     @MethodSource("getCases")
