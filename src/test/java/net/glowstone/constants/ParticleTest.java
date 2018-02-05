@@ -20,6 +20,7 @@ public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
+    // FIXME: Times out if we return the Stream<Effect> directly, which JUnit says is supported
     public static List<Effect> getCases() {
         try {
             return Stream.of(Effect.values())
