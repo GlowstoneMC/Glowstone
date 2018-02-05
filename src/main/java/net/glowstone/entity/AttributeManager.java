@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.EntityPropertyMessage;
 
+/**
+ * Manages the attributes described at https://minecraft.gamepedia.com/Attribute
+ */
 public class AttributeManager {
 
     private static final List<Modifier> EMPTY_LIST = new ArrayList<>();
@@ -129,14 +132,34 @@ public class AttributeManager {
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
 
 
+        /**
+         * Attribute name from https://minecraft.gamepedia.com/Attribute
+         */
         private final String name;
+
+        /**
+         * Default attribute value.
+         */
         @Getter
         private final double def;
+        /**
+         * Minimum attribute value.
+         */
         @Getter
         private final double min;
+        /**
+         * Maximum attribute value.
+         */
         @Getter
         private final double max;
 
+        /**
+         * Creates an instance with a minimum value of 0.
+         *
+         * @param name attribute name
+         * @param def default value
+         * @param max maximum value
+         */
         Key(String name, double def, double max) {
             this(name, def, 0, max);
         }
