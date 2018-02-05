@@ -6,7 +6,7 @@
   <groupId>net.glowstone</groupId>
   <artifactId>glowstone</artifactId>
   <packaging>jar</packaging>
-  <version>2018.1.0-SNAPSHOT</version>
+  <version>2018.2.0-SNAPSHOT</version>
   <name>Glowstone</name>
   <url>https://www.glowstone.net</url>
   <description>A fast, customizable and compatible open source Minecraft server.</description>
@@ -19,6 +19,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <kotlin.version>1.2.20</kotlin.version>
+    <powermockVersion>2.0.0-beta.5</powermockVersion>
   </properties>
 
   <repositories>
@@ -106,9 +107,15 @@
     </dependency>
     <!-- Tests -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>4.12.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.0.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -119,14 +126,20 @@
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <version>1.6.6</version>
+      <artifactId>powermock-core</artifactId>
+      <version>${powermockVersion}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito</artifactId>
-      <version>1.6.6</version>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>${powermockVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <version>${powermockVersion}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
