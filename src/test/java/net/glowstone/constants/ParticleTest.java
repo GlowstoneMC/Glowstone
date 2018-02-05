@@ -20,10 +20,10 @@ public class ParticleTest {
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
     public static Stream<Effect> getCases() {
-        return Arrays.asList(Effect.values())
-                .parallelStream()
+        return Stream.of(Effect.values())
+                .parallel()
                 .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
-                .limit(10);
+                .limit(0);
     }
 
     @MethodSource("getCases")
