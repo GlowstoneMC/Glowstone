@@ -19,9 +19,9 @@ public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
-    public static final Stream<Effect> getCases() {
+    public static Stream<Effect> getCases() {
         return Stream.of(Effect.values())
-                .filter(particle -> particle.getType() == Effect.Type.PARTICLE);
+                .filter(effect -> effect.getType() == Effect.Type.PARTICLE);
     }
 
     @MethodSource("getCases")
