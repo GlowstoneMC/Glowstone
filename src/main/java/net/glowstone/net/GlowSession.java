@@ -10,15 +10,6 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.CodecException;
-import java.net.InetSocketAddress;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Queue;
-import java.util.logging.Level;
-import javax.crypto.SecretKey;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -48,6 +39,12 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
+import javax.crypto.SecretKey;
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.logging.Level;
+
 /**
  * A single connection to the server, which may or may not be associated with a player.
  *
@@ -71,13 +68,13 @@ public class GlowSession extends BasicSession {
     /**
      * A queue of incoming and unprocessed messages.
      */
-    private final Queue<Message> messageQueue = new ArrayDeque<>();
+    private final Queue<Message> messageQueue = new ConcurrentLinkedDeque<>();
 
     /**
      * The remote address of the connection.
      */
     @Getter
-    private InetSocketAddress address;
+    private volatile InetSocketAddress address;
 
     /**
      * The state of the connection.
@@ -85,7 +82,7 @@ public class GlowSession extends BasicSession {
      * @return true if this session's state is online
      */
     @Getter
-    private boolean online;
+    private volatile boolean online;
     /**
      * The randomly-generated verify token used in authentication for this session.
      *
@@ -94,27 +91,27 @@ public class GlowSession extends BasicSession {
      */
     @Getter
     @Setter
-    private byte[] verifyToken;
+    private volatile byte[] verifyToken;
 
     /**
      * The verify username used in authentication.
      */
     @Getter
     @Setter
-    private String verifyUsername;
+    private volatile String verifyUsername;
 
     /**
      * The hostname/port the player used to connect to the server.
      */
     @Getter
     @Setter
-    private InetSocketAddress virtualHost;
+    private volatile InetSocketAddress virtualHost;
 
     /**
      * The version used to connect.
      */
     @Getter
-    private int version = -1;
+    private volatile int version = -1;
 
     /**
      * Data regarding a user who has connected through a proxy, used to provide online-mode UUID and
@@ -125,7 +122,7 @@ public class GlowSession extends BasicSession {
      * @return The proxy data to use, or null for an unproxied connection.
      */
     @Getter
-    private ProxyData proxyData;
+    private volatile ProxyData proxyData;
 
     /**
      * The player associated with this session (if there is one).
@@ -133,27 +130,27 @@ public class GlowSession extends BasicSession {
      * @return The player, or {@code null} if no player is associated with this session.
      */
     @Getter
-    private GlowPlayer player;
+    private volatile GlowPlayer player;
 
     /**
      * The ID of the last ping message sent, used to ensure the client responded correctly.
      */
-    private long pingMessageId;
+    private volatile long pingMessageId;
 
     /**
      * The number of ticks until previousPlacement must be cleared.
      */
-    private int previousPlacementTicks;
+    private volatile int previousPlacementTicks;
 
     /**
      * If the connection has been disconnected.
      */
-    private boolean disconnected;
+    private volatile boolean disconnected;
 
     /**
      * If compression packet has been sent.
      */
-    private boolean compresssionSent;
+    private volatile boolean compresssionSent;
 
     /**
      * Creates a new session.
