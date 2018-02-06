@@ -20,17 +20,9 @@ public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
-    // FIXME: Times out if we return the Stream<Effect> directly, which JUnit says is supported
-    public static List<Effect> getCases() {
-        try {
-            return Stream.of(Effect.values())
-                    .parallel()
-                    .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
-                    .collect(Collectors.toList());
-        } finally {
-            // Necessary due to https://github.com/junit-team/junit5/issues/1283
-            System.err.println();
-        }
+    public static Stream<Effect> getCases() {
+        return Stream.of(Effect.values())
+                .filter(effect -> effect.getType() == Effect.Type.PARTICLE);
     }
 
     @MethodSource("getCases")
