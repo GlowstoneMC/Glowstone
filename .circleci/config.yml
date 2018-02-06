@@ -11,7 +11,7 @@ jobs:
 
         steps:
             - run: mvn --version
-            - run: java --version
+            - run: java -version
 
             - checkout
 
