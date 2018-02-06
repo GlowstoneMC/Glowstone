@@ -10,6 +10,10 @@ jobs:
             MAVEN_OPTS: -Xmx3200m
 
         steps:
+            - run:
+                - mvn --version
+                - java --version
+
             - checkout
 
             - restore_cache:
