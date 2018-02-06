@@ -10,9 +10,8 @@ jobs:
             MAVEN_OPTS: -Xmx3200m
 
         steps:
-            - run:
-                - mvn --version
-                - java --version
+            - run: mvn --version
+            - run: java --version
 
             - checkout
 
