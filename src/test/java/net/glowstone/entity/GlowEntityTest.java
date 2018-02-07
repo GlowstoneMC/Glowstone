@@ -35,6 +35,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * Superclass for tests of entity classes. Configures necessary mocks for subclasses.
  *
+ * TODO: Create subclasses to test all types of entities.
+ *
  * @param <T> the class under test
  */
 @PrepareForTest({GlowWorld.class, GlowServer.class})
