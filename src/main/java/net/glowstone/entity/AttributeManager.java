@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.EntityPropertyMessage;
 
+/**
+ * Manages the attributes described at https://minecraft.gamepedia.com/Attribute
+ */
 public class AttributeManager {
 
     private static final List<Modifier> EMPTY_LIST = new ArrayList<>();
@@ -74,7 +77,7 @@ public class AttributeManager {
      * @param value the new value
      */
     public void setProperty(Key key, double value) {
-        setProperty(key.toString(), Math.max(0, Math.min(value, key.max)), null);
+        setProperty(key.toString(), Math.max(key.min, Math.min(value, key.max)), null);
     }
 
     /**
@@ -124,15 +127,42 @@ public class AttributeManager {
         KEY_ATTACK_SPEED("generic.attackSpeed", 4.0, 1024.0),
         KEY_ARMOR("generic.armor", 0.0, 30.0),
         KEY_ARMOR_TOUGHNESS("generic.armorToughness", 0.0, 20.0),
+        KEY_LUCK("generic.luck", 0, -1024, 1024),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
 
 
+        /**
+         * Attribute name from https://minecraft.gamepedia.com/Attribute
+         */
         private final String name;
+
+        /**
+         * Default attribute value.
+         */
         @Getter
         private final double def;
+        /**
+         * Minimum attribute value.
+         */
+        @Getter
+        private final double min;
+        /**
+         * Maximum attribute value.
+         */
         @Getter
         private final double max;
+
+        /**
+         * Creates an instance with a minimum value of 0.
+         *
+         * @param name attribute name
+         * @param def default value
+         * @param max maximum value
+         */
+        Key(String name, double def, double max) {
+            this(name, def, 0, max);
+        }
 
         @Override
         public String toString() {
