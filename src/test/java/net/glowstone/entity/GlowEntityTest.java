@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Answers.RETURNS_SMART_NULLS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import com.flowpowered.network.Message;
 import java.io.IOException;
@@ -13,13 +15,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
@@ -39,7 +44,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  * @param <T> the class under test
  */
-@PrepareForTest({GlowWorld.class, GlowServer.class})
+@PrepareForTest({GlowWorld.class, GlowServer.class, EventFactory.class})
 @RunWith(PowerMockRunner.class)
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
@@ -79,7 +84,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(server.getWorlds()).thenReturn(Collections.singletonList(world));
         when(server.getItemFactory()).thenReturn(itemFactory);
         when(server.getEntityIdManager()).thenReturn(idManager);
-
+        mockStatic(EventFactory.class);
+        when(EventFactory.callEvent(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
         // ensureServerConversions returns its argument
         when(itemFactory.ensureServerConversions(any(ItemStack.class)))
                 .thenAnswer(invocation -> invocation.getArguments()[0]);
