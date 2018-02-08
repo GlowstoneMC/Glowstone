@@ -32,7 +32,6 @@ import org.mockito.Mock;
 import org.mockito.internal.matchers.GreaterThan;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-@PrepareForTest(GlowScheduler.class)
 public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
     @Mock
