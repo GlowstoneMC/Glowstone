@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowEntityTest;
 import net.glowstone.entity.FishingRewardManager;
@@ -22,6 +23,7 @@ import net.glowstone.testutils.ServerShim;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -30,6 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.GreaterThan;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
@@ -64,6 +67,8 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         hook.reelIn();
         assertTrue(hook.isRemoved());
         verify(world, never()).dropItemNaturally(any(Location.class), any(ItemStack.class));
+        PowerMockito.verifyStatic(EventFactory.class, never());
+        EventFactory.callEvent(any(PlayerFishEvent.class));
     }
 
     @Test
@@ -75,6 +80,8 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         verify(player).giveExp(intThat(new GreaterThan<>(0)));
         verify(world).dropItemNaturally(eq(location),
                 argThat(itemStack -> !InventoryUtil.isEmpty(itemStack)));
+        PowerMockito.verifyStatic(EventFactory.class);
+        EventFactory.callEvent(any(PlayerFishEvent.class));
     }
 
     @Test
@@ -86,5 +93,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         assertTrue(hook.isRemoved());
         verify(world, never()).dropItemNaturally(any(Location.class), any(ItemStack.class));
         verify(player, never()).giveExp(anyInt());
+        PowerMockito.verifyStatic(EventFactory.class, never());
+        EventFactory.callEvent(any(PlayerFishEvent.class));
     }
 }
