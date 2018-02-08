@@ -21,17 +21,20 @@ public class ItemFishingRod extends ItemType {
             player.getCurrentFishingHook().reelIn();
             player.setCurrentFishingHook(null);
         }
-
     }
 
+    /**
+     * Determines the initial location of the fishing hook.
+     *
+     * @param player the player who is fishing
+     * @return the initial location of the hook
+     */
     private Location calculateSpawnLocation(Player player) {
         Location loc = player.getEyeLocation();
         Vector direction = loc.getDirection();
-
         double dx = direction.getX() * player.getWidth() / 2;
         double dz = direction.getZ() * player.getWidth() / 2;
         loc.add(dx, 0, dz);
-
         return loc;
     }
 }

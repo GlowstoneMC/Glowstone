@@ -12,6 +12,7 @@ import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import net.glowstone.GlowServer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -38,6 +39,10 @@ public class FishingRewardManager {
 
     private void registerBuiltins(ConfigurationSection mainSection) {
         ConfigurationSection valuesSection = mainSection.getConfigurationSection("rewards");
+        if (valuesSection == null) {
+            GlowServer.logger.warning("Invalid fishingRewards.yml: no 'rewards' section");
+            return;
+        }
         Set<String> categories = valuesSection.getKeys(false);
         for (String strCategorie : categories) {
             RewardCategory category = RewardCategory.valueOf(strCategorie);
@@ -48,6 +53,12 @@ public class FishingRewardManager {
         }
     }
 
+    /**
+     * Returns all the {@link RewardItem} instances for the items in the given category.
+     *
+     * @param category the category to look up
+     * @return a collection of the reward items in that category
+     */
     public Collection<RewardItem> getCategoryItems(RewardCategory category) {
         return values.get(category);
     }
@@ -59,10 +70,13 @@ public class FishingRewardManager {
         TREASURE(5.0, 2.1),
         TRASH(10.0, -1.95);
 
+        /**
+         * Percent chance to get an item in this category, with an unenchanted fishing pole.
+         */
         private final double chance;
 
         /**
-         * Additional chance per level of "Luck of the Sea" enchantment.
+         * Additional chance in % points per level of "Luck of the Sea" enchantment.
          */
         private final double modifier;
     }
@@ -72,6 +86,9 @@ public class FishingRewardManager {
     @AllArgsConstructor
     public static class RewardItem implements ConfigurationSerializable {
 
+        /**
+         * The item to drop, without any random enchantments.
+         */
         private ItemStack item;
         /**
          * Chance to get this item in this category.
@@ -86,9 +103,7 @@ public class FishingRewardManager {
          */
         private int maxEnchantmentLevel;
 
-        private RewardItem() {
-
-        }
+        private RewardItem() {}
 
         @Override
         public Map<String, Object> serialize() {
