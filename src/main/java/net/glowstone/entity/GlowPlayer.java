@@ -203,6 +203,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * A static entity id to use when telling the client about itself.
      */
     public static final int SELF_ID = 0;
+    public static final int HOOK_MAX_DISTANCE = 32;
 
     /**
      * The network session attached to this player.
@@ -947,7 +948,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 setCurrentFishingHook(null);
             }
 
-            if (hook.location.distanceSquared(location) > 32 * 32) {
+            if (hook.location.distanceSquared(location) > HOOK_MAX_DISTANCE * HOOK_MAX_DISTANCE) {
                 setCurrentFishingHook(null);
             }
         }

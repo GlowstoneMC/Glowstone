@@ -1,9 +1,12 @@
 package net.glowstone.entity.passive;
 
+import static org.bukkit.event.player.PlayerFishEvent.State.CAUGHT_FISH;
+
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.EventFactory;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;
 import net.glowstone.entity.FishingRewardManager.RewardItem;
@@ -20,11 +23,31 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
 
+    /**
+     * The minimum time, in seconds, to make the player wait for a bite when using an unenchanted
+     * fishing pole.
+     */
+    private static final int MINIMUM_BASE_WAIT = 5;
+    /**
+     * The maximum time, in seconds, to make the player wait for a bite.
+     */
+    private static final int MAXIMUM_WAIT = 45;
+    /**
+     * Waiting time saved per level of lure (down to a minimum of zero).
+     */
+    private static final int SECONDS_SAVED_PER_LURE_LEVEL = 5;
+    /**
+     * Waiting time in ticks after a bite, before it is considered missed if the player hasn't
+     * clicked.
+     */
+    private static final int CLICK_TIMEOUT_TICKS = 10;
     private int lived;
     private int lifeTime;
     private final ItemStack itemStack;
@@ -54,10 +77,10 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     private int calculateLifeTime() {
         // Waiting time is 5-45 seconds
-        int lifeTime = ThreadLocalRandom.current().nextInt(5, 46);
+        int lifeTime = ThreadLocalRandom.current().nextInt(MINIMUM_BASE_WAIT, MAXIMUM_WAIT + 1);
 
         int level = getEnchantmentLevel(Enchantment.LURE);
-        lifeTime -= level * 5;
+        lifeTime -= level * SECONDS_SAVED_PER_LURE_LEVEL;
         lifeTime = Math.max(lifeTime, 0);
         lifeTime *= 20;
         return lifeTime;
@@ -128,20 +151,20 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         // TODO: Bopper movement
         if (location.getBlock().getType() == Material.WATER) {
             increaseTimeLived();
-
         }
     }
 
     private void increaseTimeLived() {
         // "The window for reeling in when a fish bites is about half a second.
         // If a bite is missed, the line can be left in the water to wait for another bite."
-        if (lived - lifeTime > 10) {
+        // TODO: Option to give high-latency players more time? Not much abuse potential!
+        if (lived - lifeTime > CLICK_TIMEOUT_TICKS) {
             lifeTime = calculateLifeTime();
             lived = 0;
         }
 
-        // "If the bobber is not directly exposed to sun or moonlight,[note 1] the wait time will
-        // be approximately doubled.[note 2]"
+        // "If the bobber is not directly exposed to sun or moonlight, the wait time will be
+        // approximately doubled."
         Block highestBlockAt = world.getHighestBlockAt(location);
         if (location.getY() < highestBlockAt.getLocation().getY()) {
             if (ThreadLocalRandom.current().nextDouble(100) < 50) {
@@ -149,7 +172,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             }
         }
 
-        if (GlowBiomeClimate.isRainy(location.getBlock())) {
+        if (GlowBiomeClimate.isRainy(location.getBlock()) && lived < lifeTime) {
             if (ThreadLocalRandom.current().nextDouble(100) < 20) {
                 lived++;
             }
@@ -163,10 +186,17 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
      */
     public void reelIn() {
         if (location.getBlock().getType() == Material.WATER) {
-            if (getShooter() instanceof Player) {
-                // TODO: Item should "fly" towards player
-                world.dropItemNaturally(((Player) getShooter()).getLocation(), getRewardItem());
-                ((Player) getShooter()).giveExp(ThreadLocalRandom.current().nextInt(1, 7));
+            ProjectileSource shooter = getShooter();
+            if (shooter instanceof Player) {
+                PlayerFishEvent fishEvent
+                        = new PlayerFishEvent((Player) shooter, this, null, CAUGHT_FISH);
+                fishEvent.setExpToDrop(ThreadLocalRandom.current().nextInt(1, 7));
+                fishEvent = EventFactory.callEvent(fishEvent);
+                if (!fishEvent.isCancelled()) {
+                    // TODO: Item should "fly" towards player
+                    world.dropItemNaturally(((Player) getShooter()).getLocation(), getRewardItem());
+                    ((Player) getShooter()).giveExp(fishEvent.getExpToDrop());
+                }
             }
         }
         remove();

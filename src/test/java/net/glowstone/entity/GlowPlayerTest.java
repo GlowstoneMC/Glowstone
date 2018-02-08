@@ -126,12 +126,4 @@ public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
         player.pulse();
         assertNull(player.getCurrentFishingHook());
     }
-
-    private static class PlayerSupplier implements Supplier<GlowPlayer> {
-
-        @Override
-        public GlowPlayer get() {
-            return new GlowPlayer(session, profile, reader);
-        }
-    }
 }
