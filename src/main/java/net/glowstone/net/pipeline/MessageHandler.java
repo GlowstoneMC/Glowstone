@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.Getter;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
 
@@ -17,6 +18,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
     /**
      * The associated session.
      */
+    @Getter
     private final AtomicReference<GlowSession> session = new AtomicReference<>(null);
     private final GameServer connectionManager;
 
