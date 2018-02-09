@@ -6,7 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
 import java.util.concurrent.atomic.AtomicReference;
-import lombok.Getter;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
 
