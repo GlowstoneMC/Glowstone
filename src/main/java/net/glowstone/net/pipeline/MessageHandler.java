@@ -18,7 +18,6 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
     /**
      * The associated session.
      */
-    @Getter
     private final AtomicReference<GlowSession> session = new AtomicReference<>(null);
     private final GameServer connectionManager;
 
@@ -64,4 +63,7 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
         session.get().onInboundThrowable(cause);
     }
 
+    public GlowSession getSession() {
+        return session.get();
+    }
 }
