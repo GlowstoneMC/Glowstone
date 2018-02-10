@@ -62,4 +62,11 @@ public final class MessageHandler extends SimpleChannelInboundHandler<Message> {
         session.get().onInboundThrowable(cause);
     }
 
+    public GlowSession getSession() {
+        return session.get();
+    }
+    
+    public void setSession(GlowSession newSession) {
+        session.set(newSession);
+    }
 }
