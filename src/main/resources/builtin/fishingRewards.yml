@@ -19,7 +19,7 @@ rewards:
       item: 
         data: 3
         type: RAW_FISH
-  TRASH: 
+  JUNK:
     - 
       chance: 12
       item: 

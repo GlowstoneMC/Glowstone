@@ -64,12 +64,16 @@ public class FishingRewardManager {
         return values.get(category);
     }
 
+    /**
+     * Category names must match one-to-one with the subtags of "rewards" in
+     * builtin/fishingRewards.yml.
+     */
     @Getter
     @AllArgsConstructor
     public enum RewardCategory {
         FISH(85.0, -1.15),
         TREASURE(5.0, 2.1),
-        TRASH(10.0, -1.95);
+        JUNK(10.0, -1.95);
 
         /**
          * Percent chance to get an item in this category, with an unenchanted fishing pole.
