@@ -37,6 +37,7 @@ public class FishingRewardManager {
         registerBuiltins(builtinValues);
     }
 
+    @SuppressWarnings("unchecked")
     private void registerBuiltins(ConfigurationSection mainSection) {
         ConfigurationSection valuesSection = mainSection.getConfigurationSection("rewards");
         if (valuesSection == null) {
@@ -44,9 +45,9 @@ public class FishingRewardManager {
             return;
         }
         Set<String> categories = valuesSection.getKeys(false);
-        for (String strCategorie : categories) {
-            RewardCategory category = RewardCategory.valueOf(strCategorie);
-            List<Map<?, ?>> items = valuesSection.getMapList(strCategorie);
+        for (String strCategory : categories) {
+            RewardCategory category = RewardCategory.valueOf(strCategory);
+            List<Map<?, ?>> items = valuesSection.getMapList(strCategory);
             for (Map<?, ?> item : items) {
                 values.put(category, RewardItem.deserialize((Map<String, Object>) item));
             }
