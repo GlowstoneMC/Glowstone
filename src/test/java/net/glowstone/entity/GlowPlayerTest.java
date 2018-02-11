@@ -72,6 +72,7 @@ public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
 
     // Finally, the star of the show
     private GlowPlayer player;
+    private ItemStack fishingRodItem;
 
     public GlowPlayerTest() {
         super(ignoredLocation -> new GlowPlayer(session, profile, reader));
@@ -98,13 +99,14 @@ public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
         when(block.getType()).thenReturn(Material.AIR);
         when(block.getRelative(any(BlockFace.class))).thenReturn(block);
         player = entityCreator.apply(location);
-        player.setItemInHand(new ItemStack(Material.FISHING_ROD));
+        fishingRodItem = new ItemStack(Material.FISHING_ROD);
+        player.setItemInHand(fishingRodItem);
         when(session.getPlayer()).thenReturn(player);
     }
 
     @Test
     public void testFishingContinues() {
-        final GlowFishingHook fishingHook = new GlowFishingHook(location);
+        final GlowFishingHook fishingHook = new GlowFishingHook(location, fishingRodItem, player);
         player.setCurrentFishingHook(fishingHook);
         player.pulse();
         assertSame(fishingHook, player.getCurrentFishingHook());
@@ -112,7 +114,7 @@ public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
 
     @Test
     public void testFishingStopsAtDistance() {
-        player.setCurrentFishingHook(new GlowFishingHook(location));
+        player.setCurrentFishingHook(new GlowFishingHook(location, fishingRodItem, player));
         player.teleport(new Location(world, 33, 0, 0));
         player.endTeleport();
         player.pulse();
@@ -121,7 +123,7 @@ public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
 
     @Test
     public void testFishingStopsWhenNoPoleHeld() {
-        player.setCurrentFishingHook(new GlowFishingHook(location));
+        player.setCurrentFishingHook(new GlowFishingHook(location, fishingRodItem, player));
         player.setItemInHand(InventoryUtil.createEmptyStack());
         player.pulse();
         assertNull(player.getCurrentFishingHook());

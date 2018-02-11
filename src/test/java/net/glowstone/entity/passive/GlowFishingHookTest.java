@@ -37,15 +37,16 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 
 public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
+    /** This needs to be static because it's used in the constructor's super call. */
     @Mock
-    private GlowPlayer player;
+    private static GlowPlayer player;
     @Mock
     private GlowBlock block;
 
     private FishingRewardManager fishingRewardManager;
 
     public GlowFishingHookTest() {
-        super(GlowFishingHook::new);
+        super(location -> new GlowFishingHook(location, null, player));
     }
 
     @Before
@@ -62,7 +63,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
     @Test
     public void testReelInNotPlayer() {
-        GlowFishingHook hook = new GlowFishingHook(location);
+        GlowFishingHook hook = new GlowFishingHook(location, null, player);
         hook.setShooter(new GlowCreeper(location));
         hook.reelIn();
         assertTrue(hook.isRemoved());
@@ -73,7 +74,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
     @Test
     public void testReelIn() {
-        GlowFishingHook hook = new GlowFishingHook(location);
+        GlowFishingHook hook = new GlowFishingHook(location, null, player);
         hook.setShooter(player);
         hook.reelIn();
         assertTrue(hook.isRemoved());
@@ -87,7 +88,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
     @Test
     public void testReelInNotInWater() {
         when(block.getType()).thenReturn(Material.DIRT);
-        GlowFishingHook hook = new GlowFishingHook(location);
+        GlowFishingHook hook = new GlowFishingHook(location, null, player);
         hook.setShooter(player);
         hook.reelIn();
         assertTrue(hook.isRemoved());

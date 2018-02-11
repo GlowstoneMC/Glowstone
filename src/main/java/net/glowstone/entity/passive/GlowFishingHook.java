@@ -4,19 +4,24 @@ import static org.bukkit.event.player.PlayerFishEvent.State.CAUGHT_FISH;
 
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;
 import net.glowstone.entity.FishingRewardManager.RewardItem;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.projectile.GlowProjectile;
+import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -29,6 +34,28 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
+    private static final double VISIBLE_DISTANCE = 16.0;
+    public static final Message[] EMPTY_MESSAGE_ARRAY = new Message[0];
+
+    @Override
+    public void setShooter(ProjectileSource shooter) {
+        setShooterInternal(shooter);
+        World world = location.getWorld();
+        if (world instanceof GlowWorld) {
+            List<Message> respawnMessages = new LinkedList<>();
+            respawnMessages.add(
+                    new DestroyEntitiesMessage(Collections.singletonList(getObjectId())));
+            respawnMessages.addAll(createSpawnMessage());
+            ((GlowWorld) world).getRawPlayers()
+                    .stream().filter(player -> player.canSeeEntity(this))
+                    .forEach(player -> player.getSession().sendAll(
+                            respawnMessages.toArray(EMPTY_MESSAGE_ARRAY)));
+        }
+    }
+
+    private void setShooterInternal(ProjectileSource shooter) {
+        super.setShooter(shooter);
+    }
 
     /**
      * The minimum time, in seconds, to make the player wait for a bite when using an unenchanted
@@ -52,18 +79,14 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
     private int lifeTime;
     private final ItemStack itemStack;
 
-    public GlowFishingHook(Location location) {
-        this(location, null);
-    }
-
     /**
      * Creates a fishing bob.
      *
      * @param location the location
      * @param itemStack the fishing rod (used to handle enchantments) or null (equivalent to
-     *         unenchanted rod)
+     * @param angler the player who is casting this fish hook (must be set at spawn time)
      */
-    public GlowFishingHook(Location location, ItemStack itemStack) {
+    public GlowFishingHook(Location location, ItemStack itemStack, Player angler) {
         super(location);
         setSize(0.25f, 0.25f);
         lifeTime = calculateLifeTime();
@@ -73,6 +96,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         // TODO: velocity does not match vanilla
         Vector direction = location.getDirection();
         setVelocity(direction.multiply(1.5));
+        setShooterInternal(angler);
     }
 
     private int calculateLifeTime() {
@@ -97,8 +121,14 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int intHeadYaw = Position.getIntHeadYaw(location.getYaw());
 
         spawnMessage.add(new SpawnObjectMessage(getEntityId(), getUniqueId(),
-                SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw, 0, velocity));
+                SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw,
+                getShooterId(),
+                velocity));
         return spawnMessage;
+    }
+
+    private int getShooterId() {
+        return getShooter() instanceof Entity ? ((Entity) getShooter()).getEntityId() : -1;
     }
 
     @Override

@@ -14,7 +14,7 @@ public class ItemFishingRod extends ItemType {
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
         if (player.getCurrentFishingHook() == null) {
             Location location = calculateSpawnLocation(player);
-            FishHook fishHook = new GlowFishingHook(location, holding);
+            FishHook fishHook = new GlowFishingHook(location, holding, player);
             fishHook.setShooter(player);
             player.setCurrentFishingHook((GlowFishingHook) fishHook);
         } else {
