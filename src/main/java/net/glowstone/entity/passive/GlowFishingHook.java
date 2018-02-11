@@ -3,6 +3,7 @@ package net.glowstone.entity.passive;
 import static org.bukkit.event.player.PlayerFishEvent.State.CAUGHT_FISH;
 
 import com.flowpowered.network.Message;
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -13,8 +14,10 @@ import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;
 import net.glowstone.entity.FishingRewardManager.RewardItem;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.projectile.GlowProjectile;
+import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.InventoryUtil;
@@ -34,33 +37,39 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
-    private static final double VISIBLE_DISTANCE = 16.0;
     public static final Message[] EMPTY_MESSAGE_ARRAY = new Message[0];
 
     @Override
     public void setShooter(ProjectileSource shooter) {
-        if (getShooter() == shooter) {
+        ProjectileSource oldShooter = getShooter();
+        if (oldShooter == shooter) {
             return;
         }
         // Shooter is immutable client-side (a situation peculiar to fishing hooks), so if it
         // changes then all clients who can see this fishing hook must be told that this hook has
         // despawned and a new one has spawned.
-        setShooterInternal(shooter);
+        super.setShooter(shooter);
         World world = location.getWorld();
         if (world instanceof GlowWorld) {
             List<Message> respawnMessages = new LinkedList<>();
-            respawnMessages.add(
-                    new DestroyEntitiesMessage(Collections.singletonList(getObjectId())));
-            respawnMessages.addAll(createSpawnMessage());
+            DestroyEntitiesMessage destroyOldCopy = new DestroyEntitiesMessage(
+                    Collections.singletonList(getObjectId()));
+            respawnMessages.add(destroyOldCopy);
+            respawnMessages.addAll(createSpawnMessage(getShooterId()));
             ((GlowWorld) world).getRawPlayers()
-                    .stream().filter(player -> player.canSeeEntity(this))
+                    .stream()
+                    .filter(player -> !Objects.equal(player, shooter))
+                    .filter(player -> player.canSeeEntity(this))
                     .forEach(player -> player.getSession().sendAll(
                             respawnMessages.toArray(EMPTY_MESSAGE_ARRAY)));
+            // Each player believes her own entity ID is 0, so the update is sent separately to the
+            // shooter
+            if (shooter instanceof GlowPlayer) {
+                GlowSession session = ((GlowPlayer) shooter).getSession();
+                session.send(destroyOldCopy);
+                session.sendAll(createSpawnMessage(YOURSELF).toArray(EMPTY_MESSAGE_ARRAY));
+            }
         }
-    }
-
-    private void setShooterInternal(ProjectileSource shooter) {
-        super.setShooter(shooter);
     }
 
     /**
@@ -102,7 +111,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         // TODO: velocity does not match vanilla
         Vector direction = location.getDirection();
         setVelocity(direction.multiply(1.5));
-        setShooterInternal(angler);
+        super.setShooter(angler);
     }
 
     private int calculateLifeTime() {
@@ -118,6 +127,10 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     @Override
     public List<Message> createSpawnMessage() {
+        return createSpawnMessage(getShooterId());
+    }
+
+    public List<Message> createSpawnMessage(int shooterId) {
         List<Message> spawnMessage = new ArrayList<>(super.createSpawnMessage());
 
         double x = location.getX();
@@ -128,13 +141,14 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
         spawnMessage.add(new SpawnObjectMessage(getEntityId(), getUniqueId(),
                 SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw,
-                getShooterId(),
+                shooterId,
                 velocity));
         return spawnMessage;
     }
 
     private int getShooterId() {
-        return getShooter() instanceof Entity ? ((Entity) getShooter()).getEntityId() : -1;
+        return getShooter() instanceof Entity ? ((Entity) getShooter()).getEntityId()
+                : ENTITY_ID_NOBODY;
     }
 
     @Override
