@@ -39,17 +39,19 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     @Override
     public void setShooter(ProjectileSource shooter) {
-        setShooterInternal(shooter);
-        World world = location.getWorld();
-        if (world instanceof GlowWorld) {
-            List<Message> respawnMessages = new LinkedList<>();
-            respawnMessages.add(
-                    new DestroyEntitiesMessage(Collections.singletonList(getObjectId())));
-            respawnMessages.addAll(createSpawnMessage());
-            ((GlowWorld) world).getRawPlayers()
-                    .stream().filter(player -> player.canSeeEntity(this))
-                    .forEach(player -> player.getSession().sendAll(
-                            respawnMessages.toArray(EMPTY_MESSAGE_ARRAY)));
+        if (getShooter() != shooter) {
+            setShooterInternal(shooter);
+            World world = location.getWorld();
+            if (world instanceof GlowWorld) {
+                List<Message> respawnMessages = new LinkedList<>();
+                respawnMessages.add(
+                        new DestroyEntitiesMessage(Collections.singletonList(getObjectId())));
+                respawnMessages.addAll(createSpawnMessage());
+                ((GlowWorld) world).getRawPlayers()
+                        .stream().filter(player -> player.canSeeEntity(this))
+                        .forEach(player -> player.getSession().sendAll(
+                                respawnMessages.toArray(EMPTY_MESSAGE_ARRAY)));
+            }
         }
     }
 
