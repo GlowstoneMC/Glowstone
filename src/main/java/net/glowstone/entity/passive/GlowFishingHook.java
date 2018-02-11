@@ -42,6 +42,9 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         if (getShooter() == shooter) {
             return;
         }
+        // Shooter is immutable client-side (a situation peculiar to fishing hooks), so if it
+        // changes then all clients who can see this fishing hook must be told that this hook has
+        // despawned and a new one has spawned.
         setShooterInternal(shooter);
         World world = location.getWorld();
         if (world instanceof GlowWorld) {
