@@ -4,7 +4,6 @@ import static org.bukkit.event.player.PlayerFishEvent.State.CAUGHT_FISH;
 
 import com.flowpowered.network.Message;
 import com.google.common.base.Objects;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
