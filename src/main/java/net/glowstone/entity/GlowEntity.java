@@ -88,10 +88,6 @@ public abstract class GlowEntity implements Entity {
      */
     public static final int ENTITY_ID_NOBODY = -1;
     /**
-     * The 32-bit entity ID each player believes herself to have.
-     */
-    public static final int YOURSELF = 0;
-    /**
      * The metadata store for entities.
      */
     private static final MetadataStore<Entity> bukkitMetadata = new EntityMetadataStore();

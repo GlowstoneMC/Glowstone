@@ -67,7 +67,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             if (shooter instanceof GlowPlayer) {
                 GlowSession session = ((GlowPlayer) shooter).getSession();
                 session.send(destroyOldCopy);
-                session.sendAll(createSpawnMessage(YOURSELF).toArray(EMPTY_MESSAGE_ARRAY));
+                session.sendAll(createSpawnMessage(GlowPlayer.SELF_ID).toArray(EMPTY_MESSAGE_ARRAY));
             }
         }
     }
