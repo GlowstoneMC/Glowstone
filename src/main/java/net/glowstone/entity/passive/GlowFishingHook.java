@@ -139,7 +139,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
      * @return the spawn messages
      */
     private List<Message> createSpawnMessage(int shooterId) {
-        List<Message> spawnMessage = new ArrayList<>(super.createSpawnMessage());
+        List<Message> spawnMessage = super.createSpawnMessage();
 
         double x = location.getX();
         double y = location.getY();
