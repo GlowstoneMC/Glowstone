@@ -67,7 +67,8 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             if (shooter instanceof GlowPlayer) {
                 GlowSession session = ((GlowPlayer) shooter).getSession();
                 session.send(destroyOldCopy);
-                session.sendAll(createSpawnMessage(GlowPlayer.SELF_ID).toArray(EMPTY_MESSAGE_ARRAY));
+                session.sendAll(
+                        createSpawnMessage(GlowPlayer.SELF_ID).toArray(EMPTY_MESSAGE_ARRAY));
             }
         }
     }
@@ -130,7 +131,14 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         return createSpawnMessage(getShooterId());
     }
 
-    public List<Message> createSpawnMessage(int shooterId) {
+    /**
+     * Creates the spawn messages given the shooter ID on the receiving end (which is different for
+     * the shooter than for everyone else).
+     *
+     * @param shooterId the shooter's ID, according to the receiving client
+     * @return the spawn messages
+     */
+    private List<Message> createSpawnMessage(int shooterId) {
         List<Message> spawnMessage = new ArrayList<>(super.createSpawnMessage());
 
         double x = location.getX();
@@ -139,7 +147,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int intPitch = Position.getIntPitch(location);
         int intHeadYaw = Position.getIntHeadYaw(location.getYaw());
 
-        spawnMessage.add(new SpawnObjectMessage(getEntityId(), getUniqueId(),
+        spawnMessage.set(0, new SpawnObjectMessage(getEntityId(), getUniqueId(),
                 SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw,
                 shooterId,
                 velocity));
