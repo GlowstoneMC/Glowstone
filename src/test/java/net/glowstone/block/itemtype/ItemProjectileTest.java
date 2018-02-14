@@ -32,11 +32,8 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
         T projectile = Mockito.mock(projectileClass);
         when(player.launchProjectile(projectileClass)).thenReturn(projectile);
         item.use(player, itemStack);
-        checkProjectile(projectile);
-    }
-
-    protected void checkProjectile(T projectile) {
         verify(player, times(1)).launchProjectile(projectileClass);
         // FIXME: assertEmpty(inventory.getItemInMainHand());
     }
+
 }
