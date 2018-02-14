@@ -25,15 +25,14 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
     protected final Material type;
     protected final Class<T> projectileClass;
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testUse() {
         ItemStack itemStack = new ItemStack(type, 1);
         inventory.setItemInMainHand(itemStack);
-        Projectile projectile = Mockito.mock(projectileClass);
-        when(player.launchProjectile(projectileClass)).thenReturn((T) projectile);
+        T projectile = Mockito.mock(projectileClass);
+        when(player.launchProjectile(projectileClass)).thenReturn(projectile);
         item.use(player, itemStack);
-        checkProjectile((T) projectile);
+        checkProjectile(projectile);
     }
 
     protected void checkProjectile(T projectile) {
