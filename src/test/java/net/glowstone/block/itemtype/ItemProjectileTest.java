@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
@@ -29,7 +29,7 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
     @Test
     public void testUse() {
         ItemStack itemStack = new ItemStack(type, 1);
-        inventory.addItem(itemStack);
+        inventory.setItemInMainHand(itemStack);
         Projectile projectile = Mockito.mock(projectileClass);
         when(player.launchProjectile(projectileClass)).thenReturn((T) projectile);
         item.use(player, itemStack);
@@ -38,5 +38,6 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
 
     protected void checkProjectile(T projectile) {
         verify(player, times(1)).launchProjectile(projectileClass);
+        // FIXME: assertEmpty(inventory.getItemInMainHand());
     }
 }
