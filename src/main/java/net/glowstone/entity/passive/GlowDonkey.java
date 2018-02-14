@@ -1,10 +1,10 @@
 package net.glowstone.entity.passive;
 
+import net.glowstone.inventory.GlowHorseInventory;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Donkey;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.Inventory;
 
 public class GlowDonkey extends GlowChestedHorse implements Donkey {
 
@@ -13,7 +13,7 @@ public class GlowDonkey extends GlowChestedHorse implements Donkey {
     }
 
     @Override
-    public Inventory getInventory() {
+    public GlowHorseInventory getInventory() {
         return null;
     }
 
