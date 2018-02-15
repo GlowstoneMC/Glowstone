@@ -14,8 +14,9 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
 
 /**
  * Superclass of tests of {@link ItemProjectile} subclasses.
@@ -28,14 +29,23 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
     protected final ItemProjectile item;
     protected final Material type;
     protected final Class<T> projectileClass;
+    protected ItemStack itemStack;
+    @Mock
     protected T projectile;
+    @Mock
+    protected GlowBlock block;
+
+    @BeforeEach
+    @Override
+    public void setUp() {
+        super.setUp();
+        when(player.launchProjectile(projectileClass)).thenReturn(projectile);
+    }
 
     @Test
     public void testRightClickAir() {
-        ItemStack itemStack = new ItemStack(type, 1);
+        itemStack = new ItemStack(type, 1);
         inventory.setItemInMainHand(itemStack);
-        projectile = Mockito.mock(projectileClass);
-        when(player.launchProjectile(projectileClass)).thenReturn(projectile);
         item.rightClickAir(player, itemStack);
         verify(player, times(1)).launchProjectile(projectileClass);
         assertEmpty(inventory.getItemInMainHand());
@@ -43,11 +53,8 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
 
     @Test
     public void testRightClickBlock() {
-        GlowBlock block = Mockito.mock(GlowBlock.class);
-        ItemStack itemStack = new ItemStack(type, 1);
+        itemStack = new ItemStack(type, 1);
         inventory.setItemInMainHand(itemStack);
-        projectile = Mockito.mock(projectileClass);
-        when(player.launchProjectile(projectileClass)).thenReturn(projectile);
         item.rightClickBlock(player, block, BlockFace.UP, itemStack, new Vector(0,0,0), EquipmentSlot.HAND);
         verify(player, times(1)).launchProjectile(projectileClass);
         assertEmpty(inventory.getItemInMainHand());
@@ -55,10 +62,8 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
 
     @Test
     public void testRightClickAirStackOfTwo() {
-        ItemStack itemStack = new ItemStack(type, 2);
+        itemStack = new ItemStack(type, 2);
         inventory.setItemInMainHand(itemStack);
-        projectile = Mockito.mock(projectileClass);
-        when(player.launchProjectile(projectileClass)).thenReturn(projectile);
         item.rightClickAir(player, itemStack);
         verify(player, times(1)).launchProjectile(projectileClass);
         ItemStack remaining = inventory.getItemInMainHand();
