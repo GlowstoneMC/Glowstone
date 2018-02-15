@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,5 +35,18 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
         item.rightClickAir(player, itemStack);
         verify(player, times(1)).launchProjectile(projectileClass);
         assertEmpty(inventory.getItemInMainHand());
+    }
+
+    @Test
+    public void testRightClickAirStackOfTwo() {
+        ItemStack itemStack = new ItemStack(type, 2);
+        inventory.setItemInMainHand(itemStack);
+        projectile = Mockito.mock(projectileClass);
+        when(player.launchProjectile(projectileClass)).thenReturn(projectile);
+        item.rightClickAir(player, itemStack);
+        verify(player, times(1)).launchProjectile(projectileClass);
+        ItemStack remaining = inventory.getItemInMainHand();
+        assertEquals(1, remaining.getAmount());
+        assertEquals(type, remaining.getType());
     }
 }
