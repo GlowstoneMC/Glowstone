@@ -23,12 +23,13 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
     protected final ItemProjectile item;
     protected final Material type;
     protected final Class<T> projectileClass;
+    protected T projectile;
 
     @Test
     public void testRightClickAir() {
         ItemStack itemStack = new ItemStack(type, 1);
         inventory.setItemInMainHand(itemStack);
-        T projectile = Mockito.mock(projectileClass);
+        projectile = Mockito.mock(projectileClass);
         when(player.launchProjectile(projectileClass)).thenReturn(projectile);
         item.rightClickAir(player, itemStack);
         verify(player, times(1)).launchProjectile(projectileClass);
