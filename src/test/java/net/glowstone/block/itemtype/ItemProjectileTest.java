@@ -55,7 +55,8 @@ public abstract class ItemProjectileTest<T extends Projectile> extends ItemTypeT
     public void testRightClickBlock() {
         itemStack = new ItemStack(type, 1);
         inventory.setItemInMainHand(itemStack);
-        item.rightClickBlock(player, block, BlockFace.UP, itemStack, new Vector(0,0,0), EquipmentSlot.HAND);
+        item.rightClickBlock(player, block, BlockFace.UP, itemStack, new Vector(0, 0, 0),
+                EquipmentSlot.HAND);
         verify(player, times(1)).launchProjectile(projectileClass);
         assertEmpty(inventory.getItemInMainHand());
     }
