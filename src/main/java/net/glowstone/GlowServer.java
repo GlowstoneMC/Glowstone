@@ -7,6 +7,8 @@ import com.google.common.collect.Iterators;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
+import io.netty.channel.kqueue.KQueue;
+import io.netty.util.ResourceLeakDetector;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -397,6 +399,14 @@ public final class GlowServer implements Server {
      * The file name for the server icon.
      */
     private static final String SERVER_ICON_FILE = "server-icon.png";
+    /**
+     * Whether the Linux epoll native transport is available for Netty.
+     */
+    public static final boolean EPOLL = Epoll.isAvailable();
+    /**
+     * Whether the macOS/BSD kqueue native transport is available for Netty.
+     */
+    public static final boolean KQUEUE = KQueue.isAvailable();
 
     /**
      * Creates a new server.
@@ -433,6 +443,8 @@ public final class GlowServer implements Server {
      * @param args The command-line arguments.
      */
     public static void main(String... args) {
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
+        logger.setLevel(Level.ALL);
         try {
             GlowServer server = createFromArguments(args);
 
@@ -861,8 +873,10 @@ public final class GlowServer implements Server {
     }
 
     private void bind() {
-        if (Epoll.isAvailable()) {
+        if (EPOLL) {
             logger.info("Native epoll transport is enabled.");
+        } else if (KQUEUE) {
+            logger.info("Native kqueue transport is enabled.");
         }
 
         CountDownLatch latch = new CountDownLatch(3);

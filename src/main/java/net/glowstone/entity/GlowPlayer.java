@@ -627,7 +627,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
-        session.send(PluginMessage.fromString("MC|Brand", server.getName()));
+        Message pluginMessage = PluginMessage.fromString("MC|Brand", server.getName());
+        if (pluginMessage != null) {
+            session.send(pluginMessage);
+        }
         sendSupportedChannels();
         joinTime = System.currentTimeMillis();
         reader.readData(this);
@@ -2394,8 +2397,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         try {
             ByteBufUtils.writeUTF8(buffer, source); //Source
             ByteBufUtils.writeUTF8(buffer, sound); //Sound
-            session.send(new PluginMessage("MC|StopSound", buffer.array()));
-            buffer.release();
+            session.sendAndRelease(new PluginMessage("MC|StopSound", buffer.array()),
+                buffer);
         } catch (IOException e) {
             GlowServer.logger.info("Failed to send stop-sound event.");
             e.printStackTrace();
@@ -3272,8 +3275,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 buf.writeBytes(channel.getBytes(StandardCharsets.UTF_8));
                 buf.writeByte(0);
             }
-            session.send(new PluginMessage("REGISTER", buf.array()));
-            buf.release();
+            session.sendAndRelease(new PluginMessage("REGISTER", buf.array()), buf);
         }
     }
 
