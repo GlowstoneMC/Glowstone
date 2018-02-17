@@ -72,11 +72,12 @@ public class HttpClient {
         } else {
             throw new IllegalArgumentException("Only http(s) is supported!");
         }
-
+        
         new Bootstrap()
             .group(eventLoop)
             .resolver(resolverGroup)
-            .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
+            .channel(epoll ? EpollServerSocketChannel.class : kqueue
+                ? KQueueServerSocketChannel.class : NioServerSocketChannel.class)
             .handler(new HttpChannelInitializer(sslCtx, callback))
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
             .connect(InetSocketAddress.createUnresolved(host, port))
