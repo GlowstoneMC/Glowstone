@@ -1,8 +1,11 @@
 package net.glowstone.entity.projectile;
 
 import com.flowpowered.network.Message;
+import io.netty.util.internal.ThreadLocalRandom;
 import java.util.Arrays;
 import java.util.List;
+
+import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
@@ -12,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.projectiles.ProjectileSource;
@@ -27,7 +31,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
      * @param location the position and facing of the thrower
      */
     public GlowEnderPearl(Location location) {
-        this(location, 2.0f);
+        this(location, 3.0f);
     }
 
     /**
@@ -40,33 +44,67 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
         super(location);
         setDrag(0.99, false);
         setDrag(0.99, true);
-        setHorizontalAirDrag(0.95);
-        setGravityAccel(new Vector(0,-0.06,0));
+        setHorizontalAirDrag(1);
+        setGravityAccel(new Vector(0, -0.03, 0));
         setVelocity(location.getDirection().multiply(speed));
+        setBoundingBox(0.25, 0.25);
     }
 
+    /**
+     * Process teleportation when collide with a block.
+     *
+     * @param block the block that the ender pearl collides with
+     */
     @Override
     public void collide(Block block) {
         ProjectileSource source = getShooter();
         if (source instanceof Entity) {
-            Location location = getLocation();
-            location.add(0, 1, 0);
+            Location destination = getLocation();
             Entity entity = (Entity) source;
             Location entityLocation = entity.getLocation();
-            location.setPitch(entityLocation.getPitch());
-            location.setYaw(entityLocation.getYaw());
-            entity.teleport(this.location, PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
+
+            // Add 1 to Y value. Otherwise the eneity will get stuck inside a block.
+            destination.add(0, 0.3, 0);
+            // Renew the pitch and yaw value right before teleportation.
+            destination.setPitch(entityLocation.getPitch());
+            destination.setYaw(entityLocation.getYaw());
+
+            entity.teleport(destination, PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
+
+            // Give fall damage to the eneity that threw this ender pearl.
             if (source instanceof LivingEntity) {
                 ((LivingEntity) entity).damage(ENDER_PEARL_DAMAGE,
                         EntityDamageEvent.DamageCause.FALL);
             }
         }
+
+        // Spawn endermite for 5% chance.
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        if (random.nextInt(100) < 5) {
+            getWorld().spawn(
+                location,
+                GlowEndermite.class,
+                CreatureSpawnEvent.SpawnReason.ENDER_PEARL);
+        }
+
         remove();
     }
 
+    /**
+     * Process teleportation when collide with an entity.
+     *
+     * @param entity the eneity that the ender pearl collides with
+     */
     @Override
     public void collide(LivingEntity entity) {
-        // No-op.
+        ProjectileSource source = getShooter();
+        // the entity receives fake damage.
+        if (source instanceof Entity) {
+            entity.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+        } else {
+            entity.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
+        }
+        collide(entity.getLocation().getBlock());
     }
 
     @Override
