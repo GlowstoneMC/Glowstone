@@ -77,7 +77,7 @@ public class HttpClient {
         new Bootstrap()
             .group(eventLoop)
             .resolver(resolverGroup)
-            .channel(epoll ? EpollSocketChannel.class : kqueue
+            .channel(GlowServer.EPOLL ? EpollSocketChannel.class : GlowServer.KQUEUE
                 ? KQueueSocketChannel.class : NioSocketChannel.class)
             .handler(new HttpChannelInitializer(sslCtx, callback))
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
