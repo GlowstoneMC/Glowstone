@@ -962,17 +962,17 @@ public abstract class GlowEntity implements Entity {
     protected void pulsePhysics() {
         Location velLoc = location.clone().add(velocity);
         final Block block = velLoc.getBlock();
-        if (block.getType().isOccluding()) {
+        if (block.getType().isSolid()) {
             Location velLocY = location.clone().add(0, velocity.getY(), 0);
-            if (velLocY.getBlock().getType().isOccluding()) {
+            if (velLocY.getBlock().getType().isSolid()) {
                 velocity.setY(0);
             }
             Location velLocX = location.clone().add(velocity.getX(), 0, 0);
-            if (velLocX.getBlock().getType().isOccluding()) {
+            if (velLocX.getBlock().getType().isSolid()) {
                 velocity.setX(0);
             }
             Location velLocZ = location.clone().add(0, 0, velocity.getZ());
-            if (velLocZ.getBlock().getType().isOccluding()) {
+            if (velLocZ.getBlock().getType().isSolid()) {
                 velocity.setZ(0);
             }
             collide(block);
