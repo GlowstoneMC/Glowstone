@@ -63,7 +63,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
             Entity entity = (Entity) source;
             Location entityLocation = entity.getLocation();
 
-            // Add 1 to Y value. Otherwise the eneity will get stuck inside a block.
+            // Add 0.3 to Y value. Otherwise the eneity will get stuck inside a block.
             destination.add(0, 0.3, 0);
             // Renew the pitch and yaw value right before teleportation.
             destination.setPitch(entityLocation.getPitch());
