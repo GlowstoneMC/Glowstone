@@ -10,6 +10,7 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.kqueue.KQueueDatagramChannel;
+import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpRequest;
@@ -76,8 +77,8 @@ public class HttpClient {
         new Bootstrap()
             .group(eventLoop)
             .resolver(resolverGroup)
-            .channel(epoll ? EpollServerSocketChannel.class : kqueue
-                ? KQueueServerSocketChannel.class : NioServerSocketChannel.class)
+            .channel(epoll ? EpollSocketChannel.class : kqueue
+                ? KQueueSocketChannel.class : NioSocketChannel.class)
             .handler(new HttpChannelInitializer(sslCtx, callback))
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
             .connect(InetSocketAddress.createUnresolved(host, port))
