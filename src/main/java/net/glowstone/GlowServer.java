@@ -443,8 +443,6 @@ public final class GlowServer implements Server {
      * @param args The command-line arguments.
      */
     public static void main(String... args) {
-        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
-        logger.setLevel(Level.ALL);
         try {
             GlowServer server = createFromArguments(args);
 
