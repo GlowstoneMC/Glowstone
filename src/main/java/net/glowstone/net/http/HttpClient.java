@@ -72,7 +72,7 @@ public class HttpClient {
         } else {
             throw new IllegalArgumentException("Only http(s) is supported!");
         }
-        
+
         new Bootstrap()
             .group(eventLoop)
             .resolver(resolverGroup)
