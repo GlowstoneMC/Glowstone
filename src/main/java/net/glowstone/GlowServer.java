@@ -8,7 +8,6 @@ import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.kqueue.KQueue;
-import io.netty.util.ResourceLeakDetector;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
