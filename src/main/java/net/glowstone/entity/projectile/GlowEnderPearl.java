@@ -4,7 +4,6 @@ import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
 import java.util.Arrays;
 import java.util.List;
-
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
@@ -22,8 +21,8 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
-
     private static final double ENDER_PEARL_DAMAGE = 5.0;
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.03;
 
     /**
      * Creates a thrown ender pearl with default speed.
@@ -45,7 +44,7 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
         setDrag(0.99, false);
         setDrag(0.99, true);
         setHorizontalAirDrag(1);
-        setGravityAccel(new Vector(0, -0.03, 0));
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
         setVelocity(location.getDirection().multiply(speed));
         setBoundingBox(0.25, 0.25);
     }
