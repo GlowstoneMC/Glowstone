@@ -520,6 +520,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private boolean forceStream = false;
 
     /**
+     * The player's ender pearl cooldown game tick counter.
+     * 1 second, or 20 game ticks by default.
+     * The player can use ender pearl again if equals 0.
+     */
+    @Getter
+    @Setter
+    private int enderPearlCooldown = 0;
+
+    /**
      * Creates a new player and adds it to the world.
      *
      * @param session The player's session.
@@ -850,6 +859,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             default: {
                 // Do nothing when there are other game difficulties.
             }
+        }
+
+        // process ender pearl cooldown, decrease by 1 every game tick.
+        if (enderPearlCooldown > 0) {
+            enderPearlCooldown--;
         }
 
         // stream world
