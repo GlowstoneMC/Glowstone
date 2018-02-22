@@ -3,7 +3,6 @@ package net.glowstone.block.blocktype;
 import java.util.Arrays;
 import java.util.Collection;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
