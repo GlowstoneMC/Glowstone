@@ -17,7 +17,7 @@ import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.testutils.ServerShim;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base tests for each {@link GlowProtocol}.

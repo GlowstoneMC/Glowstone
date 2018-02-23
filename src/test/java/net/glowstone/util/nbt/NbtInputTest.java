@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link NbtInputStream} and reading from {@link CompoundTag}s.

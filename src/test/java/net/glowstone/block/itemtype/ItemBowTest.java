@@ -15,18 +15,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowSpectralArrow;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.inventory.GlowMetaPotion;
-import net.glowstone.inventory.GlowPlayerInventory;
-import net.glowstone.testutils.ServerShim;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.SpectralArrow;
@@ -39,13 +34,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class ItemBowTest extends ItemTypeTest {
     @Override
-    @Before
+    @BeforeEach
     public void setUp() {
         super.setUp();
         bowItemStack = new ItemStack(Material.BOW);
