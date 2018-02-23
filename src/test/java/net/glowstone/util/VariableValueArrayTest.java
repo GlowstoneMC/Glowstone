@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 
 import net.glowstone.block.ItemTable;
 import org.bukkit.Material;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VariableValueArrayTest {
 

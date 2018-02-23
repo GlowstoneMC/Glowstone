@@ -35,10 +35,15 @@ public class BlockSnow extends BlockNeedsAttached {
         // such as placing snow an extra block away from where it should
 
         if (state.getType() == Material.SNOW) {
-            // add another snow layer if possible
             byte data = state.getRawData();
-            if (data < 7) {
+
+            // add another snow layer if possible
+            if (data < 6) {
                 state.setRawData((byte) (data + 1));
+
+            // set to snow block if high enough
+            } else {
+                state.setType(Material.SNOW_BLOCK);
             }
         } else {
             // place first snow layer
