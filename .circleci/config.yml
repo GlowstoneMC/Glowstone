@@ -48,7 +48,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx3200m
+            MAVEN_OPTS: -Xmx1024m
 
         steps:
             - checkout
