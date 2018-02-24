@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class ItemEnderPearl extends ItemType {
+    private static final int ENDER_PEARL_COOLDOWN_TICKS = 20;
 
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
@@ -30,10 +31,12 @@ public class ItemEnderPearl extends ItemType {
     }
 
     private void throwEnderPearl(GlowPlayer player, ItemStack holding) {
-        if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-            holding.setAmount(holding.getAmount() - 1);
+        if (player.getEnderPearlCooldown() == 0) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                holding.setAmount(holding.getAmount() - 1);
+            }
+            throwEnderPearl(player);
         }
-        throwEnderPearl(player);
     }
 
     private void throwEnderPearl(GlowPlayer player) {
@@ -41,5 +44,6 @@ public class ItemEnderPearl extends ItemType {
         throwLoc.setY(throwLoc.getY() + 1.5);
         player.launchProjectile(EnderPearl.class);
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERPEARL_THROW, 3, 1);
+        player.setEnderPearlCooldown(ENDER_PEARL_COOLDOWN_TICKS);
     }
 }

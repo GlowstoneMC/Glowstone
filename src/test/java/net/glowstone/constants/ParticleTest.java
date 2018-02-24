@@ -1,42 +1,33 @@
 package net.glowstone.constants;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.Collection;
-import net.glowstone.testutils.ParameterUtils;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowParticle}.
  */
-@RunWith(Parameterized.class)
 public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
-    private final Effect particle;
-
-    public ParticleTest(Effect particle) {
-        this.particle = particle;
+    public static Stream<Effect> getCases() {
+        return Stream.of(Effect.values())
+                .filter(effect -> effect.getType() == Effect.Type.PARTICLE);
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ParameterUtils.enumCases(Effect.values());
-    }
-
-    @Test
-    public void testGetData() {
-        if (particle.getType() != Effect.Type.PARTICLE) {
-            return; // this only tests particle effects
-        }
-
+    @MethodSource("getCases")
+    @ParameterizedTest
+    public void testGetData(Effect particle) {
         switch (particle) {
             case ITEM_BREAK:
                 assertThat("Wrong data for " + particle, particle.getData() != null, is(true));

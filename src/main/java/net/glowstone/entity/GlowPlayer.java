@@ -537,6 +537,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     /**
+     * The player's ender pearl cooldown game tick counter.
+     * 1 second, or 20 game ticks by default.
+     * The player can use ender pearl again if equals 0.
+     */
+    @Getter
+    @Setter
+    private int enderPearlCooldown = 0;
+
+    /**
      * Creates a new player and adds it to the world.
      *
      * @param session The player's session.
@@ -644,7 +653,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
-        session.send(PluginMessage.fromString("MC|Brand", server.getName()));
+        Message pluginMessage = PluginMessage.fromString("MC|Brand", server.getName());
+        if (pluginMessage != null) {
+            session.send(pluginMessage);
+        }
         sendSupportedChannels();
         joinTime = System.currentTimeMillis();
         reader.readData(this);
@@ -864,6 +876,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             default: {
                 // Do nothing when there are other game difficulties.
             }
+        }
+
+        // process ender pearl cooldown, decrease by 1 every game tick.
+        if (enderPearlCooldown > 0) {
+            enderPearlCooldown--;
         }
 
         // stream world
@@ -2425,8 +2442,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         try {
             ByteBufUtils.writeUTF8(buffer, source); //Source
             ByteBufUtils.writeUTF8(buffer, sound); //Sound
-            session.send(new PluginMessage("MC|StopSound", buffer.array()));
-            buffer.release();
+            session.sendAndRelease(new PluginMessage("MC|StopSound", buffer.array()),
+                buffer);
         } catch (IOException e) {
             GlowServer.logger.info("Failed to send stop-sound event.");
             e.printStackTrace();
@@ -3303,8 +3320,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 buf.writeBytes(channel.getBytes(StandardCharsets.UTF_8));
                 buf.writeByte(0);
             }
-            session.send(new PluginMessage("REGISTER", buf.array()));
-            buf.release();
+            session.sendAndRelease(new PluginMessage("REGISTER", buf.array()), buf);
         }
     }
 

@@ -191,7 +191,7 @@ public class QueryTest {
 
         @Override
         public boolean matches(DatagramPacket obj) {
-            ByteBuf buf = ((DatagramPacket) obj).content();
+            ByteBuf buf = obj.content();
             byte[] array = new byte[buf.readableBytes()];
             buf.readBytes(array);
             buf.readerIndex(buf.readerIndex() - array.length);

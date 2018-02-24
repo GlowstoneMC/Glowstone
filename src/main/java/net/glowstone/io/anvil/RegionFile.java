@@ -293,7 +293,13 @@ public class RegionFile {
         Deflater deflater = new Deflater(
                 COMPRESSION_ENABLED ? Deflater.BEST_SPEED : Deflater.NO_COMPRESSION);
         deflater.setStrategy(Deflater.HUFFMAN_ONLY);
-        DeflaterOutputStream dos = new DeflaterOutputStream(new ChunkBuffer(x, z), deflater, 2048);
+        DeflaterOutputStream dos = new DeflaterOutputStream(new ChunkBuffer(x, z), deflater, 2048) {
+            @Override
+            public void close() throws IOException {
+                super.close();
+                def.end();
+            }
+        };
         return new DataOutputStream(new BufferedOutputStream(dos));
     }
 

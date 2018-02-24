@@ -6,9 +6,10 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoop;
-import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.kqueue.KQueueDatagramChannel;
+import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpRequest;
@@ -28,11 +29,13 @@ import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
 import lombok.AllArgsConstructor;
+import net.glowstone.GlowServer;
 
 public class HttpClient {
 
     private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(
-        Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class,
+        GlowServer.EPOLL ? EpollDatagramChannel.class : GlowServer.KQUEUE
+            ? KQueueDatagramChannel.class : NioDatagramChannel.class,
         DefaultDnsServerAddressStreamProvider.INSTANCE);
 
     /**
@@ -73,7 +76,8 @@ public class HttpClient {
         new Bootstrap()
             .group(eventLoop)
             .resolver(resolverGroup)
-            .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
+            .channel(GlowServer.EPOLL ? EpollSocketChannel.class : GlowServer.KQUEUE
+                ? KQueueSocketChannel.class : NioSocketChannel.class)
             .handler(new HttpChannelInitializer(sslCtx, callback))
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
             .connect(InetSocketAddress.createUnresolved(host, port))

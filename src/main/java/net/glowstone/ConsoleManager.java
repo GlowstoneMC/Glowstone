@@ -74,9 +74,6 @@ public final class ConsoleManager {
     public ConsoleManager(GlowServer server) {
         this.server = server;
 
-        // install Ansi code handler, which makes colors work on Windows
-        AnsiConsole.systemInstall();
-
         for (Handler h : logger.getHandlers()) {
             logger.removeHandler(h);
         }
@@ -95,51 +92,6 @@ public final class ConsoleManager {
         // set system output streams
         System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
         System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
-
-        // set up colorization replacements
-        replacements.put(ChatColor.BLACK,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).boldOff().toString());
-        replacements.put(ChatColor.DARK_BLUE,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GREEN,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).boldOff().toString());
-        replacements.put(ChatColor.DARK_AQUA,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).boldOff().toString());
-        replacements.put(ChatColor.DARK_RED,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.RED).boldOff().toString());
-        replacements.put(ChatColor.DARK_PURPLE,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).boldOff().toString());
-        replacements.put(ChatColor.GOLD,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).boldOff().toString());
-        replacements.put(ChatColor.GRAY,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).boldOff().toString());
-        replacements.put(ChatColor.DARK_GRAY,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).bold().toString());
-        replacements
-                .put(ChatColor.BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).bold()
-                        .toString());
-        replacements
-                .put(ChatColor.GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).bold()
-                        .toString());
-        replacements
-                .put(ChatColor.AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).bold()
-                        .toString());
-        replacements
-                .put(ChatColor.RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).bold().toString());
-        replacements.put(ChatColor.LIGHT_PURPLE,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).bold().toString());
-        replacements.put(ChatColor.YELLOW,
-                Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).bold().toString());
-        replacements
-                .put(ChatColor.WHITE, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).bold()
-                        .toString());
-        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Attribute.BLINK_SLOW).toString());
-        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Attribute.UNDERLINE_DOUBLE).toString());
-        replacements
-                .put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
-        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Attribute.UNDERLINE).toString());
-        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Attribute.ITALIC).toString());
-        replacements.put(ChatColor.RESET, Ansi.ansi().a(Attribute.RESET).toString());
     }
 
     /**
@@ -149,6 +101,10 @@ public final class ConsoleManager {
      */
     public void startConsole(boolean jline) {
         this.jline = jline;
+
+        if (jline) {
+            setupColors();
+        }
 
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
@@ -162,6 +118,56 @@ public final class ConsoleManager {
         thread.setName("ConsoleCommandThread");
         thread.setDaemon(true);
         thread.start();
+    }
+
+    private void setupColors() {
+        // install Ansi code handler, which makes colors work on Windows
+        AnsiConsole.systemInstall();
+
+        // set up colorization replacements
+        replacements.put(ChatColor.BLACK,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).boldOff().toString());
+        replacements.put(ChatColor.DARK_BLUE,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GREEN,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).boldOff().toString());
+        replacements.put(ChatColor.DARK_AQUA,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).boldOff().toString());
+        replacements.put(ChatColor.DARK_RED,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.RED).boldOff().toString());
+        replacements.put(ChatColor.DARK_PURPLE,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).boldOff().toString());
+        replacements.put(ChatColor.GOLD,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).boldOff().toString());
+        replacements.put(ChatColor.GRAY,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).boldOff().toString());
+        replacements.put(ChatColor.DARK_GRAY,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.BLACK).bold().toString());
+        replacements
+            .put(ChatColor.BLUE, Ansi.ansi().a(Attribute.RESET).fg(Color.BLUE).bold()
+                .toString());
+        replacements
+            .put(ChatColor.GREEN, Ansi.ansi().a(Attribute.RESET).fg(Color.GREEN).bold()
+                .toString());
+        replacements
+            .put(ChatColor.AQUA, Ansi.ansi().a(Attribute.RESET).fg(Color.CYAN).bold()
+                .toString());
+        replacements
+            .put(ChatColor.RED, Ansi.ansi().a(Attribute.RESET).fg(Color.RED).bold().toString());
+        replacements.put(ChatColor.LIGHT_PURPLE,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.MAGENTA).bold().toString());
+        replacements.put(ChatColor.YELLOW,
+            Ansi.ansi().a(Attribute.RESET).fg(Color.YELLOW).bold().toString());
+        replacements
+            .put(ChatColor.WHITE, Ansi.ansi().a(Attribute.RESET).fg(Color.WHITE).bold()
+                .toString());
+        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Attribute.BLINK_SLOW).toString());
+        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Attribute.UNDERLINE_DOUBLE).toString());
+        replacements
+            .put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
+        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Attribute.UNDERLINE).toString());
+        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Attribute.ITALIC).toString());
+        replacements.put(ChatColor.RESET, Ansi.ansi().a(Attribute.RESET).toString());
     }
 
     /**

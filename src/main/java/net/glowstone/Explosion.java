@@ -50,9 +50,9 @@ public final class Explosion {
         for (int x = 0; x < value; x++) {
             for (int y = 0; y < value; y++) {
                 for (int z = 0; z < value; z++) {
-                    if (!(x == 0 || x == value - 1
-                            || y == 0 || y == value - 1
-                            || z == 0 || z == value - 1)) {
+                    if (x != 0 && x != value - 1
+                            && y != 0 && y != value - 1
+                            && z != 0 && z != value - 1) {
                         continue;
                     }
                     double vx = x / 7.5 - 1;

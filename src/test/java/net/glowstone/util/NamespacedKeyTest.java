@@ -4,7 +4,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.bukkit.NamespacedKey;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NamespacedKeyTest {
 

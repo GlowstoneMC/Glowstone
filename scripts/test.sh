@@ -10,7 +10,8 @@ then
   ./build.sh
 fi
 # Check if Maven built successfully
-if [ $? -eq 0 ] && [ "$1" != "run" ];
+# or if we didn't build, just run
+if [ $? -eq 0 ] || [ "$1" == "run" ];
 then
   # Run Glowstone
   (cd ../target && ../scripts/start.sh)
