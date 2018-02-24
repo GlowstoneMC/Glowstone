@@ -5,13 +5,15 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 
@@ -32,14 +34,18 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
      */
     public GlowSocketServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
-        boolean epoll = Epoll.isAvailable();
-        bossGroup = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-        workerGroup = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        boolean epoll = GlowServer.EPOLL;
+        boolean kqueue = GlowServer.KQUEUE;
+        bossGroup = epoll ? new EpollEventLoopGroup() : kqueue ? new KQueueEventLoopGroup()
+            : new NioEventLoopGroup();
+        workerGroup = epoll ? new EpollEventLoopGroup() : kqueue ? new KQueueEventLoopGroup()
+            : new NioEventLoopGroup();
         bootstrap = new ServerBootstrap();
 
         bootstrap
             .group(bossGroup, workerGroup)
-            .channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+            .channel(epoll ? EpollServerSocketChannel.class : kqueue
+                ? KQueueServerSocketChannel.class : NioServerSocketChannel.class)
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childOption(ChannelOption.SO_KEEPALIVE, true);
     }
@@ -60,7 +66,15 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
     @Override
     public void shutdown() {
         channel.close();
-        bootstrap.config().childGroup().shutdownGracefully();
         bootstrap.config().group().shutdownGracefully();
+        bootstrap.config().childGroup().shutdownGracefully();
+
+        try {
+            bootstrap.config().group().terminationFuture().sync();
+            bootstrap.config().childGroup().terminationFuture().sync();
+        } catch (InterruptedException e) {
+            GlowServer.logger.log(Level.SEVERE, "Socket server shutdown process interrupted!",
+                e);
+        }
     }
 }

@@ -17,6 +17,7 @@ import org.bukkit.util.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 /**
  * Superclass of tests of {@link ItemProjectile} subclasses.
