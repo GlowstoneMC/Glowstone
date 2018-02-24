@@ -1,9 +1,9 @@
 package net.glowstone.entity.passive;
 
+import net.glowstone.inventory.GlowHorseInventory;
 import org.bukkit.Location;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.Inventory;
 
 public class GlowUndeadHorse extends GlowAbstractHorse implements AbstractHorse {
 
@@ -12,7 +12,7 @@ public class GlowUndeadHorse extends GlowAbstractHorse implements AbstractHorse 
     }
 
     @Override
-    public Inventory getInventory() {
+    public GlowHorseInventory getInventory() {
         return null;
     }
 
