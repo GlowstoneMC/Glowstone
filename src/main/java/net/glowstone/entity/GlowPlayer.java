@@ -521,11 +521,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * If we should force block streaming regardless of chunk difference.
      */
     private boolean forceStream = false;
-
     /**
      * Current casted fishing hook.
      */
     private final AtomicReference<GlowFishingHook> currentFishingHook = new AtomicReference<>(null);
+    /**
+     * The player's ender pearl cooldown game tick counter.
+     * 1 second, or 20 game ticks by default.
+     * The player can use ender pearl again if equals 0.
+     */
+    @Getter
+    @Setter
+    private int enderPearlCooldown = 0;
 
     /**
      * Returns the current fishing hook.
@@ -535,15 +542,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public GlowFishingHook getCurrentFishingHook() {
         return currentFishingHook.get();
     }
-
-    /**
-     * The player's ender pearl cooldown game tick counter.
-     * 1 second, or 20 game ticks by default.
-     * The player can use ender pearl again if equals 0.
-     */
-    @Getter
-    @Setter
-    private int enderPearlCooldown = 0;
 
     /**
      * Creates a new player and adds it to the world.
