@@ -1,36 +1,22 @@
 package net.glowstone.constants;
 
+import org.bukkit.Material;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.util.Collection;
-import net.glowstone.testutils.ParameterUtils;
-import org.bukkit.Material;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 /**
  * Tests for {@link ItemIds}.
  */
-@RunWith(Parameterized.class)
 public class ItemIdsTest {
 
-    private final Material material;
-
-    public ItemIdsTest(Material material) {
-        this.material = material;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> getCases() {
-        return ParameterUtils.enumCases(Material.values());
-    }
-
-    @Test
-    public void mappingExists() {
+    @EnumSource(Material.class)
+    @ParameterizedTest
+    public void mappingExists(Material material) {
         String nameid = ItemIds.getName(material);
         assertThat("Identifier missing for " + material, nameid, notNullValue());
         if (!nameid.startsWith("minecraft:")) {

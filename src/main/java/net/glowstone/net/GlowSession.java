@@ -5,6 +5,7 @@ import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
 import com.flowpowered.network.session.BasicSession;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -307,6 +308,30 @@ public class GlowSession extends BasicSession {
             return null;
         }
         return super.sendWithFuture(message);
+    }
+
+    /**
+     * Send the message and release the specified byte buffer after it is sent.
+     *
+     * @param message The message.
+     * @param buf The byte buffer.
+     */
+    public void sendAndRelease(Message message, ByteBuf buf) {
+        sendWithFuture(message).addListener(f -> buf.release());
+    }
+
+    /**
+     * Send the message and release the specified byte buffers after it is sent.
+     *
+     * @param message The message.
+     * @param bufs The byte buffers.
+     */
+    public void sendAndRelease(Message message, ByteBuf... bufs) {
+        sendWithFuture(message).addListener(f -> {
+            for (ByteBuf buf : bufs) {
+                buf.release();
+            }
+        });
     }
 
     @Override

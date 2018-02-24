@@ -17,7 +17,7 @@ import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.testutils.ServerShim;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base tests for each {@link GlowProtocol}.
@@ -102,9 +102,7 @@ public abstract class BaseProtocolTest {
             Codec<Message> codec = reg.getCodec();
             ByteBuf buffer = codec.encode(Unpooled.buffer(), message);
             Message decoded = codec.decode(buffer);
-            if (buffer.refCnt() > 0) {
-                buffer.release(buffer.refCnt());
-            }
+            buffer.release();
             assertThat("Asymmetry for " + reg.getOpcode() + "/" + message.getClass().getName(),
                 decoded, is(message));
         } catch (IOException e) {

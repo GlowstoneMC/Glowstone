@@ -26,13 +26,15 @@ public final class PluginMessage implements Message {
         ByteBuf buf = Unpooled.buffer(5 + text.length());
         try {
             ByteBufUtils.writeUTF8(buf, text);
+            byte[] array = buf.array();
+            return new PluginMessage(channel, array);
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING,
                 "Error converting to PluginMessage: \"" + channel + "\", \"" + text + "\"", e);
+        } finally {
+            buf.release();
         }
-        byte[] array = buf.array();
-        buf.release();
-        return new PluginMessage(channel, array);
+        return null;
     }
 
 }

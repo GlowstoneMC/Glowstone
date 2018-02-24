@@ -3,7 +3,6 @@ package net.glowstone.chunk;
 import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.Multiset;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -12,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
@@ -154,7 +152,7 @@ public final class ChunkManager {
                 EventFactory.callEvent(new ChunkLoadEvent(chunk, false));
                 return true;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             GlowServer.logger.log(Level.SEVERE,
                     "Error while loading chunk (" + chunk.getX() + "," + chunk.getZ() + ")",
                     e);
@@ -403,9 +401,7 @@ public final class ChunkManager {
      * @return The currently loaded chunks.
      */
     public GlowChunk[] getLoadedChunks() {
-        ArrayList<GlowChunk> result = chunks.values().stream().filter(GlowChunk::isLoaded)
-                .collect(Collectors.toCollection(ArrayList::new));
-        return result.toArray(new GlowChunk[result.size()]);
+        return chunks.values().stream().filter(GlowChunk::isLoaded).toArray(GlowChunk[]::new);
     }
 
     /**
