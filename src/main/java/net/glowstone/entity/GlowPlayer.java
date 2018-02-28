@@ -1162,6 +1162,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // restore health
         setHealth(getMaxHealth());
         setFoodLevel(20);
+
+        // reset fire ticks
+        setFireTicks(0);
+
         worldLock.writeLock().lock();
         try {
             // determine spawn destination
