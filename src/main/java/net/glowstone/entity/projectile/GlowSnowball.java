@@ -1,27 +1,68 @@
 package net.glowstone.entity.projectile;
 
+import net.glowstone.entity.monster.GlowBlaze;
+import net.glowstone.entity.objects.GlowEnderCrystal;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Snowball;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.Vector;
 
 public class GlowSnowball extends GlowProjectile implements Snowball {
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.03;
 
+    /**
+     * Creates a thrown snowball with default speed.
+     *
+     * @param location the position and facing of the thrower
+     */
     public GlowSnowball(Location location) {
         super(location);
+        setDrag(0.99, false);
+        setDrag(0.99, true);
+        setHorizontalAirDrag(1);
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
+        setVelocity(location.getDirection().multiply(3));
         setBoundingBox(0.25, 0.25);
     }
 
     @Override
     public void collide(Block block) {
+        getWorld().spawnParticle(Particle.SNOWBALL, location, 5);
         remove();
     }
 
     @Override
     public void collide(LivingEntity entity) {
-        entity.damage(0);
-        remove();
+        ProjectileSource source = getShooter();
+        // the entity receives fake damage.
+        if (source instanceof Entity) {
+            if (entity instanceof GlowBlaze) {
+                entity.damage(3, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+            } else {
+                entity.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+            }
+        } else {
+            entity.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
+        }
+        collide(location.getBlock());
+    }
+
+    /**
+     * Process random spawn chicks when collide with an entity.
+     *
+     * @param entity the eneity that the egg collides with
+     */
+    public void collide(Entity entity) {
+        if (entity instanceof GlowEnderCrystal) {
+            ((GlowEnderCrystal) entity).damage(0, entity, EntityDamageEvent.DamageCause.PROJECTILE);
+        }
+        collide(location.getBlock());
     }
 
     @Override

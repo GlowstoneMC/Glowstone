@@ -2150,10 +2150,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         int[] particleData = GlowParticle.getExtData(particle, data);
 
         if (distance <= 1024.0D || isLongDistance && distance <= 262144.0D) {
-            getSession().send(new PlayParticleMessage(particleId, isLongDistance, (float) location
-                    .getX(), (float) location.getY(), (float) location
-                    .getZ(), (float) offsetX, (float) offsetY, (float) offsetZ, (float) extra,
-                    count, particleData));
+            getSession().send(new PlayParticleMessage(particleId, isLongDistance,
+                (float) location.getX(), (float) location.getY(), (float) location.getZ(),
+                (float) offsetX, (float) offsetY, (float) offsetZ,
+                (float) extra, count, particleData));
         }
     }
 

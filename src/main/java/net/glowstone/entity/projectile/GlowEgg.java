@@ -1,55 +1,107 @@
 package net.glowstone.entity.projectile;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.entity.objects.GlowEnderCrystal;
 import net.glowstone.entity.passive.GlowChicken;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class GlowEgg extends GlowProjectile implements Egg {
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.03;
 
     /**
-     * Creates an egg entity.
+     * Creates a thrown egg with default speed.
      *
-     * @param location the initial location
+     * @param location the position and facing of the thrower
      */
     public GlowEgg(Location location) {
         super(location);
-        setGravityAccel(new Vector(0, -0.3, 0));
+        setDrag(0.99, false);
+        setDrag(0.99, true);
+        setHorizontalAirDrag(1);
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
+        setVelocity(location.getDirection().multiply(3));
         setBoundingBox(0.25, 0.25);
     }
 
+    /**
+     * Process random spawn chicks when collide with a block.
+     *
+     * @param block the block that the egg collides with
+     */
     @Override
     public void collide(Block block) {
-        randomSpawnChicken(getLocation().add(0, 1, 0));
+        randomSpawnChicken(getLocation().clone());
+        getWorld().spawnParticle(
+            Particle.ITEM_CRACK, location, 5,
+            0, 0, 0, 0.05, new ItemStack(Material.EGG));
         remove();
     }
 
+    /**
+     * Process random spawn chicks when collide with a living entity.
+     *
+     * @param entity the eneity that the egg collides with
+     */
     @Override
     public void collide(LivingEntity entity) {
-        randomSpawnChicken(getLocation());
-        entity.damage(0);
-        remove();
+        ProjectileSource source = getShooter();
+        // the entity receives fake damage.
+        if (entity instanceof Entity) {
+            entity.damage(0, (Entity) source, EntityDamageEvent.DamageCause.PROJECTILE);
+        } else {
+            entity.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
+        }
+
+        collide(entity.getLocation().getBlock());
     }
 
+    /**
+     * Process random spawn chicks when collide with an entity.
+     *
+     * @param entity the eneity that the egg collides with
+     */
+    public void collide(Entity entity) {
+        if (entity instanceof GlowEnderCrystal) {
+            ((GlowEnderCrystal) entity).damage(0, entity, EntityDamageEvent.DamageCause.PROJECTILE);
+        }
+        collide(location.getBlock());
+    }
+
+    /**
+     * Handle spawning chicks when the egg breaks.
+     * There is a 1/8 chance to spawn 1 chick,
+     * and if that happends, there is a 1/32 chance to spawn 3 more chicks.
+     *
+     * @param location The location the egg breaks
+     */
     private void randomSpawnChicken(Location location) {
-        Random random = ThreadLocalRandom.current();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int amount = 0;
+
         if (random.nextInt(8) == 0) {
-            int count = 1;
+            amount = 1;
             if (random.nextInt(32) == 0) {
-                count = 4;
+                amount = 4;
             }
-            for (int i = 0; i < count; i++) {
-                GlowChicken chicken = (GlowChicken)
-                        location.getWorld().spawnEntity(location.clone().add(0, 1, 0),
-                                EntityType.CHICKEN);
-                chicken.setAge(-24000);
-            }
+        }
+
+        for (int i = 0; i < amount; i++) {
+            GlowChicken chicken =
+                (GlowChicken) location.getWorld().spawnEntity(
+                    location.clone().add(0, 0.3, 0), EntityType.CHICKEN);
+            chicken.setBaby();
         }
     }
 
