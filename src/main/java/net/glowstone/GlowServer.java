@@ -97,6 +97,7 @@ import net.glowstone.command.minecraft.XpCommand;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.EntityIdManager;
+import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
@@ -399,6 +400,11 @@ public final class GlowServer implements Server {
      */
     private static final String SERVER_ICON_FILE = "server-icon.png";
     /**
+     * The FishingRewards of this server.
+     */
+    @Getter
+    private final FishingRewardManager fishingRewardManager;
+    /**
      * Whether the Linux epoll native transport is available for Netty.
      */
     public static final boolean EPOLL = Epoll.isAvailable();
@@ -413,7 +419,10 @@ public final class GlowServer implements Server {
      * @param config This server's config.
      */
     public GlowServer(ServerConfig config) {
+        Bukkit.setServer(this);
+
         materialValueManager = new BuiltinMaterialValueManager();
+        fishingRewardManager = new FishingRewardManager();
         advancements = new HashMap<>();
         // test advancement
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
@@ -432,7 +441,6 @@ public final class GlowServer implements Server {
         nameBans = new GlowBanList(this, Type.NAME);
         ipBans = new GlowBanList(this, Type.IP);
 
-        Bukkit.setServer(this);
         loadConfig();
     }
 

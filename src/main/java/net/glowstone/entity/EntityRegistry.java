@@ -53,6 +53,7 @@ import net.glowstone.entity.passive.GlowChicken;
 import net.glowstone.entity.passive.GlowCow;
 import net.glowstone.entity.passive.GlowDonkey;
 import net.glowstone.entity.passive.GlowFirework;
+import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.entity.passive.GlowHorse;
 import net.glowstone.entity.passive.GlowLlama;
 import net.glowstone.entity.passive.GlowMooshroom;
@@ -107,6 +108,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
 import org.bukkit.entity.Guardian;
@@ -192,7 +194,7 @@ public class EntityRegistry {
             .put(FallingBlock.class, GlowFallingBlock.class)
             .put(Fireball.class, GlowFireball.class)
             .put(Firework.class, GlowFirework.class)
-            //TODO: Fishing hook
+            .put(FishHook.class, GlowFishingHook.class)
             .put(Ghast.class, GlowGhast.class)
             .put(Giant.class, GlowGiant.class)
             .put(Guardian.class, GlowGuardian.class)

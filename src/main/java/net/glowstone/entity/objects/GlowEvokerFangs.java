@@ -3,7 +3,6 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
@@ -34,7 +33,7 @@ public class GlowEvokerFangs extends GlowEntity implements EvokerFangs {
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
         result.add(new SpawnObjectMessage(
-                entityId, UUID.randomUUID(), 79, x, y, z, pitch, yaw, 0, 0, 0, 0));
+                entityId, this.getUniqueId(), 79, x, y, z, pitch, yaw, 0, 0, 0, 0));
         return result;
     }
 
