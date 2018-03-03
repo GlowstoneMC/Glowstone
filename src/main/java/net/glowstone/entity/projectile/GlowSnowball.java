@@ -31,12 +31,22 @@ public class GlowSnowball extends GlowProjectile implements Snowball {
         setBoundingBox(0.25, 0.25);
     }
 
+    /**
+     * Process collide with a block.
+     *
+     * @param block the block that the snowball collides with
+     */
     @Override
     public void collide(Block block) {
         getWorld().spawnParticle(Particle.SNOWBALL, location, 5);
         remove();
     }
 
+    /**
+     * Process collide with a living entity.
+     *
+     * @param entity the eneity that the snowball collides with
+     */
     @Override
     public void collide(LivingEntity entity) {
         ProjectileSource source = getShooter();
@@ -54,9 +64,9 @@ public class GlowSnowball extends GlowProjectile implements Snowball {
     }
 
     /**
-     * Process random spawn chicks when collide with an entity.
+     * Process collide with an entity.
      *
-     * @param entity the eneity that the egg collides with
+     * @param entity the eneity that the snowball collides with
      */
     public void collide(Entity entity) {
         if (entity instanceof GlowEnderCrystal) {
