@@ -81,7 +81,12 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
  * @author Graham Edgecombe
  */
 public abstract class GlowEntity implements Entity {
-
+    /**
+     * An ID to use in network messages when the protocol calls for a 32-bit entity ID, but the
+     * relevant Object doesn't exist, isn't an Entity, or is in a different World (and thus a
+     * different space for 32-bit entity IDs).
+     */
+    public static final int ENTITY_ID_NOBODY = -1;
     /**
      * The metadata store for entities.
      */

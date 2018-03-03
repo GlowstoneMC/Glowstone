@@ -29,6 +29,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -60,6 +61,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
+import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
@@ -201,6 +203,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * A static entity id to use when telling the client about itself.
      */
     public static final int SELF_ID = 0;
+    public static final int HOOK_MAX_DISTANCE = 32;
 
     /**
      * The network session attached to this player.
@@ -518,7 +521,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * If we should force block streaming regardless of chunk difference.
      */
     private boolean forceStream = false;
-
+    /**
+     * Current casted fishing hook.
+     */
+    private final AtomicReference<GlowFishingHook> currentFishingHook = new AtomicReference<>(null);
     /**
      * The player's ender pearl cooldown game tick counter.
      * 1 second, or 20 game ticks by default.
@@ -527,6 +533,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Getter
     @Setter
     private int enderPearlCooldown = 0;
+
+    /**
+     * Returns the current fishing hook.
+     *
+     * @return the current fishing hook, or null if not fishing
+     */
+    public GlowFishingHook getCurrentFishingHook() {
+        return currentFishingHook.get();
+    }
 
     /**
      * Creates a new player and adds it to the world.
@@ -938,6 +953,20 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                     .mapToInt(Entity::getEntityId).toArray()));
         }
         getAttributeManager().sendMessages(session);
+
+        GlowFishingHook hook = currentFishingHook.get();
+        if (hook != null) {
+            // The line will disappear if the player wanders more than 32 blocks away from the
+            // bobber, or if the player stops holding a fishing rod.
+            if (getInventory().getItemInMainHand().getType() != Material.FISHING_ROD
+                    && getInventory().getItemInOffHand().getType() != Material.FISHING_ROD) {
+                setCurrentFishingHook(null);
+            }
+
+            if (hook.location.distanceSquared(location) > HOOK_MAX_DISTANCE * HOOK_MAX_DISTANCE) {
+                setCurrentFishingHook(null);
+            }
+        }
     }
 
     @Override
@@ -1162,6 +1191,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // restore health
         setHealth(getMaxHealth());
         setFoodLevel(20);
+
+        // reset fire ticks
+        setFireTicks(0);
+
         worldLock.writeLock().lock();
         try {
             // determine spawn destination
@@ -1358,7 +1391,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public boolean isWhitelisted() {
         return server.getWhitelist().containsProfile(
-                new GlowPlayerProfile(getName(),getUniqueId()));
+                new GlowPlayerProfile(getName(), getUniqueId()));
     }
 
     @Override
@@ -3430,5 +3463,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             return -1;
         }
         return invMonitor.getId();
+    }
+
+    /**
+     * Removes the current fishing hook, if any, and sets a new one.
+     *
+     * @param fishingHook the new fishing hook, or null to stop fishing
+     */
+    public void setCurrentFishingHook(GlowFishingHook fishingHook) {
+        GlowFishingHook oldHook = currentFishingHook.getAndSet(fishingHook);
+        if (oldHook != null && !(oldHook.equals(fishingHook)) && !oldHook.isDead()) {
+            oldHook.remove();
+        }
     }
 }
