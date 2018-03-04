@@ -52,6 +52,11 @@ public class GlowInventorySlot {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s (in %s slot)", item, type);
+    }
+
     public static List<GlowInventorySlot> createList(int len) {
         return Arrays.asList(createArray(len));
     }

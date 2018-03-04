@@ -211,6 +211,27 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Inventory for " + getHolder() + ": ");
+        boolean empty = true;
+        for (int i = 0; i < SIZE; i++) {
+            GlowInventorySlot slot = getSlot(i);
+            ItemStack item = slot.getItem();
+            if (!InventoryUtil.isEmpty(item)) {
+                empty = false;
+                stringBuilder.append(i).append('=').append(slot).append(',');
+            }
+        }
+        if (empty) {
+            stringBuilder.append("<empty>");
+        } else {
+            // Remove last comma
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        return stringBuilder.toString();
+    }
+
+    @Override
     public void setItem(EquipmentSlot slot, ItemStack item) {
         switch (slot) {
             case HAND:
