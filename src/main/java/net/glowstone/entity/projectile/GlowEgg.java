@@ -1,7 +1,6 @@
 package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
-import net.glowstone.entity.objects.GlowEnderCrystal;
 import net.glowstone.entity.passive.GlowChicken;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
@@ -65,18 +64,6 @@ public class GlowEgg extends GlowProjectile implements Egg {
         }
 
         collide(entity.getLocation().getBlock());
-    }
-
-    /**
-     * Process random spawn chicks when collide with an entity.
-     *
-     * @param entity the eneity that the egg collides with
-     */
-    public void collide(Entity entity) {
-        if (entity instanceof GlowEnderCrystal) {
-            ((GlowEnderCrystal) entity).damage(0, entity, EntityDamageEvent.DamageCause.PROJECTILE);
-        }
-        collide(location.getBlock());
     }
 
     /**

@@ -1,7 +1,6 @@
 package net.glowstone.entity.projectile;
 
 import net.glowstone.entity.monster.GlowBlaze;
-import net.glowstone.entity.objects.GlowEnderCrystal;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -59,18 +58,6 @@ public class GlowSnowball extends GlowProjectile implements Snowball {
             }
         } else {
             entity.damage(0, EntityDamageEvent.DamageCause.PROJECTILE);
-        }
-        collide(location.getBlock());
-    }
-
-    /**
-     * Process collide with an entity.
-     *
-     * @param entity the eneity that the snowball collides with
-     */
-    public void collide(Entity entity) {
-        if (entity instanceof GlowEnderCrystal) {
-            ((GlowEnderCrystal) entity).damage(0, entity, EntityDamageEvent.DamageCause.PROJECTILE);
         }
         collide(location.getBlock());
     }

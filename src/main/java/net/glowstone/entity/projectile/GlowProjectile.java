@@ -71,8 +71,6 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
                     if (entity instanceof LivingEntity) {
                         collide((LivingEntity) entity);
                         break;
-                    } else if (entity instanceof Entity) {
-                        collide((Entity) entity);
                     }
                 }
             }
@@ -84,8 +82,6 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
     public abstract void collide(Block block);
 
     public abstract void collide(LivingEntity entity);
-
-    public abstract void collide(Entity entity);
 
     protected abstract int getObjectId();
 
