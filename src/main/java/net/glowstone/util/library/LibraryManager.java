@@ -9,6 +9,8 @@ import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -54,6 +56,9 @@ public final class LibraryManager {
     private final Collection<Library> libraries;
 
     private final ExecutorService downloaderService = Executors.newCachedThreadPool();
+
+    @Getter(lazy = true)
+    private static final MethodHandle addUrlMethod = lookupAddUrlMethod();
 
     /**
      * Creates the instance.
@@ -196,13 +201,15 @@ public final class LibraryManager {
                 if (Integer.parseInt(javaVersion[0]) >= 9) {
                     ClassPathAgent.addJarFile(new JarFile(file));
                 } else {
-                    Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-                    method.setAccessible(true);
-                    method.invoke(ClassLoader.getSystemClassLoader(), file.toURI().toURL());
+                    MethodHandle addUrl = getAddUrlMethod();
+                    if (addUrl != null) {
+                        addUrl.invokeExact(ClassLoader.getSystemClassLoader(),
+                                file.toURI().toURL());
+                    }
                 }
-            } catch (Exception e) {
+            } catch (Throwable t) {
                 GlowServer.logger.log(Level.WARNING,
-                        "Failed to add to classpath: " + library.toString(), e);
+                        "Failed to add to classpath: " + library.toString(), t);
             }
         }
 
@@ -249,6 +256,18 @@ public final class LibraryManager {
                 return false;
             }
             return digest.equals(checksum);
+        }
+    }
+
+    private static MethodHandle lookupAddUrlMethod() {
+        try {
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            method.setAccessible(true);
+            return MethodHandles.lookup().unreflect(method);
+        } catch (IllegalAccessException | NoSuchMethodException e) {
+            // Should be impossible
+            GlowServer.logger.log(Level.SEVERE, e, () -> "Unable to load libraries");
+            return null;
         }
     }
 
