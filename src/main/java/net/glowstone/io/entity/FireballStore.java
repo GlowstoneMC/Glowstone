@@ -2,9 +2,11 @@ package net.glowstone.io.entity;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowFireball;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
+import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
@@ -13,8 +15,8 @@ public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
     private static final String YIELD_INT = "ExplosionPower";
     private static final String YIELD_FLOAT = "glowstone:ExplosionPowerFloat";
 
-    public FireballStore(Class<T> clazz, String id) {
-        super(clazz, id);
+    public FireballStore(Class<T> clazz, String id, Function<Location, T> constructor) {
+        super(clazz, id, constructor);
     }
 
     @Override

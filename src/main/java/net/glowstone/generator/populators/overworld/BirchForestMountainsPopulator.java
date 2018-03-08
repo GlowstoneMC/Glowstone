@@ -12,8 +12,8 @@ public class BirchForestMountainsPopulator extends BirchForestPopulator {
 
     private static final Biome[] BIOMES = {Biome.MUTATED_BIRCH_FOREST,
         Biome.MUTATED_BIRCH_FOREST_HILLS};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(BirchTree.class, 1),
-        new TreeDecoration(TallBirchTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(BirchTree::new, 1),
+        new TreeDecoration(TallBirchTree::new, 1)};
 
     public BirchForestMountainsPopulator() {
         treeDecorator.setTrees(TREES);

@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class IcePlainsPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.ICE_FLATS, Biome.ICE_MOUNTAINS};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 1)};
 
     /**
      * Creates a populator specialized for ice plains and ice mountains, with rabbits, polar bears
