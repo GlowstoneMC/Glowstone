@@ -381,7 +381,8 @@ public final class GlowWorld implements World {
      */
     // FIXME: Prevents classes from unloading. Using a WeakHashMap wouldn't help, because the values
     // strongly reference the keys.
-    private Map<Class<? extends GlowEntity>, MethodHandle> entityCtors = new ConcurrentHashMap<>();
+    private static final Map<Class<? extends GlowEntity>, MethodHandle> entityCtors
+            = new ConcurrentHashMap<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
