@@ -6,7 +6,6 @@ import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowFireball;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.DoubleTag;
-import net.glowstone.util.nbt.ListTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
