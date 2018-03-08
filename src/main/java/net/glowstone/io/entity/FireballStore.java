@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowFireball;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.DoubleTag;
+import net.glowstone.util.nbt.ListTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
@@ -25,8 +27,8 @@ public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
         Vector vel = entity.getVelocity();
         // Mojang creates tags "direction" and "power", as duplicates of "Motion"
         final List<Double> velocityAsList = Arrays.asList(vel.getX(), vel.getY(), vel.getZ());
-        tag.putList("direction", TagType.LIST, velocityAsList);
-        tag.putList("power", TagType.LIST, velocityAsList);
+        tag.putList("direction", TagType.DOUBLE, velocityAsList, DoubleTag::new);
+        tag.putList("power", TagType.DOUBLE, velocityAsList, DoubleTag::new);
         tag.putBool(IS_INCENDIARY, entity.isIncendiary());
         tag.putInt(YIELD_INT, (int) entity.getYield());
         tag.putFloat(YIELD_FLOAT, (int) entity.getYield());

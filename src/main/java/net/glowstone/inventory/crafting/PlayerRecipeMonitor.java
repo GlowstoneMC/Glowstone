@@ -7,6 +7,7 @@ import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 
 @Data
@@ -77,8 +78,10 @@ public final class PlayerRecipeMonitor {
         CompoundTag recipeBook = new CompoundTag();
         recipeBook.putBool("isFilteringCraftable", filterCraftable);
         recipeBook.putBool("isGuiOpen", bookOpen);
-        recipeBook.putList("recipes", TagType.STRING, new ArrayList<>(recipes));
-        recipeBook.putList("toBeDisplayed", TagType.STRING, new ArrayList<>(toBeDisplayed));
+        recipeBook.putList("recipes", TagType.STRING, new ArrayList<>(recipes),
+                StringTag::new);
+        recipeBook.putList("toBeDisplayed", TagType.STRING, new ArrayList<>(toBeDisplayed),
+                StringTag::new);
         playerData.putCompound("recipeBook", recipeBook);
     }
 }

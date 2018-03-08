@@ -2,13 +2,13 @@ package net.glowstone.util.nbt;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
@@ -471,23 +471,19 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
     /**
      * Adds or replaces a list subtag, converting the list entries to tags.
      *
+     * @param <V> the list elements' Java type
      * @param key the key to write to
      * @param type the list elements' tag type
      * @param value the list contents, as objects to convert to tags
-     * @param <V> the list elements' Java type
+     * @param tagCreator a function that will convert each V to an element tag
      */
-    public <V> void putList(String key, TagType type, List<V> value) {
-        // the reflection here is really gross but I'm not sure a good way around it
-        try {
-            Constructor<? extends Tag> constructor = type.getConstructor();
-            List<Tag> result = new ArrayList<>(value.size());
-            for (V item : value) {
-                result.add(constructor.newInstance(item));
-            }
-            put(key, new ListTag<>(type, result));
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalArgumentException("Unable to create list of type " + type, e);
+    public <V> void putList(String key, TagType type, List<V> value,
+            Function<? super V, ? extends Tag> tagCreator) {
+        List<Tag> result = new ArrayList<>(value.size());
+        for (V item : value) {
+            result.add(tagCreator.apply(item));
         }
+        put(key, new ListTag<>(type, result));
     }
 
     public void putCompound(String key, CompoundTag tag) {

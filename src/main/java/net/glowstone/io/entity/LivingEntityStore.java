@@ -15,6 +15,7 @@ import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -323,13 +324,13 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             tag.putList("HandDropChances", TagType.FLOAT, Arrays.asList(
                     equip.getItemInMainHandDropChance(),
                     equip.getItemInOffHandDropChance()
-            ));
+            ), FloatTag::new);
             tag.putList("ArmorDropChances", TagType.FLOAT, Arrays.asList(
                     equip.getBootsDropChance(),
                     equip.getLeggingsDropChance(),
                     equip.getChestplateDropChance(),
                     equip.getHelmetDropChance()
-            ));
+            ), FloatTag::new);
         }
         tag.putBool("CanPickUpLoot", entity.getCanPickupItems());
 

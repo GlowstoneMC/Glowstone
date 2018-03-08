@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtOutputStream;
+import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -119,7 +120,7 @@ public class NbtScoreboardIoWriter {
 
             List<String> players = new ArrayList<>(team.getEntries());
 
-            teamNbt.putList("Players", TagType.STRING, players);
+            teamNbt.putList("Players", TagType.STRING, players, StringTag::new);
             teams.add(teamNbt);
         }
         root.putCompoundList("Teams", teams);

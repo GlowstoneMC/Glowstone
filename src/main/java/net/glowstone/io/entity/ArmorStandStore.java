@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -61,12 +62,18 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
         tag.putBool("ShowArms", entity.hasArms());
         tag.putBool("Small", entity.isSmall());
         CompoundTag pose = new CompoundTag();
-        pose.putList("Body", TagType.FLOAT, toFloatList(entity.getBodyPose()));
-        pose.putList("LeftArm", TagType.FLOAT, toFloatList(entity.getLeftArmPose()));
-        pose.putList("RightArm", TagType.FLOAT, toFloatList(entity.getRightArmPose()));
-        pose.putList("LeftLeg", TagType.FLOAT, toFloatList(entity.getLeftLegPose()));
-        pose.putList("RightLeg", TagType.FLOAT, toFloatList(entity.getRightLegPose()));
-        pose.putList("Head", TagType.FLOAT, toFloatList(entity.getHeadPose()));
+        pose.putList("Body", TagType.FLOAT, toFloatList(entity.getBodyPose()),
+                FloatTag::new);
+        pose.putList("LeftArm", TagType.FLOAT, toFloatList(entity.getLeftArmPose()),
+                FloatTag::new);
+        pose.putList("RightArm", TagType.FLOAT, toFloatList(entity.getRightArmPose()),
+                FloatTag::new);
+        pose.putList("LeftLeg", TagType.FLOAT, toFloatList(entity.getLeftLegPose()),
+                FloatTag::new);
+        pose.putList("RightLeg", TagType.FLOAT, toFloatList(entity.getRightLegPose()),
+                FloatTag::new);
+        pose.putList("Head", TagType.FLOAT, toFloatList(entity.getHeadPose()),
+                FloatTag::new);
         tag.putCompound("Pose", pose);
     }
 

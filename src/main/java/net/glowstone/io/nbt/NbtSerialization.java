@@ -9,6 +9,8 @@ import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.DoubleTag;
+import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -207,8 +209,10 @@ public final class NbtSerialization {
      * @param tag The tag to write to.
      */
     public static void locationToListTags(Location loc, CompoundTag tag) {
-        tag.putList("Pos", TagType.DOUBLE, Arrays.asList(loc.getX(), loc.getY(), loc.getZ()));
-        tag.putList("Rotation", TagType.FLOAT, Arrays.asList(loc.getYaw(), loc.getPitch()));
+        tag.putList("Pos", TagType.DOUBLE, Arrays.asList(loc.getX(), loc.getY(), loc.getZ()),
+                DoubleTag::new);
+        tag.putList("Rotation", TagType.FLOAT, Arrays.asList(loc.getYaw(), loc.getPitch()),
+                FloatTag::new);
     }
 
     /**

@@ -7,6 +7,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.TagType;
 import org.json.simple.JSONObject;
 
@@ -39,7 +40,7 @@ public final class ProtocolTestUtils {
         CompoundTag tag = new CompoundTag();
         tag.putInt("int", 5);
         tag.putString("string", "text");
-        tag.putList("list", TagType.FLOAT, Arrays.asList(1.f, 2.f, 3.f));
+        tag.putList("list", TagType.FLOAT, Arrays.asList(1.f, 2.f, 3.f), FloatTag::new);
         tag.putCompound("compound", new CompoundTag());
         return tag;
     }

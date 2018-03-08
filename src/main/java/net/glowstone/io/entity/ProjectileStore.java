@@ -10,6 +10,8 @@ class ProjectileStore<T extends GlowProjectile> extends EntityStore<T> {
     private final Function<Location, T> constructor;
 
     /**
+     * Creates an instance.
+     *
      * @param clazz the class of projectile this ProjectileStore will store
      * @param id the entity-type name used in NBT
      * @param constructor {@code clazz}'s constructor taking a Location

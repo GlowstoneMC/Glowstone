@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -164,7 +165,7 @@ public class GlowMetaItem implements ItemMeta {
             displayTags.putString("Name", getDisplayName());
         }
         if (hasLore()) {
-            displayTags.putList("Lore", TagType.STRING, getLore());
+            displayTags.putList("Lore", TagType.STRING, getLore(), StringTag::new);
         }
 
         if (!displayTags.isEmpty()) {
