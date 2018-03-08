@@ -33,8 +33,6 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
     /** This needs to be static because it's used in the constructor's super call. */
     @Mock
     private static GlowPlayer player;
-    @Mock
-    private GlowBlock block;
 
     private FishingRewardManager fishingRewardManager;
 
