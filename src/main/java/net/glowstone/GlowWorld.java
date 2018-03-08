@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -380,8 +381,9 @@ public final class GlowWorld implements World {
     /**
      * Map of entity classes to constructors.
      */
-    private Map<Class<? extends GlowEntity>, MethodHandle> entityCtors
-            = Collections.synchronizedMap(new WeakHashMap<>());
+    // FIXME: Prevents classes from unloading. Using a WeakHashMap wouldn't help, because the values
+    // strongly reference the keys.
+    private Map<Class<? extends GlowEntity>, MethodHandle> entityCtors = new ConcurrentHashMap<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
