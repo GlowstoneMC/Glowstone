@@ -1,9 +1,6 @@
 package net.glowstone.util.nbt;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,22 +11,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum TagType {
 
-    END("End", null, Void.class),
-    BYTE("Byte", ByteTag.class, byte.class),
-    SHORT("Short", ShortTag.class, short.class),
-    INT("Int", IntTag.class, int.class),
-    LONG("Long", LongTag.class, long.class),
-    FLOAT("Float", FloatTag.class, float.class),
-    DOUBLE("Double", DoubleTag.class, double.class),
-    BYTE_ARRAY("Byte_Array", ByteArrayTag.class, byte[].class),
-    STRING("String", StringTag.class, String.class),
-    LIST("List", ListTag.class, List.class),
-    COMPOUND("Compound", CompoundTag.class, Map.class),
-    INT_ARRAY("Int_Array", IntArrayTag.class, int[].class);
+    END("End"),
+    BYTE("Byte"),
+    SHORT("Short"),
+    INT("Int"),
+    LONG("Long"),
+    FLOAT("Float"),
+    DOUBLE("Double"),
+    BYTE_ARRAY("Byte_Array"),
+    STRING("String"),
+    LIST("List"),
+    COMPOUND("Compound"),
+    INT_ARRAY("Int_Array");
 
     private final String name;
-    private final Class<? extends Tag> tagClass;
-    private final Class<?> valueClass;
 
     /**
      * Returns the tag type with a given ID.
@@ -62,7 +57,4 @@ public enum TagType {
         return (byte) ordinal();
     }
 
-    public Constructor<? extends Tag> getConstructor() throws NoSuchMethodException {
-        return tagClass.getConstructor(valueClass);
-    }
 }
