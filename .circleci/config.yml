@@ -32,7 +32,7 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: while sleep 5; do free -m; done &
+            - run: while sleep 5; do (free -m >> target/memory.txt); done &
 
             - run: mvn -T 1C -B package
 
@@ -42,6 +42,8 @@ jobs:
             - store_artifacts:
                 path: target/glowstone.jar
                 destination: glowstone.jar
+                path: target/memory.txt
+                destination: memory.txt
 
     build-deploy:
         docker:
