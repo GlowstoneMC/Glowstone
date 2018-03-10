@@ -38,6 +38,11 @@ jobs:
 
             - run: mvn -B package
 
+            - run:
+                when: on-fail
+                name: Give dmesg time to output death messages
+                command: sleep 5
+
             - store_test_results:
                 path: target/surefire-reports
 
