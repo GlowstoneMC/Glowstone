@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class GlowCowTest extends GlowAgeableTest<GlowCow> {
 
-    protected GlowCowTest() {
+    public GlowCowTest() {
         super(GlowCow::new);
     }
 
