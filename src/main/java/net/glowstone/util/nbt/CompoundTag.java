@@ -491,6 +491,12 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
         put(key, tag);
     }
 
+    /**
+     * Adds or replaces a list subtag with a list of compound tags.
+     *
+     * @param key the key to write to
+     * @param list the list contents as compound tags
+     */
     public void putCompoundList(String key, List<CompoundTag> list) {
         put(key, new ListTag<>(TagType.COMPOUND, list));
     }
@@ -499,7 +505,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
      * Adds or replaces a list subtag with a list of strings.
      *
      * @param key the key to write to
-     * @param value the list contents as strings, to convert to string tags
+     * @param list the list contents as strings, to convert to string tags
      */
     public void putStringList(String key, List<String> list) {
         putList(key, TagType.STRING, list, StringTag::new);
@@ -509,7 +515,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
      * Adds or replaces a list subtag with a list of floats.
      *
      * @param key the key to write to
-     * @param value the list contents as floats, to convert to float tags
+     * @param list the list contents as floats, to convert to float tags
      */
     public void putFloatList(String key, List<Float> list) {
         putList(key, TagType.FLOAT, list, FloatTag::new);
@@ -519,7 +525,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
      * Adds or replaces a list subtag with a list of doubles.
      *
      * @param key the key to write to
-     * @param value the list contents as doubles, to convert to double tags
+     * @param list the list contents as doubles, to convert to double tags
      */
     public void putDoubleList(String key, List<Double> list) {
         putList(key, TagType.DOUBLE, list, DoubleTag::new);
@@ -529,7 +535,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
      * Adds or replaces a list subtag with a list of longs.
      *
      * @param key the key to write to
-     * @param value the list contents as longs, to convert to long tags
+     * @param list the list contents as longs, to convert to long tags
      */
     public void putLongList(String key, List<Long> list) {
         putList(key, TagType.LONG, list, LongTag::new);
