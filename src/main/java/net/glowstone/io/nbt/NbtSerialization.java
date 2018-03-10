@@ -209,10 +209,8 @@ public final class NbtSerialization {
      * @param tag The tag to write to.
      */
     public static void locationToListTags(Location loc, CompoundTag tag) {
-        tag.putList("Pos", TagType.DOUBLE, Arrays.asList(loc.getX(), loc.getY(), loc.getZ()),
-                DoubleTag::new);
-        tag.putList("Rotation", TagType.FLOAT, Arrays.asList(loc.getYaw(), loc.getPitch()),
-                FloatTag::new);
+        tag.putDoubleList("Pos", Arrays.asList(loc.getX(), loc.getY(), loc.getZ()));
+        tag.putFloatList("Rotation", Arrays.asList(loc.getYaw(), loc.getPitch()));
     }
 
     /**

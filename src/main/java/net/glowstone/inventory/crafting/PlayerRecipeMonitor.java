@@ -78,10 +78,8 @@ public final class PlayerRecipeMonitor {
         CompoundTag recipeBook = new CompoundTag();
         recipeBook.putBool("isFilteringCraftable", filterCraftable);
         recipeBook.putBool("isGuiOpen", bookOpen);
-        recipeBook.putList("recipes", TagType.STRING, new ArrayList<>(recipes),
-                StringTag::new);
-        recipeBook.putList("toBeDisplayed", TagType.STRING, new ArrayList<>(toBeDisplayed),
-                StringTag::new);
+        recipeBook.putStringList("recipes", new ArrayList<>(recipes));
+        recipeBook.putStringList("toBeDisplayed", new ArrayList<>(toBeDisplayed));
         playerData.putCompound("recipeBook", recipeBook);
     }
 }

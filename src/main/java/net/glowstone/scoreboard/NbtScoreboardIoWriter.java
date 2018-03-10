@@ -120,7 +120,7 @@ public class NbtScoreboardIoWriter {
 
             List<String> players = new ArrayList<>(team.getEntries());
 
-            teamNbt.putList("Players", TagType.STRING, players, StringTag::new);
+            teamNbt.putStringList("Players", players);
             teams.add(teamNbt);
         }
         root.putCompoundList("Teams", teams);

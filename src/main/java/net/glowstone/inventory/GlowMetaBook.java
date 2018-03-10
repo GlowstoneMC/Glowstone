@@ -96,7 +96,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
             tag.putString("title", title);
         }
         if (hasPages()) {
-            tag.putList("pages", TagType.STRING, pages, StringTag::new);
+            tag.putStringList("pages", pages);
         }
         if (hasGeneration()) {
             tag.putInt("generation", generation);

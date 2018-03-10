@@ -26,8 +26,8 @@ public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
         Vector vel = entity.getVelocity();
         // Mojang creates tags "direction" and "power", as duplicates of "Motion"
         final List<Double> velocityAsList = Arrays.asList(vel.getX(), vel.getY(), vel.getZ());
-        tag.putList("direction", TagType.DOUBLE, velocityAsList, DoubleTag::new);
-        tag.putList("power", TagType.DOUBLE, velocityAsList, DoubleTag::new);
+        tag.putDoubleList("direction", velocityAsList);
+        tag.putDoubleList("power", velocityAsList);
         tag.putBool(IS_INCENDIARY, entity.isIncendiary());
         tag.putInt(YIELD_INT, (int) entity.getYield());
         tag.putFloat(YIELD_FLOAT, (int) entity.getYield());

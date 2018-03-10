@@ -187,8 +187,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         Location loc = entity.getLocation();
         NbtSerialization.writeWorld(loc.getWorld(), tag);
         NbtSerialization.locationToListTags(loc, tag);
-        tag.putList("Motion", TagType.DOUBLE, NbtSerialization.vectorToList(entity.getVelocity()),
-                DoubleTag::new);
+        tag.putDoubleList("Motion", NbtSerialization.vectorToList(entity.getVelocity()));
 
         tag.putFloat("FallDistance", entity.getFallDistance());
         tag.putShort("Fire", entity.getFireTicks());
@@ -204,7 +203,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         tag.putInt("PortalCooldown", entity.getPortalCooldown());
 
         if (!entity.getCustomTags().isEmpty()) {
-            tag.putList("Tags", TagType.STRING, entity.getCustomTags(), StringTag::new);
+            tag.putStringList("Tags", entity.getCustomTags());
         }
 
         // in case Vanilla or CraftBukkit expects non-living entities to have this tag

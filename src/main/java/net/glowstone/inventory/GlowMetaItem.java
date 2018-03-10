@@ -165,7 +165,7 @@ public class GlowMetaItem implements ItemMeta {
             displayTags.putString("Name", getDisplayName());
         }
         if (hasLore()) {
-            displayTags.putList("Lore", TagType.STRING, getLore(), StringTag::new);
+            displayTags.putStringList("Lore", getLore());
         }
 
         if (!displayTags.isEmpty()) {

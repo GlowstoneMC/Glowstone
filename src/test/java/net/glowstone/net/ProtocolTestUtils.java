@@ -40,7 +40,7 @@ public final class ProtocolTestUtils {
         CompoundTag tag = new CompoundTag();
         tag.putInt("int", 5);
         tag.putString("string", "text");
-        tag.putList("list", TagType.FLOAT, Arrays.asList(1.f, 2.f, 3.f), FloatTag::new);
+        tag.putFloatList("list", Arrays.asList(1.f, 2.f, 3.f));
         tag.putCompound("compound", new CompoundTag());
         return tag;
     }

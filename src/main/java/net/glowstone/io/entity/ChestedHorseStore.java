@@ -34,7 +34,7 @@ public class ChestedHorseStore<T extends GlowChestedHorse> extends AbstractHorse
         if (entity.getInventory() != null) {
             List<CompoundTag> items = NbtSerialization
                 .writeInventory(entity.getInventory().getContents(), 2);
-            tag.putList("Items", TagType.COMPOUND, items, Function.identity());
+            tag.putCompoundList("Items", items);
         }
     }
 }

@@ -57,7 +57,7 @@ public class NbtOutputTest {
         for (int i = 0; i < 5; ++i) {
             longList.add((long) (11 + i));
         }
-        compound.putList("listTest (long)", TagType.LONG, longList, LongTag::new);
+        compound.putLongList("listTest (long)", longList);
 
         // compound list
         List<CompoundTag> compoundList = new ArrayList<>(2);

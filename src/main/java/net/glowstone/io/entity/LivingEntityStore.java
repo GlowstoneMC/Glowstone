@@ -321,16 +321,16 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                     NbtSerialization.writeItem(equip.getHelmet(), -1)
             ));
 
-            tag.putList("HandDropChances", TagType.FLOAT, Arrays.asList(
+            tag.putFloatList("HandDropChances", Arrays.asList(
                     equip.getItemInMainHandDropChance(),
                     equip.getItemInOffHandDropChance()
-            ), FloatTag::new);
-            tag.putList("ArmorDropChances", TagType.FLOAT, Arrays.asList(
+            ));
+            tag.putFloatList("ArmorDropChances", Arrays.asList(
                     equip.getBootsDropChance(),
                     equip.getLeggingsDropChance(),
                     equip.getChestplateDropChance(),
                     equip.getHelmetDropChance()
-            ), FloatTag::new);
+            ));
         }
         tag.putBool("CanPickUpLoot", entity.getCanPickupItems());
 
