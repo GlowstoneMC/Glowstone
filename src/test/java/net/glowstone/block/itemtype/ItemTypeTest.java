@@ -1,6 +1,5 @@
 package net.glowstone.block.itemtype;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -11,6 +10,7 @@ import net.glowstone.testutils.ServerShim;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
@@ -33,5 +33,14 @@ public abstract class ItemTypeTest {
         when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
         world = mock(World.class, RETURNS_SMART_NULLS);
         location = new Location(world, 0, 0, 0);
+    }
+
+    @AfterAll
+    public void tearDownClass() {
+        // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
+        inventory = null;
+        player = null;
+        world = null;
+        location = null;
     }
 }

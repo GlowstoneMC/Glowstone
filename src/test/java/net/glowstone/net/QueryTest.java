@@ -28,6 +28,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +88,15 @@ public class QueryTest {
     @After
     public void tearDown() throws Exception {
         server.shutdown();
+    }
+
+    @AfterClass
+    public void tearDownClass() {
+        // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
+        glowServer = null;
+        server = null;
+        random = null;
+        address = null;
     }
 
     @Test
