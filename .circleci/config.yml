@@ -32,21 +32,18 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mkdir target
-            - run: while sleep 5; do free -m; done >> target/memory.txt &
+            - run:
+                command: while sleep 5; do free -m; done
+                background: true
 
             - run: mvn -T 1C -B package
 
             - store_test_results:
                 path: target/surefire-reports
 
-            - run: rm target/memory.txt
-
             - store_artifacts:
                 path: target/glowstone.jar
                 destination: glowstone.jar
-                path: target/memory.txt
-                destination: memory.txt
 
     build-deploy:
         docker:
