@@ -349,7 +349,7 @@
             </goals>
             <configuration>
               <threadCount>1</threadCount>
-              <perCoreThreadCount>false</perCoreThreadCount>
+              <perCoreThreadCount>false<!-- Core count on VMs is only a loose upper bound --></perCoreThreadCount>
             </configuration>
           </execution>
         </executions>
