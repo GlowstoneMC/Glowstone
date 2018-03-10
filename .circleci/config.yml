@@ -9,9 +9,6 @@ jobs:
 
         working_directory: ~/glowstone
 
-        environment:
-            MAVEN_OPTS: -Xmx512m
-
         steps:
             - run: mvn --version
             - run: java -version
