@@ -9,6 +9,9 @@ jobs:
 
         working_directory: ~/glowstone
 
+        environment:
+            MAVEN_OPTS: -Xms512m -Xmx512m -Xss16m -XX:MaxMetaspaceSize=512m
+
         steps:
             - run: mvn --version
             - run: java -version
@@ -49,7 +52,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx512m
+            MAVEN_OPTS: -Xms512m -Xmx512m -Xss16m -XX:MaxMetaspaceSize=512m
 
         steps:
             - checkout
