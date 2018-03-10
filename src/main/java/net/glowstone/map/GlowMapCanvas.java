@@ -1,6 +1,6 @@
 package net.glowstone.map;
 
-import java.awt.*;
+import java.awt.Image;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

@@ -36,7 +36,7 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     }
 
     /**
-     * Creates a primed TNT block not associated with any igniting entity
+     * Creates a primed TNT block, not associated with any igniting entity.
      *
      * @param location the location
      */
