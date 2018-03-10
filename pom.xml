@@ -347,6 +347,10 @@
             <goals>
               <goal>test</goal>
             </goals>
+            <configuration>
+              <threadCount>4</threadCount>
+              <perCoreThreadCount>false</perCoreThreadCount>
+            </configuration>
           </execution>
         </executions>
       </plugin>
