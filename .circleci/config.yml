@@ -30,7 +30,7 @@ jobs:
                 key: glowstone-{{ checksum "pom.xml" }}
 
             - run:
-                command: while sleep 5; do free -m; done
+                command: dmesg -w
                 background: true
 
             - run: mvn -B package
