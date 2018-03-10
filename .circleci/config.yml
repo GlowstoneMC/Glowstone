@@ -1,7 +1,7 @@
 version: 2
 machine:
     environment:
-      _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
+      _JAVA_OPTIONS: "-Xms512m -Xmx512m"
 jobs:
     build:
         docker:
@@ -10,7 +10,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx1024m
+            MAVEN_OPTS: -Xmx512m
 
         steps:
             - run: mvn --version
@@ -48,7 +48,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx1024m
+            MAVEN_OPTS: -Xmx512m
 
         steps:
             - checkout
