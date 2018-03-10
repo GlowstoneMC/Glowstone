@@ -36,7 +36,7 @@ jobs:
                 command: while sleep 5; do free -m; done
                 background: true
 
-            - run: mvn -T 1C -B package
+            - run: mvn -B package
 
             - store_test_results:
                 path: target/surefire-reports
