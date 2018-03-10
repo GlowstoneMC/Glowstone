@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,14 @@ public class SetIdleTimeoutCommandTest {
 
         Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(Bukkit.getServer()).thenReturn(PowerMockito.mock(Server.class));
+    }
+
+    @After
+    public void tearDown() {
+        // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
+        command = null;
+        sender = null;
+        opSender = null;
     }
 
     @Test

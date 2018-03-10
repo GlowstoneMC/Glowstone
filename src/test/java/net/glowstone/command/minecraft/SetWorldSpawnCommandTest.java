@@ -14,6 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,16 @@ public class SetWorldSpawnCommandTest {
 
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
+    }
+
+    @After
+    public void tearDown() {
+        // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
+        command = null;
+        sender = null;
+        opSender = null;
+        opPlayer = null;
+        world = null;
     }
 
     @Test
