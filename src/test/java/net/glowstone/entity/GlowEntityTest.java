@@ -37,6 +37,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,8 +62,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
     // Mocks
-    protected final GlowWorld world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
-    protected final GlowServer server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
+    protected GlowWorld world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
+    protected GlowServer server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
     @Mock
     protected ItemFactory itemFactory;
     @Mock(answer = RETURNS_SMART_NULLS)
@@ -70,19 +71,36 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @Mock
     protected GlowBlock block;
     @Mock
-    protected final GlowScoreboardManager scoreboardManager
+    protected GlowScoreboardManager scoreboardManager
             = PowerMockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
 
     // Real objects
-    protected final Logger log = Logger.getLogger(getClass().getSimpleName());
+    protected Logger log = Logger.getLogger(getClass().getSimpleName());
     protected Location location;
-    protected final EntityIdManager idManager = new EntityIdManager();
-    protected final EntityManager entityManager = new EntityManager();
-    protected final Function<Location, ? extends T> entityCreator;
-    protected final GlowScoreboard scoreboard = new GlowScoreboard();
+    protected EntityIdManager idManager = new EntityIdManager();
+    protected EntityManager entityManager = new EntityManager();
+    protected Function<Location, ? extends T> entityCreator;
+    protected GlowScoreboard scoreboard = new GlowScoreboard();
 
     protected GlowEntityTest(Function<Location, ? extends T> entityCreator) {
         this.entityCreator = entityCreator;
+    }
+
+    @AfterClass
+    public void tearDownClass() {
+        // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
+        world = null;
+        server = null;
+        itemFactory = null;
+        chunk = null;
+        block = null;
+        scoreboardManager = null;
+        log = null;
+        location = null;
+        idManager = null;
+        entityManager = null;
+        entityCreator = null;
+        scoreboard = null;
     }
 
     @Before
