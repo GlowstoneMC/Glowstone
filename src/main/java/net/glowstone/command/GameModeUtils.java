@@ -1,9 +1,7 @@
 package net.glowstone.command;
 
 import com.google.common.collect.ImmutableList;
-
 import java.util.List;
-
 import org.bukkit.GameMode;
 
 /**

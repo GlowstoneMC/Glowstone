@@ -7,8 +7,6 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.FloatTag;
-import net.glowstone.util.nbt.TagType;
 import org.json.simple.JSONObject;
 
 /**

@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

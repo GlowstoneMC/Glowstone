@@ -1,15 +1,24 @@
 package net.glowstone.util.mojangson;
 
-import net.glowstone.util.nbt.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import net.glowstone.util.nbt.ByteTag;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.DoubleTag;
+import net.glowstone.util.nbt.FloatTag;
+import net.glowstone.util.nbt.IntTag;
+import net.glowstone.util.nbt.ListTag;
+import net.glowstone.util.nbt.LongTag;
+import net.glowstone.util.nbt.ShortTag;
+import net.glowstone.util.nbt.StringTag;
+import net.glowstone.util.nbt.Tag;
+import net.glowstone.util.nbt.TagType;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class MojangsonWriteTest {
 

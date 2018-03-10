@@ -7,7 +7,6 @@ import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 
 @Data

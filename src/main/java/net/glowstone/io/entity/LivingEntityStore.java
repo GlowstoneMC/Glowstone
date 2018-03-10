@@ -15,7 +15,6 @@ import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

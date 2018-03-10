@@ -9,8 +9,6 @@ import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.DoubleTag;
-import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,11 +1,11 @@
 package net.glowstone.constants;
 
+import static org.junit.Assert.assertThat;
+
 import org.bukkit.Achievement;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests for {@link GlowAchievement}.

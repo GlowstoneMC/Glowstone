@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;

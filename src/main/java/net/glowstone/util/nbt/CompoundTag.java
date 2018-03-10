@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
-import org.bukkit.util.EulerAngle;
 
 /**
  * The {@code TAG_Compound} tag.

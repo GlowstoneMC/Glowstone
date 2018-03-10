@@ -12,8 +12,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.DoubleTag;
-import net.glowstone.util.nbt.StringTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtOutputStream;
-import net.glowstone.util.nbt.StringTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
