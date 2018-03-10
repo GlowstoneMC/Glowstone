@@ -36,7 +36,6 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class ItemBowTest extends ItemTypeTest {
     private ItemBow bow;
@@ -63,7 +62,6 @@ public class ItemBowTest extends ItemTypeTest {
             when(arrow.spigot()).thenReturn(spigot);
         }
         doCallRealMethod().when(launchedTippedArrow).copyFrom(any(PotionMeta.class));
-        assertTrue(launchedArrow instanceof Arrow);
         when(player.launchProjectile(Arrow.class)).thenReturn(launchedArrow);
         when(player.launchProjectile(SpectralArrow.class)).thenReturn(launchedSpectralArrow);
         when(player.launchProjectile(TippedArrow.class)).thenReturn(launchedTippedArrow);

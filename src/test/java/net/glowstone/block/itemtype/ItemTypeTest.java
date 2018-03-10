@@ -27,7 +27,10 @@ public abstract class ItemTypeTest {
     @BeforeEach
     public void setUp() {
         ServerShim.install();
-        player = Mockito.mock(GlowPlayer.class, RETURNS_SMART_NULLS);
+        // WARNING: if player ever answers RETURNS_SMART_NULLS, RETURNS_DEEP_STUBS or RETURNS_MOCKS
+        // then it must be overridden not to do so in ItemBowTest due to
+        // until https://github.com/mockito/mockito/issues/357
+        player = Mockito.mock(GlowPlayer.class);
         inventory = new GlowPlayerInventory(player);
         when(player.getInventory()).thenReturn(inventory);
         when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
