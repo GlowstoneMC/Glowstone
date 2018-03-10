@@ -335,8 +335,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <threadCount>1</threadCount>
-              <perCoreThreadCount>false<!-- Core count on VMs is only a loose upper bound --></perCoreThreadCount>
+              <parallel>false</parallel>
             </configuration>
           </execution>
         </executions>
