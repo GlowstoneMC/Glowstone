@@ -20,7 +20,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <kotlin.version>1.2.21</kotlin.version>
     <powermockVersion>2.0.0-beta.5</powermockVersion>
-    <junit.jupiter.version>5.0.3</junit.jupiter.version>
+    <junit.jupiter.version>5.1.0</junit.jupiter.version>
     <junit.vintage.version>5.1.0</junit.vintage.version>
   </properties>
 
