@@ -1,7 +1,7 @@
 version: 2
 machine:
     environment:
-      _JAVA_OPTIONS: "-Xms512m -Xmx512m -XX:MaxMetaspaceSize=512m"
+      _JAVA_OPTIONS: "-Xms512m -Xmx512m -Xss16m -XX:MaxMetaspaceSize=512m"
 jobs:
     build:
         docker:
