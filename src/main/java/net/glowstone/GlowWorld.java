@@ -1421,10 +1421,6 @@ public final class GlowWorld implements World {
     public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz,
             SpawnReason reason) throws IllegalArgumentException {
 
-        if (TNTPrimed.class.isAssignableFrom(clazz)) {
-            return new GlowTntPrimed(location, null);
-        }
-
         GlowEntity entity = null;
 
         try {
