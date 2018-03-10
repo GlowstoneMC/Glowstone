@@ -32,16 +32,12 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run:
-                command: dmesg -w
-                background: true
-
             - run: mvn -B package
 
             - run:
                 when: on_fail
-                name: Give dmesg time to output death messages
-                command: sleep 5
+                name: dmesg
+                command: sleep 5 && dmesg
 
             - store_test_results:
                 path: target/surefire-reports
