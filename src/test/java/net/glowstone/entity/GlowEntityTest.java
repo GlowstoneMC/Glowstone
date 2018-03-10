@@ -47,6 +47,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.mockito.internal.expectation.PowerMockitoStubberImpl;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -62,18 +63,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
-    // Mocks
-    protected GlowWorld world;
-    protected GlowServer server;
+
+    // Normal mocks
     @Mock
     protected ItemFactory itemFactory;
     @Mock(answer = RETURNS_SMART_NULLS)
     protected GlowChunk chunk;
     @Mock
     protected GlowBlock block;
-    @Mock
-    protected GlowScoreboardManager scoreboardManager
-            = PowerMockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
+
+    // PowerMockito mocks
+    protected GlowWorld world;
+    protected GlowServer server;
+    protected GlowScoreboardManager scoreboardManager;
 
     // Real objects
     protected Logger log;
@@ -129,6 +131,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(server.getItemFactory()).thenReturn(itemFactory);
         idManager = new EntityIdManager();
         when(server.getEntityIdManager()).thenReturn(idManager);
+        scoreboardManager = PowerMockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
         when(server.getScoreboardManager()).thenReturn(scoreboardManager);
         scoreboard = new GlowScoreboard();
         when(scoreboardManager.getMainScoreboard()).thenReturn(scoreboard);
