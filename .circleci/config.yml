@@ -32,6 +32,7 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
+            - run: mkdir target
             - run: while sleep 5; do free -m; done >> target/memory.txt & sleep 6
             # The sleep after the & ensures any error messages from `free -m` are displayed
 
