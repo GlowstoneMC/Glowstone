@@ -33,7 +33,7 @@ jobs:
                 key: glowstone-{{ checksum "pom.xml" }}
 
             - run:
-                command: dmesg -w
+                command: dmesg -w | grep -B100 "sacrifice child"
                 background: true
 
             - run: mvn -B package
