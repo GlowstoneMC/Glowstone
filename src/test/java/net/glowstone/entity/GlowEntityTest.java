@@ -40,6 +40,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -62,8 +63,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
     // Mocks
-    protected GlowWorld world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
-    protected GlowServer server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
+    protected GlowWorld world;
+    protected GlowServer server;
     @Mock
     protected ItemFactory itemFactory;
     @Mock(answer = RETURNS_SMART_NULLS)
@@ -75,19 +76,19 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
             = PowerMockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
 
     // Real objects
-    protected Logger log = Logger.getLogger(getClass().getSimpleName());
+    protected Logger log;
     protected Location location;
-    protected EntityIdManager idManager = new EntityIdManager();
-    protected EntityManager entityManager = new EntityManager();
+    protected EntityIdManager idManager;
+    protected EntityManager entityManager;
     protected Function<Location, ? extends T> entityCreator;
-    protected GlowScoreboard scoreboard = new GlowScoreboard();
+    protected GlowScoreboard scoreboard;
 
     protected GlowEntityTest(Function<Location, ? extends T> entityCreator) {
         this.entityCreator = entityCreator;
     }
 
-    @AfterClass
-    public void tearDownClass() {
+    @AfterEach
+    public void tearDown() {
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
         world = null;
         server = null;
@@ -105,13 +106,17 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
 
     @Before
     public void setUp() throws IOException {
+        server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
+        log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
         if (Bukkit.getServer() == null) {
             Bukkit.setServer(server);
         }
         MockitoAnnotations.initMocks(this);
+        world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
         location = new Location(world, 0, 0, 0);
         when(world.getServer()).thenReturn(server);
+        entityManager = new EntityManager();
         when(world.getEntityManager()).thenReturn(entityManager);
         when(world.getBlockAt(any(Location.class))).thenReturn(block);
         when(block.getType()).thenReturn(Material.DIRT);
@@ -122,8 +127,10 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(world.getDifficulty()).thenReturn(Difficulty.NORMAL);
         when(server.getWorlds()).thenReturn(Collections.singletonList(world));
         when(server.getItemFactory()).thenReturn(itemFactory);
+        idManager = new EntityIdManager();
         when(server.getEntityIdManager()).thenReturn(idManager);
         when(server.getScoreboardManager()).thenReturn(scoreboardManager);
+        scoreboard = new GlowScoreboard();
         when(scoreboardManager.getMainScoreboard()).thenReturn(scoreboard);
         mockStatic(EventFactory.class);
         when(EventFactory.callEvent(any(Event.class))).thenAnswer(

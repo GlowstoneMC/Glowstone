@@ -11,6 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
@@ -35,8 +36,8 @@ public abstract class ItemTypeTest {
         location = new Location(world, 0, 0, 0);
     }
 
-    @AfterAll
-    public void tearDownClass() {
+    @AfterEach
+    public void tearDown() {
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
         inventory = null;
         player = null;

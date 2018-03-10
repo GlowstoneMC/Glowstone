@@ -88,10 +88,6 @@ public class QueryTest {
     @After
     public void tearDown() throws Exception {
         server.shutdown();
-    }
-
-    @AfterClass
-    public void tearDownClass() {
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
         glowServer = null;
         server = null;
