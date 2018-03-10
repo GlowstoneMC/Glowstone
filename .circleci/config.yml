@@ -1,7 +1,7 @@
 version: 2
 machine:
     environment:
-      _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
+      _JAVA_OPTIONS: "-Xms1024m -Xmx1024m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
 jobs:
     build:
         docker:
