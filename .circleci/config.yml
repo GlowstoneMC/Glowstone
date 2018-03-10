@@ -32,6 +32,8 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
+            - run: while sleep 5; do free -m; done &
+
             - run: mvn -T 1C -B package
 
             - store_test_results:
