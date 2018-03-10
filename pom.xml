@@ -348,7 +348,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <threadCount>4</threadCount>
+              <threadCount>1</threadCount>
               <perCoreThreadCount>false</perCoreThreadCount>
             </configuration>
           </execution>
