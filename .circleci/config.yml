@@ -39,7 +39,7 @@ jobs:
             - run: mvn -B package
 
             - run:
-                when: on-fail
+                when: on_fail
                 name: Give dmesg time to output death messages
                 command: sleep 5
 
