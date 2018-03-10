@@ -1,7 +1,7 @@
 version: 2
 machine:
     environment:
-      _JAVA_OPTIONS: "-Xms1024m -Xmx1024m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      _JAVA_OPTIONS: "-Xms256m -Xmx256m"
 jobs:
     build:
         docker:
@@ -10,7 +10,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx1024m
+            MAVEN_OPTS: -Xmx256m
 
         steps:
             - run: mvn --version
@@ -52,7 +52,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx1024m
+            MAVEN_OPTS: -Xmx256m
 
         steps:
             - checkout
