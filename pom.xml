@@ -335,7 +335,9 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <parallel>false</parallel>
+              <parallel>suites<!-- Tag must exist to enable latest JUnit version in Surefire --></parallel>
+              <threadCount>1</threadCount>
+              <perCoreThreadCount>false<!-- Core count on VMs is only a loose upper bound --></perCoreThreadCount>
             </configuration>
           </execution>
         </executions>
