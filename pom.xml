@@ -20,9 +20,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <kotlin.version>1.2.21</kotlin.version>
     <powermockVersion>2.0.0-beta.5</powermockVersion>
-    <junit.version>4.12</junit.version>
-    <junit.jupiter.version>5.0.3</junit.jupiter.version>
-    <junit.vintage.version>${junit.version}.3</junit.vintage.version>
+    <junit.jupiter.version>5.1.0</junit.jupiter.version>
+    <junit.vintage.version>5.1.0</junit.vintage.version>
   </properties>
 
   <repositories>
@@ -115,21 +114,9 @@
     </dependency>
     <!-- Tests -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <version>${junit.vintage.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
