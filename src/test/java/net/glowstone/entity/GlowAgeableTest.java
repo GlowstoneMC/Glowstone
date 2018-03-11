@@ -4,13 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.io.IOException;
 import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 
 public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingEntityTest<T> {
 
@@ -42,6 +48,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
         assertBaby(ageable);
     }
 
+    @SuppressWarnings("unchecked")
     private void assertBaby(Ageable ageable) {
         assertFalse(ageable.isAdult());
         // Check that scale is less than 1
@@ -133,6 +140,10 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
     @SuppressWarnings("unchecked")
     @Test
     public void testCreateBaby() {
+        Mockito.when(world.spawn(any(Location.class),
+                (Class<? extends GlowEntity>) any(Class.class),
+                eq(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG)))
+                .thenCallRealMethod();
         T ageable = entityCreator.apply(location);
         T baby = (T) ageable.createBaby();
         assertNotEquals(ageable, baby);
