@@ -2,11 +2,13 @@ package net.glowstone.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.function.Function;
 import org.bukkit.Location;
+import org.bukkit.entity.Ageable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +42,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
         assertBaby(ageable);
     }
 
-    private void assertBaby(T ageable) {
+    private void assertBaby(Ageable ageable) {
         assertFalse(ageable.isAdult());
         // Check that scale is less than 1
         // FIXME: assertTrue(ageable.getWidth() < ageable.width);
@@ -82,13 +84,40 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
     }
 
     @Test
-    public void testCanBreed() {
-        // TODO
+    public void testSetBreedTrueBaby() {
+        T ageable = entityCreator.apply(location);
+        ageable.setBaby();
+        ageable.setBreed(true);
+        assertAdult(ageable);
+        assertTrue(ageable.canBreed());
     }
 
     @Test
-    public void testSetBreed() {
-        // TODO
+    public void testSetBreedTrueAdult() {
+        T ageable = entityCreator.apply(location);
+        ageable.setAge(1);
+        assertFalse(ageable.canBreed());
+        ageable.setBreed(true);
+        assertAdult(ageable);
+        assertTrue(ageable.canBreed());
+    }
+
+    @Test
+    public void testSetBreedFalseBaby() {
+        T ageable = entityCreator.apply(location);
+        ageable.setBaby();
+        ageable.setBreed(false);
+        assertBaby(ageable);
+        assertFalse(ageable.canBreed());
+    }
+
+    @Test
+    public void testSetBreedFalseAdult() {
+        T ageable = entityCreator.apply(location);
+        ageable.setAdult();
+        ageable.setBreed(false);
+        assertAdult(ageable);
+        assertFalse(ageable.canBreed());
     }
 
     @Test
@@ -101,9 +130,14 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
         // TODO
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testCreateBaby() {
-        // TODO
+        T ageable = entityCreator.apply(location);
+        T baby = (T) ageable.createBaby();
+        assertNotEquals(ageable, baby);
+        assertEquals(ageable.getClass(), baby.getClass());
+        assertEquals(ageable, baby.getParent());
     }
 
     @Test
