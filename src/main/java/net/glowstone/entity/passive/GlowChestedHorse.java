@@ -7,14 +7,19 @@ import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.AbstractHorseInventory;
 
-public abstract class GlowChestedHorse<TInventory extends AbstractHorseInventory>
+/**
+ * A quadruped whose inventory may include a chest.
+ *
+ * @param <InventoryType> the inventory class this entity uses
+ */
+public abstract class GlowChestedHorse<InventoryType extends AbstractHorseInventory>
         extends GlowAbstractHorse implements ChestedHorse {
 
     /**
      * Null when not carrying a chest; otherwise, a 15-slot container.
      */
     @Getter
-    protected TInventory inventory;
+    protected InventoryType inventory;
 
     public GlowChestedHorse(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
