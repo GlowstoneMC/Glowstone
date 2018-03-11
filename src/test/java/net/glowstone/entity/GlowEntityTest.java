@@ -60,9 +60,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
-    // Mocks
-    protected final GlowWorld world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
-    protected final GlowServer server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
+
+    // PowerMock mocks
+    protected GlowWorld world;
+    protected GlowServer server;
+
+    // Mockito mocks
     @Mock
     protected ItemFactory itemFactory;
     @Mock(answer = RETURNS_SMART_NULLS)
@@ -87,10 +90,12 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
 
     @Before
     public void setUp() throws IOException {
+        server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
         when(server.getLogger()).thenReturn(log);
         if (Bukkit.getServer() == null) {
             Bukkit.setServer(server);
         }
+        world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
         MockitoAnnotations.initMocks(this);
         location = new Location(world, 0, 0, 0);
         when(world.getServer()).thenReturn(server);
