@@ -374,13 +374,6 @@ public final class GlowWorld implements World {
     @Getter
     private int maxHeight;
     private Set<Key> activeChunksSet = new HashSet<>();
-    /**
-     * Map of entity classes to constructors.
-     */
-    // FIXME: Prevents classes from unloading. Using a WeakHashMap wouldn't help, because the values
-    // strongly reference the keys.
-    private static final Map<Class<? extends GlowEntity>, MethodHandle> entityCtors
-            = new ConcurrentHashMap<>();
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -1422,18 +1415,9 @@ public final class GlowWorld implements World {
         GlowEntity entity = null;
 
         try {
-            MethodHandle constructor = entityCtors.computeIfAbsent(clazz, clazz_ -> {
-                try {
-                    return MethodHandles.lookup().unreflectConstructor(
-                            clazz_.getConstructor(Location.class));
-                } catch (IllegalAccessException e) {
-                    throw new IllegalAccessError(e.getMessage());
-                } catch (NoSuchMethodException e) {
-                    throw new NoSuchMethodError(e.getMessage());
-                }
-            });
-            entity = (GlowEntity) constructor.invokeExact((Location) location);
-            GlowEntity impl = entity;
+            if (EntityRegistry.getEntity(clazz) != null) {
+                entity = EntityRegistry.constructEntity(clazz, location);
+            }
             // function.accept(entity); TODO: work on type mismatches
             EntitySpawnEvent spawnEvent = null;
             if (entity instanceof LivingEntity) {
@@ -1447,7 +1431,8 @@ public final class GlowWorld implements World {
                 entity.remove();
             } else {
                 List<Message> spawnMessage = entity.createSpawnMessage();
-                getRawPlayers().stream().filter(player -> player.canSeeEntity(impl))
+                final GlowEntity finalEntity = entity;
+                getRawPlayers().stream().filter(player -> player.canSeeEntity(finalEntity))
                         .forEach(player -> player.getSession().sendAll(spawnMessage
                                 .toArray(new Message[spawnMessage.size()])));
             }
