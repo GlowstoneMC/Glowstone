@@ -64,6 +64,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     // PowerMock mocks
     protected GlowWorld world;
     protected GlowServer server;
+    protected GlowScoreboardManager scoreboardManager;
 
     // Mockito mocks
     @Mock
@@ -72,9 +73,6 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected GlowChunk chunk;
     @Mock
     protected GlowBlock block;
-    @Mock
-    protected final GlowScoreboardManager scoreboardManager
-            = PowerMockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
 
     // Real objects
     protected final Logger log = Logger.getLogger(getClass().getSimpleName());
@@ -110,6 +108,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(server.getWorlds()).thenReturn(Collections.singletonList(world));
         when(server.getItemFactory()).thenReturn(itemFactory);
         when(server.getEntityIdManager()).thenReturn(idManager);
+        scoreboardManager = PowerMockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
         when(server.getScoreboardManager()).thenReturn(scoreboardManager);
         when(scoreboardManager.getMainScoreboard()).thenReturn(scoreboard);
         mockStatic(EventFactory.class);
