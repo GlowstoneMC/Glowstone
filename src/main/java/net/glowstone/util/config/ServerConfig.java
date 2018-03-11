@@ -393,6 +393,12 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                     .add(new Library("org.apache.commons", "commons-lang3", "3.5",
                             HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6")
                             .toConfigMap())
+                    .add(new Library("org.jetbrains.kotlin", "kotlin-runtime", "1.2.21",
+                            HashAlgorithm.SHA1, "67558262649fc4ab2ade6b6a2999e636019e82a2")
+                            .toConfigMap())
+                    .add(new Library("org.jetbrains.kotlin", "kotlin-reflect", "1.2.21",
+                            HashAlgorithm.SHA1, "3159ff5936aa570a90050d385cb717fbb6c1723a")
+                            .toConfigMap())
                     .build();
 
     /**

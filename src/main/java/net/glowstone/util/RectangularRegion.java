@@ -3,9 +3,9 @@ package net.glowstone.util;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.AbstractIterator;
 import java.util.Iterator;
+import javax.annotation.Nonnull;
 import lombok.Getter;
 import org.bukkit.Location;
-import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class RectangularRegion {
@@ -88,7 +88,7 @@ public class RectangularRegion {
             this.iterableZ = iterableZ;
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public Iterator<Location> iterator() {
             return new LocationIterator(lowCorner, iterableX, iterableY, iterableZ);
@@ -172,7 +172,7 @@ public class RectangularRegion {
             this.max = max;
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public Iterator<Integer> iterator() {
             return new ForwardsAxisIterator(max);
@@ -208,7 +208,7 @@ public class RectangularRegion {
             this.max = max;
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public Iterator<Integer> iterator() {
             return new BackwardsAxisIterator(max);

@@ -1,15 +1,18 @@
 package net.glowstone.util.library;
 
+import com.google.common.collect.ComparisonChain;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import net.glowstone.util.library.LibraryManager.HashAlgorithm;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 
 /**
  * Represents a library that will be injected into the classpath at runtime.
  */
-public class Library {
+public class Library implements Comparable<Library> {
     private static final String ARTIFACT_ID_KEY = "artifact-id";
     private static final String CHECKSUM_KEY = "checksum";
     private static final String CHECKSUM_TYPE_KEY = "type";
@@ -49,13 +52,7 @@ public class Library {
      * by periods.
      */
     @Getter
-    private final String groupId;
-
-    /**
-     * The artifact ID of the library in a maven-style repo.
-     */
-    @Getter
-    private final String artifactId;
+    private final LibraryKey libraryKey;
 
     /**
      * The version number of the library in a maven-style repo.
@@ -134,10 +131,9 @@ public class Library {
      */
     public Library(String groupId, String artifactId, String version,
                    String repository, HashAlgorithm checksumType, String checksumValue) {
-        this.groupId = groupId;
-        this.artifactId = artifactId;
+        this.libraryKey = new LibraryKey(groupId, artifactId);
         this.version = version;
-        this.repository = repository;
+        this.repository = StringUtils.isBlank(repository) ? null : repository;
         this.checksumType = checksumType;
         this.checksumValue = checksumValue;
     }
@@ -151,8 +147,8 @@ public class Library {
     public Map<?, ?> toConfigMap() {
         // Using LinkedHashMap to keep the props in order when written into the config file.
         Map<String, Object> configMap = new LinkedHashMap<>();
-        configMap.put(GROUP_ID_KEY, groupId);
-        configMap.put(ARTIFACT_ID_KEY, artifactId);
+        configMap.put(GROUP_ID_KEY, libraryKey.getGroupId());
+        configMap.put(ARTIFACT_ID_KEY, libraryKey.getArtifactId());
         configMap.put(VERSION_KEY, version);
 
         if (repository != null) {
@@ -169,9 +165,26 @@ public class Library {
         return configMap;
     }
 
+    // The fields the following getters represent were moved from this class to the LibraryKey
+    // class. These methods are being preserved here for compatibiltiy with old code as well as
+    // ease of use.
+    /**
+     * Returns the group ID of this library.
+     */
+    public String getGroupId() {
+        return libraryKey.getGroupId();
+    }
+
+    /**
+     * Returns the artifact ID of this library.
+     */
+    public String getArtifactId() {
+        return libraryKey.getArtifactId();
+    }
+
     @Override
     public String toString() {
-        return groupId + ":" + artifactId + ":" + version;
+        return libraryKey.toString() + ":" + version;
     }
 
     @Override
@@ -183,13 +196,20 @@ public class Library {
             return false;
         }
         Library library = (Library) o;
-        return Objects.equals(groupId, library.groupId)
-                && Objects.equals(artifactId, library.artifactId)
+        return Objects.equals(libraryKey, library.libraryKey)
                 && Objects.equals(version, library.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(groupId, artifactId, version);
+        return Objects.hash(libraryKey, version);
+    }
+
+    @Override
+    public int compareTo(Library o) {
+        return ComparisonChain.start()
+                .compare(libraryKey, o.libraryKey)
+                .compare(new ComparableVersion(version), new ComparableVersion(o.version))
+                .result();
     }
 }
