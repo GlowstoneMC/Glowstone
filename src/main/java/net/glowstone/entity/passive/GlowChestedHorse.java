@@ -2,9 +2,6 @@ package net.glowstone.entity.passive;
 
 import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.inventory.GlowHorseInventory;
-import net.glowstone.inventory.GlowInventory;
-import net.glowstone.inventory.GlowLlamaInventory;
 import org.bukkit.Location;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;

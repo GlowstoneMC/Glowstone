@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Mule;
-import org.bukkit.inventory.AbstractHorseInventory;
 
 public class GlowMule extends GlowChestedHorse<GlowHorseInventory> implements Mule {
 
