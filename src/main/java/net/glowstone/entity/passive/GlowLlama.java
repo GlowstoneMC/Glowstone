@@ -2,13 +2,13 @@ package net.glowstone.entity.passive;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.inventory.GlowLlamaInventory;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Llama;
-import org.bukkit.inventory.LlamaInventory;
 
-public class GlowLlama extends GlowChestedHorse implements Llama {
+public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements Llama {
 
     /**
      * Creates a llama entity.
@@ -42,11 +42,6 @@ public class GlowLlama extends GlowChestedHorse implements Llama {
     }
 
     @Override
-    public LlamaInventory getInventory() {
-        return null; // todo
-    }
-
-    @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_LLAMA_DEATH;
     }
@@ -59,5 +54,15 @@ public class GlowLlama extends GlowChestedHorse implements Llama {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_LLAMA_AMBIENT;
+    }
+
+    @Override
+    protected void createNewInventory() {
+        GlowLlamaInventory oldInventory = inventory;
+        inventory = new GlowLlamaInventory();
+        if (oldInventory != null) {
+            inventory.setSaddle(oldInventory.getSaddle());
+            inventory.setDecor(oldInventory.getDecor());
+        }
     }
 }
