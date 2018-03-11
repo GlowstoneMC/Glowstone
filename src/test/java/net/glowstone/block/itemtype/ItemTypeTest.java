@@ -24,13 +24,19 @@ public abstract class ItemTypeTest {
     protected World world;
     protected Location location;
 
+    /**
+     * Override this to work around https://github.com/mockito/mockito/issues/357 by removing
+     * RETURNS_SMART_NULLS.
+     * @return a mock GlowPlayer
+     */
+    protected GlowPlayer mockPlayer() {
+        return Mockito.mock(GlowPlayer.class, RETURNS_SMART_NULLS);
+    }
+
     @BeforeEach
     public void setUp() {
         ServerShim.install();
-        // WARNING: if player ever answers RETURNS_SMART_NULLS, RETURNS_DEEP_STUBS or RETURNS_MOCKS
-        // then it must be overridden not to do so in ItemBowTest due to
-        // until https://github.com/mockito/mockito/issues/357
-        player = Mockito.mock(GlowPlayer.class);
+        player = mockPlayer();
         inventory = new GlowPlayerInventory(player);
         when(player.getInventory()).thenReturn(inventory);
         when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);

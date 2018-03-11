@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowSpectralArrow;
 import net.glowstone.entity.projectile.GlowTippedArrow;
@@ -36,6 +37,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class ItemBowTest extends ItemTypeTest {
     private ItemBow bow;
@@ -65,6 +67,12 @@ public class ItemBowTest extends ItemTypeTest {
         when(player.launchProjectile(Arrow.class)).thenReturn(launchedArrow);
         when(player.launchProjectile(SpectralArrow.class)).thenReturn(launchedSpectralArrow);
         when(player.launchProjectile(TippedArrow.class)).thenReturn(launchedTippedArrow);
+    }
+
+    @Override
+    protected GlowPlayer mockPlayer() {
+        // https://github.com/mockito/mockito/issues/357
+        return Mockito.mock(GlowPlayer.class);
     }
 
     private void scanInventory(boolean expectBow, int expectedBowDamage, int expectedArrows) {
