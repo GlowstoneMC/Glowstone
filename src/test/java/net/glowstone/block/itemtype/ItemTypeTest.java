@@ -1,6 +1,5 @@
 package net.glowstone.block.itemtype;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowEntityTest;
 import net.glowstone.entity.GlowPlayer;
