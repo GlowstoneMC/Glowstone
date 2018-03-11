@@ -1,7 +1,7 @@
 package net.glowstone.entity.passive;
 
 import net.glowstone.entity.GlowAgeableTest;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class GlowCowTest extends GlowAgeableTest<GlowCow> {
 
