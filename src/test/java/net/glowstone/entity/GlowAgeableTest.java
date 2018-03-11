@@ -10,7 +10,7 @@ import org.bukkit.Location;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowEntityTest<T> {
+public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingEntityTest<T> {
 
     protected GlowAgeableTest(
             Function<Location, ? extends T> entityCreator) {
