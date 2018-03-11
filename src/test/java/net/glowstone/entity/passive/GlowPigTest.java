@@ -1,4 +1,9 @@
 package net.glowstone.entity.passive;
 
-public class GlowPigTest extends Glow {
+import net.glowstone.entity.GlowAnimalTest;
+
+public class GlowPigTest extends GlowAnimalTest<GlowPig> {
+    public GlowPigTest() {
+        super(GlowPig::new);
+    }
 }

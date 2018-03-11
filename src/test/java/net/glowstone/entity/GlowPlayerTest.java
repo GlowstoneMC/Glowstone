@@ -40,7 +40,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 @PrepareForTest({GlowServer.class, GlowWorld.class, ChunkManager.class})
-public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
+public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     private final ChunkManager chunkManager
             = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
