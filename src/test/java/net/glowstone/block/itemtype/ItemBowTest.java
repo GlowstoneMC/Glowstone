@@ -35,6 +35,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -73,6 +74,18 @@ public class ItemBowTest extends ItemTypeTest {
     protected GlowPlayer mockPlayer() {
         // https://github.com/mockito/mockito/issues/357
         return Mockito.mock(GlowPlayer.class);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() {
+        // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
+        bow = null;
+        bowItemStack = null;
+        launchedArrow = null;
+        launchedSpectralArrow = null;
+        launchedTippedArrow = null;
+        super.tearDown();
     }
 
     private void scanInventory(boolean expectBow, int expectedBowDamage, int expectedArrows) {

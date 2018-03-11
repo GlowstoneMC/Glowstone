@@ -1,7 +1,7 @@
 version: 2
 machine:
     environment:
-      _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
+      _JAVA_OPTIONS: "-Xms512m -Xmx512m -Xss16m -XX:MaxMetaspaceSize=512m"
 jobs:
     build:
         docker:
@@ -10,7 +10,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx1024m
+            MAVEN_OPTS: -Xms512m -Xmx512m -Xss16m -XX:MaxMetaspaceSize=512m
 
         steps:
             - run: mvn --version
@@ -32,7 +32,12 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -T 1C -B package
+            - run: mvn -B package
+
+            - run:
+                when: on_fail
+                name: dmesg
+                command: sleep 5 && dmesg
 
             - store_test_results:
                 path: target/surefire-reports
@@ -48,7 +53,7 @@ jobs:
         working_directory: ~/glowstone
 
         environment:
-            MAVEN_OPTS: -Xmx1024m
+            MAVEN_OPTS: -Xms512m -Xmx512m -Xss16m -XX:MaxMetaspaceSize=512m
 
         steps:
             - checkout
