@@ -76,6 +76,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected EntityManager entityManager;
     protected final Function<Location, ? extends T> entityCreator;
     protected GlowScoreboard scoreboard;
+    protected T entity;
 
     protected GlowEntityTest(Function<Location, ? extends T> entityCreator) {
         this.entityCreator = entityCreator;
@@ -118,6 +119,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         // ensureServerConversions returns its argument
         when(itemFactory.ensureServerConversions(any(ItemStack.class)))
                 .thenAnswer(invocation -> invocation.getArguments()[0]);
+
+        entity = entityCreator.apply(location);
     }
 
     @After
@@ -134,11 +137,11 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         idManager = null;
         entityManager = null;
         scoreboard = null;
+        entity = null;
     }
 
     @Test
     public void testCreateSpawnMessage() {
-        T entity = entityCreator.apply(location);
         List<Message> messages = entity.createSpawnMessage();
         assertFalse(messages.isEmpty());
         // Should start with an instance of one of the Spawn*Message classes

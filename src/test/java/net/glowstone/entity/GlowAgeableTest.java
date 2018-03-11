@@ -33,19 +33,17 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
 
     @Test
     public void testPulse() {
-        T ageable = entityCreator.apply(location);
-        ageable.setBaby();
-        int prevAge = ageable.getAge();
-        ageable.pulse();
-        assertEquals(prevAge + 1, ageable.getAge());
+        entity.setBaby();
+        int prevAge = entity.getAge();
+        entity.pulse();
+        assertEquals(prevAge + 1, entity.getAge());
     }
 
     @Test
     public void testSetAgeBaby() {
-        T ageable = entityCreator.apply(location);
-        ageable.setAge(-1);
-        assertEquals(-1, ageable.getAge());
-        assertBaby(ageable);
+        entity.setAge(-1);
+        assertEquals(-1, entity.getAge());
+        assertBaby(entity);
     }
 
     @SuppressWarnings("unchecked")
@@ -57,11 +55,19 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
     }
 
     @Test
-    public void testSetAgeAdult() {
-        T ageable = entityCreator.apply(location);
-        ageable.setAge(0);
-        assertEquals(0, ageable.getAge());
-        assertAdult(ageable);
+    public void testSetAgeAdultCanBreed() {
+        entity.setAge(0);
+        assertEquals(0, entity.getAge());
+        assertAdult(entity);
+        assertTrue(entity.canBreed());
+    }
+
+    @Test
+    public void testSetAgeAdultCannotBreed() {
+        entity.setAge(1);
+        assertEquals(1, entity.getAge());
+        assertAdult(entity);
+        assertFalse(entity.canBreed());
     }
 
     private void assertAdult(T ageable) {
@@ -78,53 +84,47 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
 
     @Test
     public void testSetBaby() {
-        T ageable = entityCreator.apply(location);
-        ageable.setBaby();
-        assertBaby(ageable);
+        entity.setBaby();
+        assertBaby(entity);
     }
 
     @Test
     public void testSetAdult() {
-        T ageable = entityCreator.apply(location);
-        ageable.setAdult();
-        assertAdult(ageable);
+        entity.setAdult();
+        assertAdult(entity);
     }
 
     @Test
     public void testSetBreedTrueBaby() {
-        T ageable = entityCreator.apply(location);
-        ageable.setBaby();
-        ageable.setBreed(true);
-        assertAdult(ageable);
-        assertTrue(ageable.canBreed());
+        entity.setBaby();
+        entity.setBreed(true);
+        assertAdult(entity);
+        assertTrue(entity.canBreed());
     }
 
     @Test
     public void testSetBreedTrueAdult() {
-        T ageable = entityCreator.apply(location);
-        ageable.setAge(1);
-        assertFalse(ageable.canBreed());
-        ageable.setBreed(true);
-        assertAdult(ageable);
-        assertTrue(ageable.canBreed());
+        entity.setAge(1);
+        assertFalse(entity.canBreed());
+        entity.setBreed(true);
+        assertAdult(entity);
+        assertTrue(entity.canBreed());
     }
 
     @Test
     public void testSetBreedFalseBaby() {
-        T ageable = entityCreator.apply(location);
-        ageable.setBaby();
-        ageable.setBreed(false);
-        assertBaby(ageable);
-        assertFalse(ageable.canBreed());
+        entity.setBaby();
+        entity.setBreed(false);
+        assertBaby(entity);
+        assertFalse(entity.canBreed());
     }
 
     @Test
     public void testSetBreedFalseAdult() {
-        T ageable = entityCreator.apply(location);
-        ageable.setAdult();
-        ageable.setBreed(false);
-        assertAdult(ageable);
-        assertFalse(ageable.canBreed());
+        entity.setAdult();
+        entity.setBreed(false);
+        assertAdult(entity);
+        assertFalse(entity.canBreed());
     }
 
     @Test
@@ -144,11 +144,10 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
                 (Class<? extends GlowEntity>) any(Class.class),
                 eq(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG)))
                 .thenCallRealMethod();
-        T ageable = entityCreator.apply(location);
-        T baby = (T) ageable.createBaby();
-        assertNotEquals(ageable, baby);
-        assertEquals(ageable.getClass(), baby.getClass());
-        assertEquals(ageable, baby.getParent());
+        T baby = (T) entity.createBaby();
+        assertNotEquals(entity, baby);
+        assertEquals(entity.getClass(), baby.getClass());
+        assertEquals(entity, baby.getParent());
     }
 
     @Test

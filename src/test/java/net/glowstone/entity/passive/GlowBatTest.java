@@ -13,15 +13,13 @@ public class GlowBatTest extends GlowEntityTest<GlowBat> {
 
     @Test
     public void testSleep() {
-        GlowBat bat = entityCreator.apply(location);
-        bat.setAwake(false);
-        assertFalse(bat.isAwake());
+        entity.setAwake(false);
+        assertFalse(entity.isAwake());
     }
 
     @Test
     public void testWakeUp() {
-        GlowBat bat = entityCreator.apply(location);
-        bat.setAwake(true);
-        assertTrue(bat.isAwake());
+        entity.setAwake(true);
+        assertTrue(entity.isAwake());
     }
 }
