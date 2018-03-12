@@ -1050,7 +1050,7 @@ public final class GlowServer implements Server {
 
     private Naether createNaetherWithRepository(String repository, String libraryFolder) {
         Naether naether = new NaetherImpl();
-        naether.setLocalRepoPath(new File(libraryFolder).toPath().toAbsolutePath().toString());
+        naether.setLocalRepoPath(new File(libraryFolder).getAbsolutePath());
 
         try {
             // Must overwrite the collection here in order to remove Maven Central from it.

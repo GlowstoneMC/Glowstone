@@ -378,6 +378,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         return migrateStatus;
     }
 
+    public static final String DEFAULT_KOTLIN_VERSION = "1.2.21";
     private static final List<Map<?, ?>> DEFAULT_LIBRARIES_VALUE =
             ImmutableList.<Map<?, ?>>builder()
                     .add(new Library("org.xerial", "sqlite-jdbc", "3.21.0", HashAlgorithm.SHA1,
@@ -393,12 +394,12 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                     .add(new Library("org.apache.commons", "commons-lang3", "3.5",
                             HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6")
                             .toConfigMap())
-                    .add(new Library("org.jetbrains.kotlin", "kotlin-runtime", "1.2.21",
-                            HashAlgorithm.SHA1, "67558262649fc4ab2ade6b6a2999e636019e82a2")
-                            .toConfigMap())
-                    .add(new Library("org.jetbrains.kotlin", "kotlin-reflect", "1.2.21",
-                            HashAlgorithm.SHA1, "3159ff5936aa570a90050d385cb717fbb6c1723a")
-                            .toConfigMap())
+                    .add(new Library("org.jetbrains.kotlin", "kotlin-runtime",
+                            DEFAULT_KOTLIN_VERSION, HashAlgorithm.SHA1,
+                            "67558262649fc4ab2ade6b6a2999e636019e82a2").toConfigMap())
+                    .add(new Library("org.jetbrains.kotlin", "kotlin-reflect",
+                            DEFAULT_KOTLIN_VERSION, HashAlgorithm.SHA1,
+                            "3159ff5936aa570a90050d385cb717fbb6c1723a").toConfigMap())
                     .build();
 
     /**
