@@ -26,6 +26,7 @@ import org.bukkit.entity.EntityType;
 @RequiredArgsConstructor
 public abstract class EntityStore<T extends GlowEntity> {
 
+    private static final CompoundTag EMPTY_TAG = new CompoundTag();
     protected final Class<? extends T> type;
     protected final String entityType;
 
@@ -43,6 +44,18 @@ public abstract class EntityStore<T extends GlowEntity> {
      * @return The new entity.
      */
     public abstract T createEntity(Location location, CompoundTag compound);
+
+    /**
+     * Create a new entity of this store's type at the given location, with all attributes set to
+     * their defaults.
+     *
+     * @param location The location.
+     * @param compound The entity's tag, if extra data is needed.
+     * @return The new entity.
+     */
+    public T createEntity(Location location) {
+        return createEntity(location, EMPTY_TAG);
+    }
 
     // For information on the NBT tags loaded here and elsewhere:
     // http://minecraft.gamepedia.com/Chunk_format#Entity_Format

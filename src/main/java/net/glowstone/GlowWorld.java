@@ -49,6 +49,7 @@ import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
@@ -1413,7 +1414,7 @@ public final class GlowWorld implements World {
 
         try {
             if (EntityRegistry.getEntity(clazz) != null) {
-                entity = EntityRegistry.constructEntity(clazz, location);
+                entity = EntityStorage.create(clazz, location);
             }
             // function.accept(entity); TODO: work on type mismatches
             EntitySpawnEvent spawnEvent = null;

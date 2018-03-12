@@ -59,6 +59,7 @@ public final class EntityStorage {
      */
     private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable
             = new HashMap<>();
+    private static final CompoundTag EMPTY_TAG = new CompoundTag();
 
     /*
      * Populates the maps with stores.
@@ -159,6 +160,18 @@ public final class EntityStorage {
     }
 
     private EntityStorage() {
+    }
+
+    /**
+     * Creates an entity of the given Glowstone class, by deserializing an empty tag.
+     *
+     * @param clazz the type of entity
+     * @param <T>   the type of entity
+     * @param location the entity's initial location
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends GlowEntity> T create(Class<T> clazz, Location location) {
+        return (T) find(clazz, clazz.getSimpleName()).createEntity(location, EMPTY_TAG);
     }
 
     /**
