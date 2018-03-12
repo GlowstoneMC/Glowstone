@@ -50,7 +50,6 @@ public abstract class EntityStore<T extends GlowEntity> {
      * their defaults.
      *
      * @param location The location.
-     * @param compound The entity's tag, if extra data is needed.
      * @return The new entity.
      */
     public T createEntity(Location location) {
