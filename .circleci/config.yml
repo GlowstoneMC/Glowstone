@@ -5,7 +5,7 @@ machine:
 jobs:
     build:
         docker:
-            - image: circleci/openjdk:9-jdk
+            - image: circleci/openjdk:8-jdk
 
         working_directory: ~/glowstone
 
@@ -43,7 +43,7 @@ jobs:
 
     build-deploy:
         docker:
-            - image: circleci/openjdk:9-jdk
+            - image: circleci/openjdk:8-jdk
 
         working_directory: ~/glowstone
 
