@@ -4,7 +4,7 @@ machine:
       _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
 jobs:
     build:
-        docker:
+        machine:
             - image: circleci/openjdk:9-jdk
 
         working_directory: ~/glowstone
