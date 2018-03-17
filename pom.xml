@@ -316,16 +316,28 @@
         <version>1.16.20.0</version>
         <executions>
           <execution>
+            <id>delombok</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>delombok</goal>
             </goals>
+            <configuration>
+              <addOutputDirectory>false</addOutputDirectory>
+              <sourceDirectory>src/main/java</sourceDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-delombok</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>testDelombok</goal>
+            </goals>
+            <configuration>
+              <addOutputDirectory>false</addOutputDirectory>
+              <sourceDirectory>src/test/java</sourceDirectory>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <addOutputDirectory>false</addOutputDirectory>
-          <sourceDirectory>src/main/java</sourceDirectory>
-        </configuration>
       </plugin>
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
