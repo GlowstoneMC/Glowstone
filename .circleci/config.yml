@@ -4,7 +4,7 @@ machine:
       _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
 defaults: &defaults
     machine:
-        # Do not update this such that build-deploy would run on JDK9, until we drop support for JDK8
+        # If updating to a JDK9 image, ensure that build-deploy still tests against JDK8 until we drop support for it
         image: circleci/classic:201711-01
 
     working_directory: ~/glowstone
