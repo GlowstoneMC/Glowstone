@@ -83,6 +83,8 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                 "glowstone.yml is the main configuration file for a Glowstone server\n"
                         + "It contains everything from server.properties and bukkit.yml in a\n"
                         + "normal CraftBukkit installation.\n\n"
+                        + "Configuration entries are documented on the wiki: "
+                        + "https://github.com/GlowstoneMC/Glowstone/wiki/Configuration-Guide\n"
                         + "For help, join us on Discord: https://discord.gg/TFJqhsC");
     }
 
