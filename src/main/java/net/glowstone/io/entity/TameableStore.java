@@ -20,17 +20,17 @@ abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
         // TODO make this better.
         super.load(entity, compound);
         if (compound.containsKey("OwnerUUID") && !compound.getString("OwnerUUID").isEmpty()) {
-            entity.setOwnerUuid(UUID.fromString(compound.getString("OwnerUUID")));
-            if (Bukkit.getPlayer(entity.getOwnerUuid()) != null) {
-                entity.setOwner(Bukkit.getPlayer(entity.getOwnerUuid()));
+            entity.setOwnerUniqueId(UUID.fromString(compound.getString("OwnerUUID")));
+            if (Bukkit.getPlayer(entity.getOwnerUniqueId()) != null) {
+                entity.setOwner(Bukkit.getPlayer(entity.getOwnerUniqueId()));
             }
         } else if (compound.containsKey("Owner") && !compound.getString("Owner").isEmpty()) {
             String playerName = compound.getString("Owner");
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
             if (player.hasPlayedBefore()) {
-                entity.setOwnerUuid(player.getUniqueId());
-                if (Bukkit.getPlayer(entity.getOwnerUuid()) != null) {
-                    entity.setOwner(Bukkit.getPlayer(entity.getOwnerUuid()));
+                entity.setOwnerUniqueId(player.getUniqueId());
+                if (Bukkit.getPlayer(entity.getOwnerUniqueId()) != null) {
+                    entity.setOwner(Bukkit.getPlayer(entity.getOwnerUniqueId()));
                 }
             }
         }
