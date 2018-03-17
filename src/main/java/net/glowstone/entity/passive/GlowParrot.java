@@ -134,7 +134,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
                 return true;
             }
             // TODO: sitting only happens on crouch
-            if (isTamed() && getOwnerUuid() != null && getOwnerUuid()
+            if (isTamed() && getOwnerUniqueId() != null && getOwnerUniqueId()
                 .equals(player.getUniqueId())) {
                 if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag()
                     .isEmpty()) {

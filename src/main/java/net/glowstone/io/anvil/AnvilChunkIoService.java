@@ -72,14 +72,14 @@ public final class AnvilChunkIoService implements ChunkIoService {
         ChunkSection[] sections = new ChunkSection[GlowChunk.SEC_COUNT];
         for (CompoundTag sectionTag : sectionList) {
             int y = sectionTag.getByte("Y");
+            if (y < 0 || y > GlowChunk.SEC_COUNT) {
+                GlowServer.logger.log(Level.WARNING,
+                        "Out of bounds chunk section at y " + y + " in " + chunk + "!");
+                continue;
+            }
             if (sections[y] != null) {
                 GlowServer.logger
                     .log(Level.WARNING, "Multiple chunk sections at y " + y + " in " + chunk + "!");
-                continue;
-            }
-            if (y < 0 || y > GlowChunk.SEC_COUNT) {
-                GlowServer.logger.log(Level.WARNING,
-                    "Out of bounds chunk section at y " + y + " in " + chunk + "!");
                 continue;
             }
             sections[y] = ChunkSection.fromNbt(sectionTag);

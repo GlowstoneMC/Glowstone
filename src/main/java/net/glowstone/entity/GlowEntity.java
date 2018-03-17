@@ -1517,6 +1517,8 @@ public abstract class GlowEntity implements Entity {
 
     /**
      * Set the unique ID of this entities leash holder. Only useful during load of the entity.
+     *
+     * @param uniqueId The UUID
      */
     public void setLeashHolderUniqueId(UUID uniqueId) {
         if (ticksLived > 1 || isLeashed()) {

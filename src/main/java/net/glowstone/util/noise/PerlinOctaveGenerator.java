@@ -62,7 +62,7 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
      * @param z the starting Z coordinate
      * @param lacunarity layer n's frequency as a fraction of layer {@code n - 1}'s frequency
      * @param persistence layer n's amplitude as a multiple of layer {@code n - 1}'s amplitude
-     * @return
+     * @return The noise array
      */
     public double[] getFractalBrownianMotion(
             double x, double z, double lacunarity, double persistence) {
@@ -77,7 +77,7 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
      * @param z the starting Z coordinate
      * @param lacunarity layer n's frequency as a fraction of layer {@code n - 1}'s frequency
      * @param persistence layer n's amplitude as a multiple of layer {@code n - 1}'s amplitude
-     * @return
+     * @return The noise array
      */
     public double[] getFractalBrownianMotion(double x, double y, double z, double lacunarity,
             double persistence) {

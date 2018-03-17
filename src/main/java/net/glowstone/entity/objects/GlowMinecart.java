@@ -74,6 +74,7 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
      *
      * @param location the location
      * @param minecartType the minecart type (i.e. the type of block carried, if any)
+     * @return The resultant minecart
      */
     public static GlowMinecart create(Location location, MinecartType minecartType) {
         return minecartType.getCreator().apply(location);
