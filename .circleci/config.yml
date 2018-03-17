@@ -5,7 +5,7 @@ machine:
 jobs:
     build:
         machine:
-            image: circleci/openjdk:8-jdk
+            image: circleci/classic:201711-01
 
         working_directory: ~/glowstone
 
