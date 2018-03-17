@@ -2,17 +2,18 @@ version: 2
 machine:
     environment:
       _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
+defaults: &defaults
+    machine:
+        # Do not update this such that build-deploy would run on JDK9, until we drop support for JDK8
+        image: circleci/classic:201711-01
+
+    working_directory: ~/glowstone
+
+    environment:
+        MAVEN_OPTS: -Xmx1024m
 jobs:
     build:
-        machine:
-            # Do not update this such that build-deploy would run on JDK9, until we drop support for JDK8
-            image: circleci/classic:201711-01
-
-        working_directory: ~/glowstone
-
-        environment:
-            MAVEN_OPTS: -Xmx1024m
-
+        <<: *defaults
         steps:
             - run: mvn --version
             - run: java -version
@@ -43,14 +44,7 @@ jobs:
                 destination: glowstone.jar
 
     build-deploy:
-        docker:
-            - image: circleci/openjdk:8-jdk
-
-        working_directory: ~/glowstone
-
-        environment:
-            MAVEN_OPTS: -Xmx1024m
-
+        <<: *defaults
         steps:
             - checkout
 
