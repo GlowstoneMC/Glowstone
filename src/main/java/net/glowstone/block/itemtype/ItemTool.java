@@ -26,6 +26,7 @@ public class ItemTool extends ItemType {
      * @param face The clicked BlockFace
      * @param holding The tool
      * @param clickedLoc The click location on the block
+     * @param player the player this advancement message is for
      * @return true if the tool's durability should be decreased, false otherwise
      */
     protected boolean onToolRightClick(GlowPlayer player, GlowBlock target, BlockFace face,

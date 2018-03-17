@@ -61,6 +61,8 @@ public final class LibraryManager {
      * @param defaultRepository the repository to download the libraries from
      * @param directoryName the name of the directory to download the libraries to
      * @param validateChecksum whether or not checksum validation is enabled
+     * @param maxDownloadAttempts the maximum number of attempts to download a library
+     * @param libraries the libraries to download
      */
     public LibraryManager(String defaultRepository, String directoryName, boolean validateChecksum,
             int maxDownloadAttempts, Collection<Library> libraries) {

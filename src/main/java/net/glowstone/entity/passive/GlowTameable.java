@@ -20,7 +20,7 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     private AnimalTamer owner;
     @Getter
-    private UUID ownerUuid;
+    private UUID ownerUniqueId;
 
     public GlowTameable(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
@@ -47,18 +47,18 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
     @Override
     public AnimalTamer getOwner() {
-        return owner instanceof Player ? owner : Bukkit.getPlayer(ownerUuid);
+        return owner instanceof Player ? owner : Bukkit.getPlayer(ownerUniqueId);
     }
 
     @Override
     public void setOwner(AnimalTamer animalTamer) {
         if (animalTamer == null) {
             owner = null;
-            ownerUuid = null;
+            ownerUniqueId = null;
             return;
         }
         owner = animalTamer;
-        ownerUuid = animalTamer.getUniqueId();
+        ownerUniqueId = animalTamer.getUniqueId();
         metadata.set(META_OWNER, owner.getUniqueId());
     }
 
@@ -70,16 +70,16 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      * <p>If a player with the specified UUID has not played on the server before, the owner is not
      * set.
      *
-     * @param ownerUuid The player UUID of the owner.
+     * @param ownerUniqueId The player UUID of the owner.
      */
-    public void setOwnerUuid(UUID ownerUuid) {
-        if (ownerUuid == null) {
-            this.ownerUuid = null;
+    public void setOwnerUniqueId(UUID ownerUniqueId) {
+        if (ownerUniqueId == null) {
+            this.ownerUniqueId = null;
             return;
         }
-        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUuid);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(ownerUniqueId);
         if (player != null && player.hasPlayedBefore()) {
-            this.ownerUuid = ownerUuid;
+            this.ownerUniqueId = ownerUniqueId;
         }
     }
 

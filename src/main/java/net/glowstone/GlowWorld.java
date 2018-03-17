@@ -381,6 +381,7 @@ public final class GlowWorld implements World {
      *
      * @param server  The server for the world.
      * @param creator The WorldCreator to use.
+     * @param worldStorageProvider The storage provider to use.
      */
     public GlowWorld(GlowServer server, WorldCreator creator,
             WorldStorageProvider worldStorageProvider) {
@@ -1829,6 +1830,7 @@ public final class GlowWorld implements World {
      * @param offsetZ TODO: document this parameter
      * @param speed TODO: document this parameter
      * @param amount the number of particles
+     * @param radius TODO: document this parameter
      */
     //@Override
     public void showParticle(Location loc, Effect particle, int id, int data, float offsetX,

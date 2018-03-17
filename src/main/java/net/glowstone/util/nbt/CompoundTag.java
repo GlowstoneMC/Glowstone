@@ -256,6 +256,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>>
      * Returns the value of a {@link List} subtag.
      *
      * @param key the key to look up
+     * @param type the list element tag type
      * @param <V> the list element type
      * @return the tag value
      */

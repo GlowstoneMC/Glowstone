@@ -711,10 +711,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * the given velocity vector.
      *
      * @param type the projectile class
-     * @param vector the direction to shoot in
+     * @param location the location to launch the projectile from
+     * @param originalVector the direction to shoot in
      * @param pitchOffset degrees to subtract from the pitch angle while calculating the y component
      *         of the initial direction
-     * @param speed the speed for the first flight tick
+     * @param velocity the speed for the first flight tick
      * @param <T> the projectile class
      * @return the launched projectile
      */
