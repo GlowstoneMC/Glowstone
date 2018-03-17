@@ -14,10 +14,10 @@ import org.bukkit.block.Biome;
 public class RoofedForestPopulator extends ForestPopulator {
 
     private static final Biome[] BIOMES = {Biome.ROOFED_FOREST, Biome.MUTATED_ROOFED_FOREST};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree.class, 20),
-        new TreeDecoration(BirchTree.class, 5),
-        new TreeDecoration(RedMushroomTree.class, 2),
-        new TreeDecoration(BrownMushroomTree.class, 2), new TreeDecoration(DarkOakTree.class, 50)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree::new, 20),
+        new TreeDecoration(BirchTree::new, 5),
+        new TreeDecoration(RedMushroomTree::new, 2),
+        new TreeDecoration(BrownMushroomTree::new, 2), new TreeDecoration(DarkOakTree::new, 50)};
 
     /**
      * Creates a populator specialized for the Roofed Forest and Roofed Forest M biomes.

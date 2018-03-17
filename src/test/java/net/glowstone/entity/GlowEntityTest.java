@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Answers.RETURNS_SMART_NULLS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -19,7 +18,6 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
-import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;

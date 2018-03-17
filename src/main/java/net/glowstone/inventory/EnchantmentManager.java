@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.WeightedRandom;
-
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

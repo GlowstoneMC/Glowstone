@@ -61,16 +61,16 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
         tag.putBool("ShowArms", entity.hasArms());
         tag.putBool("Small", entity.isSmall());
         CompoundTag pose = new CompoundTag();
-        pose.putList("Body", TagType.FLOAT, toFloatList(entity.getBodyPose()));
-        pose.putList("LeftArm", TagType.FLOAT, toFloatList(entity.getLeftArmPose()));
-        pose.putList("RightArm", TagType.FLOAT, toFloatList(entity.getRightArmPose()));
-        pose.putList("LeftLeg", TagType.FLOAT, toFloatList(entity.getLeftLegPose()));
-        pose.putList("RightLeg", TagType.FLOAT, toFloatList(entity.getRightLegPose()));
-        pose.putList("Head", TagType.FLOAT, toFloatList(entity.getHeadPose()));
+        pose.putFloatList("Body", toFloatList(entity.getBodyPose()));
+        pose.putFloatList("LeftArm", toFloatList(entity.getLeftArmPose()));
+        pose.putFloatList("RightArm", toFloatList(entity.getRightArmPose()));
+        pose.putFloatList("LeftLeg", toFloatList(entity.getLeftLegPose()));
+        pose.putFloatList("RightLeg", toFloatList(entity.getRightLegPose()));
+        pose.putFloatList("Head", toFloatList(entity.getHeadPose()));
         tag.putCompound("Pose", pose);
     }
 
-    private List<Float> toFloatList(EulerAngle angle) {
+    private static List<Float> toFloatList(EulerAngle angle) {
         return Arrays.asList(
             (float) Math.toDegrees(angle.getX()),
             (float) Math.toDegrees(angle.getY()),

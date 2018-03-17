@@ -15,8 +15,8 @@ public class SavannaPopulator extends BiomePopulator {
     private static final Biome[] BIOMES = {Biome.SAVANNA, Biome.SAVANNA_ROCK};
     private static final DoublePlantDecoration[] DOUBLE_PLANTS = {
         new DoublePlantDecoration(DoublePlantSpecies.DOUBLE_TALLGRASS, 1)};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(AcaciaTree.class, 4),
-        new TreeDecoration(GenericTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(AcaciaTree::new, 4),
+        new TreeDecoration(GenericTree::new, 1)};
 
     /**
      * Creates a populator specialized for the Savanna and Savanna Plateau biomes.

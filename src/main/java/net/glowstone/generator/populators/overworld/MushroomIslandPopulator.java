@@ -18,8 +18,8 @@ import org.bukkit.entity.EntityType;
 public class MushroomIslandPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_ISLAND_SHORE};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree.class, 1),
-        new TreeDecoration(BrownMushroomTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree::new, 1),
+        new TreeDecoration(BrownMushroomTree::new, 1)};
 
     protected final MushroomDecorator islandBrownMushroomDecorator = new MushroomDecorator(
         Material.BROWN_MUSHROOM);
