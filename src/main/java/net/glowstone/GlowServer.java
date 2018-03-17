@@ -1329,6 +1329,7 @@ public final class GlowServer implements Server {
      * @param clear whether to clear the advancements on the player's perspective.
      * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove
      *         from the player's perspective.
+     * @param player the player this advancement message is for
      * @return a resulting {@link AdvancementsMessage} packet
      */
     public AdvancementsMessage createAdvancementsMessage(boolean clear, List<NamespacedKey> remove,
@@ -1346,6 +1347,7 @@ public final class GlowServer implements Server {
      * @param clear whether to clear the advancements on the player's perspective.
      * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove
      *         from the player's perspective.
+     * @param player the player this advancement message is for
      * @return a resulting {@link AdvancementsMessage} packet
      */
     public AdvancementsMessage createAdvancementsMessage(

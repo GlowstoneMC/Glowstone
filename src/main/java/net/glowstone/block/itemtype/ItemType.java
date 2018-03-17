@@ -152,6 +152,7 @@ public class ItemType {
      * @param face The face on which the click occurred
      * @param holding The ItemStack the player was holding
      * @param clickedLoc The coordinates at which the click occurred
+     * * @param player the player this advancement message is for
      */
     public void rightClickBlock(GlowPlayer player, GlowBlock target, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {

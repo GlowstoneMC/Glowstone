@@ -53,11 +53,11 @@ public final class UserListItemMessage implements Message {
      * @param gameMode the player's game mode's value (see {@link org.bukkit.GameMode})
      * @param ping the player's ping time in milliseconds (TODO: is this up, down, or round-trip?)
      * @param displayName the name to display for the player
-     * @return
+     * @return The resultant entry
      */
     public static Entry add(GlowPlayerProfile profile, int gameMode, int ping,
                             TextMessage displayName) {
-        // TODO measure ping
+        // TODO: measure ping
         return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName,
                 Action.ADD_PLAYER);
     }

@@ -28,7 +28,7 @@ public class BlockLog2 extends BlockType {
     }
 
     /**
-     * Returns {@link data} updated to face the given direction.
+     * Returns data updated to face the given direction.
      * @param dir the direction to face
      * @param data a data value that specifies species but not direction
      * @return the data value with facing direction specified
