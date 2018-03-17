@@ -16,6 +16,7 @@
     <api.version>1.12.2-R2.1-SNAPSHOT</api.version>
     <minecraft.version>1.12.2</minecraft.version>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+    <additionalparam>-Xdoclint:none</additionalparam>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <kotlin.version>1.2.21</kotlin.version>
