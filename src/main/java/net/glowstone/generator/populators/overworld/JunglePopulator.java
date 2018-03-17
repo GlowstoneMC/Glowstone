@@ -19,9 +19,9 @@ import org.bukkit.block.Block;
 public class JunglePopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.MUTATED_JUNGLE};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 10),
-        new TreeDecoration(JungleBush.class, 50), new TreeDecoration(MegaJungleTree.class, 15),
-        new TreeDecoration(CocoaTree.class, 30)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree::new, 10),
+        new TreeDecoration(JungleBush::new, 50), new TreeDecoration(MegaJungleTree::new, 15),
+        new TreeDecoration(CocoaTree::new, 30)};
 
     private final MelonDecorator melonDecorator = new MelonDecorator();
 

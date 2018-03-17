@@ -10,7 +10,7 @@ import org.bukkit.block.Biome;
 public class BirchForestPopulator extends ForestPopulator {
 
     private static final Biome[] BIOMES = {Biome.BIRCH_FOREST, Biome.BIRCH_FOREST_HILLS};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(BirchTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(BirchTree::new, 1)};
 
     public BirchForestPopulator() {
         treeDecorator.setTrees(TREES);

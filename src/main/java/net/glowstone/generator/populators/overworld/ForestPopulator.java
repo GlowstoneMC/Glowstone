@@ -16,8 +16,8 @@ import org.bukkit.material.types.DoublePlantSpecies;
 public class ForestPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.FOREST, Biome.FOREST_HILLS};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree.class, 4),
-        new TreeDecoration(BirchTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree::new, 4),
+        new TreeDecoration(BirchTree::new, 1)};
     private static final DoublePlantSpecies[] DOUBLE_PLANTS = {DoublePlantSpecies.LILAC,
         DoublePlantSpecies.ROSE_BUSH, DoublePlantSpecies.PEONY};
 

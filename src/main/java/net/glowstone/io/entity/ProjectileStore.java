@@ -1,29 +1,31 @@
 package net.glowstone.io.entity;
 
-import java.lang.reflect.Constructor;
+import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 
 class ProjectileStore<T extends GlowProjectile> extends EntityStore<T> {
 
-    private final Constructor<T> constructor;
+    private final Function<Location, T> constructor;
 
-    public ProjectileStore(Class<T> clazz, String id) {
+    /**
+     * Creates an instance.
+     *
+     * @param clazz the class of projectile this ProjectileStore will store
+     * @param id the entity-type name used in NBT
+     * @param constructor {@code clazz}'s constructor taking a Location
+     */
+    public ProjectileStore(Class<T> clazz, String id,
+            Function<Location, T> constructor) {
         super(clazz, id);
-        Constructor<T> ctor = null;
-        try {
-            ctor = clazz.getConstructor(Location.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        constructor = ctor;
+        this.constructor = constructor;
     }
 
     @Override
     public T createEntity(Location location, CompoundTag compound) {
         try {
-            return constructor.newInstance(location);
+            return constructor.apply(location);
         } catch (Exception e) {
             e.printStackTrace();
             throw new UnsupportedOperationException("Not implemented yet.");

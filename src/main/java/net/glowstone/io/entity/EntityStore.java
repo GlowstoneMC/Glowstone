@@ -26,6 +26,7 @@ import org.bukkit.entity.EntityType;
 @RequiredArgsConstructor
 public abstract class EntityStore<T extends GlowEntity> {
 
+    private static final CompoundTag EMPTY_TAG = new CompoundTag();
     protected final Class<? extends T> type;
     protected final String entityType;
 
@@ -43,6 +44,17 @@ public abstract class EntityStore<T extends GlowEntity> {
      * @return The new entity.
      */
     public abstract T createEntity(Location location, CompoundTag compound);
+
+    /**
+     * Create a new entity of this store's type at the given location, with all attributes set to
+     * their defaults.
+     *
+     * @param location The location.
+     * @return The new entity.
+     */
+    public T createEntity(Location location) {
+        return createEntity(location, EMPTY_TAG);
+    }
 
     // For information on the NBT tags loaded here and elsewhere:
     // http://minecraft.gamepedia.com/Chunk_format#Entity_Format
@@ -185,7 +197,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         Location loc = entity.getLocation();
         NbtSerialization.writeWorld(loc.getWorld(), tag);
         NbtSerialization.locationToListTags(loc, tag);
-        tag.putList("Motion", TagType.DOUBLE, NbtSerialization.vectorToList(entity.getVelocity()));
+        tag.putDoubleList("Motion", NbtSerialization.vectorToList(entity.getVelocity()));
 
         tag.putFloat("FallDistance", entity.getFallDistance());
         tag.putShort("Fire", entity.getFireTicks());
@@ -201,7 +213,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         tag.putInt("PortalCooldown", entity.getPortalCooldown());
 
         if (!entity.getCustomTags().isEmpty()) {
-            tag.putList("Tags", TagType.STRING, entity.getCustomTags());
+            tag.putStringList("Tags", entity.getCustomTags());
         }
 
         // in case Vanilla or CraftBukkit expects non-living entities to have this tag

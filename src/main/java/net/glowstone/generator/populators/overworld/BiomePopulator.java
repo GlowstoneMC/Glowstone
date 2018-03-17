@@ -36,8 +36,8 @@ import org.bukkit.generator.BlockPopulator;
 
 public class BiomePopulator extends BlockPopulator {
 
-    private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 1),
-        new TreeDecoration(GenericTree.class, 9)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree::new, 1),
+        new TreeDecoration(GenericTree::new, 9)};
     private static final FlowerDecoration[] FLOWERS = {
         new FlowerDecoration(FlowerType.DANDELION, 2), new FlowerDecoration(FlowerType.POPPY, 1)};
     protected final LakeDecorator waterLakeDecorator = new LakeDecorator(Material.STATIONARY_WATER);

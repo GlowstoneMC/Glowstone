@@ -16,7 +16,7 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
     private static final String CUSTOM_POTION_EFFECTS = "CustomPotionEffects";
 
     public NormalTippedArrowStore() {
-        super(GlowArrow.class, "arrow");
+        super(GlowArrow.class, "arrow", GlowArrow::new);
     }
 
     @Override

@@ -59,6 +59,7 @@ public final class EntityStorage {
      */
     private static final Map<Class<? extends GlowEntity>, EntityStore<?>> classTable
             = new HashMap<>();
+    private static final CompoundTag EMPTY_TAG = new CompoundTag();
 
     /*
      * Populates the maps with stores.
@@ -80,9 +81,9 @@ public final class EntityStorage {
         bind(new WaterMobStore<>(GlowSquid.class, EntityType.SQUID, GlowSquid::new));
         bind(new AgeableStore<>(GlowPolarBear.class, EntityType.POLAR_BEAR, GlowPolarBear::new));
         bind(new AbstractHorseStore<>(GlowZombieHorse.class, EntityType.ZOMBIE_HORSE,
-            GlowZombieHorse::new));
+                GlowZombieHorse::new));
         bind(new AbstractHorseStore<>(GlowSkeletonHorse.class, EntityType.SKELETON_HORSE,
-            GlowSkeletonHorse::new));
+                GlowSkeletonHorse::new));
         bind(new ChestedHorseStore<>(GlowLlama.class, EntityType.LLAMA, GlowLlama::new));
         bind(new ChestedHorseStore<>(GlowMule.class, EntityType.MULE, GlowMule::new));
         bind(new ChestedHorseStore<>(GlowDonkey.class, EntityType.DONKEY, GlowDonkey::new));
@@ -104,7 +105,7 @@ public final class EntityStorage {
         bind(new MonsterStore<>(GlowSkeleton.class, EntityType.SKELETON, GlowSkeleton::new));
         bind(new MonsterStore<>(GlowStray.class, EntityType.STRAY, GlowStray::new));
         bind(new MonsterStore<>(GlowWitherSkeleton.class, EntityType.WITHER_SKELETON,
-            GlowWitherSkeleton::new));
+                GlowWitherSkeleton::new));
         bind(new MonsterStore<>(GlowBlaze.class, EntityType.BLAZE, GlowBlaze::new));
         bind(new MonsterStore<>(GlowCaveSpider.class, EntityType.CAVE_SPIDER, GlowCaveSpider::new));
         bind(new MonsterStore<>(GlowSpider.class, EntityType.SPIDER, GlowSpider::new));
@@ -133,18 +134,21 @@ public final class EntityStorage {
                 bind(new MinecartStore(type));
             }
         }
-        bind(new ProjectileStore<>(GlowSnowball.class, "snowball"));
-        bind(new ProjectileStore<>(GlowEgg.class, "egg"));
-        bind(new ProjectileStore<>(GlowEnderPearl.class, "ender_pearl"));
-        bind(new ProjectileStore<>(GlowThrownExpBottle.class, "xp_bottle"));
-        bind(new SplashPotionStore<>(GlowSplashPotion.class, "splash_potion"));
-        bind(new SplashPotionStore<>(GlowLingeringPotion.class, "lingering_potion"));
+        bind(new ProjectileStore<>(GlowSnowball.class, "snowball", GlowSnowball::new));
+        bind(new ProjectileStore<>(GlowEgg.class, "egg", GlowEgg::new));
+        bind(new ProjectileStore<>(GlowEnderPearl.class, "ender_pearl", GlowEnderPearl::new));
+        bind(new ProjectileStore<>(GlowThrownExpBottle.class, "xp_bottle",
+                GlowThrownExpBottle::new));
+        bind(new SplashPotionStore<>(GlowSplashPotion.class, "splash_potion",
+                GlowSplashPotion::new));
+        bind(new SplashPotionStore<>(GlowLingeringPotion.class, "lingering_potion",
+                GlowLingeringPotion::new));
         final FireballStore<GlowFireball> fireballStore
-                = new FireballStore<>(GlowFireball.class, "fireball");
+                = new FireballStore<>(GlowFireball.class, "fireball", GlowFireball::new);
         bind(fireballStore);
         idTable.put("small_fireball", fireballStore);
-        bind(new FireballStore<>(GlowWitherSkull.class, "wither_skull"));
-        bind(new ArrowStore<>(GlowSpectralArrow.class, "spectral_arrow"));
+        bind(new FireballStore<>(GlowWitherSkull.class, "wither_skull", GlowWitherSkull::new));
+        bind(new ArrowStore<>(GlowSpectralArrow.class, "spectral_arrow", GlowSpectralArrow::new));
         bind(new PaintingStore());
         bind(new ExperienceOrbStore());
         bind(new FireworkStore());
@@ -159,10 +163,22 @@ public final class EntityStorage {
     }
 
     /**
+     * Creates an entity of the given Glowstone class, by deserializing an empty tag.
+     *
+     * @param clazz the type of entity
+     * @param <T>   the type of entity
+     * @param location the entity's initial location
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends GlowEntity> T create(Class<T> clazz, Location location) {
+        return (T) find(clazz, clazz.getSimpleName()).createEntity(location, EMPTY_TAG);
+    }
+
+    /**
      * Binds a store by adding entries for it to the tables.
      *
      * @param store The store object.
-     * @param <T> The type of entity.
+     * @param <T>   The type of entity.
      */
     public static <T extends GlowEntity> void bind(EntityStore<T> store) {
         idTable.put(store.getEntityType(), store);
@@ -172,7 +188,7 @@ public final class EntityStorage {
     /**
      * Load a new entity in the given world from the given data tag.
      *
-     * @param world The target world.
+     * @param world    The target world.
      * @param compound The tag to load from.
      * @return The newly constructed entity.
      * @throws IllegalArgumentException if there is an error in the data.
@@ -189,14 +205,14 @@ public final class EntityStorage {
         EntityStore<?> store = idTable.get(id);
         if (store == null) {
             throw new IllegalArgumentException(
-                "Unknown entity type to load: \"" + compound.getString("id") + "\"");
+                    "Unknown entity type to load: \"" + compound.getString("id") + "\"");
         }
 
         // verify that, if the tag contains a world, it's correct
         World checkWorld = NbtSerialization.readWorld(world.getServer(), compound);
         if (checkWorld != null && checkWorld != world) {
             throw new IllegalArgumentException(
-                "Entity in wrong world: stored in " + world + " but data says " + checkWorld);
+                    "Entity in wrong world: stored in " + world + " but data says " + checkWorld);
         }
 
         // find out the entity's location
@@ -213,7 +229,7 @@ public final class EntityStorage {
      * Helper method to call EntityStore methods for type safety.
      */
     private static <T extends GlowEntity> T createEntity(EntityStore<T> store, Location location,
-        CompoundTag compound) {
+            CompoundTag compound) {
         T entity = store.createEntity(location, compound);
         store.load(entity, compound);
         return entity;
@@ -242,7 +258,7 @@ public final class EntityStorage {
     /**
      * Save an entity's data to the given compound tag.
      *
-     * @param entity The entity to save.
+     * @param entity   The entity to save.
      * @param compound The target tag.
      */
     public static void save(GlowEntity entity, CompoundTag compound) {
@@ -256,7 +272,7 @@ public final class EntityStorage {
     /**
      * Load an entity's data from the given compound tag.
      *
-     * @param entity The target entity.
+     * @param entity   The target entity.
      * @param compound The tag to load from.
      */
     public static void load(GlowEntity entity, CompoundTag compound) {

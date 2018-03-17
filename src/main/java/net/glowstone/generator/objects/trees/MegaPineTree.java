@@ -2,7 +2,6 @@ package net.glowstone.generator.objects.trees;
 
 import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -16,11 +15,10 @@ public class MegaPineTree extends MegaRedwoodTree {
      * Initializes this tree with a random height, preparing it to attempt to generate.
      *
      * @param random the PRNG
-     * @param location the base of the trunk
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
      *     blocks
      */
-    public MegaPineTree(Random random, Location location, BlockStateDelegate delegate) {
+    public MegaPineTree(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
         setLeavesHeight(random.nextInt(5) + 3);
     }

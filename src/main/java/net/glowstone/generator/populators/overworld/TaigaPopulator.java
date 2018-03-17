@@ -22,8 +22,8 @@ public class TaigaPopulator extends BiomePopulator {
         Biome.TAIGA_COLD_HILLS, Biome.MUTATED_TAIGA_COLD};
     private static final DoublePlantDecoration[] DOUBLE_PLANTS = {
         new DoublePlantDecoration(DoublePlantSpecies.LARGE_FERN, 1)};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 2),
-        new TreeDecoration(TallRedwoodTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 2),
+        new TreeDecoration(TallRedwoodTree::new, 1)};
 
     protected final MushroomDecorator taigaBrownMushroomDecorator = new MushroomDecorator(
         Material.BROWN_MUSHROOM);

@@ -4,8 +4,6 @@ import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,13 +43,13 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowLightningStrike;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.GlowTntPrimed;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
@@ -86,7 +84,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -840,7 +837,7 @@ public final class GlowWorld implements World {
      * Sets the spawn location of the world.
      *
      * @param newSpawn the new spawn location
-     * @param anchor if true, the spawn is never unloaded while the world is running
+     * @param anchor   if true, the spawn is never unloaded while the world is running
      * @return true if the spawn location has changed
      */
     public boolean setSpawnLocation(Location newSpawn, boolean anchor) {
@@ -1201,7 +1198,7 @@ public final class GlowWorld implements World {
      * and all blocks above it are either air or one of the given materials.
      *
      * @param location Coordinates to get the highest block
-     * @param except Blocks to exclude in addition to air
+     * @param except   Blocks to exclude in addition to air
      * @return Highest non-empty block
      */
     public Block getHighestBlockAt(Location location, Material... except) {
@@ -1406,48 +1403,42 @@ public final class GlowWorld implements World {
      * Spawns an entity.
      *
      * @param location the {@link Location} to spawn the entity at
-     * @param clazz the class of the {@link Entity} to spawn
-     * @param reason the reason for the spawning of the entity
+     * @param clazz    the class of the {@link Entity} to spawn
+     * @param reason   the reason for the spawning of the entity
      * @return an instance of the spawned {@link Entity}
      * @throws IllegalArgumentException TODO: document the reason this can happen
      */
     public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz,
             SpawnReason reason) throws IllegalArgumentException {
+
         GlowEntity entity = null;
 
-        if (TNTPrimed.class.isAssignableFrom(clazz)) {
-            entity = new GlowTntPrimed(location, null);
-        }
-
-        if (entity == null) {
-            try {
-                Constructor<? extends GlowEntity> constructor = clazz
-                        .getConstructor(Location.class);
-                entity = constructor.newInstance(location);
-                GlowEntity impl = entity;
-                // function.accept(entity); TODO: work on type mismatches
-                EntitySpawnEvent spawnEvent = null;
-                if (entity instanceof LivingEntity) {
-                    spawnEvent = EventFactory
-                            .callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
-                } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
-                    spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
-                }
-                if (spawnEvent != null && spawnEvent.isCancelled()) {
-                    // TODO: separate spawning and construction for better event cancellation
-                    entity.remove();
-                } else {
-                    List<Message> spawnMessage = entity.createSpawnMessage();
-                    getRawPlayers().stream().filter(player -> player.canSeeEntity(impl))
-                            .forEach(player -> player.getSession().sendAll(spawnMessage
-                                    .toArray(new Message[spawnMessage.size()])));
-                }
-            } catch (NoSuchMethodException e) {
-                GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
-            } catch (IllegalAccessException | InstantiationException | InvocationTargetException
-                    e) {
-                GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", e);
+        try {
+            if (EntityRegistry.getEntity(clazz) != null) {
+                entity = EntityStorage.create(clazz, location);
             }
+            // function.accept(entity); TODO: work on type mismatches
+            EntitySpawnEvent spawnEvent = null;
+            if (entity instanceof LivingEntity) {
+                spawnEvent = EventFactory
+                        .callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
+            } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
+                spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
+            }
+            if (spawnEvent != null && spawnEvent.isCancelled()) {
+                // TODO: separate spawning and construction for better event cancellation
+                entity.remove();
+            } else {
+                List<Message> spawnMessage = entity.createSpawnMessage();
+                final GlowEntity finalEntity = entity;
+                getRawPlayers().stream().filter(player -> player.canSeeEntity(finalEntity))
+                        .forEach(player -> player.getSession().sendAll(spawnMessage
+                                .toArray(new Message[spawnMessage.size()])));
+            }
+        } catch (NoSuchMethodError | IllegalAccessError e) {
+            GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
+        } catch (Throwable t) {
+            GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", t);
         }
 
         if (entity != null) {
@@ -1744,11 +1735,11 @@ public final class GlowWorld implements World {
      * Plays an effect to all but one player within a given radius around a location.
      *
      * @param location the {@link Location} around which players must be to
-     *     hear the effect
-     * @param effect the {@link Effect}
-     * @param data a data bit needed for some effects
-     * @param radius the radius around the location
-     * @param exclude the player who won't see the effect
+     *                 hear the effect
+     * @param effect   the {@link Effect}
+     * @param data     a data bit needed for some effects
+     * @param radius   the radius around the location
+     * @param exclude  the player who won't see the effect
      */
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius,
             Player exclude) {
@@ -1796,13 +1787,13 @@ public final class GlowWorld implements World {
     /**
      * Displays the given particle to all players.
      *
-     * @param loc the location
+     * @param loc      the location
      * @param particle the particle type
-     * @param offsetX TODO: document this parameter
-     * @param offsetY TODO: document this parameter
-     * @param offsetZ TODO: document this parameter
-     * @param speed TODO: document this parameter
-     * @param amount the number of particles
+     * @param offsetX  TODO: document this parameter
+     * @param offsetY  TODO: document this parameter
+     * @param offsetZ  TODO: document this parameter
+     * @param speed    TODO: document this parameter
+     * @param amount   the number of particles
      */
     //@Override
     public void showParticle(Location loc, Effect particle, float offsetX, float offsetY,
@@ -1821,16 +1812,16 @@ public final class GlowWorld implements World {
     /**
      * Displays the given particle to all players.
      *
-     * @param loc the location
+     * @param loc      the location
      * @param particle the particle type
-     * @param id the block or item type ID
-     * @param data the block or item data
-     * @param offsetX TODO: document this parameter
-     * @param offsetY TODO: document this parameter
-     * @param offsetZ TODO: document this parameter
-     * @param speed TODO: document this parameter
-     * @param amount the number of particles
-     * @param radius TODO: document this parameter
+     * @param id       the block or item type ID
+     * @param data     the block or item data
+     * @param offsetX  TODO: document this parameter
+     * @param offsetY  TODO: document this parameter
+     * @param offsetZ  TODO: document this parameter
+     * @param speed    TODO: document this parameter
+     * @param amount   the number of particles
+     * @param radius   TODO: document this parameter
      */
     //@Override
     public void showParticle(Location loc, Effect particle, int id, int data, float offsetX,

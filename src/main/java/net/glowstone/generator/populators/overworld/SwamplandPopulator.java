@@ -18,7 +18,7 @@ import org.bukkit.block.Biome;
 public class SwamplandPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.SWAMPLAND, Biome.MUTATED_SWAMPLAND};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(SwampTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(SwampTree::new, 1)};
     private static final FlowerDecoration[] FLOWERS = {
         new FlowerDecoration(FlowerType.BLUE_ORCHID, 1)};
 
