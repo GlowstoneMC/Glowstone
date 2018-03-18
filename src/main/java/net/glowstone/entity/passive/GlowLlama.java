@@ -39,7 +39,9 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     @Override
     public void setStrength(int strength) {
         metadata.set(MetadataIndex.LLAMA_STRENGTH, strength);
-        inventory = createNewInventory();
+        if (isCarryingChest()) {
+            inventory = createNewInventory();
+        }
     }
 
     @Override
