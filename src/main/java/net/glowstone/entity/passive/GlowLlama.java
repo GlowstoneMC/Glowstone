@@ -39,6 +39,7 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     @Override
     public void setStrength(int strength) {
         metadata.set(MetadataIndex.LLAMA_STRENGTH, strength);
+        inventory = createNewInventory();
     }
 
     @Override
@@ -57,12 +58,15 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     }
 
     @Override
-    protected void createNewInventory() {
+    protected GlowLlamaInventory createNewInventory() {
         GlowLlamaInventory oldInventory = inventory;
-        inventory = new GlowLlamaInventory();
+        GlowLlamaInventory newInventory
+                = new GlowLlamaInventory(this, isCarryingChest() ? 3 * getStrength() : 0);
         if (oldInventory != null) {
-            inventory.setSaddle(oldInventory.getSaddle());
-            inventory.setDecor(oldInventory.getDecor());
+            newInventory.setSaddle(oldInventory.getSaddle());
+            newInventory.setDecor(oldInventory.getDecor());
+            moveChestContents(oldInventory, newInventory);
         }
+        return newInventory;
     }
 }

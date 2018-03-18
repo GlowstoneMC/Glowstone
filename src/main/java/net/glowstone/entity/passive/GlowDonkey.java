@@ -28,11 +28,13 @@ public class GlowDonkey extends GlowChestedHorse<GlowHorseInventory> implements 
     }
 
     @Override
-    protected void createNewInventory() {
+    protected GlowHorseInventory createNewInventory() {
         GlowHorseInventory oldInventory = inventory;
-        inventory = new GlowHorseInventory(this);
+        GlowHorseInventory newInventory = new GlowHorseInventory(this);
         if (oldInventory != null) {
-            inventory.setSaddle(oldInventory.getSaddle());
+            newInventory.setSaddle(oldInventory.getSaddle());
+            moveChestContents(oldInventory, newInventory);
         }
+        return newInventory;
     }
 }
