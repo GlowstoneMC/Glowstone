@@ -1093,10 +1093,24 @@ public final class GlowServer implements Server {
                 })
                 .collect(Collectors.toMap(Library::getLibraryKey, Function.identity()));
 
-        Set<String> conflicts = libraries.values().stream()
-                .filter(this::serverContainsLibrary)
-                .map(Object::toString)
-                .collect(Collectors.toSet());
+        Set<String> conflicts = new HashSet<>();
+
+        for (Library library : libraries.values()) {
+            if (serverContainsLibrary(library)) {
+                conflicts.add(library.toString());
+            }
+            Map<LibraryKey, Library> defaultLibs = ServerConfig.DEFAULT_RUNTIME_LIBRARIES;
+            if (defaultLibs.containsKey(library.getLibraryKey())) {
+                Library defaultLib = defaultLibs.get(library.getLibraryKey());
+                if (defaultLib.compareTo(library) < 0) {
+                    logger.warning(String.format(
+                        "Library '%s' is out of date. The recommended version is '%s'.",
+                        library.toString(),
+                        defaultLib.toString()
+                    ));
+                }
+            }
+        }
 
         if (!conflicts.isEmpty()) {
             String joinedConflicts = conflicts.stream()
@@ -1108,8 +1122,6 @@ public final class GlowServer implements Server {
             ));
             System.exit(1);
         }
-
-        Set<LibraryKey> seenDependencies = new HashSet<>();
 
         Map<LibraryKey, Library> dependencies = clients.values().stream()
                 .filter(Objects::nonNull)

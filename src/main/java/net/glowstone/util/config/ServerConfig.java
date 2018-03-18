@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,12 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.DynamicallyTypedMap;
 import net.glowstone.util.library.Library;
+import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager.HashAlgorithm;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -379,28 +383,30 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
     }
 
     public static final String DEFAULT_KOTLIN_VERSION = "1.2.21";
-    private static final List<Map<?, ?>> DEFAULT_LIBRARIES_VALUE =
-            ImmutableList.<Map<?, ?>>builder()
-                    .add(new Library("org.xerial", "sqlite-jdbc", "3.21.0", HashAlgorithm.SHA1,
-                            "347e4d1d3e1dff66d389354af8f0021e62344584").toConfigMap())
-                    .add(new Library("mysql", "mysql-connector-java", "5.1.44", HashAlgorithm.SHA1,
-                            "61b6b998192c85bb581c6be90e03dcd4b9079db4").toConfigMap())
-                    .add(new Library("org.apache.logging.log4j", "log4j-api", "2.8.1",
-                            HashAlgorithm.SHA1, "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72")
-                            .toConfigMap())
-                    .add(new Library("org.apache.logging.log4j", "log4j-core", "2.8.1",
-                            HashAlgorithm.SHA1, "4ac28ff2f1ddf05dae3043a190451e8c46b73c31")
-                            .toConfigMap())
-                    .add(new Library("org.apache.commons", "commons-lang3", "3.5",
-                            HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6")
-                            .toConfigMap())
-                    .add(new Library("org.jetbrains.kotlin", "kotlin-runtime",
-                            DEFAULT_KOTLIN_VERSION, HashAlgorithm.SHA1,
-                            "67558262649fc4ab2ade6b6a2999e636019e82a2").toConfigMap())
-                    .add(new Library("org.jetbrains.kotlin", "kotlin-reflect",
-                            DEFAULT_KOTLIN_VERSION, HashAlgorithm.SHA1,
-                            "3159ff5936aa570a90050d385cb717fbb6c1723a").toConfigMap())
-                    .build();
+    public static final Map<LibraryKey, Library> DEFAULT_RUNTIME_LIBRARIES = Stream.of(
+            new Library("org.xerial", "sqlite-jdbc", "3.21.0", HashAlgorithm.SHA1,
+                    "347e4d1d3e1dff66d389354af8f0021e62344584"),
+            new Library("mysql", "mysql-connector-java", "5.1.44", HashAlgorithm.SHA1,
+                    "61b6b998192c85bb581c6be90e03dcd4b9079db4"),
+            new Library("org.apache.logging.log4j", "log4j-api", "2.8.1",
+                    HashAlgorithm.SHA1, "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72"),
+            new Library("org.apache.logging.log4j", "log4j-core", "2.8.1",
+                    HashAlgorithm.SHA1, "4ac28ff2f1ddf05dae3043a190451e8c46b73c31"),
+            new Library("org.apache.commons", "commons-lang3", "3.5",
+                    HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6"),
+            new Library("org.jetbrains.kotlin", "kotlin-runtime",
+                    DEFAULT_KOTLIN_VERSION, HashAlgorithm.SHA1,
+                    "67558262649fc4ab2ade6b6a2999e636019e82a2"),
+            new Library("org.jetbrains.kotlin", "kotlin-reflect",
+                    DEFAULT_KOTLIN_VERSION, HashAlgorithm.SHA1,
+                    "3159ff5936aa570a90050d385cb717fbb6c1723a")
+            )
+            .collect(ImmutableMap.toImmutableMap(Library::getLibraryKey, Function.identity()));
+    private static final List<Map<?, ?>> DEFAULT_LIBRARIES_VALUE = DEFAULT_RUNTIME_LIBRARIES
+            .values()
+            .stream()
+            .map(Library::toConfigMap)
+            .collect(ImmutableList.toImmutableList());
 
     /**
      * An enum containing configuration keys used by the server.
