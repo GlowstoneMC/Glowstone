@@ -209,17 +209,17 @@ public class EntityRegistry {
             .put(Llama.class, GlowLlama.class)
             .put(MagmaCube.class, GlowMagmaCube.class)
             .put(GlowMinecart.MinecartType.RIDEABLE.getEntityClass(),
-                GlowMinecart.MinecartType.RIDEABLE.getMinecartClass())
+                    GlowMinecart.MinecartType.RIDEABLE.getMinecartClass())
             .put(GlowMinecart.MinecartType.CHEST.getEntityClass(),
-                GlowMinecart.MinecartType.CHEST.getMinecartClass())
+                    GlowMinecart.MinecartType.CHEST.getMinecartClass())
             .put(GlowMinecart.MinecartType.FURNACE.getEntityClass(),
-                GlowMinecart.MinecartType.FURNACE.getMinecartClass())
+                    GlowMinecart.MinecartType.FURNACE.getMinecartClass())
             .put(GlowMinecart.MinecartType.TNT.getEntityClass(),
-                GlowMinecart.MinecartType.TNT.getMinecartClass())
+                    GlowMinecart.MinecartType.TNT.getMinecartClass())
             .put(GlowMinecart.MinecartType.HOPPER.getEntityClass(),
-                GlowMinecart.MinecartType.HOPPER.getMinecartClass())
+                    GlowMinecart.MinecartType.HOPPER.getMinecartClass())
             .put(GlowMinecart.MinecartType.SPAWNER.getEntityClass(),
-                GlowMinecart.MinecartType.SPAWNER.getMinecartClass())
+                    GlowMinecart.MinecartType.SPAWNER.getMinecartClass())
             //TODO: Command Block minecart
             .put(Mule.class, GlowMule.class)
             .put(MushroomCow.class, GlowMooshroom.class)
@@ -265,25 +265,36 @@ public class EntityRegistry {
         return ENTITIES.get(type.getEntityClass());
     }
 
+    /**
+     * Gets the implementation class for the given entity interface class.
+     *
+     * @param clazz the entity interface class
+     * @return the implementation class
+     */
     public static Class<? extends GlowEntity> getEntity(Class<? extends Entity> clazz) {
+        if (GlowEntity.class.isAssignableFrom(clazz)) {
+            // implementation class, return self
+            return (Class<? extends GlowEntity>) clazz;
+        }
         return ENTITIES.get(clazz);
     }
 
     /**
      * Registers a custom entity type.
+     *
      * @param descriptor the entity type to register; all fields except
-     *     {@link CustomEntityDescriptor#getStorage()} must be non-null
+     *                   {@link CustomEntityDescriptor#getStorage()} must be non-null
      */
     public static void registerCustomEntity(
-        CustomEntityDescriptor<? extends GlowEntity> descriptor) {
+            CustomEntityDescriptor<? extends GlowEntity> descriptor) {
         if (descriptor == null || descriptor.getEntityClass() == null || descriptor.getId() == null
-            || descriptor.getPlugin() == null) {
+                || descriptor.getPlugin() == null) {
             return;
         }
         if (descriptor.getPlugin().isEnabled()) {
             descriptor.getPlugin().getServer().getLogger().warning(
-                "Cannot register custom entity '" + descriptor.getId() + "' for plugin '"
-                    + descriptor.getPlugin() + "', worlds are already loaded.");
+                    "Cannot register custom entity '" + descriptor.getId() + "' for plugin '"
+                            + descriptor.getPlugin() + "', worlds are already loaded.");
             return;
         }
         if (CUSTOM_ENTITIES.containsKey(descriptor.getId().toLowerCase())) {
