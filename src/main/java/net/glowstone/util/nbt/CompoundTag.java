@@ -16,7 +16,7 @@ import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 /**
  * The {@code TAG_Compound} tag.
  */
-public final class CompoundTag extends Tag<Map<String, Tag>>
+public class CompoundTag extends Tag<Map<String, Tag>>
         implements DynamicallyTypedMapWithDoubles<String> {
 
     /**
