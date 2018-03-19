@@ -105,7 +105,9 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
         MetadataMap metadataMap = new MetadataMap(GlowAreaEffectCloud.class);
         metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_COLOR, color);
         metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_RADIUS, radius);
-        metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLEID, particle.ordinal());
+        if (particle != null) {
+            metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLEID, particle.ordinal());
+        }
         return Arrays.asList(
                 new SpawnObjectMessage(entityId, getUniqueId(), NETWORK_TYPE_ID, location),
                 new EntityMetadataMessage(entityId, metadataMap.getEntryList()));
