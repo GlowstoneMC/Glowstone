@@ -397,7 +397,7 @@ public final class GlowServer implements Server {
     private WorldStorageProviderFactory storageProviderFactory = null;
     /**
      * Whether the server should just generate and load configuration files, then exit.
-     * <p>
+     *
      * <p>This can be enabled by using the --generate-config launch argument.
      */
     private static boolean generateConfigOnly;
@@ -534,8 +534,7 @@ public final class GlowServer implements Server {
 
             // Below this point, options require parameters
             if (i == args.length - 1 && !"--generate-config".equals(opt)) {
-                System.err.println(
-                        MessageFormat.format(strings.getString("ignored.option.without.value"), opt));
+                System.err.format(strings.getString("ignored.option.without.value"), opt);
                 continue;
             }
 
@@ -1302,7 +1301,7 @@ public final class GlowServer implements Server {
     /**
      * Creates an {@link AdvancementsMessage} containing a list of advancements the server has,
      * along with some extra actions.
-     * <p>
+     *
      * <p>This does not affect the server's advancement registry.
      *
      * @param clear  whether to clear the advancements on the player's perspective.
@@ -1319,7 +1318,7 @@ public final class GlowServer implements Server {
     /**
      * Creates an {@link AdvancementsMessage} containing a given list of advancements, along with
      * some extra actions.
-     * <p>
+     *
      * <p>This does not affect the server's advancement registry.
      *
      * @param advancements the advancements to add to the player's perspective.
@@ -2293,7 +2292,7 @@ public final class GlowServer implements Server {
 
     /**
      * Sets the port that the Query server will expose.
-     * <p>
+     *
      * <p>This does not change the port the server will run on.
      *
      * @param port the port number
@@ -2309,7 +2308,7 @@ public final class GlowServer implements Server {
 
     /**
      * Sets the IP address that the Query server will expose.
-     * <p>
+     *
      * <p>This does not change the IP address the server will run on.
      *
      * @param ip the IP address
@@ -2507,7 +2506,7 @@ public final class GlowServer implements Server {
 
     /**
      * Gets the server type.
-     * <p>
+     *
      * <p>Currently, this value is set to {@code VANILLA}.
      *
      * @return the server type.
@@ -2518,7 +2517,7 @@ public final class GlowServer implements Server {
 
     /**
      * Gets whether the server allows client mods.
-     * <p>
+     *
      * <p>This rule is not actually enforced, and is simply exposed to clients as a warning.
      *
      * @return true if client mods are allowed, false otherwise.
@@ -2550,7 +2549,7 @@ public final class GlowServer implements Server {
      * Gets whether the server is OpenCL-capable and allowed to use graphics compute functionality.
      *
      * @return true if the server is capable and allowed to use graphics compute functionality,
-     * false otherwise.
+     *     false otherwise.
      */
     public boolean doesUseGraphicsCompute() {
         return isGraphicsComputeAvailable && config.getBoolean(Key.GRAPHICS_COMPUTE);
