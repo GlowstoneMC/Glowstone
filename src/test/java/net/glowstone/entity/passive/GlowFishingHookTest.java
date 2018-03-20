@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import net.glowstone.EventFactory;
-import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowEntityTest;
 import net.glowstone.entity.GlowPlayer;
@@ -33,8 +32,6 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
     /** This needs to be static because it's used in the constructor's super call. */
     @Mock
     private static GlowPlayer player;
-    @Mock
-    private GlowBlock block;
 
     private FishingRewardManager fishingRewardManager;
 

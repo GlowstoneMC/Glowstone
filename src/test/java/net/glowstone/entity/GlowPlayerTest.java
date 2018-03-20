@@ -39,7 +39,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 @PrepareForTest({GlowServer.class, GlowWorld.class, ChunkManager.class})
-public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
+public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     private final ChunkManager chunkManager
             = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
@@ -68,9 +68,6 @@ public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
     private final SessionRegistry sessionRegistry = new SessionRegistry();
     private File opsListFile;
     private UuidListFile opsList;
-
-    // Finally, the star of the show
-    private GlowPlayer player;
     private ItemStack fishingRodItem;
 
     public GlowPlayerTest() {
@@ -97,34 +94,33 @@ public class GlowPlayerTest extends GlowEntityTest<GlowPlayer> {
         when(world.newChunkLock(anyString())).thenReturn(chunkLock);
         when(block.getType()).thenReturn(Material.AIR);
         when(block.getRelative(any(BlockFace.class))).thenReturn(block);
-        player = entityCreator.apply(location);
         fishingRodItem = new ItemStack(Material.FISHING_ROD);
-        player.setItemInHand(fishingRodItem);
-        when(session.getPlayer()).thenReturn(player);
+        entity.setItemInHand(fishingRodItem);
+        when(session.getPlayer()).thenReturn(entity);
     }
 
     @Test
     public void testFishingContinues() {
-        final GlowFishingHook fishingHook = new GlowFishingHook(location, fishingRodItem, player);
-        player.setCurrentFishingHook(fishingHook);
-        player.pulse();
-        assertSame(fishingHook, player.getCurrentFishingHook());
+        final GlowFishingHook fishingHook = new GlowFishingHook(location, fishingRodItem, entity);
+        entity.setCurrentFishingHook(fishingHook);
+        entity.pulse();
+        assertSame(fishingHook, entity.getCurrentFishingHook());
     }
 
     @Test
     public void testFishingStopsAtDistance() {
-        player.setCurrentFishingHook(new GlowFishingHook(location, fishingRodItem, player));
-        player.teleport(new Location(world, 33, 0, 0));
-        player.endTeleport();
-        player.pulse();
-        assertNull(player.getCurrentFishingHook());
+        entity.setCurrentFishingHook(new GlowFishingHook(location, fishingRodItem, entity));
+        entity.teleport(new Location(world, 33, 0, 0));
+        entity.endTeleport();
+        entity.pulse();
+        assertNull(entity.getCurrentFishingHook());
     }
 
     @Test
     public void testFishingStopsWhenNoPoleHeld() {
-        player.setCurrentFishingHook(new GlowFishingHook(location, fishingRodItem, player));
-        player.setItemInHand(InventoryUtil.createEmptyStack());
-        player.pulse();
-        assertNull(player.getCurrentFishingHook());
+        entity.setCurrentFishingHook(new GlowFishingHook(location, fishingRodItem, entity));
+        entity.setItemInHand(InventoryUtil.createEmptyStack());
+        entity.pulse();
+        assertNull(entity.getCurrentFishingHook());
     }
 }
