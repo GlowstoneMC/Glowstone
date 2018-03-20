@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -204,6 +205,10 @@ import org.bukkit.util.permissions.DefaultPermissions;
  */
 public final class GlowServer implements Server {
 
+    /**
+     * Localized strings.
+     */
+    private static final ResourceBundle strings = ResourceBundle.getBundle("strings");
     /**
      * The logger for this class.
      */
@@ -428,7 +433,8 @@ public final class GlowServer implements Server {
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
         advancement.addCriterion("minecraft:test/criterion");
         advancement.setDisplay(new GlowAdvancementDisplay(
-                new TextMessage("Advancements in Glowstone"), new TextMessage("=)"),
+                new TextMessage(strings.getString("advancements.in.glowstone")),
+                new TextMessage("=)"),
                 new ItemStack(Material.GLOWSTONE),
                 GlowAdvancementDisplay.FrameType.GOAL,
                 -10F, 0));
@@ -458,16 +464,16 @@ public final class GlowServer implements Server {
                 return;
             }
             if (generateConfigOnly) {
-                GlowServer.logger.info("Configuration files have been loaded, exiting...");
+                GlowServer.logger.info(strings.getString("config.only.done"));
                 return;
             }
 
             server.run();
         } catch (SecurityException e) {
-            logger.log(Level.WARNING, "Error loading classpath!", e);
+            logger.log(Level.WARNING, strings.getString("error.loading.classpath"), e);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, "Error during server startup.", t);
+            logger.log(Level.SEVERE, strings.getString("error.during.server.startup"), t);
             System.exit(1);
         }
     }
