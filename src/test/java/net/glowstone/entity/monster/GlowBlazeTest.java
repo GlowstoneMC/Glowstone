@@ -2,7 +2,7 @@ package net.glowstone.entity.monster;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class GlowBlazeTest extends net.glowstone.entity.monster.GlowMonsterTest<GlowBlaze> {
 
