@@ -74,11 +74,11 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected Location location;
     protected EntityIdManager idManager;
     protected EntityManager entityManager;
-    protected final Function<Location, ? extends T> entityCreator;
+    protected final Function<? super Location, ? extends T> entityCreator;
     protected GlowScoreboard scoreboard;
     protected T entity;
 
-    protected GlowEntityTest(Function<Location, ? extends T> entityCreator) {
+    protected GlowEntityTest(Function<? super Location, ? extends T> entityCreator) {
         this.entityCreator = entityCreator;
     }
 
