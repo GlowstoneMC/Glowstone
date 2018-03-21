@@ -1,6 +1,8 @@
 package net.glowstone.entity.objects;
 
-public class GlowArmorStandTest extends net.glowstone.entity.GlowLivingEntityTest<GlowArmorStand> {
+import net.glowstone.entity.GlowLivingEntityTest;
+
+public class GlowArmorStandTest extends GlowLivingEntityTest<GlowArmorStand> {
     public GlowArmorStandTest() {
         super(GlowArmorStand::new);
     }

@@ -3,8 +3,9 @@ package net.glowstone.entity.monster.complex;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 import java.util.Collections;
+import net.glowstone.entity.GlowEntityTest;
 
-public class GlowEnderDragonPartTest extends net.glowstone.entity.GlowEntityTest<GlowEnderDragonPart> {
+public class GlowEnderDragonPartTest extends GlowEntityTest<GlowEnderDragonPart> {
     public GlowEnderDragonPartTest() {
         super(location -> new GlowEnderDragonPart(new GlowEnderDragon(location)));
     }

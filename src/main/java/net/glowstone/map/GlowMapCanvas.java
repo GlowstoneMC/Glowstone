@@ -14,7 +14,7 @@ import org.bukkit.map.MapView;
 
 /**
  * Represents a canvas for drawing to a map. Each canvas is associated with a specific
- * {@link org.bukkit.map.MapRenderer} and represents that renderer's layer on the map.
+ * {@link MapRenderer} and represents that renderer's layer on the map.
  */
 public final class GlowMapCanvas implements MapCanvas {
 

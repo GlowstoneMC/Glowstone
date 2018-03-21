@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.Test;
 
-public class GlowBlazeTest extends net.glowstone.entity.monster.GlowMonsterTest<GlowBlaze> {
+public class GlowBlazeTest extends GlowMonsterTest<GlowBlaze> {
 
     public GlowBlazeTest() {
         super(GlowBlaze::new);
