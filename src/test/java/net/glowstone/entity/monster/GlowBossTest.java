@@ -40,6 +40,11 @@ public abstract class GlowBossTest<T extends GlowBoss> extends GlowMonsterTest<T
     }
 
     @Override
+    public boolean createEntityInSuperSetUp() {
+        return false; // must stub out server.createBossBar first
+    }
+
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -51,7 +56,7 @@ public abstract class GlowBossTest<T extends GlowBoss> extends GlowMonsterTest<T
         doNothing().when(entityManager, "unregister", any(GlowEntity.class));
         when(server.createBossBar(anyString(), any(BarColor.class), any(BarStyle.class),
                 any(BarFlag[].class))).thenCallRealMethod();
-        entity = entityCreator.apply(location); // must redo because of createBossBar stubbing
+        entity = entityCreator.apply(location);
     }
 
     @Test

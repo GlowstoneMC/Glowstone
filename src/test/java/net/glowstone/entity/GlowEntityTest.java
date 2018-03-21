@@ -82,6 +82,17 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         this.entityCreator = entityCreator;
     }
 
+    /**
+     * Override this to return false in subclasses that call super.{@link #setUp()}, if the entity
+     * under test should not be created in the super method.
+     *
+     * @return true if GlowEntity's implementation of {@link #setUp()} is to invoke {@link
+     * #entityCreator}; false otherwise.
+     */
+    public boolean createEntityInSuperSetUp() {
+        return true;
+    }
+
     @Before
     public void setUp() throws Exception {
         server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
@@ -119,8 +130,9 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         // ensureServerConversions returns its argument
         when(itemFactory.ensureServerConversions(any(ItemStack.class)))
                 .thenAnswer(invocation -> invocation.getArguments()[0]);
-
-        entity = entityCreator.apply(location);
+        if (createEntityInSuperSetUp()) {
+            entity = entityCreator.apply(location);
+        }
     }
 
     @After

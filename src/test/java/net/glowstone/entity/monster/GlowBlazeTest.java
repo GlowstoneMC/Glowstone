@@ -11,13 +11,13 @@ public class GlowBlazeTest extends net.glowstone.entity.monster.GlowMonsterTest<
     }
 
     @Test
-    void setOnFire() {
+    public void setOnFire() {
         entity.setOnFire(true);
         assertTrue(entity.isOnFire());
     }
 
     @Test
-    void setNotOnFire() {
+    public void setNotOnFire() {
         entity.setOnFire(false);
         assertFalse(entity.isOnFire());
     }

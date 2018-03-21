@@ -74,6 +74,11 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         super(ignoredLocation -> new GlowPlayer(session, profile, reader));
     }
 
+    @Override
+    public boolean createEntityInSuperSetUp() {
+        return false;
+    }
+
     @Before
     @Override
     public void setUp() throws Exception {
@@ -95,6 +100,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         when(block.getType()).thenReturn(Material.AIR);
         when(block.getRelative(any(BlockFace.class))).thenReturn(block);
         fishingRodItem = new ItemStack(Material.FISHING_ROD);
+        entity = entityCreator.apply(location);
         entity.setItemInHand(fishingRodItem);
         when(session.getPlayer()).thenReturn(entity);
     }
