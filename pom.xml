@@ -309,6 +309,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <failIfNoTests>true</failIfNoTests>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.projectlombok</groupId>
