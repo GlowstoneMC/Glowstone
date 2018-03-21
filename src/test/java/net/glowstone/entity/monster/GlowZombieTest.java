@@ -9,6 +9,6 @@ public class GlowZombieTest extends GlowMonsterTest<GlowZombie> {
         super(entityCreator);
     }
     public GlowZombieTest() {
-        super(GlowZombie::new);
+        this(GlowZombie::new);
     }
 }

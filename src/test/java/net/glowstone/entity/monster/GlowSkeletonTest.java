@@ -11,6 +11,6 @@ public class GlowSkeletonTest extends GlowMonsterTest<GlowSkeleton> {
     }
 
     public GlowSkeletonTest() {
-        super(GlowSkeleton::new);
+        this(GlowSkeleton::new);
     }
 }

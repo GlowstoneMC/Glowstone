@@ -11,6 +11,6 @@ public class GlowSlimeTest extends GlowMonsterTest<GlowSlime> {
     }
 
     public GlowSlimeTest() {
-        super(GlowSlime::new);
+        this(GlowSlime::new);
     }
 }
