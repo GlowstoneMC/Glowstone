@@ -1,6 +1,6 @@
 package net.glowstone.entity.monster;
 
-public class GlowHuskTest extends GlowMonsterTest<GlowHusk> {
+public class GlowHuskTest extends GlowZombieTest {
     public GlowHuskTest() {
         super(GlowHusk::new);
     }
