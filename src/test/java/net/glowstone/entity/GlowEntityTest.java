@@ -83,7 +83,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
@@ -94,7 +94,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         MockitoAnnotations.initMocks(this);
         location = new Location(world, 0, 0, 0);
         when(world.getServer()).thenReturn(server);
-        entityManager = new EntityManager();
+        entityManager = Mockito.spy(new EntityManager());
         when(world.getEntityManager()).thenReturn(entityManager);
         when(world.getBlockAt(any(Location.class))).thenReturn(block);
         when(block.getType()).thenReturn(Material.DIRT);

@@ -229,4 +229,9 @@ public class GlowBossBar implements BossBar {
         return obj.getClass() == GlowBossBar.class && ((GlowBossBar) obj).getUniqueId() == this
                 .getUniqueId();
     }
+
+    @Override
+    public String toString() {
+        return String.format("[GlowBossBar %s named %s]", getUniqueId(), getTitle());
+    }
 }

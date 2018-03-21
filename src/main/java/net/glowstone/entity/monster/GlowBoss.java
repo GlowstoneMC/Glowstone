@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
  * A monster with a boss bar.
  */
 public class GlowBoss extends GlowMonster {
-    protected BossBar bar;
+    protected final BossBar bar;
 
     @Override
     public boolean teleport(Location location) {
@@ -23,13 +23,9 @@ public class GlowBoss extends GlowMonster {
         worldLock.readLock().lock();
         try {
             if (world != oldWorld) {
-                for (Player player : bar.getPlayers()) {
-                    if (player instanceof GlowPlayer) {
-                        ((GlowPlayer) player).removeBossBar(bar);
-                    }
-                }
+                bar.removeAll();
                 for (GlowPlayer player : world.getRawPlayers()) {
-                    player.addBossBar(bar);
+                    bar.addPlayer(player);
                 }
             }
         } finally {

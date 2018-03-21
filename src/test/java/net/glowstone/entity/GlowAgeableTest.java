@@ -27,7 +27,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
 
     @Before
     @Override
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         super.setUp();
     }
 

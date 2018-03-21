@@ -41,7 +41,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
     @Before
     @Override
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         super.setUp();
         when(world.getBlockAt(any(Location.class))).thenReturn(block);
         when(world.getBlockAt(anyInt(), anyInt(), anyInt())).thenReturn(block);

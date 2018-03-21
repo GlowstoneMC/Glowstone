@@ -76,7 +76,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Before
     @Override
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         super.setUp();
         opsListFile = File.createTempFile("test-ops-list", "");
         opsList = new UuidListFile(opsListFile);
