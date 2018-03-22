@@ -33,6 +33,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -58,7 +59,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
 
     // PowerMock mocks
     protected GlowWorld world;
-    protected GlowServer server;
+    protected static GlowServer server;
     protected GlowScoreboardManager scoreboardManager;
 
     // Mockito mocks
@@ -93,14 +94,16 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         return true;
     }
 
+    @BeforeClass
+    public static void staticSetUp() throws Exception {
+        server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
+        Bukkit.setServer(server);
+    }
+
     @Before
     public void setUp() throws Exception {
-        server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
-        if (Bukkit.getServer() == null) {
-            Bukkit.setServer(server);
-        }
         world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
         MockitoAnnotations.initMocks(this);
         location = new Location(world, 0, 0, 0);
@@ -139,7 +142,6 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     public void tearDown() {
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
         world = null;
-        server = null;
         scoreboardManager = null;
         itemFactory = null;
         chunk = null;
