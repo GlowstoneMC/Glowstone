@@ -240,7 +240,6 @@ public class GlowWorld implements World {
      * The functions for this world.
      */
     private final Map<String, CommandFunction> functions;
-    private final EventFactory eventFactory;
     /**
      * A lock kept on the spawn chunkManager.
      */
@@ -443,7 +442,6 @@ public class GlowWorld implements World {
 
         // pulse AI tasks
         //aiTaskService = Executors.newScheduledThreadPool(1);
-        eventFactory = EventFactory.getInstance();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -851,7 +849,7 @@ public class GlowWorld implements World {
         if (anchor) {
             setKeepSpawnInMemory(keepSpawnLoaded);
         }
-        eventFactory.callEvent(new SpawnChangeEvent(this, oldSpawn));
+        EventFactory.getInstance().callEvent(new SpawnChangeEvent(this, oldSpawn));
         return true;
     }
 
@@ -1031,7 +1029,7 @@ public class GlowWorld implements World {
      * @param async if true, save asynchronously
      */
     public void save(boolean async) {
-        eventFactory.callEvent(new WorldSaveEvent(this));
+        EventFactory.getInstance().callEvent(new WorldSaveEvent(this));
 
         // save metadata
         writeWorldData(async);
@@ -1075,7 +1073,7 @@ public class GlowWorld implements World {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent
                     = new StructureGrowEvent(loc, type, false, null, blockStates);
-            eventFactory.callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
                     state.update(true);
@@ -1422,10 +1420,10 @@ public class GlowWorld implements World {
             // function.accept(entity); TODO: work on type mismatches
             EntitySpawnEvent spawnEvent = null;
             if (entity instanceof LivingEntity) {
-                spawnEvent = eventFactory
+                spawnEvent = EventFactory.getInstance()
                         .callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
             } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
-                spawnEvent = eventFactory.callEvent(new EntitySpawnEvent(entity));
+                spawnEvent = EventFactory.getInstance().callEvent(new EntitySpawnEvent(entity));
             }
             if (spawnEvent != null && spawnEvent.isCancelled()) {
                 // TODO: separate spawning and construction for better event cancellation
@@ -1487,7 +1485,7 @@ public class GlowWorld implements World {
     @Override
     public GlowItem dropItem(Location location, ItemStack item) {
         GlowItem entity = new GlowItem(location, item);
-        ItemSpawnEvent event = eventFactory.callEvent(new ItemSpawnEvent(entity));
+        ItemSpawnEvent event = EventFactory.getInstance().callEvent(new ItemSpawnEvent(entity));
         if (event.isCancelled()) {
             entity.remove();
         }
@@ -1561,7 +1559,7 @@ public class GlowWorld implements World {
             boolean isSilent) {
         GlowLightningStrike strike = new GlowLightningStrike(loc, effect, isSilent);
         LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
-        if (eventFactory.callEvent(event).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
             return null;
         }
         return strike;
@@ -1599,7 +1597,7 @@ public class GlowWorld implements World {
     public void setStorm(boolean hasStorm) {
         // call event
         WeatherChangeEvent event = new WeatherChangeEvent(this, hasStorm);
-        if (eventFactory.callEvent(event).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
             return;
         }
 
@@ -1626,7 +1624,7 @@ public class GlowWorld implements World {
     public void setThundering(boolean thundering) {
         // call event
         ThunderChangeEvent event = new ThunderChangeEvent(this, thundering);
-        if (eventFactory.callEvent(event).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
             return;
         }
 
@@ -1885,7 +1883,7 @@ public class GlowWorld implements World {
     public boolean unload() {
         // terminate task service
         //aiTaskService.shutdown();
-        if (eventFactory.callEvent(new WorldUnloadEvent(this)).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(new WorldUnloadEvent(this)).isCancelled()) {
             return false;
         }
         try {
