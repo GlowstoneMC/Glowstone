@@ -243,8 +243,8 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         super.pulse();
 
         if (ticksLived % (20 * 5) == 0 && isObstructed()) {
-            if (EventFactory.getInstance().callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
-                .isCancelled()) {
+            if (EventFactory.getInstance()
+                    .callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
                 return;
             }
 

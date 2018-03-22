@@ -87,8 +87,8 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         }
         if (message.getAction() == Action.ATTACK.ordinal()) {
             if (isEmpty()) {
-                if (EventFactory.getInstance().callEvent(new HangingBreakByEntityEvent(this, player))
-                    .isCancelled()) {
+                if (EventFactory.getInstance()
+                        .callEvent(new HangingBreakByEntityEvent(this, player)).isCancelled()) {
                     return false;
                 }
                 if (player.getGameMode() != GameMode.CREATIVE) {
@@ -116,8 +116,9 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         if (ticksLived % (20 * 5) == 0) {
 
             if (location.getBlock().getRelative(getAttachedFace()).getType() == Material.AIR) {
-                if (EventFactory.getInstance().callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
-                    .isCancelled()) {
+                if (EventFactory.getInstance()
+                        .callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
+                        .isCancelled()) {
                     return;
                 }
                 world.dropItemNaturally(location, new ItemStack(Material.ITEM_FRAME));

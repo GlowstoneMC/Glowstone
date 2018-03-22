@@ -98,7 +98,8 @@ public class GlowBoat extends GlowEntity implements Boat {
 
         boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
         if (getDamage() > 40.0 || isCreative) {
-            if (EventFactory.getInstance().callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
+            if (EventFactory.getInstance()
+                    .callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
                 return;
             }
             remove();

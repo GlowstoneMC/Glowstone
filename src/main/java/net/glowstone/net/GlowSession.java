@@ -265,7 +265,8 @@ public class GlowSession extends BasicSession {
         }
 
         // login event
-        PlayerLoginEvent event = EventFactory.getInstance().onPlayerLogin(player, virtualHost.toString());
+        PlayerLoginEvent event = EventFactory.getInstance()
+                .onPlayerLogin(player, virtualHost.toString());
         if (event.getResult() != Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;

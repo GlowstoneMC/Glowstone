@@ -98,7 +98,8 @@ public class GlowTntPrimed extends GlowExplosive implements TNTPrimed {
     }
 
     private void explode() {
-        ExplosionPrimeEvent event = EventFactory.getInstance().callEvent(new ExplosionPrimeEvent(this));
+        ExplosionPrimeEvent event = EventFactory.getInstance()
+                .callEvent(new ExplosionPrimeEvent(this));
 
         if (!event.isCancelled()) {
             Location location = getLocation();

@@ -1195,7 +1195,8 @@ public abstract class GlowEntity implements Entity {
             return false; // nothing changed
         }
 
-        if (EventFactory.getInstance().callEvent(new EntityDismountEvent(passenger, this)).isCancelled()) {
+        if (EventFactory.getInstance()
+                .callEvent(new EntityDismountEvent(passenger, this)).isCancelled()) {
             return false;
         }
 
