@@ -117,9 +117,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         }
         EntityDamageEvent event;
         if (source == null) {
-            event = EventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
+            event = eventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
         } else {
-            event = EventFactory
+            event = eventFactory
                 .onEntityDamage(new EntityDamageByEntityEvent(source, this, cause, amount));
         }
         if (event.isCancelled()) {
@@ -196,7 +196,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                 PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player,
                     this, InventoryUtil.itemOrEmpty(null),
                     InventoryUtil.itemOrEmpty(equipment.getItem(slot)), slot);
-                EventFactory.callEvent(event);
+                eventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
                     return false;
@@ -219,7 +219,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                 PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player,
                     this, player.getItemInHand(),
                     InventoryUtil.itemOrEmpty(equipment.getItem(slot)), slot);
-                EventFactory.callEvent(event);
+                eventFactory.callEvent(event);
 
                 if (event.isCancelled()) {
                     return false;

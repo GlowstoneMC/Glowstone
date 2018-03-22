@@ -66,7 +66,7 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
         // call move event if movement actually occurred and there are handlers registered
         if (!oldLocation.equals(newLocation)
             && VehicleMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            EventFactory.callEvent(
+            session.getServer().getEventFactory().callEvent(
                 new VehicleMoveEvent((Vehicle) vehicle, oldLocation, newLocation.clone()));
         }
 

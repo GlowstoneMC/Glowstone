@@ -57,21 +57,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  * @param <T> the class under test
  */
-@PrepareForTest({GlowWorld.class, GlowServer.class, EventFactory.class, GlowScoreboardManager.class})
 @RunWith(PowerMockRunner.class)
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
 
-    // PowerMock mocks
-    protected static GlowWorld world;
-    protected static GlowServer server;
-    protected static GlowScoreboardManager scoreboardManager;
-
     // Mockito mocks
     protected static ItemFactory itemFactory;
     protected static GlowChunk chunk;
     protected static GlowBlock block;
+    protected static GlowWorld world;
+    protected static GlowServer server;
+    protected static GlowScoreboardManager scoreboardManager;
+    @Mock protected EventFactory eventFactory;
 
     // Real objects
     protected static Location location;
@@ -100,9 +98,9 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
 
     @BeforeClass
     public static void staticSetUp() throws Exception {
-        server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
+        server = Mockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
         Bukkit.setServer(server);
-        world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
+        world = Mockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
         when(world.getServer()).thenReturn(server);
         when(world.getDifficulty()).thenReturn(Difficulty.NORMAL);
         when(server.getWorlds()).thenReturn(Collections.singletonList(world));
@@ -121,7 +119,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(world.getEntityManager()).thenReturn(entityManager);
         idManager = new EntityIdManager();
         when(server.getEntityIdManager()).thenReturn(idManager);
-        scoreboardManager = PowerMockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
+        scoreboardManager = Mockito.mock(GlowScoreboardManager.class, RETURNS_SMART_NULLS);
         when(server.getScoreboardManager()).thenReturn(scoreboardManager);
         scoreboard = new GlowScoreboard();
         when(scoreboardManager.getMainScoreboard()).thenReturn(scoreboard);
@@ -134,12 +132,12 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
         MockitoAnnotations.initMocks(this);
+        when(server.getEventFactory()).thenReturn(eventFactory);
         if (createEntityInSuperSetUp()) {
             entity = entityCreator.apply(location);
         }
-        mockStatic(EventFactory.class);
-        when(EventFactory.callEvent(any(Event.class))).thenAnswer(RETURN_FIRST_ARG);
-        when(EventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
+        when(eventFactory.callEvent(any(Event.class))).thenAnswer(RETURN_FIRST_ARG);
+        when(eventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
                 RETURN_FIRST_ARG);
     }
 

@@ -29,6 +29,7 @@ public class EnchantmentManager {
 
     private final Random random = new Random();
     private final GlowPlayer player;
+    private final EventFactory eventFactory;
     private final GlowEnchantingInventory inventory;
     private final int[] enchLevelCosts = new int[3];
     private final int[] enchId = new int[3];
@@ -43,6 +44,7 @@ public class EnchantmentManager {
      */
     public EnchantmentManager(GlowEnchantingInventory inventory, GlowPlayer player) {
         this.player = player;
+        eventFactory = player.getServer().getEventFactory();
         this.inventory = inventory;
         xpSeed = player.getXpSeed();
     }
@@ -233,7 +235,7 @@ public class EnchantmentManager {
             enchants = new ArrayList<>();
         }
 
-        EnchantItemEvent event = EventFactory.callEvent(
+        EnchantItemEvent event = eventFactory.callEvent(
             new EnchantItemEvent(player, player.getOpenInventory(),
                 inventory.getLocation().getBlock(), item.clone(), enchLevelCosts[clicked],
                 toMap(enchants), clicked));
@@ -321,7 +323,7 @@ public class EnchantmentManager {
             player.getOpenInventory(), inventory.getLocation().getBlock(), item, offers,
             realBookshelfs);
         event.setCancelled(!canEnchant(item));
-        EventFactory.callEvent(event);
+        eventFactory.callEvent(event);
         if (event.isCancelled()) {
             for (int i = 0; i < enchLevelCosts.length; i++) {
                 enchLevelCosts[i] = 0;

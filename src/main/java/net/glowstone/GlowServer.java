@@ -202,7 +202,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
  *
  * @author Graham Edgecombe
  */
-public final class GlowServer implements Server {
+public class GlowServer implements Server {
 
     /**
      * The logger for this class.
@@ -412,6 +412,11 @@ public final class GlowServer implements Server {
      * Whether the macOS/BSD kqueue native transport is available for Netty.
      */
     public static final boolean KQUEUE = KQueue.isAvailable();
+    /**
+     * The event factory.
+     */
+    @Getter
+    private final EventFactory eventFactory = new EventFactory();
 
     /**
      * Creates a new server.

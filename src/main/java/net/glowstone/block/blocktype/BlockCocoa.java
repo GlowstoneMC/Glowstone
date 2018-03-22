@@ -5,9 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.block.BlockFace;
@@ -112,7 +114,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
             GlowBlockState state = block.getState();
             state.setData(cocoa);
             BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-            EventFactory.callEvent(growEvent);
+            block.getEventFactory().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 state.update(true);
             }
@@ -138,7 +140,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
                 GlowBlockState state = block.getState();
                 state.setData(cocoa);
                 BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-                EventFactory.callEvent(growEvent);
+                block.getEventFactory().callEvent(growEvent);
                 if (!growEvent.isCancelled()) {
                     state.update(true);
                 }

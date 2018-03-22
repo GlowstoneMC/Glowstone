@@ -20,7 +20,8 @@ public class ItemItemFrame extends ItemType {
         GlowItemFrame entity = new GlowItemFrame(player, target.getRelative(face).getLocation(),
             face);
 
-        if (EventFactory.callEvent(new HangingPlaceEvent(entity, player, target, face))
+        if (player.getServer().getEventFactory()
+                .callEvent(new HangingPlaceEvent(entity, player, target, face))
             .isCancelled()) {
             return;
         }

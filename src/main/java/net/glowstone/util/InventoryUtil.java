@@ -98,7 +98,8 @@ public class InventoryUtil {
         holding.setDurability((short) (holding.getDurability() + 1));
         if (holding.getDurability() == holding.getType().getMaxDurability() + 1) {
             if (player != null) {
-                EventFactory.callEvent(new PlayerItemBreakEvent(player, holding));
+                player.getServer().getEventFactory()
+                        .callEvent(new PlayerItemBreakEvent(player, holding));
             }
             return createEmptyStack();
         }

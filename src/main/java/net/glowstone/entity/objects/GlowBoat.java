@@ -88,7 +88,7 @@ public class GlowBoat extends GlowEntity implements Boat {
     private void damage(GlowPlayer player) {
         //TODO: Do proper damage calculations, based upon the tool used
         VehicleDamageEvent damageEvent = new VehicleDamageEvent(this, player, 10);
-        if (EventFactory.callEvent(damageEvent).isCancelled()) {
+        if (eventFactory.callEvent(damageEvent).isCancelled()) {
             return;
         }
 
@@ -98,7 +98,7 @@ public class GlowBoat extends GlowEntity implements Boat {
 
         boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
         if (getDamage() > 40.0 || isCreative) {
-            if (EventFactory.callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
+            if (eventFactory.callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
                 return;
             }
             remove();

@@ -19,11 +19,11 @@ public final class PlayerSwingArmHandler implements
     @Override
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
         GlowPlayer player = session.getPlayer();
-
+        EventFactory eventFactory = player.getServer().getEventFactory();
         Block block = player.getTargetBlock((Set<Material>) null, 6);
 
         if (block == null || block.isEmpty()) {
-            if (EventFactory.onPlayerInteract(
+            if (eventFactory.onPlayerInteract(
                     player, Action.LEFT_CLICK_AIR, message.getHandSlot()).useItemInHand()
                     == Result.DENY) {
                 return;
@@ -31,7 +31,7 @@ public final class PlayerSwingArmHandler implements
             // todo: item interactions with air
         }
 
-        if (!EventFactory.callEvent(new PlayerAnimationEvent(player)).isCancelled()) {
+        if (!eventFactory.callEvent(new PlayerAnimationEvent(player)).isCancelled()) {
             // play the animation to others
             player.playAnimation(message.getHand() == 1 ? EntityAnimation.SWING_OFF_HAND
                     : EntityAnimation.SWING_MAIN_HAND);

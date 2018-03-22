@@ -813,7 +813,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 }
                 PlayerDeathEvent event = new PlayerDeathEvent(player, items, 0,
                     player.getDisplayName() + " died.");
-                EventFactory.callEvent(event);
+                eventFactory.callEvent(event);
                 server.broadcastMessage(event.getDeathMessage());
                 for (ItemStack item : items) {
                     world.dropItemNaturally(getLocation(), item);
@@ -847,7 +847,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                         }
                     }
                 }
-                deathEvent = EventFactory.callEvent(deathEvent);
+                deathEvent = eventFactory.callEvent(deathEvent);
                 for (ItemStack item : deathEvent.getDrops()) {
                     world.dropItemNaturally(getLocation(), item);
                 }
@@ -891,9 +891,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         // fire event
         EntityDamageEvent event;
         if (source == null) {
-            event = EventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
+            event = eventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
         } else {
-            event = EventFactory
+            event = eventFactory
                 .onEntityDamage(new EntityDamageByEntityEvent(source, this, cause, amount));
         }
         if (event.isCancelled()) {
@@ -1118,7 +1118,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void setGliding(boolean gliding) {
-        if (EventFactory.callEvent(new EntityToggleGlideEvent(this, gliding)).isCancelled()) {
+        if (eventFactory.callEvent(new EntityToggleGlideEvent(this, gliding)).isCancelled()) {
             return;
         }
 
@@ -1179,7 +1179,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
         if (isLeashed() && player.equals(this.getLeashHolder())
             && message.getHandSlot() == EquipmentSlot.HAND) {
-            if (EventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
+            if (eventFactory.callEvent(new PlayerUnleashEntityEvent(this, player)).isCancelled()) {
                 return false;
             }
 
@@ -1190,7 +1190,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             return true;
         } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEASH) {
             if (!GlowLeashHitch.isAllowedLeashHolder(this.getType()) || this.isLeashed()
-                || EventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player))
+                || eventFactory.callEvent(new PlayerLeashEntityEvent(this, player, player))
                 .isCancelled()) {
                 return false;
             }

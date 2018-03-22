@@ -14,6 +14,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 import net.glowstone.util.RayUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -73,6 +74,7 @@ public final class Explosion {
     private final boolean incendiary;
     private final boolean breakBlocks;
     private final GlowWorld world;
+    private final EventFactory eventFactory;
     private float power;
     private float yield = 0.3f;
 
@@ -114,6 +116,7 @@ public final class Explosion {
         this.incendiary = incendiary;
         this.breakBlocks = breakBlocks;
         world = (GlowWorld) location.getWorld();
+        eventFactory = world.getServer().getEventFactory();
     }
 
     /**
@@ -128,7 +131,7 @@ public final class Explosion {
         Set<BlockVector> droppedBlocks = calculateBlocks();
 
         List<Block> blocks = toBlockList(droppedBlocks);
-        EntityExplodeEvent event = EventFactory.callEvent(
+        EntityExplodeEvent event = eventFactory.callEvent(
                 new EntityExplodeEvent(source, location, blocks, yield));
         if (event.isCancelled()) {
             return false;
@@ -239,7 +242,7 @@ public final class Explosion {
         if (belowType == Material.AIR || belowType == Material.FIRE || !belowType.isFlammable()) {
             return;
         }
-        BlockIgniteEvent event = EventFactory.callEvent(
+        BlockIgniteEvent event = eventFactory.callEvent(
                 new BlockIgniteEvent(block, IgniteCause.EXPLOSION, source));
         if (event.isCancelled()) {
             return;

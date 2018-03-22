@@ -65,13 +65,12 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         fishingRewardManager = new FishingRewardManager();
         when(server.getFishingRewardManager()).thenReturn(fishingRewardManager);
         when(player.getLocation()).thenReturn(location);
-        mockStatic(EventFactory.class);
-        when(EventFactory.callEvent(any(Event.class))).thenAnswer(invocation -> {
+        when(eventFactory.callEvent(any(Event.class))).thenAnswer(invocation -> {
             Event e = invocation.getArgument(0);
             eventsFired.put(e.getClass(), e);
             return e;
         });
-        when(EventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
+        when(eventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
                 RETURN_FIRST_ARG);
     }
 

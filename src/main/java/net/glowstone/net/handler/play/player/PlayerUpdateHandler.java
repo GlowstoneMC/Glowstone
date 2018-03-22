@@ -64,7 +64,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         // call move event if movement actually occurred and there are handlers registered
         if (!oldLocation.equals(newLocation)
             && PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            PlayerMoveEvent event = EventFactory
+            PlayerMoveEvent event = player.getServer().getEventFactory()
                 .callEvent(new PlayerMoveEvent(player, oldLocation, newLocation));
             if (event.isCancelled()) {
                 // tell client they're back where they started

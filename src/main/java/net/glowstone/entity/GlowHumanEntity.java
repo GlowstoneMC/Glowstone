@@ -394,7 +394,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void closeInventory() {
-        EventFactory.callEvent(new InventoryCloseEvent(openInventory));
+        eventFactory.callEvent(new InventoryCloseEvent(openInventory));
         if (getGameMode() != GameMode.CREATIVE) {
             if (!InventoryUtil.isEmpty(getItemOnCursor())) {
                 drop(getItemOnCursor());

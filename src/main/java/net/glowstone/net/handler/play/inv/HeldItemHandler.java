@@ -25,7 +25,7 @@ public final class HeldItemHandler implements MessageHandler<GlowSession, HeldIt
         }
 
         PlayerItemHeldEvent event = new PlayerItemHeldEvent(player, oldSlot, slot);
-        EventFactory.callEvent(event);
+        player.getServer().getEventFactory().callEvent(event);
 
         if (!event.isCancelled()) {
             player.getInventory().setRawHeldItemSlot(slot);

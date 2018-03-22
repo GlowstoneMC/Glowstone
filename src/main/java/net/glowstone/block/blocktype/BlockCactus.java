@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -65,7 +67,7 @@ public class BlockCactus extends BlockType {
                     state.setType(Material.CACTUS);
                     state.setRawData((byte) 0);
                     BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
-                    EventFactory.callEvent(growEvent);
+                    block.getEventFactory().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         state.update(true);
                     }

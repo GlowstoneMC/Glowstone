@@ -44,7 +44,7 @@ public class ItemFilledBucket extends ItemType {
 
         GlowBlockState newState = target.getState();
 
-        PlayerBucketEmptyEvent event = EventFactory.callEvent(
+        PlayerBucketEmptyEvent event = player.getServer().getEventFactory().callEvent(
             new PlayerBucketEmptyEvent(player, target, face, holding.getType(), holding));
         if (event.isCancelled()) {
             return;

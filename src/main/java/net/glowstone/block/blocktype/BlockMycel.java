@@ -31,7 +31,7 @@ public class BlockMycel extends BlockType {
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
+            block.getEventFactory().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }
@@ -57,7 +57,7 @@ public class BlockMycel extends BlockType {
                     state.setType(Material.MYCEL);
                     state.setRawData((byte) 0);
                     BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
-                    EventFactory.callEvent(spreadEvent);
+                    block.getEventFactory().callEvent(spreadEvent);
                     if (!spreadEvent.isCancelled()) {
                         state.update(true);
                     }

@@ -152,7 +152,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     private void setBlockOnFire(GlowBlock block) {
         if (block.isEmpty() && block.getRelative(BlockFace.DOWN).isFlammable()) {
             BlockIgniteEvent igniteEvent = new BlockIgniteEvent(block, IgniteCause.LIGHTNING, this);
-            EventFactory.callEvent(igniteEvent);
+            eventFactory.callEvent(igniteEvent);
             if (!igniteEvent.isCancelled()) {
                 BlockState state = block.getState();
                 state.setType(Material.FIRE);
