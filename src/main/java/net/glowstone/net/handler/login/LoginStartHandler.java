@@ -50,7 +50,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
                 }
             }
 
-            AsyncPlayerPreLoginEvent event = server.getEventFactory()
+            AsyncPlayerPreLoginEvent event = EventFactory.getInstance()
                 .onPlayerPreLogin(profile.getName(), session.getAddress(), profile.getUniqueId());
             if (event.getLoginResult() != Result.ALLOWED) {
                 session.disconnect(event.getKickMessage(), true);

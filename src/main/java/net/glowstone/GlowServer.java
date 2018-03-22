@@ -412,11 +412,6 @@ public class GlowServer implements Server {
      * Whether the macOS/BSD kqueue native transport is available for Netty.
      */
     public static final boolean KQUEUE = KQueue.isAvailable();
-    /**
-     * The event factory.
-     */
-    @Getter
-    private final EventFactory eventFactory = new EventFactory();
 
     /**
      * Creates a new server.

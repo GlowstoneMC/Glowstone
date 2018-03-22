@@ -44,7 +44,7 @@ public class EnchantmentManager {
      */
     public EnchantmentManager(GlowEnchantingInventory inventory, GlowPlayer player) {
         this.player = player;
-        eventFactory = player.getServer().getEventFactory();
+        eventFactory = EventFactory.getInstance();
         this.inventory = inventory;
         xpSeed = player.getXpSeed();
     }

@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;

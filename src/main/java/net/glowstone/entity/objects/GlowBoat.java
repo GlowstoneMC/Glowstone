@@ -4,7 +4,6 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
-import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;

@@ -182,7 +182,7 @@ public class BlockVine extends BlockClimbable {
         state.setData(vine);
         if (fromBlock != null) {
             BlockSpreadEvent spreadEvent = new BlockSpreadEvent(block, fromBlock, state);
-            block.getEventFactory().callEvent(spreadEvent);
+            EventFactory.getInstance().callEvent(spreadEvent);
             if (!spreadEvent.isCancelled()) {
                 state.update(true);
             }

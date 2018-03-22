@@ -31,7 +31,7 @@ public final class InteractEntityHandler implements
     @Override
     public void handle(GlowSession session, InteractEntityMessage message) {
         GlowPlayer player = session.getPlayer();
-        EventFactory eventFactory = player.getServer().getEventFactory();
+        EventFactory eventFactory = EventFactory.getInstance();
 
         // You can't do anything when you're dead
         if (player.isDead()) {

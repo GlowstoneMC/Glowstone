@@ -6,18 +6,10 @@ import static org.mockito.Answers.RETURNS_SMART_NULLS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import com.flowpowered.network.Message;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.MutableClassToInstanceMap;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import net.glowstone.EventFactory;
@@ -46,8 +38,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
@@ -132,7 +122,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
         MockitoAnnotations.initMocks(this);
-        when(server.getEventFactory()).thenReturn(eventFactory);
+        EventFactory.setInstance(eventFactory);
         if (createEntityInSuperSetUp()) {
             entity = entityCreator.apply(location);
         }

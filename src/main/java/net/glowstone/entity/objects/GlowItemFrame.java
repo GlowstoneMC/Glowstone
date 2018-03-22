@@ -3,7 +3,6 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
-import net.glowstone.EventFactory;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowHangingEntity;

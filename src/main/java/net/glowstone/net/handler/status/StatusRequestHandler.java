@@ -35,7 +35,7 @@ public final class StatusRequestHandler implements
         event.icon = server.getServerIcon();
         event.serverType = server.getServerType();
         event.clientModsAllowed = server.getAllowClientMods();
-        server.getEventFactory().callEvent(event);
+        EventFactory.getInstance().callEvent(event);
 
         // build the json
         JSONObject json = new JSONObject();

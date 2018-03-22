@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;

@@ -34,7 +34,7 @@ public class BlockSnowBlock extends BlockType {
             state.setType(Material.AIR);
             state.setData(new MaterialData(Material.AIR));
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            block.getEventFactory().callEvent(fadeEvent);
+            EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }

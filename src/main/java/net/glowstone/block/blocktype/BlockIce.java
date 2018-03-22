@@ -31,7 +31,7 @@ public class BlockIce extends BlockType {
             state.setType(type);
             state.setData(new MaterialData(type));
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            block.getEventFactory().callEvent(fadeEvent);
+            EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }

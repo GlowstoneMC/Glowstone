@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
-import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.MaterialValueManager.ValueCollection;
@@ -654,15 +653,6 @@ public class GlowBlock implements Block {
             return subject.getWorld() + "," + subject.getX() + "," + subject.getY() + "," + subject
                     .getZ() + ":" + metadataKey;
         }
-    }
-
-    /**
-     * Returns the event factory that handles events related to this block.
-     *
-     * @return the event factory
-     */
-    public EventFactory getEventFactory() {
-        return world.getServer().getEventFactory();
     }
 }
 

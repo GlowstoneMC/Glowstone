@@ -29,7 +29,7 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
             lines[i] = message.getMessage()[i].asPlaintext();
         }
         SignChangeEvent event = new SignChangeEvent(location.getBlock(), player, lines);
-        session.getServer().getEventFactory().callEvent(event);
+        EventFactory.getInstance().callEvent(event);
         if (event.isCancelled()) {
             GlowServer.logger.warning("Sign was cancelled");
             return;

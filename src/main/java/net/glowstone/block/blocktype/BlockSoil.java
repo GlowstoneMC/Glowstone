@@ -39,7 +39,7 @@ public class BlockSoil extends BlockType {
             state.setType(Material.DIRT);
             state.setRawData((byte) 0);
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            block.getEventFactory().callEvent(fadeEvent);
+            EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }

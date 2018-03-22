@@ -92,7 +92,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
 
         try {
-            RemoteServerCommandEvent event = rconServer.getServer().getEventFactory()
+            RemoteServerCommandEvent event = EventFactory.getInstance()
                 .callEvent(new RemoteServerCommandEvent(commandSender, payload));
             if (event.isCancelled()) {
                 return;

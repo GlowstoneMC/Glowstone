@@ -169,7 +169,7 @@ public class GlowSession extends BasicSession {
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());
         this.server = server;
-        this.eventFactory = server.getEventFactory();
+        this.eventFactory = EventFactory.getInstance();
         this.connectionManager = connectionManager;
         address = super.getAddress();
     }

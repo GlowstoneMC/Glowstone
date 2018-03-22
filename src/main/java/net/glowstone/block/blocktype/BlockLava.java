@@ -38,7 +38,7 @@ public class BlockLava extends BlockLiquid {
                 if (aboveB.isEmpty() && b.isFlammable()) {
                     BlockIgniteEvent igniteEvent = new BlockIgniteEvent(aboveB, IgniteCause.LAVA,
                         block);
-                    block.getEventFactory().callEvent(igniteEvent);
+                    EventFactory.getInstance().callEvent(igniteEvent);
                     if (!igniteEvent.isCancelled()) {
                         GlowBlockState state = aboveB.getState();
                         state.setType(Material.FIRE);
@@ -55,7 +55,7 @@ public class BlockLava extends BlockLiquid {
                     if (hasNearFlammableBlock(b)) {
                         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(b, IgniteCause.LAVA,
                             block);
-                        block.getEventFactory().callEvent(igniteEvent);
+                        EventFactory.getInstance().callEvent(igniteEvent);
                         if (!igniteEvent.isCancelled()) {
                             GlowBlockState state = b.getState();
                             state.setType(Material.FIRE);

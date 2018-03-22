@@ -164,7 +164,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
         if ((message.getAction() == Action.INTERACT.ordinal())
                 && message.getHandSlot() == EquipmentSlot.HAND) {
-            EventFactory eventFactory = player.getServer().getEventFactory();
+            EventFactory eventFactory = EventFactory.getInstance();
             if (player.getLeashedEntities().isEmpty()) {
                 List<GlowEntity> entities = ImmutableList.copyOf(getLeashedEntities());
                 for (GlowEntity leashedEntity : entities) {

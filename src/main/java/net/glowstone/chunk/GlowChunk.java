@@ -225,7 +225,7 @@ public class GlowChunk implements Chunk {
             return false;
         }
 
-        if (world.getServer().getEventFactory()
+        if (EventFactory.getInstance()
                 .callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
             return false;
         }

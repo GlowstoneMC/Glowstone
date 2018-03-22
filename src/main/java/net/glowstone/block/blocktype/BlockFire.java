@@ -5,13 +5,11 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
@@ -169,7 +167,7 @@ public class BlockFire extends BlockNeedsAttached {
                                         .nextInt(y > 1 ? 100 + 100 * (y - 1) : 100) <= resistance) {
                                         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(
                                             propagationBlock, IgniteCause.SPREAD, block);
-                                        world.getServer().getEventFactory()
+                                        EventFactory.getInstance()
                                                 .callEvent(igniteEvent);
                                         if (!igniteEvent.isCancelled()) {
                                             if (propagationBlock.getType() == Material.TNT) {
@@ -236,7 +234,7 @@ public class BlockFire extends BlockNeedsAttached {
         if (ThreadLocalRandom.current().nextInt(burnResistance) < block.getMaterialValues()
             .getFireResistance()) {
             BlockBurnEvent burnEvent = new BlockBurnEvent(block, from);
-            block.getEventFactory().callEvent(burnEvent);
+            EventFactory.getInstance().callEvent(burnEvent);
             if (!burnEvent.isCancelled()) {
                 if (block.getType() == Material.TNT) {
                     BlockTnt.igniteBlock(block, false);

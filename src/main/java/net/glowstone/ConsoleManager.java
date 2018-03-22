@@ -350,7 +350,7 @@ public final class ConsoleManager {
 
         @Override
         public void run() {
-            ServerCommandEvent event = server.getEventFactory()
+            ServerCommandEvent event = EventFactory.getInstance()
                     .callEvent(new ServerCommandEvent(sender, command));
             if (!event.isCancelled()) {
                 server.dispatchCommand(sender, event.getCommand());

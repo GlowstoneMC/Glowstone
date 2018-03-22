@@ -38,7 +38,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
     public void handle(GlowSession session, DiggingMessage message) {
         GlowPlayer player = session.getPlayer();
         GlowWorld world = player.getWorld();
-        EventFactory eventFactory = world.getServer().getEventFactory();
+        EventFactory eventFactory = EventFactory.getInstance();
         GlowBlock block = world.getBlockAt(message.getX(), message.getY(), message.getZ());
         BlockFace face = BlockPlacementHandler.convertFace(message.getFace());
         ItemStack holding = player.getItemInHand();

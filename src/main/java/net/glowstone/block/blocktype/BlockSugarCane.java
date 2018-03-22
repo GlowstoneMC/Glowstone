@@ -72,7 +72,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
                     state.setType(Material.SUGAR_CANE_BLOCK);
                     state.setRawData((byte) 0);
                     BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
-                    block.getEventFactory().callEvent(growEvent);
+                    EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         state.update(true);
                     }

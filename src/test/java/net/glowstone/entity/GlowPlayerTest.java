@@ -9,7 +9,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;

@@ -116,7 +116,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
                 new StructureGrowEvent(loc, type, player != null, player, blockStates);
-            block.getEventFactory().callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 canGrow = true;
                 for (BlockState state : blockStates) {

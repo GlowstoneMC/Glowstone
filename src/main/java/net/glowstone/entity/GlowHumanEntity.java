@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.objects.GlowItem;

@@ -78,7 +78,7 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
     }
 
     static void handleRightClickAir(GlowPlayer player, ItemStack holding, EquipmentSlot slot) {
-        PlayerInteractEvent event = player.getServer().getEventFactory().onPlayerInteract(
+        PlayerInteractEvent event = EventFactory.getInstance().onPlayerInteract(
                 player, Action.RIGHT_CLICK_AIR, slot);
 
         if (event.useItemInHand() == null || event.useItemInHand() == Event.Result.DENY) {

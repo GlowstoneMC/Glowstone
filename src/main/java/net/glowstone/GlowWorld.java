@@ -432,18 +432,18 @@ public class GlowWorld implements World {
                 .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
-        server.getEventFactory().callEvent(new WorldInitEvent(this));
+        EventFactory.getInstance().callEvent(new WorldInitEvent(this));
 
         spawnChunkLock = keepSpawnLoaded ? newChunkLock("spawn") : null;
 
         setKeepSpawnInMemory(keepSpawnLoaded);
 
         server.getLogger().info("Preparing spawn for " + name + ": done");
-        server.getEventFactory().callEvent(new WorldLoadEvent(this));
+        EventFactory.getInstance().callEvent(new WorldLoadEvent(this));
 
         // pulse AI tasks
         //aiTaskService = Executors.newScheduledThreadPool(1);
-        eventFactory = server.getEventFactory();
+        eventFactory = EventFactory.getInstance();
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -193,7 +193,7 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
         if (getBlock().getType() != Material.NOTE_BLOCK) {
             return false;
         }
-        NotePlayEvent event = getBlock().getEventFactory()
+        NotePlayEvent event = EventFactory.getInstance()
             .callEvent(new NotePlayEvent(getBlock(), instrument, note));
         if (event.isCancelled()) {
             return false;

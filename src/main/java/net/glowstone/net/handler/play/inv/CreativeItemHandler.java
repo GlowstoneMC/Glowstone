@@ -40,7 +40,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
         ItemStack stack = ItemIds.sanitize(message.getItem());
 
         // clicking outside drops the item
-        EventFactory eventFactory = player.getServer().getEventFactory();
+        EventFactory eventFactory = EventFactory.getInstance();
         if (message.getSlot() < 0) {
             InventoryCreativeEvent event = eventFactory
                 .callEvent(new InventoryCreativeEvent(view, SlotType.OUTSIDE, -999, stack));

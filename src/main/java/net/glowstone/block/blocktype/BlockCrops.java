@@ -5,11 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -55,7 +53,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
         }
         state.setRawData((byte) cropState);
         BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-        block.getEventFactory().callEvent(growEvent);
+        EventFactory.getInstance().callEvent(growEvent);
         if (!growEvent.isCancelled()) {
             state.update(true);
         }
@@ -82,7 +80,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
             }
             state.setRawData((byte) cropState);
             BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-            block.getEventFactory().callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 state.update(true);
             }

@@ -163,7 +163,7 @@ public final class EncryptionKeyResponseHandler implements
                 properties.add(new ProfileProperty(propName, value, signature));
             }
 
-            AsyncPlayerPreLoginEvent event = session.getServer().getEventFactory()
+            AsyncPlayerPreLoginEvent event = EventFactory.getInstance()
                 .onPlayerPreLogin(name, session.getAddress(), uuid);
             if (event.getLoginResult() != Result.ALLOWED) {
                 session.disconnect(event.getKickMessage(), true);

@@ -152,7 +152,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
 
                     InventoryDragEvent event = new InventoryDragEvent(view, newCursor, cursor,
                             right, newSlots);
-                    player.getServer().getEventFactory().callEvent(event);
+                    EventFactory.getInstance().callEvent(event);
                     if (event.isCancelled()) {
                         return false;
                     }
@@ -268,7 +268,7 @@ public final class WindowClickHandler implements MessageHandler<GlowSession, Win
             }
         }
 
-        player.getServer().getEventFactory().callEvent(event);
+        EventFactory.getInstance().callEvent(event);
         if (event.isCancelled()) {
             int slot = event.getSlot();
             player.getSession().send(new SetWindowSlotMessage(player.getOpenWindowId(),

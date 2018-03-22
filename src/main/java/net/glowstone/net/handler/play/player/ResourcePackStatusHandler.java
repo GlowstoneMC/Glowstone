@@ -6,7 +6,6 @@ import net.glowstone.constants.ResourcePackStatus;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.ResourcePackStatusMessage;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 public final class ResourcePackStatusHandler implements
@@ -18,7 +17,7 @@ public final class ResourcePackStatusHandler implements
         PlayerResourcePackStatusEvent.Status status = ResourcePackStatus
             .getStatus(message.getResult());
         player.setResourcePackStatus(status);
-        player.getServer().getEventFactory().callEvent(
+        EventFactory.getInstance().callEvent(
             new PlayerResourcePackStatusEvent(player, status, player.getResourcePackHash()));
     }
 }

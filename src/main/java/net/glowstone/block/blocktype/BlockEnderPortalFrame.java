@@ -3,11 +3,9 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
@@ -109,7 +107,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
                 blocks.add(state);
             }
         }
-        if (!player.getServer().getEventFactory()
+        if (!EventFactory.getInstance()
                 .callEvent(new EntityCreatePortalEvent(player, blocks, PortalType.ENDER))
                 .isCancelled()) {
             for (BlockState state : blocks) {

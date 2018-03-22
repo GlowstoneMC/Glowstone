@@ -9,6 +9,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
@@ -40,6 +42,13 @@ import org.bukkit.scheduler.BukkitScheduler;
  * Central class for the calling of events.
  */
 public class EventFactory {
+
+    /**
+     * The instance of this class. Setter should only be called in tests when mocking.
+     */
+    @Getter
+    @Setter
+    private static EventFactory instance = new EventFactory();
 
     public EventFactory() {
     }

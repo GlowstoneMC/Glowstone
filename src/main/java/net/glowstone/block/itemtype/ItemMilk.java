@@ -16,7 +16,7 @@ public class ItemMilk extends ItemFood {
     @Override
     public boolean eat(GlowPlayer player, ItemStack item) {
         PlayerItemConsumeEvent event1 = new PlayerItemConsumeEvent(player, item);
-        player.getServer().getEventFactory().callEvent(event1);
+        EventFactory.getInstance().callEvent(event1);
         if (event1.isCancelled()) {
             return false;
         }

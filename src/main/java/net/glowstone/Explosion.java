@@ -14,7 +14,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 import net.glowstone.util.RayUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -116,7 +115,7 @@ public final class Explosion {
         this.incendiary = incendiary;
         this.breakBlocks = breakBlocks;
         world = (GlowWorld) location.getWorld();
-        eventFactory = world.getServer().getEventFactory();
+        eventFactory = EventFactory.getInstance();
     }
 
     /**

@@ -19,7 +19,7 @@ public final class PlayerSwingArmHandler implements
     @Override
     public void handle(GlowSession session, PlayerSwingArmMessage message) {
         GlowPlayer player = session.getPlayer();
-        EventFactory eventFactory = player.getServer().getEventFactory();
+        EventFactory eventFactory = EventFactory.getInstance();
         Block block = player.getTargetBlock((Set<Material>) null, 6);
 
         if (block == null || block.isEmpty()) {

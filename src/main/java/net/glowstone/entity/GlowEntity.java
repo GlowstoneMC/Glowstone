@@ -290,7 +290,7 @@ public abstract class GlowEntity implements Entity {
         this.location = location.clone();
         world = (GlowWorld) location.getWorld();
         server = world.getServer();
-        eventFactory = server.getEventFactory();
+        eventFactory = EventFactory.getInstance();
         // this is so dirty I washed my hands after writing it.
         if (this instanceof GlowPlayer) {
             // spawn location event
@@ -571,7 +571,7 @@ public abstract class GlowEntity implements Entity {
                         success = teleportToEnd();
                     }
                     if (success) {
-                        EntityPortalExitEvent e = server.getEventFactory()
+                        EntityPortalExitEvent e = EventFactory.getInstance()
                                 .callEvent(new EntityPortalExitEvent(this, previousLocation,
                                         location
                                         .clone(), velocity.clone(), new Vector()));

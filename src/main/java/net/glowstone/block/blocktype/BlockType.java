@@ -352,7 +352,7 @@ public class BlockType extends ItemType {
         // call canBuild event
         boolean canBuild = canPlaceAt(target, face);
         BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, getId(), canBuild);
-        if (!player.getServer().getEventFactory().callEvent(canBuildEvent).isBuildable()) {
+        if (!EventFactory.getInstance().callEvent(canBuildEvent).isBuildable()) {
             //revert(player, target);
             return;
         }
@@ -373,7 +373,7 @@ public class BlockType extends ItemType {
         // call blockPlace event
         BlockPlaceEvent event = new BlockPlaceEvent(target, oldState, against, holding, player,
             canBuild, hand);
-        player.getServer().getEventFactory().callEvent(event);
+        EventFactory.getInstance().callEvent(event);
         if (event.isCancelled() || !event.canBuild()) {
             oldState.update(true);
             return;
