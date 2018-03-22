@@ -70,6 +70,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected Logger log;
     protected final Function<? super Location, ? extends T> entityCreator;
     protected T entity;
+    private EventFactory oldEventFactory;
 
 
     protected GlowEntityTest(Function<? super Location, ? extends T> entityCreator) {
@@ -116,6 +117,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(scoreboardManager.getMainScoreboard()).thenReturn(scoreboard);
         when(itemFactory.ensureServerConversions(any(ItemStack.class)))
                 .thenAnswer(RETURN_FIRST_ARG);
+        oldEventFactory = EventFactory.getInstance();
         EventFactory.setInstance(eventFactory);
         if (createEntityInSuperSetUp()) {
             entity = entityCreator.apply(location);
@@ -127,6 +129,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
 
     @After
     public void tearDown() {
+        EventFactory.setInstance(oldEventFactory);
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
         world = null;
         server = null;
