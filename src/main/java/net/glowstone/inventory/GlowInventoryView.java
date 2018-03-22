@@ -1,7 +1,8 @@
 package net.glowstone.inventory;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.glowstone.entity.GlowHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
@@ -12,7 +13,8 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Standard implementation of InventoryView for most inventories.
  */
-@Data
+@Getter
+@Setter
 @RequiredArgsConstructor
 public class GlowInventoryView extends InventoryView {
 

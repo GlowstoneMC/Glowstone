@@ -186,15 +186,6 @@ public class GlowChunk implements Chunk {
                 includeBiomeTempRain);
     }
 
-    /**
-     * Gets whether this chunk has been populated by special features.
-     *
-     * @return Population status.
-     */
-    public boolean isPopulated() {
-        return populated;
-    }
-
     @Override
     public boolean isLoaded() {
         return sections != null;
@@ -818,6 +809,15 @@ public class GlowChunk implements Chunk {
         @Override
         public int hashCode() {
             return hashCode;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Key) {
+                Key otherKey = ((Key) obj);
+                return x == otherKey.x && z == otherKey.z;
+            }
+            return false;
         }
     }
 }

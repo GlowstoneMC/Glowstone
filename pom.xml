@@ -282,12 +282,14 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <!-- Upgrade to 2.21.0 when junit-platform-surefire-provider 1.2.0 releases
+         See https://github.com/junit-team/junit5/issues/809 -->
+        <version>2.19.1</version>
         <dependencies>
           <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.1.0</version>
+            <version>1.0.3</version>
           </dependency>
           <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -327,17 +329,6 @@
             <configuration>
               <addOutputDirectory>false</addOutputDirectory>
               <sourceDirectory>src/main/java</sourceDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>test-delombok</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>testDelombok</goal>
-            </goals>
-            <configuration>
-              <addOutputDirectory>false</addOutputDirectory>
-              <sourceDirectory>src/test/java</sourceDirectory>
             </configuration>
           </execution>
         </executions>
