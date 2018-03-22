@@ -64,15 +64,9 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
 
     // PowerMock mocks
-<<<<<<< HEAD
     protected static GlowWorld world;
     protected static GlowServer server;
     protected static GlowScoreboardManager scoreboardManager;
-=======
-    protected GlowWorld world;
-    protected static GlowServer server;
-    protected GlowScoreboardManager scoreboardManager;
->>>>>>> 07e7d9c5ba891cdc9f9c28854a3448687e2be0ee
 
     // Mockito mocks
     protected static ItemFactory itemFactory;
