@@ -10,8 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.UUID;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.ChunkManager;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
@@ -32,12 +30,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@PrepareForTest({GlowServer.class, GlowWorld.class, ChunkManager.class})
+@PrepareForTest({ChunkManager.class})
+@RunWith(PowerMockRunner.class)
 public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     private final ChunkManager chunkManager
