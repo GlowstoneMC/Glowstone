@@ -7,8 +7,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
-import com.binarytweed.test.Quarantine;
-import com.binarytweed.test.QuarantiningRunner;
 import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
@@ -50,8 +48,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  * @param <T> the class under test
  */
-@RunWith(QuarantiningRunner.class)
-@Quarantine("net.glowstone.entity")
+@PrepareForTest(Bukkit.class)
+@RunWith(PowerMockRunner.class)
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
@@ -94,7 +92,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        Bukkit.setServer(server);
+        PowerMockito.mockStatic(Bukkit.class);
+        when(Bukkit.getServer()).thenReturn(server);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
         location = new Location(world, 0, 0, 0);
