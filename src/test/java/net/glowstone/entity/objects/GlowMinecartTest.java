@@ -1,10 +1,10 @@
 package net.glowstone.entity.objects;
 
+import com.binarytweed.test.DelegateRunningTo;
 import net.glowstone.entity.GlowEntityTest;
 import org.junit.runners.Parameterized;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-@PowerMockRunnerDelegate(Parameterized.class)
+@DelegateRunningTo(Parameterized.class)
 public class GlowMinecartTest extends GlowEntityTest<GlowMinecart> {
 
     @Parameterized.Parameters(name = "{0}")
