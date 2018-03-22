@@ -93,6 +93,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         PowerMockito.mockStatic(Bukkit.class);
+        when(Bukkit.getItemFactory()).thenReturn(itemFactory);
         when(Bukkit.getServer()).thenReturn(server);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);

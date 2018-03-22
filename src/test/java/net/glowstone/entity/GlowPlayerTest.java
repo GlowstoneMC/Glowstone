@@ -23,6 +23,7 @@ import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.bans.UuidListFile;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -37,7 +38,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-@PrepareForTest({ChunkManager.class})
+@PrepareForTest({Bukkit.class, ChunkManager.class})
 @RunWith(PowerMockRunner.class)
 public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
