@@ -3,6 +3,7 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
+import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -82,7 +83,7 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         }
 
         if (cause != DamageCause.ENTITY_EXPLOSION) {
-            ExplosionPrimeEvent event = eventFactory
+            ExplosionPrimeEvent event = EventFactory.getInstance()
                 .callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
 
             if (!event.isCancelled()) {

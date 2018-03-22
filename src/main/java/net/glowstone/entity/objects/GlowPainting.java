@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.EntityBoundingBox;
@@ -103,7 +104,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (message.getAction() == Action.ATTACK.ordinal()) {
-            if (eventFactory.callEvent(new HangingBreakByEntityEvent(this, player))
+            if (EventFactory.getInstance().callEvent(new HangingBreakByEntityEvent(this, player))
                 .isCancelled()) {
                 return false;
             }
@@ -242,7 +243,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         super.pulse();
 
         if (ticksLived % (20 * 5) == 0 && isObstructed()) {
-            if (eventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
+            if (EventFactory.getInstance().callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
                 .isCancelled()) {
                 return;
             }

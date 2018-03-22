@@ -156,8 +156,6 @@ public class GlowSession extends BasicSession {
      */
     private volatile boolean compresssionSent;
 
-    private final EventFactory eventFactory;
-
     /**
      * Creates a new session.
      *
@@ -169,7 +167,6 @@ public class GlowSession extends BasicSession {
     public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
         super(channel, ProtocolType.HANDSHAKE.getProtocol());
         this.server = server;
-        this.eventFactory = EventFactory.getInstance();
         this.connectionManager = connectionManager;
         address = super.getAddress();
     }
@@ -268,7 +265,7 @@ public class GlowSession extends BasicSession {
         }
 
         // login event
-        PlayerLoginEvent event = eventFactory.onPlayerLogin(player, virtualHost.toString());
+        PlayerLoginEvent event = EventFactory.getInstance().onPlayerLogin(player, virtualHost.toString());
         if (event.getResult() != Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;
@@ -285,7 +282,7 @@ public class GlowSession extends BasicSession {
                 .getUniqueId());
 
         // message and user list
-        String message = eventFactory.onPlayerJoin(player).getJoinMessage();
+        String message = EventFactory.getInstance().onPlayerJoin(player).getJoinMessage();
         if (message != null && !message.isEmpty()) {
             server.broadcastMessage(message);
         }
@@ -364,7 +361,7 @@ public class GlowSession extends BasicSession {
      */
     public void disconnect(String reason, boolean overrideKick) {
         if (player != null && !overrideKick) {
-            PlayerKickEvent event = eventFactory.onPlayerKick(player, reason);
+            PlayerKickEvent event = EventFactory.getInstance().onPlayerKick(player, reason);
             if (event.isCancelled()) {
                 return;
             }
@@ -446,7 +443,7 @@ public class GlowSession extends BasicSession {
                 }
             } while (!bars.isEmpty());
 
-            String text = eventFactory.onPlayerQuit(player).getQuitMessage();
+            String text = EventFactory.getInstance().onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);
             }

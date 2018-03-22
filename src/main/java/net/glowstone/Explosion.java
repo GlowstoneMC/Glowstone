@@ -73,7 +73,6 @@ public final class Explosion {
     private final boolean incendiary;
     private final boolean breakBlocks;
     private final GlowWorld world;
-    private final EventFactory eventFactory;
     private float power;
     private float yield = 0.3f;
 
@@ -115,7 +114,6 @@ public final class Explosion {
         this.incendiary = incendiary;
         this.breakBlocks = breakBlocks;
         world = (GlowWorld) location.getWorld();
-        eventFactory = EventFactory.getInstance();
     }
 
     /**
@@ -130,7 +128,7 @@ public final class Explosion {
         Set<BlockVector> droppedBlocks = calculateBlocks();
 
         List<Block> blocks = toBlockList(droppedBlocks);
-        EntityExplodeEvent event = eventFactory.callEvent(
+        EntityExplodeEvent event = EventFactory.getInstance().callEvent(
                 new EntityExplodeEvent(source, location, blocks, yield));
         if (event.isCancelled()) {
             return false;
@@ -241,7 +239,7 @@ public final class Explosion {
         if (belowType == Material.AIR || belowType == Material.FIRE || !belowType.isFlammable()) {
             return;
         }
-        BlockIgniteEvent event = eventFactory.callEvent(
+        BlockIgniteEvent event = EventFactory.getInstance().callEvent(
                 new BlockIgniteEvent(block, IgniteCause.EXPLOSION, source));
         if (event.isCancelled()) {
             return;

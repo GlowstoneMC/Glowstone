@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
@@ -393,7 +394,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public void closeInventory() {
-        eventFactory.callEvent(new InventoryCloseEvent(openInventory));
+        EventFactory.getInstance().callEvent(new InventoryCloseEvent(openInventory));
         if (getGameMode() != GameMode.CREATIVE) {
             if (!InventoryUtil.isEmpty(getItemOnCursor())) {
                 drop(getItemOnCursor());

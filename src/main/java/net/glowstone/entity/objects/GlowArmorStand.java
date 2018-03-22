@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -116,9 +117,9 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         }
         EntityDamageEvent event;
         if (source == null) {
-            event = eventFactory.onEntityDamage(new EntityDamageEvent(this, cause, amount));
+            event = EventFactory.getInstance().onEntityDamage(new EntityDamageEvent(this, cause, amount));
         } else {
-            event = eventFactory
+            event = EventFactory.getInstance()
                 .onEntityDamage(new EntityDamageByEntityEvent(source, this, cause, amount));
         }
         if (event.isCancelled()) {
@@ -195,7 +196,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                 PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player,
                     this, InventoryUtil.itemOrEmpty(null),
                     InventoryUtil.itemOrEmpty(equipment.getItem(slot)), slot);
-                eventFactory.callEvent(event);
+                EventFactory.getInstance().callEvent(event);
 
                 if (event.isCancelled()) {
                     return false;
@@ -218,7 +219,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                 PlayerArmorStandManipulateEvent event = new PlayerArmorStandManipulateEvent(player,
                     this, player.getItemInHand(),
                     InventoryUtil.itemOrEmpty(equipment.getItem(slot)), slot);
-                eventFactory.callEvent(event);
+                EventFactory.getInstance().callEvent(event);
 
                 if (event.isCancelled()) {
                     return false;

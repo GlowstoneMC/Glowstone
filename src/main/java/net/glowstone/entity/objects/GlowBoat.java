@@ -4,6 +4,7 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -87,7 +88,7 @@ public class GlowBoat extends GlowEntity implements Boat {
     private void damage(GlowPlayer player) {
         //TODO: Do proper damage calculations, based upon the tool used
         VehicleDamageEvent damageEvent = new VehicleDamageEvent(this, player, 10);
-        if (eventFactory.callEvent(damageEvent).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(damageEvent).isCancelled()) {
             return;
         }
 
@@ -97,7 +98,7 @@ public class GlowBoat extends GlowEntity implements Boat {
 
         boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
         if (getDamage() > 40.0 || isCreative) {
-            if (eventFactory.callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
+            if (EventFactory.getInstance().callEvent(new VehicleDestroyEvent(this, player)).isCancelled()) {
                 return;
             }
             remove();

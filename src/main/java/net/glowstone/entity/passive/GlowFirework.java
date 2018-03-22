@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -160,7 +161,7 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
     }
 
     private void explode() {
-        if (!eventFactory.callEvent(new FireworkExplodeEvent(this)).isCancelled()) {
+        if (!EventFactory.getInstance().callEvent(new FireworkExplodeEvent(this)).isCancelled()) {
             this.playEffect(EntityEffect.FIREWORK_EXPLODE);
 
             int effectsSize = getFireworkMeta().getEffectsSize();

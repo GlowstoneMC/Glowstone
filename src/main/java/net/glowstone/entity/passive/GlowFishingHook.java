@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;
@@ -247,7 +248,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
                 PlayerFishEvent fishEvent
                         = new PlayerFishEvent((Player) shooter, this, null, CAUGHT_FISH);
                 fishEvent.setExpToDrop(ThreadLocalRandom.current().nextInt(1, 7));
-                fishEvent = eventFactory.callEvent(fishEvent);
+                fishEvent = EventFactory.getInstance().callEvent(fishEvent);
                 if (!fishEvent.isCancelled()) {
                     // TODO: Item should "fly" towards player
                     world.dropItemNaturally(((Player) getShooter()).getLocation(), getRewardItem());

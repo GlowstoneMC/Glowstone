@@ -132,7 +132,6 @@ public abstract class GlowEntity implements Entity {
      */
     @Getter
     private final List<String> customTags = Lists.newArrayList();
-    protected final EventFactory eventFactory;
     /**
      * The world this entity belongs to. Guarded by {@link #worldLock}.
      */
@@ -290,11 +289,10 @@ public abstract class GlowEntity implements Entity {
         this.location = location.clone();
         world = (GlowWorld) location.getWorld();
         server = world.getServer();
-        eventFactory = EventFactory.getInstance();
         // this is so dirty I washed my hands after writing it.
         if (this instanceof GlowPlayer) {
             // spawn location event
-            location = eventFactory
+            location = EventFactory.getInstance()
                     .callEvent(new PlayerSpawnLocationEvent((Player) this, location))
                     .getSpawnLocation();
         }
@@ -560,7 +558,7 @@ public abstract class GlowEntity implements Entity {
         if (hasMoved()) {
             Block currentBlock = location.getBlock();
             if (currentBlock.getType() == Material.ENDER_PORTAL) {
-                eventFactory
+                EventFactory.getInstance()
                         .callEvent(new EntityPortalEnterEvent(this, currentBlock.getLocation()));
                 if (server.getAllowEnd()) {
                     Location previousLocation = location.clone();
@@ -862,7 +860,7 @@ public abstract class GlowEntity implements Entity {
     protected boolean teleportToSpawn() {
         Location target = server.getWorlds().get(0).getSpawnLocation();
 
-        EntityPortalEvent event = eventFactory
+        EntityPortalEvent event = EventFactory.getInstance()
                 .callEvent(new EntityPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
@@ -896,7 +894,7 @@ public abstract class GlowEntity implements Entity {
             return false;
         }
 
-        EntityPortalEvent event = eventFactory
+        EntityPortalEvent event = EventFactory.getInstance()
                 .callEvent(new EntityPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
@@ -1082,7 +1080,7 @@ public abstract class GlowEntity implements Entity {
     // Miscellaneous actions
 
     private void unleash(GlowEntity entity, UnleashReason reason) {
-        eventFactory.callEvent(new EntityUnleashEvent(entity, reason));
+        EventFactory.getInstance().callEvent(new EntityUnleashEvent(entity, reason));
         world.dropItemNaturally(entity.location, new ItemStack(Material.LEASH));
         entity.setLeashHolder(null);
     }
@@ -1197,7 +1195,7 @@ public abstract class GlowEntity implements Entity {
             return false; // nothing changed
         }
 
-        if (eventFactory.callEvent(new EntityDismountEvent(passenger, this)).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(new EntityDismountEvent(passenger, this)).isCancelled()) {
             return false;
         }
 
@@ -1234,7 +1232,7 @@ public abstract class GlowEntity implements Entity {
         }
 
         EntityMountEvent event = new EntityMountEvent(passenger, this);
-        eventFactory.callEvent(event);
+        EventFactory.getInstance().callEvent(event);
         if (event.isCancelled()) {
             return false;
         }
