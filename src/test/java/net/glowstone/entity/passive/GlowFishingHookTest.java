@@ -71,6 +71,8 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
             eventsFired.put(e.getClass(), e);
             return e;
         });
+        when(EventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
+                RETURN_FIRST_ARG);
     }
 
     @After
