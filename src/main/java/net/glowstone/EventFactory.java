@@ -50,7 +50,7 @@ public class EventFactory {
     @Setter
     private static EventFactory instance = new EventFactory();
 
-    public EventFactory() {
+    private EventFactory() {
     }
 
     /**
