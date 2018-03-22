@@ -46,9 +46,9 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     // Mockito mocks
     @Mock(answer = RETURNS_SMART_NULLS)
-    private GlowSession session;
+    private static GlowSession session;
     @Mock(answer = RETURNS_SMART_NULLS)
-    private PlayerReader reader;
+    private static PlayerReader reader;
     @Mock(answer = RETURNS_SMART_NULLS)
     private GlowBlock block;
     @Mock(answer = RETURNS_SMART_NULLS)
