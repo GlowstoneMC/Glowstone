@@ -26,7 +26,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, CommandUtils.class, GlowServer.class, GlowWorld.class})
+@PrepareForTest({Bukkit.class, CommandUtils.class})
 public class SpawnPointCommandTest {
 
     private CommandSender sender, opSender, opPlayer;

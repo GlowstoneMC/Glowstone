@@ -2,14 +2,8 @@ package net.glowstone.util.nbt;
 
 import static org.junit.Assert.assertTrue;
 
-import net.glowstone.GlowWorld;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({GlowWorld.class})
 public class CompoundTagTest {
 
     @Test
