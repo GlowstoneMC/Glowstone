@@ -58,7 +58,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
 
     // PowerMock mocks
-    protected GlowWorld world;
+    protected static GlowWorld world;
     protected static GlowServer server;
     protected GlowScoreboardManager scoreboardManager;
 
@@ -98,16 +98,18 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     public static void staticSetUp() throws Exception {
         server = PowerMockito.mock(GlowServer.class, Mockito.RETURNS_DEEP_STUBS);
         Bukkit.setServer(server);
+        world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
+        when(world.getServer()).thenReturn(server);
+        when(world.getDifficulty()).thenReturn(Difficulty.NORMAL);
+        when(server.getWorlds()).thenReturn(Collections.singletonList(world));
     }
 
     @Before
     public void setUp() throws Exception {
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
-        world = PowerMockito.mock(GlowWorld.class, Mockito.RETURNS_SMART_NULLS);
         MockitoAnnotations.initMocks(this);
         location = new Location(world, 0, 0, 0);
-        when(world.getServer()).thenReturn(server);
         entityManager = Mockito.spy(new EntityManager());
         when(world.getEntityManager()).thenReturn(entityManager);
         when(world.getBlockAt(any(Location.class))).thenReturn(block);
@@ -116,8 +118,6 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(world.getChunkAt(any(Location.class))).thenReturn(chunk);
         when(world.getChunkAt(any(Block.class))).thenReturn(chunk);
         when(world.getChunkAt(anyInt(),anyInt())).thenReturn(chunk);
-        when(world.getDifficulty()).thenReturn(Difficulty.NORMAL);
-        when(server.getWorlds()).thenReturn(Collections.singletonList(world));
         when(server.getItemFactory()).thenReturn(itemFactory);
         idManager = new EntityIdManager();
         when(server.getEntityIdManager()).thenReturn(idManager);
@@ -141,7 +141,6 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @After
     public void tearDown() {
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
-        world = null;
         scoreboardManager = null;
         itemFactory = null;
         chunk = null;
