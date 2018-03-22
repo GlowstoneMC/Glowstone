@@ -37,6 +37,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
@@ -46,6 +48,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  * @param <T> the class under test
  */
+@PrepareForTest(Bukkit.class)
+@RunWith(PowerMockRunner.class)
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
@@ -88,11 +92,10 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        PowerMockito.mockStatic(Bukkit.class);
+        when(Bukkit.getServer()).thenReturn(server);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
-        if (Bukkit.getServer() == null) {
-            Bukkit.setServer(server);
-        }
         location = new Location(world, 0, 0, 0);
         when(world.getServer()).thenReturn(server);
         when(world.getDifficulty()).thenReturn(Difficulty.NORMAL);
