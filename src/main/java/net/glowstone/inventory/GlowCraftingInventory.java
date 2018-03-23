@@ -99,7 +99,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
      */
     public void craft() {
         ItemStack[] matrix = getMatrix();
-        CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+        CraftingManager cm = ((GlowServer) GlowServerProvider.getServer()).getCraftingManager();
         Recipe recipe = cm.getCraftingRecipe(matrix);
 
         if (recipe != null) {
@@ -137,7 +137,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
     @Override
     public Recipe getRecipe() {
-        return ((GlowServer) Bukkit.getServer()).getCraftingManager()
+        return ((GlowServer) GlowServerProvider.getServer()).getCraftingManager()
             .getCraftingRecipe(getMatrix());
     }
 

@@ -43,7 +43,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
             return false;
         }
 
-        Bukkit.getServer().setDefaultGameMode(gamemode);
+        GlowServerProvider.getServer().setDefaultGameMode(gamemode);
         sender.sendMessage(
             "The world's default game mode is now " + ChatColor.GRAY + "" + ChatColor.ITALIC
                 + GameModeUtils.prettyPrint(gamemode) + " Mode");

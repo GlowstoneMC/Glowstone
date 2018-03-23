@@ -29,7 +29,7 @@ public class PardonCommand extends VanillaCommand {
             return false;
         }
         String name = args[0];
-        GlowServer server = (GlowServer) Bukkit.getServer();
+        GlowServer server = (GlowServer) GlowServerProvider.getServer();
         // asynchronously lookup player
         server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
             if (ex != null) {
@@ -38,7 +38,7 @@ public class PardonCommand extends VanillaCommand {
                 ex.printStackTrace();
                 return;
             }
-            BanList banList = Bukkit.getServer().getBanList(BanList.Type.NAME);
+            BanList banList = GlowServerProvider.getServer().getBanList(BanList.Type.NAME);
             if (!banList.isBanned(player.getName())) {
                 sender.sendMessage(ChatColor.RED + "Could not unban player " + player.getName()
                         + ": not banned");

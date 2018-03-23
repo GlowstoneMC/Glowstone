@@ -284,7 +284,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
                 .get("surface"));
         int sizeX = octaveGenerator.getSizeX();
         int sizeZ = octaveGenerator.getSizeZ();
-        if (((GlowServer) Bukkit.getServer()).doesUseGraphicsCompute()) {
+        if (((GlowServer) GlowServerProvider.getServer()).doesUseGraphicsCompute()) {
             CLKernel noiseGen = null;
             CLBuffer<FloatBuffer> noise = null;
             try {
@@ -324,7 +324,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
             } finally {
                 // Clean up
                 if (noise != null) {
-                    Bukkit.getServer().getScheduler().runTaskAsynchronously(null, noise::release);
+                    GlowServerProvider.getServer().getScheduler().runTaskAsynchronously(null, noise::release);
                 }
                 if (noiseGen != null) {
                     noiseGen.rewind();

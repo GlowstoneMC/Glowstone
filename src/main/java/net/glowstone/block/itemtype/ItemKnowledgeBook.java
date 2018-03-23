@@ -40,7 +40,7 @@ public class ItemKnowledgeBook extends ItemType {
             KnowledgeBookMeta recipes = (KnowledgeBookMeta) holding.getItemMeta();
             if (recipes.hasRecipes()) {
                 for (NamespacedKey recipe : recipes.getRecipes()) {
-                    player.learnRecipe(((GlowServer) Bukkit.getServer()).getCraftingManager()
+                    player.learnRecipe(((GlowServer) GlowServerProvider.getServer()).getCraftingManager()
                         .getRecipeByKey(recipe), true);
                 }
             }

@@ -1231,7 +1231,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
-        Bukkit.getServer().getScheduler()
+        GlowServerProvider.getServer().getScheduler()
                 .runTaskAsynchronously(null, () -> cb.onLoad(chunkManager.getChunk(x, z)));
     }
 

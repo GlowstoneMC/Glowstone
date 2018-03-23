@@ -146,7 +146,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     @Override
     public OfflinePlayer getOwningPlayer() {
-        return ((GlowServer) Bukkit.getServer()).getOfflinePlayer(owner.get());
+        return ((GlowServer) GlowServerProvider.getServer()).getOfflinePlayer(owner.get());
     }
 
     /**

@@ -45,7 +45,7 @@ public class SetIdleTimeoutCommand extends VanillaCommand {
             return false;
         }
 
-        Bukkit.getServer().setIdleTimeout(timeout);
+        GlowServerProvider.getServer().setIdleTimeout(timeout);
         sender.sendMessage("Successfully set the idle timeout to " + timeout + " minutes.");
 
         return true;

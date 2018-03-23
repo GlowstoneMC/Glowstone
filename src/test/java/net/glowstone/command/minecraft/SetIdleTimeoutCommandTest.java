@@ -35,7 +35,7 @@ public class SetIdleTimeoutCommandTest {
         command = new SetIdleTimeoutCommand();
 
         Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
-        Mockito.when(Bukkit.getServer()).thenReturn(PowerMockito.mock(Server.class));
+        Mockito.when(GlowServerProvider.getServer()).thenReturn(PowerMockito.mock(Server.class));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class SetIdleTimeoutCommandTest {
         assertThat(commandResult, is(true));
         Mockito.verify(opSender)
             .sendMessage(eq("Successfully set the idle timeout to 50 minutes."));
-        Mockito.verify(Bukkit.getServer()).setIdleTimeout(50);
+        Mockito.verify(GlowServerProvider.getServer()).setIdleTimeout(50);
     }
 
     @Test

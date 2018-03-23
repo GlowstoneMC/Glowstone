@@ -45,7 +45,7 @@ import org.bukkit.Bukkit;
 public class RegionFileCache {
 
     private static final int MAX_CACHE_SIZE =
-            ((GlowServer) Bukkit.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
+            ((GlowServer) GlowServerProvider.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
 
     private static final RemovalListener<File, RegionFile> removalListener = removal -> {
         try {

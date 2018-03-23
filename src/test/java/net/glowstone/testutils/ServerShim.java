@@ -63,7 +63,7 @@ import org.mockito.Mockito;
 public class ServerShim implements Server {
 
     public static void install() {
-        if (Bukkit.getServer() == null) {
+        if (GlowServerProvider.getServer() == null) {
             Bukkit.setServer(new ServerShim());
         }
     }

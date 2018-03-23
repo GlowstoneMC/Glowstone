@@ -37,7 +37,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
         this.dir = dir;
-        server = (GlowServer) Bukkit.getServer();
+        server = (GlowServer) GlowServerProvider.getServer();
 
         if (!dir.isDirectory() && !dir.mkdirs()) {
             server.getLogger().warning("Failed to create directory: " + dir);

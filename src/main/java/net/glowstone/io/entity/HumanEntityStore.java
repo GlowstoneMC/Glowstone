@@ -31,7 +31,7 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         }
 
         if (tag.isInt("playerGameType")) {
-            GlowServer server = (GlowServer) Bukkit.getServer();
+            GlowServer server = (GlowServer) GlowServerProvider.getServer();
             if (!server.getConfig().getBoolean(ServerConfig.Key.FORCE_GAMEMODE)) {
                 GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
                 if (mode != null) {

@@ -77,8 +77,8 @@ public class GlowPlayerProfile implements PlayerProfile {
             return CompletableFuture.completedFuture(null);
         }
 
-        if (Bukkit.getServer().getOnlineMode()
-                || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
+        if (GlowServerProvider.getServer().getOnlineMode()
+                || ((GlowServer) GlowServerProvider.getServer()).getProxySupport()) {
             return ProfileCache.getUuid(name).thenComposeAsync((uuid) -> {
                 if (uuid == null) {
                     return CompletableFuture.completedFuture(null);

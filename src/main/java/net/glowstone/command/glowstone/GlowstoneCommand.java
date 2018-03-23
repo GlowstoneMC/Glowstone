@@ -180,7 +180,7 @@ public class GlowstoneCommand extends BukkitCommand {
                 builder.append(args[i] + (i == args.length - 1 ? "" : " "));
             }
             ReflectionProcessor processor = new ReflectionProcessor(builder.toString(),
-                    sender instanceof Entity ? sender : Bukkit.getServer());
+                    sender instanceof Entity ? sender : GlowServerProvider.getServer());
             Object result = processor.process();
             sender.sendMessage(
                     ChatColor.GOLD + "Eval returned: " + (result == null ? ChatColor.RED
@@ -227,7 +227,7 @@ public class GlowstoneCommand extends BukkitCommand {
     }
 
     private Collection<String> getWorldNames() {
-        return Bukkit.getServer().getWorlds().stream().map(World::getName)
+        return GlowServerProvider.getServer().getWorlds().stream().map(World::getName)
                 .collect(Collectors.toList());
     }
 }

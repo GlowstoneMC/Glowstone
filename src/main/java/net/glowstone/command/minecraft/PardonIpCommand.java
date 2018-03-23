@@ -32,7 +32,7 @@ public class PardonIpCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + "You have entered an invalid IP address");
             return false;
         }
-        Bukkit.getServer().unbanIP(ip);
+        GlowServerProvider.getServer().unbanIP(ip);
         sender.sendMessage("Unbanned IP address " + ip);
         return true;
     }

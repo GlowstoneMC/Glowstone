@@ -90,7 +90,7 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     @Override
     public boolean itemPlaceAllowed(int slot, ItemStack stack) {
         if (slot == FUEL_SLOT) {
-            return ((GlowServer) Bukkit.getServer()).getCraftingManager().isFuel(stack.getType())
+            return ((GlowServer) GlowServerProvider.getServer()).getCraftingManager().isFuel(stack.getType())
                 || stack.getType().equals(Material.BUCKET);
         }
         return super.itemPlaceAllowed(slot, stack);

@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import static net.glowstone.GlowServerProvider.getServer;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
@@ -52,7 +54,7 @@ public final class EventFactory {
      * @return the called event
      */
     public static <T extends Event> T callEvent(T event) {
-        Server server = Bukkit.getServer();
+        Server server = getServer();
 
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);

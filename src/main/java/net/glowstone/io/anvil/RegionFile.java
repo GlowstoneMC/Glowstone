@@ -84,7 +84,7 @@ import org.bukkit.Bukkit;
  */
 public class RegionFile {
 
-    private static final boolean COMPRESSION_ENABLED = ((GlowServer) Bukkit.getServer()).getConfig()
+    private static final boolean COMPRESSION_ENABLED = ((GlowServer) GlowServerProvider.getServer()).getConfig()
             .getBoolean(Key.REGION_COMPRESSION);
 
     private static final byte VERSION_GZIP = 1;

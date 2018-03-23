@@ -98,7 +98,7 @@ public class CommandUtils {
 
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
     private static GlowWorld getDefaultWorld() {
-        return (GlowWorld) Bukkit.getServer().getWorlds().get(0);
+        return (GlowWorld) GlowServerProvider.getServer().getWorlds().get(0);
     }
 
     /**

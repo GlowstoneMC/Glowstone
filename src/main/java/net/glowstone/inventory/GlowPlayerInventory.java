@@ -145,7 +145,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
         if (topAllowsShiftClick) {
             if (top.getType().equals(InventoryType.FURNACE)) {
-                CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+                CraftingManager cm = ((GlowServer) GlowServerProvider.getServer()).getCraftingManager();
                 if (cm.getFurnaceRecipe(clickedItem) != null) {
                     // move items are be burnable to the input slot
                     // TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?

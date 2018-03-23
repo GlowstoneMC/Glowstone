@@ -1,6 +1,7 @@
 package net.glowstone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.GlowServerProvider.getServer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,10 +78,10 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     public static OfflinePlayer deserialize(Map<String, Object> val) {
         if (val.get("name") != null) {
             // use name
-            return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
+            return getServer().getOfflinePlayer(val.get("name").toString());
         } else {
             // use UUID
-            return Bukkit.getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
+            return getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
         }
     }
 

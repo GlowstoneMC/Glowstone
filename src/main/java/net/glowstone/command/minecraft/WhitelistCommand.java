@@ -39,7 +39,7 @@ public class WhitelistCommand extends VanillaCommand {
             return false;
         }
         String subcommand = args[0];
-        GlowServer server = (GlowServer) Bukkit.getServer();
+        GlowServer server = (GlowServer) GlowServerProvider.getServer();
         if (subcommand.equals("on")) {
             sender.getServer().setWhitelist(true);
             sender.sendMessage("Turned on the whitelist");

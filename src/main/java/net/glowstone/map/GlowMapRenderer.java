@@ -67,7 +67,7 @@ public final class GlowMapRenderer extends MapRenderer {
         // TODO: Some blocks vary in map color based on block states (e.g. wood species)
         ValueCollection materialValues;
         materialValues = block instanceof GlowBlock ? ((GlowBlock) block).getMaterialValues()
-            : ((GlowServer) Bukkit.getServer()).getMaterialValueManager()
+            : ((GlowServer) GlowServerProvider.getServer()).getMaterialValueManager()
                 .getValues(block.getType());
         byte baseColor = materialValues.getBaseMapColor();
         return (byte) (baseColor | pseudoRandomShade(worldX, worldZ));
