@@ -659,7 +659,7 @@ public final class GlowServer implements Server {
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxIntelFlops = flops;
                                         logger.info(MessageFormat.format(strings.getString(
-                                                "console.info.opencl.best-platform-tie"),
+                                                "console.info.opencl.best-platform.version-tiebreaker"),
                                                 platform));
                                         bestIntelPlatform = platform;
                                     }
@@ -677,7 +677,7 @@ public final class GlowServer implements Server {
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxGpuFlops = flops;
                                         logger.info(MessageFormat.format(strings.getString(
-                                                "console.info.opencl.best-platform-tie"),
+                                                "console.info.opencl.best-platform.version-tiebreaker"),
                                                 platform));
                                         bestPlatform = platform;
                                     }
@@ -698,7 +698,7 @@ public final class GlowServer implements Server {
                                         .compareTo(platform.getVersion()) < 0) {
                                     maxCpuFlops = flops;
                                     logger.info(MessageFormat.format(strings.getString(
-                                            "console.info.opencl.best-platform-tie"),
+                                            "console.info.opencl.best-platform.version-tiebreaker"),
                                             platform));
                                     bestCpuPlatform = platform;
                                 }
