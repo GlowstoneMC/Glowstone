@@ -1,7 +1,6 @@
 package net.glowstone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.ServerProvider.getServer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +13,7 @@ import net.glowstone.io.PlayerDataService.PlayerReader;
 import org.bukkit.BanList.Type;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
@@ -75,12 +75,13 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static OfflinePlayer deserialize(Map<String, Object> val) {
+        Server server = ServerProvider.getServer();
         if (val.get("name") != null) {
             // use name
-            return getServer().getOfflinePlayer(val.get("name").toString());
+            return server.getOfflinePlayer(val.get("name").toString());
         } else {
             // use UUID
-            return getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
+            return server.getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
         }
     }
 

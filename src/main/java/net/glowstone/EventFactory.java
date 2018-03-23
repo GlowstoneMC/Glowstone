@@ -1,7 +1,5 @@
 package net.glowstone;
 
-import static net.glowstone.ServerProvider.getServer;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
@@ -62,7 +60,7 @@ public class EventFactory {
      * @return the called event
      */
     public <T extends Event> T callEvent(T event) {
-        Server server = getServer();
+        Server server = ServerProvider.getServer();
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);
             return event;
