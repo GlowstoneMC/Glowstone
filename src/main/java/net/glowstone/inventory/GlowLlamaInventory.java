@@ -12,7 +12,6 @@ import org.bukkit.inventory.LlamaInventory;
  * to 15 slots.
  */
 public class GlowLlamaInventory extends GlowInventory implements LlamaInventory {
-    /** The carpet this llama is wearing. */
     @Getter
     @Setter
     protected ItemStack decor;
