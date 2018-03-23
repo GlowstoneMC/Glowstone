@@ -6,15 +6,10 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Mule;
 
-public class GlowMule extends GlowChestedHorse implements Mule {
+public class GlowMule extends GlowChestedHorse<GlowHorseInventory> implements Mule {
 
     public GlowMule(Location location) {
         super(location, EntityType.MULE, 15);
-    }
-
-    @Override
-    public GlowHorseInventory getInventory() {
-        return null; // todo
     }
 
     @Override
@@ -30,5 +25,16 @@ public class GlowMule extends GlowChestedHorse implements Mule {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_MULE_AMBIENT;
+    }
+
+    @Override
+    protected GlowHorseInventory createNewInventory() {
+        GlowHorseInventory oldInventory = inventory;
+        GlowHorseInventory newInventory = new GlowHorseInventory(this);
+        if (oldInventory != null) {
+            newInventory.setSaddle(oldInventory.getSaddle());
+            moveChestContents(oldInventory, newInventory);
+        }
+        return newInventory;
     }
 }
