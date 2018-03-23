@@ -36,8 +36,8 @@ import java.io.IOException;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.util.config.ServerConfig.Key;
-import org.bukkit.Bukkit;
 
 /**
  * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
@@ -45,7 +45,7 @@ import org.bukkit.Bukkit;
 public class RegionFileCache {
 
     private static final int MAX_CACHE_SIZE =
-            ((GlowServer) Bukkit.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
+            ((GlowServer) ServerProvider.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
 
     private static final RemovalListener<File, RegionFile> removalListener = removal -> {
         try {

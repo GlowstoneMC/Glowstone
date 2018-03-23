@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.StructureDataService;
@@ -17,13 +17,13 @@ import net.glowstone.io.structure.StructureStore;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
-import org.bukkit.Bukkit;
+import org.bukkit.Server;
 
 public class NbtStructureDataService implements StructureDataService {
 
     private final GlowWorld world;
     private final File structureDir;
-    private final GlowServer server;
+    private final Server server;
 
     /**
      * Creates the instance for the given world's structures.
@@ -34,7 +34,7 @@ public class NbtStructureDataService implements StructureDataService {
     public NbtStructureDataService(GlowWorld world, File structureDir) {
         this.world = world;
         this.structureDir = structureDir;
-        server = (GlowServer) Bukkit.getServer();
+        server = ServerProvider.getServer();
 
         if (!structureDir.isDirectory() && !structureDir.mkdirs()) {
             server.getLogger().warning("Failed to create directory: " + structureDir);

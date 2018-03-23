@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 import lombok.Getter;
-import org.bukkit.Bukkit;
+import net.glowstone.ServerProvider;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -14,7 +14,7 @@ public class ImmutableItemStack extends ItemStack {
 
     public ImmutableItemStack(int type) {
         super(type);
-        itemMeta = Bukkit.getItemFactory().getItemMeta(getType()).clone();
+        itemMeta = ServerProvider.getServer().getItemFactory().getItemMeta(getType()).clone();
     }
 
     public ImmutableItemStack(Material type) {

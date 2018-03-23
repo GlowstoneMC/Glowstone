@@ -11,9 +11,9 @@ import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import org.bukkit.BanList.Type;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
@@ -75,12 +75,13 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static OfflinePlayer deserialize(Map<String, Object> val) {
+        Server server = ServerProvider.getServer();
         if (val.get("name") != null) {
             // use name
-            return Bukkit.getServer().getOfflinePlayer(val.get("name").toString());
+            return server.getOfflinePlayer(val.get("name").toString());
         } else {
             // use UUID
-            return Bukkit.getServer().getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
+            return server.getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
         }
     }
 

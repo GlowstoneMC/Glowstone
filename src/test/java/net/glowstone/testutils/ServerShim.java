@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 import lombok.Getter;
+import net.glowstone.ServerProvider;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
@@ -63,7 +64,7 @@ import org.mockito.Mockito;
 public class ServerShim implements Server {
 
     public static void install() {
-        if (Bukkit.getServer() == null) {
+        if (ServerProvider.getServer() == null) {
             Bukkit.setServer(new ServerShim());
         }
     }

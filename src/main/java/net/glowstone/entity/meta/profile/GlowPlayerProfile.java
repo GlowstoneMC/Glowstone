@@ -16,9 +16,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -77,8 +77,8 @@ public class GlowPlayerProfile implements PlayerProfile {
             return CompletableFuture.completedFuture(null);
         }
 
-        if (Bukkit.getServer().getOnlineMode()
-                || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
+        GlowServer server = (GlowServer) ServerProvider.getServer();
+        if (server.getOnlineMode() || server.getProxySupport()) {
             return ProfileCache.getUuid(name).thenComposeAsync((uuid) -> {
                 if (uuid == null) {
                     return CompletableFuture.completedFuture(null);

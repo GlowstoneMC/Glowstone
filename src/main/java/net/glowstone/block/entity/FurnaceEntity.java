@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.state.GlowFurnace;
@@ -12,7 +13,6 @@ import net.glowstone.inventory.GlowFurnaceInventory;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
@@ -92,7 +92,7 @@ public class FurnaceEntity extends ContainerEntity {
 
         if (burnTime == 0) {
             if (isBurnable) {
-                CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+                CraftingManager cm = ((GlowServer) ServerProvider.getServer()).getCraftingManager();
                 FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, inv.getFuel(),
                     cm.getFuelTime(inv.getFuel().getType()));
                 EventFactory.getInstance().callEvent(burnEvent);
@@ -128,7 +128,7 @@ public class FurnaceEntity extends ContainerEntity {
         }
 
         if (cookTime == 200) {
-            CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+            CraftingManager cm = ((GlowServer) ServerProvider.getServer()).getCraftingManager();
             Recipe recipe = cm.getFurnaceRecipe(inv.getSmelting());
             if (recipe != null) {
                 FurnaceSmeltEvent smeltEvent = new FurnaceSmeltEvent(block, inv.getSmelting(),
@@ -180,7 +180,7 @@ public class FurnaceEntity extends ContainerEntity {
                 && burnTime == 0) {
                 return false;
             }
-            CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+            CraftingManager cm = ((GlowServer) ServerProvider.getServer()).getCraftingManager();
             if (burnTime != 0 || cm.isFuel(inv.getFuel().getType())) {
                 Recipe recipe = cm.getFurnaceRecipe(inv.getSmelting());
                 if (recipe != null && (InventoryUtil.isEmpty(inv.getResult())

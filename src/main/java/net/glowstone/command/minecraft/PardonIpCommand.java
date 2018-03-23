@@ -2,7 +2,7 @@ package net.glowstone.command.minecraft;
 
 import com.google.common.net.InetAddresses;
 import java.util.Collections;
-import org.bukkit.Bukkit;
+import net.glowstone.ServerProvider;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -32,7 +32,7 @@ public class PardonIpCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + "You have entered an invalid IP address");
             return false;
         }
-        Bukkit.getServer().unbanIP(ip);
+        ServerProvider.getServer().unbanIP(ip);
         sender.sendMessage("Unbanned IP address " + ip);
         return true;
     }
