@@ -15,13 +15,13 @@ public final class GlowServerProvider {
      */
     @Getter
     @Setter
-    private static volatile GlowServer mockServer;
+    private static volatile Server mockServer;
 
     /**
      * Returns the current GlowServer instance.
      * @return the GlowServer instance
      */
-    public static GlowServer getServer() {
-        return mockServer == null ? (GlowServer) Bukkit.getServer() : mockServer;
+    public static Server getServer() {
+        return mockServer == null ? Bukkit.getServer() : mockServer;
     }
 }

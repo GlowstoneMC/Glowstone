@@ -11,6 +11,7 @@ import net.glowstone.GlowServerProvider;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
@@ -39,7 +40,7 @@ public class WhitelistCommand extends VanillaCommand {
             return false;
         }
         String subcommand = args[0];
-        GlowServer server = GlowServerProvider.getServer();
+        GlowServer server = (GlowServer) GlowServerProvider.getServer();
         if (subcommand.equals("on")) {
             sender.getServer().setWhitelist(true);
             sender.sendMessage("Turned on the whitelist");

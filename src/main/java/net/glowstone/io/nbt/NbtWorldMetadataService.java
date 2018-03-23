@@ -17,13 +17,14 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.WorldType;
 
 public class NbtWorldMetadataService implements WorldMetadataService {
 
     private final GlowWorld world;
     private final File dir;
-    private final GlowServer server;
+    private final Server server;
 
     private CompoundTag unknownTags;
 

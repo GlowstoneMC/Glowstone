@@ -19,6 +19,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowServerProvider;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Server;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -77,7 +78,7 @@ public class GlowPlayerProfile implements PlayerProfile {
             return CompletableFuture.completedFuture(null);
         }
 
-        GlowServer server = GlowServerProvider.getServer();
+        GlowServer server = (GlowServer) GlowServerProvider.getServer();
         if (server.getOnlineMode() || server.getProxySupport()) {
             return ProfileCache.getUuid(name).thenComposeAsync((uuid) -> {
                 if (uuid == null) {

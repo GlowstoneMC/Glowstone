@@ -18,12 +18,13 @@ import net.glowstone.io.structure.StructureStore;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
+import org.bukkit.Server;
 
 public class NbtStructureDataService implements StructureDataService {
 
     private final GlowWorld world;
     private final File structureDir;
-    private final GlowServer server;
+    private final Server server;
 
     /**
      * Creates the instance for the given world's structures.
