@@ -41,7 +41,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  * Tests for the minecraft query server.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({GlowPlayer.class, QueryServer.class})
+@PrepareForTest(QueryServer.class)
 public class QueryTest {
 
     /**
