@@ -2,7 +2,6 @@ package net.glowstone.map;
 
 import static net.glowstone.map.GlowMapCanvas.MAP_SIZE;
 
-import net.glowstone.GlowServer;
 import net.glowstone.GlowServerProvider;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.MaterialValueManager.ValueCollection;

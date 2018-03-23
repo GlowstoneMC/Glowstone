@@ -1,7 +1,6 @@
 package net.glowstone.inventory;
 
 import java.util.Arrays;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowServerProvider;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;

@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 import lombok.Getter;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
