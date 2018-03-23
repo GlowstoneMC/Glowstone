@@ -84,8 +84,9 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Override
     public void setUp() throws Exception {
         PowerMockito.mockStatic(Bukkit.class);
-        when(Bukkit.getServer()).thenReturn(server);
         super.setUp();
+        when(Bukkit.getServer()).thenReturn(server);
+        when(Bukkit.getItemFactory()).thenReturn(itemFactory);
         opsListFile = File.createTempFile("test-ops-list", "");
         opsList = new UuidListFile(opsListFile);
         when(server.getSessionRegistry()).thenReturn(sessionRegistry);
