@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.glowstone.GlowServer;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.ServerProvider;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
@@ -40,7 +39,7 @@ public class WhitelistCommand extends VanillaCommand {
             return false;
         }
         String subcommand = args[0];
-        GlowServer server = (GlowServer) GlowServerProvider.getServer();
+        GlowServer server = (GlowServer) ServerProvider.getServer();
         if (subcommand.equals("on")) {
             sender.getServer().setWhitelist(true);
             sender.sendMessage("Turned on the whitelist");

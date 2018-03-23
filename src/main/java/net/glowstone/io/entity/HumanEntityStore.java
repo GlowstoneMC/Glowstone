@@ -2,14 +2,13 @@ package net.glowstone.io.entity;
 
 import java.util.List;
 import net.glowstone.GlowServer;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.ServerProvider;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.GameMode;
-import org.bukkit.Server;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
@@ -32,7 +31,7 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         }
 
         if (tag.isInt("playerGameType")) {
-            GlowServer server = (GlowServer) GlowServerProvider.getServer();
+            GlowServer server = (GlowServer) ServerProvider.getServer();
             if (!server.getConfig().getBoolean(ServerConfig.Key.FORCE_GAMEMODE)) {
                 GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
                 if (mode != null) {

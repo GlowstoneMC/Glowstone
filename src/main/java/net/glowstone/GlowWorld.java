@@ -1230,7 +1230,7 @@ public class GlowWorld implements World {
 
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
-        GlowServerProvider.getServer().getScheduler()
+        ServerProvider.getServer().getScheduler()
                 .runTaskAsynchronously(null, () -> cb.onLoad(chunkManager.getChunk(x, z)));
     }
 

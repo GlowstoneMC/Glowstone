@@ -1,7 +1,7 @@
 package net.glowstone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.GlowServerProvider.getServer;
+import static net.glowstone.ServerProvider.getServer;
 
 import java.util.HashMap;
 import java.util.Map;

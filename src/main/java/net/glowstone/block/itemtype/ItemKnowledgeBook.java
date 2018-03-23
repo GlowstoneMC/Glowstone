@@ -1,6 +1,7 @@
 package net.glowstone.block.itemtype;
 
-import net.glowstone.GlowServerProvider;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
@@ -39,8 +40,8 @@ public class ItemKnowledgeBook extends ItemType {
             KnowledgeBookMeta recipes = (KnowledgeBookMeta) holding.getItemMeta();
             if (recipes.hasRecipes()) {
                 for (NamespacedKey recipe : recipes.getRecipes()) {
-                    player.learnRecipe(GlowServerProvider.getServer().getCraftingManager()
-                        .getRecipeByKey(recipe), true);
+                    player.learnRecipe(((GlowServer) ServerProvider.getServer())
+                            .getCraftingManager().getRecipeByKey(recipe), true);
                 }
             }
 

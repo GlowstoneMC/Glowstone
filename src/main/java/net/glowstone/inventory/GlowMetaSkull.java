@@ -8,7 +8,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
@@ -145,7 +146,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     @Override
     public OfflinePlayer getOwningPlayer() {
-        return GlowServerProvider.getServer().getOfflinePlayer(owner.get());
+        return ((GlowServer) ServerProvider.getServer()).getOfflinePlayer(owner.get());
     }
 
     /**

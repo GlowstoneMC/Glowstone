@@ -3,7 +3,7 @@ package net.glowstone.command.minecraft;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.ServerProvider;
 import net.glowstone.command.GameModeUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -43,7 +43,7 @@ public class DefaultGameModeCommand extends VanillaCommand {
             return false;
         }
 
-        GlowServerProvider.getServer().setDefaultGameMode(gamemode);
+        ServerProvider.getServer().setDefaultGameMode(gamemode);
         sender.sendMessage(
             "The world's default game mode is now " + ChatColor.GRAY + "" + ChatColor.ITALIC
                 + GameModeUtils.prettyPrint(gamemode) + " Mode");

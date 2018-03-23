@@ -9,7 +9,7 @@ import org.bukkit.Server;
  * Used to replace the {@link GlowServer} instance for testing purposes, when {@link
  * org.bukkit.Bukkit#setServer(Server)} has already been called.
  */
-public final class GlowServerProvider {
+public final class ServerProvider {
     /**
      * The current mock GlowServer instance, or null if not using a mock server.
      */

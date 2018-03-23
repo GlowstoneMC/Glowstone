@@ -1,6 +1,7 @@
 package net.glowstone.inventory;
 
-import net.glowstone.GlowServerProvider;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
@@ -89,7 +90,8 @@ public class GlowFurnaceInventory extends GlowInventory implements FurnaceInvent
     @Override
     public boolean itemPlaceAllowed(int slot, ItemStack stack) {
         if (slot == FUEL_SLOT) {
-            return GlowServerProvider.getServer().getCraftingManager().isFuel(stack.getType())
+            return ((GlowServer) ServerProvider.getServer())
+                    .getCraftingManager().isFuel(stack.getType())
                 || stack.getType().equals(Material.BUCKET);
         }
         return super.itemPlaceAllowed(slot, stack);

@@ -2,9 +2,8 @@ package net.glowstone.command.minecraft;
 
 import java.util.Collections;
 import net.glowstone.GlowServer;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.ServerProvider;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
@@ -29,7 +28,7 @@ public class OpCommand extends VanillaCommand {
             return false;
         }
         String name = args[0];
-        GlowServer server = (GlowServer) GlowServerProvider.getServer();
+        GlowServer server = (GlowServer) ServerProvider.getServer();
         // asynchronously lookup player
         server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
             if (ex != null) {

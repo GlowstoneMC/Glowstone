@@ -2,7 +2,7 @@ package net.glowstone.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.ServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
@@ -98,7 +98,7 @@ public class CommandUtils {
 
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
     private static GlowWorld getDefaultWorld() {
-        return (GlowWorld) GlowServerProvider.getServer().getWorlds().get(0);
+        return (GlowWorld) ServerProvider.getServer().getWorlds().get(0);
     }
 
     /**

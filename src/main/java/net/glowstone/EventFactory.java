@@ -1,6 +1,6 @@
 package net.glowstone;
 
-import static net.glowstone.GlowServerProvider.getServer;
+import static net.glowstone.ServerProvider.getServer;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;

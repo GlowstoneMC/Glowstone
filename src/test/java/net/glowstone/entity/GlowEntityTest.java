@@ -13,13 +13,12 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.ServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowScoreboardManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,14 +31,10 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * Superclass for tests of entity classes. Configures necessary mocks for subclasses.
@@ -99,7 +94,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(server.getItemFactory()).thenReturn(itemFactory);
-        GlowServerProvider.setMockServer(server);
+        ServerProvider.setMockServer(server);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
         location = new Location(world, 0, 0, 0);
@@ -135,7 +130,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @After
     public void tearDown() {
         EventFactory.setInstance(oldEventFactory);
-        GlowServerProvider.setMockServer(null);
+        ServerProvider.setMockServer(null);
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
         world = null;
         server = null;

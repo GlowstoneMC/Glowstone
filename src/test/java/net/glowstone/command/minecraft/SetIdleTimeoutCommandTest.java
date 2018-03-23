@@ -5,8 +5,7 @@ import static org.mockito.Matchers.eq;
 
 import java.util.Collections;
 import net.glowstone.GlowServer;
-import net.glowstone.GlowServerProvider;
-import org.bukkit.Bukkit;
+import net.glowstone.ServerProvider;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -29,7 +28,7 @@ public class SetIdleTimeoutCommandTest {
         command = new SetIdleTimeoutCommand();
 
         Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
-        GlowServerProvider.setMockServer(PowerMockito.mock(GlowServer.class));
+        ServerProvider.setMockServer(PowerMockito.mock(GlowServer.class));
     }
 
     @Test
@@ -85,7 +84,7 @@ public class SetIdleTimeoutCommandTest {
         MatcherAssert.assertThat(commandResult, is(true));
         Mockito.verify(opSender)
             .sendMessage(eq("Successfully set the idle timeout to 50 minutes."));
-        Mockito.verify(GlowServerProvider.getServer()).setIdleTimeout(50);
+        Mockito.verify(ServerProvider.getServer()).setIdleTimeout(50);
     }
 
     @Test

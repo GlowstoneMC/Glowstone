@@ -3,11 +3,10 @@ package net.glowstone.command.minecraft;
 import java.util.Collections;
 import java.util.List;
 import net.glowstone.GlowServer;
-import net.glowstone.GlowServerProvider;
+import net.glowstone.ServerProvider;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
@@ -29,7 +28,7 @@ public class BanCommand extends VanillaCommand {
         }
         if (args.length > 0) {
             String name = args[0];
-            GlowServer server = (GlowServer) GlowServerProvider.getServer();
+            GlowServer server = (GlowServer) ServerProvider.getServer();
             // asynchronously lookup player
             server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
                 if (ex != null) {
