@@ -5,7 +5,6 @@ import static net.glowstone.map.GlowMapCanvas.MAP_SIZE;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.MaterialValueManager.ValueCollection;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;

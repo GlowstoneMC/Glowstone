@@ -17,7 +17,6 @@ import net.glowstone.io.structure.StructureStore;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
-import org.bukkit.Bukkit;
 
 public class NbtStructureDataService implements StructureDataService {
 

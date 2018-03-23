@@ -5,7 +5,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.util.InventoryUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.CraftingInventory;

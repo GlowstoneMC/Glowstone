@@ -48,7 +48,6 @@ import java.util.zip.ZipException;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.config.ServerConfig.Key;
-import org.bukkit.Bukkit;
 
 /**
  * Interfaces with region files on the disk

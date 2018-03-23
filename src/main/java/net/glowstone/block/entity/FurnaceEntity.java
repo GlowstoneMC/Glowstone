@@ -12,7 +12,6 @@ import net.glowstone.inventory.GlowFurnaceInventory;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;

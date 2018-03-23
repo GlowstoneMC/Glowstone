@@ -17,7 +17,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.block.Block;

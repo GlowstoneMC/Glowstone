@@ -12,7 +12,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.ItemMeta;

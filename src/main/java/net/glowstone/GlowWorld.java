@@ -59,7 +59,6 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
 import org.bukkit.BlockChangeDelegate;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Difficulty;

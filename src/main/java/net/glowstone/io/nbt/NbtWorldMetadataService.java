@@ -15,7 +15,6 @@ import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WorldType;
 

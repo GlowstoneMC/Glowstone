@@ -37,7 +37,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import net.glowstone.GlowServer;
 import net.glowstone.util.config.ServerConfig.Key;
-import org.bukkit.Bukkit;
 
 /**
  * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.

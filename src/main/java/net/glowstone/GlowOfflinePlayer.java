@@ -12,7 +12,6 @@ import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import org.bukkit.BanList.Type;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.SerializableAs;

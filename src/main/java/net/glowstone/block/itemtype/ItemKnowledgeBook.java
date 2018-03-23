@@ -3,7 +3,6 @@ package net.glowstone.block.itemtype;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;

@@ -18,7 +18,6 @@ import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

@@ -145,7 +145,6 @@ import net.glowstone.generator.populators.overworld.SnowPopulator;
 import net.glowstone.util.OpenCompute;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;

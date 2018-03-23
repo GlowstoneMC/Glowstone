@@ -16,7 +16,6 @@ import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;

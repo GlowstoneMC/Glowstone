@@ -7,7 +7,6 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;

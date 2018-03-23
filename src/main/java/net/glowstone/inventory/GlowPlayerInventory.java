@@ -7,7 +7,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.util.InventoryUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
