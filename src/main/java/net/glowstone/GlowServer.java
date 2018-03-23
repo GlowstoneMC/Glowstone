@@ -729,7 +729,8 @@ public final class GlowServer implements Server {
             if (bestPlatform == null) {
                 isGraphicsComputeAvailable = false;
                 logger.info(strings.getString("console.info.opencl.no-device"));
-                logger.info(MessageFormat.format(strings.getString("console.info.required-version"), openClMajor,
+                logger.info(MessageFormat.format(strings.getString(
+                        "console.info.opencl.required-version"), openClMajor,
                         openClMinor));
                 logger.info(strings.getString("console.info.opencl.required-extensions"));
             } else {
