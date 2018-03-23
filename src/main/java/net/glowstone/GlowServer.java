@@ -511,12 +511,12 @@ public final class GlowServer implements Server {
             String opt = args[i];
 
             if (opt.isEmpty() || opt.charAt(0) != '-') {
-                System.err.format(strings.getString("console.warn.invalid-option"), opt);
+                System.err.format(strings.getString("console.warn.option.invalid"), opt);
             }
 
             // Help and version
             if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
-                System.out.println(strings.getString("console.info.command-line-help"));
+                System.out.println(strings.getString("console.info.option.help"));
                 return null;
             } else if ("--version".equals(opt) || "-v".equals(opt)) {
                 System.out.format(strings.getString("console.info.version.glowstone"),
@@ -534,7 +534,7 @@ public final class GlowServer implements Server {
 
             // Below this point, options require parameters
             if (i == args.length - 1 && !"--generate-config".equals(opt)) {
-                System.err.format(strings.getString("console.warn.option-no-value"), opt);
+                System.err.format(strings.getString("console.warn.option.no-value"), opt);
                 continue;
             }
 
@@ -588,7 +588,7 @@ public final class GlowServer implements Server {
                     // previously handled
                     break;
                 default:
-                    System.err.format(strings.getString("console.warn.invalid-option"), opt);
+                    System.err.format(strings.getString("console.warn.option.invalid"), opt);
             }
         }
 
