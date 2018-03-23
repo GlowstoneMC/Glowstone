@@ -28,9 +28,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -56,12 +58,14 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected GlowBlock block;
     @Mock
     protected GlowWorld world;
-    @Mock
+    @Mock(answer = Answers.RETURNS_SMART_NULLS)
     protected GlowServer server;
     @Mock
     protected GlowScoreboardManager scoreboardManager;
     @Mock
     protected EventFactory eventFactory;
+    @Mock
+    private PluginManager pluginManager;
 
     // Real objects
     protected Location location;
@@ -94,6 +98,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(server.getItemFactory()).thenReturn(itemFactory);
+        when(server.getPluginManager()).thenReturn(pluginManager);
         ServerProvider.setMockServer(server);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);

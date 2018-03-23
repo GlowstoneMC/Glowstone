@@ -83,11 +83,13 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Before
     @Override
     public void setUp() throws Exception {
+        PowerMockito.mockStatic(Bukkit.class);
+        when(Bukkit.getServer()).thenReturn(server);
         super.setUp();
         opsListFile = File.createTempFile("test-ops-list", "");
         opsList = new UuidListFile(opsListFile);
-        when(server.getPluginManager()).thenReturn(pluginManager);
         when(server.getSessionRegistry()).thenReturn(sessionRegistry);
+        when(server.getPluginManager()).thenReturn(pluginManager);
         scheduler = new GlowScheduler(server, worldScheduler);
         when(session.getServer()).thenReturn(server);
         when(server.getScheduler()).thenReturn(scheduler);
