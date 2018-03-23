@@ -62,7 +62,7 @@ public class EventFactory {
      * @param <T> The type of the event.
      * @return the called event
      */
-    public static <T extends Event> T callEvent(T event) {
+    public <T extends Event> T callEvent(T event) {
         Server server = getServer();
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);
