@@ -2,13 +2,13 @@ package net.glowstone.entity.passive;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.inventory.GlowLlamaInventory;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Llama;
-import org.bukkit.inventory.LlamaInventory;
 
-public class GlowLlama extends GlowChestedHorse implements Llama {
+public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements Llama {
 
     /**
      * Creates a llama entity.
@@ -39,11 +39,9 @@ public class GlowLlama extends GlowChestedHorse implements Llama {
     @Override
     public void setStrength(int strength) {
         metadata.set(MetadataIndex.LLAMA_STRENGTH, strength);
-    }
-
-    @Override
-    public LlamaInventory getInventory() {
-        return null; // todo
+        if (isCarryingChest()) {
+            inventory = createNewInventory();
+        }
     }
 
     @Override
@@ -59,5 +57,18 @@ public class GlowLlama extends GlowChestedHorse implements Llama {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_LLAMA_AMBIENT;
+    }
+
+    @Override
+    protected GlowLlamaInventory createNewInventory() {
+        GlowLlamaInventory oldInventory = inventory;
+        GlowLlamaInventory newInventory
+                = new GlowLlamaInventory(this, isCarryingChest() ? 3 * getStrength() : 0);
+        if (oldInventory != null) {
+            newInventory.setSaddle(oldInventory.getSaddle());
+            newInventory.setDecor(oldInventory.getDecor());
+            moveChestContents(oldInventory, newInventory);
+        }
+        return newInventory;
     }
 }
