@@ -2,8 +2,8 @@ package net.glowstone.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.glowstone.ServerProvider;
 import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
 import net.glowstone.block.state.StateSerialization;
