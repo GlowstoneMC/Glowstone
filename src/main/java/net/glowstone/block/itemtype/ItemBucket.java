@@ -77,7 +77,7 @@ public class ItemBucket extends ItemType {
 
             Material replaceWith = ((BlockLiquid) targetBlockType).getBucketType();
 
-            PlayerBucketFillEvent event = EventFactory.callEvent(
+            PlayerBucketFillEvent event = EventFactory.getInstance().callEvent(
                 new PlayerBucketFillEvent(player, target, face, holding.getType(), holding));
             if (event.isCancelled()) {
                 return;

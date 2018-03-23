@@ -11,6 +11,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
@@ -41,7 +43,14 @@ import org.bukkit.scheduler.BukkitScheduler;
 /**
  * Central class for the calling of events.
  */
-public final class EventFactory {
+public class EventFactory {
+
+    /**
+     * The instance of this class. Setter should only be called in tests when mocking.
+     */
+    @Getter
+    @Setter
+    private static EventFactory instance = new EventFactory();
 
     private EventFactory() {
     }
@@ -55,7 +64,6 @@ public final class EventFactory {
      */
     public static <T extends Event> T callEvent(T event) {
         Server server = getServer();
-
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);
             return event;
@@ -93,7 +101,7 @@ public final class EventFactory {
      * @return an AsyncPlayerPreLoginEvent
      */
     @SuppressWarnings("deprecation")
-    public static AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address,
+    public AsyncPlayerPreLoginEvent onPlayerPreLogin(String name, InetSocketAddress address,
             UUID uuid) {
         // call async event
         AsyncPlayerPreLoginEvent event = new AsyncPlayerPreLoginEvent(name, address
@@ -125,7 +133,7 @@ public final class EventFactory {
      * @param hostname the hostname that was used to connect to the server
      * @return the completed event
      */
-    public static PlayerLoginEvent onPlayerLogin(GlowPlayer player, String hostname) {
+    public PlayerLoginEvent onPlayerLogin(GlowPlayer player, String hostname) {
         Server server = player.getServer();
         InetAddress address = player.getAddress().getAddress();
         String addressString = address.getHostAddress();
@@ -159,7 +167,7 @@ public final class EventFactory {
      * @return the completed event
      */
     @SuppressWarnings("deprecation")
-    public static AsyncPlayerChatEvent onPlayerChat(boolean async, Player player, String message) {
+    public AsyncPlayerChatEvent onPlayerChat(boolean async, Player player, String message) {
         // call async event
         Set<Player> recipients = new HashSet<>(player.getServer().getOnlinePlayers());
         AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(async, player, message, recipients);
@@ -182,16 +190,16 @@ public final class EventFactory {
         return event;
     }
 
-    public static PlayerJoinEvent onPlayerJoin(Player player) {
+    public PlayerJoinEvent onPlayerJoin(Player player) {
         return callEvent(new PlayerJoinEvent(player,
                 ChatColor.YELLOW + player.getName() + " joined the game"));
     }
 
-    public static PlayerKickEvent onPlayerKick(Player player, String reason) {
+    public PlayerKickEvent onPlayerKick(Player player, String reason) {
         return callEvent(new PlayerKickEvent(player, reason, null));
     }
 
-    public static PlayerQuitEvent onPlayerQuit(Player player) {
+    public PlayerQuitEvent onPlayerQuit(Player player) {
         return callEvent(new PlayerQuitEvent(player,
                 ChatColor.YELLOW + player.getName() + " left the game"));
     }
@@ -204,7 +212,7 @@ public final class EventFactory {
      * @param hand the active hand
      * @return the completed event
      */
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action,
+    public PlayerInteractEvent onPlayerInteract(Player player, Action action,
             EquipmentSlot hand) {
         return onPlayerInteract(player, action, hand, null, BlockFace.SELF);
     }
@@ -219,7 +227,7 @@ public final class EventFactory {
      * @param face the side of the block clicked
      * @return the completed event
      */
-    public static PlayerInteractEvent onPlayerInteract(Player player, Action action,
+    public PlayerInteractEvent onPlayerInteract(Player player, Action action,
             EquipmentSlot hand, Block clicked, BlockFace face) {
         return callEvent(new PlayerInteractEvent(player, action,
                 hand == EquipmentSlot.OFF_HAND ? player.getInventory().getItemInOffHand()
@@ -234,7 +242,7 @@ public final class EventFactory {
      * @param <T> the event's type
      * @return the completed event
      */
-    public static <T extends EntityDamageEvent> T onEntityDamage(T event) {
+    public <T extends EntityDamageEvent> T onEntityDamage(T event) {
         T result = callEvent(event);
         if (!result.isCancelled()) {
             result.getEntity().setLastDamageCause(result);

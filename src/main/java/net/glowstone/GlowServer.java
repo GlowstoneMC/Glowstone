@@ -202,7 +202,7 @@ import org.bukkit.util.permissions.DefaultPermissions;
  *
  * @author Graham Edgecombe
  */
-public final class GlowServer implements Server {
+public class GlowServer implements Server {
 
     /**
      * The logger for this class.

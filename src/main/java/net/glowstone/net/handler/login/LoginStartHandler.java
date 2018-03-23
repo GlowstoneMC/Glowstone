@@ -4,6 +4,7 @@ import com.flowpowered.network.MessageHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import net.glowstone.EventFactory;
+import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.ProxyData;
@@ -18,12 +19,13 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
     @Override
     public void handle(GlowSession session, LoginStartMessage message) {
         String name = message.getUsername();
+        GlowServer server = session.getServer();
 
-        if (session.getServer().getOnlineMode()) {
+        if (server.getOnlineMode()) {
             // Get necessary information to create our request message
             String sessionId = session.getSessionId();
             byte[] publicKey = SecurityUtils
-                .generateX509Key(session.getServer().getKeyPair().getPublic())
+                .generateX509Key(server.getKeyPair().getPublic())
                 .getEncoded(); //Convert to X509 format
             byte[] verifyToken = SecurityUtils.generateVerifyToken();
 
@@ -48,7 +50,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
                 }
             }
 
-            AsyncPlayerPreLoginEvent event = EventFactory
+            AsyncPlayerPreLoginEvent event = EventFactory.getInstance()
                 .onPlayerPreLogin(profile.getName(), session.getAddress(), profile.getUniqueId());
             if (event.getLoginResult() != Result.ALLOWED) {
                 session.disconnect(event.getKickMessage(), true);
@@ -56,7 +58,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             }
 
             GlowPlayerProfile finalProfile = profile;
-            session.getServer().getScheduler().runTask(null, () -> session.setPlayer(finalProfile));
+            server.getScheduler().runTask(null, () -> session.setPlayer(finalProfile));
         }
     }
 }

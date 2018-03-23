@@ -163,12 +163,13 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
         }
 
         if ((message.getAction() == Action.INTERACT.ordinal())
-            && message.getHandSlot() == EquipmentSlot.HAND) {
+                && message.getHandSlot() == EquipmentSlot.HAND) {
+            EventFactory eventFactory = EventFactory.getInstance();
             if (player.getLeashedEntities().isEmpty()) {
                 List<GlowEntity> entities = ImmutableList.copyOf(getLeashedEntities());
                 for (GlowEntity leashedEntity : entities) {
-                    if (EventFactory.callEvent(
-                        EventFactory.callEvent(new PlayerUnleashEntityEvent(leashedEntity, player)))
+                    if (eventFactory.callEvent(
+                        eventFactory.callEvent(new PlayerUnleashEntityEvent(leashedEntity, player)))
                         .isCancelled()) {
                         continue;
                     }
@@ -183,7 +184,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
             } else {
                 List<GlowEntity> entities = ImmutableList.copyOf(player.getLeashedEntities());
                 for (GlowEntity leashedEntity : entities) {
-                    if (EventFactory.callEvent(EventFactory
+                    if (eventFactory.callEvent(eventFactory
                         .callEvent(new PlayerLeashEntityEvent(leashedEntity, this, player)))
                         .isCancelled()) {
                         continue;

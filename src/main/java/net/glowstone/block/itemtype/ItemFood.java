@@ -33,14 +33,14 @@ public class ItemFood extends ItemTimedUsage {
 
     protected boolean handleEat(GlowPlayer player, ItemStack item) {
         PlayerItemConsumeEvent event1 = new PlayerItemConsumeEvent(player, item);
-        EventFactory.callEvent(event1);
+        EventFactory.getInstance().callEvent(event1);
         if (event1.isCancelled()) {
             return false;
         }
 
         FoodLevelChangeEvent event2 = new FoodLevelChangeEvent(player,
             getFoodLevel(item) + player.getFoodLevel());
-        EventFactory.callEvent(event2);
+        EventFactory.getInstance().callEvent(event2);
 
         if (!event2.isCancelled()) {
             player.setFoodLevelAndSaturation(event2.getFoodLevel(), getSaturation(item));

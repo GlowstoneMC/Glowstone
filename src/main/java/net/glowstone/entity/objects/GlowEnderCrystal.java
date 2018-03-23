@@ -83,7 +83,7 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
         }
 
         if (cause != DamageCause.ENTITY_EXPLOSION) {
-            ExplosionPrimeEvent event = EventFactory
+            ExplosionPrimeEvent event = EventFactory.getInstance()
                 .callEvent(new ExplosionPrimeEvent(this, Explosion.POWER_ENDER_CRYSTAL, true));
 
             if (!event.isCancelled()) {

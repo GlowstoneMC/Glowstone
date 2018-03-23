@@ -31,6 +31,7 @@ public final class InteractEntityHandler implements
     @Override
     public void handle(GlowSession session, InteractEntityMessage message) {
         GlowPlayer player = session.getPlayer();
+        EventFactory eventFactory = EventFactory.getInstance();
 
         // You can't do anything when you're dead
         if (player.isDead()) {
@@ -138,7 +139,7 @@ public final class InteractEntityHandler implements
             PlayerInteractAtEntityEvent event = new PlayerInteractAtEntityEvent(player,
                 possibleTarget,
                 new Vector(message.getTargetX(), message.getTargetY(), message.getTargetZ()), hand);
-            EventFactory.callEvent(event);
+            eventFactory.callEvent(event);
 
             if (!event.isCancelled()) {
                 possibleTarget.entityInteract(player, message);
@@ -147,7 +148,7 @@ public final class InteractEntityHandler implements
             //Todo: Handle hand variable
             PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, possibleTarget,
                 hand);
-            EventFactory.callEvent(event);
+            eventFactory.callEvent(event);
 
             if (!event.isCancelled()) {
                 possibleTarget.entityInteract(player, message);

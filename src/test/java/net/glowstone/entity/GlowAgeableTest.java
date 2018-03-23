@@ -3,19 +3,17 @@ package net.glowstone.entity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-import java.io.IOException;
 import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingEntityTest<T> {
@@ -145,6 +143,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
                 eq(CreatureSpawnEvent.SpawnReason.SPAWNER_EGG)))
                 .thenCallRealMethod();
         T baby = (T) entity.createBaby();
+        assertNotNull(baby);
         assertNotEquals(entity, baby);
         assertEquals(entity.getClass(), baby.getClass());
         assertEquals(entity, baby.getParent());

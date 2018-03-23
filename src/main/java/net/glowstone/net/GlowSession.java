@@ -265,7 +265,8 @@ public class GlowSession extends BasicSession {
         }
 
         // login event
-        PlayerLoginEvent event = EventFactory.onPlayerLogin(player, virtualHost.toString());
+        PlayerLoginEvent event = EventFactory.getInstance()
+                .onPlayerLogin(player, virtualHost.toString());
         if (event.getResult() != Result.ALLOWED) {
             disconnect(event.getKickMessage(), true);
             return;
@@ -282,7 +283,7 @@ public class GlowSession extends BasicSession {
                 .getUniqueId());
 
         // message and user list
-        String message = EventFactory.onPlayerJoin(player).getJoinMessage();
+        String message = EventFactory.getInstance().onPlayerJoin(player).getJoinMessage();
         if (message != null && !message.isEmpty()) {
             server.broadcastMessage(message);
         }
@@ -361,7 +362,7 @@ public class GlowSession extends BasicSession {
      */
     public void disconnect(String reason, boolean overrideKick) {
         if (player != null && !overrideKick) {
-            PlayerKickEvent event = EventFactory.onPlayerKick(player, reason);
+            PlayerKickEvent event = EventFactory.getInstance().onPlayerKick(player, reason);
             if (event.isCancelled()) {
                 return;
             }
@@ -443,7 +444,7 @@ public class GlowSession extends BasicSession {
                 }
             } while (!bars.isEmpty());
 
-            String text = EventFactory.onPlayerQuit(player).getQuitMessage();
+            String text = EventFactory.getInstance().onPlayerQuit(player).getQuitMessage();
             if (online && text != null && !text.isEmpty()) {
                 server.broadcastMessage(text);
             }

@@ -820,7 +820,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 saturation = Math.max(saturation - 1f, 0f);
                 sendHealth();
             } else if (world.getDifficulty() != Difficulty.PEACEFUL) {
-                FoodLevelChangeEvent event = EventFactory
+                FoodLevelChangeEvent event = EventFactory.getInstance()
                         .callEvent(new FoodLevelChangeEvent(this, Math.max(foodLevel - 1, 0)));
                 if (!event.isCancelled()) {
                     foodLevel = event.getFoodLevel();
@@ -835,7 +835,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
                 EntityRegainHealthEvent event1
                         = new EntityRegainHealthEvent(this, 1f, RegainReason.SATIATED);
-                EventFactory.callEvent(event1);
+                EventFactory.getInstance().callEvent(event1);
                 if (!event1.isCancelled()) {
                     setHealth(getHealth() + 1);
                 }
@@ -1155,7 +1155,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // fire world change if needed
         if (oldWorld != world) {
             session.send(((GlowWorldBorder) world.getWorldBorder()).createMessage());
-            EventFactory.callEvent(new PlayerChangedWorldEvent(this, oldWorld));
+            EventFactory.getInstance().callEvent(new PlayerChangedWorldEvent(this, oldWorld));
         }
     }
 
@@ -1215,7 +1215,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
             // fire event and perform spawn
             PlayerRespawnEvent event = new PlayerRespawnEvent(this, dest, spawnAtBed);
-            EventFactory.callEvent(event);
+            EventFactory.getInstance().callEvent(event);
             if (event.getRespawnLocation().getWorld().equals(getWorld()) && !knownEntities
                     .isEmpty()) {
                 // we need to manually reset all known entities if the player respawns in the
@@ -1326,7 +1326,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setVelocity(Vector velocity) {
-        PlayerVelocityEvent event = EventFactory.callEvent(new PlayerVelocityEvent(this, velocity));
+        PlayerVelocityEvent event = EventFactory.getInstance()
+                .callEvent(new PlayerVelocityEvent(this, velocity));
         if (!event.isCancelled()) {
             velocity = event.getVelocity();
             super.setVelocity(velocity);
@@ -1539,7 +1540,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void setGameMode(GameMode mode) {
         if (getGameMode() != mode) {
             PlayerGameModeChangeEvent event = new PlayerGameModeChangeEvent(this, mode);
-            if (EventFactory.callEvent(event).isCancelled()) {
+            if (EventFactory.getInstance().callEvent(event).isCancelled()) {
                 return;
             }
 
@@ -1572,7 +1573,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setSneaking(boolean sneak) {
-        if (EventFactory.callEvent(new PlayerToggleSneakEvent(this, sneak)).isCancelled()) {
+        if (EventFactory.getInstance()
+                .callEvent(new PlayerToggleSneakEvent(this, sneak)).isCancelled()) {
             return;
         }
 
@@ -1586,7 +1588,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setSprinting(boolean sprinting) {
-        if (EventFactory.callEvent(new PlayerToggleSprintEvent(this, sprinting)).isCancelled()) {
+        if (EventFactory.getInstance()
+                .callEvent(new PlayerToggleSprintEvent(this, sprinting)).isCancelled()) {
             return;
         }
 
@@ -1885,7 +1888,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event
                     = new PlayerTeleportEvent(this, this.location, location, cause);
-            if (EventFactory.callEvent(event).isCancelled()) {
+            if (EventFactory.getInstance().callEvent(event).isCancelled()) {
                 return false;
             }
             location = event.getTo();
@@ -1926,7 +1929,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             target = server.getWorlds().get(0).getSpawnLocation();
         }
 
-        PlayerPortalEvent event = EventFactory
+        PlayerPortalEvent event = EventFactory.getInstance()
                 .callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
@@ -1956,7 +1959,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             return false;
         }
 
-        PlayerPortalEvent event = EventFactory
+        PlayerPortalEvent event = EventFactory.getInstance()
                 .callEvent(new PlayerPortalEvent(this, location.clone(), target, null));
         if (event.isCancelled()) {
             return false;
@@ -1981,7 +1984,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
         GlowBlock head = BlockBed.getHead(block);
         GlowBlock foot = BlockBed.getFoot(block);
-        if (EventFactory.callEvent(new PlayerBedEnterEvent(this, head)).isCancelled()) {
+        if (EventFactory.getInstance()
+                .callEvent(new PlayerBedEnterEvent(this, head)).isCancelled()) {
             return;
         }
 
@@ -2029,7 +2033,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         teleported = true;
 
         // Call event
-        EventFactory.callEvent(new PlayerBedLeaveEvent(this, head));
+        EventFactory.getInstance().callEvent(new PlayerBedLeaveEvent(this, head));
 
         playAnimationToSelf(EntityAnimation.LEAVE_BED);
         playAnimation(EntityAnimation.LEAVE_BED);
@@ -2223,7 +2227,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 try {
                     PlayerCommandPreprocessEvent event
                             = new PlayerCommandPreprocessEvent(this, text);
-                    if (!EventFactory.callEvent(event).isCancelled()) {
+                    if (!EventFactory.getInstance().callEvent(event).isCancelled()) {
                         server.dispatchCommand(this, event.getMessage().substring(1));
                     }
                 } catch (Exception ex) {
@@ -2242,7 +2246,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 task.run();
             }
         } else {
-            AsyncPlayerChatEvent event = EventFactory.onPlayerChat(async, this, text);
+            AsyncPlayerChatEvent event = EventFactory.getInstance().onPlayerChat(async, this, text);
             if (event.isCancelled()) {
                 return;
             }
@@ -2819,7 +2823,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         PlayerAchievementAwardedEvent event = new PlayerAchievementAwardedEvent(this, achievement);
-        if (EventFactory.callEvent(event).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
             return false; // event was cancelled
         }
 
@@ -3054,7 +3058,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         GlowItem dropping = super.drop(stack);
         if (dropping != null) {
             PlayerDropItemEvent event = new PlayerDropItemEvent(this, dropping);
-            EventFactory.callEvent(event);
+            EventFactory.getInstance().callEvent(event);
             if (event.isCancelled()) {
                 dropping.remove();
                 dropping = null;
@@ -3294,7 +3298,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public void addChannel(String channel) {
         checkArgument(listeningChannels.size() < 128, "Cannot add more than 127 channels!");
         if (listeningChannels.add(channel)) {
-            EventFactory.callEvent(new PlayerRegisterChannelEvent(this, channel));
+            EventFactory.getInstance().callEvent(new PlayerRegisterChannelEvent(this, channel));
         }
     }
 
@@ -3305,7 +3309,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void removeChannel(String channel) {
         if (listeningChannels.remove(channel)) {
-            EventFactory.callEvent(new PlayerUnregisterChannelEvent(this, channel));
+            EventFactory.getInstance().callEvent(new PlayerUnregisterChannelEvent(this, channel));
         }
     }
 
