@@ -2,7 +2,6 @@ package net.glowstone.util;
 
 import lombok.Getter;
 import net.glowstone.ServerProvider;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
