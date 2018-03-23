@@ -126,6 +126,7 @@ import java.util.Random;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.ground.DirtAndStonePatchGroundGenerator;
@@ -323,7 +324,8 @@ public class OverworldGenerator extends GlowChunkGenerator {
             } finally {
                 // Clean up
                 if (noise != null) {
-                    GlowServerProvider.getServer().getScheduler().runTaskAsynchronously(null, noise::release);
+                    GlowServerProvider.getServer().getScheduler()
+                            .runTaskAsynchronously(null, noise::release);
                 }
                 if (noiseGen != null) {
                     noiseGen.rewind();

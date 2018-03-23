@@ -2,6 +2,7 @@ package net.glowstone.io.entity;
 
 import java.util.List;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.config.ServerConfig;
@@ -30,7 +31,7 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         }
 
         if (tag.isInt("playerGameType")) {
-            GlowServer server = (GlowServer) GlowServerProvider.getServer();
+            GlowServer server = GlowServerProvider.getServer();
             if (!server.getConfig().getBoolean(ServerConfig.Key.FORCE_GAMEMODE)) {
                 GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
                 if (mode != null) {

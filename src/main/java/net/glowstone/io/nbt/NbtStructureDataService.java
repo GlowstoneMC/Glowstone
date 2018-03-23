@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.generator.structures.GlowStructure;
@@ -33,7 +34,7 @@ public class NbtStructureDataService implements StructureDataService {
     public NbtStructureDataService(GlowWorld world, File structureDir) {
         this.world = world;
         this.structureDir = structureDir;
-        server = (GlowServer) GlowServerProvider.getServer();
+        server = GlowServerProvider.getServer();
 
         if (!structureDir.isDirectory() && !structureDir.mkdirs()) {
             server.getLogger().warning("Failed to create directory: " + structureDir);

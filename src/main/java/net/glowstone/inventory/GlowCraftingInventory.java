@@ -2,6 +2,7 @@ package net.glowstone.inventory;
 
 import java.util.Arrays;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.util.InventoryUtil;
@@ -98,7 +99,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
      */
     public void craft() {
         ItemStack[] matrix = getMatrix();
-        CraftingManager cm = ((GlowServer) GlowServerProvider.getServer()).getCraftingManager();
+        CraftingManager cm = GlowServerProvider.getServer().getCraftingManager();
         Recipe recipe = cm.getCraftingRecipe(matrix);
 
         if (recipe != null) {
@@ -136,7 +137,7 @@ public class GlowCraftingInventory extends GlowInventory implements CraftingInve
 
     @Override
     public Recipe getRecipe() {
-        return ((GlowServer) GlowServerProvider.getServer()).getCraftingManager()
+        return GlowServerProvider.getServer().getCraftingManager()
             .getCraftingRecipe(getMatrix());
     }
 

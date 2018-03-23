@@ -2,6 +2,7 @@ package net.glowstone.command.minecraft;
 
 import com.google.common.net.InetAddresses;
 import java.util.Collections;
+import net.glowstone.GlowServerProvider;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;

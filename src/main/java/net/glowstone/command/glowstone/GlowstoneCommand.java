@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.GlowPlayer;

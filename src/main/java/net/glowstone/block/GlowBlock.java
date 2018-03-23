@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
-import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.MaterialValueManager.ValueCollection;
 import net.glowstone.block.blocktype.BlockRedstone;
@@ -282,7 +282,7 @@ public class GlowBlock implements Block {
     }
 
     public ValueCollection getMaterialValues() {
-        return ((GlowServer) GlowServerProvider.getServer()).getMaterialValueManager().getValues(getType());
+        return GlowServerProvider.getServer().getMaterialValueManager().getValues(getType());
     }
 
     ////////////////////////////////////////////////////////////////////////////

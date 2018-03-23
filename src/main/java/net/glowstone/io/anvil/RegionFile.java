@@ -47,6 +47,7 @@ import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.util.config.ServerConfig.Key;
 
 /**
@@ -83,7 +84,7 @@ import net.glowstone.util.config.ServerConfig.Key;
  */
 public class RegionFile {
 
-    private static final boolean COMPRESSION_ENABLED = ((GlowServer) GlowServerProvider.getServer()).getConfig()
+    private static final boolean COMPRESSION_ENABLED = GlowServerProvider.getServer().getConfig()
             .getBoolean(Key.REGION_COMPRESSION);
 
     private static final byte VERSION_GZIP = 1;

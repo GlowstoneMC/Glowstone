@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
@@ -36,7 +37,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
         this.dir = dir;
-        server = (GlowServer) GlowServerProvider.getServer();
+        server = GlowServerProvider.getServer();
 
         if (!dir.isDirectory() && !dir.mkdirs()) {
             server.getLogger().warning("Failed to create directory: " + dir);

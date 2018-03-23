@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.state.GlowFurnace;
@@ -91,7 +92,7 @@ public class FurnaceEntity extends ContainerEntity {
 
         if (burnTime == 0) {
             if (isBurnable) {
-                CraftingManager cm = ((GlowServer) GlowServerProvider.getServer()).getCraftingManager();
+                CraftingManager cm = GlowServerProvider.getServer().getCraftingManager();
                 FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, inv.getFuel(),
                     cm.getFuelTime(inv.getFuel().getType()));
                 EventFactory.getInstance().callEvent(burnEvent);

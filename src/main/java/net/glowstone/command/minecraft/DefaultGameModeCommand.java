@@ -3,6 +3,7 @@ package net.glowstone.command.minecraft;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.glowstone.GlowServerProvider;
 import net.glowstone.command.GameModeUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
