@@ -471,10 +471,10 @@ public final class GlowServer implements Server {
 
             server.run();
         } catch (SecurityException e) {
-            logger.log(Level.WARNING, strings.getString("console.error.loading-classpath"), e);
+            logger.log(Level.WARNING, strings.getString("console.error.classpath"), e);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, strings.getString("console.error.during-startup"), t);
+            logger.log(Level.SEVERE, strings.getString("console.error.startup"), t);
             System.exit(1);
         }
     }
@@ -749,7 +749,7 @@ public final class GlowServer implements Server {
         try {
             LootingManager.load();
         } catch (Exception e) {
-            GlowServer.logger.severe(strings.getString("console.error.loading-looting-manager"));
+            GlowServer.logger.severe(strings.getString("console.error.looting-manager"));
             e.printStackTrace();
         }
 
