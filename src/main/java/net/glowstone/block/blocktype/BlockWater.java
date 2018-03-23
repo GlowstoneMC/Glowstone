@@ -32,7 +32,7 @@ public class BlockWater extends BlockLiquid {
                 state.setType(Material.ICE);
                 state.setData(new MaterialData(Material.ICE));
                 BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
-                EventFactory.callEvent(spreadEvent);
+                EventFactory.getInstance().callEvent(spreadEvent);
                 if (!spreadEvent.isCancelled()) {
                     state.update(true);
                 }

@@ -65,7 +65,7 @@ public class BlockCactus extends BlockType {
                     state.setType(Material.CACTUS);
                     state.setRawData((byte) 0);
                     BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
-                    EventFactory.callEvent(growEvent);
+                    EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         state.update(true);
                     }

@@ -80,7 +80,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player,
                 blockStates);
-            EventFactory.callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
                     state.update(true);
@@ -138,7 +138,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                 GlowBlockState state = world.getBlockAt(nx, ny, nz).getState();
                 state.setType(mushroomType);
                 BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
-                EventFactory.callEvent(spreadEvent);
+                EventFactory.getInstance().callEvent(spreadEvent);
                 if (!spreadEvent.isCancelled()) {
                     state.update(true);
                 }

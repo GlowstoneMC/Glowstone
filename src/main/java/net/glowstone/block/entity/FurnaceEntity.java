@@ -95,7 +95,7 @@ public class FurnaceEntity extends ContainerEntity {
                 CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
                 FurnaceBurnEvent burnEvent = new FurnaceBurnEvent(block, inv.getFuel(),
                     cm.getFuelTime(inv.getFuel().getType()));
-                EventFactory.callEvent(burnEvent);
+                EventFactory.getInstance().callEvent(burnEvent);
                 if (!burnEvent.isCancelled() && burnEvent.isBurning()) {
                     burnTime = (short) burnEvent.getBurnTime();
                     burnTimeFuel = burnTime;
@@ -133,7 +133,7 @@ public class FurnaceEntity extends ContainerEntity {
             if (recipe != null) {
                 FurnaceSmeltEvent smeltEvent = new FurnaceSmeltEvent(block, inv.getSmelting(),
                     recipe.getResult());
-                EventFactory.callEvent(smeltEvent);
+                EventFactory.getInstance().callEvent(smeltEvent);
                 if (!smeltEvent.isCancelled()) {
                     if (inv.getSmelting().getType().equals(Material.SPONGE)
                         && inv.getSmelting().getData().getData() == 1 && inv.getFuel() != null

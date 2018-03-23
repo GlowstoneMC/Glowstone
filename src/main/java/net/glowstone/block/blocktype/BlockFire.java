@@ -167,7 +167,8 @@ public class BlockFire extends BlockNeedsAttached {
                                         .nextInt(y > 1 ? 100 + 100 * (y - 1) : 100) <= resistance) {
                                         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(
                                             propagationBlock, IgniteCause.SPREAD, block);
-                                        EventFactory.callEvent(igniteEvent);
+                                        EventFactory.getInstance()
+                                                .callEvent(igniteEvent);
                                         if (!igniteEvent.isCancelled()) {
                                             if (propagationBlock.getType() == Material.TNT) {
                                                 BlockTnt.igniteBlock(propagationBlock, false);
@@ -233,7 +234,7 @@ public class BlockFire extends BlockNeedsAttached {
         if (ThreadLocalRandom.current().nextInt(burnResistance) < block.getMaterialValues()
             .getFireResistance()) {
             BlockBurnEvent burnEvent = new BlockBurnEvent(block, from);
-            EventFactory.callEvent(burnEvent);
+            EventFactory.getInstance().callEvent(burnEvent);
             if (!burnEvent.isCancelled()) {
                 if (block.getType() == Material.TNT) {
                     BlockTnt.igniteBlock(block, false);

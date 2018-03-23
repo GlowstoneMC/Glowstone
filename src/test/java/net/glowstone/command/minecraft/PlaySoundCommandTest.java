@@ -30,7 +30,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, CommandUtils.class, GlowServer.class, GlowWorld.class})
+@PrepareForTest({Bukkit.class, CommandUtils.class})
 public class PlaySoundCommandTest {
 
     private Player fakePlayer1, fakePlayer2, fakePlayer3;

@@ -65,7 +65,7 @@ public class ItemFlintAndSteel extends ItemTool {
             return true;
         }
 
-        BlockIgniteEvent event = EventFactory
+        BlockIgniteEvent event = EventFactory.getInstance()
             .callEvent(new BlockIgniteEvent(fireBlock, IgniteCause.FLINT_AND_STEEL, player, null));
         if (event.isCancelled()) {
             player.setItemInHand(holding);

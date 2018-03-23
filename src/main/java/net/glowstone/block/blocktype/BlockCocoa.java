@@ -112,7 +112,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
             GlowBlockState state = block.getState();
             state.setData(cocoa);
             BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-            EventFactory.callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 state.update(true);
             }
@@ -138,7 +138,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
                 GlowBlockState state = block.getState();
                 state.setData(cocoa);
                 BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-                EventFactory.callEvent(growEvent);
+                EventFactory.getInstance().callEvent(growEvent);
                 if (!growEvent.isCancelled()) {
                     state.update(true);
                 }

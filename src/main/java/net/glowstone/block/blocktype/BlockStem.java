@@ -75,7 +75,7 @@ public class BlockStem extends BlockCrops {
         }
         state.setRawData((byte) cropState);
         BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-        EventFactory.callEvent(growEvent);
+        EventFactory.getInstance().callEvent(growEvent);
         if (!growEvent.isCancelled()) {
             state.update(true);
         }
@@ -133,7 +133,7 @@ public class BlockStem extends BlockCrops {
                 GlowBlockState state = block.getState();
                 state.setRawData((byte) cropState);
                 BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-                EventFactory.callEvent(growEvent);
+                EventFactory.getInstance().callEvent(growEvent);
                 if (!growEvent.isCancelled()) {
                     state.update(true);
                 }

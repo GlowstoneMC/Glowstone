@@ -138,7 +138,7 @@ public class GlowItem extends GlowEntity implements Item {
 
         // disappear if we've lived too long
         if (getTicksLived() >= LIFETIME) {
-            ItemDespawnEvent event = EventFactory
+            ItemDespawnEvent event = EventFactory.getInstance()
                     .callEvent(new ItemDespawnEvent(this, getLocation()));
             if (event.isCancelled()) {
                 // Allow it to live for 5 more minutes, according to docs

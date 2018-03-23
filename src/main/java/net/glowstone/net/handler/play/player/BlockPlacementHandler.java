@@ -104,7 +104,7 @@ public final class BlockPlacementHandler implements
             GlowPlayer player, ItemStack holding, EquipmentSlot slot, GlowBlock clicked,
             BlockFace face, Vector clickedLoc) {
         // call interact event
-        PlayerInteractEvent event = EventFactory.onPlayerInteract(
+        PlayerInteractEvent event = EventFactory.getInstance().onPlayerInteract(
                 player, Action.RIGHT_CLICK_BLOCK, slot, clicked, face);
 
         // attempt to use interacted block

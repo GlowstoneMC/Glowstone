@@ -19,7 +19,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CommandUtils.class, GlowWorld.class})
+@PrepareForTest({CommandUtils.class})
 public class ToggleDownfallCommandTest {
 
     private World world;

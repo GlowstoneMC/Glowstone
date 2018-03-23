@@ -149,7 +149,8 @@ public final class ChunkManager {
         // try to load chunk
         try {
             if (service.read(chunk)) {
-                EventFactory.callEvent(new ChunkLoadEvent(chunk, false));
+                EventFactory.getInstance()
+                        .callEvent(new ChunkLoadEvent(chunk, false));
                 return true;
             }
         } catch (IOException e) {
@@ -176,7 +177,7 @@ public final class ChunkManager {
             return false;
         }
 
-        EventFactory.callEvent(new ChunkLoadEvent(chunk, true));
+        EventFactory.getInstance().callEvent(new ChunkLoadEvent(chunk, true));
 
         // right now, forcePopulate takes care of populating chunks that players actually see.
         /*for (int x2 = x - 1; x2 <= x + 1; ++x2) {
@@ -242,7 +243,7 @@ public final class ChunkManager {
             p.populate(world, random, chunk);
         }
 
-        EventFactory.callEvent(new ChunkPopulateEvent(chunk));
+        EventFactory.getInstance().callEvent(new ChunkPopulateEvent(chunk));
     }
 
     /**

@@ -4,6 +4,7 @@ import com.flowpowered.network.MessageHandler;
 import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.TabCompleteMessage;
 import net.glowstone.net.message.play.player.TabCompleteResponseMessage;
@@ -15,7 +16,7 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
 
     @Override
     public void handle(GlowSession session, TabCompleteMessage message) {
-        Player sender = session.getPlayer();
+        GlowPlayer sender = session.getPlayer();
         String buffer = message.getText();
         List<String> completions = new ArrayList<>();
 
@@ -51,7 +52,8 @@ public final class TabCompleteHandler implements MessageHandler<GlowSession, Tab
         }
 
         // call event and send response
-        EventFactory.callEvent(new PlayerChatTabCompleteEvent(sender, buffer, completions));
+        EventFactory.getInstance()
+                .callEvent(new PlayerChatTabCompleteEvent(sender, buffer, completions));
         session.send(new TabCompleteResponseMessage(completions));
     }
 }

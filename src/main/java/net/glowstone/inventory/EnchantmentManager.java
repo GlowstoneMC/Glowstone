@@ -233,7 +233,7 @@ public class EnchantmentManager {
             enchants = new ArrayList<>();
         }
 
-        EnchantItemEvent event = EventFactory.callEvent(
+        EnchantItemEvent event = EventFactory.getInstance().callEvent(
             new EnchantItemEvent(player, player.getOpenInventory(),
                 inventory.getLocation().getBlock(), item.clone(), enchLevelCosts[clicked],
                 toMap(enchants), clicked));
@@ -321,7 +321,7 @@ public class EnchantmentManager {
             player.getOpenInventory(), inventory.getLocation().getBlock(), item, offers,
             realBookshelfs);
         event.setCancelled(!canEnchant(item));
-        EventFactory.callEvent(event);
+        EventFactory.getInstance().callEvent(event);
         if (event.isCancelled()) {
             for (int i = 0; i < enchLevelCosts.length; i++) {
                 enchLevelCosts[i] = 0;
