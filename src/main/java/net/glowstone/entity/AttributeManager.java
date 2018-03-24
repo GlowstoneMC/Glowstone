@@ -128,6 +128,7 @@ public class AttributeManager {
         KEY_ARMOR("generic.armor", 0.0, 30.0),
         KEY_ARMOR_TOUGHNESS("generic.armorToughness", 0.0, 20.0),
         KEY_LUCK("generic.luck", 0, -1024, 1024),
+        KEY_FLYING_SPEED("generic.flyingSpeed", 0.4, 1024),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
 
