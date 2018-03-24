@@ -1,9 +1,10 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-import java.util.ArrayList;
+import com.google.common.collect.Maps;
+
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,8 +21,6 @@ import net.glowstone.net.message.play.entity.EntityPropertyMessage;
  */
 public class AttributeManager {
 
-    private static final List<Modifier> EMPTY_LIST = new ArrayList<>();
-
     private final GlowLivingEntity entity;
     private final Map<String, Property> properties;
 
@@ -34,7 +33,7 @@ public class AttributeManager {
      */
     public AttributeManager(GlowLivingEntity entity) {
         this.entity = entity;
-        properties = new HashMap<>();
+        properties = Maps.newHashMap();
         needsUpdate = false;
     }
 
@@ -94,7 +93,7 @@ public class AttributeManager {
             properties.get(key).value = value;
             properties.get(key).modifiers = modifiers;
         } else {
-            properties.put(key, new Property(value, modifiers == null ? EMPTY_LIST : modifiers));
+            properties.put(key, new Property(value, modifiers == null ? Collections.emptyList() : modifiers));
         }
 
         needsUpdate = true;
@@ -114,9 +113,12 @@ public class AttributeManager {
         return key.def;
     }
 
+    /**
+     * Return all the properties stored in the manager
+     * @return a unmodifiable map of all the properties
+     */
     public Map<String, Property> getAllProperties() {
-        // TODO: Defensive copy
-        return properties;
+        return Collections.unmodifiableMap(properties);
     }
 
     @RequiredArgsConstructor
