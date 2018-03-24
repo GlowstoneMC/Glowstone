@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -171,17 +173,13 @@ public class AttributeManager {
         }
     }
 
+    @AllArgsConstructor
     public static class Property {
 
         @Getter
         private double value;
         @Getter
         private List<Modifier> modifiers;
-
-        public Property(double value, List<Modifier> modifiers) {
-            this.value = value;
-            this.modifiers = modifiers;
-        }
     }
 
     @Data
