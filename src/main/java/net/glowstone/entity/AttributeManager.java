@@ -115,7 +115,7 @@ public class AttributeManager {
     }
 
     /**
-     * Return all the properties stored in the manager.
+     * Returns all the properties stored in the manager.
      * @return a unmodifiable map of all the properties
      */
     public Map<String, Property> getAllProperties() {
