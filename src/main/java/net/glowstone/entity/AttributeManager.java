@@ -93,7 +93,8 @@ public class AttributeManager {
             properties.get(key).value = value;
             properties.get(key).modifiers = modifiers;
         } else {
-            properties.put(key, new Property(value, modifiers == null ? Collections.emptyList() : modifiers));
+            properties.put(key,
+                    new Property(value, modifiers == null ? Collections.emptyList() : modifiers));
         }
 
         needsUpdate = true;
@@ -114,7 +115,7 @@ public class AttributeManager {
     }
 
     /**
-     * Return all the properties stored in the manager
+     * Return all the properties stored in the manager.
      * @return a unmodifiable map of all the properties
      */
     public Map<String, Property> getAllProperties() {
