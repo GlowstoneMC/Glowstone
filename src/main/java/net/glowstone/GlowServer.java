@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -204,6 +206,10 @@ import org.bukkit.util.permissions.DefaultPermissions;
  */
 public class GlowServer implements Server {
 
+    /**
+     * Localized strings.
+     */
+    private static final ResourceBundle strings = ResourceBundle.getBundle("strings");
     /**
      * The logger for this class.
      */
@@ -428,7 +434,8 @@ public class GlowServer implements Server {
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
         advancement.addCriterion("minecraft:test/criterion");
         advancement.setDisplay(new GlowAdvancementDisplay(
-                new TextMessage("Advancements in Glowstone"), new TextMessage("=)"),
+                new TextMessage(strings.getString("glowstone.advancement.title")),
+                new TextMessage("=)"),
                 new ItemStack(Material.GLOWSTONE),
                 GlowAdvancementDisplay.FrameType.GOAL,
                 -10F, 0));
@@ -458,16 +465,16 @@ public class GlowServer implements Server {
                 return;
             }
             if (generateConfigOnly) {
-                GlowServer.logger.info("Configuration files have been loaded, exiting...");
+                GlowServer.logger.info(strings.getString("console.info.config-only-done"));
                 return;
             }
 
             server.run();
         } catch (SecurityException e) {
-            logger.log(Level.WARNING, "Error loading classpath!", e);
+            logger.log(Level.WARNING, strings.getString("console.error.classpath"), e);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, "Error during server startup.", t);
+            logger.log(Level.SEVERE, strings.getString("console.error.startup"), t);
             System.exit(1);
         }
     }
@@ -504,61 +511,22 @@ public class GlowServer implements Server {
             String opt = args[i];
 
             if (opt.isEmpty() || opt.charAt(0) != '-') {
-                System.err.println("Ignored invalid option: " + opt);
-                continue;
+                System.err.format(strings.getString("console.warn.option.invalid"), opt);
             }
 
             // Help and version
             if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
-                System.out.println("Available command-line options:");
-                System.out
-                        .println("  --help, -h, -?                 Shows this help message and "
-                                + "exits.");
-                System.out
-                        .println("  --version, -v                  Shows version information and "
-                                + "exits.");
-                System.out
-                        .println("  --generate-config              Generates and loads "
-                                + "configuration files, then exits.");
-                System.out
-                        .println("  --configdir <directory>        Sets the configuration "
-                                + "directory.");
-                System.out.println("  --configfile <file>            Sets the configuration file.");
-                System.out
-                        .println("  --port, -p <port>              Sets the server listening port"
-                                + ".");
-                System.out
-                        .println("  --host, -H <ip | hostname>     Sets the server listening "
-                                + "address.");
-                System.out
-                        .println("  --onlinemode, -o <onlinemode>  Sets the server's online-mode.");
-                System.out
-                        .println("  --jline <true/false>           Enables or disables JLine "
-                                + "console.");
-                System.out
-                        .println("  --plugins-dir, -P <directory>  Sets the plugin directory to "
-                                + "use.");
-                System.out
-                        .println("  --worlds-dir, -W <directory>   Sets the world directory to "
-                                + "use.");
-                System.out
-                        .println("  --update-dir, -U <directory>   Sets the plugin update folder "
-                                + "to use.");
-                System.out
-                        .println("  --max-players, -M <director>   Sets the maximum amount of "
-                                + "players.");
-                System.out.println("  --world-name, -N <name>        Sets the main world name.");
-                System.out
-                        .println("  --log-pattern, -L <pattern>    Sets the log file pattern (%D "
-                                + "for date).");
+                System.out.println(strings.getString("console.info.option.help"));
                 return null;
             } else if ("--version".equals(opt) || "-v".equals(opt)) {
-                System.out.println("Glowstone version: " + GlowServer.class.getPackage()
-                        .getImplementationVersion());
-                System.out.println("Bukkit version:    " + GlowServer.class.getPackage()
-                        .getSpecificationVersion());
-                System.out.println(
-                        "Minecraft version: " + GAME_VERSION + " protocol " + PROTOCOL_VERSION);
+                System.out.format(strings.getString("console.info.version.glowstone"),
+                        GlowServer.class.getPackage()
+                                .getImplementationVersion());
+                System.out.format(strings.getString("console.info.version.bukkit"),
+                        GlowServer.class.getPackage()
+                                .getSpecificationVersion());
+                System.out.format(strings.getString("console.info.version.minecraft-client"),
+                        GAME_VERSION, PROTOCOL_VERSION);
                 return null;
             } else if ("--generate-config".equals(opt)) {
                 generateConfigOnly = true;
@@ -566,7 +534,7 @@ public class GlowServer implements Server {
 
             // Below this point, options require parameters
             if (i == args.length - 1 && !"--generate-config".equals(opt)) {
-                System.err.println("Ignored option specified without value: " + opt);
+                System.err.format(strings.getString("console.warn.option.no-value"), opt);
                 continue;
             }
 
@@ -620,7 +588,7 @@ public class GlowServer implements Server {
                     // previously handled
                     break;
                 default:
-                    System.err.println("Ignored invalid option: " + opt);
+                    System.err.format(strings.getString("console.warn.option.invalid"), opt);
             }
         }
 
@@ -637,7 +605,7 @@ public class GlowServer implements Server {
     public void run() {
         start();
         bind();
-        logger.info("Ready for connections.");
+        logger.info(strings.getString("console.info.ready"));
     }
 
     /**
@@ -650,9 +618,9 @@ public class GlowServer implements Server {
 
         if (getProxySupport()) {
             if (getOnlineMode()) {
-                logger.warning("Proxy support is enabled, but online mode is enabled.");
+                logger.warning("console.info.proxy.online");
             } else {
-                logger.info("Proxy support is enabled.");
+                logger.info(strings.getString("console.info.proxy"));
             }
         } else if (!getOnlineMode()) {
             logger.warning("The server is running in offline mode! Only do this if you know what "
@@ -676,34 +644,42 @@ public class GlowServer implements Server {
                     for (CLDevice device : platform.listCLDevices()) {
                         if (device.getType() == CLDevice.Type.GPU) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                            logger.info("Found " + device + " with " + flops + " flops");
+                            logger.info(MessageFormat.format(
+                                    strings.getString("console.info.opencl.found-device"),
+                                    device, flops));
                             if (device.getVendor().contains("Intel")) {
                                 if (flops > maxIntelFlops) {
                                     maxIntelFlops = flops;
-                                    logger.info("Device is best platform so far, on " + platform);
+                                    logger.info(MessageFormat.format(
+                                            strings.getString(
+                                                    "console.info.opencl.best"),
+                                            platform));
                                     bestIntelPlatform = platform;
                                 } else if (flops == maxIntelFlops) {
                                     if (bestIntelPlatform != null && bestIntelPlatform.getVersion()
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxIntelFlops = flops;
-                                        logger.info(
-                                                "Device tied for flops, but had higher version on "
-                                                        + platform);
+                                        logger.info(MessageFormat.format(strings.getString(
+                                                "console.info.opencl.best.version-tiebreaker"),
+                                                platform));
                                         bestIntelPlatform = platform;
                                     }
                                 }
                             } else {
                                 if (flops > maxGpuFlops) {
                                     maxGpuFlops = flops;
-                                    logger.info("Device is best platform so far, on " + platform);
+                                    logger.info(MessageFormat.format(
+                                            strings.getString(
+                                                    "console.info.opencl.best"),
+                                            platform));
                                     bestPlatform = platform;
                                 } else if (flops == maxGpuFlops) {
                                     if (bestPlatform != null && bestPlatform.getVersion()
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxGpuFlops = flops;
-                                        logger.info(
-                                                "Device tied for flops, but had higher version on "
-                                                        + platform);
+                                        logger.info(MessageFormat.format(strings.getString(
+                                                "console.info.opencl.best.version-tiebreaker"),
+                                                platform));
                                         bestPlatform = platform;
                                     }
                                 }
@@ -713,14 +689,18 @@ public class GlowServer implements Server {
                             logger.info("Found " + device + " with " + flops + " flops");
                             if (flops > maxCpuFlops) {
                                 maxCpuFlops = flops;
-                                logger.info("Device is best platform so far, on " + platform);
+                                logger.info(MessageFormat.format(
+                                        strings.getString(
+                                                "console.info.opencl.best"),
+                                        platform));
                                 bestCpuPlatform = platform;
                             } else if (flops == maxCpuFlops) {
                                 if (bestCpuPlatform != null && bestCpuPlatform.getVersion()
                                         .compareTo(platform.getVersion()) < 0) {
                                     maxCpuFlops = flops;
-                                    logger.info("Device tied for flops, but had higher version on "
-                                            + platform);
+                                    logger.info(MessageFormat.format(strings.getString(
+                                            "console.info.opencl.best.version-tiebreaker"),
+                                            platform));
                                     bestCpuPlatform = platform;
                                 }
                             }
@@ -738,12 +718,10 @@ public class GlowServer implements Server {
             } else {
                 if (maxGpuFlops == 0) {
                     if (maxIntelFlops == 0) {
-                        logger.info("No Intel graphics found, best platform is the best CPU "
-                                + "platform we could find...");
+                        logger.info(strings.getString("console.info.opencl.cpu"));
                         bestPlatform = bestCpuPlatform;
                     } else {
-                        logger.info("No dGPU found, best platform is the best Intel graphics we "
-                                + "could find...");
+                        logger.info(strings.getString("console.info.opencl.intel-gpu"));
                         bestPlatform = bestIntelPlatform;
                     }
                 }
@@ -751,10 +729,11 @@ public class GlowServer implements Server {
 
             if (bestPlatform == null) {
                 isGraphicsComputeAvailable = false;
-                logger.info("Your system does not meet the OpenCL requirements for Glowstone. See"
-                        + " if driver updates are available.");
-                logger.info("Required version: " + openClMajor + '.' + openClMinor);
-                logger.info("Required extensions: [ cl_khr_fp64 ]");
+                logger.info(strings.getString("console.info.opencl.no-device"));
+                logger.info(MessageFormat.format(strings.getString(
+                        "console.info.opencl.required-version"), openClMajor,
+                        openClMinor));
+                logger.info(strings.getString("console.info.opencl.required-extensions"));
             } else {
                 OpenCompute.initContext(bestPlatform);
             }
@@ -771,7 +750,7 @@ public class GlowServer implements Server {
         try {
             LootingManager.load();
         } catch (Exception e) {
-            GlowServer.logger.severe("Failed to load looting manager: ");
+            GlowServer.logger.severe(strings.getString("console.error.looting-manager"));
             e.printStackTrace();
         }
 
@@ -835,7 +814,8 @@ public class GlowServer implements Server {
                 .toPath();
         Path destPath = new File(getWorldContainer(), name + suffix).toPath();
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
-            logger.info("Importing " + destPath + " from " + srcPath);
+            logger.info(MessageFormat.format(
+                    strings.getString("console.info.import"), destPath, srcPath));
             try {
                 Files.walkFileTree(srcPath, new FileVisitor<Path>() {
                     @Override
@@ -860,7 +840,9 @@ public class GlowServer implements Server {
                     public FileVisitResult visitFileFailed(Path file,
                             IOException exc) throws IOException {
                         logger.warning(
-                                "Importing file " + srcPath.relativize(file) + " + failed: " + exc);
+                                MessageFormat.format(
+                                        strings.getString("console.error.import.with-message"),
+                                        srcPath.relativize(file), exc));
                         return FileVisitResult.CONTINUE;
                     }
 
@@ -872,16 +854,17 @@ public class GlowServer implements Server {
                 });
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
-                logger.log(Level.WARNING, "Import of " + srcPath + " failed", e);
+                logger.log(Level.WARNING, MessageFormat.format(
+                        strings.getString("console.error.import.no-message"), srcPath), e);
             }
         }
     }
 
     private void bind() {
         if (EPOLL) {
-            logger.info("Native epoll transport is enabled.");
+            logger.info(strings.getString("console.info.native-transport.epoll"));
         } else if (KQUEUE) {
-            logger.info("Native kqueue transport is enabled.");
+            logger.info(strings.getString("console.info.native-transport.kqueue"));
         }
 
         CountDownLatch latch = new CountDownLatch(3);
@@ -1326,9 +1309,9 @@ public class GlowServer implements Server {
      *
      * <p>This does not affect the server's advancement registry.
      *
-     * @param clear whether to clear the advancements on the player's perspective.
+     * @param clear  whether to clear the advancements on the player's perspective.
      * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove
-     *         from the player's perspective.
+     *               from the player's perspective.
      * @param player the player this advancement message is for
      * @return a resulting {@link AdvancementsMessage} packet
      */
@@ -1344,10 +1327,10 @@ public class GlowServer implements Server {
      * <p>This does not affect the server's advancement registry.
      *
      * @param advancements the advancements to add to the player's perspective.
-     * @param clear whether to clear the advancements on the player's perspective.
-     * @param remove a list of advancement {@link NamespacedKey NamespacedKeys} to remove
-     *         from the player's perspective.
-     * @param player the player this advancement message is for
+     * @param clear        whether to clear the advancements on the player's perspective.
+     * @param remove       a list of advancement {@link NamespacedKey NamespacedKeys} to remove
+     *                     from the player's perspective.
+     * @param player       the player this advancement message is for
      * @return a resulting {@link AdvancementsMessage} packet
      */
     public AdvancementsMessage createAdvancementsMessage(
@@ -2571,7 +2554,7 @@ public class GlowServer implements Server {
      * Gets whether the server is OpenCL-capable and allowed to use graphics compute functionality.
      *
      * @return true if the server is capable and allowed to use graphics compute functionality,
-     *         false otherwise.
+     *     false otherwise.
      */
     public boolean doesUseGraphicsCompute() {
         return isGraphicsComputeAvailable && config.getBoolean(Key.GRAPHICS_COMPUTE);
@@ -2603,7 +2586,7 @@ public class GlowServer implements Server {
      * provider for each world. Otherwise, this will throw an {@link IllegalStateException}.
      *
      * @param storageProviderFactory The world storage provider that is attempting to be
-     *         set.
+     *                               set.
      */
     public void setStorageProvider(WorldStorageProviderFactory storageProviderFactory) {
         if (this.storageProviderFactory != null) {
