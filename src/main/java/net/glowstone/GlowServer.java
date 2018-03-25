@@ -4,6 +4,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.flowpowered.network.Message;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Multimaps;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
 import io.netty.channel.epoll.Epoll;
@@ -36,6 +39,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -123,6 +127,7 @@ import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.glowstone.scoreboard.GlowScoreboardManager;
+import net.glowstone.util.CompatibilityBundle;
 import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.GlowServerIcon;
 import net.glowstone.util.GlowUnsafeValues;
@@ -136,6 +141,7 @@ import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.library.Library;
+import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -776,7 +782,7 @@ public class GlowServer implements Server {
         }
 
         // Start loading plugins
-        List<Library> libraries = aggregateLibraries();
+        Set<Library> libraries = aggregateLibraries();
         new LibraryManager(config.getString(Key.LIBRARY_REPOSITORY_URL),
                 config.getString(Key.LIBRARIES_FOLDER),
                 config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
@@ -1022,10 +1028,43 @@ public class GlowServer implements Server {
     /**
      * Aggregates libraries from all relevant sources together.
      */
-    private List<Library> aggregateLibraries() {
-        return config.getMapList(Key.LIBRARIES).stream()
-                .map(Library::fromConfigMap)
-                .collect(Collectors.toList());
+    private Set<Library> aggregateLibraries() {
+        String bundleString = config.getString(Key.COMPATIBILITY_BUNDLE);
+        CompatibilityBundle bundle = CompatibilityBundle.fromConfig(bundleString);
+        if (bundle == null) {
+            logger.log(Level.SEVERE, "Unrecognized compatibility bundle: \"" + bundleString + "\"");
+            System.exit(1);
+        }
+
+        Map<LibraryKey, Library> bundleLibs = bundle.libraries;
+
+        ListMultimap<LibraryKey, Library> configLibs = config.getMapList(Key.LIBRARIES).stream()
+            .map(Library::fromConfigMap)
+            .collect(Multimaps.toMultimap(Library::getLibraryKey, Function.identity(),
+                MultimapBuilder.hashKeys().arrayListValues()::build));
+
+        Set<Library> libs = new HashSet<>(bundleLibs.values());
+
+        for (Map.Entry<LibraryKey, List<Library>> entry : Multimaps.asMap(configLibs).entrySet()) {
+            if (entry.getValue().size() > 1) {
+                logger.log(Level.SEVERE, String.format(
+                    "Library '%s' is defined multiple times in the 'libraries' config section.",
+                    entry.getKey().toString()
+                ));
+                System.exit(1);
+            } else if (bundleLibs.containsKey(entry.getKey())) {
+                logger.log(Level.WARNING, String.format(
+                    "Library '%s' is already defined as part of bundle '%s'. This entry within "
+                        + "the 'libraries' config section will be ignored.",
+                    entry.getKey().toString(),
+                    bundleString
+                ));
+            } else {
+                libs.add(entry.getValue().get(0));
+            }
+        }
+
+        return libs;
     }
 
     /**
