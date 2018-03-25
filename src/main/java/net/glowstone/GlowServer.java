@@ -3,15 +3,22 @@ package net.glowstone;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.flowpowered.network.Message;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Sets;
 import com.jogamp.opencl.CLDevice;
 import com.jogamp.opencl.CLPlatform;
+import com.tobedevoured.naether.NaetherException;
+import com.tobedevoured.naether.api.Naether;
+import com.tobedevoured.naether.impl.NaetherImpl;
+import com.tobedevoured.naether.util.RepoBuilder;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.kqueue.KQueue;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
@@ -28,6 +35,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -36,9 +44,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
@@ -136,6 +146,7 @@ import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.config.ServerConfig.Key;
 import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.library.Library;
+import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -412,6 +423,13 @@ public class GlowServer implements Server {
      * Whether the macOS/BSD kqueue native transport is available for Netty.
      */
     public static final boolean KQUEUE = KQueue.isAvailable();
+    /**
+     * Libraries that are known to cause problems when loaded up via the server config or plugin
+     * dependencies.
+     */
+    private static final Set<LibraryKey> blacklistedRuntimeLibs = ImmutableSet.of(
+            new LibraryKey("it.unimi.dsi", "fastutil")
+    );
 
     /**
      * Creates a new server.
@@ -776,9 +794,10 @@ public class GlowServer implements Server {
         }
 
         // Start loading plugins
-        List<Library> libraries = aggregateLibraries();
-        new LibraryManager(config.getString(Key.LIBRARY_REPOSITORY_URL),
-                config.getString(Key.LIBRARIES_FOLDER),
+        String repository = config.getString(Key.LIBRARY_REPOSITORY_URL);
+        String libraryFolder = config.getString(Key.LIBRARIES_FOLDER);
+        Set<Library> libraries = aggregateLibraries(repository, libraryFolder);
+        new LibraryManager(repository, libraryFolder,
                 config.getBoolean(Key.LIBRARY_CHECKSUM_VALIDATION),
                 config.getInt(Key.LIBRARY_DOWNLOAD_ATTEMPTS), libraries).run();
         loadPlugins();
@@ -1019,13 +1038,122 @@ public class GlowServer implements Server {
         }
     }
 
+    private boolean serverContainsLibrary(Library library) {
+        return this.getClass().getResource(
+                String.format(
+                        "/META-INF/maven/%s/%s/pom.xml",
+                        library.getGroupId(),
+                        library.getArtifactId()
+                )
+        ) != null;
+    }
+
+    private Naether createNaetherWithRepository(String repository, String libraryFolder) {
+        Naether naether = new NaetherImpl();
+        naether.setLocalRepoPath(new File(libraryFolder).getAbsolutePath());
+
+        try {
+            // Must overwrite the collection here in order to remove Maven Central from it.
+            naether.setRemoteRepositories(Sets.newHashSet(
+                    RepoBuilder.remoteRepositoryFromUrl(repository)
+            ));
+        } catch (MalformedURLException e) {
+            logger.log(Level.WARNING, "Unable to resolve library dependencies. Falling back to "
+                    + "explicitly defined dependencies only.", e);
+            return null;
+        }
+
+        return naether;
+    }
+
     /**
      * Aggregates libraries from all relevant sources together.
      */
-    private List<Library> aggregateLibraries() {
-        return config.getMapList(Key.LIBRARIES).stream()
+    private Set<Library> aggregateLibraries(String repository, String libraryFolder) {
+        Map<String, Naether> clients = new HashMap<>();
+        clients.put(null, createNaetherWithRepository(repository, libraryFolder));
+
+        Map<LibraryKey, Library> libraries = config.getMapList(Key.LIBRARIES).stream()
                 .map(Library::fromConfigMap)
-                .collect(Collectors.toList());
+                .peek(library -> {
+                    Naether naether = clients.computeIfAbsent(
+                        library.getRepository(),
+                        k -> createNaetherWithRepository(k, libraryFolder)
+                    );
+                    if (naether != null) {
+                        naether.addDependency(
+                            String.format(
+                                "%s:%s:jar:%s",
+                                library.getGroupId(),
+                                library.getArtifactId(),
+                                library.getVersion()
+                            )
+                        );
+                    }
+                })
+                .collect(Collectors.toMap(Library::getLibraryKey, Function.identity()));
+
+        Set<String> conflicts = new HashSet<>();
+
+        for (Library library : libraries.values()) {
+            if (serverContainsLibrary(library)) {
+                conflicts.add(library.toString());
+            }
+            Map<LibraryKey, Library> defaultLibs = ServerConfig.DEFAULT_RUNTIME_LIBRARIES;
+            if (defaultLibs.containsKey(library.getLibraryKey())) {
+                Library defaultLib = defaultLibs.get(library.getLibraryKey());
+                if (defaultLib.compareTo(library) < 0) {
+                    logger.warning(String.format(
+                        "Library '%s' is out of date. The recommended version is '%s'.",
+                        library.toString(),
+                        defaultLib.toString()
+                    ));
+                }
+            }
+        }
+
+        if (!conflicts.isEmpty()) {
+            String joinedConflicts = conflicts.stream()
+                    .collect(Collectors.joining("', '", "['", "']"));
+            logger.log(Level.SEVERE, String.format(
+                    "Libraries %s conflict with libraries built into this JAR file. Please fix"
+                            + " this issue and restart the server.",
+                    joinedConflicts
+            ));
+            System.exit(1);
+        }
+
+        Map<LibraryKey, Library> dependencies = clients.values().stream()
+                .filter(Objects::nonNull)
+                .flatMap(naether -> {
+                    try {
+                        naether.resolveDependencies(false);
+                        return naether.getDependenciesNotation().stream();
+                    } catch (NaetherException e) {
+                        logger.log(Level.WARNING, "Unable to resolve library dependencies. Falling"
+                                + " back to explicitly defined dependencies only.", e);
+                        return Stream.empty();
+                    }
+                })
+                .map(dependency -> {
+                    // same format as above, {groupId}:{artifactId}:jar:{version}
+                    String[] expanded = dependency.split(":");
+                    // TODO: populate the repository and checksum fields if possible
+                    return new Library(expanded[0], expanded[1], expanded[3]);
+                })
+                .filter(library -> !libraries.containsKey(library.getLibraryKey())
+                        && !serverContainsLibrary(library)
+                        && !blacklistedRuntimeLibs.contains(library.getLibraryKey()))
+                .collect(Collectors.toMap(
+                    Library::getLibraryKey,
+                    Function.identity(),
+                    (library1, library2) -> library1.compareTo(library2) > 0
+                        ? library1 : library2
+                ));
+
+        libraries.putAll(dependencies);
+
+        return new HashSet<>(libraries.values());
     }
 
     /**
