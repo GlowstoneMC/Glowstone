@@ -1,16 +1,18 @@
 package net.glowstone.util.library;
 
+import com.google.common.collect.ComparisonChain;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import net.glowstone.util.library.LibraryManager.HashAlgorithm;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 
 /**
  * Represents a library that will be injected into the classpath at runtime.
  */
-public class Library {
+public class Library implements Comparable<Library> {
     private static final String ARTIFACT_ID_KEY = "artifact-id";
     private static final String CHECKSUM_KEY = "checksum";
     private static final String CHECKSUM_TYPE_KEY = "type";
@@ -201,5 +203,13 @@ public class Library {
     @Override
     public int hashCode() {
         return Objects.hash(libraryKey, version);
+    }
+
+    @Override
+    public int compareTo(Library o) {
+        return ComparisonChain.start()
+                .compare(libraryKey, o.libraryKey)
+                .compare(new ComparableVersion(version), new ComparableVersion(o.version))
+                .result();
     }
 }
