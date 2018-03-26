@@ -30,8 +30,13 @@ public class GlowPlayerProfile implements PlayerProfile {
     public static final int MAX_USERNAME_LENGTH = 16;
     @Getter
     private final String name;
-    private final UUID uniqueId;
+    private final CompletableFuture<UUID> uniqueId;
     private final Map<String, ProfileProperty> properties;
+
+    private static CompletableFuture<UUID> lookUpIfNull(String name, UUID maybeUuid) {
+        return maybeUuid == null ? ProfileCache.getUuid(name) : CompletableFuture.completedFuture(
+                maybeUuid);
+    }
 
     /**
      * Construct a new profile with only a name and UUID.
@@ -39,11 +44,10 @@ public class GlowPlayerProfile implements PlayerProfile {
      * <p>This does not try to resolve the name if it's null.
      *
      * @param name The player's name.
-     * @param uuid The player's UUID.
-     * @throws IllegalArgumentException if uuid is null.
+     * @param uuid The player's UUID; may be null.
      */
     public GlowPlayerProfile(String name, UUID uuid) {
-        this(name, uuid, Collections.emptySet());
+        this(name, lookUpIfNull(name, uuid), Collections.emptySet());
     }
 
     /**
@@ -52,14 +56,28 @@ public class GlowPlayerProfile implements PlayerProfile {
      * <p>This does not try to resolve the name if it's null.
      *
      * @param name The player's name.
-     * @param uuid The player's UUID.
+     * @param uuid The player's UUID; may be null.
+     * @param properties A list of extra properties.
+     * @throws IllegalArgumentException if properties are null.
+     */
+    public GlowPlayerProfile(String name, UUID uuid, Collection<ProfileProperty> properties) {
+        this(name, lookUpIfNull(name, uuid), properties);
+    }
+
+    /**
+     * Construct a new profile with additional properties.
+     *
+     * <p>This does not try to resolve the name if it's null.
+     *
+     * @param name The player's name.
+     * @param uuid Lookup of the player's UUID.
      * @param properties A list of extra properties.
      * @throws IllegalArgumentException if uuid or properties are null.
      */
-    public GlowPlayerProfile(String name, UUID uuid, Collection<ProfileProperty> properties) {
-        checkNotNull(uuid, "uuid must not be null");
+    private GlowPlayerProfile(String name, CompletableFuture<UUID> uuid,
+            Collection<ProfileProperty> properties) {
         checkNotNull(properties, "properties must not be null");
-
+        checkNotNull(uuid, "uuid must not be null");
         this.name = name;
         this.uniqueId = uuid;
         this.properties = Maps.newHashMap();
@@ -182,7 +200,7 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public UUID getId() {
-        return this.uniqueId;
+        return this.uniqueId.join();
     }
 
     /**

@@ -1689,11 +1689,7 @@ public final class GlowServer implements Server {
     @Override
     public GlowPlayerProfile createProfile(String name) {
         checkNotNull(name);
-        UUID id = ProfileCache.getUuid(name).join();
-        if (id == null) {
-            throw new IllegalArgumentException("Could not fetch UUID for username: " + name);
-        }
-        return createProfile(id, name);
+        return createProfile(null, name);
     }
 
     @Override
