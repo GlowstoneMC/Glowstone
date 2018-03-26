@@ -198,6 +198,12 @@ public class GlowPlayerProfile implements PlayerProfile {
         return profileTag;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This method will block if the UUID is still being looked up. It will not block if {@link
+     * #isComplete()}.
+     */
     @Override
     public UUID getId() {
         return this.uniqueId.join();
@@ -251,6 +257,12 @@ public class GlowPlayerProfile implements PlayerProfile {
         this.properties.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>A player profile that's currently incomplete may become complete later, because UUIDs are
+     * looked up asynchronously when needed.
+     */
     @Override
     public boolean isComplete() {
         return name != null && uniqueId.isDone()
