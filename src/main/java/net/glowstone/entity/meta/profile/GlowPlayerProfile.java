@@ -253,6 +253,7 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public boolean isComplete() {
-        return name != null && uniqueId != null && properties.containsKey("textures");
+        return name != null && uniqueId.isDone()
+                && uniqueId.join() != null && properties.containsKey("textures");
     }
 }
