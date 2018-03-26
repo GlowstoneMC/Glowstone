@@ -2537,7 +2537,7 @@ public class GlowServer implements Server {
     /**
      * Gets the server type.
      *
-     * <p>Currently, this value is set to {@code VANILLA}.
+     * <p>Currently, this value is set to {@code VANILLA} and is not localized.
      *
      * @return the server type.
      */
