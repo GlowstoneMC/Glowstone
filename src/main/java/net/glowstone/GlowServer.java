@@ -397,7 +397,7 @@ public class GlowServer implements Server {
     private WorldStorageProviderFactory storageProviderFactory = null;
     /**
      * Whether the server should just generate and load configuration files, then exit.
-     * 
+     *
      * <p>This can be enabled by using the --generate-config launch argument.
      */
     private static boolean generateConfigOnly;
@@ -1324,7 +1324,7 @@ public class GlowServer implements Server {
     /**
      * Creates an {@link AdvancementsMessage} containing a list of advancements the server has,
      * along with some extra actions.
-     * 
+     *
      * <p>This does not affect the server's advancement registry.
      *
      * @param clear  whether to clear the advancements on the player's perspective.
@@ -1341,7 +1341,7 @@ public class GlowServer implements Server {
     /**
      * Creates an {@link AdvancementsMessage} containing a given list of advancements, along with
      * some extra actions.
-     * 
+     *
      * <p>This does not affect the server's advancement registry.
      *
      * @param advancements the advancements to add to the player's perspective.
@@ -2322,7 +2322,7 @@ public class GlowServer implements Server {
 
     /**
      * Sets the port that the Query server will expose.
-     * 
+     *
      * <p>This does not change the port the server will run on.
      *
      * @param port the port number
@@ -2338,7 +2338,7 @@ public class GlowServer implements Server {
 
     /**
      * Sets the IP address that the Query server will expose.
-     * 
+     *
      * <p>This does not change the IP address the server will run on.
      *
      * @param ip the IP address
@@ -2536,18 +2536,18 @@ public class GlowServer implements Server {
 
     /**
      * Gets the server type.
-     * 
+     *
      * <p>Currently, this value is set to {@code VANILLA}.
      *
      * @return the server type.
      */
     public String getServerType() {
-        return strings.getString("glowstone.server-type.vanilla");
+        return "VANILLA";
     }
 
     /**
      * Gets whether the server allows client mods.
-     * 
+     *
      * <p>This rule is not actually enforced, and is simply exposed to clients as a warning.
      *
      * @return true if client mods are allowed, false otherwise.
