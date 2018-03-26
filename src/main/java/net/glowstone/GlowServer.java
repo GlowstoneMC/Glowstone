@@ -397,7 +397,7 @@ public class GlowServer implements Server {
     private WorldStorageProviderFactory storageProviderFactory = null;
     /**
      * Whether the server should just generate and load configuration files, then exit.
-     *
+     * <p>
      * <p>This can be enabled by using the --generate-config launch argument.
      */
     private static boolean generateConfigOnly;
@@ -623,8 +623,7 @@ public class GlowServer implements Server {
                 logger.info(strings.getString("console.info.proxy"));
             }
         } else if (!getOnlineMode()) {
-            logger.warning("The server is running in offline mode! Only do this if you know what "
-                    + "you're doing.");
+            logger.warning(strings.getString("console.warn.offline"));
         }
 
         int openClMajor = 1;
@@ -686,7 +685,9 @@ public class GlowServer implements Server {
                             }
                         } else {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                            logger.info("Found " + device + " with " + flops + " flops");
+                            logger.info(MessageFormat.format(
+                                    strings.getString("console.info.opencl.found-device"), device,
+                                    flops));
                             if (flops > maxCpuFlops) {
                                 maxCpuFlops = flops;
                                 logger.info(MessageFormat.format(
@@ -889,7 +890,7 @@ public class GlowServer implements Server {
         try {
             latch.await();
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Bind interrupted! ", e);
+            logger.log(Level.SEVERE, strings.getString("console.error.rcon.bind-interrupted"), e);
             System.exit(1);
         }
     }
@@ -920,7 +921,7 @@ public class GlowServer implements Server {
             return;
         }
         isShuttingDown = true;
-        logger.info("The server is shutting down...");
+        logger.info(strings.getString("console.info.shutdown"));
 
         // Disable plugins
         pluginManager.clearPlugins();
@@ -944,7 +945,8 @@ public class GlowServer implements Server {
 
         // Save worlds
         for (World world : getWorlds()) {
-            logger.info("Saving world: " + world.getName());
+            logger.info(
+                    MessageFormat.format(strings.getString("console.info.save"), world.getName()));
             unloadWorld(world, true);
         }
 
@@ -988,17 +990,21 @@ public class GlowServer implements Server {
                     File vanillaServerIcon = new File(SERVER_ICON_FILE);
                     if (vanillaServerIcon.isFile()) {
                         // Import from Vanilla
-                        logger.info("Importing '" + SERVER_ICON_FILE + "' from Vanilla.");
+                        logger.info(MessageFormat.format(
+                                strings.getString("console.info.icon.import"), SERVER_ICON_FILE));
                         Files.copy(vanillaServerIcon.toPath(), serverIconFile.toPath());
                         defaultIcon = new GlowServerIcon(serverIconFile);
                     }
                 } catch (Exception e) {
-                    logger.log(Level.WARNING,
-                            "Failed to import '" + SERVER_ICON_FILE + "' from Vanilla", e);
+                    logger.log(Level.WARNING, MessageFormat.format(
+                            strings.getString("console.warn.icon.load-failed.import"),
+                            SERVER_ICON_FILE), e);
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Failed to load '" + SERVER_ICON_FILE + "'", e);
+            logger.log(Level.WARNING,
+                    MessageFormat.format(strings.getString("console.warn.icon.load-failed"),
+                            SERVER_ICON_FILE), e);
         }
     }
 
@@ -1071,7 +1077,8 @@ public class GlowServer implements Server {
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
-            logger.log(Level.SEVERE, "Could not create plugins directory: " + folder);
+            logger.log(Level.SEVERE,
+                    MessageFormat.format(strings.getString("console.error.plugin.mkdir"), folder));
         }
 
         // detect plugin types
@@ -1091,7 +1098,8 @@ public class GlowServer implements Server {
                 plugin.onLoad();
             } catch (Exception ex) {
                 logger.log(Level.SEVERE,
-                        "Error loading " + plugin.getDescription().getFullName(), ex);
+                        MessageFormat.format(strings.getString("console.error.plugin.loading"),
+                                plugin.getDescription().getFullName()), ex);
             }
         }
 
@@ -1114,35 +1122,44 @@ public class GlowServer implements Server {
             }
 
             if (!hasSponge && spongeOnlyPlugins) {
-                logger.log(Level.WARNING, "SpongeAPI plugins found, but no Sponge bridge present!"
-                        + " They will be ignored.");
+                logger.log(Level.WARNING, strings.getString("console.warn.plugin.no-sponge"));
                 for (File file : getSpongePlugins()) {
-                    logger.log(Level.WARNING, "Ignored SpongeAPI plugin: " + file.getPath());
+                    logger.log(Level.WARNING, MessageFormat.format(
+                            strings.getString("console.warn.plugin.unsupported.sponge"),
+                            file.getPath()));
                 }
-                logger.log(Level.WARNING, "Suggestion: install https://github"
-                        + ".com/GlowstoneMC/Bukkit2Sponge to load these plugins");
+                logger.log(Level.WARNING,
+                        strings.getString("console.warn.plugin.no-sponge.bukkit2sponge"));
             }
         }
 
         if (!pluginTypeDetector.canaryPlugins.isEmpty() || !pluginTypeDetector.forgefPlugins
                 .isEmpty() || !pluginTypeDetector.forgenPlugins.isEmpty()
                 || !pluginTypeDetector.unrecognizedPlugins.isEmpty()) {
-            logger.log(Level.WARNING, "Unsupported plugin types found, will be ignored:");
+            logger.log(Level.WARNING, strings.getString("console.warn.plugin.unsupported"));
 
             for (File file : pluginTypeDetector.canaryPlugins) {
-                logger.log(Level.WARNING, "Canary plugin not supported: " + file.getPath());
+                logger.log(Level.WARNING, MessageFormat.format(
+                        strings.getString("console.warn.plugin.unsupported.canary"),
+                        file.getPath()));
             }
 
             for (File file : pluginTypeDetector.forgefPlugins) {
-                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+                logger.log(Level.WARNING, MessageFormat.format(
+                        strings.getString("console.warn.plugin.unsupported.forge"),
+                        file.getPath()));
             }
 
             for (File file : pluginTypeDetector.forgenPlugins) {
-                logger.log(Level.WARNING, "Forge plugin not supported: " + file.getPath());
+                logger.log(Level.WARNING, MessageFormat.format(
+                        strings.getString("console.warn.plugin.unsupported.forge"),
+                        file.getPath()));
             }
 
             for (File file : pluginTypeDetector.unrecognizedPlugins) {
-                logger.log(Level.WARNING, "Unrecognized plugin not supported: " + file.getPath());
+                logger.log(Level.WARNING, MessageFormat.format(
+                        strings.getString("console.warn.plugin.unsupported.other"),
+                        file.getPath()));
             }
         }
 
@@ -1178,9 +1195,9 @@ public class GlowServer implements Server {
                         pluginManager.addPermission(perm);
                     } catch (IllegalArgumentException ex) {
                         getLogger().log(Level.WARNING,
-                                "Plugin " + plugin.getDescription().getFullName()
-                                        + " tried to register permission '" + perm.getName()
-                                        + "' but it's already registered", ex);
+                                MessageFormat.format(strings.getString(
+                                        "console.warn.plugin.permission.duplicate"),
+                                        plugin.getDescription().getFullName(), perm.getName()), ex);
                     }
                 }
 
@@ -1188,7 +1205,8 @@ public class GlowServer implements Server {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
                     logger.log(Level.SEVERE,
-                            "Error loading " + plugin.getDescription().getFullName(), ex);
+                            MessageFormat.format(strings.getString("console.error.plugin.loading"),
+                                    plugin.getDescription().getFullName()), ex);
                 }
             }
         }
@@ -1221,16 +1239,16 @@ public class GlowServer implements Server {
                     .put(key, ((MemorySection) value).getValues(false)));
 
             List<Permission> perms = Permission
-                    .loadPermissions(data, "Permission node '%s' in permissions config is "
-                            + "invalid", PermissionDefault.OP);
+                    .loadPermissions(data, strings.getString("console.error.permission.invalid"),
+                            PermissionDefault.OP);
 
             for (Permission perm : perms) {
                 try {
                     pluginManager.addPermission(perm);
                 } catch (IllegalArgumentException ex) {
-                    getLogger().log(Level.WARNING,
-                            "Permission config tried to register '" + perm.getName()
-                                    + "' but it's already registered", ex);
+                    getLogger().log(Level.WARNING, MessageFormat.format(
+                            strings.getString("console.warn.permission.duplicate"),
+                            perm.getName()), ex);
                 }
             }
         }
@@ -1257,7 +1275,7 @@ public class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Uncaught error while reloading", ex);
+            logger.log(Level.SEVERE, strings.getString("console.error.reload"), ex);
         }
     }
 
@@ -1306,7 +1324,7 @@ public class GlowServer implements Server {
     /**
      * Creates an {@link AdvancementsMessage} containing a list of advancements the server has,
      * along with some extra actions.
-     *
+     * <p>
      * <p>This does not affect the server's advancement registry.
      *
      * @param clear  whether to clear the advancements on the player's perspective.
@@ -1323,7 +1341,7 @@ public class GlowServer implements Server {
     /**
      * Creates an {@link AdvancementsMessage} containing a given list of advancements, along with
      * some extra actions.
-     *
+     * <p>
      * <p>This does not affect the server's advancement registry.
      *
      * @param advancements the advancements to add to the player's perspective.
@@ -1741,7 +1759,9 @@ public class GlowServer implements Server {
             firstword = firstword.substring(0, firstword.indexOf(' '));
         }
 
-        sender.sendMessage(ChatColor.GRAY + "Unknown command \"" + firstword + "\", try \"help\"");
+        sender.sendMessage(
+                MessageFormat.format(strings.getString("glowstone.command.error.unknown-command"),
+                        ChatColor.GRAY, firstword));
         return false;
     }
 
@@ -1874,9 +1894,11 @@ public class GlowServer implements Server {
                 return getOfflinePlayerAsync(name).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException | ExecutionException ex) {
-            GlowServer.logger.log(Level.SEVERE, "UUID lookup interrupted: ", ex);
+            GlowServer.logger.log(Level.SEVERE,
+                    strings.getString("console.error.uuid.interrupted"), ex);
         } catch (TimeoutException ex) {
-            GlowServer.logger.log(Level.WARNING, "UUID lookup timeout: ", ex);
+            GlowServer.logger.log(Level.WARNING,
+                    strings.getString("console.warn.uuid.timeout"), ex);
         }
 
         return getOfflinePlayerFallback(name);
@@ -1892,9 +1914,11 @@ public class GlowServer implements Server {
                 return getOfflinePlayerAsync(uuid).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException | ExecutionException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Profile lookup interrupted: ", ex);
+            GlowServer.logger.log(Level.SEVERE,
+                    strings.getString("console.error.profile.interrupted"), ex);
         } catch (TimeoutException ex) {
-            GlowServer.logger.log(Level.WARNING, "Profile lookup timeout: ", ex);
+            GlowServer.logger.log(Level.WARNING,
+                    strings.getString("console.warn.profile.timeout"), ex);
         }
         return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid));
     }
@@ -2081,7 +2105,8 @@ public class GlowServer implements Server {
         }
         if (isGenerationDisabled()) {
             logger.warning(
-                    "World generation is disabled! World '" + creator.name() + "' will be empty.");
+                    MessageFormat.format(strings.getString("console.warn.worldgen.disabled"),
+                            creator.name()));
         }
 
         if (creator.generator() == null) {
@@ -2297,7 +2322,7 @@ public class GlowServer implements Server {
 
     /**
      * Sets the port that the Query server will expose.
-     *
+     * <p>
      * <p>This does not change the port the server will run on.
      *
      * @param port the port number
@@ -2313,7 +2338,7 @@ public class GlowServer implements Server {
 
     /**
      * Sets the IP address that the Query server will expose.
-     *
+     * <p>
      * <p>This does not change the IP address the server will run on.
      *
      * @param ip the IP address
@@ -2511,18 +2536,18 @@ public class GlowServer implements Server {
 
     /**
      * Gets the server type.
-     *
+     * <p>
      * <p>Currently, this value is set to {@code VANILLA}.
      *
      * @return the server type.
      */
     public String getServerType() {
-        return "VANILLA";
+        return strings.getString("glowstone.server-type.vanilla");
     }
 
     /**
      * Gets whether the server allows client mods.
-     *
+     * <p>
      * <p>This rule is not actually enforced, and is simply exposed to clients as a warning.
      *
      * @return true if client mods are allowed, false otherwise.
@@ -2554,7 +2579,7 @@ public class GlowServer implements Server {
      * Gets whether the server is OpenCL-capable and allowed to use graphics compute functionality.
      *
      * @return true if the server is capable and allowed to use graphics compute functionality,
-     *     false otherwise.
+     * false otherwise.
      */
     public boolean doesUseGraphicsCompute() {
         return isGraphicsComputeAvailable && config.getBoolean(Key.GRAPHICS_COMPUTE);
