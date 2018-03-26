@@ -107,8 +107,9 @@ public class BlockEnderPortalFrame extends BlockDropless {
                 blocks.add(state);
             }
         }
-        if (!EventFactory.callEvent(new EntityCreatePortalEvent(player, blocks, PortalType.ENDER))
-            .isCancelled()) {
+        if (!EventFactory.getInstance()
+                .callEvent(new EntityCreatePortalEvent(player, blocks, PortalType.ENDER))
+                .isCancelled()) {
             for (BlockState state : blocks) {
                 state.update(true);
             }

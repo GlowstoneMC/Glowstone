@@ -59,7 +59,6 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
 import org.bukkit.BlockChangeDelegate;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Difficulty;
@@ -115,7 +114,7 @@ import org.bukkit.util.Vector;
  * @author Graham Edgecombe
  */
 @ToString(of = "name")
-public final class GlowWorld implements World {
+public class GlowWorld implements World {
 
     /**
      * The length in ticks of one Minecraft day.
@@ -431,14 +430,14 @@ public final class GlowWorld implements World {
                 .collect(Collectors.toMap(CommandFunction::getFullName, function -> function));
         server.addWorld(this);
         server.getLogger().info("Preparing spawn for " + name + "...");
-        EventFactory.callEvent(new WorldInitEvent(this));
+        EventFactory.getInstance().callEvent(new WorldInitEvent(this));
 
         spawnChunkLock = keepSpawnLoaded ? newChunkLock("spawn") : null;
 
         setKeepSpawnInMemory(keepSpawnLoaded);
 
         server.getLogger().info("Preparing spawn for " + name + ": done");
-        EventFactory.callEvent(new WorldLoadEvent(this));
+        EventFactory.getInstance().callEvent(new WorldLoadEvent(this));
 
         // pulse AI tasks
         //aiTaskService = Executors.newScheduledThreadPool(1);
@@ -849,7 +848,7 @@ public final class GlowWorld implements World {
         if (anchor) {
             setKeepSpawnInMemory(keepSpawnLoaded);
         }
-        EventFactory.callEvent(new SpawnChangeEvent(this, oldSpawn));
+        EventFactory.getInstance().callEvent(new SpawnChangeEvent(this, oldSpawn));
         return true;
     }
 
@@ -1029,7 +1028,7 @@ public final class GlowWorld implements World {
      * @param async if true, save asynchronously
      */
     public void save(boolean async) {
-        EventFactory.callEvent(new WorldSaveEvent(this));
+        EventFactory.getInstance().callEvent(new WorldSaveEvent(this));
 
         // save metadata
         writeWorldData(async);
@@ -1073,7 +1072,7 @@ public final class GlowWorld implements World {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent
                     = new StructureGrowEvent(loc, type, false, null, blockStates);
-            EventFactory.callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
                     state.update(true);
@@ -1231,7 +1230,7 @@ public final class GlowWorld implements World {
 
     @Override
     public void getChunkAtAsync(int x, int z, ChunkLoadCallback cb) {
-        Bukkit.getServer().getScheduler()
+        ServerProvider.getServer().getScheduler()
                 .runTaskAsynchronously(null, () -> cb.onLoad(chunkManager.getChunk(x, z)));
     }
 
@@ -1420,10 +1419,10 @@ public final class GlowWorld implements World {
             // function.accept(entity); TODO: work on type mismatches
             EntitySpawnEvent spawnEvent = null;
             if (entity instanceof LivingEntity) {
-                spawnEvent = EventFactory
+                spawnEvent = EventFactory.getInstance()
                         .callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
             } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
-                spawnEvent = EventFactory.callEvent(new EntitySpawnEvent(entity));
+                spawnEvent = EventFactory.getInstance().callEvent(new EntitySpawnEvent(entity));
             }
             if (spawnEvent != null && spawnEvent.isCancelled()) {
                 // TODO: separate spawning and construction for better event cancellation
@@ -1485,7 +1484,7 @@ public final class GlowWorld implements World {
     @Override
     public GlowItem dropItem(Location location, ItemStack item) {
         GlowItem entity = new GlowItem(location, item);
-        ItemSpawnEvent event = EventFactory.callEvent(new ItemSpawnEvent(entity));
+        ItemSpawnEvent event = EventFactory.getInstance().callEvent(new ItemSpawnEvent(entity));
         if (event.isCancelled()) {
             entity.remove();
         }
@@ -1559,7 +1558,7 @@ public final class GlowWorld implements World {
             boolean isSilent) {
         GlowLightningStrike strike = new GlowLightningStrike(loc, effect, isSilent);
         LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
-        if (EventFactory.callEvent(event).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
             return null;
         }
         return strike;
@@ -1597,7 +1596,7 @@ public final class GlowWorld implements World {
     public void setStorm(boolean hasStorm) {
         // call event
         WeatherChangeEvent event = new WeatherChangeEvent(this, hasStorm);
-        if (EventFactory.callEvent(event).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
             return;
         }
 
@@ -1624,7 +1623,7 @@ public final class GlowWorld implements World {
     public void setThundering(boolean thundering) {
         // call event
         ThunderChangeEvent event = new ThunderChangeEvent(this, thundering);
-        if (EventFactory.callEvent(event).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
             return;
         }
 
@@ -1883,7 +1882,7 @@ public final class GlowWorld implements World {
     public boolean unload() {
         // terminate task service
         //aiTaskService.shutdown();
-        if (EventFactory.callEvent(new WorldUnloadEvent(this)).isCancelled()) {
+        if (EventFactory.getInstance().callEvent(new WorldUnloadEvent(this)).isCancelled()) {
             return false;
         }
         try {

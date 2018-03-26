@@ -3,11 +3,11 @@ package net.glowstone.command;
 import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
 import net.glowstone.block.state.StateSerialization;
 import org.apache.commons.lang.math.NumberUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -98,7 +98,7 @@ public class CommandUtils {
 
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
     private static GlowWorld getDefaultWorld() {
-        return (GlowWorld) Bukkit.getServer().getWorlds().get(0);
+        return (GlowWorld) ServerProvider.getServer().getWorlds().get(0);
     }
 
     /**

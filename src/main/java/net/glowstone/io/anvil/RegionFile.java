@@ -47,8 +47,8 @@ import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.util.config.ServerConfig.Key;
-import org.bukkit.Bukkit;
 
 /**
  * Interfaces with region files on the disk
@@ -84,7 +84,8 @@ import org.bukkit.Bukkit;
  */
 public class RegionFile {
 
-    private static final boolean COMPRESSION_ENABLED = ((GlowServer) Bukkit.getServer()).getConfig()
+    private static final boolean COMPRESSION_ENABLED =
+            ((GlowServer) ServerProvider.getServer()).getConfig()
             .getBoolean(Key.REGION_COMPRESSION);
 
     private static final byte VERSION_GZIP = 1;

@@ -248,7 +248,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
                 PlayerFishEvent fishEvent
                         = new PlayerFishEvent((Player) shooter, this, null, CAUGHT_FISH);
                 fishEvent.setExpToDrop(ThreadLocalRandom.current().nextInt(1, 7));
-                fishEvent = EventFactory.callEvent(fishEvent);
+                fishEvent = EventFactory.getInstance().callEvent(fishEvent);
                 if (!fishEvent.isCancelled()) {
                     // TODO: Item should "fly" towards player
                     world.dropItemNaturally(((Player) getShooter()).getLocation(), getRewardItem());

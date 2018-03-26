@@ -2,12 +2,12 @@ package net.glowstone.inventory;
 
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.util.InventoryUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -145,7 +145,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
         if (topAllowsShiftClick) {
             if (top.getType().equals(InventoryType.FURNACE)) {
-                CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+                CraftingManager cm = ((GlowServer) ServerProvider.getServer()).getCraftingManager();
                 if (cm.getFurnaceRecipe(clickedItem) != null) {
                     // move items are be burnable to the input slot
                     // TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?

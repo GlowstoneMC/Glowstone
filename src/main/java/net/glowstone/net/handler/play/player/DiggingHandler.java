@@ -38,6 +38,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
     public void handle(GlowSession session, DiggingMessage message) {
         GlowPlayer player = session.getPlayer();
         GlowWorld world = player.getWorld();
+        EventFactory eventFactory = EventFactory.getInstance();
         GlowBlock block = world.getBlockAt(message.getX(), message.getY(), message.getZ());
         BlockFace face = BlockPlacementHandler.convertFace(message.getFace());
         ItemStack holding = player.getItemInHand();
@@ -58,7 +59,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 action = Action.LEFT_CLICK_AIR;
                 eventBlock = null;
             }
-            PlayerInteractEvent interactEvent = EventFactory
+            PlayerInteractEvent interactEvent = eventFactory
                 .onPlayerInteract(player, action, EquipmentSlot.HAND, eventBlock, face);
 
             // blocks don't get interacted with on left click, so ignore that
@@ -77,7 +78,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                     && EnchantmentTarget.WEAPON.includes(holding.getType())) {
                     damageEvent.setCancelled(true);
                 }
-                EventFactory.callEvent(damageEvent);
+                eventFactory.callEvent(damageEvent);
 
                 // follow orders
                 if (damageEvent.isCancelled()) {
@@ -200,7 +201,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         if (blockBroken && !revert) {
             // fire the block break event
-            BlockBreakEvent breakEvent = EventFactory.callEvent(new BlockBreakEvent(block, player));
+            BlockBreakEvent breakEvent = eventFactory.callEvent(new BlockBreakEvent(block, player));
             if (breakEvent.isCancelled()) {
                 BlockPlacementHandler.revert(player, block);
                 return;

@@ -104,7 +104,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (message.getAction() == Action.ATTACK.ordinal()) {
-            if (EventFactory.callEvent(new HangingBreakByEntityEvent(this, player))
+            if (EventFactory.getInstance().callEvent(new HangingBreakByEntityEvent(this, player))
                 .isCancelled()) {
                 return false;
             }
@@ -243,8 +243,8 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         super.pulse();
 
         if (ticksLived % (20 * 5) == 0 && isObstructed()) {
-            if (EventFactory.callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS))
-                .isCancelled()) {
+            if (EventFactory.getInstance()
+                    .callEvent(new HangingBreakEvent(this, RemoveCause.PHYSICS)).isCancelled()) {
                 return;
             }
 

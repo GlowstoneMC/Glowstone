@@ -127,6 +127,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.ground.DirtAndStonePatchGroundGenerator;
 import net.glowstone.generator.ground.DirtPatchGroundGenerator;
@@ -145,7 +146,6 @@ import net.glowstone.generator.populators.overworld.SnowPopulator;
 import net.glowstone.util.OpenCompute;
 import net.glowstone.util.noise.PerlinOctaveGenerator;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -284,7 +284,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
                 .get("surface"));
         int sizeX = octaveGenerator.getSizeX();
         int sizeZ = octaveGenerator.getSizeZ();
-        if (((GlowServer) Bukkit.getServer()).doesUseGraphicsCompute()) {
+        if (((GlowServer) ServerProvider.getServer()).doesUseGraphicsCompute()) {
             CLKernel noiseGen = null;
             CLBuffer<FloatBuffer> noise = null;
             try {
@@ -324,7 +324,8 @@ public class OverworldGenerator extends GlowChunkGenerator {
             } finally {
                 // Clean up
                 if (noise != null) {
-                    Bukkit.getServer().getScheduler().runTaskAsynchronously(null, noise::release);
+                    ServerProvider.getServer().getScheduler()
+                            .runTaskAsynchronously(null, noise::release);
                 }
                 if (noiseGen != null) {
                     noiseGen.rewind();

@@ -7,7 +7,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 /**
  * ScoreboardManager implementation.
  */
-public final class GlowScoreboardManager implements ScoreboardManager {
+public class GlowScoreboardManager implements ScoreboardManager {
 
     private final GlowServer server;
     private GlowScoreboard mainScoreboard;

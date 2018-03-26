@@ -1,12 +1,15 @@
 package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
-import java.util.ArrayList;
+import com.google.common.collect.Maps;
+
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +20,6 @@ import net.glowstone.net.message.play.entity.EntityPropertyMessage;
  * Manages the attributes described at https://minecraft.gamepedia.com/Attribute
  */
 public class AttributeManager {
-
-    private static final List<Modifier> EMPTY_LIST = new ArrayList<>();
 
     private final GlowLivingEntity entity;
     private final Map<String, Property> properties;
@@ -32,7 +33,7 @@ public class AttributeManager {
      */
     public AttributeManager(GlowLivingEntity entity) {
         this.entity = entity;
-        properties = new HashMap<>();
+        properties = Maps.newHashMap();
         needsUpdate = false;
     }
 
@@ -92,7 +93,8 @@ public class AttributeManager {
             properties.get(key).value = value;
             properties.get(key).modifiers = modifiers;
         } else {
-            properties.put(key, new Property(value, modifiers == null ? EMPTY_LIST : modifiers));
+            properties.put(key,
+                    new Property(value, modifiers == null ? Collections.emptyList() : modifiers));
         }
 
         needsUpdate = true;
@@ -112,9 +114,12 @@ public class AttributeManager {
         return key.def;
     }
 
+    /**
+     * Returns all the properties stored in the manager.
+     * @return a unmodifiable map of all the properties
+     */
     public Map<String, Property> getAllProperties() {
-        // TODO: Defensive copy
-        return properties;
+        return Collections.unmodifiableMap(properties);
     }
 
     @RequiredArgsConstructor
@@ -128,6 +133,7 @@ public class AttributeManager {
         KEY_ARMOR("generic.armor", 0.0, 30.0),
         KEY_ARMOR_TOUGHNESS("generic.armorToughness", 0.0, 20.0),
         KEY_LUCK("generic.luck", 0, -1024, 1024),
+        KEY_FLYING_SPEED("generic.flyingSpeed", 0.4, 1024),
         KEY_HORSE_JUMP_STRENGTH("horse.jumpStrength", 0.7, 2),
         KEY_ZOMBIE_SPAWN_REINFORCEMENTS("zombie.spawnReinforcements", 0, 1);
 
@@ -170,17 +176,13 @@ public class AttributeManager {
         }
     }
 
+    @AllArgsConstructor
     public static class Property {
 
         @Getter
         private double value;
         @Getter
         private List<Modifier> modifiers;
-
-        public Property(double value, List<Modifier> modifiers) {
-            this.value = value;
-            this.modifiers = modifiers;
-        }
     }
 
     @Data

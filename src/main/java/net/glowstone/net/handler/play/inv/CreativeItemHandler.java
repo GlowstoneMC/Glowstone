@@ -40,8 +40,9 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
         ItemStack stack = ItemIds.sanitize(message.getItem());
 
         // clicking outside drops the item
+        EventFactory eventFactory = EventFactory.getInstance();
         if (message.getSlot() < 0) {
-            InventoryCreativeEvent event = EventFactory
+            InventoryCreativeEvent event = eventFactory
                 .callEvent(new InventoryCreativeEvent(view, SlotType.OUTSIDE, -999, stack));
             if (event.isCancelled()) {
                 session.send(new SetWindowSlotMessage(-1, -1, stack));
@@ -60,7 +61,7 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
         GlowInventory inv = player.getInventory();
         int slot = view.convertSlot(viewSlot);
         SlotType type = inv.getSlotType(slot);
-        InventoryCreativeEvent event = EventFactory
+        InventoryCreativeEvent event = eventFactory
             .callEvent(new InventoryCreativeEvent(view, type, viewSlot, stack));
         if (event.isCancelled()) {
             // send original slot to player to prevent async inventories

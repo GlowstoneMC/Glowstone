@@ -81,7 +81,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
                     headBlockState.setType(Material.DOUBLE_PLANT);
                     headBlockState.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
                     BlockGrowEvent growEvent = new BlockGrowEvent(block, blockState);
-                    EventFactory.callEvent(growEvent);
+                    EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         blockState.update(true);
                         headBlockState.update(true);

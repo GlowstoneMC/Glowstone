@@ -141,7 +141,7 @@ public class BlockLeaves extends BlockType {
 
             if (getBlockInMap(4, 4, 4) < 0) { // leaf decay
                 LeavesDecayEvent decayEvent = new LeavesDecayEvent(block);
-                EventFactory.callEvent(decayEvent);
+                EventFactory.getInstance().callEvent(decayEvent);
                 if (!decayEvent.isCancelled()) {
                     block.breakNaturally();
                 }

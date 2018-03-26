@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 
 import java.util.Collections;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
@@ -23,7 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CommandUtils.class, GlowServer.class, GlowWorld.class})
+@PrepareForTest({CommandUtils.class})
 public class SetWorldSpawnCommandTest {
 
     private CommandSender sender, opSender, opPlayer;

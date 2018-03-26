@@ -72,7 +72,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         }
                     }
                     BlockGrowEvent growEvent = new BlockGrowEvent(b, blockState);
-                    EventFactory.callEvent(growEvent);
+                    EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         blockState.update(true);
                     }
@@ -104,7 +104,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
+            EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }
@@ -131,7 +131,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                     state.setType(Material.GRASS);
                     state.setRawData((byte) 0);
                     BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
-                    EventFactory.callEvent(spreadEvent);
+                    EventFactory.getInstance().callEvent(spreadEvent);
                     if (!spreadEvent.isCancelled()) {
                         state.update(true);
                     }

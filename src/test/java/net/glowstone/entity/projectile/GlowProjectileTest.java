@@ -1,7 +1,5 @@
 package net.glowstone.entity.projectile;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.function.Function;
 import net.glowstone.entity.GlowEntityTest;
 import org.bukkit.Location;

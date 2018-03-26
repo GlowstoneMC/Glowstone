@@ -128,7 +128,7 @@ public final class Explosion {
         Set<BlockVector> droppedBlocks = calculateBlocks();
 
         List<Block> blocks = toBlockList(droppedBlocks);
-        EntityExplodeEvent event = EventFactory.callEvent(
+        EntityExplodeEvent event = EventFactory.getInstance().callEvent(
                 new EntityExplodeEvent(source, location, blocks, yield));
         if (event.isCancelled()) {
             return false;
@@ -239,7 +239,7 @@ public final class Explosion {
         if (belowType == Material.AIR || belowType == Material.FIRE || !belowType.isFlammable()) {
             return;
         }
-        BlockIgniteEvent event = EventFactory.callEvent(
+        BlockIgniteEvent event = EventFactory.getInstance().callEvent(
                 new BlockIgniteEvent(block, IgniteCause.EXPLOSION, source));
         if (event.isCancelled()) {
             return;
