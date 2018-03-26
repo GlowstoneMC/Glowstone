@@ -203,15 +203,6 @@ public class GlowPlayerProfile implements PlayerProfile {
         return this.uniqueId.join();
     }
 
-    /**
-     * Gets the UUID of this profile.
-     *
-     * @return the UUID of this profile.
-     */
-    public UUID getUniqueId() {
-        return getId();
-    }
-
     @Override
     public Set<ProfileProperty> getProperties() {
         return Sets.newHashSet(this.properties.values());

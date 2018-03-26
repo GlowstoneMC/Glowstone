@@ -68,7 +68,7 @@ public final class UuidListFile extends JsonListFile {
      * @return whether the player is on this list
      */
     public boolean containsProfile(GlowPlayerProfile profile) {
-        return containsUuid(profile.getUniqueId());
+        return containsUuid(profile.getId());
     }
 
     /**
@@ -93,7 +93,7 @@ public final class UuidListFile extends JsonListFile {
      * @param profile the player to remove
      */
     public void remove(GlowPlayerProfile profile) {
-        UUID playerUuid = profile.getUniqueId();
+        UUID playerUuid = profile.getId();
         entriesByUuid.remove(playerUuid);
         // FIXME: Unnecessary linear time
         Iterator<BaseEntry> iter = entries.iterator();

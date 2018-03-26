@@ -244,7 +244,7 @@ public class GlowSession extends BasicSession {
         }
 
         // initialize the player
-        PlayerReader reader = server.getPlayerDataService().beginReadingData(profile.getUniqueId());
+        PlayerReader reader = server.getPlayerDataService().beginReadingData(profile.getId());
         player = new GlowPlayer(this, profile, reader);
         finalizeLogin(profile);
 
@@ -472,7 +472,7 @@ public class GlowSession extends BasicSession {
         }
 
         // send login response
-        send(new LoginSuccessMessage(profile.getUniqueId().toString(), profile.getName()));
+        send(new LoginSuccessMessage(profile.getId().toString(), profile.getName()));
         setProtocol(ProtocolType.PLAY);
     }
 

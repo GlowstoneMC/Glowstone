@@ -120,7 +120,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public UUID getUniqueId() {
-        return profile.getUniqueId();
+        return profile.getId();
     }
 
     @Override
