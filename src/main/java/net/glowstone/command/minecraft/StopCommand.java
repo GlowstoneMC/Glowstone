@@ -3,7 +3,6 @@ package net.glowstone.command.minecraft;
 import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
