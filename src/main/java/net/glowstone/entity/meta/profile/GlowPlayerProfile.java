@@ -200,7 +200,16 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public UUID getId() {
-        return this.uniqueId.getNow(null);
+        return uniqueId.getNow(null);
+    }
+
+    /**
+     * Waits for the lookup of, then returns, the player's UUID.
+     *
+     * @return the player UUID, or null if it's unknown and couldn't be looked up
+     */
+    public UUID getIdBlocking() {
+        return uniqueId.join();
     }
 
     @Override
