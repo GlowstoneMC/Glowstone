@@ -2535,9 +2535,10 @@ public class GlowServer implements Server {
     }
 
     /**
-     * Gets the server type.
+     * Gets the server type (e.g. VANILLA, BUCKET, FML). Server types are meant to be enum-like, and
+     * thus are not localizable.
      *
-     * <p>Currently, this value is set to {@code VANILLA} and is not localized.
+     * <p>Currently, this value is set to {@code VANILLA}.
      *
      * @return the server type.
      */
