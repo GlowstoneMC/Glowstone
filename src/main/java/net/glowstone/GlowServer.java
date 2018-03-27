@@ -2538,7 +2538,10 @@ public class GlowServer implements Server {
 
     /**
      * Gets the server type (e.g. VANILLA, BUKKIT, FML). The server type is meant to be read by mods
-     * and thus is not localized server-side.
+     * and thus is not localized server-side. It is output to clients by {@link
+     * net.glowstone.net.handler.status.StatusRequestHandler#handle(GlowSession,
+     * StatusRequestMessage)}, but should be ignored by vanilla clients and localized client-side by
+     * modded clients aware of it.
      *
      * <p>Currently, this value is set to {@code VANILLA}.
      *
