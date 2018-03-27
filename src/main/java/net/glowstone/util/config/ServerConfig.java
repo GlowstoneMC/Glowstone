@@ -608,7 +608,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
 
     /**
      * A predicate wrapper to check if a value is a valid element of an enum.
-     * <p>
+     *
      * <p>See {@link Validators#forEnum(Class)}
      *
      * @param <T> the type of the enum
@@ -686,7 +686,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
 
         /**
          * Checks if the value is a valid file/directory path.
-         * <p>
+         *
          * <p>Note that the behavior of this predicate may be platform-dependent.
          */
         static final Predicate<String> PATH = typeCheck(String.class).and((value) -> {
