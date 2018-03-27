@@ -240,6 +240,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * If this entity has swam in lava (for fire application).
      */
     private boolean swamInLava;
+    /**
+     * If this entity has stood in fire (for fire application).
+     */
+    private boolean stoodInFire;
 
     /**
      * Creates a mob within the specified world.
@@ -307,6 +311,18 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         if (isWithinSolidBlock()) {
             damage(1, DamageCause.SUFFOCATION);
+        }
+
+        // fire damage
+        if (getLocation().getBlock().getType() == Material.FIRE) {
+            damage(1, DamageCause.FIRE);
+            // not applying additional fire ticks after dying in fire
+            stoodInFire = !isDead();
+        } else {
+            if (stoodInFire) {
+                setFireTicks(getFireTicks() + 180);
+                stoodInFire = false;
+            }
         }
 
         if (getLocation().getBlock().getType() == Material.LAVA
