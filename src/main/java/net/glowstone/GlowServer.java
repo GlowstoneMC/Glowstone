@@ -915,6 +915,15 @@ public class GlowServer implements Server {
      */
     @Override
     public void shutdown() {
+        shutdown(getShutdownMessage());
+    }
+
+    /**
+     * Stops this server, sending the specified message to all players on their kick screen.
+     *
+     * @param message Message to send to all players as they are kicked
+     */
+    public void shutdown(String message) {
         // Just in case this gets called twice
         if (isShuttingDown) {
             return;
@@ -927,7 +936,7 @@ public class GlowServer implements Server {
 
         // Kick all players (this saves their data too)
         for (GlowPlayer player : new ArrayList<>(getRawOnlinePlayers())) {
-            player.kickPlayer(getShutdownMessage(), false);
+            player.kickPlayer(message, false);
         }
 
         // Stop the network servers - starts the shutdown process
