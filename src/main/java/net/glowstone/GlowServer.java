@@ -106,7 +106,6 @@ import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
-import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
@@ -1740,11 +1739,7 @@ public class GlowServer implements Server {
     @Override
     public GlowPlayerProfile createProfile(String name) {
         checkNotNull(name);
-        UUID id = ProfileCache.getUuid(name).join();
-        if (id == null) {
-            throw new IllegalArgumentException("Could not fetch UUID for username: " + name);
-        }
-        return createProfile(id, name);
+        return createProfile(null, name);
     }
 
     @Override

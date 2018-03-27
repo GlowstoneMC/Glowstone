@@ -58,7 +58,7 @@ public final class UserListItemMessage implements Message {
     public static Entry add(GlowPlayerProfile profile, int gameMode, int ping,
                             TextMessage displayName) {
         // TODO: measure ping
-        return new Entry(profile.getUniqueId(), profile, gameMode, ping, displayName,
+        return new Entry(profile.getId(), profile, gameMode, ping, displayName,
                 Action.ADD_PLAYER);
     }
 
