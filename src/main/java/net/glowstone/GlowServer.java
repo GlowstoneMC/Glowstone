@@ -118,8 +118,10 @@ import net.glowstone.io.WorldStorageProviderFactory;
 import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
+import net.glowstone.net.GlowSession;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.net.message.play.player.AdvancementsMessage;
+import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
@@ -2535,8 +2537,10 @@ public class GlowServer implements Server {
     }
 
     /**
-     * Gets the server type (e.g. VANILLA, BUCKET, FML). Server types are meant to be enum-like, and
-     * thus are not localizable.
+     * Gets the server type (e.g. VANILLA, BUCKET, FML). Server types are meant to be read by mods
+     * that are aware of them, so they're not localized, even though {@link
+     * net.glowstone.net.handler.status.StatusRequestHandler#handle(GlowSession, StatusRequestMessage)}
+     * may make the server type visible to humans.
      *
      * <p>Currently, this value is set to {@code VANILLA}.
      *
