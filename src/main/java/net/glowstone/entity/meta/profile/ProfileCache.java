@@ -44,4 +44,14 @@ public class ProfileCache {
         uuidFuture.thenAccept(uid -> uuidCache.put(playerName, uid));
         return uuidFuture;
     }
+
+    /**
+     * Look up the UUID for a given username, but only in the cache and not on the Mojang server.
+     *
+     * @param playerName The name to look up.
+     * @return A UUID, or null if it's not found in the cache.
+     */
+    public static UUID getUuidCached(String playerName) {
+        return uuidCache.get(playerName);
+    }
 }
