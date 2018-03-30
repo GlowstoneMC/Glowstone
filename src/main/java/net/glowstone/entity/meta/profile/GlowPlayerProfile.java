@@ -90,7 +90,6 @@ public class GlowPlayerProfile implements PlayerProfile {
     private GlowPlayerProfile(String name, CompletableFuture<UUID> uuid,
             Collection<ProfileProperty> properties) {
         checkNotNull(properties, "properties must not be null");
-        checkNotNull(uuid, "uuid must not be null");
         this.name = name;
         this.uniqueId = uuid;
         this.properties = Maps.newHashMap();
