@@ -210,15 +210,19 @@ public class GlowPlayerProfile implements PlayerProfile {
         return profileTag;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>This method will block if the UUID is still being looked up. It will not block if {@link
-     * #isComplete()}.
-     */
     @Override
     public UUID getId() {
-        return uniqueId == null ? null : uniqueId.join();
+        return uniqueId == null ? null : uniqueId.getNow(null);
+    }
+
+    /**
+     * Waits for the lookup of, then returns, the player's UUID.
+     *
+     * @return the player UUID, or null if it's unknown and couldn't be looked up
+     */
+    public UUID getIdBlocking() {
+        complete();
+        return getId();
     }
 
     @Override
