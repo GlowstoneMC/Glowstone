@@ -42,7 +42,7 @@ public final class LoginStartHandler implements MessageHandler<GlowSession, Logi
             if (proxy == null) {
                 UUID uuid = UUID
                     .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
-                profile = new GlowPlayerProfile(name, uuid);
+                profile = new GlowPlayerProfile(name, uuid, true);
             } else {
                 profile = proxy.getProfile();
                 if (profile == null) {

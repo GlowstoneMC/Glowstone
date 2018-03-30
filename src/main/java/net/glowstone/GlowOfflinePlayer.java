@@ -89,6 +89,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     // Core properties
 
     private void loadData() {
+        profile.completeCached();
         try (PlayerReader reader = server.getPlayerDataService().beginReadingData(getUniqueId())) {
             hasPlayed = reader.hasPlayedBefore();
             if (hasPlayed) {

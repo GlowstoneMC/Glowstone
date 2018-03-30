@@ -64,7 +64,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     // Real objects
 
     private static final GlowPlayerProfile profile
-            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID());
+            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), true);
     private GlowScheduler scheduler;
     private final SessionRegistry sessionRegistry = new SessionRegistry();
     private File opsListFile;

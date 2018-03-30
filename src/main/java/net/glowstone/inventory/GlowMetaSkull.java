@@ -21,7 +21,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     private static final GlowPlayerProfile UNKNOWN_PLAYER = new GlowPlayerProfile("MHF_Steve",
-            new UUID(0xc06f89064c8a4911L, 0x9c29ea1dbd1aab82L));
+            new UUID(0xc06f89064c8a4911L, 0x9c29ea1dbd1aab82L), true);
 
     final AtomicReference<GlowPlayerProfile> owner = new AtomicReference<>();
 

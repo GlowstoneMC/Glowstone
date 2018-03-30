@@ -1744,7 +1744,19 @@ public class GlowServer implements Server {
 
     @Override
     public GlowPlayerProfile createProfile(UUID id, String name) {
-        return new GlowPlayerProfile(name, id);
+        return createProfile(id, name, false);
+    }
+
+    /**
+     * Creates a player profile.
+     *
+     * @param name The player's name.
+     * @param uuid The player's UUID; may be null.
+     * @param asyncLookup If true and {@code uuid} is null, the UUID is looked up asynchronously.
+     * @return The player's profile.
+     */
+    public GlowPlayerProfile createProfile(UUID uuid, String name, boolean asyncLookup) {
+        return new GlowPlayerProfile(name, uuid, asyncLookup);
     }
 
     @Override
@@ -1965,7 +1977,7 @@ public class GlowServer implements Server {
             GlowServer.logger.log(Level.WARNING,
                     strings.getString("console.warn.profile.timeout"), ex);
         }
-        return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid));
+        return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid, false));
     }
 
     /**
@@ -2007,7 +2019,7 @@ public class GlowServer implements Server {
 
     private OfflinePlayer getOfflinePlayerFallback(String name) {
         return getOfflinePlayer(new GlowPlayerProfile(name, UUID
-                .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes())));
+                .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes()), false));
     }
 
 

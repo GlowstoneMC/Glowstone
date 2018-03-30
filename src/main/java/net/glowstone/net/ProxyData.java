@@ -133,7 +133,7 @@ public final class ProxyData {
      * @return The spoofed profile.
      */
     public GlowPlayerProfile getProfile(String name) {
-        return new GlowPlayerProfile(name, uuid, properties);
+        return new GlowPlayerProfile(name, uuid, properties, true);
     }
 
     /**
@@ -146,6 +146,6 @@ public final class ProxyData {
         if (name == null) {
             return null;
         }
-        return new GlowPlayerProfile(name, uuid, properties);
+        return new GlowPlayerProfile(name, uuid, properties, true);
     }
 }
