@@ -110,9 +110,7 @@ public class GlowChunk implements Chunk {
     @Setter
     private boolean populated;
 
-    /**
-     * Cache for isSlimeChunk.
-     */
+    @Setter
     private int isSlimeChunk = -1;
 
     /**
@@ -204,7 +202,7 @@ public class GlowChunk implements Chunk {
             boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot(x, z, world, sections,
                 includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null,
-                includeBiomeTempRain);
+                includeBiomeTempRain, isSlimeChunk());
     }
 
     @Override

@@ -100,6 +100,11 @@ public final class AnvilChunkIoService implements ChunkIoService {
             chunk.automaticHeightMap();
         }
 
+        // read slime chunk
+        if (levelTag.isByte("isSlimeChunk")) {
+            chunk.setIsSlimeChunk(levelTag.getByte("isSlimeChunk"));
+        }
+
         // read entities
         if (levelTag.isList("Entities", TagType.COMPOUND)) {
             for (CompoundTag entityTag : levelTag.getCompoundList("Entities")) {
@@ -213,6 +218,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // height map and biomes
         levelTags.putIntArray("HeightMap", snapshot.getRawHeightmap());
         levelTags.putByteArray("Biomes", snapshot.getRawBiomes());
+
+        // Save Slime Chunk
+        levelTags.putByte("isSlimeChunk", snapshot.isSlimeChunk() ? 1 : 0);
 
         // entities
         List<CompoundTag> entities = new ArrayList<>();
