@@ -175,6 +175,10 @@ public class GlowChunk implements Chunk {
         return Collections.unmodifiableCollection(blockEntities.values());
     }
 
+    /**
+     * Formula taken from Minecraft Gamepedia.
+     * https://minecraft.gamepedia.com/Slime#.22Slime_chunks.22
+     */
     @Override
     public boolean isSlimeChunk() {
         if (isSlimeChunk == -1) {
