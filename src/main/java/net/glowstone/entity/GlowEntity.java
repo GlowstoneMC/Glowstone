@@ -688,7 +688,7 @@ public abstract class GlowEntity implements Entity {
             }
         }
 
-        if (fall && !(this instanceof GlowPlayer)) {
+        if (fall && hasDefaultLandingBehavior()) {
             setOnGround(location.clone().add(new Vector(0, -1, 0)).getBlock().getType().isSolid());
         }
     }
@@ -700,6 +700,18 @@ public abstract class GlowEntity implements Entity {
      */
     public void setRawLocation(Location location) {
         setRawLocation(location, true);
+    }
+
+    /**
+     * If true, {@link #setRawLocation(Location, boolean)} with {@code fall} true will call
+     * {@link #setOnGround(boolean)} according to whether or not our location is inside a solid
+     * block.
+     *
+     * @return true to call {@link #setOnGround(boolean)} from {@link #setRawLocation(Location,
+     *     boolean)}; false otherwise
+     */
+    protected boolean hasDefaultLandingBehavior() {
+        return true;
     }
 
     /**

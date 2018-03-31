@@ -1396,6 +1396,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    protected boolean hasDefaultLandingBehavior() {
+        return false;
+    }
+
+    @Override
     public void setWhitelisted(boolean value) {
         if (value) {
             server.getWhitelist().add(this);

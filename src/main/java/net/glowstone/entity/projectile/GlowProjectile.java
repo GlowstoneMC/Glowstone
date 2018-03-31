@@ -79,6 +79,11 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
     }
 
     @Override
+    protected boolean hasDefaultLandingBehavior() {
+        return false;
+    }
+
+    @Override
     public abstract void collide(Block block);
 
     public abstract void collide(LivingEntity entity);
