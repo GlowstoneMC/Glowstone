@@ -40,7 +40,7 @@ public class LocalizedStrings {
      * @param args the values to format
      */
     public static void logInfo(@PropertyKey String key, Object... args) {
-        GlowServer.logger.info(format(key, args));
+        GlowServer.logger.info(format(key, (Object[]) args));
     }
 
     /**
@@ -52,7 +52,7 @@ public class LocalizedStrings {
      * @param args the values to format
      */
     public static void logWarning(@PropertyKey String key, Object... args) {
-        GlowServer.logger.warning(format(key, args));
+        GlowServer.logger.warning(format(key, (Object[]) args));
     }
 
     /**
@@ -64,6 +64,6 @@ public class LocalizedStrings {
      * @param args the values to format
      */
     public static void logError(@PropertyKey String key, Object... args) {
-        GlowServer.logger.severe(format(key, args));
+        GlowServer.logger.severe(format(key, (Object[]) args));
     }
 }
