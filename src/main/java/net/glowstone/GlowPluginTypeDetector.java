@@ -1,5 +1,7 @@
 package net.glowstone;
 
+import static net.glowstone.GlowInternationalizedStrings.logInfo;
+
 import com.google.common.io.PatternFilenameFilter;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +37,7 @@ public class GlowPluginTypeDetector {
      * Scans all jars in the plugin directory for their types.
      */
     public void scan() {
-        GlowServer.logger.info("Scanning plugins...");
+        GlowInternationalizedStrings.logInfo("console.info.plugin.scanning");
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;
@@ -45,15 +47,9 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        GlowServer.logger.info(String.format(
-                "PluginTypeDetector: found %d Bukkit, %d Sponge, %d Forge, %d Canary, "
-                        + "%d unknown plugins (total %d)",
-                bukkitPlugins.size(),
-                spongePlugins.size(),
-                forgefPlugins.size() + forgenPlugins.size(),
-                canaryPlugins.size(),
-                unrecognizedPlugins.size(),
-                files.length));
+        logInfo("console.info.plugin.counts", bukkitPlugins.size(),
+                spongePlugins.size(), forgefPlugins.size() + forgenPlugins.size(),
+                canaryPlugins.size(), unrecognizedPlugins.size(), files.length);
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
