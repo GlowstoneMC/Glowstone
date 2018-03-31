@@ -3,13 +3,8 @@ package net.glowstone.chunk;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import lombok.Data;
@@ -109,6 +104,11 @@ public class GlowChunk implements Chunk {
     private boolean populated;
 
     /**
+     * Cache for isSlimeChunk
+     */
+    private int isSlimeChunk = -1;
+
+    /**
      * Creates a new chunk with a specified X and Z coordinate.
      *
      * @param x The X coordinate.
@@ -170,7 +170,17 @@ public class GlowChunk implements Chunk {
 
     @Override
     public boolean isSlimeChunk() {
-        return false; // TODO: implement slime chunks
+        if (isSlimeChunk == -1) {
+            boolean isSlimeChunk = new Random(this.world.getSeed() +
+                    (long) (this.x * this.x * 0x4c1906) +
+                    (long) (this.x * 0x5ac0db) +
+                    (long) (this.z * this.z) * 0x4307a7L +
+                    (long) (this.z * 0x5f24f) ^ 0x3ad8025f).nextInt(10) == 0;
+
+            this.isSlimeChunk = (isSlimeChunk ? 1 : 0);
+        }
+
+        return this.isSlimeChunk == 1;
     }
 
     @Override
