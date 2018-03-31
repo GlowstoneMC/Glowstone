@@ -1,6 +1,6 @@
 package net.glowstone;
 
-import static net.glowstone.GlowInternationalizedStrings.logInfo;
+import static net.glowstone.LocalizedStrings.logInfo;
 
 import com.google.common.io.PatternFilenameFilter;
 import java.io.File;
@@ -37,7 +37,7 @@ public class GlowPluginTypeDetector {
      * Scans all jars in the plugin directory for their types.
      */
     public void scan() {
-        GlowInternationalizedStrings.logInfo("console.info.plugin.scanning");
+        LocalizedStrings.logInfo("console.info.plugin.scanning");
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;

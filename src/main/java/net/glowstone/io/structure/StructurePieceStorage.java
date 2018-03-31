@@ -1,6 +1,6 @@
 package net.glowstone.io.structure;
 
-import static net.glowstone.GlowInternationalizedStrings.logError;
+import static net.glowstone.LocalizedStrings.logError;
 
 import java.util.HashMap;
 import java.util.Map;

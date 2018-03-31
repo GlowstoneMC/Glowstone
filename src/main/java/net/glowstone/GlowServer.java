@@ -1,10 +1,10 @@
 package net.glowstone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.GlowInternationalizedStrings.format;
-import static net.glowstone.GlowInternationalizedStrings.logError;
-import static net.glowstone.GlowInternationalizedStrings.logInfo;
-import static net.glowstone.GlowInternationalizedStrings.logWarning;
+import static net.glowstone.LocalizedStrings.format;
+import static net.glowstone.LocalizedStrings.logError;
+import static net.glowstone.LocalizedStrings.logInfo;
+import static net.glowstone.LocalizedStrings.logWarning;
 
 import com.flowpowered.network.Message;
 import com.google.common.collect.Iterators;
@@ -630,7 +630,7 @@ public class GlowServer implements Server {
                 logInfo("console.info.proxy");
             }
         } else if (!getOnlineMode()) {
-            GlowInternationalizedStrings.logWarning("console.warn.offline");
+            LocalizedStrings.logWarning("console.warn.offline");
         }
 
         int openClMajor = 1;

@@ -7,12 +7,12 @@ import javax.annotation.PropertyKey;
 /**
  * Static helper methods used with localized strings.
  */
-public class GlowInternationalizedStrings {
+public class LocalizedStrings {
 
     /**
      * Utility class; do not instantiate.
      */
-    private GlowInternationalizedStrings() {}
+    private LocalizedStrings() {}
 
     /**
      * Localized strings.
