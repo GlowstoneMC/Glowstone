@@ -49,7 +49,6 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     protected void pulsePhysics() {
         super.pulsePhysics();
         if (!isOnGround()) {
-            location.add(getVelocity());
             if (isTouchingMaterial(Material.WATER)
                     || isTouchingMaterial(Material.STATIONARY_WATER)) {
                 setFireTicks(0);
