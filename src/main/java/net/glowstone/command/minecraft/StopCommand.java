@@ -7,6 +7,10 @@ import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
+/**
+ * In vanilla Minecraft, this command takes no arguments; but as an extension, Glowstone treats any
+ * arguments as a custom kick message.
+ */
 public class StopCommand extends VanillaCommand {
 
     public StopCommand() {
