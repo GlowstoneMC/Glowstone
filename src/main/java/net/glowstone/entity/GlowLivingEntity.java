@@ -244,6 +244,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
      * If this entity has stood in fire (for fire application).
      */
     private boolean stoodInFire;
+    /**
+     * The ticks an entity stands adjacent to fire and lava.
+     */
+    private int adjacentBurnTicks;
 
     /**
      * Creates a mob within the specified world.
@@ -313,19 +317,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(1, DamageCause.SUFFOCATION);
         }
 
-        // fire damage
+        // fire and lava damage
         if (getLocation().getBlock().getType() == Material.FIRE) {
             damage(1, DamageCause.FIRE);
             // not applying additional fire ticks after dying in fire
             stoodInFire = !isDead();
-        } else {
-            if (stoodInFire) {
-                setFireTicks(getFireTicks() + 180);
-                stoodInFire = false;
-            }
-        }
-
-        if (getLocation().getBlock().getType() == Material.LAVA
+        } else if (getLocation().getBlock().getType() == Material.LAVA 
                 || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
             damage(4, DamageCause.LAVA);
             if (swamInLava) {
@@ -334,6 +331,19 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 setFireTicks(getFireTicks() + 300);
                 swamInLava = true;
             }
+        } else if (isTouchingMaterial(Material.FIRE)
+                || isTouchingMaterial(Material.LAVA) 
+                || isTouchingMaterial(Material.STATIONARY_LAVA)) {
+            damage(1, DamageCause.FIRE);
+            // increment the ticks stood adjacent to fire or lava
+            adjacentBurnTicks++;
+            if (adjacentBurnTicks > 40) {
+                stoodInFire = !isDead();
+            }
+        } else if (stoodInFire) {
+            setFireTicks(getFireTicks() + 160);
+            stoodInFire = false;
+            adjacentBurnTicks = 0;
         } else {
             swamInLava = false;
             if (getLocation().getBlock().getType() == Material.WATER
