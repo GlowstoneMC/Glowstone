@@ -1,9 +1,9 @@
 package net.glowstone.io.structure;
 
-import java.text.MessageFormat;
+import static net.glowstone.LocalizedStrings.logError;
+
 import java.util.HashMap;
 import java.util.Map;
-import net.glowstone.GlowServer;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.util.nbt.CompoundTag;
 
@@ -64,9 +64,8 @@ public final class StructurePieceStorage {
         }
         StructurePieceStore<?> store = idTable.get(compound.getString("id"));
         if (store == null) {
-            GlowServer.logger.severe(MessageFormat
-                    .format("Unknown structure piece type to load: \"{0}\"", compound
-                            .getString("id")));
+            logError("console.error.structure.unknown-piece-type",
+                    compound.getString("id"));
             return null;
         }
 

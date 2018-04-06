@@ -65,9 +65,8 @@ import static org.bukkit.block.Biome.TAIGA_HILLS;
 import static org.bukkit.block.Biome.VOID;
 import static org.bukkit.block.Biome.values;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
-import net.glowstone.GlowServer;
+import net.glowstone.LocalizedStrings;
 import org.bukkit.block.Biome;
 
 /**
@@ -169,7 +168,7 @@ public final class GlowBiome {
         if (id < biomes.length) {
             return biomes[id];
         } else {
-            GlowServer.logger.severe(MessageFormat.format("Unknown biome id: {0}!", id));
+            LocalizedStrings.logError("console.error.biome.unknown", id);
             return null;
         }
     }
