@@ -1,7 +1,5 @@
 package net.glowstone;
 
-import static net.glowstone.LocalizedStrings.logInfo;
-
 import com.google.common.io.PatternFilenameFilter;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import net.glowstone.i18n.LocalizedStrings;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -37,7 +36,7 @@ public class GlowPluginTypeDetector {
      * Scans all jars in the plugin directory for their types.
      */
     public void scan() {
-        LocalizedStrings.logInfo("console.info.plugin.scanning");
+        LocalizedStrings.Console.Info.Plugin.SCANNING.log();
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
         if (files == null || files.length == 0) {
             return;
@@ -47,9 +46,14 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        logInfo("console.info.plugin.counts", bukkitPlugins.size(),
-                spongePlugins.size(), forgefPlugins.size() + forgenPlugins.size(),
-                canaryPlugins.size(), unrecognizedPlugins.size(), files.length);
+        LocalizedStrings.Console.Info.Plugin.COUNTS.log(
+            bukkitPlugins.size(),
+            spongePlugins.size(),
+            forgefPlugins.size() + forgenPlugins.size(),
+            canaryPlugins.size(),
+            unrecognizedPlugins.size(),
+            files.length
+        );
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {

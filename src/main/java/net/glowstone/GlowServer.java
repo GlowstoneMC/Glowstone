@@ -1,10 +1,6 @@
 package net.glowstone;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.LocalizedStrings.format;
-import static net.glowstone.LocalizedStrings.logError;
-import static net.glowstone.LocalizedStrings.logInfo;
-import static net.glowstone.LocalizedStrings.logWarning;
 
 import com.flowpowered.network.Message;
 import com.google.common.collect.Iterators;
@@ -113,6 +109,7 @@ import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
 import net.glowstone.generator.SuperflatGenerator;
 import net.glowstone.generator.TheEndGenerator;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.crafting.CraftingManager;
@@ -439,7 +436,7 @@ public class GlowServer implements Server {
         GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
         advancement.addCriterion("minecraft:test/criterion");
         advancement.setDisplay(new GlowAdvancementDisplay(
-                new TextMessage(format("glowstone.advancement.title")),
+                new TextMessage(LocalizedStrings.Glowstone.Advancement.TITLE.get()),
                 new TextMessage("=)"),
                 new ItemStack(Material.GLOWSTONE),
                 GlowAdvancementDisplay.FrameType.GOAL,
@@ -470,17 +467,16 @@ public class GlowServer implements Server {
                 return;
             }
             if (generateConfigOnly) {
-                logInfo("console.info.config-only-done",
-                        new Object[0]);
+                LocalizedStrings.Console.Info.CONFIG_ONLY_DONE.log();
                 return;
             }
 
             server.run();
         } catch (SecurityException e) {
-            logger.log(Level.WARNING, format("console.error.classpath"), e);
+            LocalizedStrings.Console.Error.CLASSPATH.log(e);
         } catch (Throwable t) {
             // general server startup crash
-            logger.log(Level.SEVERE, format("console.error.startup"), t);
+            LocalizedStrings.Console.Error.STARTUP.log(t);
             System.exit(1);
         }
     }
@@ -517,23 +513,24 @@ public class GlowServer implements Server {
             String opt = args[i];
 
             if (opt.isEmpty() || opt.charAt(0) != '-') {
-                System.err.println(format("console.warn.option.invalid", opt));
+
+                System.err.println(LocalizedStrings.Console.Warn.Option.INVALID.get(opt));
             }
 
             // Help and version
             if ("--help".equals(opt) || "-h".equals(opt) || "-?".equals(opt)) {
-                System.out.println(format("console.info.option.help"));
+                System.out.println(LocalizedStrings.Console.Info.Option.HELP.get());
                 return null;
             } else if ("--version".equals(opt) || "-v".equals(opt)) {
-                System.out.println(format("console.info.version.glowstone",
-                        GlowServer.class.getPackage()
-                                .getImplementationVersion()));
-                System.out.println(format("console.info.version.bukkit",
-                        GlowServer.class.getPackage()
-                                .getSpecificationVersion()));
-                System.out.println(
-                        format("console.info.version.minecraft-client",
-                        GAME_VERSION, PROTOCOL_VERSION));
+                System.out.println(LocalizedStrings.Console.Info.Version.GLOWSTONE.get(
+                    GlowServer.class.getPackage().getImplementationVersion()
+                ));
+                System.out.println(LocalizedStrings.Console.Info.Version.BUKKIT.get(
+                    GlowServer.class.getPackage().getSpecificationVersion()
+                ));
+                System.out.println(LocalizedStrings.Console.Info.Version.MINECRAFT_CLIENT.get(
+                    GAME_VERSION, PROTOCOL_VERSION
+                ));
                 return null;
             } else if ("--generate-config".equals(opt)) {
                 generateConfigOnly = true;
@@ -541,7 +538,7 @@ public class GlowServer implements Server {
 
             // Below this point, options require parameters
             if (i == args.length - 1 && !"--generate-config".equals(opt)) {
-                System.err.format(format("console.warn.option.no-value"), opt);
+                System.err.format(LocalizedStrings.Console.Warn.Option.NO_VALUE.get(), opt);
                 continue;
             }
 
@@ -595,7 +592,7 @@ public class GlowServer implements Server {
                     // previously handled
                     break;
                 default:
-                    System.err.format(format("console.warn.option.invalid"), opt);
+                    System.err.format(LocalizedStrings.Console.Warn.Option.INVALID.get(), opt);
             }
         }
 
@@ -612,7 +609,7 @@ public class GlowServer implements Server {
     public void run() {
         start();
         bind();
-        logInfo("console.info.ready");
+        LocalizedStrings.Console.Info.READY.log();
     }
 
     /**
@@ -627,10 +624,10 @@ public class GlowServer implements Server {
             if (getOnlineMode()) {
                 logger.warning("console.info.proxy.online");
             } else {
-                logInfo("console.info.proxy");
+                LocalizedStrings.Console.Info.PROXY.log();
             }
         } else if (!getOnlineMode()) {
-            LocalizedStrings.logWarning("console.warn.offline");
+            LocalizedStrings.Console.Warn.OFFLINE.log();
         }
 
         int openClMajor = 1;
@@ -650,57 +647,51 @@ public class GlowServer implements Server {
                     for (CLDevice device : platform.listCLDevices()) {
                         if (device.getType() == CLDevice.Type.GPU) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                            logInfo("console.info.opencl.found-device",
-                                    device, flops);
+                            LocalizedStrings.Console.Info.Opencl.FOUND_DEVICE.log(
+                                device, flops
+                            );
                             if (device.getVendor().contains("Intel")) {
                                 if (flops > maxIntelFlops) {
                                     maxIntelFlops = flops;
-                                    logInfo("console.info.opencl.best",
-                                            platform);
+                                    LocalizedStrings.Console.Info.Opencl.BEST.log(platform);
                                     bestIntelPlatform = platform;
                                 } else if (flops == maxIntelFlops) {
                                     if (bestIntelPlatform != null && bestIntelPlatform.getVersion()
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxIntelFlops = flops;
-                                        logInfo(
-                                                "console.info.opencl.best.version-tiebreaker",
-                                                platform);
+                                        LocalizedStrings.Console.Info.Opencl.Best
+                                            .VERSION_TIEBREAKER.log(platform);
                                         bestIntelPlatform = platform;
                                     }
                                 }
                             } else {
                                 if (flops > maxGpuFlops) {
                                     maxGpuFlops = flops;
-                                    logInfo("console.info.opencl.best",
-                                            platform);
+                                    LocalizedStrings.Console.Info.Opencl.BEST.log(platform);
                                     bestPlatform = platform;
                                 } else if (flops == maxGpuFlops) {
                                     if (bestPlatform != null && bestPlatform.getVersion()
                                             .compareTo(platform.getVersion()) < 0) {
                                         maxGpuFlops = flops;
-                                        logInfo(
-                                                "console.info.opencl.best.version-tiebreaker",
-                                                platform);
+                                        LocalizedStrings.Console.Info.Opencl.Best
+                                            .VERSION_TIEBREAKER.log(platform);
                                         bestPlatform = platform;
                                     }
                                 }
                             }
                         } else {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
-                            logInfo("console.info.opencl.found-device",
-                                    device, flops);
+                            LocalizedStrings.Console.Info.Opencl.FOUND_DEVICE.log(device, flops);
                             if (flops > maxCpuFlops) {
                                 maxCpuFlops = flops;
-                                logInfo("console.info.opencl.best",
-                                        platform);
+                                LocalizedStrings.Console.Info.Opencl.BEST.log(platform);
                                 bestCpuPlatform = platform;
                             } else if (flops == maxCpuFlops) {
                                 if (bestCpuPlatform != null && bestCpuPlatform.getVersion()
                                         .compareTo(platform.getVersion()) < 0) {
                                     maxCpuFlops = flops;
-                                    logInfo(
-                                            "console.info.opencl.best.version-tiebreaker",
-                                            platform);
+                                    LocalizedStrings.Console.Info.Opencl.Best.VERSION_TIEBREAKER
+                                        .log(platform);
                                     bestCpuPlatform = platform;
                                 }
                             }
@@ -718,12 +709,10 @@ public class GlowServer implements Server {
             } else {
                 if (maxGpuFlops == 0) {
                     if (maxIntelFlops == 0) {
-                        logInfo("console.info.opencl.cpu",
-                                new Object[0]);
+                        LocalizedStrings.Console.Info.Opencl.CPU.log();
                         bestPlatform = bestCpuPlatform;
                     } else {
-                        logInfo("console.info.opencl.intel-gpu",
-                                new Object[0]);
+                        LocalizedStrings.Console.Info.Opencl.INTEL_GPU.log();
                         bestPlatform = bestIntelPlatform;
                     }
                 }
@@ -731,12 +720,11 @@ public class GlowServer implements Server {
 
             if (bestPlatform == null) {
                 isGraphicsComputeAvailable = false;
-                logInfo("console.info.opencl.no-device",
-                        new Object[0]);
-                logInfo("console.info.opencl.required-version",
-                        openClMajor, openClMinor);
-                logInfo("console.info.opencl.required-extensions",
-                        new Object[0]);
+                LocalizedStrings.Console.Info.Opencl.NO_DEVICE.log();
+                LocalizedStrings.Console.Info.Opencl.REQUIRED_VERSION.log(
+                    openClMajor, openClMinor
+                );
+                LocalizedStrings.Console.Info.Opencl.REQUIRED_EXTENSIONS.log();
             } else {
                 OpenCompute.initContext(bestPlatform);
             }
@@ -753,7 +741,7 @@ public class GlowServer implements Server {
         try {
             LootingManager.load();
         } catch (Exception e) {
-            logError("console.error.looting-manager");
+            LocalizedStrings.Console.Error.LOOTING_MANAGER.log();
             e.printStackTrace();
         }
 
@@ -817,7 +805,7 @@ public class GlowServer implements Server {
                 .toPath();
         Path destPath = new File(getWorldContainer(), name + suffix).toPath();
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
-            logInfo("console.info.import", destPath, srcPath);
+            LocalizedStrings.Console.Info.IMPORT.log(destPath, srcPath);
             try {
                 Files.walkFileTree(srcPath, new FileVisitor<Path>() {
                     @Override
@@ -841,8 +829,9 @@ public class GlowServer implements Server {
                     @Override
                     public FileVisitResult visitFileFailed(Path file,
                             IOException exc) throws IOException {
-                        logger.warning(format("console.error.import.with-message",
-                                        srcPath.relativize(file), exc));
+                        LocalizedStrings.Console.Error.Import.WITH_MESSAGE.log(
+                            exc, srcPath.relativize(file)
+                        );
                         return FileVisitResult.CONTINUE;
                     }
 
@@ -854,19 +843,16 @@ public class GlowServer implements Server {
                 });
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
-                logger.log(Level.WARNING, format(
-                        "console.error.import.no-message", srcPath), e);
+                LocalizedStrings.Console.Error.Import.NO_MESSAGE.log(e, srcPath);
             }
         }
     }
 
     private void bind() {
         if (EPOLL) {
-            logInfo("console.info.native-transport.epoll",
-                    new Object[0]);
+            LocalizedStrings.Console.Info.NativeTransport.EPOLL.log();
         } else if (KQUEUE) {
-            logInfo("console.info.native-transport.kqueue",
-                    new Object[0]);
+            LocalizedStrings.Console.Info.NativeTransport.KQUEUE.log();
         }
 
         CountDownLatch latch = new CountDownLatch(3);
@@ -891,8 +877,7 @@ public class GlowServer implements Server {
         try {
             latch.await();
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE,
-                    format("console.error.rcon.bind-interrupted"), e);
+            LocalizedStrings.Console.Error.Rcon.BIND_INTERRUPTED.log(e);
             System.exit(1);
         }
     }
@@ -932,7 +917,7 @@ public class GlowServer implements Server {
             return;
         }
         isShuttingDown = true;
-        logInfo("console.info.shutdown");
+        LocalizedStrings.Console.Info.SHUTDOWN.log();
 
         // Disable plugins
         pluginManager.clearPlugins();
@@ -956,7 +941,7 @@ public class GlowServer implements Server {
 
         // Save worlds
         for (World world : getWorlds()) {
-            logInfo("console.info.save", world.getName());
+            LocalizedStrings.Console.Info.SAVE.log(world.getName());
             unloadWorld(world, true);
         }
 
@@ -1000,19 +985,16 @@ public class GlowServer implements Server {
                     File vanillaServerIcon = new File(SERVER_ICON_FILE);
                     if (vanillaServerIcon.isFile()) {
                         // Import from Vanilla
-                        logInfo("console.info.icon.import",
-                                SERVER_ICON_FILE);
+                        LocalizedStrings.Console.Info.Icon.IMPORT.log(SERVER_ICON_FILE);
                         Files.copy(vanillaServerIcon.toPath(), serverIconFile.toPath());
                         defaultIcon = new GlowServerIcon(serverIconFile);
                     }
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, format("console.warn.icon.load-failed.import",
-                            SERVER_ICON_FILE), e);
+                    LocalizedStrings.Console.Warn.Icon.LoadFailed.IMPORT.log(e, SERVER_ICON_FILE);
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING, format("console.warn.icon.load-failed",
-                            SERVER_ICON_FILE), e);
+            LocalizedStrings.Console.Warn.Icon.LOAD_FAILED.log(e, SERVER_ICON_FILE);
         }
     }
 
@@ -1118,7 +1100,7 @@ public class GlowServer implements Server {
 
         File folder = new File(config.getString(Key.PLUGIN_FOLDER));
         if (!folder.isDirectory() && !folder.mkdirs()) {
-            logger.log(Level.SEVERE, format("console.error.plugin.mkdir", folder));
+            LocalizedStrings.Console.Error.Plugin.MKDIR.log(folder);
         }
 
         // detect plugin types
@@ -1137,8 +1119,9 @@ public class GlowServer implements Server {
             try {
                 plugin.onLoad();
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, format("console.error.plugin.loading",
-                                plugin.getDescription().getFullName()), ex);
+                LocalizedStrings.Console.Error.Plugin.LOADING.log(
+                    ex, plugin.getDescription().getFullName()
+                );
             }
         }
 
@@ -1161,39 +1144,33 @@ public class GlowServer implements Server {
             }
 
             if (!hasSponge && spongeOnlyPlugins) {
-                logWarning("console.warn.plugin.no-sponge");
+                LocalizedStrings.Console.Warn.Plugin.NO_SPONGE.log();
                 for (File file : getSpongePlugins()) {
-                    logWarning("console.warn.plugin.unsupported.sponge",
-                            file.getPath());
+                    LocalizedStrings.Console.Warn.Plugin.Unsupported.SPONGE.log(file.getPath());
                 }
-                logWarning("console.warn.plugin.no-sponge.bukkit2sponge");
+                LocalizedStrings.Console.Warn.Plugin.NoSponge.BUKKIT2SPONGE.log();
             }
         }
 
         if (!pluginTypeDetector.canaryPlugins.isEmpty() || !pluginTypeDetector.forgefPlugins
                 .isEmpty() || !pluginTypeDetector.forgenPlugins.isEmpty()
                 || !pluginTypeDetector.unrecognizedPlugins.isEmpty()) {
-            logger.log(Level.WARNING,
-                    format("console.warn.plugin.unsupported"));
+            LocalizedStrings.Console.Warn.Plugin.UNSUPPORTED.log();
 
             for (File file : pluginTypeDetector.canaryPlugins) {
-                logger.log(Level.WARNING, format("console.warn.plugin.unsupported.canary",
-                        file.getPath()));
+                LocalizedStrings.Console.Warn.Plugin.Unsupported.CANARY.log(file.getPath());
             }
 
             for (File file : pluginTypeDetector.forgefPlugins) {
-                logger.log(Level.WARNING, format("console.warn.plugin.unsupported.forge",
-                        file.getPath()));
+                LocalizedStrings.Console.Warn.Plugin.Unsupported.FORGE.log(file.getPath());
             }
 
             for (File file : pluginTypeDetector.forgenPlugins) {
-                logger.log(Level.WARNING, format("console.warn.plugin.unsupported.forge",
-                        file.getPath()));
+                LocalizedStrings.Console.Warn.Plugin.Unsupported.FORGE.log(file.getPath());
             }
 
             for (File file : pluginTypeDetector.unrecognizedPlugins) {
-                logger.log(Level.WARNING, format("console.warn.plugin.unsupported.other",
-                        file.getPath()));
+                LocalizedStrings.Console.Warn.Plugin.Unsupported.OTHER.log(file.getPath());
             }
         }
 
@@ -1228,17 +1205,18 @@ public class GlowServer implements Server {
                     try {
                         pluginManager.addPermission(perm);
                     } catch (IllegalArgumentException ex) {
-                        getLogger().log(Level.WARNING, format(
-                                        "console.warn.plugin.permission.duplicate",
-                                        plugin.getDescription().getFullName(), perm.getName()), ex);
+                        LocalizedStrings.Console.Warn.Plugin.Permission.DUPLICATE.log(
+                            ex, plugin.getDescription().getFullName(), perm.getName()
+                        );
                     }
                 }
 
                 try {
                     pluginManager.enablePlugin(plugin);
                 } catch (Throwable ex) {
-                    logger.log(Level.SEVERE, format("console.error.plugin.loading",
-                                    plugin.getDescription().getFullName()), ex);
+                    LocalizedStrings.Console.Error.Plugin.LOADING.log(
+                        ex, plugin.getDescription().getFullName()
+                    );
                 }
             }
         }
@@ -1272,15 +1250,16 @@ public class GlowServer implements Server {
 
             List<Permission> perms = Permission
                     .loadPermissions(data,
-                            format("console.error.permission.invalid"),
+                            LocalizedStrings.Console.Error.Permission.INVALID.get(),
                             PermissionDefault.OP);
 
             for (Permission perm : perms) {
                 try {
                     pluginManager.addPermission(perm);
                 } catch (IllegalArgumentException ex) {
-                    getLogger().log(Level.WARNING, format("console.warn.permission.duplicate",
-                            perm.getName()), ex);
+                    LocalizedStrings.Console.Warn.Permission.DUPLICATE.log(
+                        ex, perm.getName()
+                    );
                 }
             }
         }
@@ -1307,7 +1286,7 @@ public class GlowServer implements Server {
             enablePlugins(PluginLoadOrder.STARTUP);
             enablePlugins(PluginLoadOrder.POSTWORLD);
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, format("console.error.reload"), ex);
+            LocalizedStrings.Console.Error.RELOAD.log(ex);
         }
     }
 
@@ -1799,8 +1778,8 @@ public class GlowServer implements Server {
             firstword = firstword.substring(0, firstword.indexOf(' '));
         }
 
-        sender.sendMessage(format("glowstone.command.error.unknown-command",
-                        ChatColor.GRAY, firstword));
+        sender.sendMessage(LocalizedStrings.Glowstone.Command.Error.UNKNOWN_COMMAND.get(
+            ChatColor.GRAY, firstword));
         return false;
     }
 
@@ -1933,11 +1912,9 @@ public class GlowServer implements Server {
                 return getOfflinePlayerAsync(name).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException | ExecutionException ex) {
-            GlowServer.logger.log(Level.SEVERE,
-                    format("console.error.uuid.interrupted"), ex);
+            LocalizedStrings.Console.Error.Uuid.INTERRUPTED.log(ex);
         } catch (TimeoutException ex) {
-            GlowServer.logger.log(Level.WARNING,
-                    format("console.warn.uuid.timeout"), ex);
+            LocalizedStrings.Console.Warn.Uuid.TIMEOUT.log(ex);
         }
 
         return getOfflinePlayerFallback(name);
@@ -1953,11 +1930,9 @@ public class GlowServer implements Server {
                 return getOfflinePlayerAsync(uuid).get(getProfileLookupTimeout(), TimeUnit.SECONDS);
             }
         } catch (InterruptedException | ExecutionException ex) {
-            GlowServer.logger.log(Level.SEVERE,
-                    format("console.error.profile.interrupted"), ex);
+            LocalizedStrings.Console.Error.Profile.INTERRUPTED.log(ex);
         } catch (TimeoutException ex) {
-            GlowServer.logger.log(Level.WARNING,
-                    format("console.warn.profile.timeout"), ex);
+            LocalizedStrings.Console.Warn.Profile.TIMEOUT.log(ex);
         }
         return new GlowOfflinePlayer(this, new GlowPlayerProfile(null, uuid, false));
     }
@@ -2143,7 +2118,7 @@ public class GlowServer implements Server {
             return world;
         }
         if (isGenerationDisabled()) {
-            logWarning("console.warn.worldgen.disabled", creator.name());
+            LocalizedStrings.Console.Warn.WorldGen.DISABLED.log(creator.name());
         }
 
         if (creator.generator() == null) {
