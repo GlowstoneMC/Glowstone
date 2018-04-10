@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.GlowStatusClient;
 import net.glowstone.net.message.status.StatusRequestMessage;
@@ -28,6 +29,27 @@ public final class StatusRequestHandler implements
     MessageHandler<GlowSession, StatusRequestMessage> {
 
     private static final UUID BLANK_UUID = new UUID(0, 0);
+
+    private static void choosePlayerSample(GlowServer server, PaperServerListPingEvent event) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        List<Player> players = new ArrayList<>(server.getOnlinePlayers());
+        int sampleCount = server.getPlayerSampleCount();
+        if (players.size() <= sampleCount) {
+            sampleCount = players.size();
+            Collections.shuffle(players, random);
+        } else {
+            // Avoid shuffling the entire list if we only need a few players
+            for (int i = 0; i < sampleCount; i++) {
+                Collections.swap(players, i, random.nextInt(i, players.size()));
+            }
+        }
+
+        // Add selected players to the event
+        for (int i = 0; i < sampleCount; i++) {
+            event.getPlayerSample().add(players.get(i).getPlayerProfile());
+        }
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -43,13 +65,7 @@ public final class StatusRequestHandler implements
         event.serverType = server.getServerType();
         event.clientModsAllowed = server.getAllowClientMods();
 
-        // Add player sample list
-        List<Player> playerList = new ArrayList<>(server.getOnlinePlayers());
-        int count = Math.min(playerList.size(), server.getPlayerSampleCount());
-        Collections.shuffle(playerList);
-        for (int i = 0; i < count; i++) {
-            event.getPlayerSample().add(((GlowPlayer) playerList.get(i)).getProfile());
-        }
+        choosePlayerSample(server, event);
 
         EventFactory.getInstance().callEvent(event);
 
