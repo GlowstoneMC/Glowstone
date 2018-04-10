@@ -6,7 +6,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.MessageHandler;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +33,7 @@ public final class StatusRequestHandler implements
     private static void choosePlayerSample(GlowServer server, PaperServerListPingEvent event) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
-        List<Player> players = new ArrayList<>(server.getOnlinePlayers());
+        List<Player> players = Arrays.asList(server.getOnlinePlayers());
         int sampleCount = server.getPlayerSampleCount();
         if (players.size() <= sampleCount) {
             sampleCount = players.size();
