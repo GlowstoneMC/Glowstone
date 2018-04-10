@@ -38,7 +38,7 @@ public final class StatusRequestHandler implements
         if (players.size() <= sampleCount) {
             sampleCount = players.size();
         } else {
-            // Avoid shuffling the entire list if we only need a few players
+            // Send a random subset of players (modified Fisher-Yates shuffle)
             for (int i = 0; i < sampleCount; i++) {
                 Collections.swap(players, i, random.nextInt(i, players.size()));
             }
