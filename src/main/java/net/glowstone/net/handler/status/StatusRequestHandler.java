@@ -37,7 +37,6 @@ public final class StatusRequestHandler implements
         int sampleCount = server.getPlayerSampleCount();
         if (players.size() <= sampleCount) {
             sampleCount = players.size();
-            Collections.shuffle(players, random);
         } else {
             // Avoid shuffling the entire list if we only need a few players
             for (int i = 0; i < sampleCount; i++) {
