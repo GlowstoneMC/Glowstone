@@ -19,6 +19,7 @@ import net.glowstone.entity.GlowEntityTest;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.monster.GlowCreeper;
 import net.glowstone.util.InventoryUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -28,9 +29,15 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.GreaterThan;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@PrepareForTest(Bukkit.class)
+@RunWith(PowerMockRunner.class)
 public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
     /** This needs to be static because it's used in the constructor's super call. */
@@ -51,6 +58,8 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        PowerMockito.mockStatic(Bukkit.class);
+        when(Bukkit.getServer()).thenReturn(server);
         eventsFired.removeAll(PlayerFishEvent.class);
         when(world.getBlockAt(any(Location.class))).thenReturn(block);
         when(world.getBlockAt(anyInt(), anyInt(), anyInt())).thenReturn(block);

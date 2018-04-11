@@ -16,7 +16,7 @@ public final class SpectateHandler implements MessageHandler<GlowSession, Specta
 
         GlowPlayer player = session.getPlayer();
         if (player.getGameMode() == GameMode.SPECTATOR && !Objects
-            .equals(player.getProfile().getUniqueId(), message.getTarget())) {
+            .equals(player.getProfile().getId(), message.getTarget())) {
             Entity entity = Bukkit.getEntity(message.getTarget());
 
             if (entity != null) {

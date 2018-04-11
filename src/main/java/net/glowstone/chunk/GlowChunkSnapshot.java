@@ -35,6 +35,8 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     private final double[] humid;
     @Getter
     private final byte[] rawBiomes;
+    @Getter
+    private final boolean isSlimeChunk;
 
     /**
      * Creates a snapshot of a chunk.
@@ -48,11 +50,12 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
      * @param svTemp if true, copy temperature and humidity from the world
      */
     public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, byte[] height,
-            byte[] biomes, boolean svTemp) {
+            byte[] biomes, boolean svTemp, boolean isSlimeChunk) {
         this.x = x;
         this.z = z;
         this.worldName = world.getName();
         captureFullTime = world.getFullTime();
+        this.isSlimeChunk = isSlimeChunk;
 
         int numSections = sections != null ? sections.length : 0;
         this.rawSections = new ChunkSection[numSections];
@@ -167,7 +170,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     public static class EmptySnapshot extends GlowChunkSnapshot {
 
         public EmptySnapshot(int x, int z, World world, boolean svBiome, boolean svTemp) {
-            super(x, z, world, null, null, svBiome ? new byte[256] : null, svTemp);
+            super(x, z, world, null, null, svBiome ? new byte[256] : null, svTemp, false);
         }
 
         @Override

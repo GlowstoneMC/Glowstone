@@ -1,6 +1,7 @@
 package net.glowstone.entity.meta.profile;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -16,9 +17,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -30,8 +31,21 @@ public class GlowPlayerProfile implements PlayerProfile {
     public static final int MAX_USERNAME_LENGTH = 16;
     @Getter
     private final String name;
-    private final UUID uniqueId;
+    private volatile CompletableFuture<UUID> uniqueId;
     private final Map<String, ProfileProperty> properties;
+
+    private static CompletableFuture<UUID> maybeLookUpNull(String name, UUID maybeUuid,
+            boolean asyncLookup) {
+        if (maybeUuid == null) {
+            if (asyncLookup) {
+                return ProfileCache.getUuid(name);
+            }
+            UUID maybeCachedUuid = ProfileCache.getUuidCached(name);
+            return maybeCachedUuid == null ? null : completedFuture(maybeCachedUuid);
+        } else {
+            return completedFuture(maybeUuid);
+        }
+    }
 
     /**
      * Construct a new profile with only a name and UUID.
@@ -39,11 +53,11 @@ public class GlowPlayerProfile implements PlayerProfile {
      * <p>This does not try to resolve the name if it's null.
      *
      * @param name The player's name.
-     * @param uuid The player's UUID.
-     * @throws IllegalArgumentException if uuid is null.
+     * @param uuid The player's UUID; may be null.
+     * @param asyncLookup If true and {@code uuid} is null, the UUID is looked up asynchronously.
      */
-    public GlowPlayerProfile(String name, UUID uuid) {
-        this(name, uuid, Collections.emptySet());
+    public GlowPlayerProfile(String name, UUID uuid, boolean asyncLookup) {
+        this(name, maybeLookUpNull(name, uuid, asyncLookup), Collections.emptySet());
     }
 
     /**
@@ -52,14 +66,30 @@ public class GlowPlayerProfile implements PlayerProfile {
      * <p>This does not try to resolve the name if it's null.
      *
      * @param name The player's name.
-     * @param uuid The player's UUID.
+     * @param uuid The player's UUID; may be null.
+     * @param properties A list of extra properties.
+     * @param asyncLookup If true and {@code uuid} is null, the UUID is looked up asynchronously
+     *     even if it's not in cache.
+     * @throws IllegalArgumentException if properties are null.
+     */
+    public GlowPlayerProfile(String name, UUID uuid, Collection<ProfileProperty> properties,
+            boolean asyncLookup) {
+        this(name, maybeLookUpNull(name, uuid, asyncLookup), properties);
+    }
+
+    /**
+     * Construct a new profile with additional properties.
+     *
+     * <p>This does not try to resolve the name if it's null.
+     *
+     * @param name The player's name.
+     * @param uuid Lookup of the player's UUID.
      * @param properties A list of extra properties.
      * @throws IllegalArgumentException if uuid or properties are null.
      */
-    public GlowPlayerProfile(String name, UUID uuid, Collection<ProfileProperty> properties) {
-        checkNotNull(uuid, "uuid must not be null");
+    private GlowPlayerProfile(String name, CompletableFuture<UUID> uuid,
+            Collection<ProfileProperty> properties) {
         checkNotNull(properties, "properties must not be null");
-
         this.name = name;
         this.uniqueId = uuid;
         this.properties = Maps.newHashMap();
@@ -74,20 +104,20 @@ public class GlowPlayerProfile implements PlayerProfile {
      */
     public static CompletableFuture<GlowPlayerProfile> getProfile(String name) {
         if (name == null || name.length() > MAX_USERNAME_LENGTH || name.isEmpty()) {
-            return CompletableFuture.completedFuture(null);
+            return completedFuture(null);
         }
 
-        if (Bukkit.getServer().getOnlineMode()
-                || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
+        GlowServer server = (GlowServer) ServerProvider.getServer();
+        if (server.getOnlineMode() || server.getProxySupport()) {
             return ProfileCache.getUuid(name).thenComposeAsync((uuid) -> {
                 if (uuid == null) {
-                    return CompletableFuture.completedFuture(null);
+                    return completedFuture(null);
                 } else {
                     return ProfileCache.getProfile(uuid);
                 }
             });
         }
-        return CompletableFuture.completedFuture(null);
+        return completedFuture(null);
     }
 
     /**
@@ -112,11 +142,11 @@ public class GlowPlayerProfile implements PlayerProfile {
         }
 
         if (tag.containsKey("Name")) {
-            return CompletableFuture.completedFuture(
-                    new GlowPlayerProfile(tag.getString("Name"), uuid, properties));
+            return completedFuture(
+                    new GlowPlayerProfile(tag.getString("Name"), uuid, properties, true));
         } else {
             return ProfileCache.getProfile(uuid).thenApplyAsync(
-                (profile) -> new GlowPlayerProfile(profile.getName(), uuid, properties));
+                (profile) -> new GlowPlayerProfile(profile.getName(), uuid, properties, true));
         }
     }
 
@@ -150,7 +180,7 @@ public class GlowPlayerProfile implements PlayerProfile {
             properties.add(new ProfileProperty(propName, value, signature));
         }
 
-        return new GlowPlayerProfile(name, uuid, properties);
+        return new GlowPlayerProfile(name, uuid, properties, true);
     }
 
     /**
@@ -182,15 +212,16 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public UUID getId() {
-        return this.uniqueId;
+        return uniqueId == null ? null : uniqueId.getNow(null);
     }
 
     /**
-     * Gets the UUID of this profile.
+     * Waits for the lookup of, then returns, the player's UUID.
      *
-     * @return the UUID of this profile.
+     * @return the player UUID, or null if it's unknown and couldn't be looked up
      */
-    public UUID getUniqueId() {
+    public UUID getIdBlocking() {
+        complete();
         return getId();
     }
 
@@ -242,8 +273,60 @@ public class GlowPlayerProfile implements PlayerProfile {
         this.properties.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>A player profile that's currently incomplete may become complete later, because UUIDs are
+     * looked up asynchronously when needed.
+     */
     @Override
     public boolean isComplete() {
-        return name != null && uniqueId != null && properties.containsKey("textures");
+        return name != null && getId() != null && properties.containsKey("textures");
+    }
+
+    /**
+     * Looks up the UUID if it's missing and hasn't already been attempted, and waits for it.
+     *
+     * @return true if the profile {@link #isComplete()} when done; false otherwise
+     */
+    public boolean complete() {
+        completeAsync();
+        uniqueId.join();
+        return isComplete();
+    }
+
+    /**
+     * Looks up the UUID asynchronously if it's missing and hasn't already been attempted. Returns
+     * immediately.
+     */
+    public void completeAsync() {
+        if (uniqueId == null) {
+            synchronized (this) {
+                if (uniqueId == null) {
+                    uniqueId = ProfileCache.getUuid(name);
+                }
+            }
+        }
+    }
+
+    /**
+     * Looks up the UUID in cache, if it's missing and hasn't already been attempted.
+     *
+     * @return true if the profile {@link #isComplete()} when done; false otherwise
+     */
+    public boolean completeCached() {
+        if (uniqueId == null) {
+            synchronized (this) {
+                if (uniqueId == null) {
+                    UUID maybeCachedUuid = ProfileCache.getUuidCached(name);
+                    if (maybeCachedUuid != null) {
+                        uniqueId = completedFuture(maybeCachedUuid);
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return isComplete();
     }
 }

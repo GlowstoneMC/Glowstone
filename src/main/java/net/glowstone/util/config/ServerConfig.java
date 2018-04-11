@@ -2,8 +2,8 @@ package net.glowstone.util.config;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.util.config.ServerConfig.Validators.typeCheck;
 
-import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.util.CompatibilityBundle;
 import net.glowstone.util.DynamicallyTypedMap;
-import net.glowstone.util.library.Library;
-import net.glowstone.util.library.LibraryManager.HashAlgorithm;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.WorldType;
@@ -380,23 +380,6 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         return migrateStatus;
     }
 
-    private static final List<Map<?, ?>> DEFAULT_LIBRARIES_VALUE =
-            ImmutableList.<Map<?, ?>>builder()
-                    .add(new Library("org.xerial", "sqlite-jdbc", "3.21.0", HashAlgorithm.SHA1,
-                            "347e4d1d3e1dff66d389354af8f0021e62344584").toConfigMap())
-                    .add(new Library("mysql", "mysql-connector-java", "5.1.44", HashAlgorithm.SHA1,
-                            "61b6b998192c85bb581c6be90e03dcd4b9079db4").toConfigMap())
-                    .add(new Library("org.apache.logging.log4j", "log4j-api", "2.8.1",
-                            HashAlgorithm.SHA1, "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72")
-                            .toConfigMap())
-                    .add(new Library("org.apache.logging.log4j", "log4j-core", "2.8.1",
-                            HashAlgorithm.SHA1, "4ac28ff2f1ddf05dae3043a190451e8c46b73c31")
-                            .toConfigMap())
-                    .add(new Library("org.apache.commons", "commons-lang3", "3.5",
-                            HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6")
-                            .toConfigMap())
-                    .build();
-
     /**
      * An enum containing configuration keys used by the server.
      */
@@ -410,7 +393,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         ONLINE_MODE("server.online-mode", true, Migrate.PROPS, "online-mode",
                 Boolean.class::isInstance),
         MAX_PLAYERS("server.max-players", 20, Migrate.PROPS, "max-players",
-                Validators.typeCheck(Integer.class).and(Validators.POSITIVE)),
+                Validators.POSITIVE_INTEGER),
         WHITELIST("server.whitelisted", false, Migrate.PROPS, "white-list",
                 Boolean.class::isInstance),
         MOTD("server.motd", "A Glowstone server", Migrate.PROPS, "motd",
@@ -438,7 +421,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         PVP_ENABLED("game.pvp", true, Migrate.PROPS, "pvp",
                 Boolean.class::isInstance),
         MAX_BUILD_HEIGHT("game.max-build-height", 256, Migrate.PROPS, "max-build-height",
-                Validators.typeCheck(Integer.class).and(Validators.POSITIVE)),
+                Validators.POSITIVE_INTEGER),
         ANNOUNCE_ACHIEVEMENTS("game.announce-achievements", true, Migrate.PROPS,
                 "announce-player-achievements", Boolean.class::isInstance),
 
@@ -465,18 +448,18 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         SPAWN_NPCS("creatures.enable.npcs", true, Migrate.PROPS, "spawn-npcs",
                 Boolean.class::isInstance),
         MONSTER_LIMIT("creatures.limit.monsters", 70, Migrate.BUKKIT, "spawn-limits.monsters",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         ANIMAL_LIMIT("creatures.limit.animals", 15, Migrate.BUKKIT, "spawn-limits.animals",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         WATER_ANIMAL_LIMIT("creatures.limit.water", 5, Migrate.BUKKIT,
                 "spawn-limits.water-animals",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         AMBIENT_LIMIT("creatures.limit.ambient", 15, Migrate.BUKKIT, "spawn-limits.ambient",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         MONSTER_TICKS("creatures.ticks.monsters", 1, Migrate.BUKKIT, "ticks-per.monster-spawns",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         ANIMAL_TICKS("creatures.ticks.animal", 400, Migrate.BUKKIT, "ticks-per.animal-spawns",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
 
         // folders
         PLUGIN_FOLDER("folders.plugins", "plugins", Validators.PATH),
@@ -495,11 +478,11 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         // advanced
         CONNECTION_THROTTLE("advanced.connection-throttle", 4000, Migrate.BUKKIT,
                 "settings.connection-throttle",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         //PING_PACKET_LIMIT(
         //        "advanced.ping-packet-limit", 100, Migrate.BUKKIT, "settings.ping-packet-limit"),
         PLAYER_IDLE_TIMEOUT("advanced.idle-timeout", 0, Migrate.PROPS, "player-idle-timeout",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         WARN_ON_OVERLOAD("advanced.warn-on-overload", true, Migrate.BUKKIT,
                 "settings.warn-on-overload", Boolean.class::isInstance),
         EXACT_LOGIN_LOCATION("advanced.exact-login-location", false, Migrate.BUKKIT,
@@ -510,27 +493,26 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                 "settings.deprecated-verbose"),
         COMPRESSION_THRESHOLD("advanced.compression-threshold", 256, Migrate.PROPS,
                 "network-compression-threshold",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)
-                .or((value) -> value == -1)),
+                typeCheck(Integer.class).and(value -> value >= -1)),
         PROXY_SUPPORT("advanced.proxy-support", false, Boolean.class::isInstance),
         PLAYER_SAMPLE_COUNT("advanced.player-sample-count", 12,
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         GRAPHICS_COMPUTE("advanced.graphics-compute.enable", false),
         GRAPHICS_COMPUTE_ANY_DEVICE("advanced.graphics-compute.use-any-device", false,
                 Boolean.class::isInstance),
         REGION_CACHE_SIZE("advanced.region-file.cache-size", 256,
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         REGION_COMPRESSION("advanced.region-file.compression", true,
                 Boolean.class::isInstance),
         PROFILE_LOOKUP_TIMEOUT("advanced.profile-lookup-timeout", 5,
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         LIBRARY_CHECKSUM_VALIDATION("advanced.library-checksum-validation", true,
                 Boolean.class::isInstance),
         LIBRARY_REPOSITORY_URL("advanced.library-repository-url",
                 "https://repo.glowstone.net/service/local/repositories/central/content/",
                 String.class::isInstance),
         LIBRARY_DOWNLOAD_ATTEMPTS("advanced.library-download-attempts", 2,
-                Validators.typeCheck(Integer.class).and(Validators.POSITIVE)),
+                Validators.POSITIVE_INTEGER),
         SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS(
                 "advanced.suggest-player-name-when-null-tab-completions", true,
                 Boolean.class::isInstance),
@@ -556,9 +538,9 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         LEVEL_TYPE("world.level-type", "DEFAULT", Migrate.PROPS, "level-type", Validators
                 .WORLD_TYPE),
         SPAWN_RADIUS("world.spawn-radius", 16, Migrate.PROPS, "spawn-protection",
-                Validators.typeCheck(Integer.class).and(Validators.ABSOLUTE)),
+                Validators.NON_NEGATIVE_INTEGER),
         VIEW_DISTANCE("world.view-distance", 8, Migrate.PROPS, "view-distance",
-                Validators.typeCheck(Integer.class).and(Validators.POSITIVE)),
+                Validators.POSITIVE_INTEGER),
         GENERATE_STRUCTURES("world.gen-structures", true, Migrate.PROPS, "generate-structures",
                 Boolean.class::isInstance),
         ALLOW_NETHER("world.allow-nether", true, Migrate.PROPS, "allow-nether",
@@ -584,8 +566,12 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation",
                 String.class::isInstance),
 
+        // compatibility Bundles
+        COMPATIBILITY_BUNDLE("compatibility-bundle", CompatibilityBundle.CRAFTBUKKIT.name(),
+            (val) -> val instanceof String && CompatibilityBundle.valueOf((String) val) != null),
+
         // libraries
-        LIBRARIES("libraries", DEFAULT_LIBRARIES_VALUE);
+        LIBRARIES("libraries", Collections.emptyList());
 
         @Getter
         private final String path;
@@ -638,7 +624,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
 
         @Override
         public boolean test(String value) {
-            if (!Validators.typeCheck(String.class).test(value)) {
+            if (!typeCheck(String.class).test(value)) {
                 return false;
             }
             if (value == null || value.isEmpty()) {
@@ -659,6 +645,11 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
          */
         static final Predicate<Number> POSITIVE = (number) -> number.doubleValue() > 0;
         /**
+         * Checks if the value is integer-typed and positive.
+         */
+        static final Predicate<Integer> POSITIVE_INTEGER = typeCheck(Integer.class).and(
+                POSITIVE);
+        /**
          * Checks if the value is zero.
          */
         static final Predicate<Number> ZERO = (number) -> number.doubleValue() == 0;
@@ -666,6 +657,10 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
          * Checks if the value is greater than (positive) or equal to zero.
          */
         static final Predicate<Number> ABSOLUTE = POSITIVE.or(ZERO);
+        /**
+         * Checks if the value is integer-typed and either positive or zero.
+         */
+        static final Predicate<?> NON_NEGATIVE_INTEGER = typeCheck(Integer.class).and(ABSOLUTE);
         /**
          * Checks if the value is a valid port number.
          */
@@ -694,7 +689,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
          *
          * <p>Note that the behavior of this predicate may be platform-dependent.
          */
-        static final Predicate<String> PATH = Validators.typeCheck(String.class).and((value) -> {
+        static final Predicate<String> PATH = typeCheck(String.class).and((value) -> {
             try {
                 if (Paths.get(value) == null) {
                     return false;

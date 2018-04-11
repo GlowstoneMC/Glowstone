@@ -13,12 +13,12 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowScoreboardManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,17 +28,15 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * Superclass for tests of entity classes. Configures necessary mocks for subclasses.
@@ -47,20 +45,27 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  * @param <T> the class under test
  */
-@PrepareForTest(Bukkit.class)
-@RunWith(PowerMockRunner.class)
 public abstract class GlowEntityTest<T extends GlowEntity> {
 
     public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
 
     // Mockito mocks
-    @Mock protected ItemFactory itemFactory;
-    @Mock protected GlowChunk chunk;
-    @Mock protected GlowBlock block;
-    @Mock protected GlowWorld world;
-    @Mock protected GlowServer server;
-    @Mock protected GlowScoreboardManager scoreboardManager;
-    @Mock protected EventFactory eventFactory;
+    @Mock
+    protected ItemFactory itemFactory;
+    @Mock
+    protected GlowChunk chunk;
+    @Mock
+    protected GlowBlock block;
+    @Mock
+    protected GlowWorld world;
+    @Mock(answer = Answers.RETURNS_SMART_NULLS)
+    protected GlowServer server;
+    @Mock
+    protected GlowScoreboardManager scoreboardManager;
+    @Mock
+    protected EventFactory eventFactory;
+    @Mock
+    private PluginManager pluginManager;
 
     // Real objects
     protected Location location;
@@ -92,9 +97,9 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        PowerMockito.mockStatic(Bukkit.class);
-        when(Bukkit.getItemFactory()).thenReturn(itemFactory);
-        when(Bukkit.getServer()).thenReturn(server);
+        when(server.getItemFactory()).thenReturn(itemFactory);
+        when(server.getPluginManager()).thenReturn(pluginManager);
+        ServerProvider.setMockServer(server);
         log = Logger.getLogger(getClass().getSimpleName());
         when(server.getLogger()).thenReturn(log);
         location = new Location(world, 0, 0, 0);
@@ -130,6 +135,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @After
     public void tearDown() {
         EventFactory.setInstance(oldEventFactory);
+        ServerProvider.setMockServer(null);
         // https://www.atlassian.com/blog/archives/reducing_junit_memory_usage
         world = null;
         server = null;

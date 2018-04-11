@@ -154,7 +154,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(entityId, profile.getUniqueId(), x, y, z, yaw, pitch,
+        result.add(new SpawnPlayerMessage(entityId, profile.getId(), x, y, z, yaw, pitch,
                 metadata.getEntryList()));
 
         // head facing
@@ -222,15 +222,15 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public UUID getUniqueId() {
-        return profile.getUniqueId();
+        return profile.getId();
     }
 
     @Override
     public void setUniqueId(UUID uuid) {
         // silently allow setting the same UUID again
-        if (!profile.getUniqueId().equals(uuid)) {
+        if (!profile.getId().equals(uuid)) {
             throw new IllegalStateException(
-                    "UUID of " + this + " is already " + profile.getUniqueId());
+                    "UUID of " + this + " is already " + profile.getId());
         }
     }
 

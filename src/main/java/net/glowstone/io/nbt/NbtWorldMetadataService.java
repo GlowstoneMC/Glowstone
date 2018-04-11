@@ -9,21 +9,21 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.UUID;
 import java.util.logging.Level;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.WorldType;
 
 public class NbtWorldMetadataService implements WorldMetadataService {
 
     private final GlowWorld world;
     private final File dir;
-    private final GlowServer server;
+    private final Server server;
 
     private CompoundTag unknownTags;
 
@@ -37,7 +37,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
         this.dir = dir;
-        server = (GlowServer) Bukkit.getServer();
+        server = ServerProvider.getServer();
 
         if (!dir.isDirectory() && !dir.mkdirs()) {
             server.getLogger().warning("Failed to create directory: " + dir);

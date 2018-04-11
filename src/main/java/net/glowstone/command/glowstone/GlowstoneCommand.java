@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.ReflectionProcessor;
@@ -180,7 +181,7 @@ public class GlowstoneCommand extends BukkitCommand {
                 builder.append(args[i] + (i == args.length - 1 ? "" : " "));
             }
             ReflectionProcessor processor = new ReflectionProcessor(builder.toString(),
-                    sender instanceof Entity ? sender : Bukkit.getServer());
+                    sender instanceof Entity ? sender : ServerProvider.getServer());
             Object result = processor.process();
             sender.sendMessage(
                     ChatColor.GOLD + "Eval returned: " + (result == null ? ChatColor.RED
@@ -227,7 +228,7 @@ public class GlowstoneCommand extends BukkitCommand {
     }
 
     private Collection<String> getWorldNames() {
-        return Bukkit.getServer().getWorlds().stream().map(World::getName)
+        return ServerProvider.getServer().getWorlds().stream().map(World::getName)
                 .collect(Collectors.toList());
     }
 }

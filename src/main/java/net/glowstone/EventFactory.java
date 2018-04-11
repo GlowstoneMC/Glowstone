@@ -15,7 +15,6 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -61,8 +60,7 @@ public class EventFactory {
      * @return the called event
      */
     public <T extends Event> T callEvent(T event) {
-        Server server = Bukkit.getServer();
-
+        Server server = ServerProvider.getServer();
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);
             return event;

@@ -89,7 +89,7 @@ public class ItemBow extends ItemTimedUsage {
                             / TICKS_TO_FULLY_CHARGE);
             double damage = MAX_BASE_DAMAGE * chargeFraction
                     * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
-            launchedArrow.setVelocity(launchedArrow.getVelocity().normalize().multiply(
+            launchedArrow.setVelocity(player.getEyeLocation().getDirection().multiply(
                     chargeFraction * MAX_SPEED));
             launchedArrow.spigot().setDamage(damage);
             if (bow.containsEnchantment(Enchantment.ARROW_FIRE)) {

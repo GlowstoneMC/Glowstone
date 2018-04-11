@@ -64,7 +64,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     // Real objects
 
     private static final GlowPlayerProfile profile
-            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID());
+            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), true);
     private GlowScheduler scheduler;
     private final SessionRegistry sessionRegistry = new SessionRegistry();
     private File opsListFile;
@@ -83,11 +83,14 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Before
     @Override
     public void setUp() throws Exception {
+        PowerMockito.mockStatic(Bukkit.class);
         super.setUp();
+        when(Bukkit.getServer()).thenReturn(server);
+        when(Bukkit.getItemFactory()).thenReturn(itemFactory);
         opsListFile = File.createTempFile("test-ops-list", "");
         opsList = new UuidListFile(opsListFile);
-        when(server.getPluginManager()).thenReturn(pluginManager);
         when(server.getSessionRegistry()).thenReturn(sessionRegistry);
+        when(server.getPluginManager()).thenReturn(pluginManager);
         scheduler = new GlowScheduler(server, worldScheduler);
         when(session.getServer()).thenReturn(server);
         when(server.getScheduler()).thenReturn(scheduler);
