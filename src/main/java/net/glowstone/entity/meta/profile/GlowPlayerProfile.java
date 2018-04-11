@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
@@ -211,8 +212,18 @@ public class GlowPlayerProfile implements PlayerProfile {
     }
 
     @Override
+    public String setName(@Nullable String name) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
     public UUID getId() {
         return uniqueId == null ? null : uniqueId.getNow(null);
+    }
+
+    @Override
+    public UUID setId(@Nullable UUID uuid) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     /**
@@ -228,6 +239,11 @@ public class GlowPlayerProfile implements PlayerProfile {
     @Override
     public Set<ProfileProperty> getProperties() {
         return Sets.newHashSet(this.properties.values());
+    }
+
+    @Override
+    public boolean hasProperty(String property) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -284,6 +300,11 @@ public class GlowPlayerProfile implements PlayerProfile {
         return name != null && getId() != null && properties.containsKey("textures");
     }
 
+    @Override
+    public boolean completeFromCache() {
+        return completeCached();
+    }
+
     /**
      * Looks up the UUID if it's missing and hasn't already been attempted, and waits for it.
      *
@@ -293,6 +314,11 @@ public class GlowPlayerProfile implements PlayerProfile {
         completeAsync();
         uniqueId.join();
         return isComplete();
+    }
+
+    @Override
+    public boolean complete(boolean textures) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     /**

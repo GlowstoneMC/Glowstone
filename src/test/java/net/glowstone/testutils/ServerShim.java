@@ -58,6 +58,8 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
 import org.mockito.Mockito;
 
+import javax.annotation.Nullable;
+
 /**
  * Simple mocked Server implementation.
  */
@@ -241,6 +243,12 @@ public class ServerShim implements Server {
 
     @Override
     public Player getPlayer(UUID id) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public UUID getPlayerUniqueId(String playerName) {
         return null;
     }
 

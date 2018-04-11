@@ -47,6 +47,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
@@ -1882,6 +1883,12 @@ public class GlowServer implements Server {
             }
         }
         return null;
+    }
+
+    @Nullable
+    @Override
+    public UUID getPlayerUniqueId(String playerName) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override

@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.destroystokyo.paper.Title;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.util.ByteBufUtils;
 import com.google.common.base.Preconditions;
@@ -2341,6 +2342,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public boolean hasResourcePack() {
         return resourcePackStatus == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED;
+    }
+
+    @Override
+    public PlayerProfile getPlayerProfile() {
+        return getProfile();
+    }
+
+    @Override
+    public void setPlayerProfile(PlayerProfile playerProfile) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
