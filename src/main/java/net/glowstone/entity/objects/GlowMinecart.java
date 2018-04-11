@@ -32,6 +32,7 @@ import org.bukkit.util.Vector;
 
 // TODO: Implement movement and collision detection.
 public abstract class GlowMinecart extends GlowEntity implements Minecart {
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     @Getter
     @Setter
@@ -66,6 +67,8 @@ public abstract class GlowMinecart extends GlowEntity implements Minecart {
     public GlowMinecart(Location location, MinecartType minecartType) {
         super(location);
         setSize(0.98f, 0.7f);
+        setAirDrag(0.95);
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
         this.minecartType = minecartType;
     }
 

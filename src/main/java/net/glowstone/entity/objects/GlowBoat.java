@@ -23,8 +23,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class GlowBoat extends GlowEntity implements Boat {
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     @Getter
     private TreeSpecies woodType;
@@ -38,6 +40,8 @@ public class GlowBoat extends GlowEntity implements Boat {
     public GlowBoat(Location location) {
         super(location);
         setSize(1.375f, 0.5625f);
+        setAirDrag(0.95);
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
         setWoodType(TreeSpecies.GENERIC);
     }
 

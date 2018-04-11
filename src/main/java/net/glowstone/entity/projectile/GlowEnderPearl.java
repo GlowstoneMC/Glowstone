@@ -4,6 +4,7 @@ import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
 import java.util.Arrays;
 import java.util.List;
+
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
@@ -41,10 +42,9 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
      */
     public GlowEnderPearl(Location location, float speed) {
         super(location);
-        setDrag(0.99, false);
-        setDrag(0.99, true);
-        setHorizontalAirDrag(1);
+        setAirDrag(0.99);
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
+        setApplyDragBeforeAccel(true);
         setVelocity(location.getDirection().multiply(speed));
         setBoundingBox(0.25, 0.25);
     }

@@ -22,10 +22,9 @@ public class GlowSnowball extends GlowProjectile implements Snowball {
      */
     public GlowSnowball(Location location) {
         super(location);
-        setDrag(0.99, false);
-        setDrag(0.99, true);
-        setHorizontalAirDrag(1);
+        setAirDrag(0.99);
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
+        setApplyDragBeforeAccel(true);
         setVelocity(location.getDirection().multiply(3));
         setBoundingBox(0.25, 0.25);
     }

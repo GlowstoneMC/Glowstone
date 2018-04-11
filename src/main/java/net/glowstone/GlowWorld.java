@@ -1481,6 +1481,12 @@ public class GlowWorld implements World {
         return (T) spawn(location, descriptor.getEntityClass(), reason);
     }
 
+    /**
+     * Spawn an item at the given {@link Location} without shooting effect.
+     *
+     * @param location  the {@link Location} to spawn the item at
+     * @param item      the {@ItemStack} the item should have
+     */
     @Override
     public GlowItem dropItem(Location location, ItemStack item) {
         GlowItem entity = new GlowItem(location, item);
@@ -1491,14 +1497,33 @@ public class GlowWorld implements World {
         return entity;
     }
 
+    /**
+     * Spawn an item at the given {@link Location} with shooting effect.
+     *
+     * @param location  the {@link Location} to spawn the item at
+     * @param item      the {@ItemStack} the item should have
+     */
     @Override
     public GlowItem dropItemNaturally(Location location, ItemStack item) {
-        double xs = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double ys = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        double zs = ThreadLocalRandom.current().nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
-        location = location.clone().add(xs, ys, zs);
+        ThreadLocalRandom tlr = ThreadLocalRandom.current();
+
+        // Calculate initial velocity using radius and offsetY as constant
+        // offsetX and offsetZ are calculated using random and Pythagorean theorem
+        double radius = 0.1;
+        double offsetX = tlr.nextDouble(radius * 2) - radius;
+        double offsetY = 0.15;
+        double offsetZ = Math.sqrt(Math.pow(radius, 2) - Math.pow(offsetX, 2));
+
+        // The previous calculation always gives a non-negative zOffset
+        // This adds a 50% chance of offsetZ being negative
+        if (tlr.nextInt(2) == 0) {
+            offsetZ *= -1;
+        }
+
+        // Move starting point to the center of the block
+        location.add(0.5, 0.5, 0.5);
         GlowItem dropItem = dropItem(location, item);
-        dropItem.setVelocity(new Vector(0, 0.01F, 0));
+        dropItem.setVelocity(new Vector(offsetX, offsetY, offsetZ));
         return dropItem;
     }
 
