@@ -1516,7 +1516,7 @@ public class GlowWorld implements World {
 
         // The previous calculation always gives a non-negative zOffset
         // This adds a 50% chance of offsetZ being negative
-        if (tlr.nextInt(2) == 0) {
+        if (tlr.nextBoolean()) {
             offsetZ *= -1;
         }
 
