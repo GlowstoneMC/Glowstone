@@ -691,7 +691,7 @@ public abstract class GlowEntity implements Entity {
         // set entity to be on ground if its bounding box intercepts a solid block in -Y direction
         if (fall && hasDefaultLandingBehavior()) {
             double detectOffsetY = 0;
-            if(boundingBox != null){
+            if (boundingBox != null) {
                 detectOffsetY = boundingBox.getSize().getY();
             }
 
