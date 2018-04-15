@@ -1085,7 +1085,7 @@ public class GlowServer implements Server {
                 Library library = entry.getValue().get(0);
                 if (serverContainsLibrary(library)) {
                     conflicts.add(entry.getKey().toString());
-                } else {
+                } else if (!library.isExcludeDependencies()) {
                     Naether naether = clients.computeIfAbsent(
                         library.getRepository(),
                         k -> createNaetherWithRepository(k, libraryFolder)
