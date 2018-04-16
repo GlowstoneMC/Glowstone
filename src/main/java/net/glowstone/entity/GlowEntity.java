@@ -180,29 +180,43 @@ public abstract class GlowEntity implements Entity {
      */
     @Getter
     protected boolean removed;
+
     /**
-     * Velocity reduction applied each tick in air, y component.
+     * Velocity reduction applied each tick in air.
+     * For example, if the multiplier is 0.98,
+     * the entity will lose 2% of its velocity each physics tick.
+     * The default value 1 indicates no air drag.
      */
-    protected double airDrag = 0.98;
-    /**
-     * Velocity reduction applied each tick in air, x and z components.
-     */
-    @Getter
     @Setter
-    private double horizontalAirDrag = 0.91;
+    protected double airDrag = 1;
+
     /**
-     * Velocity reduction applied each tick in liquids.
+     * Velocity reduction applied each tick in water.
+     * For example, if the multiplier is 0.98,
+     * the entity will lose 2% of its velocity each physics tick.
+     * The default value 0.8 indicates 20% water drag.
      */
+    @Setter
     protected double liquidDrag = 0.8;
+
     /**
      * Gravity acceleration applied each tick.
+     * The default value (0,0,0) indicates no gravity acceleration.
      */
     @Setter
-    protected Vector gravityAccel = new Vector(0, -0.04, 0);
+    protected Vector gravityAccel = new Vector(0, 0, 0);
+
     /**
      * The slipperiness multiplier applied according to the block this entity was on.
      */
     protected double slipMultiplier = 0.6;
+
+    /**
+     * If drag is applied before appling acceleration while calculating physics.
+     */
+    @Setter
+    protected boolean applyDragBeforeAccel = false;
+
     /**
      * This entity's unique id.
      */
@@ -217,7 +231,7 @@ public abstract class GlowEntity implements Entity {
      * A flag indicting if the entity is on the ground.
      */
     @Getter
-    private boolean onGround = true;
+    private boolean onGround = false;
     /**
      * The distance the entity is currently falling without touching the ground.
      */
@@ -286,7 +300,9 @@ public abstract class GlowEntity implements Entity {
      */
     public GlowEntity(Location location) {
         this.origin = location.clone();
+        this.previousLocation = location.clone();
         this.location = location.clone();
+
         world = (GlowWorld) location.getWorld();
         server = world.getServer();
         // this is so dirty I washed my hands after writing it.
@@ -298,7 +314,6 @@ public abstract class GlowEntity implements Entity {
         }
         server.getEntityIdManager().allocate(this);
         world.getEntityManager().register(this);
-        previousLocation = location.clone();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -434,22 +449,6 @@ public abstract class GlowEntity implements Entity {
 
     ////////////////////////////////////////////////////////////////////////////
     // Internals
-
-    /**
-     * Sets the velocity multiplier due to drag. For example, if the multiplier is 0.98, the entity
-     * will lose 2% of its velocity each physics tick. Set to 1.0 to disable drag.
-     *
-     * @param drag the new drag rate
-     * @param liquid true to set liquid drag; false to set air drag
-     */
-    public void setDrag(double drag, boolean liquid) {
-        if (liquid) {
-            liquidDrag = drag;
-        } else {
-            airDrag = drag;
-        }
-    }
-
     @Override
     public boolean teleport(Location location) {
         checkNotNull(location, "location cannot be null");
@@ -670,6 +669,7 @@ public abstract class GlowEntity implements Entity {
         }
 
         world.getEntityManager().move(this, location);
+        Position.copyLocation(this.location, this.previousLocation);
         Position.copyLocation(location, this.location);
 
         updateBoundingBox();
@@ -688,8 +688,15 @@ public abstract class GlowEntity implements Entity {
             }
         }
 
+        // set entity to be on ground if its bounding box intercepts a solid block in -Y direction
         if (fall && hasDefaultLandingBehavior()) {
-            setOnGround(location.clone().add(new Vector(0, -1, 0)).getBlock().getType().isSolid());
+            double detectOffsetY = 0;
+            if (boundingBox != null) {
+                detectOffsetY = boundingBox.getSize().getY();
+            }
+
+            Location detectLocation = location.clone().add(0, -detectOffsetY, 0);
+            setOnGround(detectLocation.getBlock().getType().isSolid());
         }
     }
 
@@ -978,52 +985,63 @@ public abstract class GlowEntity implements Entity {
     }
 
     protected void pulsePhysics() {
-        Location velLoc = location.clone().add(velocity);
-        final Block block = velLoc.getBlock();
-        if (block.getType().isSolid()) {
-            Location velLocY = location.clone().add(0, velocity.getY(), 0);
-            if (velLocY.getBlock().getType().isSolid()) {
-                velocity.setY(0);
-            }
-            Location velLocX = location.clone().add(velocity.getX(), 0, 0);
-            if (velLocX.getBlock().getType().isSolid()) {
+        // The pending locaiton and the block at that location
+        Location pendingLocation = location.clone().add(velocity);
+        Block pendingBlock = pendingLocation.getBlock();
+
+        if (pendingBlock.getType().isSolid()) {
+            Location pendingLocationX = location.clone().add(velocity.getX(), 0, 0);
+            if (pendingLocationX.getBlock().getType().isSolid()) {
                 velocity.setX(0);
             }
-            Location velLocZ = location.clone().add(0, 0, velocity.getZ());
-            if (velLocZ.getBlock().getType().isSolid()) {
+
+            Location pendingLocationY = location.clone().add(0, velocity.getY(), 0);
+            if (pendingLocationY.getBlock().getType().isSolid()) {
+                velocity.setY(0);
+            }
+
+            Location pendingLocationZ = location.clone().add(0, 0, velocity.getZ());
+            if (pendingLocationZ.getBlock().getType().isSolid()) {
                 velocity.setZ(0);
             }
-            collide(block);
+
+            collide(pendingBlock);
         } else {
             if (hasFriction()) {
                 // apply friction and gravity
                 if (location.getBlock().getType() == Material.WATER) {
                     velocity.multiply(liquidDrag);
-                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
                 } else if (location.getBlock().getType() == Material.LAVA) {
                     velocity.multiply(liquidDrag - 0.3);
-                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                    velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
                 } else {
-                    velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
+                    if (applyDragBeforeAccel) {
+                        velocity.setY(airDrag * velocity.getY() + getGravityAccel().getY());
+                    } else {
+                        velocity.setY(airDrag * (velocity.getY() + getGravityAccel().getY()));
+                    }
+
                     if (isOnGround()) {
                         velocity.setX(velocity.getX() * slipMultiplier);
+                        velocity.setY(0);
                         velocity.setZ(velocity.getZ() * slipMultiplier);
                     } else {
-                        velocity.setX(velocity.getX() * horizontalAirDrag);
-                        velocity.setZ(velocity.getZ() * horizontalAirDrag);
+                        velocity.setX(velocity.getX() * airDrag);
+                        velocity.setZ(velocity.getZ() * airDrag);
                     }
                 }
             } else if (hasGravity() && !isOnGround()) {
                 switch (location.getBlock().getType()) {
                     case WATER:
                     case LAVA:
-                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
                         break;
                     default:
-                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4d);
+                        velocity.setY(velocity.getY() + getGravityAccel().getY() / 4);
                 }
             }
-            setRawLocation(velLoc);
+            setRawLocation(pendingLocation);
         }
     }
 

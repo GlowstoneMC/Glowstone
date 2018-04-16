@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     @Getter
     @Setter
@@ -66,8 +67,8 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         }
         this.sourceLocation = location.clone();
         setBoundingBox(0.98, 0.98);
-        setDrag(0.98, false);
-        setGravityAccel(new Vector(0, -0.02, 0));
+        setAirDrag(0.98);
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
 
         setMaterial(material);
         setDropItem(true);
