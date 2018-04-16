@@ -1029,10 +1029,11 @@ public class GlowServer implements Server {
 
         Map<LibraryKey, Library> bundleLibs = bundle.libraries;
 
-        ListMultimap<LibraryKey, Library> configLibs = config.getMapList(Key.LIBRARIES).stream()
-            .map(Library::fromConfigMap)
-            .collect(Multimaps.toMultimap(Library::getLibraryKey, Function.identity(),
-                MultimapBuilder.hashKeys().arrayListValues()::build));
+        ListMultimap<LibraryKey, Library> configLibs = config.getMapList(Key.LIBRARIES_LIST)
+                .stream()
+                .map(Library::fromConfigMap)
+                .collect(Multimaps.toMultimap(Library::getLibraryKey, Function.identity(),
+                        MultimapBuilder.hashKeys().arrayListValues()::build));
 
         Set<Library> libs = new HashSet<>(bundleLibs.values());
 
