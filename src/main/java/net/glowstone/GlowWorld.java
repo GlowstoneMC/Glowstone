@@ -1485,7 +1485,7 @@ public class GlowWorld implements World {
      * Spawn an item at the given {@link Location} without shooting effect.
      *
      * @param location  the {@link Location} to spawn the item at
-     * @param item      the {@ItemStack} the item should have
+     * @param item      the {@link ItemStack} the item should have
      */
     @Override
     public GlowItem dropItem(Location location, ItemStack item) {
@@ -1501,7 +1501,7 @@ public class GlowWorld implements World {
      * Spawn an item at the given {@link Location} with shooting effect.
      *
      * @param location  the {@link Location} to spawn the item at
-     * @param item      the {@ItemStack} the item should have
+     * @param item      the {@link ItemStack} the item should have
      */
     @Override
     public GlowItem dropItemNaturally(Location location, ItemStack item) {
