@@ -3,13 +3,17 @@ package net.glowstone.generator.decorators;
 import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.GlowServer;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 import org.bukkit.generator.BlockPopulator;
 
 public class EntityDecorator extends BlockPopulator {
@@ -39,6 +43,9 @@ public class EntityDecorator extends BlockPopulator {
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
+        GlowServer server = (GlowServer) Bukkit.getServer();
+        boolean allowAnimals = world.getAllowAnimals() && server.getAnimalsSpawnEnabled();
+        boolean allowMonsters = world.getAllowMonsters() && server.getMonstersSpawnEnabled();
         if (entityTypes.length == 0) {
             return;
         }
@@ -48,6 +55,10 @@ public class EntityDecorator extends BlockPopulator {
         int sourceX = chunk.getX() << 4;
         int sourceZ = chunk.getZ() << 4;
         EntityType type = entityTypes[random.nextInt(entityTypes.length)];
+        if ((!allowAnimals && Animals.class.isAssignableFrom(type.getEntityClass()))
+                || !allowMonsters && Monster.class.isAssignableFrom(type.getEntityClass())) {
+            return;
+        }
         int centerX = sourceX + random.nextInt(16);
         int centerZ = sourceZ + random.nextInt(16);
         int count = minGroup == maxGroup ? minGroup

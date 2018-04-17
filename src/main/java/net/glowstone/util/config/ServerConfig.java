@@ -440,7 +440,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         PREVENT_PROXY("server.prevent-proxy-connections", true, Migrate.PROPS,
                 "prevent-proxy-connections", Boolean.class::isInstance),
 
-        // critters
+        // creatures
         SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters",
                 Boolean.class::isInstance),
         SPAWN_ANIMALS("creatures.enable.animals", true, Migrate.PROPS, "spawn-animals",

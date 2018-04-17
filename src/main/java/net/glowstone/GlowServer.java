@@ -2473,6 +2473,24 @@ public class GlowServer implements Server {
         return config.getInt(Key.CONNECTION_THROTTLE);
     }
 
+    /**
+     * Gets whether monster spawning is enabled.
+     *
+     * @return true if monster spawning is enabled, false otherwise.
+     */
+    public boolean getMonstersSpawnEnabled() {
+        return config.getBoolean(Key.SPAWN_MONSTERS);
+    }
+
+    /**
+     * Gets whether animal spawning is enabled.
+     *
+     * @return true if animal spawning is enabled, false otherwise.
+     */
+    public boolean getAnimalsSpawnEnabled() {
+        return config.getBoolean(Key.SPAWN_ANIMALS);
+    }
+
     @Override
     public int getTicksPerAnimalSpawns() {
         return config.getInt(Key.ANIMAL_TICKS);
