@@ -549,16 +549,6 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         DISABLE_GENERATION("world.disable-generation", false,
                 Boolean.class::isInstance),
 
-        // database
-        DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver",
-                String.class::isInstance),
-        DB_URL("database.url", "jdbc:sqlite:config/database.db", Migrate.BUKKIT, "database.url",
-                String.class::isInstance),
-        DB_USERNAME("database.username", "glowstone", Migrate.BUKKIT, "database.username"),
-        DB_PASSWORD("database.password", "nether", Migrate.BUKKIT, "database.password"),
-        DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation",
-                String.class::isInstance),
-
         // libraries
         LIBRARY_CHECKSUM_VALIDATION("libraries.checksum-validation", true,
                 Boolean.class::isInstance),
