@@ -1,14 +1,19 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+import java.util.Set;
 import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
 
 public class GlowOcelot extends GlowTameable implements Ocelot {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.RAW_FISH);
 
     @Getter
     private Type catType;
@@ -49,5 +54,10 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_CAT_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFood() {
+        return BREEDING_FOODS;
     }
 }

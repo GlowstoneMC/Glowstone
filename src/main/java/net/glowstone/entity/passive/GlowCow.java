@@ -1,5 +1,7 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+import java.util.Set;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
@@ -14,6 +16,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowCow extends GlowAnimal implements Cow {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.WHEAT);
 
     public GlowCow(Location location) {
         super(location, EntityType.COW, 10);
@@ -39,13 +43,7 @@ public class GlowCow extends GlowAnimal implements Cow {
                 return false;
             }
 
-            if (hand.getAmount() > 1) {
-                hand.setAmount(hand.getAmount() - 1);
-                player.getInventory().setItem(message.getHandSlot(), hand);
-            } else {
-                player.getInventory()
-                    .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
-            }
+            player.getInventory().consumeItemInMainHand();
 
             if (player.getInventory().firstEmpty() == -1) {
                 GlowItem item = player.getWorld()
@@ -73,5 +71,10 @@ public class GlowCow extends GlowAnimal implements Cow {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_COW_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFood() {
+        return BREEDING_FOODS;
     }
 }

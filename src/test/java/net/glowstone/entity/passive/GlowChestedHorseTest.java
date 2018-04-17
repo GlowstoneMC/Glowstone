@@ -4,7 +4,7 @@ import java.util.function.Function;
 import net.glowstone.entity.GlowEntityTest;
 import org.bukkit.Location;
 
-public abstract class GlowChestedHorseTest<T extends GlowChestedHorse> extends GlowEntityTest<T> {
+public abstract class GlowChestedHorseTest<T extends GlowChestedHorse> extends GlowAbstractHorseTest<T> {
     protected GlowChestedHorseTest(
             Function<Location, ? extends T> entityCreator) {
         super(entityCreator);

@@ -1,5 +1,8 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -17,6 +20,10 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowPig extends GlowAnimal implements Pig {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT_ITEM,
+            Material.POTATO_ITEM,
+            Material.BEETROOT);
 
     public GlowPig(Location location) {
         super(location, EntityType.PIG, 10);
@@ -46,13 +53,7 @@ public class GlowPig extends GlowAnimal implements Pig {
                 if (hand.getType() == Material.SADDLE) {
                     setSaddle(true);
                     if (player.getGameMode() != GameMode.CREATIVE) {
-                        if (hand.getAmount() > 1) {
-                            hand.setAmount(hand.getAmount() - 1);
-                            player.getInventory().setItem(message.getHandSlot(), hand);
-                        } else {
-                            player.getInventory()
-                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
-                        }
+                        player.getInventory().consumeItemInMainHand();
                     }
                     return true;
                 }
@@ -88,5 +89,10 @@ public class GlowPig extends GlowAnimal implements Pig {
         PigZombie pigZombie = world.spawn(this.location, PigZombie.class);
         pigZombie.damage(amount, source, cause);
         remove();
+    }
+
+    @Override
+    public Set<Material> getBreedingFood() {
+        return BREEDING_FOODS;
     }
 }

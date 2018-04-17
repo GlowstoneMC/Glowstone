@@ -1,12 +1,17 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+import java.util.Set;
 import net.glowstone.entity.GlowAnimal;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.MushroomCow;
 
 public class GlowMooshroom extends GlowAnimal implements MushroomCow {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.WHEAT);
 
     public GlowMooshroom(Location location) {
         super(location, EntityType.MUSHROOM_COW, 10);
@@ -26,5 +31,10 @@ public class GlowMooshroom extends GlowAnimal implements MushroomCow {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_COW_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFood() {
+        return BREEDING_FOODS;
     }
 }

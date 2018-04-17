@@ -1,5 +1,7 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
@@ -19,6 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
 
 public class GlowSheep extends GlowAnimal implements Sheep {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.WHEAT);
 
     @Getter
     private boolean sheared;
@@ -124,13 +128,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     }
 
                     if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-                        if (hand.getAmount() > 1) {
-                            hand.setAmount(hand.getAmount() - 1);
-                            player.getInventory().setItem(message.getHandSlot(), hand);
-                        } else {
-                            player.getInventory()
-                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
-                        }
+                        player.getInventory().consumeItemInMainHand();
                     }
 
                     setColor(color);
@@ -156,5 +154,10 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SHEEP_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFood() {
+        return BREEDING_FOODS;
     }
 }
