@@ -1,6 +1,7 @@
 package net.glowstone.inventory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -125,8 +126,7 @@ public class GlowInventory implements Inventory {
      * @return Viewers set.
      */
     public Set<HumanEntity> getViewersSet() {
-        // TODO: Defensive copy
-        return viewers;
+        return Collections.unmodifiableSet(viewers);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -198,7 +198,7 @@ public class GlowInventory implements Inventory {
      * @param clickedItem The item at which was clicked
      */
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
-            ItemStack clickedItem) {
+                                 ItemStack clickedItem) {
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         view.setItem(clickedSlot, clickedItem);
     }
@@ -298,8 +298,7 @@ public class GlowInventory implements Inventory {
      * @return Slot list.
      */
     public List<GlowInventorySlot> getSlots() {
-        // TODO: Defensive copy
-        return slots;
+        return Collections.unmodifiableList(slots);
     }
 
     @Override
@@ -690,6 +689,38 @@ public class GlowInventory implements Inventory {
         for (GlowInventorySlot slot : slots) {
             slot.setItem(InventoryUtil.createEmptyStack());
         }
+    }
+
+    /**
+     * Consumes an item or the full stack in the given slot.
+     * @param slot The slot to consume.
+     * @param wholeStack True if we should remove the complete stack.
+     * @return The number of item really consumed.
+     */
+    public int consumeItem(int slot, boolean wholeStack) {
+        ItemStack item = InventoryUtil.itemOrEmpty(getItem(slot));
+
+        if (InventoryUtil.isEmpty(item)) {
+            return 0;
+        }
+
+        if (wholeStack || item.getAmount() == 1) {
+            setItem(slot, InventoryUtil.createEmptyStack());
+        } else {
+            item.setAmount(item.getAmount() - 1);
+            setItem(slot, item);
+        }
+
+        return wholeStack ? item.getAmount() : 1;
+    }
+
+    /**
+     * Consumes an item in the given slot.
+     * @param slot The slot to consume.
+     * @return The number of item really consumed.
+     */
+    public int consumeItem(int slot) {
+        return this.consumeItem(slot, false);
     }
 
 }
