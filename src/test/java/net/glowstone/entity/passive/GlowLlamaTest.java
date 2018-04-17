@@ -14,7 +14,7 @@ public class GlowLlamaTest extends GlowChestedHorseTest<GlowLlama> {
 
     @Test
     @Override
-    public void testGetBreedingFood() {
-        assertEquals(EnumSet.of(Material.HAY_BLOCK), entity.getBreedingFood());
+    public void testGetBreedingFoods() {
+        assertEquals(EnumSet.of(Material.HAY_BLOCK), entity.getBreedingFoods());
     }
 }

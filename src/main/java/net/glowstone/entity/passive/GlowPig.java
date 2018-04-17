@@ -92,7 +92,7 @@ public class GlowPig extends GlowAnimal implements Pig {
     }
 
     @Override
-    public Set<Material> getBreedingFood() {
+    public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
     }
 }

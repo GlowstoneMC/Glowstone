@@ -57,7 +57,7 @@ public class GlowOcelot extends GlowTameable implements Ocelot {
     }
 
     @Override
-    public Set<Material> getBreedingFood() {
+    public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
     }
 }

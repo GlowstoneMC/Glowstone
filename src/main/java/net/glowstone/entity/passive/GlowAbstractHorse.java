@@ -87,7 +87,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     }
 
     @Override
-    public Set<Material> getBreedingFood() {
+    public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
     }
 }

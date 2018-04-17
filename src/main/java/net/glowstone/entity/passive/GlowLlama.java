@@ -78,7 +78,7 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     }
 
     @Override
-    public Set<Material> getBreedingFood() {
+    public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
     }
 }

@@ -157,7 +157,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     @Override
-    public Set<Material> getBreedingFood() {
+    public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
     }
 }

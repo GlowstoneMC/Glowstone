@@ -53,7 +53,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
             }
 
             if (GameMode.CREATIVE != player.getGameMode()
-                    && getBreedingFood().contains(item.getType())) {
+                    && getBreedingFoods().contains(item.getType())) {
                 // TODO set love mode if possible and spawn particles
                 // TODO heal
                 player.getInventory().consumeItemInMainHand();
@@ -67,7 +67,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
      * Returns a set containing the breeding foods for the current animal.
      * @return a set containing Material
      */
-    public Set<Material> getBreedingFood() {
+    public Set<Material> getBreedingFoods() {
         return EnumSet.noneOf(Material.class);
     }
 }

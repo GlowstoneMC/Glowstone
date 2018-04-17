@@ -15,7 +15,7 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
     }
 
     @Test
-    public void testGetBreedingFood() {
-        assertEquals(EnumSet.noneOf(Material.class), entity.getBreedingFood());
+    public void testGetBreedingFoods() {
+        assertEquals(EnumSet.noneOf(Material.class), entity.getBreedingFoods());
     }
 }

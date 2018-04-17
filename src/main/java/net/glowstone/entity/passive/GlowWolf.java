@@ -121,7 +121,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
     }
 
     @Override
-    public Set<Material> getBreedingFood() {
+    public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
     }
 }

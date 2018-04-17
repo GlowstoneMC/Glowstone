@@ -14,7 +14,7 @@ public class GlowOcelotTest extends GlowTameableTest<GlowOcelot> {
 
     @Test
     @Override
-    public void testGetBreedingFood() {
+    public void testGetBreedingFoods() {
         assertEquals(EnumSet.of(Material.RAW_FISH), entity.getBreedingFoods());
     }
 }

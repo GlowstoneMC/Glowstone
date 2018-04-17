@@ -17,8 +17,8 @@ public abstract class GlowAbstractHorseTest<T extends GlowAbstractHorse> extends
 
     @Test
     @Override
-    public void testGetBreedingFood() {
+    public void testGetBreedingFoods() {
         assertEquals(EnumSet.of(Material.GOLDEN_APPLE, Material.GOLDEN_CARROT),
-                entity.getBreedingFood());
+                entity.getBreedingFoods());
     }
 }

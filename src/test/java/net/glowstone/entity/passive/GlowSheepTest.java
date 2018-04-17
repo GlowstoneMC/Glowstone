@@ -2,7 +2,6 @@ package net.glowstone.entity.passive;
 
 import net.glowstone.entity.GlowAnimalTest;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 
 import java.util.EnumSet;
@@ -18,7 +17,7 @@ public class GlowSheepTest extends GlowAnimalTest<GlowSheep> {
 
     @Test
     @Override
-    public void testGetBreedingFood() {
-        assertEquals(EnumSet.of(Material.WHEAT), entity.getBreedingFood());
+    public void testGetBreedingFoods() {
+        assertEquals(EnumSet.of(Material.WHEAT), entity.getBreedingFoods());
     }
 }
