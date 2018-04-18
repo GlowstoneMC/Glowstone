@@ -32,6 +32,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -587,5 +588,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     public void setRightShoulderTag(CompoundTag tag) {
         metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    @Override
+    public void openSign(Sign sign) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }
