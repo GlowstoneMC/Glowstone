@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import com.google.common.collect.Sets;
 import java.util.EnumSet;
 import java.util.Set;
 import net.glowstone.entity.ai.EntityDirector;
@@ -17,6 +18,9 @@ import org.bukkit.inventory.ItemStack;
  * Represents an Animal, such as a Cow.
  */
 public class GlowAnimal extends GlowAgeable implements Animals {
+
+    private static final Set<Material> DEFAULT_BREEDING_FOODS =
+            Sets.immutableEnumSet(EnumSet.noneOf(Material.class));
 
     /**
      * Creates a new ageable animal.
@@ -68,6 +72,6 @@ public class GlowAnimal extends GlowAgeable implements Animals {
      * @return a set containing Material
      */
     public Set<Material> getBreedingFoods() {
-        return EnumSet.noneOf(Material.class);
+        return DEFAULT_BREEDING_FOODS;
     }
 }
