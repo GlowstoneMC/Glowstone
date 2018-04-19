@@ -2,19 +2,27 @@ package net.glowstone.entity.passive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.Sets;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
-    private static final ImmutableBiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT_ITEM,
+            Material.GOLDEN_CARROT,
+            Material.YELLOW_FLOWER);
+
+    private static final BiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap
             .<Type, Integer>builder()
             .put(Type.BROWN, 0)
             .put(Type.WHITE, 1)
@@ -60,5 +68,10 @@ public class GlowRabbit extends GlowAnimal implements Rabbit {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_RABBIT_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
     }
 }

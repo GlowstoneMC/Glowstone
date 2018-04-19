@@ -109,13 +109,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
             if (hand.getType() == Material.COOKIE) {
                 damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                 world.spawnParticle(Particle.SPELL, location, 1);
-                if (hand.getAmount() > 1) {
-                    hand.setAmount(hand.getAmount() - 1);
-                    player.getInventory().setItem(message.getHandSlot(), hand);
-                } else {
-                    player.getInventory()
-                        .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
-                }
+                player.getInventory().consumeItemInMainHand();
             } else if (!isTamed() && hand.getType() == Material.SEEDS) {
                 if (ThreadLocalRandom.current().nextInt(3) == 0) {
                     setTamed(true);
@@ -124,13 +118,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
                 }
                 world.playSound(getLocation(), Sound.ENTITY_PARROT_EAT, 1.0F,
                     SoundUtil.randomReal(0.2F) + 1F);
-                if (hand.getAmount() > 1) {
-                    hand.setAmount(hand.getAmount() - 1);
-                    player.getInventory().setItem(message.getHandSlot(), hand);
-                } else {
-                    player.getInventory()
-                        .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
-                }
+                player.getInventory().consumeItemInMainHand();
                 return true;
             }
             // TODO: sitting only happens on crouch

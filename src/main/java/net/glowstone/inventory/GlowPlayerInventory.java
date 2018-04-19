@@ -491,4 +491,21 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     public void setBootsDropChance(float chance) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Consumes an item or the full stack in the main hand slot.
+     * @param wholeStack True if we should remove the complete stack.
+     * @return The number of item really consumed.
+     */
+    public int consumeItemInMainHand(boolean wholeStack) {
+        return super.consumeItem(heldItemSlot, wholeStack);
+    }
+
+    /**
+     * Consumes an item in the main hand slot.
+     * @return The number of item really consumed.
+     */
+    public int consumeItemInMainHand() {
+        return this.consumeItemInMainHand(false);
+    }
 }

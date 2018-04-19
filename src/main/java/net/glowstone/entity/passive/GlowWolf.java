@@ -2,15 +2,30 @@ package net.glowstone.entity.passive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.Sets;
+import java.util.Set;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
 
 public class GlowWolf extends GlowTameable implements Wolf {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.RAW_BEEF,
+            Material.COOKED_BEEF,
+            Material.RABBIT,
+            Material.COOKED_RABBIT,
+            Material.MUTTON,
+            Material.COOKED_MUTTON,
+            Material.PORK,
+            Material.GRILLED_PORK,
+            Material.RAW_CHICKEN,
+            Material.COOKED_CHICKEN,
+            Material.ROTTEN_FLESH);
 
     private static final DyeColor DEFAULT_COLLAR_COLOR = DyeColor.RED;
 
@@ -103,5 +118,10 @@ public class GlowWolf extends GlowTameable implements Wolf {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_WOLF_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
     }
 }

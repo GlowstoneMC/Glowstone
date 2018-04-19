@@ -1,14 +1,19 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.GlowLlamaInventory;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Llama;
 
 public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements Llama {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.HAY_BLOCK);
 
     /**
      * Creates a llama entity.
@@ -70,5 +75,10 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
             moveChestContents(oldInventory, newInventory);
         }
         return newInventory;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
     }
 }
