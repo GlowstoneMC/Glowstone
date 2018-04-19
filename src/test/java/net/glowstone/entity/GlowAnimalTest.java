@@ -18,4 +18,9 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
     public void testGetBreedingFoods() {
         assertEquals(EnumSet.noneOf(Material.class), entity.getBreedingFoods());
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetBreedingFoodsReturnsImmutableSet() {
+        entity.getBreedingFoods().add(Material.SANDSTONE);
+    }
 }

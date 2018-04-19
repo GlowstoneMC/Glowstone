@@ -68,8 +68,8 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     }
 
     /**
-     * Returns a set containing the breeding foods for the current animal.
-     * @return a set containing Material
+     * Returns an immutable set containing the breeding foods for the current animal.
+     * @return an immutable set containing Material
      */
     public Set<Material> getBreedingFoods() {
         return DEFAULT_BREEDING_FOODS;
