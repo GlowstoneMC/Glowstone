@@ -198,7 +198,7 @@ public class GlowInventory implements Inventory {
      * @param clickedItem The item at which was clicked
      */
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
-                                 ItemStack clickedItem) {
+            ItemStack clickedItem) {
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         view.setItem(clickedSlot, clickedItem);
     }
