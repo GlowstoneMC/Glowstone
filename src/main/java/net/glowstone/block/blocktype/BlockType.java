@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
@@ -52,15 +51,6 @@ public class BlockType extends ItemType {
      */
     @Getter
     protected SoundInfo placeSound = new SoundInfo(Sound.BLOCK_WOOD_BREAK, 1F, 0.75F);
-
-    /**
-     * Determines whether or not the player is sneaking while placing a block.
-     * 
-     * @return If the player is sneaking while placing.
-     */
-    @Getter
-    @Setter
-    private boolean shiftClickPlace = false;
 
     ////////////////////////////////////////////////////////////////////////////
     // Setters for subclass use
@@ -170,12 +160,6 @@ public class BlockType extends ItemType {
      * @return Whether the placement is valid.
      */
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        Material targetMat = ItemTable.instance().getBlock(
-            block.getRelative(against.getOppositeFace()).getType()).getMaterial();
-        
-        if (targetMat == Material.SIGN_POST || targetMat == Material.WALL_SIGN) {
-            return isShiftClickPlace();
-        }
         return true;
     }
 
@@ -331,9 +315,8 @@ public class BlockType extends ItemType {
     public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock target = against.getRelative(face);
-
-        // player attempting to place while shifting
-        setShiftClickPlace(player.isSneaking());
+        final Material targetMat = ItemTable.instance().getBlock(
+            target.getRelative(face.getOppositeFace()).getType()).getMaterial();
 
         // prevent building above the height limit
         if (target.getLocation().getY() >= target.getWorld().getMaxHeight()) {
@@ -369,7 +352,19 @@ public class BlockType extends ItemType {
         }
 
         // call canBuild event
-        boolean canBuild = canPlaceAt(target, face);
+        boolean canBuild = true;
+        switch (targetMat) {
+            case SIGN_POST:
+            case WALL_SIGN:
+                if (player.isSneaking()) {
+                    canBuild = canPlaceAt(target, face);
+                } else {
+                    return;
+                }
+                break;
+            default:
+                canBuild = canPlaceAt(target, face);
+        }
         BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, getId(), canBuild);
         if (!EventFactory.getInstance().callEvent(canBuildEvent).isBuildable()) {
             //revert(player, target);

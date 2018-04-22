@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.SignEntity;
 import net.glowstone.chunk.GlowChunk;
@@ -43,6 +44,9 @@ public class BlockSign extends BlockNeedsAttached {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return canAttachTo(block, against) || isShiftClickPlace();
+        Material targetMat = ItemTable.instance().getBlock(
+            block.getRelative(against.getOppositeFace()).getType()).getMaterial();
+        return canAttachTo(block, against) || targetMat == Material.SIGN_POST
+            || targetMat == Material.WALL_SIGN; 
     }
 }
