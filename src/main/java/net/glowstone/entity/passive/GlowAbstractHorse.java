@@ -1,13 +1,16 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import com.google.common.collect.Sets;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
@@ -15,6 +18,9 @@ import org.bukkit.entity.Horse;
 import org.bukkit.inventory.HorseInventory;
 
 public abstract class GlowAbstractHorse extends GlowTameable implements AbstractHorse {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.GOLDEN_APPLE,
+            Material.GOLDEN_CARROT);
 
     @Getter
     @Setter
@@ -78,5 +84,10 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
             }
         }
         return value;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
     }
 }

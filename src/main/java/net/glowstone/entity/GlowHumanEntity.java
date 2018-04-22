@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -32,6 +33,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -499,8 +501,19 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
         Location dropLocation = location.clone().add(0, getEyeHeight(true) - 0.3, 0);
         GlowItem dropItem = world.dropItem(dropLocation, stack);
-        Vector vel = location.getDirection().multiply(new Vector(0.11F, 0.0F, 0.11F));
-        vel.setY(0.006F);
+
+        /**
+         * These calculations are strictly based off of trial-and-error to find the 
+         * closest similar behavior to the official server. May be changed in the future.
+         */
+        Vector vel = location.getDirection().multiply(0.3);
+        ThreadLocalRandom tlr = ThreadLocalRandom.current();
+        double randOffset = 0.02;
+        vel.add(new Vector(
+            tlr.nextDouble(randOffset) - randOffset / 2,
+            tlr.nextDouble(0.12),
+            tlr.nextDouble(randOffset) - randOffset / 2));
+            
         dropItem.setVelocity(vel);
         return dropItem;
     }
@@ -587,5 +600,10 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     public void setRightShoulderTag(CompoundTag tag) {
         metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    @Override
+    public void openSign(Sign sign) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

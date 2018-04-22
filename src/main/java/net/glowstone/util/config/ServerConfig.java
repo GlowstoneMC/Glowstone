@@ -440,7 +440,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         PREVENT_PROXY("server.prevent-proxy-connections", true, Migrate.PROPS,
                 "prevent-proxy-connections", Boolean.class::isInstance),
 
-        // critters
+        // creatures
         SPAWN_MONSTERS("creatures.enable.monsters", true, Migrate.PROPS, "spawn-monsters",
                 Boolean.class::isInstance),
         SPAWN_ANIMALS("creatures.enable.animals", true, Migrate.PROPS, "spawn-animals",
@@ -506,13 +506,6 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                 Boolean.class::isInstance),
         PROFILE_LOOKUP_TIMEOUT("advanced.profile-lookup-timeout", 5,
                 Validators.NON_NEGATIVE_INTEGER),
-        LIBRARY_CHECKSUM_VALIDATION("advanced.library-checksum-validation", true,
-                Boolean.class::isInstance),
-        LIBRARY_REPOSITORY_URL("advanced.library-repository-url",
-                "https://repo.glowstone.net/service/local/repositories/central/content/",
-                String.class::isInstance),
-        LIBRARY_DOWNLOAD_ATTEMPTS("advanced.library-download-attempts", 2,
-                Validators.POSITIVE_INTEGER),
         SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS(
                 "advanced.suggest-player-name-when-null-tab-completions", true,
                 Boolean.class::isInstance),
@@ -556,22 +549,17 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         DISABLE_GENERATION("world.disable-generation", false,
                 Boolean.class::isInstance),
 
-        // database
-        DB_DRIVER("database.driver", "org.sqlite.JDBC", Migrate.BUKKIT, "database.driver",
-                String.class::isInstance),
-        DB_URL("database.url", "jdbc:sqlite:config/database.db", Migrate.BUKKIT, "database.url",
-                String.class::isInstance),
-        DB_USERNAME("database.username", "glowstone", Migrate.BUKKIT, "database.username"),
-        DB_PASSWORD("database.password", "nether", Migrate.BUKKIT, "database.password"),
-        DB_ISOLATION("database.isolation", "SERIALIZABLE", Migrate.BUKKIT, "database.isolation",
-                String.class::isInstance),
-
-        // compatibility Bundles
-        COMPATIBILITY_BUNDLE("compatibility-bundle", CompatibilityBundle.CRAFTBUKKIT.name(),
-            (val) -> val instanceof String && CompatibilityBundle.valueOf((String) val) != null),
-
         // libraries
-        LIBRARIES("libraries", Collections.emptyList());
+        LIBRARY_CHECKSUM_VALIDATION("libraries.checksum-validation", true,
+                Boolean.class::isInstance),
+        LIBRARY_REPOSITORY_URL("libraries.repository-url",
+                "https://repo.glowstone.net/service/local/repositories/central/content/",
+                String.class::isInstance),
+        LIBRARY_DOWNLOAD_ATTEMPTS("libraries.download-attempts", 2,
+                Validators.POSITIVE_INTEGER),
+        COMPATIBILITY_BUNDLE("libraries.compatibility-bundle",
+                CompatibilityBundle.CRAFTBUKKIT.name(), String.class::isInstance),
+        LIBRARIES_LIST("libraries.list", Collections.emptyList());
 
         @Getter
         private final String path;

@@ -1,5 +1,8 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +15,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 public class GlowChicken extends GlowAnimal implements Chicken {
+
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.SEEDS,
+            Material.BEETROOT_SEEDS,
+            Material.MELON_SEEDS,
+            Material.PUMPKIN_SEEDS);
 
     @Getter
     @Setter
@@ -40,7 +48,7 @@ public class GlowChicken extends GlowAnimal implements Chicken {
         super.pulse();
         eggLayTime--;
         if (eggLayTime <= 0) {
-            getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.EGG, 1));
+            getWorld().dropItem(getLocation(), new ItemStack(Material.EGG, 1));
             getWorld().playSound(getLocation(), Sound.ENTITY_CHICKEN_EGG, 1, 1);
             generateEggLayDelay();
         }
@@ -59,5 +67,10 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_CHICKEN_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
     }
 }

@@ -1,16 +1,22 @@
 package net.glowstone.entity.passive;
 
-import net.glowstone.entity.GlowAgeableTest;
+import net.glowstone.entity.GlowAnimalTest;
+import org.bukkit.Material;
 import org.junit.Test;
 
-public class GlowCowTest extends GlowAgeableTest<GlowCow> {
+import java.util.EnumSet;
+
+import static org.junit.Assert.assertEquals;
+
+public class GlowCowTest extends GlowAnimalTest<GlowCow> {
 
     public GlowCowTest() {
         super(GlowCow::new);
     }
 
     @Test
-    public void testEntityInteract() {
-        // TODO
+    @Override
+    public void testGetBreedingFoods() {
+        assertEquals(EnumSet.of(Material.WHEAT), entity.getBreedingFoods());
     }
 }

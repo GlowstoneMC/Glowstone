@@ -1,19 +1,26 @@
 package net.glowstone.net.handler.status;
 
+import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
+import com.destroystokyo.paper.network.StatusClient;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.MessageHandler;
-import java.net.InetAddress;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.GlowStatusClient;
 import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.message.status.StatusResponseMessage;
-import net.glowstone.util.GlowServerIcon;
 import org.bukkit.entity.Player;
-import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,59 +28,83 @@ import org.json.simple.JSONObject;
 public final class StatusRequestHandler implements
     MessageHandler<GlowSession, StatusRequestMessage> {
 
+    private static final UUID BLANK_UUID = new UUID(0, 0);
+
+    private static void choosePlayerSample(GlowServer server, PaperServerListPingEvent event) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        List<Player> players = new ArrayList<>(server.getOnlinePlayers());
+        int sampleCount = server.getPlayerSampleCount();
+        if (players.size() <= sampleCount) {
+            sampleCount = players.size();
+        } else {
+            // Send a random subset of players (modified Fisher-Yates shuffle)
+            for (int i = 0; i < sampleCount; i++) {
+                Collections.swap(players, i, random.nextInt(i, players.size()));
+            }
+        }
+
+        // Add selected players to the event
+        for (int i = 0; i < sampleCount; i++) {
+            event.getPlayerSample().add(players.get(i).getPlayerProfile());
+        }
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public void handle(GlowSession session, StatusRequestMessage message) {
         // create and call the event
         GlowServer server = session.getServer();
-        int online = server.getOnlinePlayers().size();
-        InetAddress address = session.getAddress().getAddress();
+        StatusEvent event = new StatusEvent(
+                new GlowStatusClient(session), server.getMotd(),
+                server.getOnlinePlayers().size(), server.getMaxPlayers(),
+                GlowServer.GAME_VERSION, GlowServer.PROTOCOL_VERSION,
+                server.getServerIcon());
 
-        StatusEvent event = new StatusEvent(address, server.getMotd(), online,
-            server.getMaxPlayers());
-        event.players = new ArrayList<>(server.getOnlinePlayers());
-        event.icon = server.getServerIcon();
         event.serverType = server.getServerType();
         event.clientModsAllowed = server.getAllowClientMods();
+
+        choosePlayerSample(server, event);
+
         EventFactory.getInstance().callEvent(event);
+
+        // Disconnect immediately if event is cancelled
+        if (event.isCancelled()) {
+            session.getChannel().close();
+            return;
+        }
 
         // build the json
         JSONObject json = new JSONObject();
 
         JSONObject version = new JSONObject();
-        String gameVersion = GlowServer.GAME_VERSION;
-        int protocolVersion = GlowServer.PROTOCOL_VERSION;
-        version.put("name", gameVersion);
-        version.put("protocol", protocolVersion);
+        version.put("name", event.getVersion());
+        version.put("protocol", event.getProtocolVersion());
         json.put("version", version);
 
-        JSONObject players = new JSONObject();
-        players.put("max", event.getMaxPlayers());
-        players.put("online", online);
+        if (!event.shouldHidePlayers()) {
+            JSONObject players = new JSONObject();
+            players.put("max", event.getMaxPlayers());
+            players.put("online", event.getNumPlayers());
 
-        if (!event.players.isEmpty()) {
-            event.players = event.players
-                .subList(0, Math.min(event.players.size(), server.getPlayerSampleCount()));
-            Collections.shuffle(event.players);
             JSONArray playersSample = new JSONArray();
-
-            for (Player player : event.players) {
+            for (PlayerProfile profile : event.getPlayerSample()) {
                 JSONObject p = new JSONObject();
-                p.put("name", player.getName());
-                p.put("id", player.getUniqueId().toString());
+                p.put("name", Strings.nullToEmpty(profile.getName()));
+                p.put("id", MoreObjects.firstNonNull(profile.getId(), BLANK_UUID).toString());
                 playersSample.add(p);
             }
             players.put("sample", playersSample);
-        }
 
-        json.put("players", players);
+            json.put("players", players);
+        }
 
         JSONObject description = new JSONObject();
         description.put("text", event.getMotd());
         json.put("description", description);
 
-        if (event.icon.getData() != null) {
-            json.put("favicon", event.icon.getData());
+        if (event.getServerIcon() != null) {
+            json.put("favicon", event.getServerIcon().getData());
         }
 
         // Mod list must be included but can be empty
@@ -92,29 +123,16 @@ public final class StatusRequestHandler implements
         session.send(new StatusResponseMessage(json));
     }
 
-    private static class StatusEvent extends ServerListPingEvent {
+    private static class StatusEvent extends PaperServerListPingEvent {
 
-        private GlowServerIcon icon;
-        private List<Player> players;
         private String serverType; // VANILLA, BUKKIT, or FML
         private boolean clientModsAllowed;
 
-        private StatusEvent(InetAddress address, String motd, int numPlayers, int maxPlayers) {
-            super(address, motd, numPlayers, maxPlayers);
+        private StatusEvent(@Nonnull StatusClient client, String motd, int numPlayers,
+                int maxPlayers, @Nonnull String version, int protocolVersion,
+                @Nullable CachedServerIcon favicon) {
+            super(client, motd, numPlayers, maxPlayers, version, protocolVersion, favicon);
         }
 
-        @Override
-        public void setServerIcon(CachedServerIcon icon)
-            throws IllegalArgumentException, UnsupportedOperationException {
-            if (!(icon instanceof GlowServerIcon)) {
-                throw new IllegalArgumentException("Icon not provided by this implementation");
-            }
-            this.icon = (GlowServerIcon) icon;
-        }
-
-        @Override
-        public Iterator<Player> iterator() {
-            return players.iterator();
-        }
     }
 }
