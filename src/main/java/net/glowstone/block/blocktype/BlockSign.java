@@ -40,4 +40,9 @@ public class BlockSign extends BlockNeedsAttached {
         GlowBlockState oldState) {
         player.openSignEditor(block.getLocation());
     }
+
+    @Override
+    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+        return canAttachTo(block, against) || isShiftClickPlace();
+    }
 }
