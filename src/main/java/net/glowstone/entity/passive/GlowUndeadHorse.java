@@ -12,6 +12,11 @@ public class GlowUndeadHorse extends GlowAbstractHorse implements AbstractHorse 
     }
 
     @Override
+    public boolean canBreed() {
+        return false;
+    }
+
+    @Override
     public GlowHorseInventory getInventory() {
         return null;
     }
