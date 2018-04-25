@@ -1,8 +1,11 @@
 package net.glowstone.boss;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
@@ -18,8 +21,8 @@ public class GlowBossBar implements BossBar {
 
     @Getter
     private final UUID uniqueId;
-    private final List<BarFlag> flags = new ArrayList<>();
-    private final List<Player> players = new ArrayList<>();
+    private final Set<BarFlag> flags = new HashSet<>();
+    private final Set<Player> players = new HashSet<>();
     @Getter
     private String title;
     @Getter
@@ -42,6 +45,14 @@ public class GlowBossBar implements BossBar {
      */
     public GlowBossBar(String title, BarColor color, BarStyle style, double progress,
             BarFlag... flags) {
+        Preconditions.checkNotNull(title);
+        Preconditions.checkNotNull(color);
+        Preconditions.checkNotNull(style);
+        Preconditions.checkNotNull(flags);
+        for (BarFlag flag : flags) {
+            Preconditions.checkNotNull(flag);
+        }
+
         this.uniqueId = UUID.randomUUID();
         this.title = title;
         this.color = color;
@@ -56,6 +67,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public void setTitle(String title) {
+        Preconditions.checkNotNull(title);
         this.title = title;
         if (isVisible()) {
             sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_TITLE, new
@@ -65,6 +77,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public void setColor(BarColor color) {
+        Preconditions.checkNotNull(color);
         this.color = color;
         if (isVisible()) {
             sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE,
@@ -75,6 +88,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public void setStyle(BarStyle style) {
+        Preconditions.checkNotNull(style);
         this.style = style;
         if (isVisible()) {
             sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE,
@@ -85,6 +99,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public void removeFlag(BarFlag flag) {
+        Preconditions.checkNotNull(flag);
         if (flags.contains(flag)) {
             flags.remove(flag);
             if (isVisible()) {
@@ -96,7 +111,8 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public void addFlag(BarFlag flag) {
-        if (!flags.contains(flag) && flag != null) {
+        Preconditions.checkNotNull(flag);
+        if (!flags.contains(flag)) {
             flags.add(flag);
             if (isVisible()) {
                 sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS,
@@ -107,6 +123,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public boolean hasFlag(BarFlag flag) {
+        Preconditions.checkNotNull(flag);
         return flags.contains(flag);
     }
 
@@ -121,6 +138,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public void addPlayer(Player player) {
+        Preconditions.checkNotNull(player);
         if (!players.contains(player)) {
             players.add(player);
             if (isVisible()) {
@@ -134,6 +152,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public void removePlayer(Player player) {
+        Preconditions.checkNotNull(player);
         if (players.contains(player)) {
             if (isVisible()) {
                 sendUpdate(player, createRemoveAction());
@@ -160,8 +179,7 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public List<Player> getPlayers() {
-        // TODO: Defensive copy
-        return players;
+        return new ArrayList<>(players);
     }
 
     @Override
@@ -211,7 +229,7 @@ public class GlowBossBar implements BossBar {
     }
 
     private void sendUpdate(BossBarMessage message) {
-        for (Player player : getPlayers()) {
+        for (Player player : this.players) {
             sendUpdate(player, message);
         }
     }

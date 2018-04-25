@@ -2323,8 +2323,7 @@ public class GlowServer implements Server {
 
     @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
-        GlowBossBar bossBar = new GlowBossBar(title, color, style, flags);
-        return bossBar;
+        return new GlowBossBar(title, color, style, flags);
     }
 
     @Override
