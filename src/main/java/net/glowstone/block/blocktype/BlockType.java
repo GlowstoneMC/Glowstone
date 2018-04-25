@@ -315,6 +315,8 @@ public class BlockType extends ItemType {
     public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face,
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock target = against.getRelative(face);
+        final Material targetMat = ItemTable.instance().getBlock(
+            target.getRelative(face.getOppositeFace()).getType()).getMaterial();
 
         // prevent building above the height limit
         if (target.getLocation().getY() >= target.getWorld().getMaxHeight()) {
@@ -350,7 +352,19 @@ public class BlockType extends ItemType {
         }
 
         // call canBuild event
-        boolean canBuild = canPlaceAt(target, face);
+        boolean canBuild = true;
+        switch (targetMat) {
+            case SIGN_POST:
+            case WALL_SIGN:
+                if (player.isSneaking()) {
+                    canBuild = canPlaceAt(target, face);
+                } else {
+                    return;
+                }
+                break;
+            default:
+                canBuild = canPlaceAt(target, face);
+        }
         BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, getId(), canBuild);
         if (!EventFactory.getInstance().callEvent(canBuildEvent).isBuildable()) {
             //revert(player, target);

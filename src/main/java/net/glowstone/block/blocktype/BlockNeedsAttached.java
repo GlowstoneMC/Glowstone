@@ -30,6 +30,14 @@ public class BlockNeedsAttached extends BlockType {
         }
     }
 
+    /**
+     * Called to determine if the target block can be attached to
+     * when right clicking it.
+     *
+     * @param block The location the block is being placed at.
+     * @param against The face the block is being placed against.
+     * @return Whether the black can be attached to.
+    */
     public boolean canAttachTo(GlowBlock block, BlockFace against) {
         return !(ItemTable.instance().getBlock(
             block.getRelative(against.getOppositeFace()).getType()) instanceof BlockNeedsAttached);
