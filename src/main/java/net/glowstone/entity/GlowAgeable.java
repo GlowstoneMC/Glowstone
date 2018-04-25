@@ -102,7 +102,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     }
 
     @Override
-    public final boolean canBreed() {
+    public boolean canBreed() {
         return age == AGE_ADULT;
     }
 

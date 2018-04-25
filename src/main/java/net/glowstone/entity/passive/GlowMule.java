@@ -13,6 +13,11 @@ public class GlowMule extends GlowChestedHorse<GlowHorseInventory> implements Mu
     }
 
     @Override
+    public boolean canBreed() {
+        return false;
+    }
+
+    @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_MULE_DEATH;
     }

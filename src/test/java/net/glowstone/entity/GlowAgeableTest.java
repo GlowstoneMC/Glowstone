@@ -53,7 +53,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
     }
 
     @Test
-    public void testSetAgeAdultCanBreed() {
+    public void testSetAgeAdult() {
         entity.setAge(0);
         assertEquals(0, entity.getAge());
         assertAdult(entity);
@@ -68,7 +68,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
         assertFalse(entity.canBreed());
     }
 
-    private void assertAdult(T ageable) {
+    protected void assertAdult(T ageable) {
         assertTrue(ageable.isAdult());
         // Check that scale is at least 1
         assertTrue(ageable.getWidth() >= ageable.width);
