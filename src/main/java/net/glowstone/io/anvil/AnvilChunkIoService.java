@@ -94,9 +94,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             chunk.setBiomes(levelTag.getByteArray("Biomes"));
         }
         // read height map
-        if (levelTag.isIntArray("HeightMap")) {
-            chunk.setHeightMap(levelTag.getIntArray("HeightMap"));
-        } else {
+        if (!levelTag.consumeIntArray(chunk::setHeightMap, "HeightMap")) {
             chunk.automaticHeightMap();
         }
 

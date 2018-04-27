@@ -5,7 +5,6 @@ import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.inventory.GlowMetaPotion;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.TippedArrow;

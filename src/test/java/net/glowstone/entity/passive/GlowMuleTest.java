@@ -1,9 +1,9 @@
 package net.glowstone.entity.passive;
 
-import org.junit.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import org.junit.Test;
 
 public class GlowMuleTest extends GlowChestedHorseTest<GlowMule> {
     public GlowMuleTest() {

@@ -36,8 +36,6 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     }
 
     static FireworkEffect toEffect(CompoundTag explosion) {
-        boolean flicker = false;
-        boolean trail = false;
         Type type;
         List<Color> colors = new ArrayList<>();
         List<Color> fadeColors = new ArrayList<>();
@@ -49,15 +47,14 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
 
         type = Type.values()[explosion.getByte("Type")];
 
-        flicker = explosion.getBoolDefaultFalse("Flicker");
-        trail = explosion.getBoolDefaultFalse("Trail");
+        boolean flicker = explosion.getBoolDefaultFalse("Flicker");
+        boolean trail = explosion.getBoolDefaultFalse("Trail");
 
-        if (explosion.isIntArray("FadeColors")) {
-            int[] fadeInts = explosion.getIntArray("FadeColors");
+        explosion.consumeIntArray(fadeInts -> {
             for (int fade : fadeInts) {
                 fadeColors.add(Color.fromRGB(fade));
             }
-        }
+        }, "FadeColors");
 
         return FireworkEffect.builder()
             .flicker(flicker)

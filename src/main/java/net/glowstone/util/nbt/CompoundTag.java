@@ -413,6 +413,19 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     }
 
     /**
+     * Applies the given function to an integer array subtag if it is present. Multiple strings can
+     * be passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String...)}, except
+     * that the last one must be an integer array rather than compound subtag.
+     *
+     * @param consumer the function to apply
+     * @param keys the key to look up, or multiple keys forming a subtag path
+     * @return true if the tag exists and was passed to the consumer; false otherwise
+     */
+    public boolean consumeIntArray(Consumer<int[]> consumer, String... keys) {
+        return consumeObject(consumer, IntArrayTag.class, keys);
+    }
+
+    /**
      * Applies the given function to a long subtag if it is present. Multiple strings can be
      * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String...)}, except that
      * the last one must be a long rather than compound subtag.

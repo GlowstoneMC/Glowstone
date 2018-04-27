@@ -1,6 +1,5 @@
 package net.glowstone.io.entity;
 
-import java.util.UUID;
 import net.glowstone.entity.passive.GlowFirework;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
