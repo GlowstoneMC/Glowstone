@@ -13,18 +13,11 @@ class EndermiteStore extends MonsterStore<GlowEndermite> {
     @Override
     public void load(GlowEndermite entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isInt("Lifetime")) {
-            entity.setTicksLived(compound.getInt("Lifetime"));
-        } else {
+        if (!compound.consumeInt(entity::setTicksLived, "Lifetime")) {
             entity.setTicksLived(1);
         }
 
-        if (compound.isByte("PlayerSpawned")) {
-            entity.setPlayerSpawned(compound.getBoolDefaultFalse("PlayerSpawned"));
-        } else {
-            entity.setPlayerSpawned(true);
-        }
-
+        entity.setPlayerSpawned(compound.getBoolDefaultTrue("PlayerSpawned"));
     }
 
     @Override

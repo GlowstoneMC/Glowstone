@@ -13,15 +13,8 @@ class ChickenStore extends AgeableStore<GlowChicken> {
     @Override
     public void load(GlowChicken entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte("isChickenJockey")) {
-            entity.setChickenJockey(compound.getBoolDefaultFalse("isChickenJockey"));
-        } else {
-            entity.setChickenJockey(false);
-        }
-
-        if (compound.isInt("EggLayTime")) {
-            entity.setEggLayTime(compound.getInt("EggLayTime"));
-        } else {
+        entity.setChickenJockey(compound.getBoolDefaultFalse("isChickenJockey"));
+        if (!compound.consumeInt(entity::setEggLayTime, "EggLayTime")) {
             entity.setEggLayTime(6000);
         }
 
