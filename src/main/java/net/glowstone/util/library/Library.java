@@ -1,20 +1,23 @@
 package net.glowstone.util.library;
 
+import com.google.common.collect.ComparisonChain;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import net.glowstone.util.library.LibraryManager.HashAlgorithm;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 
 /**
  * Represents a library that will be injected into the classpath at runtime.
  */
-public class Library {
+public class Library implements Comparable<Library> {
     private static final String ARTIFACT_ID_KEY = "artifact-id";
     private static final String CHECKSUM_KEY = "checksum";
     private static final String CHECKSUM_TYPE_KEY = "type";
     private static final String CHECKSUM_VALUE_KEY = "value";
+    private static final String EXCLUDE_DEPENDENCIES_KEY = "exclude-dependencies";
     private static final String GROUP_ID_KEY = "group-id";
     private static final String REPOSITORY_KEY = "repository";
     private static final String VERSION_KEY = "version";
@@ -41,8 +44,13 @@ public class Library {
             checksumValue = (String) checksum.get(CHECKSUM_VALUE_KEY);
         }
 
+        Boolean excludeDependencies = (Boolean) configMap.get(EXCLUDE_DEPENDENCIES_KEY);
+        if (excludeDependencies == null) {
+            excludeDependencies = Boolean.FALSE;
+        }
+
         return new Library(group, artifact, version, repository, checksumType,
-                checksumValue);
+                checksumValue, excludeDependencies);
     }
 
     /**
@@ -78,6 +86,13 @@ public class Library {
     private final String checksumValue;
 
     /**
+     * Excludes the dependency from any dependency checks. Use this if the library is locally
+     * hosted.
+     */
+    @Getter
+    private final boolean excludeDependencies;
+
+    /**
      * Creates a {@link Library} instance with the specified group ID, artifact ID, and version.
      *
      * @param groupId The group ID of the library, separated by periods.
@@ -85,7 +100,7 @@ public class Library {
      * @param version The version of the library.
      */
     public Library(String groupId, String artifactId, String version) {
-        this(groupId, artifactId, version, null, null, null);
+        this(groupId, artifactId, version, null, null, null, false);
     }
 
     /**
@@ -98,7 +113,7 @@ public class Library {
      * @param repository The URL of the library's repository.
      */
     public Library(String groupId, String artifactId, String version, String repository) {
-        this(groupId, artifactId, version, repository, null, null);
+        this(groupId, artifactId, version, repository, null, null, false);
     }
 
     /**
@@ -113,27 +128,29 @@ public class Library {
      */
     public Library(String groupId, String artifactId, String version, HashAlgorithm checksumType,
                    String checksumValue) {
-        this(groupId, artifactId, version, null, checksumType, checksumValue);
+        this(groupId, artifactId, version, null, checksumType, checksumValue, false);
     }
 
     /**
      * Creates a {@link Library} instance with the specified group ID, artifact ID, version,
      * repository, and checksum.
-     *
-     * @param groupId The group ID of the library, separated by periods.
+     *  @param groupId The group ID of the library, separated by periods.
      * @param artifactId The artifact ID of the library.
      * @param version The version of the library.
      * @param repository The URL of the library's repository.
      * @param checksumType The type of hash the checksum is using.
      * @param checksumValue The checksum to validate the downloaded library against.
+     * @param excludeDependencies Specifies that dependencies may be excluded.
      */
     public Library(String groupId, String artifactId, String version,
-                   String repository, HashAlgorithm checksumType, String checksumValue) {
+                   String repository, HashAlgorithm checksumType, String checksumValue,
+                   boolean excludeDependencies) {
         this.libraryKey = new LibraryKey(groupId, artifactId);
         this.version = version;
         this.repository = StringUtils.isBlank(repository) ? null : repository;
         this.checksumType = checksumType;
         this.checksumValue = checksumValue;
+        this.excludeDependencies = excludeDependencies;
     }
 
     /**
@@ -158,6 +175,10 @@ public class Library {
             checksumMap.put(CHECKSUM_TYPE_KEY, checksumType.getName());
             checksumMap.put(CHECKSUM_VALUE_KEY, checksumValue);
             configMap.put(CHECKSUM_KEY, checksumMap);
+        }
+
+        if (excludeDependencies) {
+            configMap.put(EXCLUDE_DEPENDENCIES_KEY, excludeDependencies);
         }
 
         return configMap;
@@ -201,5 +222,13 @@ public class Library {
     @Override
     public int hashCode() {
         return Objects.hash(libraryKey, version);
+    }
+
+    @Override
+    public int compareTo(Library o) {
+        return ComparisonChain.start()
+                .compare(libraryKey, o.libraryKey)
+                .compare(new ComparableVersion(version), new ComparableVersion(o.version))
+                .result();
     }
 }
