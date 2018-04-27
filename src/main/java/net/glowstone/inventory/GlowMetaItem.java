@@ -182,15 +182,10 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     void readNbt(CompoundTag tag) {
-        if (tag.isCompound("display")) {
-            CompoundTag display = tag.getCompound("display");
-            if (display.isString("Name")) {
-                setDisplayName(display.getString("Name"));
-            }
-            if (display.isList("Lore", TagType.STRING)) {
-                setLore(display.getList("Lore", TagType.STRING));
-            }
-        }
+        tag.consumeCompound(display -> {
+            display.consumeString(this::setDisplayName, "Name");
+            display.consumeStringList(this::setLore, "Lore");
+        }, "display");
 
         //TODO currently ignoring level restriction, is that right?
         Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
@@ -201,13 +196,8 @@ public class GlowMetaItem implements ItemMeta {
                 enchants.putAll(tagEnchants);
             }
         }
-
-        if (tag.isInt("HideFlags")) {
-            hideFlag = tag.getInt("HideFlags");
-        }
-        if (tag.isByte("Unbreakable")) {
-            unbreakable = tag.getBool("Unbreakable");
-        }
+        tag.consumeInt(flags -> hideFlag = flags, "HideFlags");
+        tag.consumeBoolean(u -> unbreakable = u, "Unbreakable");
     }
 
     @Override

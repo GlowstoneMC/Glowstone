@@ -16,7 +16,7 @@ public class HorseStore extends AbstractHorseStore<GlowHorse> {
     public void load(GlowHorse entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.isByte("EatingHaystack")) {
-            entity.setEatingHay(compound.getBool("EatingHaystack"));
+            entity.setEatingHay(compound.getBoolDefaultFalse("EatingHaystack"));
         }
         if (compound.isInt("Variant")) {
             entity.setStyle(Horse.Style.values()[compound.getInt("Variant") >>> 8]);

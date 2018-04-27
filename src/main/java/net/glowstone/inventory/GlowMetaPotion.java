@@ -55,8 +55,8 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
         int duration = tag.getInt("Duration");
         int amplifier = tag.getByte("Amplifier");
-        boolean ambient = tag.isByte("Ambient") && tag.getBool("Ambient");
-        boolean particles = !tag.isByte("ShowParticles") || tag.getBool("ShowParticles");
+        boolean ambient = tag.getBoolDefaultFalse("Ambient");
+        boolean particles = tag.getBoolDefaultTrue("ShowParticles");
 
         return new PotionEffect(type, duration, amplifier, ambient, particles);
     }

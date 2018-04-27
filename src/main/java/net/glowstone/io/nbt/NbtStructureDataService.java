@@ -48,22 +48,17 @@ public class NbtStructureDataService implements StructureDataService {
             File structureFile = new File(structureDir, store.getId() + ".dat");
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
-                    CompoundTag data = new CompoundTag();
-                    data = in.readCompound();
-                    if (data.isCompound("data")) {
-                        data = data.getCompound("data");
-                        if (data.isCompound("Features")) {
-                            CompoundTag features = data.getCompound("Features");
-                            features.getValue().keySet().stream().filter(features::isCompound)
+                    CompoundTag data = in.readCompound();
+                    if (!data.consumeCompound(
+                        features -> features.getValue().keySet().stream()
+                                .filter(features::isCompound)
                                 .forEach(key -> {
                                     GlowStructure structure = StructureStorage
                                         .loadStructure(world, features.getCompound(key));
                                     structures.put(GlowChunk.Key
                                         .of(structure.getChunkX(), structure.getChunkZ())
                                         .hashCode(), structure);
-                                });
-                        }
-                    } else {
+                                }), "data", "Features")) {
                         server.getLogger().log(Level.SEVERE, "No data tag in " + structureFile);
                     }
                 } catch (IOException e) {
@@ -91,11 +86,9 @@ public class NbtStructureDataService implements StructureDataService {
                         new FileInputStream(structureFile))) {
                         data = new CompoundTag();
                         data = in.readCompound();
-                        if (data.isCompound("data")) {
-                            data = data.getCompound("data");
-                            if (data.isCompound("Features")) {
-                                features = data.getCompound("Features");
-                            }
+                        CompoundTag maybeFeatures = data.tryGetCompound("data", "Features");
+                        if (maybeFeatures != null) {
+                            features = maybeFeatures;
                         }
                     } catch (IOException e) {
                         server.getLogger().log(Level.SEVERE,

@@ -50,22 +50,14 @@ public final class PlayerRecipeMonitor {
      * @param playerData an NBT tag containing a compound subtag named recipeBook
      */
     public void read(CompoundTag playerData) {
-        if (!playerData.isCompound("recipeBook")) {
+        CompoundTag recipeBook = playerData.tryGetCompound("recipeBook");
+        if (recipeBook == null) {
             return;
         }
-        CompoundTag recipeBook = playerData.getCompound("recipeBook");
-        if (recipeBook.isByte("isFilteringCraftable")) {
-            setFilterCraftable(recipeBook.getBool("isFilteringCraftable"));
-        }
-        if (recipeBook.isByte("isGuiOpen")) {
-            setBookOpen(recipeBook.getBool("isGuiOpen"));
-        }
-        if (recipeBook.isList("recipes", TagType.STRING)) {
-            recipes.addAll(recipeBook.getList("recipes", TagType.STRING));
-        }
-        if (recipeBook.isList("toBeDisplayed", TagType.STRING)) {
-            toBeDisplayed.addAll(recipeBook.getList("toBeDisplayed", TagType.STRING));
-        }
+        recipeBook.consumeBoolean(this::setFilterCraftable, "isFilteringCraftable");
+        recipeBook.consumeBoolean(this::setBookOpen, "isGuiOpen");
+        recipeBook.consumeStringList(recipes::addAll, "recipes");
+        recipeBook.consumeStringList(toBeDisplayed::addAll, "toBeDisplayed");
     }
 
     /**

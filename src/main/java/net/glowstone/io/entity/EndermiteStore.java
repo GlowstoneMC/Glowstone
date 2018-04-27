@@ -20,7 +20,7 @@ class EndermiteStore extends MonsterStore<GlowEndermite> {
         }
 
         if (compound.isByte("PlayerSpawned")) {
-            entity.setPlayerSpawned(compound.getBool("PlayerSpawned"));
+            entity.setPlayerSpawned(compound.getBoolDefaultFalse("PlayerSpawned"));
         } else {
             entity.setPlayerSpawned(true);
         }

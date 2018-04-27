@@ -18,7 +18,7 @@ class WolfStore extends TameableStore<GlowWolf> {
             entity.setCollarColor(DyeColor.getByDyeData(compound.getByte("CollarColor")));
         }
         if (compound.isByte("Angry")) {
-            entity.setAngry(compound.getBool("Angry"));
+            entity.setAngry(compound.getBoolDefaultFalse("Angry"));
         }
     }
 

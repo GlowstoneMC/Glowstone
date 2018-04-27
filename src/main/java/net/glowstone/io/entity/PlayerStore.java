@@ -38,68 +38,36 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         super.load(entity, tag);
 
         // experience
-        if (tag.isInt("XpLevel")) {
-            entity.setLevel(tag.getInt("XpLevel"));
-        }
-        if (tag.isFloat("XpP")) {
-            entity.setExp(tag.getFloat("XpP"));
-        }
-        if (tag.isInt("XpTotal")) {
-            entity.setTotalExperience(tag.getInt("XpTotal"));
-        }
+        tag.consumeInt(entity::setLevel, "XpLevel");
+        tag.consumeFloat(entity::setExp, "XpP");
+        tag.consumeInt(entity::setTotalExperience, "XpTotal");
 
         // food
-        if (tag.isInt("foodLevel")) {
-            entity.setFoodLevel(tag.getInt("foodLevel"));
-        }
-        if (tag.isFloat("foodSaturationLevel")) {
-            entity.setSaturation(tag.getFloat("foodSaturationLevel"));
-        }
-        if (tag.isFloat("foodExhaustionLevel")) {
-            entity.setExhaustion(tag.getFloat("foodExhaustionLevel"));
-        }
+        tag.consumeInt(entity::setFoodLevel, "foodLevel");
+        tag.consumeFloat(entity::setSaturation, "foodSaturationLevel");
+        tag.consumeFloat(entity::setExhaustion, "foodExhaustionLevel");
 
         // spawn location
         if (tag.isInt("SpawnX") && tag.isInt("SpawnY") && tag.isInt("SpawnZ")) {
             int x = tag.getInt("SpawnX");
             int y = tag.getInt("SpawnY");
             int z = tag.getInt("SpawnZ");
-            boolean forced = false;
-            if (tag.isByte("SpawnForced")) {
-                forced = tag.getBool("SpawnForced");
-            }
-            entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z), forced);
+            entity.setBedSpawnLocation(new Location(entity.getWorld(), x, y, z),
+                    tag.getBoolDefaultFalse("SpawnForced"));
         }
 
         // abilities
-        if (tag.isCompound("abilities")) {
-            CompoundTag abilities = tag.getCompound("abilities");
-            if (abilities.isFloat("walkSpeed")) {
-                entity.setWalkSpeed(abilities.getFloat("walkSpeed") * 2f);
-            }
-            if (abilities.isFloat("flySpeed")) {
-                entity.setFlySpeed(abilities.getFloat("flySpeed") * 2f);
-            }
-            if (abilities.isByte("mayfly")) {
-                entity.setAllowFlight(abilities.getBool("mayfly"));
-            }
-            if (abilities.isByte("flying")) {
-                entity.setFlying(abilities.getBool("flying"));
-            }
-        }
-
+        tag.consumeCompound(abilities -> {
+            abilities.consumeFloat(speed -> entity.setWalkSpeed(speed * 2f), "walkSpeed");
+            abilities.consumeFloat(speed -> entity.setFlySpeed(speed * 2f), "flySpeed");
+            abilities.consumeBoolean(entity::setAllowFlight, "mayfly");
+            abilities.consumeBoolean(entity::setFlying, "flying");
+        }, "abilities");
         // shoulders (1.12)
-        if (tag.isCompound("ShoulderEntityLeft")) {
-            entity.setLeftShoulderTag(tag.getCompound("ShoulderEntityLeft"));
-        }
-        if (tag.isCompound("ShoulderEntityRight")) {
-            entity.setRightShoulderTag(tag.getCompound("ShoulderEntityRight"));
-        }
-
+        tag.consumeCompound(entity::setLeftShoulderTag, "ShoulderEntityLeft");
+        tag.consumeCompound(entity::setRightShoulderTag, "ShoulderEntityRight");
         // seen credits
-        if (tag.containsKey("seenCredits")) {
-            entity.setSeenCredits(tag.getBool("seenCredits"));
-        }
+        tag.consumeBoolean(entity::setSeenCredits, "seenCredits");
 
         // recipe book
         entity.getRecipeMonitor().read(tag);

@@ -87,7 +87,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // initialize the chunk
         chunk.initializeSections(sections);
-        chunk.setPopulated(levelTag.getBool("TerrainPopulated"));
+        chunk.setPopulated(levelTag.getBoolDefaultFalse("TerrainPopulated"));
 
         // read biomes
         if (levelTag.isByteArray("Biomes")) {
@@ -101,13 +101,11 @@ public final class AnvilChunkIoService implements ChunkIoService {
         }
 
         // read slime chunk
-        if (levelTag.isByte("isSlimeChunk")) {
-            chunk.setIsSlimeChunk(levelTag.getByte("isSlimeChunk"));
-        }
+        levelTag.consumeByte(chunk::setIsSlimeChunk, "isSlimeChunk");
 
         // read entities
-        if (levelTag.isList("Entities", TagType.COMPOUND)) {
-            for (CompoundTag entityTag : levelTag.getCompoundList("Entities")) {
+        levelTag.consumeCompoundList(entities -> {
+            for (CompoundTag entityTag : entities) {
                 try {
                     // note that creating the entity is sufficient to add it to the world
                     EntityStorage.loadEntity(chunk.getWorld(), entityTag);
@@ -122,7 +120,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     }
                 }
             }
-        }
+        }, "Entities");
 
         // read block entities
         List<CompoundTag> storedBlockEntities = levelTag.getCompoundList("TileEntities");

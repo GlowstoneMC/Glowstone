@@ -61,7 +61,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             entity.setCustomName(compound.getString("CustomName"));
         }
         if (compound.isByte("CustomNameVisible")) {
-            entity.setCustomNameVisible(compound.getBool("CustomNameVisible"));
+            entity.setCustomNameVisible(compound.getBoolDefaultFalse("CustomNameVisible"));
         }
 
         if (compound.isFloat("HealF")) {
@@ -73,7 +73,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             entity.setNoDamageTicks(compound.getShort("AttackTime"));
         }
         if (compound.isByte("FallFlying")) {
-            entity.setFallFlying(compound.getBool("FallFlying"));
+            entity.setFallFlying(compound.getBoolDefaultFalse("FallFlying"));
         }
 
         if (compound.isList("ActiveEffects", TagType.COMPOUND)) {
@@ -95,7 +95,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                     amplifier = compound.getByte("Amplifier");
                 }
                 if (compound.isByte("Ambient")) {
-                    ambient = compound.getBool("Ambient");
+                    ambient = compound.getBoolDefaultFalse("Ambient");
                 }
                 // bool "ShowParticles"
 
@@ -107,12 +107,8 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         if (equip != null) {
             loadEquipment(entity, equip, compound);
         }
-        if (compound.isByte("CanPickUpLoot")) {
-            entity.setCanPickupItems(compound.getBool("CanPickUpLoot"));
-        }
-
-        if (compound.isList("Attributes", TagType.COMPOUND)) {
-            List<CompoundTag> attributes = compound.getCompoundList("Attributes");
+        compound.consumeBoolean(entity::setCanPickupItems, "CanPickUpLoot");
+        compound.consumeCompoundList(attributes -> {
             AttributeManager am = entity.getAttributeManager();
 
             for (CompoundTag tag : attributes) {
@@ -142,20 +138,20 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
 
                 am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
             }
-        }
-
-        if (compound.isByte("Leashed") && compound.getBool("Leashed") && !compound
-                .isCompound("Leash")) {
-            // We know that there was something leashed, but not what entity it was
-            // This can happen, when for example Minecart got leashed
-            // We still have to make sure that we drop a Leash Item
-            entity.setLeashHolderUniqueId(UUID.randomUUID());
-        } else if (compound.isCompound("Leash")) {
-            CompoundTag leash = compound.getCompound("Leash");
-            if (leash.isLong("UUIDMost") && leash.isLong("UUIDLeast")) {
-                UUID uuid = new UUID(leash.getLong("UUIDMost"), leash.getLong("UUIDLeast"));
-                entity.setLeashHolderUniqueId(uuid);
-            } else if (leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
+        }, "Attributes");
+        CompoundTag leash = compound.tryGetCompound("Leash");
+        if (leash == null) {
+            compound.consumeBoolean(leashSet -> {
+                if (leashSet) {
+                    // We know that there was something leashed, but not what entity it was
+                    // This can happen, when for example Minecart got leashed
+                    // We still have to make sure that we drop a Leash Item
+                    entity.setLeashHolderUniqueId(UUID.randomUUID());
+                }
+            }, "Leashed");
+        } else {
+            if (!leash.consumeUuid(entity::setLeashHolderUniqueId, "UUIDMost", "UUIDLeast")
+                    && leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
                 int y = leash.getInt("Y");
                 int z = leash.getInt("Z");

@@ -16,7 +16,7 @@ public class AbstractHorseStore<T extends GlowAbstractHorse> extends TameableSto
     @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setTamed(compound.getBool("Tame"));
+        entity.setTamed(compound.getBoolDefaultFalse("Tame"));
     }
 
     @Override

@@ -14,7 +14,7 @@ class IronGolemStore extends MonsterStore<GlowIronGolem> {
     public void load(GlowIronGolem entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.isByte("PlayerCreated")) {
-            entity.setPlayerCreated(compound.getBool("PlayerCreated"));
+            entity.setPlayerCreated(compound.getBoolDefaultFalse("PlayerCreated"));
         } else {
             entity.setPlayerCreated(true);
         }

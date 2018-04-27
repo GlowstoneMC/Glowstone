@@ -5,6 +5,7 @@ import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowTippedArrow;
 import net.glowstone.inventory.GlowMetaPotion;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.TippedArrow;
@@ -42,12 +43,11 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
             TippedArrow tippedArrow = (TippedArrow) entity;
             handleIntIfPresent(tag, COLOR, rgb -> tippedArrow.setColor(Color.fromRGB(rgb)));
             // TODO: POTION
-            if (tag.isCompoundList(CUSTOM_POTION_EFFECTS)) {
-                tag.getCompoundList(CUSTOM_POTION_EFFECTS)
-                        .stream()
-                        .map(GlowMetaPotion::fromNbt)
-                        .forEach(effect -> tippedArrow.addCustomEffect(effect, false));
-            }
+            tag.consumeCompoundList(list -> list
+                    .stream()
+                    .map(GlowMetaPotion::fromNbt)
+                    .forEach(effect -> tippedArrow.addCustomEffect(effect, false)),
+                    CUSTOM_POTION_EFFECTS);
         }
     }
 

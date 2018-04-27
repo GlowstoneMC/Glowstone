@@ -117,19 +117,19 @@ public abstract class EntityStore<T extends GlowEntity> {
             entity.setFireTicks(tag.getShort("Fire"));
         }
         if (tag.isByte("OnGround")) {
-            entity.setOnGround(tag.getBool("OnGround"));
+            entity.setOnGround(tag.getBoolDefaultFalse("OnGround"));
         }
         if (tag.isByte("NoGravity")) {
-            entity.setGravity(!tag.getBool("NoGravity"));
+            entity.setGravity(!tag.getBoolDefaultFalse("NoGravity"));
         }
         if (tag.isByte("Silent")) {
-            entity.setSilent(tag.getBool("Silent"));
+            entity.setSilent(tag.getBoolDefaultFalse("Silent"));
         }
         if (tag.isByte("Glowing")) {
-            entity.setGlowing(tag.getBool("Glowing"));
+            entity.setGlowing(tag.getBoolDefaultFalse("Glowing"));
         }
         if (tag.isByte("Invulnerable")) {
-            entity.setInvulnerable(tag.getBool("Invulnerable"));
+            entity.setInvulnerable(tag.getBoolDefaultFalse("Invulnerable"));
         }
         if (tag.isList("Tags", TagType.STRING)) {
             List<String> list = tag.getList("Tags", TagType.STRING);

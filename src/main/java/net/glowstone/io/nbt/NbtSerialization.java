@@ -48,9 +48,11 @@ public final class NbtSerialization {
             return null;
         }
         ItemStack stack = new ItemStack(material, count, damage);
-        if (tag.isCompound("tag")) {
-            stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag.getCompound("tag")));
-        }
+        // This is slightly different than what tag.consumeItem would do, since we specify the
+        // material separately.
+        tag.consumeCompound(
+            subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material, subtag)),
+                "tag");
         return stack;
     }
 

@@ -14,7 +14,7 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
     public void load(GlowCreeper entity, CompoundTag compound) {
         super.load(entity, compound);
         if (compound.containsKey("powered")) {
-            entity.setPowered(compound.getBool("powered"));
+            entity.setPowered(compound.getBoolDefaultFalse("powered"));
         } else {
             entity.setPowered(false);
         }
@@ -32,7 +32,7 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
         }
 
         if (compound.containsKey("ignited")) {
-            entity.setIgnited(compound.getBool("ignited"));
+            entity.setIgnited(compound.getBoolDefaultFalse("ignited"));
         } else {
             entity.setIgnited(false);
         }

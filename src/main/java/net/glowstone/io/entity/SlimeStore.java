@@ -22,7 +22,7 @@ class SlimeStore<T extends GlowSlime> extends MonsterStore<T> {
         }
 
         if (tag.isByte("wasOnGround")) {
-            entity.setOnGround(tag.getBool("wasOnGround"));
+            entity.setOnGround(tag.getBoolDefaultFalse("wasOnGround"));
         } else {
             entity.setOnGround(false);
         }

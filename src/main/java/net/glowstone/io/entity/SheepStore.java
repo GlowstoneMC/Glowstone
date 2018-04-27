@@ -30,7 +30,7 @@ class SheepStore extends AgeableStore<GlowSheep> {
         }
 
         if (compound.isByte(SHEARED_KEY)) {
-            entity.setSheared(compound.getBool(SHEARED_KEY));
+            entity.setSheared(compound.getBoolDefaultFalse(SHEARED_KEY));
         } else {
             entity.setSheared(false);
         }

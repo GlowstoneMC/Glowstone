@@ -23,31 +23,21 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void load(GlowArmorStand entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.containsKey("Marker")) {
-            entity.setMarker(tag.getBool("Marker"));
-        }
-        if (tag.containsKey("Invisible")) {
-            entity.setVisible(!tag.getBool("Invisible"));
-        }
-        if (tag.containsKey("NoBasePlate")) {
-            entity.setBasePlate(!tag.getBool("NoBasePlate"));
-        }
-        if (tag.containsKey("NoGravity")) {
-            entity.setGravity(!tag.getBool("NoGravity"));
-        }
-        if (tag.containsKey("ShowArms")) {
-            entity.setArms(tag.getBool("ShowArms"));
-        }
-        if (tag.containsKey("Small")) {
-            entity.setSmall(tag.getBool("Small"));
-        }
-        if (tag.isCompound("Pose")) {
-            entity.setBodyPose(readSafeAngle(tag.getCompound("Pose"), "Body"));
-            entity.setLeftArmPose(readSafeAngle(tag.getCompound("Pose"), "LeftArm"));
-            entity.setRightArmPose(readSafeAngle(tag.getCompound("Pose"), "RightArm"));
-            entity.setLeftLegPose(readSafeAngle(tag.getCompound("Pose"), "LeftLeg"));
-            entity.setRightLegPose(readSafeAngle(tag.getCompound("Pose"), "RightLeg"));
-            entity.setHeadPose(readSafeAngle(tag.getCompound("Pose"), "Head"));
+        tag.consumeBoolean(entity::setMarker, "Marker");
+        tag.consumeBooleanNegated(entity::setVisible, "Invisible");
+        tag.consumeBoolean(entity::setMarker, "Marker");
+        tag.consumeBooleanNegated(entity::setBasePlate, "NoBasePlate");
+        tag.consumeBooleanNegated(entity::setGravity, "NoGravity");
+        tag.consumeBoolean(entity::setArms, "ShowArms");
+        tag.consumeBoolean(entity::setSmall, "Small");
+        CompoundTag pose = tag.tryGetCompound("Pose");
+        if (pose != null) {
+            entity.setBodyPose(readSafeAngle(pose, "Body"));
+            entity.setLeftArmPose(readSafeAngle(pose, "LeftArm"));
+            entity.setRightArmPose(readSafeAngle(pose, "RightArm"));
+            entity.setLeftLegPose(readSafeAngle(pose, "LeftLeg"));
+            entity.setRightLegPose(readSafeAngle(pose, "RightLeg"));
+            entity.setHeadPose(readSafeAngle(pose, "Head"));
         }
     }
 

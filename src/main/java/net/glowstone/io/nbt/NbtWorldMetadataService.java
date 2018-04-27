@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.glowstone.GlowWorld;
+import net.glowstone.GlowWorldBorder;
 import net.glowstone.ServerProvider;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
@@ -66,8 +67,9 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         if (levelFile.exists()) {
             try (NbtInputStream in = new NbtInputStream(new FileInputStream(levelFile))) {
                 level = in.readCompound();
-                if (level.isCompound("Data")) {
-                    level = level.getCompound("Data");
+                CompoundTag data = level.tryGetCompound("Data");
+                if (data != null) {
+                    level = data;
                 } else {
                     server.getLogger().warning(
                         "Loading world \"" + world.getName() + "\": reading from root, not Data");
@@ -78,39 +80,33 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         }
 
         // seed
-        long seed = 0L;
-        if (level.isLong("RandomSeed")) {
-            seed = level.getLong("RandomSeed");
+        final long[] seed = {0L};
+        if (level.consumeLong(x -> seed[0] = x, "RandomSeed")) {
             level.remove("RandomSeed");
         }
 
         // time of day and weather status
-        if (level.isByte("thundering")) {
-            world.setThundering(level.getBool("thundering"));
+        if (level.consumeBoolean(world::setThundering, "thundering")) {
             level.remove("thundering");
         }
-        if (level.isByte("raining")) {
-            world.setStorm(level.getBool("raining"));
+        if (level.consumeBoolean(world::setStorm, "raining")) {
             level.remove("raining");
         }
-        if (level.isInt("thunderTime")) {
-            world.setThunderDuration(level.getInt("thunderTime"));
+        if (level.consumeInt(world::setThunderDuration, "thunderTime")) {
             level.remove("thunderTime");
         }
-        if (level.isInt("rainTime")) {
-            world.setWeatherDuration(level.getInt("rainTime"));
+        if (level.consumeInt(world::setWeatherDuration, "rainTime")) {
             level.remove("rainTime");
         }
-        if (level.isLong("Time")) {
-            world.setFullTime(level.getLong("Time"));
+        if (level.consumeLong(world::setFullTime, "Time")) {
             level.remove("Time");
         }
-        if (level.isLong("DayTime")) {
-            world.setTime(level.getLong("DayTime"));
+        if (level.consumeLong(world::setTime, "DatTime")) {
             level.remove("DayTime");
         }
-        if (level.isString("generatorName")) {
-            world.setWorldType(WorldType.getByName(level.getString("generatorName")));
+        if (level.consumeString(
+            generatorName -> world.setWorldType(WorldType.getByName(generatorName)),
+                "generatorName")) {
             level.remove("generatorName");
         }
 
@@ -124,48 +120,44 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         }
 
         // game rules
-        if (level.isCompound("GameRules")) {
-            CompoundTag gameRules = level.getCompound("GameRules");
-            gameRules.getValue().keySet().stream().filter(gameRules::isString)
-                .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)));
+        if (level.consumeCompound(gameRules ->
+                gameRules.getValue().keySet().stream().filter(gameRules::isString)
+                    .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key))),
+                "GameRules")) {
             level.remove("GameRules");
         }
 
         // world border
         Location borderCenter = new Location(world, 0, 0, 0);
-        if (level.isDouble("BorderCenterX")) {
-            borderCenter.setX(level.getDouble("BorderCenterX"));
+        if (level.consumeDouble(borderCenter::setX, "BorderCenterX")) {
             level.remove("BorderCenterX");
         }
-        if (level.isDouble("BorderCenterZ")) {
-            borderCenter.setZ(level.getDouble("BorderCenterZ"));
+        if (level.consumeDouble(borderCenter::setZ, "BorderCenterZ")) {
             level.remove("BorderCenterZ");
         }
-        world.getWorldBorder().setCenter(borderCenter);
-        if (level.isDouble("BorderSize")) {
-            world.getWorldBorder().setSize(level.getDouble("BorderSize"));
+        GlowWorldBorder worldBorder = world.getWorldBorder();
+        worldBorder.setCenter(borderCenter);
+        if (level.consumeDouble(worldBorder::setSize, "BorderSize")) {
             level.remove("BorderSize");
         }
         if (level.isDouble("BorderSizeLerpTarget") && level.isLong("BorderSizeLerpTime")) {
-            world.getWorldBorder().setSize(level.getDouble("BorderSizeLerpTarget"),
+            worldBorder.setSize(level.getDouble("BorderSizeLerpTarget"),
                 level.getLong("BorderSizeLerpTime"));
             level.remove("BorderSizeLerpTarget");
             level.remove("BorderSizeLerpTime");
         }
-        if (level.isDouble("BorderSafeZone")) {
-            world.getWorldBorder().setDamageBuffer(level.getDouble("BorderSafeZone"));
+        if (level.consumeDouble(worldBorder::setDamageBuffer, "BorderSafeZone")) {
             level.remove("BorderSafeZone");
         }
-        if (level.isDouble("BorderWarningTime")) {
-            world.getWorldBorder().setWarningTime((int) level.getDouble("BorderWarningTime"));
+        if (level.consumeDouble(time -> worldBorder.setWarningTime((int) time),
+                "BorderWarningTime")) {
             level.remove("BorderWarningTime");
         }
-        if (level.isDouble("BorderWarningBlocks")) {
-            world.getWorldBorder().setWarningDistance((int) level.getDouble("BorderWarningBlocks"));
+        if (level.consumeDouble(distance -> worldBorder.setWarningDistance((int) distance),
+                "BorderWarningBlocks")) {
             level.remove("BorderWarningBlocks");
         }
-        if (level.isDouble("BorderDamagePerBlock")) {
-            world.getWorldBorder().setDamageAmount(level.getDouble("BorderDamagePerBlock"));
+        if (level.consumeDouble(worldBorder::setDamageAmount, "BorderDamagePerBlock")) {
             level.remove("BorderDamagePerBlock");
         }
 
@@ -179,7 +171,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         // save unknown tags for later
         unknownTags = level;
 
-        return new WorldFinalValues(seed, uid);
+        return new WorldFinalValues(seed[0], uid);
     }
 
     private void handleWorldException(String file, IOException e) {

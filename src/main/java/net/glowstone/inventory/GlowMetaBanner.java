@@ -91,16 +91,12 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isCompound("BlockEntityTag")) {
-            CompoundTag blockEntityTag = tag.getCompound("BlockEntityTag");
-            if (blockEntityTag.isList("Patterns", TagType.COMPOUND)) {
-                List<CompoundTag> patterns = blockEntityTag.getCompoundList("Patterns");
-                this.patterns = BlockBanner.fromNbt(patterns);
-            }
-            if (blockEntityTag.isInt("Base")) {
-                this.baseColor = DyeColor.getByWoolData((byte) blockEntityTag.getInt("Base"));
-            }
-        }
+        tag.consumeCompound(blockEntityTag -> {
+            blockEntityTag.consumeCompoundList(
+                patterns -> this.patterns = BlockBanner.fromNbt(patterns), "Patterns");
+            blockEntityTag.consumeInt(
+                colorInt -> this.baseColor = DyeColor.getByWoolData((byte) colorInt), "Base");
+        }, "BlockEntityTag");
     }
 
     @Override

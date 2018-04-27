@@ -23,14 +23,8 @@ class ItemFrameStore extends HangingStore<GlowItemFrame> {
     @Override
     public void load(GlowItemFrame entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isCompound("Item")) {
-            entity.setItem(NbtSerialization.readItem(tag.getCompound("Item")));
-        }
-
-        if (tag.isInt("Rotation")) {
-            entity.setRotation(Rotation.values()[tag.getInt("Rotation")]);
-        }
+        tag.consumeItem(entity::setItem, "Item");
+        tag.consumeInt(rotation -> entity.setRotation(Rotation.values()[rotation]), "Rotation");
     }
 
     @Override

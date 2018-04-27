@@ -72,13 +72,7 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-
-        if (tag.isCompound("display")) {
-            CompoundTag display = tag.getCompound("display");
-            if (display.isInt("color")) {
-                color = Color.fromRGB(display.getInt("color"));
-            }
-        }
+        tag.consumeInt(rgb -> color = Color.fromRGB(rgb), "display", "color");
     }
 
     @Override
