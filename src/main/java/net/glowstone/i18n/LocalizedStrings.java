@@ -193,6 +193,16 @@ public interface LocalizedStrings {
         }
 
         interface Warn {
+            interface Entity {
+                LoggableLocalizedString LOADING_ERROR = new LoggableLocalizedStringImpl(
+                        "console.warn.entity.loading-error", Level.WARNING
+                );
+
+                LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
+                        "console.warn.entity.unknown", Level.WARNING
+                );
+            }
+
             interface Icon {
                 interface LoadFailed {
                     LoggableLocalizedString IMPORT = new LoggableLocalizedStringImpl(
@@ -295,6 +305,13 @@ public interface LocalizedStrings {
                 LocalizedString UNKNOWN_COMMAND =
                     new LocalizedStringImpl("glowstone.command.error.unknown-command");
             }
+        }
+
+        interface Entity {
+            LocalizedString UNKNOWN_TYPE_WITH_ID =
+                    new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
+            LocalizedString UNKNOWN_TYPE_NO_ID =
+                    new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
         }
     }
 }
