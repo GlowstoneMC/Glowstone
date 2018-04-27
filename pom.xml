@@ -13,7 +13,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <api.version>1.12.2-R3.0-SNAPSHOT</api.version>
+    <api.version>1.12.2-R4.0-SNAPSHOT</api.version>
     <minecraft.version>1.12.2</minecraft.version>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -83,7 +83,7 @@
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.2.3-SNAPSHOT</version>
+      <version>1.2.4-SNAPSHOT</version>
     </dependency>
     <!-- Kotlin -->
     <dependency>
