@@ -37,15 +37,15 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
     @Override
     public void load(GlowAreaEffectCloud entity, CompoundTag tag) {
         super.load(entity, tag);
-        handleIntIfPresent(tag, COLOR, rgb -> entity.setColor(Color.fromRGB(rgb)));
-        handleIntIfPresent(tag, DURATION, entity::setDuration);
-        handleIntIfPresent(tag, REAPPLICATION_DELAY, entity::setReapplicationDelay);
-        handleIntIfPresent(tag, WAIT_TIME, entity::setWaitTime);
+        tag.consumeInt(rgb -> entity.setColor(Color.fromRGB(rgb)), COLOR);
+        tag.consumeInt(entity::setDuration, DURATION);
+        tag.consumeInt(entity::setReapplicationDelay, REAPPLICATION_DELAY);
+        tag.consumeInt(entity::setWaitTime, WAIT_TIME);
         // TODO: OWNER_UUID_LEAST, OWNER_UUID_MOST
-        handleIntIfPresent(tag, DURATION_ON_USE, entity::setDurationOnUse);
-        handleFloatIfPresent(tag, RADIUS, entity::setRadius);
-        handleFloatIfPresent(tag, RADIUS_ON_USE, entity::setRadiusOnUse);
-        handleFloatIfPresent(tag, RADIUS_PER_TICK, entity::setRadiusPerTick);
+        tag.consumeInt(entity::setDurationOnUse, DURATION_ON_USE);
+        tag.consumeFloat(entity::setRadius, RADIUS);
+        tag.consumeFloat(entity::setRadiusOnUse, RADIUS_ON_USE);
+        tag.consumeFloat(entity::setRadiusPerTick, RADIUS_PER_TICK);
         if (tag.isString(PARTICLE)) {
             final String particle = tag.getString(PARTICLE);
 
