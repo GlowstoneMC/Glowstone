@@ -3,8 +3,6 @@ package net.glowstone.io.entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.logging.Level;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -64,41 +62,6 @@ public abstract class EntityStore<T extends GlowEntity> {
     // - int "PortalCooldown"
 
     /**
-     * Invokes the given method with the value of an int subtag, if that subtag is present.
-     *
-     * @param tag the parent tag
-     * @param key the subtag key
-     * @param consumer the method to be invoked with the int value if one is present
-     */
-    protected static void handleIntIfPresent(CompoundTag tag, String key, IntConsumer consumer) {
-        if (tag.isInt(key)) {
-            consumer.accept(tag.getInt(key));
-        }
-    }
-
-    /**
-     * {@link Consumer}&lt;Float&gt; without the boxing.
-     */
-    @FunctionalInterface
-    protected interface FloatConsumer {
-        void accept(float value);
-    }
-
-    /**
-     * Invokes the given method with the value of an int subtag, if that subtag is present.
-     *
-     * @param tag the parent tag
-     * @param key the subtag key
-     * @param consumer the method to be invoked with the int value if one is present
-     */
-    protected static void handleFloatIfPresent(
-            CompoundTag tag, String key, FloatConsumer consumer) {
-        if (tag.isFloat(key)) {
-            consumer.accept(tag.getFloat(key));
-        }
-    }
-
-    /**
      * Load data into an existing entity of the appropriate type from the given compound tag.
      *
      * @param entity The target entity.
@@ -112,31 +75,20 @@ public abstract class EntityStore<T extends GlowEntity> {
             entity
                 .setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
         }
-        handleFloatIfPresent(tag, "FallDistance", entity::setFallDistance);
+        tag.consumeFloat(entity::setFallDistance, "FallDistance");
         if (tag.isShort("Fire")) {
             entity.setFireTicks(tag.getShort("Fire"));
         }
-        if (tag.isByte("OnGround")) {
-            entity.setOnGround(tag.getBoolDefaultFalse("OnGround"));
-        }
-        if (tag.isByte("NoGravity")) {
-            entity.setGravity(!tag.getBoolDefaultFalse("NoGravity"));
-        }
-        if (tag.isByte("Silent")) {
-            entity.setSilent(tag.getBoolDefaultFalse("Silent"));
-        }
-        if (tag.isByte("Glowing")) {
-            entity.setGlowing(tag.getBoolDefaultFalse("Glowing"));
-        }
-        if (tag.isByte("Invulnerable")) {
-            entity.setInvulnerable(tag.getBoolDefaultFalse("Invulnerable"));
-        }
-        if (tag.isList("Tags", TagType.STRING)) {
-            List<String> list = tag.getList("Tags", TagType.STRING);
+        tag.consumeBoolean(entity::setOnGround, "OnGround");
+        tag.consumeBooleanNegated(entity::setGravity, "NoGravity");
+        tag.consumeBoolean(entity::setSilent, "Silent");
+        tag.consumeBoolean(entity::setGlowing, "Glowing");
+        tag.consumeBoolean(entity::setInvulnerable, "Invulnerable");
+        tag.consumeStringList(list -> {
             entity.getCustomTags().clear();
             entity.getCustomTags().addAll(list);
-        }
-        handleIntIfPresent(tag, "PortalCooldown", entity::setPortalCooldown);
+        }, "Tags");
+        tag.consumeInt(entity::setPortalCooldown, "PortalCooldown");
 
         if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
             UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
