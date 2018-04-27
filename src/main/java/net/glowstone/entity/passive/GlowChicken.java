@@ -1,7 +1,6 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
