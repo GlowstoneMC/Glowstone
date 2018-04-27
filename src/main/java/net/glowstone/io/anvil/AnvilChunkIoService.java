@@ -3,7 +3,6 @@ package net.glowstone.io.anvil;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
