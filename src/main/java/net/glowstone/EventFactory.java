@@ -2,6 +2,7 @@ package net.glowstone;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -72,13 +74,11 @@ public class EventFactory {
             try {
                 return task.get();
             } catch (InterruptedException e) {
-                GlowServer.logger.log(Level.WARNING,
-                        "Interrupted while handling " + event.getClass().getSimpleName());
+                LocalizedStrings.Console.Warn.Event.INTERRUPTED.log(e,
+                        event.getClass().getSimpleName());
                 return event;
             } catch (CancellationException e) {
-                GlowServer.logger.log(Level.WARNING,
-                        "Not handling event " + event.getClass().getSimpleName()
-                                + " due to shutdown");
+                LocalizedStrings.Console.Warn.Event.SHUTDOWN.log(event.getClass().getSimpleName());
                 return event;
             } catch (ExecutionException e) {
                 throw new RuntimeException(e); // No checked exceptions declared for callEvent

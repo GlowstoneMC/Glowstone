@@ -76,12 +76,12 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     @SuppressWarnings("UnusedDeclaration")
     public static OfflinePlayer deserialize(Map<String, Object> val) {
         Server server = ServerProvider.getServer();
-        if (val.get("name") != null) {
+        if (val.get("name") != null) { // NON-NLS
             // use name
-            return server.getOfflinePlayer(val.get("name").toString());
+            return server.getOfflinePlayer(val.get("name").toString()); // NON-NLS
         } else {
             // use UUID
-            return server.getOfflinePlayer(UUID.fromString(val.get("UUID").toString()));
+            return server.getOfflinePlayer(UUID.fromString(val.get("UUID").toString())); // NON-NLS
         }
     }
 
@@ -185,7 +185,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
-        ret.put("UUID", getUniqueId().toString());
+        ret.put("UUID", getUniqueId().toString()); // NON-NLS
         return ret;
     }
 
