@@ -191,7 +191,7 @@ public class GlowMetaItem implements ItemMeta {
             }
         }
         tag.readInt("HideFlags", flags -> hideFlag = flags);
-        tag.readBoolean("Unbreakable", u -> unbreakable = u);
+        tag.readBoolean("Unbreakable", this::setUnbreakable);
     }
 
     @Override
