@@ -323,7 +323,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeCompound(Consumer<CompoundTag> consumer, String... keys) {
+    public boolean consumeCompound(Consumer<? super CompoundTag> consumer, String... keys) {
         CompoundTag tag = tryGetCompound(keys);
         if (tag != null) {
             consumer.accept(tag);
@@ -333,8 +333,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         }
     }
 
-    private <V, T extends Tag<V>> boolean consumeObject(Consumer<V> consumer, Class<T> clazz,
-            String[] keys) {
+    private <V, T extends Tag<V>> boolean consumeObject(Consumer<? super V> consumer,
+            Class<T> clazz, String[] keys) {
         String lastKey = keys[keys.length - 1];
         String[] interveningKeys = Arrays.copyOf(keys, keys.length - 1);
         boolean[] consumed = {false};
@@ -421,7 +421,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeByteArray(Consumer<byte[]> consumer, String... keys) {
+    public boolean consumeByteArray(Consumer<? super byte[]> consumer, String... keys) {
         return consumeObject(consumer, ByteArrayTag.class, keys);
     }
 
@@ -434,7 +434,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeIntArray(Consumer<int[]> consumer, String... keys) {
+    public boolean consumeIntArray(Consumer<? super int[]> consumer, String... keys) {
         return consumeObject(consumer, IntArrayTag.class, keys);
     }
 
@@ -493,7 +493,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeItem(Consumer<ItemStack> consumer, String... keys) {
+    public boolean consumeItem(Consumer<? super ItemStack> consumer, String... keys) {
         return consumeCompound(tag -> consumer.accept(NbtSerialization.readItem(tag)), keys);
     }
 
@@ -507,7 +507,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeBoolean(Consumer<Boolean> consumer, String... keys) {
+    public boolean consumeBoolean(Consumer<? super Boolean> consumer, String... keys) {
         // For a boolean, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
         return consumeObject(byteVal -> consumer.accept(byteVal != 0), ByteTag.class, keys);
@@ -523,7 +523,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeByte(Consumer<Byte> consumer, String... keys) {
+    public boolean consumeByte(Consumer<? super Byte> consumer, String... keys) {
         // For a byte, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
         return consumeObject(consumer, ByteTag.class, keys);
@@ -539,7 +539,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeBooleanNegated(Consumer<Boolean> consumer, String... keys) {
+    public boolean consumeBooleanNegated(Consumer<? super Boolean> consumer, String... keys) {
         // For a boolean, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
         return consumeObject(byteVal -> consumer.accept(byteVal == 0), ByteTag.class, keys);
@@ -558,7 +558,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public <T> boolean consumeList(Consumer<List<T>> consumer, TagType type, String... keys) {
+    public <T> boolean consumeList(Consumer<? super List<T>> consumer, TagType type,
+            String... keys) {
         // Can't use consumeObject because of the list-element type check
         String lastKey = keys[keys.length - 1];
         String[] interveningKeys = Arrays.copyOf(keys, keys.length - 1);
@@ -573,8 +574,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
     /**
      * Applies the given function to a list subtag if it is present and its contents are compound
-     * tags. Processes the list as a single object; see {@link #iterateCompoundList(Consumer, String...)}
-     * if you instead want to process each tag in the list separately.
+     * tags. Processes the list as a single object; to process each tag separately, instead use
+     * {@link #iterateCompoundList(Consumer, String...)}.
      * Multiple strings can be passed in to operate on a sub-subtag, as with
      * {@link #tryGetCompound(String...)}, except that the last one must be a byte rather than
      * compound subtag.
@@ -583,7 +584,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeCompoundList(Consumer<List<CompoundTag>> consumer, String... keys) {
+    public boolean consumeCompoundList(Consumer<? super List<CompoundTag>> consumer,
+            String... keys) {
         return consumeList(consumer, TagType.COMPOUND, keys);
     }
 
@@ -598,7 +600,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean iterateCompoundList(Consumer<CompoundTag> consumer, String... keys) {
+    public boolean iterateCompoundList(Consumer<? super CompoundTag> consumer, String... keys) {
         return consumeCompoundList(compoundTags -> compoundTags.forEach(consumer), keys);
     }
 
@@ -613,7 +615,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeStringList(Consumer<List<String>> consumer, String... keys) {
+    public boolean consumeStringList(Consumer<? super List<String>> consumer, String... keys) {
         return consumeList(consumer, TagType.STRING, keys);
     }
 
@@ -626,7 +628,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean consumeString(Consumer<String> consumer, String... keys) {
+    public boolean consumeString(Consumer<? super String> consumer, String... keys) {
         return consumeObject(consumer, StringTag.class, keys);
     }
 
@@ -640,7 +642,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keyLeast the key to look up the low word of the UUID
      * @return true if the tags exist and were passed to the consumer; false otherwise
      */
-    public boolean consumeUuid(Consumer<UUID> consumer, String keyMost, String keyLeast) {
+    public boolean consumeUuid(Consumer<? super UUID> consumer, String keyMost, String keyLeast) {
         if (isLong(keyMost) && isLong(keyLeast)) {
             consumer.accept(new UUID(getLong(keyMost), getLong(keyLeast)));
             return true;
