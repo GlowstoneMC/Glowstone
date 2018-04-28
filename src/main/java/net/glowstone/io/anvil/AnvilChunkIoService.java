@@ -100,20 +100,18 @@ public final class AnvilChunkIoService implements ChunkIoService {
         levelTag.consumeByte(chunk::setIsSlimeChunk, "isSlimeChunk");
 
         // read entities
-        levelTag.consumeCompoundList(entities -> {
-            for (CompoundTag entityTag : entities) {
-                try {
-                    // note that creating the entity is sufficient to add it to the world
-                    EntityStorage.loadEntity(chunk.getWorld(), entityTag);
-                } catch (Exception e) {
-                    String id = entityTag.isString("id") ? entityTag.getString("id") : "<missing>";
-                    if (e.getMessage() != null && e.getMessage()
-                        .startsWith("Unknown entity type to load:")) {
-                        GlowServer.logger.warning("Unknown entity in " + chunk + ": " + id);
-                    } else {
-                        GlowServer.logger
-                            .log(Level.WARNING, "Error loading entity in " + chunk + ": " + id, e);
-                    }
+        levelTag.iterateCompoundList(entityTag -> {
+            try {
+                // note that creating the entity is sufficient to add it to the world
+                EntityStorage.loadEntity(chunk.getWorld(), entityTag);
+            } catch (Exception e) {
+                String id = entityTag.isString("id") ? entityTag.getString("id") : "<missing>";
+                if (e.getMessage() != null && e.getMessage()
+                    .startsWith("Unknown entity type to load:")) {
+                    GlowServer.logger.warning("Unknown entity in " + chunk + ": " + id);
+                } else {
+                    GlowServer.logger
+                        .log(Level.WARNING, "Error loading entity in " + chunk + ": " + id, e);
                 }
             }
         }, "Entities");

@@ -573,7 +573,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
     /**
      * Applies the given function to a list subtag if it is present and its contents are compound
-     * tags.
+     * tags. Processes the list as a single object; see {@link #iterateCompoundList(Consumer, String...)}
+     * if you instead want to process each tag in the list separately.
      * Multiple strings can be passed in to operate on a sub-subtag, as with
      * {@link #tryGetCompound(String...)}, except that the last one must be a byte rather than
      * compound subtag.
@@ -584,6 +585,21 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      */
     public boolean consumeCompoundList(Consumer<List<CompoundTag>> consumer, String... keys) {
         return consumeList(consumer, TagType.COMPOUND, keys);
+    }
+
+    /**
+     * Applies the given function to each compound tag in a compound-list subtag, if that tag
+     * exists.
+     * Multiple strings can be passed in to operate on a sub-subtag, as with
+     * {@link #tryGetCompound(String...)}, except that the last one must be a byte rather than
+     * compound subtag.
+     *
+     * @param consumer the function to apply
+     * @param keys the key to look up, or multiple keys forming a subtag path
+     * @return true if the tag exists and was passed to the consumer; false otherwise
+     */
+    public boolean iterateCompoundList(Consumer<CompoundTag> consumer, String... keys) {
+        return consumeCompoundList(compoundTags -> compoundTags.forEach(consumer), keys);
     }
 
     /**
