@@ -180,8 +180,7 @@ public final class NbtSerialization {
                 Location location = new Location(world, pos.get(0), pos.get(1), pos.get(2));
 
                 // check for rotation
-                tag.readFloatList(list -> {
-                    List<Float> rot = tag.getList(, TagType.FLOAT);
+                tag.readFloatList(rot -> {
                     if (rot.size() == 2) {
                         location.setYaw(rot.get(0));
                         location.setPitch(rot.get(1));
