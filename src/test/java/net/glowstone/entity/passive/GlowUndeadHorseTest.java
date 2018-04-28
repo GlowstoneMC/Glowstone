@@ -1,7 +1,10 @@
 package net.glowstone.entity.passive;
 
+import java.util.EnumSet;
 import java.util.function.Function;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,5 +42,11 @@ public abstract class GlowUndeadHorseTest<T extends GlowUndeadHorse> extends Glo
         entity.setBreed(true);
         assertAdult(entity);
         assertFalse(entity.canBreed());
+    }
+
+    @Test
+    @Override
+    public void testGetBreedingFoods() {
+        Assert.assertEquals(EnumSet.noneOf(Material.class), entity.getBreedingFoods());
     }
 }
