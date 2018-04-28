@@ -53,55 +53,32 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
     @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
-
-        if (compound.isShort("Air")) {
-            entity.setRemainingAir(compound.getShort("Air"));
+        compound.readShort(entity::setRemainingAir, "Air");
+        compound.readString(entity::setCustomName, "CustomName");
+        compound.readBoolean(entity::setCustomNameVisible, "CustomNameVisible");
+        if (!compound.readFloat(entity::setHealth, "HealF")) {
+            compound.readShort(entity::setHealth, "Health");
         }
-        if (compound.isString("CustomName")) {
-            entity.setCustomName(compound.getString("CustomName"));
-        }
-        if (compound.isByte("CustomNameVisible")) {
-            entity.setCustomNameVisible(compound.getBoolDefaultFalse("CustomNameVisible"));
-        }
-
-        if (compound.isFloat("HealF")) {
-            entity.setHealth(compound.getFloat("HealF"));
-        } else if (compound.isShort("Health")) {
-            entity.setHealth(compound.getShort("Health"));
-        }
-        if (compound.isShort("AttackTime")) {
-            entity.setNoDamageTicks(compound.getShort("AttackTime"));
-        }
-        if (compound.isByte("FallFlying")) {
-            entity.setFallFlying(compound.getBoolDefaultFalse("FallFlying"));
-        }
-
-        if (compound.isList("ActiveEffects", TagType.COMPOUND)) {
-            for (CompoundTag effect : compound.getCompoundList("ActiveEffects")) {
-                // should really always have every field, but be forgiving if possible
-                if (!effect.isByte("Id") || !effect.isInt("Duration")) {
-                    continue;
-                }
-
-                PotionEffectType type = PotionEffectType.getById(effect.getByte("Id"));
-                int duration = effect.getInt("Duration");
-                if (type == null || duration < 0) {
-                    continue;
-                }
-                int amplifier = 0;
-                boolean ambient = false;
-
-                if (compound.isByte("Amplifier")) {
-                    amplifier = compound.getByte("Amplifier");
-                }
-                if (compound.isByte("Ambient")) {
-                    ambient = compound.getBoolDefaultFalse("Ambient");
-                }
-                // bool "ShowParticles"
-
-                entity.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
+        compound.readShort(entity::setNoDamageTicks, "AttackTime");
+        compound.readBoolean(entity::setFallFlying, "FallFlying");
+        compound.iterateCompoundList(effect -> {
+            // should really always have every field, but be forgiving if possible
+            if (!effect.isByte("Id") || !effect.isInt("Duration")) {
+                return;
             }
-        }
+
+            PotionEffectType type = PotionEffectType.getById(effect.getByte("Id"));
+            int duration = effect.getInt("Duration");
+            if (type == null || duration < 0) {
+                return;
+            }
+            final int[] amplifier = {0};
+            boolean ambient = compound.getBoolDefaultFalse("Ambient");
+            compound.readInt(x -> amplifier[0] = x, "Amplifier");
+            // bool "ShowParticles"
+
+            entity.addPotionEffect(new PotionEffect(type, duration, amplifier[0], ambient), true);
+        }, "ActiveEffects");
 
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {

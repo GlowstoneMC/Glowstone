@@ -15,17 +15,10 @@ class SlimeStore<T extends GlowSlime> extends MonsterStore<T> {
     @Override
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isInt("Size")) {
-            entity.setSize(tag.getInt("Size"));
-        } else {
+        if (!tag.readInt(entity::setSize, "Size")) {
             entity.setSize(1);
         }
-
-        if (tag.isByte("wasOnGround")) {
-            entity.setOnGround(tag.getBoolDefaultFalse("wasOnGround"));
-        } else {
-            entity.setOnGround(false);
-        }
+        entity.setOnGround(tag.getBoolDefaultFalse("wasOnGround"));
     }
 
     @Override

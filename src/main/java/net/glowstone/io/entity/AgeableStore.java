@@ -33,18 +33,10 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
     @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.containsKey("Age")) {
-            entity.setAge(compound.getInt("Age"));
-        }
-        if (compound.containsKey("AgeLocked")) {
-            entity.setAgeLock(compound.getBoolDefaultFalse("AgeLocked"));
-        }
-        if (compound.containsKey("InLove")) {
-            entity.setInLove(compound.getInt("InLove"));
-        }
-        if (compound.containsKey("ForcedAge")) {
-            entity.setForcedAge(compound.getInt("ForcedAge"));
-        }
+        compound.readInt(entity::setAge, "Age");
+        compound.readBoolean(entity::setAgeLock, "AgeLocked");
+        compound.readInt(entity::setInLove, "InLove");
+        compound.readInt(entity::setForcedAge, "ForcedAge");
     }
 
     @Override
