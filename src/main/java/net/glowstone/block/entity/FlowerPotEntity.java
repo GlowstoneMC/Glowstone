@@ -32,7 +32,7 @@ public class FlowerPotEntity extends BlockEntity {
             tag.readInt(itemInt -> item[0] = Material.getMaterial(itemInt), "Item");
         }
         if (item[0] != null) {
-            tag.readInt(x -> this.contents = item[0].getNewData((byte) x), "Data");
+            tag.readInt(data -> this.contents = item[0].getNewData((byte) data), "Data");
         }
     }
 
