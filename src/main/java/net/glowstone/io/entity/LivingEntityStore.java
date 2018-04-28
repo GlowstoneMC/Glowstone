@@ -133,57 +133,44 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
 
     private void loadEquipment(T entity, EntityEquipment equip, CompoundTag compound) {
         // Deprecated since 15w31a, left here for compatibilty for now
-        if (compound.isList("Equipment", TagType.COMPOUND)) {
-            List<CompoundTag> list = compound.getCompoundList("Equipment");
-
+        compound.readCompoundList(list -> {
             equip.setItemInMainHand(getItem(list, 0));
             equip.setBoots(getItem(list, 1));
             equip.setLeggings(getItem(list, 2));
             equip.setChestplate(getItem(list, 3));
             equip.setHelmet(getItem(list, 4));
-        }
+        }, "Equipment");
         // Deprecated since 15w31a, left here for compatibilty for now
-        if (compound.isList("DropChances", TagType.FLOAT)) {
-            List<Float> list = compound.getList("DropChances", TagType.FLOAT);
-
+        compound.readFloatList(list -> {
             equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
             equip.setBootsDropChance(getOrDefault(list, 1, 1f));
             equip.setLeggingsDropChance(getOrDefault(list, 2, 1f));
             equip.setChestplateDropChance(getOrDefault(list, 3, 1f));
             equip.setHelmetDropChance(getOrDefault(list, 4, 1f));
-        }
-
-        if (compound.isList("HandItems", TagType.COMPOUND)) {
-            List<CompoundTag> list = compound.getCompoundList("HandItems");
-
+        }, "DropChances");
+        compound.readCompoundList(list -> {
             equip.setItemInMainHand(getItem(list, 0));
             equip.setItemInOffHand(getItem(list, 1));
-        }
-        if (compound.isList("ArmorItems", TagType.COMPOUND)) {
-            List<CompoundTag> list = compound.getCompoundList("ArmorItems");
-
+        }, "HandItems");
+        compound.readCompoundList(list -> {
             equip.setBoots(getItem(list, 0));
             equip.setLeggings(getItem(list, 1));
             equip.setChestplate(getItem(list, 2));
             equip.setHelmet(getItem(list, 3));
-        }
+        }, "ArmorItems");
 
         // set of dropchances on a player throws an UnsupportedOperationException
         if (!(entity instanceof Player)) {
-            if (compound.isList("HandDropChances", TagType.FLOAT)) {
-                List<Float> list = compound.getList("HandDropChances", TagType.FLOAT);
-
+            compound.readFloatList(list -> {
                 equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
                 equip.setItemInOffHandDropChance(getOrDefault(list, 1, 1f));
-            }
-            if (compound.isList("ArmorDropChances", TagType.FLOAT)) {
-                List<Float> list = compound.getList("ArmorDropChances", TagType.FLOAT);
-
+            }, "HandDropChances");
+            compound.readFloatList(list -> {
                 equip.setBootsDropChance(getOrDefault(list, 0, 1f));
                 equip.setLeggingsDropChance(getOrDefault(list, 1, 1f));
                 equip.setChestplateDropChance(getOrDefault(list, 2, 1f));
                 equip.setHelmetDropChance(getOrDefault(list, 3, 1f));
-            }
+            }, "ArmorDropChances");
         }
     }
 

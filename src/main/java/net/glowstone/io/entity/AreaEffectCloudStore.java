@@ -46,16 +46,14 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
         tag.readFloat(entity::setRadius, RADIUS);
         tag.readFloat(entity::setRadiusOnUse, RADIUS_ON_USE);
         tag.readFloat(entity::setRadiusPerTick, RADIUS_PER_TICK);
-        if (tag.isString(PARTICLE)) {
-            final String particle = tag.getString(PARTICLE);
-
+        tag.readString(particle -> {
             try {
                 entity.setParticle(Particle.valueOf(particle));
             } catch (IllegalArgumentException e) {
                 GlowServer.logger.warning(() -> String.format(
                         "Ignoring invalid particle type %s in tag %s", particle, tag));
             }
-        }
+        }, PARTICLE);
         // TODO: Potion
         tag.readCompoundList(effects -> effects
             .stream()

@@ -549,7 +549,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * Applies the given function to a list subtag if it is present, converting it to a list of
      * values first.
      * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String...)}, except that the last one must be a byte rather than
+     * {@link #tryGetCompound(String...)}, except that the last one must be a list rather than
      * compound subtag.
      *
      * @param <T> the type to convert the list entries to
@@ -577,7 +577,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * tags. Processes the list as a single object; to process each tag separately, instead use
      * {@link #iterateCompoundList(Consumer, String...)}.
      * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String...)}, except that the last one must be a byte rather than
+     * {@link #tryGetCompound(String...)}, except that the last one must be a list rather than
      * compound subtag.
      *
      * @param consumer the function to apply
@@ -593,7 +593,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * Applies the given function to each compound tag in a compound-list subtag, if that tag
      * exists.
      * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String...)}, except that the last one must be a byte rather than
+     * {@link #tryGetCompound(String...)}, except that the last one must be a list rather than
      * compound subtag.
      *
      * @param consumer the function to apply
@@ -608,7 +608,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * Applies the given function to a list subtag if it is present and its contents are string
      * tags.
      * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String...)}, except that the last one must be a byte rather than
+     * {@link #tryGetCompound(String...)}, except that the last one must be a list rather than
      * compound subtag.
      *
      * @param consumer the function to apply
@@ -617,6 +617,36 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      */
     public boolean readStringList(Consumer<? super List<String>> consumer, String... keys) {
         return readList(consumer, TagType.STRING, keys);
+    }
+
+    /**
+     * Applies the given function to a list subtag if it is present and its contents are float
+     * tags.
+     * Multiple strings can be passed in to operate on a sub-subtag, as with
+     * {@link #tryGetCompound(String...)}, except that the last one must be a list rather than
+     * compound subtag.
+     *
+     * @param consumer the function to apply
+     * @param keys the key to look up, or multiple keys forming a subtag path
+     * @return true if the tag exists and was passed to the consumer; false otherwise
+     */
+    public boolean readFloatList(Consumer<? super List<Float>> consumer, String... keys) {
+        return readList(consumer, TagType.FLOAT, keys);
+    }
+
+    /**
+     * Applies the given function to a list subtag if it is present and its contents are double
+     * tags.
+     * Multiple strings can be passed in to operate on a sub-subtag, as with
+     * {@link #tryGetCompound(String...)}, except that the last one must be a list rather than
+     * compound subtag.
+     *
+     * @param consumer the function to apply
+     * @param keys the key to look up, or multiple keys forming a subtag path
+     * @return true if the tag exists and was passed to the consumer; false otherwise
+     */
+    public boolean readDoubleList(Consumer<? super List<Double>> consumer, String... keys) {
+        return readList(consumer, TagType.DOUBLE, keys);
     }
 
     /**

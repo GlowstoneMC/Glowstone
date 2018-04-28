@@ -45,53 +45,35 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerObjectives(CompoundTag root, GlowScoreboard scoreboard) {
-        if (root.containsKey("Objectives")) {
-            List<CompoundTag> objectives = root.getCompoundList("Objectives");
-            for (CompoundTag objective : objectives) {
-                registerObjective(objective, scoreboard);
-            }
-        }
+        root.iterateCompoundList(objective -> registerObjective(objective, scoreboard),
+                "Objectives");
     }
 
     private static void registerObjective(CompoundTag data, GlowScoreboard scoreboard) {
         String criteria = data.getString("CriteriaName");
-        String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
-        String renderType = data.getString("RenderType");
-
         GlowObjective objective = (GlowObjective) scoreboard.registerNewObjective(name, criteria);
-        objective.setDisplayName(displayName);
-        objective.setRenderType(renderType);
+        data.readString(objective::setDisplayName, "DisplayName");
+        data.readString(objective::setRenderType, "RenderType");
     }
 
 
     private static void registerScores(CompoundTag root, GlowScoreboard scoreboard) {
-        if (root.containsKey("PlayerScores")) {
-            List<CompoundTag> scores = root.getCompoundList("PlayerScores");
-            for (CompoundTag score : scores) {
-                registerScore(score, scoreboard);
-            }
-        }
+        root.iterateCompoundList(score -> registerScore(score, scoreboard), "PlayerScores");
     }
 
     private static void registerScore(CompoundTag data, GlowScoreboard scoreboard) {
         int scoreNum = data.getInt("Score");
         String name = data.getString("Name");
         String objective = data.getString("Objective");
-        boolean locked = data.getByte("Locked") == 1;
 
         Score score = scoreboard.getObjective(objective).getScore(name);
         score.setScore(scoreNum);
-        ((GlowScore) score).setLocked(locked);
+        data.readBoolean(((GlowScore) score)::setLocked, "Locked");
     }
 
     private static void registerTeams(CompoundTag root, GlowScoreboard scoreboard) {
-        if (root.containsKey("Teams")) {
-            List<CompoundTag> teams = root.getCompoundList("Teams");
-            for (CompoundTag team : teams) {
-                registerTeam(team, scoreboard);
-            }
-        }
+        root.iterateCompoundList(team -> registerTeam(team, scoreboard), "Teams");
     }
 
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
@@ -125,21 +107,20 @@ public class NbtScoreboardIoReader {
                 // TODO: Should this raise a warning?
                 // leave collisionRule at default
         }
-        String displayName = data.getString("DisplayName");
         ChatColor teamColor = null;
         if (data.containsKey("TeamColor")) {
             teamColor = ChatColor.valueOf(data.getString("TeamColor").toUpperCase());
         }
 
         GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(data.getString("Name"));
-        team.setDisplayName(displayName);
-        team.setPrefix(data.getString("Prefix"));
-        team.setSuffix(data.getString("Suffix"));
-        team.setAllowFriendlyFire(data.getByte("AllowFriendlyFire") == 1);
-        team.setCanSeeFriendlyInvisibles(data.getByte("SeeFriendlyInvisibles") == 1);
-        Team.OptionStatus nameTagVisibility = Team.OptionStatus
-                .valueOf(data.getString("NameTagVisibility").toUpperCase());
-        team.setOption(Team.Option.NAME_TAG_VISIBILITY, nameTagVisibility);
+        data.readString(team::setDisplayName, "DisplayName");
+        data.readString(team::setPrefix, "Prefix");
+        data.readString(team::setSuffix, "Suffix");
+        data.readBoolean(team::setAllowFriendlyFire, "AllowFriendlyFire");
+        data.readBoolean(team::setCanSeeFriendlyInvisibles, "SeeFriendlyInvisibles");
+        data.readString(nameTagVisibility ->
+        team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus
+                .valueOf(nameTagVisibility.toUpperCase())), "NameTagVisibility");
         team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, deathMessageVisibility);
         team.setOption(Team.Option.COLLISION_RULE, collisionRule);
         if (teamColor != null) {
@@ -150,32 +131,19 @@ public class NbtScoreboardIoReader {
         players.forEach(team::addEntry);
     }
 
-    private static String getOrNull(String key, CompoundTag tag) {
-        if (tag.isString(key)) {
-            return tag.getString(key);
-        }
-        return null;
-    }
-
     private static void registerDisplaySlots(CompoundTag root, GlowScoreboard scoreboard) {
         if (root.containsKey("DisplaySlots")) {
             CompoundTag data = root.getCompound("DisplaySlots");
 
-            String list = getOrNull("slot_0", data);
-            String sidebar = getOrNull("slot_1", data);
-            String belowName = getOrNull("slot_2", data);
-
-            if (list != null) {
-                scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST);
-            }
-
-            if (sidebar != null) {
-                scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR);
-            }
-
-            if (belowName != null) {
-                scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME);
-            }
+            data.readString(
+                list -> scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST),
+                    "slot_0");
+            data.readString(
+                sidebar -> scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR),
+                    "slot_1");
+            data.readString(
+                belowName -> scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME),
+                    "slot_2");
 
             /* TODO: anything need to be done with team slots?
             String teamBlack = getOrNull("slot_3", data);

@@ -20,10 +20,8 @@ public class PaintingStore extends HangingStore<GlowPainting> {
     @Override
     public void load(GlowPainting entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isString("Motive")) {
-            entity.setArtInternal(GlowPainting.getArtFromTitle(tag.getString("Motive")));
-        }
+        tag.readString(motive -> entity.setArtInternal(GlowPainting.getArtFromTitle(motive)),
+                "Motive");
     }
 
     @Override

@@ -16,37 +16,35 @@ class EndermanStore extends MonsterStore<GlowEnderman> {
     @Override
     public void load(GlowEnderman entity, CompoundTag compound) {
         super.load(entity, compound);
-        MaterialData carried = null;
+        final MaterialData[] carried = {null};
         // Load carried block. May be saved as a String or short ID.
         // If the id is 0 or AIR, it is ignored.
-        if (compound.isShort("carried")) {
-            short id = compound.getShort("carried");
+        if (!compound.readShort(id -> {
             Material type = Material.getMaterial(id);
             if (type != null && type != Material.AIR) {
-                carried = new MaterialData(type);
+                carried[0] = new MaterialData(type);
             }
-        } else if (compound.isString("carried")) {
-            String id = compound.getString("carried");
-            if (!id.isEmpty()) {
-                if (!id.contains(":")) {
-                    // There is no namespace, so prepend the default minecraft: namespace
-                    id = "minecraft:" + id;
+        }, "carried")) {
+            compound.readString(id -> {
+                if (!id.isEmpty()) {
+                    if (!id.contains(":")) {
+                        // There is no namespace, so prepend the default minecraft: namespace
+                        id = "minecraft:" + id;
+                    }
+                    Material type = ItemIds.getBlock(id);
+                    if (type == null) {
+                        // Not a block, might be an item
+                        type = ItemIds.getItem(id);
+                    }
+                    if (type != null && type != Material.AIR) {
+                        carried[0] = new MaterialData(type);
+                    }
                 }
-                Material type = ItemIds.getBlock(id);
-                if (type == null) {
-                    // Not a block, might be an item
-                    type = ItemIds.getItem(id);
-                }
-                if (type != null && type != Material.AIR) {
-                    carried = new MaterialData(type);
-                }
-            }
+            }, "carried");
         }
-        if (carried != null) {
-            if (compound.isShort("carriedData")) {
-                carried.setData((byte) compound.getShort("carriedData"));
-            }
-            entity.setCarriedMaterial(carried);
+        if (carried[0] != null) {
+            compound.readShort(data -> carried[0].setData((byte) data), "carriedData");
+            entity.setCarriedMaterial(carried[0]);
         }
     }
 

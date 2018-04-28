@@ -26,12 +26,10 @@ public class BeaconEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        if (tag.isString("Lock")) {
-            this.lock = tag.getString("Lock");
-        }
-        this.levels = tag.getInt("Levels");
-        this.primaryId = tag.getInt("Primary");
-        this.secondaryId = tag.getInt("Secondary");
+        tag.readString(lock -> this.lock = lock, "Lock");
+        tag.readInt(this::setLevels, "Levels");
+        tag.readInt(this::setPrimaryId, "Primary");
+        tag.readInt(this::setSecondaryId, "Secondary");
     }
 
     @Override

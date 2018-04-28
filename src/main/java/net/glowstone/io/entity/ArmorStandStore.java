@@ -70,11 +70,11 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
     private EulerAngle readSafeAngle(CompoundTag tag, String key) {
         final EulerAngle[] out = {EulerAngle.ZERO};
-        tag.<Float>readList(
+        tag.readFloatList(
             list -> out[0] = new EulerAngle(
                     Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
                     Math.toRadians(list.get(2))),
-                TagType.FLOAT, key);
+                key);
         return out[0];
     }
 }

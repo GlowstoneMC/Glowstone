@@ -174,25 +174,25 @@ public final class NbtSerialization {
      */
     public static Location listTagsToLocation(World world, CompoundTag tag) {
         // check for position list
-        if (tag.isList("Pos", TagType.DOUBLE)) {
-            List<Double> pos = tag.getList("Pos", TagType.DOUBLE);
+        final Location[] out = {null};
+        tag.readDoubleList(pos -> {
             if (pos.size() == 3) {
                 Location location = new Location(world, pos.get(0), pos.get(1), pos.get(2));
 
                 // check for rotation
-                if (tag.isList("Rotation", TagType.FLOAT)) {
-                    List<Float> rot = tag.getList("Rotation", TagType.FLOAT);
+                tag.readFloatList(list -> {
+                    List<Float> rot = tag.getList(, TagType.FLOAT);
                     if (rot.size() == 2) {
                         location.setYaw(rot.get(0));
                         location.setPitch(rot.get(1));
                     }
-                }
+                }, "Rotation");
 
-                return location;
+                out[0] = location;
             }
-        }
+        }, "Pos");
 
-        return null;
+        return out[0];
     }
 
     /**
