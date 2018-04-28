@@ -134,10 +134,11 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        super.entityInteract(player, message);
-        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+        if (!super.entityInteract(player, message)
+                && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             ItemStack item = InventoryUtil
                 .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+            int growthAmount = computeGrowthAmount(item.getType());
 
             // Spawn eggs are used to spawn babies
             if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
@@ -147,16 +148,14 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
                     if (player.getGameMode() == GameMode.SURVIVAL
                         || player.getGameMode() == GameMode.ADVENTURE) {
-                        // Consume the egg
-                        if (item.getAmount() > 1) {
-                            item.setAmount(item.getAmount() - 1);
-                        } else {
-                            player.getInventory()
-                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
-                        }
+                        player.getInventory().consumeItemInMainHand();
                     }
                     return true;
                 }
+            } else if (growthAmount > 0) {
+                grow(growthAmount);
+                player.getInventory().consumeItemInMainHand();
+                return true;
             }
         }
         return false;
@@ -183,5 +182,25 @@ public class GlowAgeable extends GlowCreature implements Ageable {
             return SoundUtil.randomReal(0.2F) + 1.5F;
         }
         return super.getSoundPitch();
+    }
+
+    /**
+     * Grows an ageable creature.
+     *
+     * @param age The age to add to the ageable creature.
+     */
+    public void grow(int age) {
+        setAge(this.age + age);
+    }
+
+    /**
+     * Computes the growth amount using a specific material for the current ageable creature.
+     * Always returns 0 for an adult or if the material is not food for the creature.
+     *
+     * @param material The food used to compute the growth amount.
+     * @return The age gained using the given food.
+     */
+    protected int computeGrowthAmount(Material material) {
+        return 0;
     }
 }
