@@ -107,7 +107,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         if (equip != null) {
             loadEquipment(entity, equip, compound);
         }
-        compound.consumeBoolean(entity::setCanPickupItems, "CanPickUpLoot");
+        compound.readBoolean(entity::setCanPickupItems, "CanPickUpLoot");
         AttributeManager am = entity.getAttributeManager();
         compound.iterateCompoundList(tag -> {
             if (tag.isString("Name") && tag.isDouble("Base")) {
@@ -131,7 +131,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         }, "Attributes");
         CompoundTag leash = compound.tryGetCompound("Leash");
         if (leash == null) {
-            compound.consumeBoolean(leashSet -> {
+            compound.readBoolean(leashSet -> {
                 if (leashSet) {
                     // We know that there was something leashed, but not what entity it was
                     // This can happen, when for example Minecart got leashed
@@ -140,7 +140,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                 }
             }, "Leashed");
         } else {
-            if (!leash.consumeUuid(entity::setLeashHolderUniqueId, "UUIDMost", "UUIDLeast")
+            if (!leash.readUuid(entity::setLeashHolderUniqueId, "UUIDMost", "UUIDLeast")
                     && leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
                 int y = leash.getInt("Y");

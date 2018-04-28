@@ -20,6 +20,6 @@ public class SplashPotionStore<T extends GlowSplashPotion> extends ProjectileSto
     @Override
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.consumeItem(entity::setItem, "Potion");
+        tag.readItem(entity::setItem, "Potion");
     }
 }

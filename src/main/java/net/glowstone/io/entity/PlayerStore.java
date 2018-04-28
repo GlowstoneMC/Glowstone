@@ -38,14 +38,14 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         super.load(entity, tag);
 
         // experience
-        tag.consumeInt(entity::setLevel, "XpLevel");
-        tag.consumeFloat(entity::setExp, "XpP");
-        tag.consumeInt(entity::setTotalExperience, "XpTotal");
+        tag.readInt(entity::setLevel, "XpLevel");
+        tag.readFloat(entity::setExp, "XpP");
+        tag.readInt(entity::setTotalExperience, "XpTotal");
 
         // food
-        tag.consumeInt(entity::setFoodLevel, "foodLevel");
-        tag.consumeFloat(entity::setSaturation, "foodSaturationLevel");
-        tag.consumeFloat(entity::setExhaustion, "foodExhaustionLevel");
+        tag.readInt(entity::setFoodLevel, "foodLevel");
+        tag.readFloat(entity::setSaturation, "foodSaturationLevel");
+        tag.readFloat(entity::setExhaustion, "foodExhaustionLevel");
 
         // spawn location
         if (tag.isInt("SpawnX") && tag.isInt("SpawnY") && tag.isInt("SpawnZ")) {
@@ -57,17 +57,17 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         }
 
         // abilities
-        tag.consumeCompound(abilities -> {
-            abilities.consumeFloat(speed -> entity.setWalkSpeed(speed * 2f), "walkSpeed");
-            abilities.consumeFloat(speed -> entity.setFlySpeed(speed * 2f), "flySpeed");
-            abilities.consumeBoolean(entity::setAllowFlight, "mayfly");
-            abilities.consumeBoolean(entity::setFlying, "flying");
+        tag.readCompound(abilities -> {
+            abilities.readFloat(speed -> entity.setWalkSpeed(speed * 2f), "walkSpeed");
+            abilities.readFloat(speed -> entity.setFlySpeed(speed * 2f), "flySpeed");
+            abilities.readBoolean(entity::setAllowFlight, "mayfly");
+            abilities.readBoolean(entity::setFlying, "flying");
         }, "abilities");
         // shoulders (1.12)
-        tag.consumeCompound(entity::setLeftShoulderTag, "ShoulderEntityLeft");
-        tag.consumeCompound(entity::setRightShoulderTag, "ShoulderEntityRight");
+        tag.readCompound(entity::setLeftShoulderTag, "ShoulderEntityLeft");
+        tag.readCompound(entity::setRightShoulderTag, "ShoulderEntityRight");
         // seen credits
-        tag.consumeBoolean(entity::setSeenCredits, "seenCredits");
+        tag.readBoolean(entity::setSeenCredits, "seenCredits");
 
         // recipe book
         entity.getRecipeMonitor().read(tag);

@@ -44,7 +44,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
             entity.setCareerLevel(1);
         }
         // Recipes
-        compound.consumeCompound(offers -> {
+        compound.readCompound(offers -> {
             if (offers.isCompoundList("Recipes")) {
                 entity.clearRecipes(); // clear defaults
                 List<CompoundTag> recipesList = offers.getCompoundList("Recipes");

@@ -34,13 +34,9 @@ public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
     @Override
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isByte(IS_INCENDIARY)) {
-            entity.setIsIncendiary(tag.getBoolDefaultFalse(IS_INCENDIARY));
-        }
-        if (tag.isFloat(YIELD_FLOAT)) {
-            entity.setYield(tag.getFloat(YIELD_FLOAT));
-        } else if (tag.isInt(YIELD_INT)) {
-            entity.setYield(tag.getInt(YIELD_INT));
+        tag.readBoolean(entity::setIsIncendiary, IS_INCENDIARY);
+        if (!tag.readFloat(entity::setYield, YIELD_FLOAT)) {
+            tag.readInt(entity::setYield, YIELD_INT);
         }
     }
 }

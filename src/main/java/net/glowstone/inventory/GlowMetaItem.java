@@ -182,9 +182,9 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     void readNbt(CompoundTag tag) {
-        tag.consumeCompound(display -> {
-            display.consumeString(this::setDisplayName, "Name");
-            display.consumeStringList(this::setLore, "Lore");
+        tag.readCompound(display -> {
+            display.readString(this::setDisplayName, "Name");
+            display.readStringList(this::setLore, "Lore");
         }, "display");
 
         //TODO currently ignoring level restriction, is that right?
@@ -196,8 +196,8 @@ public class GlowMetaItem implements ItemMeta {
                 enchants.putAll(tagEnchants);
             }
         }
-        tag.consumeInt(flags -> hideFlag = flags, "HideFlags");
-        tag.consumeBoolean(u -> unbreakable = u, "Unbreakable");
+        tag.readInt(flags -> hideFlag = flags, "HideFlags");
+        tag.readBoolean(u -> unbreakable = u, "Unbreakable");
     }
 
     @Override

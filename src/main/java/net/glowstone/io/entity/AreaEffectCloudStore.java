@@ -37,15 +37,15 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
     @Override
     public void load(GlowAreaEffectCloud entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.consumeInt(rgb -> entity.setColor(Color.fromRGB(rgb)), COLOR);
-        tag.consumeInt(entity::setDuration, DURATION);
-        tag.consumeInt(entity::setReapplicationDelay, REAPPLICATION_DELAY);
-        tag.consumeInt(entity::setWaitTime, WAIT_TIME);
+        tag.readInt(rgb -> entity.setColor(Color.fromRGB(rgb)), COLOR);
+        tag.readInt(entity::setDuration, DURATION);
+        tag.readInt(entity::setReapplicationDelay, REAPPLICATION_DELAY);
+        tag.readInt(entity::setWaitTime, WAIT_TIME);
         // TODO: OWNER_UUID_LEAST, OWNER_UUID_MOST
-        tag.consumeInt(entity::setDurationOnUse, DURATION_ON_USE);
-        tag.consumeFloat(entity::setRadius, RADIUS);
-        tag.consumeFloat(entity::setRadiusOnUse, RADIUS_ON_USE);
-        tag.consumeFloat(entity::setRadiusPerTick, RADIUS_PER_TICK);
+        tag.readInt(entity::setDurationOnUse, DURATION_ON_USE);
+        tag.readFloat(entity::setRadius, RADIUS);
+        tag.readFloat(entity::setRadiusOnUse, RADIUS_ON_USE);
+        tag.readFloat(entity::setRadiusPerTick, RADIUS_PER_TICK);
         if (tag.isString(PARTICLE)) {
             final String particle = tag.getString(PARTICLE);
 

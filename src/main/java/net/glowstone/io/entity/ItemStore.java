@@ -26,9 +26,9 @@ class ItemStore extends EntityStore<GlowItem> {
     @Override
     public void load(GlowItem entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.consumeItem(entity::setItemStack, "Item");
-        tag.consumeShort(entity::setTicksLived, "Age");
-        tag.consumeShort(entity::setPickupDelay, "PickupDelay");
+        tag.readItem(entity::setItemStack, "Item");
+        tag.readShort(entity::setTicksLived, "Age");
+        tag.readShort(entity::setPickupDelay, "PickupDelay");
     }
 
     @Override

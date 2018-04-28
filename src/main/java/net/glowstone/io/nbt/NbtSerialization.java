@@ -48,9 +48,9 @@ public final class NbtSerialization {
             return null;
         }
         ItemStack stack = new ItemStack(material, count, damage);
-        // This is slightly different than what tag.consumeItem would do, since we specify the
+        // This is slightly different than what tag.readItem would do, since we specify the
         // material separately.
-        tag.consumeCompound(
+        tag.readCompound(
             subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material, subtag)),
                 "tag");
         return stack;

@@ -58,7 +58,7 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        tag.consumeString(id -> {
+        tag.readString(id -> {
             if (id.startsWith("minecraft:")) {
                 id = id.substring("minecraft:".length());
             }

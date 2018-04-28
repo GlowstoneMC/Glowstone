@@ -178,7 +178,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         public long getFirstPlayed() {
             checkOpen();
             long[] out = {0};
-            tag.consumeLong(x -> out[0] = x, "bukkit", "firstPlayed");
+            tag.readLong(x -> out[0] = x, "bukkit", "firstPlayed");
             return out[0];
         }
 
@@ -186,7 +186,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         public long getLastPlayed() {
             checkOpen();
             long[] out = {0};
-            tag.consumeLong(x -> out[0] = x, "bukkit", "lastPlayed");
+            tag.readLong(x -> out[0] = x, "bukkit", "lastPlayed");
             return out[0];
         }
 
@@ -194,7 +194,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         public String getLastKnownName() {
             checkOpen();
             String[] out = {null};
-            tag.consumeString(x -> out[0] = x, "bukkit", "lastKnownName");
+            tag.readString(x -> out[0] = x, "bukkit", "lastKnownName");
             return out[0];
         }
 

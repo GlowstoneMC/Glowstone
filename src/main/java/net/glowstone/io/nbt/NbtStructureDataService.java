@@ -49,7 +49,7 @@ public class NbtStructureDataService implements StructureDataService {
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = in.readCompound();
-                    if (!data.consumeCompound(
+                    if (!data.readCompound(
                         features -> features.getValue().keySet().stream()
                                 .filter(features::isCompound)
                                 .forEach(key -> {

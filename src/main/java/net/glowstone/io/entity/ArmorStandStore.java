@@ -23,13 +23,13 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void load(GlowArmorStand entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.consumeBoolean(entity::setMarker, "Marker");
-        tag.consumeBooleanNegated(entity::setVisible, "Invisible");
-        tag.consumeBoolean(entity::setMarker, "Marker");
-        tag.consumeBooleanNegated(entity::setBasePlate, "NoBasePlate");
-        tag.consumeBooleanNegated(entity::setGravity, "NoGravity");
-        tag.consumeBoolean(entity::setArms, "ShowArms");
-        tag.consumeBoolean(entity::setSmall, "Small");
+        tag.readBoolean(entity::setMarker, "Marker");
+        tag.readBooleanNegated(entity::setVisible, "Invisible");
+        tag.readBoolean(entity::setMarker, "Marker");
+        tag.readBooleanNegated(entity::setBasePlate, "NoBasePlate");
+        tag.readBooleanNegated(entity::setGravity, "NoGravity");
+        tag.readBoolean(entity::setArms, "ShowArms");
+        tag.readBoolean(entity::setSmall, "Small");
         CompoundTag pose = tag.tryGetCompound("Pose");
         if (pose != null) {
             entity.setBodyPose(readSafeAngle(pose, "Body"));

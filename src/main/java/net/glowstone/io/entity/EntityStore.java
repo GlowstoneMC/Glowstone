@@ -75,20 +75,20 @@ public abstract class EntityStore<T extends GlowEntity> {
             entity
                 .setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
         }
-        tag.consumeFloat(entity::setFallDistance, "FallDistance");
+        tag.readFloat(entity::setFallDistance, "FallDistance");
         if (tag.isShort("Fire")) {
             entity.setFireTicks(tag.getShort("Fire"));
         }
-        tag.consumeBoolean(entity::setOnGround, "OnGround");
-        tag.consumeBooleanNegated(entity::setGravity, "NoGravity");
-        tag.consumeBoolean(entity::setSilent, "Silent");
-        tag.consumeBoolean(entity::setGlowing, "Glowing");
-        tag.consumeBoolean(entity::setInvulnerable, "Invulnerable");
-        tag.consumeStringList(list -> {
+        tag.readBoolean(entity::setOnGround, "OnGround");
+        tag.readBooleanNegated(entity::setGravity, "NoGravity");
+        tag.readBoolean(entity::setSilent, "Silent");
+        tag.readBoolean(entity::setGlowing, "Glowing");
+        tag.readBoolean(entity::setInvulnerable, "Invulnerable");
+        tag.readStringList(list -> {
             entity.getCustomTags().clear();
             entity.getCustomTags().addAll(list);
         }, "Tags");
-        tag.consumeInt(entity::setPortalCooldown, "PortalCooldown");
+        tag.readInt(entity::setPortalCooldown, "PortalCooldown");
 
         if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
             UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));

@@ -40,9 +40,9 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
         super.load(entity, tag);
         if (entity instanceof TippedArrow) {
             TippedArrow tippedArrow = (TippedArrow) entity;
-            tag.consumeInt(rgb -> tippedArrow.setColor(Color.fromRGB(rgb)), COLOR);
+            tag.readInt(rgb -> tippedArrow.setColor(Color.fromRGB(rgb)), COLOR);
             // TODO: POTION
-            tag.consumeCompoundList(list -> list
+            tag.readCompoundList(list -> list
                     .stream()
                     .map(GlowMetaPotion::fromNbt)
                     .forEach(effect -> tippedArrow.addCustomEffect(effect, false)),

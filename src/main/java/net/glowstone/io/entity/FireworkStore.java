@@ -20,10 +20,10 @@ public class FireworkStore extends EntityStore<GlowFirework> {
     @Override
     public void load(GlowFirework entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.consumeInt(entity::setTicksLived, "Life");
-        tag.consumeInt(entity::setLifeTime, "LifeTime");
-        tag.consumeItem(entity::setFireworkItem, "FireworksItem");
-        tag.consumeUuid(entity::setSpawningEntity, "SpawningEntityMost", "SpawningEntityLeast");
+        tag.readInt(entity::setTicksLived, "Life");
+        tag.readInt(entity::setLifeTime, "LifeTime");
+        tag.readItem(entity::setFireworkItem, "FireworksItem");
+        tag.readUuid(entity::setSpawningEntity, "SpawningEntityMost", "SpawningEntityLeast");
     }
 
     @Override

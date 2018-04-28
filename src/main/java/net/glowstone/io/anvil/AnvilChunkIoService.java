@@ -90,14 +90,14 @@ public final class AnvilChunkIoService implements ChunkIoService {
         chunk.setPopulated(levelTag.getBoolDefaultFalse("TerrainPopulated"));
 
         // read biomes
-        levelTag.consumeByteArray(chunk::setBiomes, "Biomes");
+        levelTag.readByteArray(chunk::setBiomes, "Biomes");
         // read height map
-        if (!levelTag.consumeIntArray(chunk::setHeightMap, "HeightMap")) {
+        if (!levelTag.readIntArray(chunk::setHeightMap, "HeightMap")) {
             chunk.automaticHeightMap();
         }
 
         // read slime chunk
-        levelTag.consumeByte(chunk::setIsSlimeChunk, "isSlimeChunk");
+        levelTag.readByte(chunk::setIsSlimeChunk, "isSlimeChunk");
 
         // read entities
         levelTag.iterateCompoundList(entityTag -> {

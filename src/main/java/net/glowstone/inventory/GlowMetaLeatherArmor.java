@@ -72,7 +72,7 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        tag.consumeInt(rgb -> color = Color.fromRGB(rgb), "display", "color");
+        tag.readInt(rgb -> color = Color.fromRGB(rgb), "display", "color");
     }
 
     @Override
