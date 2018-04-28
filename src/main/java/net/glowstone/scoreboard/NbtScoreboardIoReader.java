@@ -118,9 +118,9 @@ public class NbtScoreboardIoReader {
         data.readString("Suffix", team::setSuffix);
         data.readBoolean("AllowFriendlyFire", team::setAllowFriendlyFire);
         data.readBoolean("SeeFriendlyInvisibles", team::setCanSeeFriendlyInvisibles);
-        data.readString("NameTagVisibility", nameTagVisibility ->
-        team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus
-                .valueOf(nameTagVisibility.toUpperCase())));
+        data.readString("NameTagVisibility", nameTagVisibility -> team.setOption(
+                Team.Option.NAME_TAG_VISIBILITY,
+                Team.OptionStatus.valueOf(nameTagVisibility.toUpperCase())));
         team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, deathMessageVisibility);
         team.setOption(Team.Option.COLLISION_RULE, collisionRule);
         if (teamColor != null) {
@@ -135,15 +135,12 @@ public class NbtScoreboardIoReader {
         if (root.containsKey("DisplaySlots")) {
             CompoundTag data = root.getCompound("DisplaySlots");
 
-            data.readString(
-                    "slot_0", list -> scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST)
-            );
-            data.readString(
-                    "slot_1", sidebar -> scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR)
-            );
-            data.readString(
-                    "slot_2", belowName -> scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME)
-            );
+            data.readString("slot_0",
+                list -> scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST));
+            data.readString("slot_1",
+                sidebar -> scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR));
+            data.readString("slot_2",
+                below -> scoreboard.getObjective(below).setDisplaySlot(DisplaySlot.BELOW_NAME));
 
             /* TODO: anything need to be done with team slots?
             String teamBlack = getOrNull("slot_3", data);

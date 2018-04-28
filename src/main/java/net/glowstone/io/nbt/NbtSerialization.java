@@ -48,10 +48,8 @@ public final class NbtSerialization {
         ItemStack stack = new ItemStack(material[0], count[0], damage[0]);
         // This is slightly different than what tag.readItem would do, since we specify the
         // material separately.
-        tag.readCompound(
-                "tag",
-                subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material[0], subtag))
-        );
+        tag.readCompound("tag",
+            subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material[0], subtag)));
         return stack;
     }
 
@@ -127,13 +125,14 @@ public final class NbtSerialization {
      */
     public static World readWorld(GlowServer server, CompoundTag compound) {
         final World[] world = {null};
-        compound.readUuid("WorldUUIDMost", "WorldUUIDLeast", uuid -> world[0] = server.getWorld(uuid)
-        );
+        compound.readUuid("WorldUUIDMost", "WorldUUIDLeast",
+            uuid -> world[0] = server.getWorld(uuid));
         if (world[0] == null) {
             compound.readString("World", name -> world[0] = server.getWorld(name));
         }
         if (world[0] == null) {
             compound.readInt("Dimension", dim -> {
+                // FIXME: Linear time
                 for (World serverWorld : server.getWorlds()) {
                     if (serverWorld.getEnvironment().getId() == dim) {
                         world[0] = serverWorld;

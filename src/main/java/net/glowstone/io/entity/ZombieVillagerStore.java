@@ -36,8 +36,8 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         if (!compound.readInt("ConversionTime", entity::setConversionTime)) {
             entity.setConversionTime(-1);
         }
-        compound.readUuid("ConversionPlayerMost", "ConversionPlayerLeast", entity::setConversionPlayer
-        );
+        compound.readUuid("ConversionPlayerMost", "ConversionPlayerLeast",
+                entity::setConversionPlayer);
     }
 
     @Override

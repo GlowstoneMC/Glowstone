@@ -14,8 +14,8 @@ class WolfStore extends TameableStore<GlowWolf> {
     @Override
     public void load(GlowWolf entity, CompoundTag compound) {
         super.load(entity, compound);
-        compound.readByte("CollarColor", color -> entity.setCollarColor(DyeColor.getByDyeData(color))
-        );
+        compound.readByte("CollarColor",
+            color -> entity.setCollarColor(DyeColor.getByDyeData(color)));
         compound.readBoolean("Angry", entity::setAngry);
     }
 

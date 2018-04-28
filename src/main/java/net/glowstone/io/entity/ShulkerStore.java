@@ -15,8 +15,8 @@ public class ShulkerStore extends MonsterStore<GlowShulker> {
     public void load(GlowShulker entity, CompoundTag tag) {
         super.load(entity, tag);
         tag.readByte("Peek", entity::setShieldHeight);
-        tag.readByte("AttachFace", direction -> entity.setDirection(GlowShulker.Facing.values()[direction])
-        );
+        tag.readByte("AttachFace",
+            direction -> entity.setDirection(GlowShulker.Facing.values()[direction]));
         tag.readByte("Color", color -> entity.setColor(DyeColor.getByWoolData(color)));
     }
 

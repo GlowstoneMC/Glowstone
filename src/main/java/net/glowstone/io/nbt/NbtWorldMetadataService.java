@@ -104,9 +104,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         if (level.readLong("DatTime", world::setTime)) {
             level.remove("DayTime");
         }
-        if (level.readString(
-                "generatorName", generatorName -> world.setWorldType(WorldType.getByName(generatorName))
-        )) {
+        if (level.readString("generatorName",
+            generatorName -> world.setWorldType(WorldType.getByName(generatorName)))) {
             level.remove("generatorName");
         }
 
@@ -153,8 +152,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         )) {
             level.remove("BorderWarningTime");
         }
-        if (level.readDouble("BorderWarningBlocks", distance -> worldBorder.setWarningDistance((int) distance)
-        )) {
+        if (level.readDouble("BorderWarningBlocks",
+            distance -> worldBorder.setWarningDistance((int) distance))) {
             level.remove("BorderWarningBlocks");
         }
         if (level.readDouble("BorderDamagePerBlock", worldBorder::setDamageAmount)) {
