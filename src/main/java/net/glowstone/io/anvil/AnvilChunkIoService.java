@@ -143,32 +143,29 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
         }
 
-        if (levelTag.isList("TileTicks", TagType.COMPOUND)) {
-            List<CompoundTag> tileTicks = levelTag.getCompoundList("TileTicks");
-            for (CompoundTag tileTick : tileTicks) {
-                int tileX = tileTick.getInt("x");
-                int tileY = tileTick.getInt("y");
-                int tileZ = tileTick.getInt("z");
-                String id = tileTick.getString("i");
-                Material material = ItemIds.getBlock(id);
-                if (material == null) {
-                    GlowServer.logger
-                        .warning("Unknown block '" + id + "' when loading chunk block ticks.");
-                    continue;
-                }
-                GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
-                if (material != block.getType()) {
-                    continue;
-                }
-                // TODO tick delay: tileTick.getInt("t");
-                // TODO ordering: tileTick.getInt("p");
-                BlockType type = ItemTable.instance().getBlock(material);
-                if (type == null) {
-                    continue;
-                }
-                block.getWorld().requestPulse(block);
+        levelTag.iterateCompoundList(tileTick -> {
+            int tileX = tileTick.getInt("x");
+            int tileY = tileTick.getInt("y");
+            int tileZ = tileTick.getInt("z");
+            String id = tileTick.getString("i");
+            Material material = ItemIds.getBlock(id);
+            if (material == null) {
+                GlowServer.logger
+                    .warning("Unknown block '" + id + "' when loading chunk block ticks.");
+                return;
             }
-        }
+            GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
+            if (material != block.getType()) {
+                return;
+            }
+            // TODO tick delay: tileTick.getInt("t");
+            // TODO ordering: tileTick.getInt("p");
+            BlockType type = ItemTable.instance().getBlock(material);
+            if (type == null) {
+                return;
+            }
+            block.getWorld().requestPulse(block);
+        }, "TileTicks");
 
         return true;
     }

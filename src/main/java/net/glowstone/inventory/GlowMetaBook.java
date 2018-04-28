@@ -105,16 +105,12 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isString("author")) {
-            author = tag.getString("author");
-        }
-        if (tag.isString("title")) {
-            title = tag.getString("title");
-        }
-        if (tag.isList("pages", TagType.STRING)) {
-            pages = tag.getList("pages", TagType.STRING);
+        tag.readString(this::setAuthor, "author");
+        tag.readString(this::setTitle, "title");
+        tag.readStringList(pages -> {
+            this.pages = pages;
             filterPages();
-        }
+        }, "pages");
         tag.readInt(x -> generation = x, "generation");
     }
 

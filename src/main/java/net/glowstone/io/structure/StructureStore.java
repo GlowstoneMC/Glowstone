@@ -53,19 +53,16 @@ public abstract class StructureStore<T extends GlowStructure> {
      * @param compound The structure's tag.
      */
     public void load(T structure, CompoundTag compound) {
-        if (compound.isIntArray("BB")) {
-            int[] bb = compound.getIntArray("BB");
+        compound.readIntArray(bb -> {
             if (bb.length == 6) {
                 StructureBoundingBox boundingBox = new StructureBoundingBox(
                         new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structure.setBoundingBox(boundingBox);
             }
-        }
-        if (compound.isList("Children", TagType.COMPOUND)) {
-            for (CompoundTag tag : compound.getCompoundList("Children")) {
-                structure.addPiece(StructurePieceStorage.loadStructurePiece(tag));
-            }
-        }
+        }, "BB");
+        compound.iterateCompoundList(
+            tag -> structure.addPiece(StructurePieceStorage.loadStructurePiece(tag)),
+                "Children");
     }
 
     /**

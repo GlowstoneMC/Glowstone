@@ -126,25 +126,23 @@ public final class NbtSerialization {
      * @return The world, or null if none could be found.
      */
     public static World readWorld(GlowServer server, CompoundTag compound) {
-        World world = null;
-        if (compound.isLong("WorldUUIDLeast") && compound.isLong("WorldUUIDMost")) {
-            long uuidLeast = compound.getLong("WorldUUIDLeast");
-            long uuidMost = compound.getLong("WorldUUIDMost");
-            world = server.getWorld(new UUID(uuidMost, uuidLeast));
+        final World[] world = {null};
+        compound.readUuid(uuid -> world[0] = server.getWorld(uuid),
+                "WorldUUIDMost", "WorldUUIDLeast");
+        if (world[0] == null) {
+            compound.readString(name -> world[0] = server.getWorld(name), "World");
         }
-        if (world == null && compound.isString("World")) {
-            world = server.getWorld(compound.getString("World"));
-        }
-        if (world == null && compound.isInt("Dimension")) {
-            int dim = compound.getInt("Dimension");
-            for (World serverWorld : server.getWorlds()) {
-                if (serverWorld.getEnvironment().getId() == dim) {
-                    world = serverWorld;
-                    break;
+        if (world[0] == null) {
+            compound.readInt(dim -> {
+                for (World serverWorld : server.getWorlds()) {
+                    if (serverWorld.getEnvironment().getId() == dim) {
+                        world[0] = serverWorld;
+                        break;
+                    }
                 }
-            }
+            }, "Dimension");
         }
-        return world;
+        return world[0];
     }
 
     /**

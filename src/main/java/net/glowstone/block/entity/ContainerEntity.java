@@ -28,13 +28,10 @@ public abstract class ContainerEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        if (tag.isList("Items", TagType.COMPOUND)) {
-            inventory.setContents(NbtSerialization
-                .readInventory(tag.getCompoundList("Items"), 0, inventory.getSize()));
-        }
-        if (tag.isString("CustomName")) {
-            inventory.setTitle(tag.getString("CustomName"));
-        }
+        tag.readCompoundList(items ->
+            inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize())),
+                "Items");
+        tag.readString(inventory::setTitle, "CustomName");
     }
 
     @Override

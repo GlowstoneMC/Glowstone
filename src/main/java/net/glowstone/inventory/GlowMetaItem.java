@@ -87,21 +87,16 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
-        Map<Enchantment, Integer> result = null;
-
-        if (tag.isList(name, TagType.COMPOUND)) {
-            Iterable<CompoundTag> enchs = tag.getCompoundList(name);
-            for (CompoundTag enchantmentTag : enchs) {
-                if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
-                    Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
-                    if (result == null) {
-                        result = new HashMap<>(4);
-                    }
-                    result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
-                }
+        Map<Enchantment, Integer> result = new HashMap<>(4);
+        tag.iterateCompoundList(enchantmentTag -> {
+            if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
+                Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
+                result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
             }
+        }, name);
+        if (result.isEmpty()) {
+            return null;
         }
-
         return result;
     }
 

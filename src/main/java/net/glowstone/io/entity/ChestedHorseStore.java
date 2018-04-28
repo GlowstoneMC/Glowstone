@@ -8,6 +8,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.ItemStack;
 
 public class ChestedHorseStore<T extends GlowChestedHorse> extends AbstractHorseStore<T> {
@@ -20,10 +21,10 @@ public class ChestedHorseStore<T extends GlowChestedHorse> extends AbstractHorse
     @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isList("Items", TagType.COMPOUND) && entity.getInventory() != null) {
-            List<CompoundTag> items = compound.getList("Items", TagType.COMPOUND);
-            ItemStack[] itemStacks = NbtSerialization.readInventory(items, 2, 14);
-            entity.getInventory().setContents(itemStacks);
+        AbstractHorseInventory inventory = entity.getInventory();
+        if (inventory != null) {
+            compound.readCompoundList(items ->
+                inventory.setContents(NbtSerialization.readInventory(items, 2, 14)),"Items");
         }
     }
 

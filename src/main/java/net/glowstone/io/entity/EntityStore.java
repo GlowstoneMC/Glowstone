@@ -70,15 +70,10 @@ public abstract class EntityStore<T extends GlowEntity> {
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
         // base stuff for all entities is here:
-
-        if (tag.isList("Motion", TagType.DOUBLE)) {
-            entity
-                .setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
-        }
+        tag.<Double>readList(list -> entity.setVelocity(NbtSerialization.listToVector(list)),
+                TagType.DOUBLE, "Motion");
         tag.readFloat(entity::setFallDistance, "FallDistance");
-        if (tag.isShort("Fire")) {
-            entity.setFireTicks(tag.getShort("Fire"));
-        }
+        tag.readShort(entity::setFireTicks, "Fire");
         tag.readBoolean(entity::setOnGround, "OnGround");
         tag.readBooleanNegated(entity::setGravity, "NoGravity");
         tag.readBoolean(entity::setSilent, "Silent");
@@ -89,24 +84,15 @@ public abstract class EntityStore<T extends GlowEntity> {
             entity.getCustomTags().addAll(list);
         }, "Tags");
         tag.readInt(entity::setPortalCooldown, "PortalCooldown");
-
-        if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
-            UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
-            entity.setUniqueId(uuid);
-        } else if (tag.isString("UUID")) {
-            // deprecated string format
-            UUID uuid = UUID.fromString(tag.getString("UUID"));
-            entity.setUniqueId(uuid);
+        if (!tag.readUuid(entity::setUniqueId, "UUIDMost", "UUIDLeast")) {
+            tag.readString(uuidString -> entity.setUniqueId(UUID.fromString(uuidString)), "UUID");
         }
-
-        if (tag.isList("Passengers", TagType.COMPOUND)) {
-            for (CompoundTag entityTag : tag.getCompoundList("Passengers")) {
-                Entity passenger = loadPassenger(entity, entityTag);
-                if (passenger != null) {
-                    entity.addPassenger(passenger);
-                }
+        tag.iterateCompoundList(entityTag -> {
+            Entity passenger = loadPassenger(entity, entityTag);
+            if (passenger != null) {
+                entity.addPassenger(passenger);
             }
-        }
+        }, "Passengers");
     }
 
     private Entity loadPassenger(T vehicle, CompoundTag compoundTag) {
