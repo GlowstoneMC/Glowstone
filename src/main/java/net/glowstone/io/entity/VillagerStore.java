@@ -37,7 +37,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
             entity.setCareerLevel(1);
         }
         // Recipes
-        compound.readCompoundList(recipesList -> {
+        compound.readCompound(offers -> offers.readCompoundList(recipesList -> {
             entity.clearRecipes(); // clear defaults
             List<MerchantRecipe> recipes = new ArrayList<>(recipesList.size());
             for (CompoundTag recipeTag : recipesList) {
@@ -55,7 +55,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                 recipes.add(recipe);
             }
             entity.setRecipes(recipes);
-        }, "Offers", "Recipes");
+        }, "Recipes"), "Offers");
 
         //TODO: remaining data
     }

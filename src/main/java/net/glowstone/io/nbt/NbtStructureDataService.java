@@ -49,7 +49,7 @@ public class NbtStructureDataService implements StructureDataService {
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = in.readCompound();
-                    if (!data.readCompound(
+                    if (!data.readCompound(innerData -> innerData.readCompound(
                         features -> features.getValue().keySet().stream()
                                 .filter(features::isCompound)
                                 .forEach(key -> {
@@ -58,7 +58,7 @@ public class NbtStructureDataService implements StructureDataService {
                                     structures.put(GlowChunk.Key
                                         .of(structure.getChunkX(), structure.getChunkZ())
                                         .hashCode(), structure);
-                                }), "data", "Features")) {
+                                }), "Features"), "Data")) {
                         server.getLogger().log(Level.SEVERE, "No data tag in " + structureFile);
                     }
                 } catch (IOException e) {
@@ -86,9 +86,12 @@ public class NbtStructureDataService implements StructureDataService {
                         new FileInputStream(structureFile))) {
                         data = new CompoundTag();
                         data = in.readCompound();
-                        CompoundTag maybeFeatures = data.tryGetCompound("data", "Features");
-                        if (maybeFeatures != null) {
-                            features = maybeFeatures;
+                        CompoundTag innerData = data.tryGetCompound("data");
+                        if (innerData != null) {
+                            CompoundTag maybeFeatures = innerData.tryGetCompound("Features");
+                            if (maybeFeatures != null) {
+                                features = maybeFeatures;
+                            }
                         }
                     } catch (IOException e) {
                         server.getLogger().log(Level.SEVERE,
