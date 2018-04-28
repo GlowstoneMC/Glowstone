@@ -45,8 +45,7 @@ public class NormalTippedArrowStore extends ArrowStore<GlowArrow> {
             tag.readCompoundList(CUSTOM_POTION_EFFECTS, list -> list
                     .stream()
                     .map(GlowMetaPotion::fromNbt)
-                    .forEach(effect -> tippedArrow.addCustomEffect(effect, false))
-            );
+                    .forEach(effect -> tippedArrow.addCustomEffect(effect, false)));
         }
     }
 

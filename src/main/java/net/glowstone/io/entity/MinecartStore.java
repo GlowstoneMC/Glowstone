@@ -5,6 +5,7 @@ import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 public class MinecartStore extends EntityStore<GlowMinecart> {
@@ -26,12 +27,11 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
     public void load(GlowMinecart entity, CompoundTag tag) {
         super.load(entity, tag);
         if (entity instanceof InventoryHolder) {
-            InventoryHolder inv = (InventoryHolder) entity;
-            if (inv.getInventory() != null) {
-                tag.readCompoundList("Items", items ->
-                    inv.getInventory().setContents(NbtSerialization.readInventory(
-                        items, 0, inv.getInventory().getSize()))
-                );
+            Inventory inventory = ((InventoryHolder) entity).getInventory();
+            if (inventory != null) {
+                tag.readCompoundList("Items",
+                    items -> inventory.setContents(NbtSerialization.readInventory(
+                        items, 0, inventory.getSize())));
             }
         }
         // todo

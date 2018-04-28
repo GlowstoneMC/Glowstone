@@ -69,8 +69,8 @@ public abstract class EntityStore<T extends GlowEntity> {
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
         // base stuff for all entities is here:
-        tag.readDoubleList("Motion", list -> entity.setVelocity(NbtSerialization.listToVector(list))
-        );
+        tag.readDoubleList("Motion",
+            list -> entity.setVelocity(NbtSerialization.listToVector(list)));
         tag.readFloat("FallDistance", entity::setFallDistance);
         tag.readShort("Fire", entity::setFireTicks);
         tag.readBoolean("OnGround", entity::setOnGround);

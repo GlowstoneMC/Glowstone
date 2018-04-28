@@ -59,9 +59,8 @@ public abstract class StructureStore<T extends GlowStructure> {
                 structure.setBoundingBox(boundingBox);
             }
         });
-        compound.iterateCompoundList(
-                "Children", tag -> structure.addPiece(StructurePieceStorage.loadStructurePiece(tag))
-        );
+        compound.iterateCompoundList("Children",
+            tag -> structure.addPiece(StructurePieceStorage.loadStructurePiece(tag)));
     }
 
     /**

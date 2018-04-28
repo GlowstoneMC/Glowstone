@@ -194,9 +194,8 @@ public class NbtPlayerDataService implements PlayerDataService {
         public String getLastKnownName() {
             checkOpen();
             String[] out = {null};
-            tag.readCompound(
-                    "bukkit", bukkit -> bukkit.readString("lastKnownName", x -> out[0] = x)
-            );
+            tag.readCompound("bukkit",
+                bukkit -> bukkit.readString("lastKnownName", x -> out[0] = x));
             return out[0];
         }
 
