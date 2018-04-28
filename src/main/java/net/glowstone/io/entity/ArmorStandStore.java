@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
@@ -23,13 +22,13 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void load(GlowArmorStand entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.readBoolean(entity::setMarker, "Marker");
-        tag.readBooleanNegated(entity::setVisible, "Invisible");
-        tag.readBoolean(entity::setMarker, "Marker");
-        tag.readBooleanNegated(entity::setBasePlate, "NoBasePlate");
-        tag.readBooleanNegated(entity::setGravity, "NoGravity");
-        tag.readBoolean(entity::setArms, "ShowArms");
-        tag.readBoolean(entity::setSmall, "Small");
+        tag.readBoolean("Marker", entity::setMarker);
+        tag.readBooleanNegated("Invisible", entity::setVisible);
+        tag.readBoolean("Marker", entity::setMarker);
+        tag.readBooleanNegated("NoBasePlate", entity::setBasePlate);
+        tag.readBooleanNegated("NoGravity", entity::setGravity);
+        tag.readBoolean("ShowArms", entity::setArms);
+        tag.readBoolean("Small", entity::setSmall);
         CompoundTag pose = tag.tryGetCompound("Pose");
         if (pose != null) {
             entity.setBodyPose(readSafeAngle(pose, "Body"));
@@ -71,10 +70,10 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     private EulerAngle readSafeAngle(CompoundTag tag, String key) {
         final EulerAngle[] out = {EulerAngle.ZERO};
         tag.readFloatList(
-            list -> out[0] = new EulerAngle(
+                key, list -> out[0] = new EulerAngle(
                     Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
-                    Math.toRadians(list.get(2))),
-                key);
+                    Math.toRadians(list.get(2)))
+        );
         return out[0];
     }
 }

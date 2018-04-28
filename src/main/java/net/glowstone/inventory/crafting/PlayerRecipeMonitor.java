@@ -53,10 +53,10 @@ public final class PlayerRecipeMonitor {
         if (recipeBook == null) {
             return;
         }
-        recipeBook.readBoolean(this::setFilterCraftable, "isFilteringCraftable");
-        recipeBook.readBoolean(this::setBookOpen, "isGuiOpen");
-        recipeBook.readStringList(recipes::addAll, "recipes");
-        recipeBook.readStringList(toBeDisplayed::addAll, "toBeDisplayed");
+        recipeBook.readBoolean("isFilteringCraftable", this::setFilterCraftable);
+        recipeBook.readBoolean("isGuiOpen", this::setBookOpen);
+        recipeBook.readStringList("recipes", recipes::addAll);
+        recipeBook.readStringList("toBeDisplayed", toBeDisplayed::addAll);
     }
 
     /**

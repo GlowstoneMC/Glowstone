@@ -15,7 +15,6 @@ import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -53,15 +52,15 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
     @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
-        compound.readShort(entity::setRemainingAir, "Air");
-        compound.readString(entity::setCustomName, "CustomName");
-        compound.readBoolean(entity::setCustomNameVisible, "CustomNameVisible");
-        if (!compound.readFloat(entity::setHealth, "HealF")) {
-            compound.readShort(entity::setHealth, "Health");
+        compound.readShort("Air", entity::setRemainingAir);
+        compound.readString("CustomName", entity::setCustomName);
+        compound.readBoolean("CustomNameVisible", entity::setCustomNameVisible);
+        if (!compound.readFloat("HealF", entity::setHealth)) {
+            compound.readShort("Health", entity::setHealth);
         }
-        compound.readShort(entity::setNoDamageTicks, "AttackTime");
-        compound.readBoolean(entity::setFallFlying, "FallFlying");
-        compound.iterateCompoundList(effect -> {
+        compound.readShort("AttackTime", entity::setNoDamageTicks);
+        compound.readBoolean("FallFlying", entity::setFallFlying);
+        compound.iterateCompoundList("ActiveEffects", effect -> {
             // should really always have every field, but be forgiving if possible
             if (!effect.isByte("Id") || !effect.isInt("Duration")) {
                 return;
@@ -74,24 +73,24 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             }
             final int[] amplifier = {0};
             boolean ambient = compound.getBoolDefaultFalse("Ambient");
-            compound.readInt(x -> amplifier[0] = x, "Amplifier");
+            compound.readInt("Amplifier", x -> amplifier[0] = x);
             // bool "ShowParticles"
 
             entity.addPotionEffect(new PotionEffect(type, duration, amplifier[0], ambient), true);
-        }, "ActiveEffects");
+        });
 
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {
             loadEquipment(entity, equip, compound);
         }
-        compound.readBoolean(entity::setCanPickupItems, "CanPickUpLoot");
+        compound.readBoolean("CanPickUpLoot", entity::setCanPickupItems);
         AttributeManager am = entity.getAttributeManager();
-        compound.iterateCompoundList(tag -> {
+        compound.iterateCompoundList("Attributes", tag -> {
             if (!tag.isString("Name") || !tag.isDouble("Base")) {
                 return;
             }
             List<Modifier> modifiers = null;
-            tag.iterateCompoundList(modifierTag -> {
+            tag.iterateCompoundList("Modifiers", modifierTag -> {
                 if (modifierTag.isDouble("Amount")
                         && modifierTag.isString("Name")
                         && modifierTag.isInt("Operation")
@@ -104,21 +103,21 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                             modifierTag.getDouble("Amount"),
                             (byte) modifierTag.getInt("Operation")));
                 }
-            }, "Modifiers");
+            });
             am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
-        }, "Attributes");
+        });
         CompoundTag leash = compound.tryGetCompound("Leash");
         if (leash == null) {
-            compound.readBoolean(leashSet -> {
+            compound.readBoolean("Leashed", leashSet -> {
                 if (leashSet) {
                     // We know that there was something leashed, but not what entity it was
                     // This can happen, when for example Minecart got leashed
                     // We still have to make sure that we drop a Leash Item
                     entity.setLeashHolderUniqueId(UUID.randomUUID());
                 }
-            }, "Leashed");
+            });
         } else {
-            if (!leash.readUuid(entity::setLeashHolderUniqueId, "UUIDMost", "UUIDLeast")
+            if (!leash.readUuid("UUIDMost", "UUIDLeast", entity::setLeashHolderUniqueId)
                     && leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
                 int y = leash.getInt("Y");
@@ -133,44 +132,44 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
 
     private void loadEquipment(T entity, EntityEquipment equip, CompoundTag compound) {
         // Deprecated since 15w31a, left here for compatibilty for now
-        compound.readCompoundList(list -> {
+        compound.readCompoundList("Equipment", list -> {
             equip.setItemInMainHand(getItem(list, 0));
             equip.setBoots(getItem(list, 1));
             equip.setLeggings(getItem(list, 2));
             equip.setChestplate(getItem(list, 3));
             equip.setHelmet(getItem(list, 4));
-        }, "Equipment");
+        });
         // Deprecated since 15w31a, left here for compatibilty for now
-        compound.readFloatList(list -> {
+        compound.readFloatList("DropChances", list -> {
             equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
             equip.setBootsDropChance(getOrDefault(list, 1, 1f));
             equip.setLeggingsDropChance(getOrDefault(list, 2, 1f));
             equip.setChestplateDropChance(getOrDefault(list, 3, 1f));
             equip.setHelmetDropChance(getOrDefault(list, 4, 1f));
-        }, "DropChances");
-        compound.readCompoundList(list -> {
+        });
+        compound.readCompoundList("HandItems", list -> {
             equip.setItemInMainHand(getItem(list, 0));
             equip.setItemInOffHand(getItem(list, 1));
-        }, "HandItems");
-        compound.readCompoundList(list -> {
+        });
+        compound.readCompoundList("ArmorItems", list -> {
             equip.setBoots(getItem(list, 0));
             equip.setLeggings(getItem(list, 1));
             equip.setChestplate(getItem(list, 2));
             equip.setHelmet(getItem(list, 3));
-        }, "ArmorItems");
+        });
 
         // set of dropchances on a player throws an UnsupportedOperationException
         if (!(entity instanceof Player)) {
-            compound.readFloatList(list -> {
+            compound.readFloatList("HandDropChances", list -> {
                 equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
                 equip.setItemInOffHandDropChance(getOrDefault(list, 1, 1f));
-            }, "HandDropChances");
-            compound.readFloatList(list -> {
+            });
+            compound.readFloatList("ArmorDropChances", list -> {
                 equip.setBootsDropChance(getOrDefault(list, 0, 1f));
                 equip.setLeggingsDropChance(getOrDefault(list, 1, 1f));
                 equip.setChestplateDropChance(getOrDefault(list, 2, 1f));
                 equip.setHelmetDropChance(getOrDefault(list, 3, 1f));
-            }, "ArmorDropChances");
+            });
         }
     }
 

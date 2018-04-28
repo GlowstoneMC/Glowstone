@@ -5,11 +5,9 @@ import java.util.function.Function;
 import net.glowstone.entity.passive.GlowChestedHorse;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.AbstractHorseInventory;
-import org.bukkit.inventory.ItemStack;
 
 public class ChestedHorseStore<T extends GlowChestedHorse> extends AbstractHorseStore<T> {
 
@@ -23,8 +21,8 @@ public class ChestedHorseStore<T extends GlowChestedHorse> extends AbstractHorse
         super.load(entity, compound);
         AbstractHorseInventory inventory = entity.getInventory();
         if (inventory != null) {
-            compound.readCompoundList(items ->
-                inventory.setContents(NbtSerialization.readInventory(items, 2, 14)),"Items");
+            compound.readCompoundList("Items", items ->
+                inventory.setContents(NbtSerialization.readInventory(items, 2, 14)));
         }
     }
 

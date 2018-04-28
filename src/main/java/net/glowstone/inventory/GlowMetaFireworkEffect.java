@@ -50,11 +50,11 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
         boolean flicker = explosion.getBoolDefaultFalse("Flicker");
         boolean trail = explosion.getBoolDefaultFalse("Trail");
 
-        explosion.readIntArray(fadeInts -> {
+        explosion.readIntArray("FadeColors", fadeInts -> {
             for (int fade : fadeInts) {
                 fadeColors.add(Color.fromRGB(fade));
             }
-        }, "FadeColors");
+        });
 
         return FireworkEffect.builder()
             .flicker(flicker)
@@ -112,7 +112,7 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        tag.readCompound(explosion -> effect = toEffect(explosion), "Explosion");
+        tag.readCompound("Explosion", explosion -> effect = toEffect(explosion));
     }
 
     @Override

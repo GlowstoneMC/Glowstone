@@ -19,13 +19,13 @@ class EndermanStore extends MonsterStore<GlowEnderman> {
         final MaterialData[] carried = {null};
         // Load carried block. May be saved as a String or short ID.
         // If the id is 0 or AIR, it is ignored.
-        if (!compound.readShort(id -> {
+        if (!compound.readShort("carried", id -> {
             Material type = Material.getMaterial(id);
             if (type != null && type != Material.AIR) {
                 carried[0] = new MaterialData(type);
             }
-        }, "carried")) {
-            compound.readString(id -> {
+        })) {
+            compound.readString("carried", id -> {
                 if (!id.isEmpty()) {
                     if (!id.contains(":")) {
                         // There is no namespace, so prepend the default minecraft: namespace
@@ -40,10 +40,10 @@ class EndermanStore extends MonsterStore<GlowEnderman> {
                         carried[0] = new MaterialData(type);
                     }
                 }
-            }, "carried");
+            });
         }
         if (carried[0] != null) {
-            compound.readShort(data -> carried[0].setData((byte) data), "carriedData");
+            compound.readShort("carriedData", data -> carried[0].setData((byte) data));
             entity.setCarriedMaterial(carried[0]);
         }
     }

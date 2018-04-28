@@ -10,7 +10,6 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -70,29 +69,29 @@ public abstract class EntityStore<T extends GlowEntity> {
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
         // base stuff for all entities is here:
-        tag.readDoubleList(list -> entity.setVelocity(NbtSerialization.listToVector(list)),
-                "Motion");
-        tag.readFloat(entity::setFallDistance, "FallDistance");
-        tag.readShort(entity::setFireTicks, "Fire");
-        tag.readBoolean(entity::setOnGround, "OnGround");
-        tag.readBooleanNegated(entity::setGravity, "NoGravity");
-        tag.readBoolean(entity::setSilent, "Silent");
-        tag.readBoolean(entity::setGlowing, "Glowing");
-        tag.readBoolean(entity::setInvulnerable, "Invulnerable");
-        tag.readStringList(list -> {
+        tag.readDoubleList("Motion", list -> entity.setVelocity(NbtSerialization.listToVector(list))
+        );
+        tag.readFloat("FallDistance", entity::setFallDistance);
+        tag.readShort("Fire", entity::setFireTicks);
+        tag.readBoolean("OnGround", entity::setOnGround);
+        tag.readBooleanNegated("NoGravity", entity::setGravity);
+        tag.readBoolean("Silent", entity::setSilent);
+        tag.readBoolean("Glowing", entity::setGlowing);
+        tag.readBoolean("Invulnerable", entity::setInvulnerable);
+        tag.readStringList("Tags", list -> {
             entity.getCustomTags().clear();
             entity.getCustomTags().addAll(list);
-        }, "Tags");
-        tag.readInt(entity::setPortalCooldown, "PortalCooldown");
-        if (!tag.readUuid(entity::setUniqueId, "UUIDMost", "UUIDLeast")) {
-            tag.readString(uuidString -> entity.setUniqueId(UUID.fromString(uuidString)), "UUID");
+        });
+        tag.readInt("PortalCooldown", entity::setPortalCooldown);
+        if (!tag.readUuid("UUIDMost", "UUIDLeast", entity::setUniqueId)) {
+            tag.readString("UUID", uuidString -> entity.setUniqueId(UUID.fromString(uuidString)));
         }
-        tag.iterateCompoundList(entityTag -> {
+        tag.iterateCompoundList("Passengers", entityTag -> {
             Entity passenger = loadPassenger(entity, entityTag);
             if (passenger != null) {
                 entity.addPassenger(passenger);
             }
-        }, "Passengers");
+        });
     }
 
     private Entity loadPassenger(T vehicle, CompoundTag compoundTag) {

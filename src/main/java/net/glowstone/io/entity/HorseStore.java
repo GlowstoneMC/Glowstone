@@ -15,14 +15,14 @@ public class HorseStore extends AbstractHorseStore<GlowHorse> {
     @Override
     public void load(GlowHorse entity, CompoundTag compound) {
         super.load(entity, compound);
-        compound.readBoolean(entity::setEatingHay, "EatingHaystack");
-        compound.readInt(variant -> {
+        compound.readBoolean("EatingHaystack", entity::setEatingHay);
+        compound.readInt("Variant", variant -> {
             entity.setStyle(Horse.Style.values()[variant >>> 8]);
             entity.setColor(Horse.Color.values()[variant & 0xFF]);
-        }, "Variant");
-        compound.readInt(entity::setTemper, "Temper");
-        compound.readItem(entity.getInventory()::setArmor, "ArmorItem");
-        compound.readItem(entity.getInventory()::setSaddle, "SaddleItem");
+        });
+        compound.readInt("Temper", entity::setTemper);
+        compound.readItem("ArmorItem", entity.getInventory()::setArmor);
+        compound.readItem("SaddleItem", entity.getInventory()::setSaddle);
     }
 
     @Override

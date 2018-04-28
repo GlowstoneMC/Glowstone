@@ -37,28 +37,28 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
     @Override
     public void load(GlowAreaEffectCloud entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.readInt(rgb -> entity.setColor(Color.fromRGB(rgb)), COLOR);
-        tag.readInt(entity::setDuration, DURATION);
-        tag.readInt(entity::setReapplicationDelay, REAPPLICATION_DELAY);
-        tag.readInt(entity::setWaitTime, WAIT_TIME);
+        tag.readInt(COLOR, rgb -> entity.setColor(Color.fromRGB(rgb)));
+        tag.readInt(DURATION, entity::setDuration);
+        tag.readInt(REAPPLICATION_DELAY, entity::setReapplicationDelay);
+        tag.readInt(WAIT_TIME, entity::setWaitTime);
         // TODO: OWNER_UUID_LEAST, OWNER_UUID_MOST
-        tag.readInt(entity::setDurationOnUse, DURATION_ON_USE);
-        tag.readFloat(entity::setRadius, RADIUS);
-        tag.readFloat(entity::setRadiusOnUse, RADIUS_ON_USE);
-        tag.readFloat(entity::setRadiusPerTick, RADIUS_PER_TICK);
-        tag.readString(particle -> {
+        tag.readInt(DURATION_ON_USE, entity::setDurationOnUse);
+        tag.readFloat(RADIUS, entity::setRadius);
+        tag.readFloat(RADIUS_ON_USE, entity::setRadiusOnUse);
+        tag.readFloat(RADIUS_PER_TICK, entity::setRadiusPerTick);
+        tag.readString(PARTICLE, particle -> {
             try {
                 entity.setParticle(Particle.valueOf(particle));
             } catch (IllegalArgumentException e) {
                 GlowServer.logger.warning(() -> String.format(
                         "Ignoring invalid particle type %s in tag %s", particle, tag));
             }
-        }, PARTICLE);
+        });
         // TODO: Potion
-        tag.readCompoundList(effects -> effects
+        tag.readCompoundList(EFFECTS, effects -> effects
             .stream()
             .map(GlowMetaPotion::fromNbt)
-            .forEach(effect -> entity.addCustomEffect(effect, false)), EFFECTS);
+            .forEach(effect -> entity.addCustomEffect(effect, false)));
     }
 
     @Override

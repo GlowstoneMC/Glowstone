@@ -19,8 +19,8 @@ class ExperienceOrbStore extends EntityStore<GlowExperienceOrb> {
     @Override
     public void load(GlowExperienceOrb entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.readShort(entity::setTicksLived, "Age");
-        tag.readShort(entity::setExperience, "Value");
+        tag.readShort("Age", entity::setTicksLived);
+        tag.readShort("Value", entity::setExperience);
     }
 
     @Override

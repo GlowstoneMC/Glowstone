@@ -17,10 +17,10 @@ public class DesertTempleStore extends TemplePieceStore<GlowDesertTemple> {
     @Override
     public void load(GlowDesertTemple structurePiece, CompoundTag compound) {
         super.load(structurePiece, compound);
-        compound.readBoolean(structurePiece::setHasPlacedChest0, "hasPlacedChest0");
-        compound.readBoolean(structurePiece::setHasPlacedChest1, "hasPlacedChest1");
-        compound.readBoolean(structurePiece::setHasPlacedChest2, "hasPlacedChest2");
-        compound.readBoolean(structurePiece::setHasPlacedChest3, "hasPlacedChest3");
+        compound.readBoolean("hasPlacedChest0", structurePiece::setHasPlacedChest0);
+        compound.readBoolean("hasPlacedChest1", structurePiece::setHasPlacedChest1);
+        compound.readBoolean("hasPlacedChest2", structurePiece::setHasPlacedChest2);
+        compound.readBoolean("hasPlacedChest3", structurePiece::setHasPlacedChest3);
     }
 
     @Override

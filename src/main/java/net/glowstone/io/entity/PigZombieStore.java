@@ -16,10 +16,10 @@ class PigZombieStore extends ZombieStore<GlowPigZombie> {
     public void load(GlowZombie entity, CompoundTag tag) {
         super.load(entity, tag);
         final GlowPigZombie pigEntity = (GlowPigZombie) entity;
-        if (!tag.readInt(pigEntity::setAnger, "Anger")) {
+        if (!tag.readInt("Anger", pigEntity::setAnger)) {
             pigEntity.setAnger(0);
         }
-        if (!tag.readString(uuid -> pigEntity.setHurtBy(UUID.fromString(uuid)), "HurtBy")) {
+        if (!tag.readString("HurtBy", uuid -> pigEntity.setHurtBy(UUID.fromString(uuid)))) {
             pigEntity.setHurtBy(null);
         }
     }

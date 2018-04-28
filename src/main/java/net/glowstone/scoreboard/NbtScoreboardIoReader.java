@@ -45,21 +45,21 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerObjectives(CompoundTag root, GlowScoreboard scoreboard) {
-        root.iterateCompoundList(objective -> registerObjective(objective, scoreboard),
-                "Objectives");
+        root.iterateCompoundList("Objectives", objective -> registerObjective(objective, scoreboard)
+        );
     }
 
     private static void registerObjective(CompoundTag data, GlowScoreboard scoreboard) {
         String criteria = data.getString("CriteriaName");
         String name = data.getString("Name");
         GlowObjective objective = (GlowObjective) scoreboard.registerNewObjective(name, criteria);
-        data.readString(objective::setDisplayName, "DisplayName");
-        data.readString(objective::setRenderType, "RenderType");
+        data.readString("DisplayName", objective::setDisplayName);
+        data.readString("RenderType", objective::setRenderType);
     }
 
 
     private static void registerScores(CompoundTag root, GlowScoreboard scoreboard) {
-        root.iterateCompoundList(score -> registerScore(score, scoreboard), "PlayerScores");
+        root.iterateCompoundList("PlayerScores", score -> registerScore(score, scoreboard));
     }
 
     private static void registerScore(CompoundTag data, GlowScoreboard scoreboard) {
@@ -69,11 +69,11 @@ public class NbtScoreboardIoReader {
 
         Score score = scoreboard.getObjective(objective).getScore(name);
         score.setScore(scoreNum);
-        data.readBoolean(((GlowScore) score)::setLocked, "Locked");
+        data.readBoolean("Locked", ((GlowScore) score)::setLocked);
     }
 
     private static void registerTeams(CompoundTag root, GlowScoreboard scoreboard) {
-        root.iterateCompoundList(team -> registerTeam(team, scoreboard), "Teams");
+        root.iterateCompoundList("Teams", team -> registerTeam(team, scoreboard));
     }
 
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
@@ -113,14 +113,14 @@ public class NbtScoreboardIoReader {
         }
 
         GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(data.getString("Name"));
-        data.readString(team::setDisplayName, "DisplayName");
-        data.readString(team::setPrefix, "Prefix");
-        data.readString(team::setSuffix, "Suffix");
-        data.readBoolean(team::setAllowFriendlyFire, "AllowFriendlyFire");
-        data.readBoolean(team::setCanSeeFriendlyInvisibles, "SeeFriendlyInvisibles");
-        data.readString(nameTagVisibility ->
+        data.readString("DisplayName", team::setDisplayName);
+        data.readString("Prefix", team::setPrefix);
+        data.readString("Suffix", team::setSuffix);
+        data.readBoolean("AllowFriendlyFire", team::setAllowFriendlyFire);
+        data.readBoolean("SeeFriendlyInvisibles", team::setCanSeeFriendlyInvisibles);
+        data.readString("NameTagVisibility", nameTagVisibility ->
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus
-                .valueOf(nameTagVisibility.toUpperCase())), "NameTagVisibility");
+                .valueOf(nameTagVisibility.toUpperCase())));
         team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, deathMessageVisibility);
         team.setOption(Team.Option.COLLISION_RULE, collisionRule);
         if (teamColor != null) {
@@ -136,14 +136,14 @@ public class NbtScoreboardIoReader {
             CompoundTag data = root.getCompound("DisplaySlots");
 
             data.readString(
-                list -> scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST),
-                    "slot_0");
+                    "slot_0", list -> scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST)
+            );
             data.readString(
-                sidebar -> scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR),
-                    "slot_1");
+                    "slot_1", sidebar -> scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR)
+            );
             data.readString(
-                belowName -> scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME),
-                    "slot_2");
+                    "slot_2", belowName -> scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME)
+            );
 
             /* TODO: anything need to be done with team slots?
             String teamBlack = getOrNull("slot_3", data);

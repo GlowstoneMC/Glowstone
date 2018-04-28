@@ -90,12 +90,12 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        tag.readCompound(blockEntityTag -> {
+        tag.readCompound("BlockEntityTag", blockEntityTag -> {
             blockEntityTag.readCompoundList(
-                patterns -> this.patterns = BlockBanner.fromNbt(patterns), "Patterns");
+                    "Patterns", patterns -> this.patterns = BlockBanner.fromNbt(patterns));
             blockEntityTag.readInt(
-                colorInt -> this.baseColor = DyeColor.getByWoolData((byte) colorInt), "Base");
-        }, "BlockEntityTag");
+                    "Base", colorInt -> this.baseColor = DyeColor.getByWoolData((byte) colorInt));
+        });
     }
 
     @Override

@@ -20,6 +20,6 @@ public class ArrowStore<T extends GlowArrow> extends ProjectileStore<T> {
     @Override
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.readShort(entity::setLife, "life");
+        tag.readShort("life", entity::setLife);
     }
 }

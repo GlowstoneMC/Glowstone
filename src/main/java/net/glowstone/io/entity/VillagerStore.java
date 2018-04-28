@@ -19,33 +19,33 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     @Override
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
-        compound.readInt(professionId -> {
+        compound.readInt("Profession", professionId -> {
             if (GlowVillager.isValidProfession(professionId)) {
                 entity.setProfession(GlowVillager.getProfessionById(professionId));
             }
-        }, "Profession");
-        compound.readInt(id -> {
+        });
+        compound.readInt("Career", id -> {
             Villager.Career career = GlowVillager.getCareerById(id, entity.getProfession());
             if (career != null) {
                 entity.setCareer(career);
             }
-        }, "Career");
-        compound.readInt(entity::setRiches, "Riches");
-        compound.readBoolean(entity::setWilling, "Willing");
-        if (!compound.readInt(entity::setCareerLevel, "CareerLevel")
+        });
+        compound.readInt("Riches", entity::setRiches);
+        compound.readBoolean("Willing", entity::setWilling);
+        if (!compound.readInt("CareerLevel", entity::setCareerLevel)
                 && entity.getCareer() != null) {
             entity.setCareerLevel(1);
         }
         // Recipes
-        compound.readCompound(offers -> offers.readCompoundList(recipesList -> {
+        compound.readCompound("Offers", offers -> offers.readCompoundList("Recipes", recipesList -> {
             entity.clearRecipes(); // clear defaults
             List<MerchantRecipe> recipes = new ArrayList<>(recipesList.size());
             for (CompoundTag recipeTag : recipesList) {
                 List<ItemStack> ingredients = new ArrayList<>(2);
-                final ItemStack[] sell = new ItemStack[1];
-                recipeTag.readItem(item -> sell[0] = item, "sell");
-                recipeTag.readItem(ingredients::add, "buy");
-                recipeTag.readItem(ingredients::add, "buyB");
+                final ItemStack[] sell = {null};
+                recipeTag.readItem("sell", item -> sell[0] = item);
+                recipeTag.readItem("buy", ingredients::add);
+                recipeTag.readItem("buyB", ingredients::add);
                 boolean experienceReward = recipeTag.getBoolDefaultFalse("rewardExp");
                 int uses = recipeTag.getInt("uses");
                 int maxUses = recipeTag.getInt("maxUses");
@@ -55,7 +55,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                 recipes.add(recipe);
             }
             entity.setRecipes(recipes);
-        }, "Recipes"), "Offers");
+        }));
 
         //TODO: remaining data
     }

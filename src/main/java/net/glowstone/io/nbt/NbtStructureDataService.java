@@ -49,8 +49,8 @@ public class NbtStructureDataService implements StructureDataService {
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = in.readCompound();
-                    if (!data.readCompound(innerData -> innerData.readCompound(
-                        features -> features.getValue().keySet().stream()
+                    if (!data.readCompound("Data", innerData -> innerData.readCompound(
+                            "Features", features -> features.getValue().keySet().stream()
                                 .filter(features::isCompound)
                                 .forEach(key -> {
                                     GlowStructure structure = StructureStorage
@@ -58,7 +58,7 @@ public class NbtStructureDataService implements StructureDataService {
                                     structures.put(GlowChunk.Key
                                         .of(structure.getChunkX(), structure.getChunkZ())
                                         .hashCode(), structure);
-                                }), "Features"), "Data")) {
+                                })))) {
                         server.getLogger().log(Level.SEVERE, "No data tag in " + structureFile);
                     }
                 } catch (IOException e) {

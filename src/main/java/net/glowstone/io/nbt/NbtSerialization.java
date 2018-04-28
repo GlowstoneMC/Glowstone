@@ -9,7 +9,6 @@ import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -34,14 +33,14 @@ public final class NbtSerialization {
      */
     public static ItemStack readItem(CompoundTag tag) {
         final Material[] material = new Material[1];
-        if (!tag.readString(id -> material[0] = ItemIds.getItem(id), "id")
-                && !tag.readShort(id -> material[0] = Material.getMaterial(id), "id")) {
+        if (!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
+                && !tag.readShort("id", id -> material[0] = Material.getMaterial(id))) {
             return null;
         }
         final short[] damage = {0};
-        tag.readShort(x -> damage[0] = x, "Damage");
+        tag.readShort("Damage", x -> damage[0] = x);
         final byte[] count = {0};
-        tag.readByte(x -> count[0] = x, "Count");
+        tag.readByte("Count", x -> count[0] = x);
 
         if (material[0] == null || material[0] == Material.AIR || count[0] == 0) {
             return null;
@@ -50,8 +49,9 @@ public final class NbtSerialization {
         // This is slightly different than what tag.readItem would do, since we specify the
         // material separately.
         tag.readCompound(
-            subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material[0], subtag)),
-                "tag");
+                "tag",
+                subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material[0], subtag))
+        );
         return stack;
     }
 
@@ -91,11 +91,11 @@ public final class NbtSerialization {
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
         for (CompoundTag tag : tagList) {
-            tag.readByte(slot -> {
+            tag.readByte("Slot", slot -> {
                 if (slot >= start && slot < start + size) {
                     items[slot - start] = readItem(tag);
                 }
-            }, "Slot");
+            });
         }
         return items;
     }
@@ -127,20 +127,20 @@ public final class NbtSerialization {
      */
     public static World readWorld(GlowServer server, CompoundTag compound) {
         final World[] world = {null};
-        compound.readUuid(uuid -> world[0] = server.getWorld(uuid),
-                "WorldUUIDMost", "WorldUUIDLeast");
+        compound.readUuid("WorldUUIDMost", "WorldUUIDLeast", uuid -> world[0] = server.getWorld(uuid)
+        );
         if (world[0] == null) {
-            compound.readString(name -> world[0] = server.getWorld(name), "World");
+            compound.readString("World", name -> world[0] = server.getWorld(name));
         }
         if (world[0] == null) {
-            compound.readInt(dim -> {
+            compound.readInt("Dimension", dim -> {
                 for (World serverWorld : server.getWorlds()) {
                     if (serverWorld.getEnvironment().getId() == dim) {
                         world[0] = serverWorld;
                         break;
                     }
                 }
-            }, "Dimension");
+            });
         }
         return world[0];
     }
@@ -175,21 +175,21 @@ public final class NbtSerialization {
     public static Location listTagsToLocation(World world, CompoundTag tag) {
         // check for position list
         final Location[] out = {null};
-        tag.readDoubleList(pos -> {
+        tag.readDoubleList("Pos", pos -> {
             if (pos.size() == 3) {
                 Location location = new Location(world, pos.get(0), pos.get(1), pos.get(2));
 
                 // check for rotation
-                tag.readFloatList(rot -> {
+                tag.readFloatList("Rotation", rot -> {
                     if (rot.size() == 2) {
                         location.setYaw(rot.get(0));
                         location.setPitch(rot.get(1));
                     }
-                }, "Rotation");
+                });
 
                 out[0] = location;
             }
-        }, "Pos");
+        });
 
         return out[0];
     }

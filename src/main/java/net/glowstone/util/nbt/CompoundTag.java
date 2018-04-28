@@ -315,12 +315,12 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * Applies the given function to a compound subtag if it is present. Multiple strings can be
      * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readCompound(Consumer<? super CompoundTag> consumer, String keys) {
-        CompoundTag tag = tryGetCompound(keys);
+    public boolean readCompound(String key, Consumer<? super CompoundTag> consumer) {
+        CompoundTag tag = tryGetCompound(key);
         if (tag != null) {
             consumer.accept(tag);
             return true;
@@ -329,8 +329,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         }
     }
 
-    private <V, T extends Tag<V>> boolean readTag(Consumer<? super V> consumer,
-            Class<T> clazz, String key) {
+    private <V, T extends Tag<V>> boolean readTag(String key, Class<T> clazz,
+            Consumer<? super V> consumer) {
         if (is(key, clazz)) {
             consumer.accept(get(key, clazz));
             return true;
@@ -339,98 +339,86 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     }
 
     /**
-     * Applies the given function to a float subtag if it is present. Multiple strings can be
-     * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except that
-     * the last one must be a float rather than compound subtag.
+     * Applies the given function to a float subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readFloat(FloatConsumer consumer, String keys) {
+    public boolean readFloat(String key, FloatConsumer consumer) {
         // Avoid boxing by not delegating to readTag
-        if (isFloat(keys)) {
-            consumer.accept(getFloat(keys));
+        if (isFloat(key)) {
+            consumer.accept(getFloat(key));
             return true;
         }
         return false;
     }
 
     /**
-     * Applies the given function to a double subtag if it is present. Multiple strings can be
-     * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except that
-     * the last one must be a double rather than compound subtag.
+     * Applies the given function to a double subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readDouble(DoubleConsumer consumer, String keys) {
+    public boolean readDouble(String key, DoubleConsumer consumer) {
         // Avoid boxing by not delegating to readTag
-        if (isDouble(keys)) {
-            consumer.accept(getDouble(keys));
+        if (isDouble(key)) {
+            consumer.accept(getDouble(key));
             return true;
         }
         return false;
     }
 
     /**
-     * Applies the given function to an integer subtag if it is present. Multiple strings can be
-     * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except that
-     * the last one must be an integer rather than compound subtag.
+     * Applies the given function to an integer subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readInt(IntConsumer consumer, String keys) {
+    public boolean readInt(String key, IntConsumer consumer) {
         // Avoid boxing by not delegating to readTag
-        if (isInt(keys)) {
-            consumer.accept(getInt(keys));
+        if (isInt(key)) {
+            consumer.accept(getInt(key));
             return true;
         }
         return false;
     }
 
     /**
-     * Applies the given function to a byte array subtag if it is present. Multiple strings can
-     * be passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except
-     * that the last one must be a byte array rather than compound subtag.
+     * Applies the given function to a byte array subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readByteArray(Consumer<? super byte[]> consumer, String keys) {
-        return readTag(consumer, ByteArrayTag.class, keys);
+    public boolean readByteArray(String key, Consumer<? super byte[]> consumer) {
+        return readTag(key, ByteArrayTag.class, consumer);
     }
 
     /**
-     * Applies the given function to an integer array subtag if it is present. Multiple strings can
-     * be passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except
-     * that the last one must be an integer array rather than compound subtag.
+     * Applies the given function to an integer array subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readIntArray(Consumer<? super int[]> consumer, String keys) {
-        return readTag(consumer, IntArrayTag.class, keys);
+    public boolean readIntArray(String key, Consumer<? super int[]> consumer) {
+        return readTag(key, IntArrayTag.class, consumer);
     }
 
     /**
-     * Applies the given function to a long subtag if it is present. Multiple strings can be
-     * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except that
-     * the last one must be a long rather than compound subtag.
+     * Applies the given function to a long subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readLong(LongConsumer consumer, String keys) {
+    public boolean readLong(String key, LongConsumer consumer) {
         // Avoid boxing by not delegating to readTag
-        if (isLong(keys)) {
-            consumer.accept(getLong(keys));
+        if (isLong(key)) {
+            consumer.accept(getLong(key));
             return true;
         }
         return false;
@@ -438,18 +426,16 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
 
     /**
-     * Applies the given function to an integer subtag if it is present. Multiple strings can be
-     * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except that
-     * the last one must be an integer rather than compound subtag.
+     * Applies the given function to an integer subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readShort(ShortConsumer consumer, String keys) {
+    public boolean readShort(String key, ShortConsumer consumer) {
         // Avoid boxing by not delegating to readTag
-        if (isShort(keys)) {
-            consumer.accept(getShort(keys));
+        if (isShort(key)) {
+            consumer.accept(getShort(key));
             return true;
         }
         return false;
@@ -458,63 +444,54 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
     /**
      * Applies the given function to a compound subtag if it is present, first converting it to an
-     * item using {@link NbtSerialization#readItem(CompoundTag)}. Multiple strings can be
-     * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}.
+     * item using {@link NbtSerialization#readItem(CompoundTag)}.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readItem(Consumer<? super ItemStack> consumer, String keys) {
-        return readCompound(tag -> consumer.accept(NbtSerialization.readItem(tag)), keys);
+    public boolean readItem(String key, Consumer<? super ItemStack> consumer) {
+        return readCompound(key, tag -> consumer.accept(NbtSerialization.readItem(tag)));
     }
 
     /**
      * Applies the given function to a byte subtag if it is present, converting it to boolean first.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a byte rather than
-     * compound subtag.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readBoolean(Consumer<? super Boolean> consumer, String keys) {
+    public boolean readBoolean(String key, Consumer<? super Boolean> consumer) {
         // For a boolean, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
-        return readTag(byteVal -> consumer.accept(byteVal != 0), ByteTag.class, keys);
+        return readTag(key, ByteTag.class, byteVal -> consumer.accept(byteVal != 0));
     }
 
     /**
      * Applies the given function to a byte subtag if it is present.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a byte rather than
-     * compound subtag.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readByte(Consumer<? super Byte> consumer, String keys) {
+    public boolean readByte(String key, Consumer<? super Byte> consumer) {
         // For a byte, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
-        return readTag(consumer, ByteTag.class, keys);
+        return readTag(key, ByteTag.class, consumer);
     }
 
     /**
      * Applies the given function to a byte subtag if it is present, converting it to boolean and
-     * negating it first. Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a byte rather than
-     * compound subtag.
+     * negating it first.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readBooleanNegated(Consumer<? super Boolean> consumer, String keys) {
+    public boolean readBooleanNegated(String key, Consumer<? super Boolean> consumer) {
         // For a boolean, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
-        return readTag(byteVal -> consumer.accept(byteVal == 0), ByteTag.class, keys);
+        return readTag(key, ByteTag.class, byteVal -> consumer.accept(byteVal == 0));
     }
 
     /**
@@ -525,16 +502,15 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * compound subtag.
      *
      * @param <T> the type to convert the list entries to
-     * @param consumer the function to apply
+     * @param key the key to look up
      * @param type the type that the list entries must be
-     * @param keys the key to look up, or multiple keys forming a subtag path
+     * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public <T> boolean readList(Consumer<? super List<T>> consumer, TagType type,
-            String keys) {
+    public <T> boolean readList(String key, TagType type, Consumer<? super List<T>> consumer) {
         // Can't use readTag because of the list-element type check
-        if (isList(keys, type)) {
-            consumer.accept(getList(keys, type));
+        if (isList(key, type)) {
+            consumer.accept(getList(key, type));
             return true;
         }
         return false;
@@ -543,104 +519,85 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     /**
      * Applies the given function to a list subtag if it is present and its contents are compound
      * tags. Processes the list as a single object; to process each tag separately, instead use
-     * {@link #iterateCompoundList(Consumer, String)}.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a list rather than
-     * compound subtag.
+     * {@link #iterateCompoundList(String, Consumer)}.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readCompoundList(Consumer<? super List<CompoundTag>> consumer,
-            String keys) {
-        return readList(consumer, TagType.COMPOUND, keys);
+    public boolean readCompoundList(String key, Consumer<? super List<CompoundTag>> consumer) {
+        return readList(key, TagType.COMPOUND, consumer);
     }
 
     /**
-     * Applies the given function to each compound tag in a compound-list subtag, if that tag
+     * Applies the given function to each compound tag in a compound-list subtag, if that subtag
      * exists.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a list rather than
-     * compound subtag.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
-     * @return true if the tag exists and was passed to the consumer; false otherwise
+     * @return true if the tag exists and was iterated over (even if it was empty); false otherwise
      */
-    public boolean iterateCompoundList(Consumer<? super CompoundTag> consumer, String keys) {
-        return readCompoundList(compoundTags -> compoundTags.forEach(consumer), keys);
+    public boolean iterateCompoundList(String key, Consumer<? super CompoundTag> consumer) {
+        return readCompoundList(key, compoundTags -> compoundTags.forEach(consumer));
     }
 
     /**
      * Applies the given function to a list subtag if it is present and its contents are string
      * tags.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a list rather than
-     * compound subtag.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readStringList(Consumer<? super List<String>> consumer, String keys) {
-        return readList(consumer, TagType.STRING, keys);
+    public boolean readStringList(String key, Consumer<? super List<String>> consumer) {
+        return readList(key, TagType.STRING, consumer);
     }
 
     /**
      * Applies the given function to a list subtag if it is present and its contents are float
      * tags.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a list rather than
-     * compound subtag.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readFloatList(Consumer<? super List<Float>> consumer, String keys) {
-        return readList(consumer, TagType.FLOAT, keys);
+    public boolean readFloatList(String key, Consumer<? super List<Float>> consumer) {
+        return readList(key, TagType.FLOAT, consumer);
     }
 
     /**
      * Applies the given function to a list subtag if it is present and its contents are double
      * tags.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a list rather than
-     * compound subtag.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readDoubleList(Consumer<? super List<Double>> consumer, String keys) {
-        return readList(consumer, TagType.DOUBLE, keys);
+    public boolean readDoubleList(String key, Consumer<? super List<Double>> consumer) {
+        return readList(key, TagType.DOUBLE, consumer);
     }
 
     /**
-     * Applies the given function to a string subtag if it is present. Multiple strings can be
-     * passed in to operate on a sub-subtag, as with {@link #tryGetCompound(String)}, except that
-     * the last one must be a string rather than compound subtag.
+     * Applies the given function to a string subtag if it is present.
      *
+     * @param key the key to look up
      * @param consumer the function to apply
-     * @param keys the key to look up, or multiple keys forming a subtag path
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readString(Consumer<? super String> consumer, String keys) {
-        return readTag(consumer, StringTag.class, keys);
+    public boolean readString(String key, Consumer<? super String> consumer) {
+        return readTag(key, StringTag.class, consumer);
     }
 
     /**
-     * Applies the given function to a UUID if it is present in the given pair of long subtags.
-     * Unlike the other consume* functions, this one is not variadic and does not recurse into
-     * sub-subtags.
+     * Applies the given function to a UUID extracted from the given pair of long subtags, if they
+     * both exist.
      *
-     * @param consumer the function to apply
      * @param keyMost the key to look up the high word of the UUID
      * @param keyLeast the key to look up the low word of the UUID
+     * @param consumer the function to apply
      * @return true if the tags exist and were passed to the consumer; false otherwise
      */
-    public boolean readUuid(Consumer<? super UUID> consumer, String keyMost, String keyLeast) {
+    public boolean readUuid(String keyMost, String keyLeast, Consumer<? super UUID> consumer) {
         if (isLong(keyMost) && isLong(keyLeast)) {
             consumer.accept(new UUID(getLong(keyMost), getLong(keyLeast)));
             return true;

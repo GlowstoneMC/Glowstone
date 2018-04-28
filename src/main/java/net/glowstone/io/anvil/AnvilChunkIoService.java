@@ -21,7 +21,6 @@ import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -90,17 +89,17 @@ public final class AnvilChunkIoService implements ChunkIoService {
         chunk.setPopulated(levelTag.getBoolDefaultFalse("TerrainPopulated"));
 
         // read biomes
-        levelTag.readByteArray(chunk::setBiomes, "Biomes");
+        levelTag.readByteArray("Biomes", chunk::setBiomes);
         // read height map
-        if (!levelTag.readIntArray(chunk::setHeightMap, "HeightMap")) {
+        if (!levelTag.readIntArray("HeightMap", chunk::setHeightMap)) {
             chunk.automaticHeightMap();
         }
 
         // read slime chunk
-        levelTag.readByte(chunk::setIsSlimeChunk, "isSlimeChunk");
+        levelTag.readByte("isSlimeChunk", chunk::setIsSlimeChunk);
 
         // read entities
-        levelTag.iterateCompoundList(entityTag -> {
+        levelTag.iterateCompoundList("Entities", entityTag -> {
             try {
                 // note that creating the entity is sufficient to add it to the world
                 EntityStorage.loadEntity(chunk.getWorld(), entityTag);
@@ -114,7 +113,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                         .log(Level.WARNING, "Error loading entity in " + chunk + ": " + id, e);
                 }
             }
-        }, "Entities");
+        });
 
         // read block entities
         List<CompoundTag> storedBlockEntities = levelTag.getCompoundList("TileEntities");
@@ -143,7 +142,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
         }
 
-        levelTag.iterateCompoundList(tileTick -> {
+        levelTag.iterateCompoundList("TileTicks", tileTick -> {
             int tileX = tileTick.getInt("x");
             int tileY = tileTick.getInt("y");
             int tileZ = tileTick.getInt("z");
@@ -165,7 +164,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 return;
             }
             block.getWorld().requestPulse(block);
-        }, "TileTicks");
+        });
 
         return true;
     }

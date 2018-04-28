@@ -17,7 +17,7 @@ public class WitchHutStore extends TemplePieceStore<GlowWitchHut> {
     @Override
     public void load(GlowWitchHut structurePiece, CompoundTag compound) {
         super.load(structurePiece, compound);
-        compound.readBoolean(structurePiece::setHasWitch, "Witch");
+        compound.readBoolean("Witch", structurePiece::setHasWitch);
     }
 
     @Override

@@ -80,8 +80,8 @@ public final class StructureStorage {
 
         final int[] x = {0};
         final int[] z = {0};
-        compound.readInt(value -> x[0] = value, "ChunkX");
-        compound.readInt(value -> z[0] = value, "ChunkZ");
+        compound.readInt("ChunkX", value -> x[0] = value);
+        compound.readInt("ChunkZ", value -> z[0] = value);
         return createStructure(world, x[0], z[0], store, compound);
     }
 

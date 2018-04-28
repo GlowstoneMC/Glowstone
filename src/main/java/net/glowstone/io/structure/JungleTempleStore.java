@@ -17,10 +17,10 @@ public class JungleTempleStore extends TemplePieceStore<GlowJungleTemple> {
     @Override
     public void load(GlowJungleTemple structurePiece, CompoundTag compound) {
         super.load(structurePiece, compound);
-        compound.readBoolean(structurePiece::setHasPlacedTrap1, "placedTrap1");
-        compound.readBoolean(structurePiece::setHasPlacedTrap2, "placedTrap2");
-        compound.readBoolean(structurePiece::setHasPlacedMainChest, "placedMainChest");
-        compound.readBoolean(structurePiece::setHasPlacedHiddenChest, "placedHiddenChest");
+        compound.readBoolean("placedTrap1", structurePiece::setHasPlacedTrap1);
+        compound.readBoolean("placedTrap2", structurePiece::setHasPlacedTrap2);
+        compound.readBoolean("placedMainChest", structurePiece::setHasPlacedMainChest);
+        compound.readBoolean("placedHiddenChest", structurePiece::setHasPlacedHiddenChest);
     }
 
     @Override

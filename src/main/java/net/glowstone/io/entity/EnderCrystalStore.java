@@ -19,7 +19,7 @@ public class EnderCrystalStore extends EntityStore<GlowEnderCrystal> {
     @Override
     public void load(GlowEnderCrystal entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.readBoolean(entity::setShowingBottom, "ShowBottom");
+        tag.readBoolean("ShowBottom", entity::setShowingBottom);
         CompoundTag beamTarget = tag.tryGetCompound("BeamTarget");
         if (beamTarget != null) {
             int x = beamTarget.getInt("X");

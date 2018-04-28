@@ -9,7 +9,6 @@ import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.util.Vector;
 
 /**
@@ -53,16 +52,16 @@ public abstract class StructureStore<T extends GlowStructure> {
      * @param compound The structure's tag.
      */
     public void load(T structure, CompoundTag compound) {
-        compound.readIntArray(bb -> {
+        compound.readIntArray("BB", bb -> {
             if (bb.length == 6) {
                 StructureBoundingBox boundingBox = new StructureBoundingBox(
                         new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structure.setBoundingBox(boundingBox);
             }
-        }, "BB");
+        });
         compound.iterateCompoundList(
-            tag -> structure.addPiece(StructurePieceStorage.loadStructurePiece(tag)),
-                "Children");
+                "Children", tag -> structure.addPiece(StructurePieceStorage.loadStructurePiece(tag))
+        );
     }
 
     /**

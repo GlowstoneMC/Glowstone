@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -120,10 +119,10 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        tag.iterateCompoundList(effect -> addCustomEffect(fromNbt(effect), true),
-                "CustomEffects");
-        tag.readString(potion -> setBasePotionData(dataFromString(potion)), "Potion");
-        tag.readInt(color -> this.color = Color.fromRGB(color), "CustomPotionColor");
+        tag.iterateCompoundList("CustomEffects", effect -> addCustomEffect(fromNbt(effect), true)
+        );
+        tag.readString("Potion", potion -> setBasePotionData(dataFromString(potion)));
+        tag.readInt("CustomPotionColor", color -> this.color = Color.fromRGB(color));
     }
 
     @Override

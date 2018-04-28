@@ -178,7 +178,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         public long getFirstPlayed() {
             checkOpen();
             long[] out = {0};
-            tag.readCompound(bukkit -> bukkit.readLong(x -> out[0] = x, "firstPlayed"), "bukkit");
+            tag.readCompound("bukkit", bukkit -> bukkit.readLong("firstPlayed", x -> out[0] = x));
             return out[0];
         }
 
@@ -186,7 +186,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         public long getLastPlayed() {
             checkOpen();
             long[] out = {0};
-            tag.readCompound(bukkit -> bukkit.readLong(x -> out[0] = x, "lastPlayed"), "bukkit");
+            tag.readCompound("bukkit", bukkit -> bukkit.readLong("lastPlayed", x -> out[0] = x));
             return out[0];
         }
 
@@ -195,8 +195,8 @@ public class NbtPlayerDataService implements PlayerDataService {
             checkOpen();
             String[] out = {null};
             tag.readCompound(
-                bukkit -> bukkit.readString(x -> out[0] = x, "lastKnownName"),
-                    "bukkit");
+                    "bukkit", bukkit -> bukkit.readString("lastKnownName", x -> out[0] = x)
+            );
             return out[0];
         }
 

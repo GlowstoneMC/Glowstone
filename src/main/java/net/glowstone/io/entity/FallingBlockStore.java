@@ -22,11 +22,11 @@ class FallingBlockStore extends EntityStore<GlowFallingBlock> {
     @Override
     public void load(GlowFallingBlock entity, CompoundTag tag) {
         super.load(entity, tag);
-        tag.readString(name -> entity.setMaterial(ItemIds.getBlock(name)), "Block");
-        tag.readByte(entity::setBlockData, "Data");
-        tag.readBoolean(entity::setHurtEntities, "HurtEntities");
-        tag.readBoolean(entity::setDropItem, "DropItem");
-        tag.readCompound(entity::setBlockEntityCompoundTag, "TileEntityData");
+        tag.readString("Block", name -> entity.setMaterial(ItemIds.getBlock(name)));
+        tag.readByte("Data", entity::setBlockData);
+        tag.readBoolean("HurtEntities", entity::setHurtEntities);
+        tag.readBoolean("DropItem", entity::setDropItem);
+        tag.readCompound("TileEntityData", entity::setBlockEntityCompoundTag);
     }
 
     @Override

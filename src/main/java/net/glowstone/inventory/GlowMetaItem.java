@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -88,12 +87,12 @@ public class GlowMetaItem implements ItemMeta {
 
     protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
         Map<Enchantment, Integer> result = new HashMap<>(4);
-        tag.iterateCompoundList(enchantmentTag -> {
+        tag.iterateCompoundList(name, enchantmentTag -> {
             if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
                 Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
                 result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
             }
-        }, name);
+        });
         if (result.isEmpty()) {
             return null;
         }
@@ -177,10 +176,10 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     void readNbt(CompoundTag tag) {
-        tag.readCompound(display -> {
-            display.readString(this::setDisplayName, "Name");
-            display.readStringList(this::setLore, "Lore");
-        }, "display");
+        tag.readCompound("display", display -> {
+            display.readString("Name", this::setDisplayName);
+            display.readStringList("Lore", this::setLore);
+        });
 
         //TODO currently ignoring level restriction, is that right?
         Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
@@ -191,8 +190,8 @@ public class GlowMetaItem implements ItemMeta {
                 enchants.putAll(tagEnchants);
             }
         }
-        tag.readInt(flags -> hideFlag = flags, "HideFlags");
-        tag.readBoolean(u -> unbreakable = u, "Unbreakable");
+        tag.readInt("HideFlags", flags -> hideFlag = flags);
+        tag.readBoolean("Unbreakable", u -> unbreakable = u);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class SignEntity extends BlockEntity {
         super.loadNbt(tag);
         for (int i = 0; i < lines.length; ++i) {
             final int finalI = i;
-            tag.readString(line -> lines[finalI] = TextMessage.decode(line), "Text" + (i + 1));
+            tag.readString("Text" + (i + 1), line -> lines[finalI] = TextMessage.decode(line));
         }
     }
 

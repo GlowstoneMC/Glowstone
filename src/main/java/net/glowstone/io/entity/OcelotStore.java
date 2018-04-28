@@ -14,8 +14,8 @@ class OcelotStore extends TameableStore<GlowOcelot> {
     @Override
     public void load(GlowOcelot entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (!compound.readInt(catType -> entity.setCatType(Ocelot.Type.getType(catType)),
-                "CatType")) {
+        if (!compound.readInt("CatType", catType -> entity.setCatType(Ocelot.Type.getType(catType))
+        )) {
             entity.setCatType(Ocelot.Type.WILD_OCELOT);
         }
 

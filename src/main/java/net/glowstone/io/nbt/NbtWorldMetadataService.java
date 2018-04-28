@@ -81,32 +81,32 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // seed
         final long[] seed = {0L};
-        if (level.readLong(x -> seed[0] = x, "RandomSeed")) {
+        if (level.readLong("RandomSeed", x -> seed[0] = x)) {
             level.remove("RandomSeed");
         }
 
         // time of day and weather status
-        if (level.readBoolean(world::setThundering, "thundering")) {
+        if (level.readBoolean("thundering", world::setThundering)) {
             level.remove("thundering");
         }
-        if (level.readBoolean(world::setStorm, "raining")) {
+        if (level.readBoolean("raining", world::setStorm)) {
             level.remove("raining");
         }
-        if (level.readInt(world::setThunderDuration, "thunderTime")) {
+        if (level.readInt("thunderTime", world::setThunderDuration)) {
             level.remove("thunderTime");
         }
-        if (level.readInt(world::setWeatherDuration, "rainTime")) {
+        if (level.readInt("rainTime", world::setWeatherDuration)) {
             level.remove("rainTime");
         }
-        if (level.readLong(world::setFullTime, "Time")) {
+        if (level.readLong("Time", world::setFullTime)) {
             level.remove("Time");
         }
-        if (level.readLong(world::setTime, "DatTime")) {
+        if (level.readLong("DatTime", world::setTime)) {
             level.remove("DayTime");
         }
         if (level.readString(
-            generatorName -> world.setWorldType(WorldType.getByName(generatorName)),
-                "generatorName")) {
+                "generatorName", generatorName -> world.setWorldType(WorldType.getByName(generatorName))
+        )) {
             level.remove("generatorName");
         }
 
@@ -120,24 +120,24 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         }
 
         // game rules
-        if (level.readCompound(gameRules ->
+        if (level.readCompound("GameRules", gameRules ->
                 gameRules.getValue().keySet().stream().filter(gameRules::isString)
-                    .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key))),
-                "GameRules")) {
+                    .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)))
+        )) {
             level.remove("GameRules");
         }
 
         // world border
         Location borderCenter = new Location(world, 0, 0, 0);
-        if (level.readDouble(borderCenter::setX, "BorderCenterX")) {
+        if (level.readDouble("BorderCenterX", borderCenter::setX)) {
             level.remove("BorderCenterX");
         }
-        if (level.readDouble(borderCenter::setZ, "BorderCenterZ")) {
+        if (level.readDouble("BorderCenterZ", borderCenter::setZ)) {
             level.remove("BorderCenterZ");
         }
         GlowWorldBorder worldBorder = world.getWorldBorder();
         worldBorder.setCenter(borderCenter);
-        if (level.readDouble(worldBorder::setSize, "BorderSize")) {
+        if (level.readDouble("BorderSize", worldBorder::setSize)) {
             level.remove("BorderSize");
         }
         if (level.isDouble("BorderSizeLerpTarget") && level.isLong("BorderSizeLerpTime")) {
@@ -146,18 +146,18 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             level.remove("BorderSizeLerpTarget");
             level.remove("BorderSizeLerpTime");
         }
-        if (level.readDouble(worldBorder::setDamageBuffer, "BorderSafeZone")) {
+        if (level.readDouble("BorderSafeZone", worldBorder::setDamageBuffer)) {
             level.remove("BorderSafeZone");
         }
-        if (level.readDouble(time -> worldBorder.setWarningTime((int) time),
-                "BorderWarningTime")) {
+        if (level.readDouble("BorderWarningTime", time -> worldBorder.setWarningTime((int) time)
+        )) {
             level.remove("BorderWarningTime");
         }
-        if (level.readDouble(distance -> worldBorder.setWarningDistance((int) distance),
-                "BorderWarningBlocks")) {
+        if (level.readDouble("BorderWarningBlocks", distance -> worldBorder.setWarningDistance((int) distance)
+        )) {
             level.remove("BorderWarningBlocks");
         }
-        if (level.readDouble(worldBorder::setDamageAmount, "BorderDamagePerBlock")) {
+        if (level.readDouble("BorderDamagePerBlock", worldBorder::setDamageAmount)) {
             level.remove("BorderDamagePerBlock");
         }
 

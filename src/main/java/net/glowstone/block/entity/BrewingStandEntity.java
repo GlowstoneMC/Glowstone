@@ -22,7 +22,7 @@ public class BrewingStandEntity extends ContainerEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        tag.readInt(this::setBrewTime, "BrewTime");
+        tag.readInt("BrewTime", this::setBrewTime);
     }
 
     @Override

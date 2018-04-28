@@ -57,8 +57,8 @@ public class FurnaceEntity extends ContainerEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        tag.readShort(this::setBurnTime, "BurnTime");
-        tag.readShort(this::setCookTime, "CookTime");
+        tag.readShort("BurnTime", this::setBurnTime);
+        tag.readShort("CookTime", this::setCookTime);
     }
 
     /**

@@ -11,7 +11,6 @@ import net.glowstone.block.entity.state.GlowBanner;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
 
@@ -30,9 +29,9 @@ public class BannerEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        tag.readCompoundList(patternTags -> patterns = BlockBanner.fromNbt(patternTags),
-                "Patterns");
-        tag.readInt(color -> base = DyeColor.getByDyeData((byte) color), "Base");
+        tag.readCompoundList("Patterns", patternTags -> patterns = BlockBanner.fromNbt(patternTags)
+        );
+        tag.readInt("Base", color -> base = DyeColor.getByDyeData((byte) color));
     }
 
     @Override
