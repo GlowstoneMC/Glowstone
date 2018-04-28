@@ -193,6 +193,16 @@ public interface LocalizedStrings {
         }
 
         interface Warn {
+            interface Event {
+                LoggableLocalizedString INTERRUPTED = new LoggableLocalizedStringImpl(
+                        "console.warn.event.interrupted", Level.WARNING
+                );
+
+                LoggableLocalizedString SHUTDOWN = new LoggableLocalizedStringImpl(
+                        "console.warn.event.shutdown", Level.WARNING
+                );
+            }
+
             interface Icon {
                 interface LoadFailed {
                     LoggableLocalizedString IMPORT = new LoggableLocalizedStringImpl(
@@ -228,6 +238,18 @@ public interface LocalizedStrings {
             interface Plugin {
                 LoggableLocalizedString NO_SPONGE = new LoggableLocalizedStringImpl(
                     "console.warn.plugin.no-sponge", Level.WARNING
+                );
+
+                LoggableLocalizedString UNRECOGNIZED = new LoggableLocalizedStringImpl(
+                    "console.warn.plugin.unrecognized", Level.WARNING
+                );
+
+                LoggableLocalizedString MALFORMED_URL = new LoggableLocalizedStringImpl(
+                        "console.warn.plugin.malformed-url", Level.WARNING
+                );
+
+                LoggableLocalizedString IO = new LoggableLocalizedStringImpl(
+                        "console.warn.plugin.io", Level.WARNING
                 );
 
                 interface NoSponge {

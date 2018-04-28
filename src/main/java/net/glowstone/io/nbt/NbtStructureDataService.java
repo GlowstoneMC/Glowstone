@@ -50,10 +50,10 @@ public class NbtStructureDataService implements StructureDataService {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = new CompoundTag();
                     data = in.readCompound();
-                    if (data.isCompound("data")) {
-                        data = data.getCompound("data");
+                    if (data.isCompound("data")) { // NON-NLS
+                        data = data.getCompound("data"); // NON-NLS
                         if (data.isCompound("Features")) {
-                            CompoundTag features = data.getCompound("Features");
+                            CompoundTag features = data.getCompound("Features"); // NON-NLS
                             features.getValue().keySet().stream().filter(features::isCompound)
                                 .forEach(key -> {
                                     GlowStructure structure = StructureStorage
@@ -91,10 +91,10 @@ public class NbtStructureDataService implements StructureDataService {
                         new FileInputStream(structureFile))) {
                         data = new CompoundTag();
                         data = in.readCompound();
-                        if (data.isCompound("data")) {
-                            data = data.getCompound("data");
-                            if (data.isCompound("Features")) {
-                                features = data.getCompound("Features");
+                        if (data.isCompound("data")) { // NON-NLS
+                            data = data.getCompound("data"); // NON-NLS
+                            if (data.isCompound("Features")) { // NON-NLS
+                                features = data.getCompound("Features"); // NON-NLS
                             }
                         }
                     } catch (IOException e) {

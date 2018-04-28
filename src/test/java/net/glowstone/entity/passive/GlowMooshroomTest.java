@@ -1,12 +1,11 @@
 package net.glowstone.entity.passive;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.EnumSet;
 import net.glowstone.entity.GlowAnimalTest;
 import org.bukkit.Material;
 import org.junit.Test;
-
-import java.util.EnumSet;
-
-import static org.junit.Assert.assertEquals;
 
 public class GlowMooshroomTest extends GlowAnimalTest<GlowMooshroom> {
     public GlowMooshroomTest() {

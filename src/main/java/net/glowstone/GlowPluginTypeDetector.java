@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import net.glowstone.i18n.LocalizedStrings;
@@ -57,7 +56,7 @@ public class GlowPluginTypeDetector {
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
-                GlowServer.logger.warning("Unrecognized plugin: " + file.getPath());
+                LocalizedStrings.Console.Warn.Plugin.UNRECOGNIZED.log(file.getPath());
             }
         }
     }
@@ -73,8 +72,7 @@ public class GlowPluginTypeDetector {
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
-            GlowServer.logger.log(Level.WARNING, "PluginTypeDetector: Malformed URL: " + file, e);
-            return;
+            LocalizedStrings.Console.Warn.Plugin.MALFORMED_URL.log(e, file);
         }
 
         try (ZipFile zip = new ZipFile(file)) {
@@ -83,15 +81,15 @@ public class GlowPluginTypeDetector {
                 ZipEntry entryIn = entries.nextElement();
                 String name = entryIn.getName();
 
-                if (name.equals("plugin.yml")) {
+                if (name.equals("plugin.yml")) { // NON-NLS
                     isBukkit = true;
                 }
 
-                if (name.equals("Canary.inf")) {
+                if (name.equals("Canary.inf")) { // NON-NLS
                     isCanary = true;
                 }
 
-                if (name.endsWith(".class") && !entryIn.isDirectory()) {
+                if (name.endsWith(".class") && !entryIn.isDirectory()) { // NON-NLS
                     // Analyze class file
                     ClassReader classReader = new ClassReader(zip.getInputStream(entryIn));
                     GlowVisitor visitor = new GlowVisitor();
@@ -112,7 +110,7 @@ public class GlowPluginTypeDetector {
                 }
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.WARNING, "PluginTypeDetector: Error reading " + url, ex);
+            LocalizedStrings.Console.Warn.Plugin.IO.log(ex, file);
         }
 
         if (isBukkit) {
@@ -149,13 +147,13 @@ public class GlowPluginTypeDetector {
         @Override
         public AnnotationVisitor visitAnnotation(String name, boolean visible) {
             switch (name) {
-                case "Lorg/spongepowered/api/plugin/Plugin;":
+                case "Lorg/spongepowered/api/plugin/Plugin;": // NON-NLS
                     isSponge = true;
                     break;
-                case "Lcpw/mods/fml/common/Mod;":  // older versions
+                case "Lcpw/mods/fml/common/Mod;":  // NON-NLS - older versions
                     isForgeF = true;
                     break;
-                case "Lnet/minecraftforge/fml/common/Mod;":  // newer
+                case "Lnet/minecraftforge/fml/common/Mod;":  // NON-NLS - newer
                     isForgeN = true;
                     break;
                 default:
