@@ -4,7 +4,17 @@ import lombok.Getter;
 import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.util.nbt.CompoundTag;
 
+/**
+ * Thrown when attempting to load an entity of an unrecognized or unspecified type. Needs a separate
+ * exception class because it has different logging messages than other
+ * {@link IllegalArgumentException} instances.
+ */
 public class UnknownEntityTypeException extends IllegalArgumentException {
+    public UnknownEntityTypeException(CompoundTag nbt) {
+        super(getMessage(nbt));
+        this.nbt = nbt;
+    }
+
     @Getter
     private final CompoundTag nbt;
 
@@ -26,8 +36,4 @@ public class UnknownEntityTypeException extends IllegalArgumentException {
         return nbt.isString("id") ? nbt.getString("id") : nbt.toString();
     }
 
-    public UnknownEntityTypeException(CompoundTag nbt) {
-        super(getMessage(nbt));
-        this.nbt = nbt;
-    }
 }
