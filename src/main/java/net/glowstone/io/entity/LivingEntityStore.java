@@ -87,24 +87,25 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         compound.readBoolean(entity::setCanPickupItems, "CanPickUpLoot");
         AttributeManager am = entity.getAttributeManager();
         compound.iterateCompoundList(tag -> {
-            if (tag.isString("Name") && tag.isDouble("Base")) {
-                List<Modifier> modifiers = null;
-                tag.iterateCompoundList(modifierTag -> {
-                    if (modifierTag.isDouble("Amount")
-                            && modifierTag.isString("Name")
-                            && modifierTag.isInt("Operation")
-                            && modifierTag.isLong("UUIDLeast")
-                            && modifierTag.isLong("UUIDMost")) {
-                        modifiers.add(new Modifier(
-                                modifierTag.getString("Name"),
-                                new UUID(modifierTag.getLong("UUIDLeast"),
-                                        modifierTag.getLong("UUIDMost")),
-                                modifierTag.getDouble("Amount"),
-                                (byte) modifierTag.getInt("Operation")));
-                    }
-                }, "Modifiers");
-                am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+            if (!tag.isString("Name") || !tag.isDouble("Base")) {
+                return;
             }
+            List<Modifier> modifiers = null;
+            tag.iterateCompoundList(modifierTag -> {
+                if (modifierTag.isDouble("Amount")
+                        && modifierTag.isString("Name")
+                        && modifierTag.isInt("Operation")
+                        && modifierTag.isLong("UUIDLeast")
+                        && modifierTag.isLong("UUIDMost")) {
+                    modifiers.add(new Modifier(
+                            modifierTag.getString("Name"),
+                            new UUID(modifierTag.getLong("UUIDLeast"),
+                                    modifierTag.getLong("UUIDMost")),
+                            modifierTag.getDouble("Amount"),
+                            (byte) modifierTag.getInt("Operation")));
+                }
+            }, "Modifiers");
+            am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
         }, "Attributes");
         CompoundTag leash = compound.tryGetCompound("Leash");
         if (leash == null) {

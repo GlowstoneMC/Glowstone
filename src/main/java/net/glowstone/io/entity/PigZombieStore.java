@@ -15,22 +15,12 @@ class PigZombieStore extends ZombieStore<GlowPigZombie> {
     @Override
     public void load(GlowZombie entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isInt("Anger")) {
-            ((GlowPigZombie) entity).setAnger(tag.getInt("Anger"));
-        } else {
-            ((GlowPigZombie) entity).setAnger(0);
+        final GlowPigZombie pigEntity = (GlowPigZombie) entity;
+        if (!tag.readInt(pigEntity::setAnger, "Anger")) {
+            pigEntity.setAnger(0);
         }
-
-        if (tag.isString("HurtBy")) {
-            try {
-                UUID uuid = UUID.fromString(tag.getString("HurtBy"));
-                ((GlowPigZombie) entity).setHurtBy(uuid);
-            } catch (IllegalArgumentException ex) {
-                ((GlowPigZombie) entity).setHurtBy(null);
-            }
-
-        } else {
-            ((GlowPigZombie) entity).setHurtBy(null);
+        if (!tag.readString(uuid -> pigEntity.setHurtBy(UUID.fromString(uuid)), "HurtBy")) {
+            pigEntity.setHurtBy(null);
         }
     }
 

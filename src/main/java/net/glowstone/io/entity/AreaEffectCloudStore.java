@@ -57,12 +57,10 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
             }
         }
         // TODO: Potion
-        if (tag.isCompoundList(EFFECTS)) {
-            tag.getCompoundList(EFFECTS)
-                    .stream()
-                    .map(GlowMetaPotion::fromNbt)
-                    .forEach(effect -> entity.addCustomEffect(effect, false));
-        }
+        tag.readCompoundList(effects -> effects
+            .stream()
+            .map(GlowMetaPotion::fromNbt)
+            .forEach(effect -> entity.addCustomEffect(effect, false)), EFFECTS);
     }
 
     @Override

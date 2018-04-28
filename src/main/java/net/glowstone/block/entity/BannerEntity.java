@@ -30,14 +30,9 @@ public class BannerEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        if (tag.isList("Patterns", TagType.COMPOUND)) {
-            List<CompoundTag> pattern = tag.getCompoundList("Patterns");
-            patterns = BlockBanner.fromNbt(pattern);
-        }
-
-        if (tag.isInt("Base")) {
-            base = DyeColor.getByDyeData((byte) tag.getInt("Base"));
-        }
+        tag.readCompoundList(patternTags -> patterns = BlockBanner.fromNbt(patternTags),
+                "Patterns");
+        tag.readInt(color -> base = DyeColor.getByDyeData((byte) color), "Base");
     }
 
     @Override

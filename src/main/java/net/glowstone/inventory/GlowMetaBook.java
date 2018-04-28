@@ -115,9 +115,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
             pages = tag.getList("pages", TagType.STRING);
             filterPages();
         }
-        if (tag.isInt("generation")) {
-            generation = tag.getInt("generation");
-        }
+        tag.readInt(x -> generation = x, "generation");
     }
 
     ////////////////////////////////////////////////////////////////////////////

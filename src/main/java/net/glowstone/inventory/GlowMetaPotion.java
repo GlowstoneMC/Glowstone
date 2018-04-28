@@ -120,19 +120,10 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-
-        if (tag.isList("CustomEffects", TagType.COMPOUND)) {
-            List<CompoundTag> customEffects = tag.getCompoundList("CustomEffects");
-            for (CompoundTag effect : customEffects) {
-                addCustomEffect(fromNbt(effect), true);
-            }
-        }
-        if (tag.isString("Potion")) {
-            this.basePotionData = dataFromString(tag.getString("Potion"));
-        }
-        if (tag.isInt("CustomPotionColor")) {
-            this.color = Color.fromRGB(tag.getInt("CustomPotionColor"));
-        }
+        tag.iterateCompoundList(effect -> addCustomEffect(fromNbt(effect), true),
+                "CustomEffects");
+        tag.readString(potion -> setBasePotionData(dataFromString(potion)), "Potion");
+        tag.readInt(color -> this.color = Color.fromRGB(color), "CustomPotionColor");
     }
 
     @Override

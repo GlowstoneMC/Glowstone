@@ -33,25 +33,24 @@ public final class NbtSerialization {
      * @return The resulting ItemStack, or null.
      */
     public static ItemStack readItem(CompoundTag tag) {
-        Material material;
-        if (tag.isString("id")) {
-            material = ItemIds.getItem(tag.getString("id"));
-        } else if (tag.isShort("id")) {
-            material = Material.getMaterial(tag.getShort("id"));
-        } else {
+        final Material[] material = new Material[1];
+        if (!tag.readString(id -> material[0] = ItemIds.getItem(id), "id")
+                && !tag.readShort(id -> material[0] = Material.getMaterial(id), "id")) {
             return null;
         }
-        short damage = tag.isShort("Damage") ? tag.getShort("Damage") : 0;
-        byte count = tag.isByte("Count") ? tag.getByte("Count") : 0;
+        final short[] damage = {0};
+        tag.readShort(x -> damage[0] = x, "Damage");
+        final byte[] count = {0};
+        tag.readByte(x -> count[0] = x, "Count");
 
-        if (material == null || material == Material.AIR || count == 0) {
+        if (material[0] == null || material[0] == Material.AIR || count[0] == 0) {
             return null;
         }
-        ItemStack stack = new ItemStack(material, count, damage);
+        ItemStack stack = new ItemStack(material[0], count[0], damage[0]);
         // This is slightly different than what tag.readItem would do, since we specify the
         // material separately.
         tag.readCompound(
-            subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material, subtag)),
+            subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material[0], subtag)),
                 "tag");
         return stack;
     }
@@ -92,13 +91,11 @@ public final class NbtSerialization {
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
         for (CompoundTag tag : tagList) {
-            if (!tag.isByte("Slot")) {
-                continue;
-            }
-            byte slot = tag.getByte("Slot");
-            if (slot >= start && slot < start + size) {
-                items[slot - start] = readItem(tag);
-            }
+            tag.readByte(slot -> {
+                if (slot >= start && slot < start + size) {
+                    items[slot - start] = readItem(tag);
+                }
+            }, "Slot");
         }
         return items;
     }

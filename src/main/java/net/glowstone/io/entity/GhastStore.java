@@ -13,9 +13,7 @@ class GhastStore extends MonsterStore<GlowGhast> {
     @Override
     public void load(GlowGhast entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isInt("ExplosionPower")) {
-            entity.setExplosionPower(compound.getInt("ExplosionPower"));
-        } else {
+        if (!compound.readInt(entity::setExplosionPower, "ExplosionPower")) {
             entity.setExplosionPower(1);
         }
 

@@ -19,29 +19,25 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     @Override
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isInt("Profession")) {
-            int professionId = compound.getInt("Profession");
+        compound.readInt(professionId -> {
             if (GlowVillager.isValidProfession(professionId)) {
                 entity.setProfession(GlowVillager.getProfessionById(professionId));
             }
-        }
-        if (compound.isInt("Career")) {
-            int id = compound.getInt("Career");
+        }, "Profession");
+        compound.readInt(id -> {
             Villager.Career career = GlowVillager.getCareerById(id, entity.getProfession());
             if (career != null) {
                 entity.setCareer(career);
             }
-        }
-        if (compound.isInt("Riches")) {
-            entity.setRiches(compound.getInt("Riches"));
-        }
+        }, "Career");
+        compound.readInt(entity::setRiches, "Riches");
         compound.readBoolean(entity::setWilling, "Willing");
         if (!compound.readInt(entity::setCareerLevel, "CareerLevel")
                 && entity.getCareer() != null) {
             entity.setCareerLevel(1);
         }
         // Recipes
-        compound.readCompound(offers -> offers.readCompoundList(recipesList -> {
+        compound.readCompoundList(recipesList -> {
             entity.clearRecipes(); // clear defaults
             List<MerchantRecipe> recipes = new ArrayList<>(recipesList.size());
             for (CompoundTag recipeTag : recipesList) {
@@ -59,7 +55,7 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                 recipes.add(recipe);
             }
             entity.setRecipes(recipes);
-        }, "Recipes"), "Offers");
+        }, "Offers", "Recipes");
 
         //TODO: remaining data
     }

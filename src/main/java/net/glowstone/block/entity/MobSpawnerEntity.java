@@ -36,10 +36,7 @@ public class MobSpawnerEntity extends BlockEntity {
         } else {
             spawning = DEFAULT;
         }
-
-        if (tag.isInt("Delay")) {
-            delay = tag.getInt("Delay");
-        } else {
+        if (!tag.readInt(this::setDelay, "Delay")) {
             delay = 0;
         }
     }

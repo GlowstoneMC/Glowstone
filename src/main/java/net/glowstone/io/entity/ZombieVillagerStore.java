@@ -26,28 +26,18 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
         GlowZombieVillager entity = (GlowZombieVillager) zombie;
         super.load(entity, compound);
 
-        if (compound.isInt("Profession")) {
-            int professionId = compound.getInt("Profession");
-            if (GlowVillager.isValidProfession(professionId)) {
-                entity.setVillagerProfession(GlowVillager.getProfessionById(professionId));
-            } else {
-                entity.setVillagerProfession(getRandomProfession(ThreadLocalRandom.current()));
-            }
-        } else {
+        if (!compound.readInt(professionId -> entity.setVillagerProfession(
+                GlowVillager.isValidProfession(professionId)
+                ? GlowVillager.getProfessionById(professionId)
+                : getRandomProfession(ThreadLocalRandom.current())), "Profession")) {
             entity.setVillagerProfession(getRandomProfession(ThreadLocalRandom.current()));
         }
 
-        if (compound.isInt("ConversionTime")) {
-            entity.setConversionTime(compound.getInt("ConversionTime"));
-        } else {
+        if (!compound.readInt(entity::setConversionTime, "ConversionTime")) {
             entity.setConversionTime(-1);
         }
-
-        if (compound.isLong("ConversionPlayerMost") && compound.isLong("ConversionPlayerLeast")) {
-            UUID conversionPlayer = new UUID(compound.getLong("ConversionPlayerMost"),
-                    compound.getLong("ConversionPlayerLeast"));
-            entity.setConversionPlayer(conversionPlayer);
-        }
+        compound.readUuid(entity::setConversionPlayer,
+                "ConversionPlayerMost", "ConversionPlayerLeast");
     }
 
     @Override

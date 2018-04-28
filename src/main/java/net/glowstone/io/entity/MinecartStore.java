@@ -27,9 +27,11 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
         super.load(entity, tag);
         if (entity instanceof InventoryHolder) {
             InventoryHolder inv = (InventoryHolder) entity;
-            if (inv.getInventory() != null && tag.isCompoundList("Items")) {
-                inv.getInventory().setContents(NbtSerialization.readInventory(
-                        tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
+            if (inv.getInventory() != null) {
+                tag.readCompoundList(items ->
+                    inv.getInventory().setContents(NbtSerialization.readInventory(
+                        items, 0, inv.getInventory().getSize())),
+                        "Items");
             }
         }
         // todo

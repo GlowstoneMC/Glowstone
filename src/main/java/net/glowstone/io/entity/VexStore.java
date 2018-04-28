@@ -13,9 +13,7 @@ public class VexStore extends MonsterStore<GlowVex> {
     @Override
     public void load(GlowVex entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isInt("LifeTicks")) {
-            entity.setLifeTicks(tag.getInt("LifeTicks"));
-        }
+        tag.readInt(entity::setLifeTicks, "LifeTicks");
     }
 
     @Override

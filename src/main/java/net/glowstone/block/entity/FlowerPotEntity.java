@@ -25,15 +25,16 @@ public class FlowerPotEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-
-        int contentsData = tag.isInt("Data") ? tag.getInt("Data") : 0;
-
-        if (tag.isString("Item") && !tag.getString("Item").isEmpty()) {
-            // NBT data uses material ID names (post-1.8).
-            contents = ItemIds.getItem(tag.getString("Item")).getNewData((byte) contentsData);
-        } else if (tag.isInt("Item")) {
+        final Material[] item = {null};
+        final byte[] contentsData = {0};
+        tag.readInt(x -> contentsData[0] = (byte) x, "Data");
+        // NBT data uses material ID names (post-1.8).
+        if (!tag.readString(itemString -> item[0] = ItemIds.getItem(itemString), "Item")) {
             // NBT data uses material IDs (pre-1.8).
-            contents = Material.getMaterial(tag.getInt("Item")).getNewData((byte) contentsData);
+            tag.readInt(itemInt -> item[0] = Material.getMaterial(itemInt), "Item");
+        }
+        if (item[0] != null) {
+            contents = item[0].getNewData(contentsData[0]);
         }
     }
 

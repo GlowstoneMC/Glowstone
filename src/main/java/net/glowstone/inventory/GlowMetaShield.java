@@ -36,13 +36,9 @@ public class GlowMetaShield extends GlowMetaBanner {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isList("Patterns", TagType.COMPOUND)) {
-            List<CompoundTag> patterns = tag.getCompoundList("Patterns");
-            this.patterns = BlockBanner.fromNbt(patterns);
-        }
-        if (tag.isInt("Base")) {
-            this.baseColor = DyeColor.getByWoolData((byte) tag.getInt("Base"));
-        }
+        tag.readCompoundList(patterns -> this.patterns = BlockBanner.fromNbt(patterns),
+                "Patterns");
+        tag.readInt(color -> this.baseColor = DyeColor.getByWoolData((byte) color), "Base");
     }
 
     @Override
