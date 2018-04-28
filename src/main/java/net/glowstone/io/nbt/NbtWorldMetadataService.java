@@ -101,7 +101,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         if (level.readLong("Time", world::setFullTime)) {
             level.remove("Time");
         }
-        if (level.readLong("DatTime", world::setTime)) {
+        if (level.readLong("DayTime", world::setTime)) {
             level.remove("DayTime");
         }
         if (level.readString("generatorName",

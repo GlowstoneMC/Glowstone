@@ -32,7 +32,7 @@ public final class NbtSerialization {
      * @return The resulting ItemStack, or null.
      */
     public static ItemStack readItem(CompoundTag tag) {
-        final Material[] material = new Material[1];
+        final Material[] material = {null};
         if (!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
                 && !tag.readShort("id", id -> material[0] = Material.getMaterial(id))) {
             return null;
