@@ -12,7 +12,7 @@ public interface LocalizedStrings {
             }
 
             LoggableLocalizedString CLASSPATH = new LoggableLocalizedStringImpl(
-                    "console.classpath.error", Level.WARNING
+                    "console.classpath.load-failed", Level.WARNING
             );
 
             interface Import {
