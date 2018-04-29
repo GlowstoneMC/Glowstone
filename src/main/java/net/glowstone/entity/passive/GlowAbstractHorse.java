@@ -11,6 +11,7 @@ import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
@@ -78,7 +79,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         }
         if (this instanceof GlowHorse) {
             GlowHorse horse = (GlowHorse) this;
-            if (getInventory() != null && getInventory().getSaddle() != null) {
+            if (getInventory() != null && InventoryUtil.isEmpty(getInventory().getSaddle())) {
                 value |= 0x04;
             }
             if (horse.hasReproduced()) {
