@@ -104,17 +104,15 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
 
     @Override
     protected int computeGrowthAmount(Material material) {
-        int amount = 0;
-
         // We need to be a baby and only tamed horses can be fed with hay block
         if (!isAdult() && !(Material.HAY_BLOCK == material && !isTamed())) {
             Integer mapResult = GROWING_FOODS.get(material);
 
             if (mapResult != null) {
-                amount = Math.min(mapResult, Math.abs(getAge()));
+                return Math.min(mapResult, Math.abs(getAge()));
             }
         }
 
-        return amount;
+        return 0;
     }
 }
