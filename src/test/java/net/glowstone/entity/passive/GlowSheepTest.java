@@ -1,14 +1,11 @@
 package net.glowstone.entity.passive;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.EnumSet;
 import net.glowstone.entity.GlowAnimalTest;
 import org.bukkit.Material;
 import org.junit.Test;
-
-import java.util.EnumSet;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GlowSheepTest extends GlowAnimalTest<GlowSheep> {
     public GlowSheepTest() {

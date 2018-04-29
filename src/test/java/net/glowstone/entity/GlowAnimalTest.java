@@ -1,13 +1,13 @@
 package net.glowstone.entity;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.EnumSet;
 import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-
-import static org.junit.Assert.assertEquals;
 
 public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTest<T> {
     protected GlowAnimalTest(

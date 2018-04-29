@@ -1,7 +1,9 @@
 package net.glowstone;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
-import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1409,6 +1411,8 @@ public class GlowWorld implements World {
      */
     public GlowEntity spawn(Location location, Class<? extends GlowEntity> clazz,
             SpawnReason reason) throws IllegalArgumentException {
+        checkNotNull(location);
+        checkNotNull(clazz);
 
         GlowEntity entity = null;
 
@@ -1472,7 +1476,8 @@ public class GlowWorld implements World {
     @SuppressWarnings("unchecked")
     public <T extends Entity> T spawnCustomEntity(Location location, String id,
             SpawnReason reason) throws IllegalArgumentException {
-        Preconditions.checkNotNull(id);
+        checkNotNull(location);
+        checkNotNull(id);
         CustomEntityDescriptor descriptor = EntityRegistry.getCustomEntityDescriptor(id);
         if (descriptor == null) {
             throw new IllegalArgumentException(
@@ -1489,6 +1494,7 @@ public class GlowWorld implements World {
      */
     @Override
     public GlowItem dropItem(Location location, ItemStack item) {
+        checkNotNull(location);
         GlowItem entity = new GlowItem(location, item);
         ItemSpawnEvent event = EventFactory.getInstance().callEvent(new ItemSpawnEvent(entity));
         if (event.isCancelled()) {
@@ -1555,15 +1561,17 @@ public class GlowWorld implements World {
     @Override
     public FallingBlock spawnFallingBlock(Location location,
             MaterialData data) throws IllegalArgumentException {
+        checkNotNull(data);
         return spawnFallingBlock(location, data.getItemType(), data.getData());
     }
 
     @Override
     public FallingBlock spawnFallingBlock(Location location, Material material,
             byte data) throws IllegalArgumentException {
-        if (location == null || material == null) {
-            throw new IllegalArgumentException();
-        }
+        checkNotNull(location);
+        checkNotNull(material, "Unknown material type.");
+        checkArgument(data >= 0, "Block data may not be negative.");
+        checkArgument(data < 16, "Block data may not be higher than 15.");
         return new GlowFallingBlock(location, material, data);
     }
 
@@ -1576,11 +1584,14 @@ public class GlowWorld implements World {
 
     @Override
     public Entity spawnEntity(Location loc, EntityType type) {
+        checkNotNull(loc);
+        checkNotNull(type);
         return spawn(loc, type.getEntityClass());
     }
 
     private GlowLightningStrike strikeLightningFireEvent(Location loc, boolean effect,
             boolean isSilent) {
+        checkNotNull(loc);
         GlowLightningStrike strike = new GlowLightningStrike(loc, effect, isSilent);
         LightningStrikeEvent event = new LightningStrikeEvent(this, strike);
         if (EventFactory.getInstance().callEvent(event).isCancelled()) {
@@ -1692,6 +1703,7 @@ public class GlowWorld implements World {
 
     @Override
     public boolean createExplosion(Location loc, float power, boolean setFire) {
+        checkNotNull(loc);
         return createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, true);
     }
 
@@ -1739,6 +1751,8 @@ public class GlowWorld implements World {
 
     @Override
     public void playEffect(Location location, Effect effect, int data, int radius) {
+        checkNotNull(location);
+        checkNotNull(effect);
         int radiusSquared = radius * radius;
         getRawPlayers().stream()
                 .filter(player -> player.getLocation().distanceSquared(location) <= radiusSquared)
@@ -1767,6 +1781,9 @@ public class GlowWorld implements World {
      */
     public void playEffectExceptTo(Location location, Effect effect, int data, int radius,
             Player exclude) {
+        checkNotNull(location);
+        checkNotNull(effect);
+        checkNotNull(exclude);
         int radiusSquared = radius * radius;
         getRawPlayers().stream().filter(player -> !player.equals(exclude)
                 && player.getLocation().distanceSquared(location) <= radiusSquared)
@@ -1775,6 +1792,7 @@ public class GlowWorld implements World {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
+        checkNotNull(sound);
         playSound(location, sound, GlowSound
                 .getSoundCategory(GlowSound.getVanillaId(sound)), volume, pitch);
     }
@@ -1787,9 +1805,8 @@ public class GlowWorld implements World {
     @Override
     public void playSound(Location location, Sound sound, SoundCategory category, float volume,
             float pitch) {
-        if (location == null || sound == null) {
-            return;
-        }
+        checkNotNull(location);
+        checkNotNull(sound);
 
         double radiusSquared = Math.pow(volume * 16, 2);
         getRawPlayers().stream()
@@ -1800,6 +1817,7 @@ public class GlowWorld implements World {
     @Override
     public void playSound(Location location, String sound, SoundCategory category, float volume,
             float pitch) {
+        checkNotNull(sound);
         playSound(location, GlowSound.getVanillaSound(sound), category, volume, pitch);
     }
 
@@ -1822,6 +1840,8 @@ public class GlowWorld implements World {
     //@Override
     public void showParticle(Location loc, Effect particle, float offsetX, float offsetY,
             float offsetZ, float speed, int amount) {
+        checkNotNull(loc);
+        checkNotNull(particle);
         int radius;
         if (GlowParticle.isLongDistance(particle)) {
             radius = 48;
@@ -1850,9 +1870,8 @@ public class GlowWorld implements World {
     //@Override
     public void showParticle(Location loc, Effect particle, int id, int data, float offsetX,
             float offsetY, float offsetZ, float speed, int amount, int radius) {
-        if (loc == null || particle == null) {
-            return;
-        }
+        checkNotNull(loc);
+        checkNotNull(particle);
 
         double radiusSquared = radius * radius;
 
@@ -1892,6 +1911,7 @@ public class GlowWorld implements World {
      * @param runnable The runnable to run.
      */
     private void maybeAsync(boolean async, Runnable runnable) {
+        checkNotNull(runnable);
         if (async) {
             server.getScheduler().runTaskAsynchronously(null, runnable);
         } else {
@@ -2010,6 +2030,7 @@ public class GlowWorld implements World {
     @Override
     public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX,
             double offsetY, double offsetZ, T data) {
+        checkNotNull(location);
         spawnParticle(particle, location.getX(), location.getY(), location
                 .getZ(), count, offsetX, offsetY, offsetZ, data);
     }
@@ -2036,10 +2057,8 @@ public class GlowWorld implements World {
     @Override
     public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX,
             double offsetY, double offsetZ, double extra, T data) {
-        if (particle == null) {
-            throw new IllegalArgumentException("particle cannot be null!");
-        }
-
+        checkNotNull(particle);
+        checkNotNull(location);
         if (data != null && !particle.getDataType().isInstance(data)) {
             throw new IllegalArgumentException(
                     "wrong data type " + data.getClass() + " should be " + particle.getDataType());
@@ -2062,6 +2081,8 @@ public class GlowWorld implements World {
 
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
+        checkNotNull(metadataKey);
+        checkNotNull(newMetadataValue);
         metadata.setMetadata(this, metadataKey, newMetadataValue);
     }
 
@@ -2112,7 +2133,7 @@ public class GlowWorld implements World {
             }
             int typeId = chunk.getType(
                     location.getBlockX() & 0xF, location.getBlockZ() & 0xF, location.getBlockY());
-            BlockType type = itemTable.getBlock(Material.getMaterial(typeId));
+            BlockType type = itemTable.getBlock(typeId);
             if (type == null) {
                 cancelPulse(location);
                 continue;

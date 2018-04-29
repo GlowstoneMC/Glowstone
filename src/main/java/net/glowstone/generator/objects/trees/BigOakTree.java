@@ -154,7 +154,7 @@ public class BigOakTree extends GenericTree {
                             new Vector(x, y + maxLeafDistance, z), world) == -1) {
                         int offX = blockX - x;
                         int offZ = blockZ - z;
-                        double distance = 0.381D * Math.sqrt(offX * offX + offZ * offZ);
+                        double distance = 0.381D * Math.hypot(offX, offZ);
                         int branchBaseY = Math.min(trunkTopY, (int) (y - distance));
                         if (countAvailableBlocks(
                                 new Vector(x, branchBaseY, z), new Vector(x, y, z), world) == -1) {

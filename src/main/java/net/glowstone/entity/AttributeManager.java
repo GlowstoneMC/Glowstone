@@ -2,13 +2,11 @@ package net.glowstone.entity;
 
 import com.flowpowered.network.Message;
 import com.google.common.collect.Maps;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
