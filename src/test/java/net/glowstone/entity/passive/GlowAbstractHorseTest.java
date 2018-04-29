@@ -77,11 +77,11 @@ public abstract class GlowAbstractHorseTest<T extends GlowAbstractHorse> extends
         Assertions.assertEquals(0, entity.computeGrowthAmount(null));
         Assertions.assertEquals(0, entity.computeGrowthAmount(Material.SAND));
 
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.SUGAR));
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.WHEAT));
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.APPLE));
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.GOLDEN_CARROT));
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.GOLDEN_APPLE));
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.HAY_BLOCK));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.SUGAR));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.WHEAT));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.APPLE));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.GOLDEN_CARROT));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.GOLDEN_APPLE));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.HAY_BLOCK));
     }
 }

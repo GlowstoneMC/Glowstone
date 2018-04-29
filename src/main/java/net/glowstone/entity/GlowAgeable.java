@@ -14,6 +14,7 @@ import net.glowstone.util.SoundUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -27,6 +28,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     private static final int AGE_BABY = -24000;
     private static final int AGE_ADULT = 0;
     private static final int BREEDING_AGE = 6000;
+    private static final int MAX_GROW_AGE = -9 * 20;
     protected float width;
     protected float height;
     @Getter
@@ -75,6 +77,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     public final void setAge(int age) {
         this.age = age;
         setScaleForAge(isAdult());
+        metadata.set(MetadataIndex.AGE_ISBABY, !isAdult());
     }
 
     @Override
@@ -104,6 +107,16 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     @Override
     public boolean canBreed() {
         return age == AGE_ADULT;
+    }
+
+    /**
+     * Gets whether this entity can grow when fed.
+     *
+     * @return true if this entity can grow when fed, false otherwise.
+     */
+    public boolean canGrow() {
+        // feeding a baby has no effect if only 9 seconds remain
+        return getAge() < MAX_GROW_AGE;
     }
 
     @Override
@@ -148,13 +161,14 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
                     if (player.getGameMode() == GameMode.SURVIVAL
                         || player.getGameMode() == GameMode.ADVENTURE) {
-                        player.getInventory().consumeItem(message.getHand());
+                        player.getInventory().consumeItemInHand(message.getHandSlot());
                     }
                     return true;
                 }
             } else if (growthAmount > 0) {
                 grow(growthAmount);
-                player.getInventory().consumeItem(message.getHand());
+                world.spawnParticle(Particle.VILLAGER_HAPPY, location, 5);
+                player.getInventory().consumeItemInHand(message.getHandSlot());
                 return true;
             }
         }

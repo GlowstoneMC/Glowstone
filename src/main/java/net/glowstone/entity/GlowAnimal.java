@@ -78,7 +78,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
 
     @Override
     protected int computeGrowthAmount(Material material) {
-        if (!isAdult() && getBreedingFoods().contains(material)) {
+        if (canGrow() && getBreedingFoods().contains(material)) {
             return Math.abs(getAge() / 10);
         }
 

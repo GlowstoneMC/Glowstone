@@ -34,4 +34,3 @@ public final class InteractEntityMessage implements Message {
         INTERACT_AT
     }
 }
-

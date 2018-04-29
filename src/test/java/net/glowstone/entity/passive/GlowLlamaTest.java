@@ -61,7 +61,7 @@ public class GlowLlamaTest extends GlowChestedHorseTest<GlowLlama> {
         Assertions.assertEquals(0, entity.computeGrowthAmount(null));
         Assertions.assertEquals(0, entity.computeGrowthAmount(Material.SAND));
 
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.WHEAT));
-        Assertions.assertEquals(1, entity.computeGrowthAmount(Material.HAY_BLOCK));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.WHEAT));
+        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.HAY_BLOCK));
     }
 }
