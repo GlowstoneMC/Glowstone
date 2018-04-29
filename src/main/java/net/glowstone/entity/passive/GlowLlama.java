@@ -16,7 +16,7 @@ import org.bukkit.entity.Llama;
 
 /**
  * Represents a llama.
- * The data come from https://minecraft.gamepedia.com/Llama
+ * The data comes from https://minecraft.gamepedia.com/Llama
  */
 public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements Llama {
 
