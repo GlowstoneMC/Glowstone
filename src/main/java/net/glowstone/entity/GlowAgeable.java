@@ -14,6 +14,7 @@ import net.glowstone.util.SoundUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -27,6 +28,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     private static final int AGE_BABY = -24000;
     private static final int AGE_ADULT = 0;
     private static final int BREEDING_AGE = 6000;
+    private static final int MAX_GROW_AGE = -9 * 20;
     protected float width;
     protected float height;
     @Getter
@@ -75,6 +77,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     public final void setAge(int age) {
         this.age = age;
         setScaleForAge(isAdult());
+        metadata.set(MetadataIndex.AGE_ISBABY, !isAdult());
     }
 
     @Override
@@ -106,6 +109,16 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         return age == AGE_ADULT;
     }
 
+    /**
+     * Gets whether this entity can grow when fed.
+     *
+     * @return true if this entity can grow when fed, false otherwise.
+     */
+    public boolean canGrow() {
+        // feeding a baby has no effect if only 9 seconds remain
+        return getAge() < MAX_GROW_AGE;
+    }
+
     @Override
     public void setBreed(boolean breed) {
         if (breed) {
@@ -134,10 +147,11 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        super.entityInteract(player, message);
-        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+        if (!super.entityInteract(player, message)
+                && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             ItemStack item = InventoryUtil
                 .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+            int growthAmount = computeGrowthAmount(item.getType());
 
             // Spawn eggs are used to spawn babies
             if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
@@ -147,16 +161,18 @@ public class GlowAgeable extends GlowCreature implements Ageable {
 
                     if (player.getGameMode() == GameMode.SURVIVAL
                         || player.getGameMode() == GameMode.ADVENTURE) {
-                        // Consume the egg
-                        if (item.getAmount() > 1) {
-                            item.setAmount(item.getAmount() - 1);
-                        } else {
-                            player.getInventory()
-                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
-                        }
+                        player.getInventory().consumeItemInHand(message.getHandSlot());
                     }
                     return true;
                 }
+            } else if (growthAmount > 0) {
+                grow(growthAmount);
+                world.spawnParticle(Particle.VILLAGER_HAPPY, location, 5);
+                if (player.getGameMode() == GameMode.SURVIVAL
+                        || player.getGameMode() == GameMode.ADVENTURE) {
+                    player.getInventory().consumeItemInHand(message.getHandSlot());
+                }
+                return true;
             }
         }
         return false;
@@ -183,5 +199,25 @@ public class GlowAgeable extends GlowCreature implements Ageable {
             return SoundUtil.randomReal(0.2F) + 1.5F;
         }
         return super.getSoundPitch();
+    }
+
+    /**
+     * Grows an ageable creature.
+     *
+     * @param age The age to add to the ageable creature.
+     */
+    public void grow(int age) {
+        setAge(this.age + age);
+    }
+
+    /**
+     * Computes the growth amount using a specific material for the current ageable creature.
+     * Always returns 0 for an adult or if the material is not food for the creature.
+     *
+     * @param material The food used to compute the growth amount.
+     * @return The age gained using the given food.
+     */
+    protected int computeGrowthAmount(Material material) {
+        return 0;
     }
 }

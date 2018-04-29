@@ -45,9 +45,8 @@ public class GlowAnimal extends GlowAgeable implements Animals {
 
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        super.entityInteract(player, message);
-
-        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+        if (!super.entityInteract(player, message)
+                && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
             ItemStack item = InventoryUtil
                     .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
 
@@ -60,7 +59,9 @@ public class GlowAnimal extends GlowAgeable implements Animals {
                     && getBreedingFoods().contains(item.getType())) {
                 // TODO set love mode if possible and spawn particles
                 // TODO heal
-                player.getInventory().consumeItemInMainHand();
+                // TODO only consume the item if the animal is healed or something else
+                player.getInventory().consumeItem(message.getHand());
+                return true;
             }
         }
 
@@ -73,5 +74,14 @@ public class GlowAnimal extends GlowAgeable implements Animals {
      */
     public Set<Material> getBreedingFoods() {
         return DEFAULT_BREEDING_FOODS;
+    }
+
+    @Override
+    protected int computeGrowthAmount(Material material) {
+        if (canGrow() && getBreedingFoods().contains(material)) {
+            return Math.abs(getAge() / 10);
+        }
+
+        return 0;
     }
 }

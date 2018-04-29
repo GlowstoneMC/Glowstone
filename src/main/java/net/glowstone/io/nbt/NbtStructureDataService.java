@@ -49,7 +49,7 @@ public class NbtStructureDataService implements StructureDataService {
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = in.readCompound();
-                    if (!data.readCompound("Data", innerData -> innerData.readCompound(
+                    if (!data.readCompound("data", innerData -> innerData.readCompound(
                             "Features", features -> features.getValue().keySet().stream()
                                 .filter(features::isCompound)
                                 .forEach(key -> {
@@ -75,20 +75,20 @@ public class NbtStructureDataService implements StructureDataService {
     public void writeStructuresData(Map<Integer, GlowStructure> structures) {
         for (GlowStructure structure : structures.values()) {
             if (structure.isDirty()) {
-                CompoundTag data = new CompoundTag();
+                CompoundTag data = null;
                 CompoundTag features = new CompoundTag();
                 CompoundTag feature = new CompoundTag();
+                CompoundTag inputRoot;
                 StructureStore<GlowStructure> store = StructureStorage
                     .saveStructure(structure, feature);
                 File structureFile = new File(structureDir, store.getId() + ".dat");
                 if (structureFile.exists()) {
                     try (NbtInputStream in = new NbtInputStream(
-                        new FileInputStream(structureFile))) {
-                        data = new CompoundTag();
-                        data = in.readCompound();
-                        CompoundTag innerData = data.tryGetCompound("data");
-                        if (innerData != null) {
-                            CompoundTag maybeFeatures = innerData.tryGetCompound("Features");
+                            new FileInputStream(structureFile))) {
+                        inputRoot = in.readCompound();
+                        data = inputRoot.tryGetCompound("data");
+                        if (data != null) {
+                            CompoundTag maybeFeatures = data.tryGetCompound("Features");
                             if (maybeFeatures != null) {
                                 features = maybeFeatures;
                             }
@@ -97,6 +97,9 @@ public class NbtStructureDataService implements StructureDataService {
                         server.getLogger().log(Level.SEVERE,
                             "Failed to read structure data from " + structureFile, e);
                     }
+                }
+                if (data == null) {
+                    data = new CompoundTag();
                 }
                 String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);

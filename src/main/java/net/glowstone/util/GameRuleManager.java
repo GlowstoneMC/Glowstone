@@ -82,7 +82,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * @return the string value, or null if not defined
      */
     public String getString(String rule) {
-        if (rule != null && isGameRule(rule)) {
+        if (isGameRule(rule)) {
             return gameRules.get(rule);
         }
         return null;

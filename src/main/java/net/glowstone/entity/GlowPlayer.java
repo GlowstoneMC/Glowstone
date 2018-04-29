@@ -2307,17 +2307,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setResourcePack(String url, byte[] hash) {
-        if (hash == null) {
-            throw new IllegalArgumentException("Resource pack hash must not be null!");
-        }
-        if (hash.length != 20) {
-            throw new IllegalArgumentException("Resource pack hash is of an invalid length!");
-        }
+        checkNotNull(url);
+        checkNotNull(hash);
+        checkArgument(hash.length == 20, "Resource pack hash is of an invalid length.");
         setResourcePack(url, Convert.fromBytes(hash));
     }
 
     @Override
     public void setResourcePack(String url, String hash) {
+        checkNotNull(url);
+        checkNotNull(hash);
+        checkArgument(hash.length() == 40, "Resource pack hash is of an invalid length.");
         session.send(new ResourcePackSendMessage(url, hash));
         resourcePackHash = hash;
     }

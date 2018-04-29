@@ -1,6 +1,9 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
+
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -11,9 +14,19 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Llama;
 
+/**
+ * Represents a llama.
+ * The data comes from https://minecraft.gamepedia.com/Llama
+ */
 public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements Llama {
 
     private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.HAY_BLOCK);
+
+    private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
+            .<Material, Integer>builder()
+            .put(Material.WHEAT, 200)
+            .put(Material.HAY_BLOCK, 1800)
+            .build();
 
     /**
      * Creates a llama entity.
@@ -81,4 +94,18 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
     public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
     }
+
+    @Override
+    protected int computeGrowthAmount(Material material) {
+        if (canGrow()) {
+            Integer mapResult = GROWING_FOODS.get(material);
+
+            if (mapResult != null) {
+                return Math.min(mapResult, Math.abs(getAge()));
+            }
+        }
+
+        return 0;
+    }
+
 }
