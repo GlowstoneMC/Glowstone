@@ -16,7 +16,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
-import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
 public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMoveMessage> {
@@ -79,9 +78,7 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
         delta.setX(Math.abs(delta.getX()));
         delta.setY(Math.abs(delta.getY()));
         delta.setZ(Math.abs(delta.getZ()));
-        int flatDistance = (int) Math.round(Math.sqrt(
-            NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ()))
-            * 100.0);
+        int flatDistance = (int) Math.round(Math.hypot(delta.getX(), delta.getZ()) * 100.0);
 
         if (vehicle instanceof Boat) {
             player.incrementStatistic(Statistic.BOAT_ONE_CM, flatDistance);
