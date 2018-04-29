@@ -13,13 +13,15 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
-import net.glowstone.ServerProvider;
 import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
+import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowScoreboardManager;
 import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -66,6 +68,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected EventFactory eventFactory;
     @Mock
     private PluginManager pluginManager;
+    @Mock
+    protected GlowPlayer player;
 
     // Real objects
     protected Location location;
@@ -76,6 +80,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     protected final Function<? super Location, ? extends T> entityCreator;
     protected T entity;
     private EventFactory oldEventFactory;
+    protected GlowPlayerInventory inventory;
 
 
     protected GlowEntityTest(Function<? super Location, ? extends T> entityCreator) {
@@ -130,6 +135,9 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(eventFactory.callEvent(any(Event.class))).thenAnswer(RETURN_FIRST_ARG);
         when(eventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
                 RETURN_FIRST_ARG);
+        inventory = new GlowPlayerInventory(player);
+        Mockito.when(player.getInventory()).thenReturn(inventory);
+        Mockito.when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
     }
 
     @After
@@ -145,6 +153,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         block = null;
         log = null;
         entity = null;
+        player = null;
     }
 
     @Test

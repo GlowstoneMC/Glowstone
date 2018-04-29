@@ -36,7 +36,7 @@ public final class TextMessage {
      * @param text The text of the message.
      */
     public TextMessage(String text) {
-        object = convert(text);
+        object = convert(String.valueOf(text));
     }
 
     /**

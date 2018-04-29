@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.ServerProvider;
 import net.glowstone.inventory.GlowItemFactory;
@@ -57,8 +58,6 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
 import org.mockito.Mockito;
-
-import javax.annotation.Nullable;
 
 /**
  * Simple mocked Server implementation.

@@ -1,26 +1,38 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
-import org.bukkit.inventory.HorseInventory;
 
 public abstract class GlowAbstractHorse extends GlowTameable implements AbstractHorse {
 
     private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.GOLDEN_APPLE,
             Material.GOLDEN_CARROT);
+
+    private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
+            .<Material, Integer>builder()
+            .put(Material.SUGAR, 600)
+            .put(Material.WHEAT, 400)
+            .put(Material.APPLE, 1200)
+            .put(Material.GOLDEN_CARROT, 1200)
+            .put(Material.GOLDEN_APPLE, 4800)
+            .put(Material.HAY_BLOCK, 3600)
+            .build();
 
     @Getter
     @Setter
@@ -67,7 +79,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         }
         if (this instanceof GlowHorse) {
             GlowHorse horse = (GlowHorse) this;
-            if (getInventory() != null && ((HorseInventory) getInventory()).getSaddle() != null) {
+            if (getInventory() != null && !InventoryUtil.isEmpty(getInventory().getSaddle())) {
                 value |= 0x04;
             }
             if (horse.hasReproduced()) {
@@ -89,5 +101,19 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     @Override
     public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
+    }
+
+    @Override
+    protected int computeGrowthAmount(Material material) {
+        // We need to be a baby and only tamed horses can be fed with hay block
+        if (canGrow() && !(Material.HAY_BLOCK == material && !isTamed())) {
+            Integer mapResult = GROWING_FOODS.get(material);
+
+            if (mapResult != null) {
+                return Math.min(mapResult, Math.abs(getAge()));
+            }
+        }
+
+        return 0;
     }
 }

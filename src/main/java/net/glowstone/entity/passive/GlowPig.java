@@ -1,7 +1,6 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;

@@ -7,11 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.spy;
 
 import java.util.function.Function;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Ageable;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -152,5 +156,50 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
     @Test
     public void testGetSoundPitch() {
         // TODO
+    }
+
+    @Test
+    public void testComputeGrowthAmount() {
+        entity.setBaby();
+        assertEquals(0, entity.computeGrowthAmount(null));
+        assertEquals(0, entity.computeGrowthAmount(Material.WHEAT));
+        assertEquals(0, entity.computeGrowthAmount(Material.HAY_BLOCK));
+        assertEquals(0, entity.computeGrowthAmount(Material.CARROT_ITEM));
+    }
+
+    @Test
+    public void testComputeGrowthAmountAdult() {
+        entity.setAge(0);
+        assertEquals(0, entity.computeGrowthAmount(null));
+        assertEquals(0, entity.computeGrowthAmount(Material.WHEAT));
+        assertEquals(0, entity.computeGrowthAmount(Material.HAY_BLOCK));
+        assertEquals(0, entity.computeGrowthAmount(Material.CARROT_ITEM));
+    }
+
+    @Test
+    public void testEntityInteractGrowsBaby() {
+        entity.setBaby();
+        T mockedEntity = spy(entity);
+        inventory.setItemInMainHand(new ItemStack(Material.RAW_FISH, 60));
+        InteractEntityMessage message = new InteractEntityMessage(0, InteractEntityMessage.Action.INTERACT.ordinal(), 0);
+
+        Mockito.when(mockedEntity.computeGrowthAmount(any())).thenReturn(100);
+
+        mockedEntity.entityInteract(player, message);
+
+        assertEquals(-23900, mockedEntity.getAge());
+        assertEquals(59, inventory.getItemInMainHand().getAmount());
+    }
+
+    @Test
+    public void testEntityInteractDoesNotGrowBaby() {
+        entity.setBaby();
+        inventory.setItemInMainHand(new ItemStack(Material.BEDROCK, 60));
+        InteractEntityMessage message = new InteractEntityMessage(0, InteractEntityMessage.Action.INTERACT.ordinal(), 0);
+
+        entity.entityInteract(player, message);
+
+        assertEquals(-24000, entity.getAge());
+        assertEquals(60, inventory.getItemInMainHand().getAmount());
     }
 }
