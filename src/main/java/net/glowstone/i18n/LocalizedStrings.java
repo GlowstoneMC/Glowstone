@@ -107,12 +107,9 @@ public interface LocalizedStrings {
                 LoggableLocalizedString BEST = new LoggableLocalizedStringImpl(
                     "console.info.opencl.best", Level.INFO
                 );
-
-                interface Best {
-                    LoggableLocalizedString VERSION_TIEBREAKER = new LoggableLocalizedStringImpl(
-                        "console.info.opencl.best.version-tiebreaker", Level.INFO
-                    );
-                }
+                LoggableLocalizedString BEST_VERSION_TIEBREAKER = new LoggableLocalizedStringImpl(
+                    "console.info.opencl.best.version-tiebreaker", Level.INFO
+                );
 
                 LoggableLocalizedString CPU = new LoggableLocalizedStringImpl(
                     "console.info.opencl.cpu", Level.INFO
@@ -204,11 +201,9 @@ public interface LocalizedStrings {
             }
 
             interface Icon {
-                interface LoadFailed {
-                    LoggableLocalizedString IMPORT = new LoggableLocalizedStringImpl(
-                        "console.warn.icon.load-failed.import", Level.WARNING
-                    );
-                }
+                LoggableLocalizedString LOAD_FAILED_IMPORT = new LoggableLocalizedStringImpl(
+                    "console.warn.icon.load-failed.import", Level.WARNING
+                );
 
                 LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.warn.icon.load-failed", Level.WARNING
@@ -252,39 +247,33 @@ public interface LocalizedStrings {
                         "console.warn.plugin.io", Level.WARNING
                 );
 
-                interface NoSponge {
-                    LoggableLocalizedString BUKKIT2SPONGE = new LoggableLocalizedStringImpl(
-                        "console.warn.plugin.no-sponge.bukkit2sponge", Level.WARNING
-                    );
-                }
+                LoggableLocalizedString BUKKIT2SPONGE = new LoggableLocalizedStringImpl(
+                    "console.warn.plugin.no-sponge.bukkit2sponge", Level.WARNING
+                );
 
-                interface Permission {
-                    LoggableLocalizedString DUPLICATE = new LoggableLocalizedStringImpl(
-                        "console.warn.plugin.permission.duplicate", Level.WARNING
-                    );
-                }
+                LoggableLocalizedString PERMISSION_DUPLICATE = new LoggableLocalizedStringImpl(
+                    "console.warn.plugin.permission.duplicate", Level.WARNING
+                );
 
                 LoggableLocalizedString UNSUPPORTED = new LoggableLocalizedStringImpl(
                     "console.warn.plugin.unsupported", Level.WARNING
                 );
 
-                interface Unsupported {
-                    LoggableLocalizedString CANARY = new LoggableLocalizedStringImpl(
-                        "console.warn.plugin.unsupported.canary", Level.WARNING
-                    );
+                LoggableLocalizedString UNSUPPORTED_CANARY = new LoggableLocalizedStringImpl(
+                    "console.warn.plugin.unsupported.canary", Level.WARNING
+                );
 
-                    LoggableLocalizedString FORGE = new LoggableLocalizedStringImpl(
-                        "console.warn.plugin.unsupported.forge", Level.WARNING
-                    );
+                LoggableLocalizedString UNSUPPORTED_FORGE = new LoggableLocalizedStringImpl(
+                    "console.warn.plugin.unsupported.forge", Level.WARNING
+                );
 
-                    LoggableLocalizedString OTHER = new LoggableLocalizedStringImpl(
-                        "console.warn.plugin.unsupported.other", Level.WARNING
-                    );
+                LoggableLocalizedString UNSUPPORTED_OTHER = new LoggableLocalizedStringImpl(
+                    "console.warn.plugin.unsupported.other", Level.WARNING
+                );
 
-                    LoggableLocalizedString SPONGE = new LoggableLocalizedStringImpl(
-                        "console.warn.plugin.unsupported.sponge", Level.WARNING
-                    );
-                }
+                LoggableLocalizedString UNSUPPORTED_SPONGE = new LoggableLocalizedStringImpl(
+                    "console.warn.plugin.unsupported.sponge", Level.WARNING
+                );
             }
 
             interface Profile {
