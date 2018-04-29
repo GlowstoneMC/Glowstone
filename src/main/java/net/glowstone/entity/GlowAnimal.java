@@ -60,7 +60,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
                 // TODO set love mode if possible and spawn particles
                 // TODO heal
                 // TODO only consume the item if the animal is healed or something else
-                player.getInventory().consumeItemInMainHand();
+                player.getInventory().consumeItem(message.getHand());
                 return true;
             }
         }
