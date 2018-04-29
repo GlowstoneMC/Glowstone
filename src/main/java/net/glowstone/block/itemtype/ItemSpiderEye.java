@@ -1,6 +1,7 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.TickUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -17,7 +18,8 @@ public class ItemSpiderEye extends ItemFood {
             return false;
         }
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 5 * 20, 0), true);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
+                TickUtil.secondsToTicks(5), 0), true);
         return true;
     }
 }

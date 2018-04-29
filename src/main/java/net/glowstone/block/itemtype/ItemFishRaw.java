@@ -1,6 +1,7 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.TickUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -44,9 +45,12 @@ public class ItemFishRaw extends ItemFood {
         }
 
         if (item.getData().getData() == 3) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 60 * 20, 3), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 15 * 20, 2), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 15 * 20, 1), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
+                    TickUtil.minutesToTicks(1), 3), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER,
+                    TickUtil.secondsToTicks(15), 2), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION,
+                    TickUtil.secondsToTicks(15), 1), true);
         }
         return true;
     }

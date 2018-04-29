@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowAnimal;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -39,7 +40,8 @@ public class GlowChicken extends GlowAnimal implements Chicken {
     }
 
     private void generateEggLayDelay() {
-        setEggLayTime(ThreadLocalRandom.current().nextInt(20 * 60 * 5) + 20 * 60 * 5);
+        int fiveMinutes = TickUtil.minutesToTicks(5);
+        setEggLayTime(ThreadLocalRandom.current().nextInt(fiveMinutes) + fiveMinutes);
     }
 
     @Override
