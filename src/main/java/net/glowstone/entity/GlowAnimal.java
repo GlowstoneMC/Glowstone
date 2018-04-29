@@ -80,8 +80,8 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     protected int computeGrowthAmount(Material material) {
         if (!isAdult() && getBreedingFoods().contains(material)) {
             return Math.abs(getAge() / 10);
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 }
