@@ -79,7 +79,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         }
         if (this instanceof GlowHorse) {
             GlowHorse horse = (GlowHorse) this;
-            if (getInventory() != null && InventoryUtil.isEmpty(getInventory().getSaddle())) {
+            if (getInventory() != null && !InventoryUtil.isEmpty(getInventory().getSaddle())) {
                 value |= 0x04;
             }
             if (horse.hasReproduced()) {
