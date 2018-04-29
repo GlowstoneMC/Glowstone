@@ -15,7 +15,6 @@ import org.bukkit.Statistic;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
 public final class PlayerUpdateHandler implements MessageHandler<GlowSession, PlayerUpdateMessage> {
@@ -119,9 +118,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         delta.setX(Math.abs(delta.getX()));
         delta.setY(Math.abs(delta.getY()));
         delta.setZ(Math.abs(delta.getZ()));
-        int flatDistance = (int) Math.round(Math.sqrt(
-            NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ()))
-            * 100.0);
+        int flatDistance = (int) Math.round(Math.hypot(delta.getX(), delta.getZ()) * 100.0);
         if (message.isOnGround()) {
             if (flatDistance > 0) {
                 if (player.isSprinting()) {
@@ -141,7 +138,5 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
                 player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
             }
         }
-
-
     }
 }
