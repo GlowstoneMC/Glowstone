@@ -534,7 +534,7 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
      */
     public int consumeItemInHand(EquipmentSlot slot, boolean wholeStack) {
         checkArgument(slot == EquipmentSlot.HAND
-                        || slot == EquipmentSlot.OFF_HAND,"Not a valid hand slot.");
+                        || slot == EquipmentSlot.OFF_HAND, "Not a valid hand slot.");
         if (slot == EquipmentSlot.HAND) {
             return consumeItemInMainHand(wholeStack);
         }

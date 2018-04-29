@@ -168,7 +168,10 @@ public class GlowAgeable extends GlowCreature implements Ageable {
             } else if (growthAmount > 0) {
                 grow(growthAmount);
                 world.spawnParticle(Particle.VILLAGER_HAPPY, location, 5);
-                player.getInventory().consumeItemInHand(message.getHandSlot());
+                if (player.getGameMode() == GameMode.SURVIVAL
+                        || player.getGameMode() == GameMode.ADVENTURE) {
+                    player.getInventory().consumeItemInHand(message.getHandSlot());
+                }
                 return true;
             }
         }
