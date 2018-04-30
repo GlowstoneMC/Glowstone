@@ -42,8 +42,8 @@ class VillagerStore extends AgeableStore<GlowVillager> {
                 entity.clearRecipes(); // clear defaults
                 List<MerchantRecipe> recipes = new ArrayList<>(recipesList.size());
                 for (CompoundTag recipeTag : recipesList) {
-                    List<ItemStack> ingredients = new ArrayList<>(2);
                     recipeTag.readItem("sell", sell -> {
+                        List<ItemStack> ingredients = new ArrayList<>(2);
                         recipeTag.readItem("buy", ingredients::add);
                         recipeTag.readItem("buyB", ingredients::add);
                         boolean experienceReward = recipeTag.getBoolDefaultFalse("rewardExp");
