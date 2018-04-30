@@ -3492,7 +3492,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 setItemInHand(tool);
             }
             setDigging(null);
-            diggingTicks = 0;
             return;
         }
         int stage = (int) (completion * 10);
