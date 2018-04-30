@@ -1,6 +1,6 @@
 package net.glowstone.block;
 
-import net.glowstone.inventory.MaterialMatcher;
+import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 
 /**
@@ -32,7 +32,7 @@ public interface MaterialValueManager {
          *
          * @return the tool (or null for none)
          */
-        MaterialMatcher getTool();
+        ToolType getTool();
 
         /**
          * Returns the blast resistance-component of this value.

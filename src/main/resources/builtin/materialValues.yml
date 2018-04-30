@@ -84,6 +84,7 @@ values:
     hardness: 2
     blastResistance: 10
   LEAVES:
+    tool: SHEARS
     lightOpacity: 1
     flameResistance: 30
     fireResistance: 60
@@ -132,6 +133,7 @@ values:
     hardness: 0.5
     blastResistance: 2.5
   WEB:
+    tool: SHEARS
     lightOpacity: 1
     hardness: 4
     blastResistance: 20
@@ -154,6 +156,7 @@ values:
     hardness: 0.5
     blastResistance: 2.5
   WOOL:
+    tool: SHEARS
     flameResistance: 30
     fireResistance: 60
     hardness: 0.8

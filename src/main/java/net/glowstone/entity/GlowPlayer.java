@@ -66,12 +66,9 @@ import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
-<<<<<<< HEAD
 import net.glowstone.inventory.MaterialMatcher;
-import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
-=======
 import net.glowstone.inventory.ToolType;
->>>>>>> satoshinm/hardness2
+import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.map.GlowMapCanvas;
 import net.glowstone.net.GlowSession;
@@ -3401,14 +3398,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 broadcastBlockBreakAnimation(digging, 10);
             }
         } else {
-            float hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
-            float breakingTimeMultiplier = 5; // default of 5 when using bare hands
+            double hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
+            double breakingTimeMultiplier = 5; // default of 5 when using bare hands
             ItemStack tool = getItemInHand();
             if (tool != null) {
-                MaterialMatcher effectiveTool = digging.getMaterialValues().getTool();
-
-                if (effectiveTool.matches(tool.getType())) {
-                    breakingTimeMultiplier = 1.5f / effectiveTool.getMiningMultiplier();
+                ToolType effectiveTool = digging.getMaterialValues().getTool();
+                Material toolType = tool.getType();
+                if (digging.getType() == Material.WEB && ToolType.SWORD.matches(toolType)) {
+                    breakingTimeMultiplier = 0.1;
+                } else if (digging.getType() == Material.WOOL && toolType == Material.SHEARS) {
+                    breakingTimeMultiplier = 0.3;
+                } else if (effectiveTool.matches(toolType)) {
+                    breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
                 }
             }
             totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
