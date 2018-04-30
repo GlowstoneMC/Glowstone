@@ -1,5 +1,7 @@
 package net.glowstone.inventory;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 
 /**
@@ -35,12 +37,7 @@ public enum ToolType implements MaterialMatcher {
     SWORD(Material.WOOD_SWORD, GOLD_SWORD, ToolMaterial.WOOD),
 
     // Shears
-    SHEARS(Material.SHEARS, null, ToolMaterial.IRON) {
-        @Override
-        public double getMiningMultiplier() {
-            return 1.5;
-        }
-    };
+    SHEARS(Material.SHEARS, null, ToolMaterial.SHEARS);
 
     private final Material bukkitMaterial;
     private final ToolType better;
@@ -72,21 +69,16 @@ public enum ToolType implements MaterialMatcher {
         return this.toolMaterial.getMultiplier();
     }
 
+    @RequiredArgsConstructor
     private enum ToolMaterial {
         WOOD(2),
         STONE(4),
         IRON(6),
         DIAMOND(8),
-        GOLD(12);
+        GOLD(12),
+        SHEARS(1.5);
 
-        private final int multiplier;
-
-        ToolMaterial(int multiplier) {
-            this.multiplier = multiplier;
-        }
-
-        public int getMultiplier() {
-            return this.multiplier;
-        }
+        @Getter
+        private final double multiplier;
     }
 }
