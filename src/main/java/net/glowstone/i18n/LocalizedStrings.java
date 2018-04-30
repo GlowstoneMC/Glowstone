@@ -192,11 +192,11 @@ public interface LocalizedStrings {
         interface Warn {
             interface Entity {
                 LoggableLocalizedString LOADING_ERROR = new LoggableLocalizedStringImpl(
-                        "console.warn.entity.loading-error", Level.WARNING
+                        "console.entity.loading-error", Level.WARNING
                 );
 
                 LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
-                        "console.warn.entity.unknown", Level.WARNING
+                        "console.entity.unknown", Level.WARNING
                 );
             }
 
