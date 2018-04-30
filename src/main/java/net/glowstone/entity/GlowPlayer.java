@@ -66,7 +66,6 @@ import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
-import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
