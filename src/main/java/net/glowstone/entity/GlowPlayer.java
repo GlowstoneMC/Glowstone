@@ -3422,7 +3422,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material
         // multiplier, etc.). For now, assuming hands are used and the block is not dropped.
         hardness *= 5;
-        logger.info(String.format("Hardness of %s is %d; been digging for %d ticks", digging, hardness, diggingTicks));
+        logger.info(String.format("Hardness of %s is %f; been digging for %d ticks", digging, hardness, diggingTicks));
         if (diggingTicks < hardness) {
             int stage = (int) (10 * (double) diggingTicks / hardness);
             broadcastBlockBreakAnimation(digging, stage);
