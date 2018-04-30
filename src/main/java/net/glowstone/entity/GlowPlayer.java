@@ -493,6 +493,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     private long diggingTicks = 0;
     /**
+     * The total number of ticks needed to dig the current block.
+     */
+    private long totalDiggingTicks = Long.MAX_VALUE;
+    /**
      * The one itemstack the player is currently usage and associated time.
      */
     @Getter
@@ -3386,11 +3390,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void setDigging(GlowBlock block) {
         if (block == null) {
+            totalDiggingTicks = Long.MAX_VALUE;
             if (digging != null) {
                 // remove the animation
                 broadcastBlockBreakAnimation(digging, 10);
             }
         } else {
+            float hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
+            float breakingTimeMultiplier = 5; // default of 5 when using bare hands
+            totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
         }
@@ -3416,14 +3424,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private void pulseDigging() {
         ++diggingTicks;
 
-        float hardness = digging.getMaterialValues().getHardness() * 20; // seconds to ticks
-
-        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material
-        // multiplier, etc.). For now, assuming hands are used and the block is not dropped.
-        hardness *= 5;
-        logger.info(String.format("Hardness of %s is %f; been digging for %d ticks",
-                digging, hardness, diggingTicks));
-        if (diggingTicks < hardness) {
+        logger.info(String.format("Hardness of %s is %d; been digging for %d ticks",
+                digging, totalDiggingTicks, diggingTicks));
+        if (diggingTicks < totalDiggingTicks) {
             int stage = (int) (10 * (double) diggingTicks / hardness);
             broadcastBlockBreakAnimation(digging, stage);
             return;
