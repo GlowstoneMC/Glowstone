@@ -3442,7 +3442,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         logger.info(String.format("Hardness of %s is %d; been digging for %d ticks",
                 digging, totalDiggingTicks, diggingTicks));
         if (diggingTicks < totalDiggingTicks) {
-            int stage = (int) (10 * (double) diggingTicks / hardness);
+            int stage = (int) (10 * (double) diggingTicks / totalDiggingTicks);
             broadcastBlockBreakAnimation(digging, stage);
             return;
         }
