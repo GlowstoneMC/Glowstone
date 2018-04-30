@@ -3404,9 +3404,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             if (tool != null) {
                 ToolType effectiveTool = block.getMaterialValues().getTool();
                 Material toolType = tool.getType();
-                if (digging.getType() == Material.WEB && ToolType.SWORD.matches(toolType)) {
+                if (block.getType() == Material.WEB && ToolType.SWORD.matches(toolType)) {
                     breakingTimeMultiplier = 0.1;
-                } else if (digging.getType() == Material.WOOL && toolType == Material.SHEARS) {
+                } else if (block.getType() == Material.WOOL && toolType == Material.SHEARS) {
                     breakingTimeMultiplier = 0.3;
                 } else if (effectiveTool.matches(toolType)) {
                     breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
