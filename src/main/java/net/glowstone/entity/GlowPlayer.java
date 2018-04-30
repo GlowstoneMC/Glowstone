@@ -114,6 +114,7 @@ import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Convert;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -3422,6 +3423,78 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         hardness *= 5;
 
         double completion = (double) diggingTicks / hardness;
+        if (diggingTicks >= completion) {
+            ItemStack tool = getItemInHand();
+            digging.breakNaturally(tool);
+            short durability = tool.getDurability();
+            short maxDurability = tool.getType().getMaxDurability();
+            if (!InventoryUtil.isEmpty(tool) && maxDurability != 0 && durability != maxDurability) {
+                switch (digging.getType()) {
+                    case GRASS:
+                    case DIRT:
+                    case SAND:
+                    case GRAVEL:
+                    case MYCEL:
+                    case SOUL_SAND:
+                        switch (tool.getType()) {
+                            case WOOD_SPADE:
+                            case STONE_SPADE:
+                            case IRON_SPADE:
+                            case GOLD_SPADE:
+                            case DIAMOND_SPADE:
+                                tool.setDurability((short) (durability + 1));
+                                break;
+                            default:
+                                tool.setDurability((short) (durability + 2));
+                                break;
+                        }
+                        break;
+                    case LOG:
+                    case LOG_2:
+                    case WOOD:
+                    case CHEST:
+                        switch (tool.getType()) {
+                            case WOOD_AXE:
+                            case STONE_AXE:
+                            case IRON_AXE:
+                            case GOLD_AXE:
+                            case DIAMOND_AXE:
+                                tool.setDurability((short) (durability + 1));
+                                break;
+                            default:
+                                tool.setDurability((short) (durability + 2));
+                                break;
+                        }
+                        break;
+                    case STONE:
+                    case COBBLESTONE:
+                        switch (tool.getType()) {
+                            case WOOD_PICKAXE:
+                            case STONE_PICKAXE:
+                            case IRON_PICKAXE:
+                            case GOLD_PICKAXE:
+                            case DIAMOND_PICKAXE:
+                                tool.setDurability((short) (durability + 1));
+                                break;
+                            default:
+                                tool.setDurability((short) (durability + 2));
+                                break;
+                        }
+                        break;
+                    default:
+                        tool.setDurability((short) (durability + 2));
+                        break;
+                }
+                if (durability >= maxDurability) {
+                    tool.setType(Material.AIR);
+                }
+                // Force-update item
+                setItemInHand(tool);
+            }
+            setDigging(null);
+            diggingTicks = 0;
+            return;
+        }
         int stage = (int) (completion * 10);
         if (stage > 9) {
             stage = 9;
