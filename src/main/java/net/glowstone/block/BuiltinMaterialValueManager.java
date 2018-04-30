@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
+import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -71,6 +72,11 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         public float getHardness() {
             float hardness = ((Number) get("hardness")).floatValue();
             return hardness == -1 ? Float.MAX_VALUE : hardness;
+        }
+
+        @Override
+        public ToolType getTool() {
+            return ToolType.valueOf((String) get("tool"));
         }
 
         @Override
