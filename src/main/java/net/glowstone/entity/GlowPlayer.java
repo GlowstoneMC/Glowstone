@@ -3402,7 +3402,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             double breakingTimeMultiplier = 5; // default of 5 when using bare hands
             ItemStack tool = getItemInHand();
             if (tool != null) {
-                ToolType effectiveTool = digging.getMaterialValues().getTool();
+                ToolType effectiveTool = block.getMaterialValues().getTool();
                 Material toolType = tool.getType();
                 if (digging.getType() == Material.WEB && ToolType.SWORD.matches(toolType)) {
                     breakingTimeMultiplier = 0.1;
