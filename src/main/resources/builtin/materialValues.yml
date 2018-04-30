@@ -22,6 +22,7 @@ values:
     hardness: 0.6
     baseMapColor: 4
   DIRT:
+    tool: SPADE
     blastResistance: 2.5
     hardness: 0.5
     baseMapColor: 40
