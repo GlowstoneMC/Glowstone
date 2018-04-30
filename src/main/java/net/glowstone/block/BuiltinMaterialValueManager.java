@@ -62,7 +62,7 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
 
         private Object get(String name) {
             Object got = section.get(name);
-            if (got == null) {
+            if (got == null && this != defaultValue) {
                 return defaultValue.get(name);
             }
             return got;
@@ -76,7 +76,8 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
 
         @Override
         public ToolType getTool() {
-            return ToolType.valueOf((String) get("tool"));
+            String toolName = (String) get("tool");
+            return toolName == null ? null : ToolType.valueOf(toolName);
         }
 
         @Override

@@ -3390,7 +3390,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param block the block to start breaking
      */
     public void setDigging(GlowBlock block) {
-        if (block == digging) {
+        if (Objects.equals(block, digging)) {
             return;
         }
         if (block == null) {
@@ -3402,14 +3402,16 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             double breakingTimeMultiplier = 5; // default of 5 when using bare hands
             ItemStack tool = getItemInHand();
             if (tool != null) {
-                ToolType effectiveTool = block.getMaterialValues().getTool();
                 Material toolType = tool.getType();
                 if (block.getType() == Material.WEB && ToolType.SWORD.matches(toolType)) {
                     breakingTimeMultiplier = 0.1;
                 } else if (block.getType() == Material.WOOL && toolType == Material.SHEARS) {
                     breakingTimeMultiplier = 0.3;
-                } else if (effectiveTool.matches(toolType)) {
-                    breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
+                } else {
+                    ToolType effectiveTool = block.getMaterialValues().getTool();
+                    if (effectiveTool != null && effectiveTool.matches(toolType)) {
+                        breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
+                    }
                 }
             }
             totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
@@ -3438,8 +3440,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private void pulseDigging() {
         ++diggingTicks;
 
-        logger.info(String.format("Hardness of %s is %d; been digging for %d ticks",
-                digging, totalDiggingTicks, diggingTicks));
         if (diggingTicks < totalDiggingTicks) {
             int stage = (int) (10 * (double) diggingTicks / totalDiggingTicks);
             broadcastBlockBreakAnimation(digging, stage);
@@ -3449,6 +3449,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         short durability = tool.getDurability();
         short maxDurability = tool.getType().getMaxDurability();
         if (!InventoryUtil.isEmpty(tool) && maxDurability != 0 && durability != maxDurability) {
+            int baseDamage; // Before applying unbreaking enchantment
             switch (digging.getType()) {
                 case GRASS:
                 case DIRT:
@@ -3462,10 +3463,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                         case IRON_SPADE:
                         case GOLD_SPADE:
                         case DIAMOND_SPADE:
-                            tool.setDurability((short) (durability + 1));
+                            baseDamage = 1;
                             break;
                         default:
-                            tool.setDurability((short) (durability + 2));
+                            baseDamage = 2;
                             break;
                     }
                     break;
@@ -3479,10 +3480,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                         case IRON_AXE:
                         case GOLD_AXE:
                         case DIAMOND_AXE:
-                            tool.setDurability((short) (durability + 1));
+                            baseDamage = 1;
                             break;
                         default:
-                            tool.setDurability((short) (durability + 2));
+                            baseDamage = 2;
                             break;
                     }
                     break;
@@ -3494,24 +3495,27 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                         case IRON_PICKAXE:
                         case GOLD_PICKAXE:
                         case DIAMOND_PICKAXE:
-                            tool.setDurability((short) (durability + 1));
+                            baseDamage = 1;
                             break;
                         default:
-                            tool.setDurability((short) (durability + 2));
+                            baseDamage = 2;
                             break;
                     }
                     break;
                 default:
-                    tool.setDurability((short) (durability + 2));
+                    baseDamage = 2;
                     break;
             }
-            if (durability >= maxDurability) {
-                tool.setType(Material.AIR);
+            for (int i = 0; i < baseDamage; i++) {
+                tool = InventoryUtil.damageItem(this, tool);
             }
             // Force-update item
             setItemInHand(tool);
-            // Finally, break the block
+            // Break the block
             digging.breakNaturally(tool);
+            // Send block status to clients
+            world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
+                    digging.getLocation(), Material.AIR, (byte) 0));
             setDigging(null);
         }
     }

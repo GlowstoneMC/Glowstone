@@ -51,6 +51,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         boolean blockBroken = false;
         boolean revert = false;
         if (message.getState() == DiggingMessage.START_DIGGING) {
+            if (block.equals(player.getDigging())) {
+                return;
+            }
             // call interact event
             Action action = Action.LEFT_CLICK_BLOCK;
             Block eventBlock = block;
