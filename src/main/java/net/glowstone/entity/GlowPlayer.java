@@ -3391,6 +3391,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param block the block to start breaking
      */
     public void setDigging(GlowBlock block) {
+        if (block == digging) {
+            return;
+        }
         if (block == null) {
             totalDiggingTicks = Long.MAX_VALUE;
             if (digging != null) {
