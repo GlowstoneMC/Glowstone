@@ -3396,10 +3396,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         if (block == null) {
             totalDiggingTicks = Long.MAX_VALUE;
-            if (digging != null) {
-                // remove the animation
-                broadcastBlockBreakAnimation(digging, 10);
-            }
+            // remove the animation
+            broadcastBlockBreakAnimation(digging, 10);
         } else {
             double hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
             double breakingTimeMultiplier = 5; // default of 5 when using bare hands
