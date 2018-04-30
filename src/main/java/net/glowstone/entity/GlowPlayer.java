@@ -3429,8 +3429,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             return;
         }
         ItemStack tool = getItemInHand();
-        digging.breakNaturally(tool);
-        setDigging(null);
         short durability = tool.getDurability();
         short maxDurability = tool.getType().getMaxDurability();
         if (!InventoryUtil.isEmpty(tool) && maxDurability != 0 && durability != maxDurability) {
@@ -3495,6 +3493,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             // Force-update item
             setItemInHand(tool);
+            // Finally, break the block
+            digging.breakNaturally(tool);
+            setDigging(null);
         }
     }
 
