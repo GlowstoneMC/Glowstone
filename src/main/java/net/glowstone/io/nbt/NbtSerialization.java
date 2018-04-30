@@ -33,18 +33,18 @@ public final class NbtSerialization {
      */
     public static ItemStack readItem(CompoundTag tag) {
         final Material[] material = {null};
-        if (!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
-                && !tag.readShort("id", id -> material[0] = Material.getMaterial(id))) {
+        if ((!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
+                        && !tag.readShort("id", id -> material[0] = Material.getMaterial(id)))
+                || material[0] == null || material[0] == Material.AIR) {
+            return null;
+        }
+        final byte[] count = {0};
+        tag.readByte("Count", x -> count[0] = x);
+        if (count[0] == 0) {
             return null;
         }
         final short[] damage = {0};
         tag.readShort("Damage", x -> damage[0] = x);
-        final byte[] count = {0};
-        tag.readByte("Count", x -> count[0] = x);
-
-        if (material[0] == null || material[0] == Material.AIR || count[0] == 0) {
-            return null;
-        }
         ItemStack stack = new ItemStack(material[0], count[0], damage[0]);
         // This is slightly different than what tag.readItem would do, since we specify the
         // material separately.
