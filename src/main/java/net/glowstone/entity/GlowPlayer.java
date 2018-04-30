@@ -3422,84 +3422,82 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // multiplier, etc.). For now, assuming hands are used and the block is not dropped.
         hardness *= 5;
 
-        double completion = (double) diggingTicks / hardness;
-        if (diggingTicks >= completion) {
-            ItemStack tool = getItemInHand();
-            digging.breakNaturally(tool);
-            short durability = tool.getDurability();
-            short maxDurability = tool.getType().getMaxDurability();
-            if (!InventoryUtil.isEmpty(tool) && maxDurability != 0 && durability != maxDurability) {
-                switch (digging.getType()) {
-                    case GRASS:
-                    case DIRT:
-                    case SAND:
-                    case GRAVEL:
-                    case MYCEL:
-                    case SOUL_SAND:
-                        switch (tool.getType()) {
-                            case WOOD_SPADE:
-                            case STONE_SPADE:
-                            case IRON_SPADE:
-                            case GOLD_SPADE:
-                            case DIAMOND_SPADE:
-                                tool.setDurability((short) (durability + 1));
-                                break;
-                            default:
-                                tool.setDurability((short) (durability + 2));
-                                break;
-                        }
-                        break;
-                    case LOG:
-                    case LOG_2:
-                    case WOOD:
-                    case CHEST:
-                        switch (tool.getType()) {
-                            case WOOD_AXE:
-                            case STONE_AXE:
-                            case IRON_AXE:
-                            case GOLD_AXE:
-                            case DIAMOND_AXE:
-                                tool.setDurability((short) (durability + 1));
-                                break;
-                            default:
-                                tool.setDurability((short) (durability + 2));
-                                break;
-                        }
-                        break;
-                    case STONE:
-                    case COBBLESTONE:
-                        switch (tool.getType()) {
-                            case WOOD_PICKAXE:
-                            case STONE_PICKAXE:
-                            case IRON_PICKAXE:
-                            case GOLD_PICKAXE:
-                            case DIAMOND_PICKAXE:
-                                tool.setDurability((short) (durability + 1));
-                                break;
-                            default:
-                                tool.setDurability((short) (durability + 2));
-                                break;
-                        }
-                        break;
-                    default:
-                        tool.setDurability((short) (durability + 2));
-                        break;
-                }
-                if (durability >= maxDurability) {
-                    tool.setType(Material.AIR);
-                }
-                // Force-update item
-                setItemInHand(tool);
+        if (diggingTicks < hardness) {
+            int stage = (int) (10 * (double) diggingTicks / hardness);
+            if (stage > 9) {
+                stage = 9;
             }
-            setDigging(null);
+            broadcastBlockBreakAnimation(digging, stage);
             return;
         }
-        int stage = (int) (completion * 10);
-        if (stage > 9) {
-            stage = 9;
+        ItemStack tool = getItemInHand();
+        digging.breakNaturally(tool);
+        setDigging(null);
+        short durability = tool.getDurability();
+        short maxDurability = tool.getType().getMaxDurability();
+        if (!InventoryUtil.isEmpty(tool) && maxDurability != 0 && durability != maxDurability) {
+            switch (digging.getType()) {
+                case GRASS:
+                case DIRT:
+                case SAND:
+                case GRAVEL:
+                case MYCEL:
+                case SOUL_SAND:
+                    switch (tool.getType()) {
+                        case WOOD_SPADE:
+                        case STONE_SPADE:
+                        case IRON_SPADE:
+                        case GOLD_SPADE:
+                        case DIAMOND_SPADE:
+                            tool.setDurability((short) (durability + 1));
+                            break;
+                        default:
+                            tool.setDurability((short) (durability + 2));
+                            break;
+                    }
+                    break;
+                case LOG:
+                case LOG_2:
+                case WOOD:
+                case CHEST:
+                    switch (tool.getType()) {
+                        case WOOD_AXE:
+                        case STONE_AXE:
+                        case IRON_AXE:
+                        case GOLD_AXE:
+                        case DIAMOND_AXE:
+                            tool.setDurability((short) (durability + 1));
+                            break;
+                        default:
+                            tool.setDurability((short) (durability + 2));
+                            break;
+                    }
+                    break;
+                case STONE:
+                case COBBLESTONE:
+                    switch (tool.getType()) {
+                        case WOOD_PICKAXE:
+                        case STONE_PICKAXE:
+                        case IRON_PICKAXE:
+                        case GOLD_PICKAXE:
+                        case DIAMOND_PICKAXE:
+                            tool.setDurability((short) (durability + 1));
+                            break;
+                        default:
+                            tool.setDurability((short) (durability + 2));
+                            break;
+                    }
+                    break;
+                default:
+                    tool.setDurability((short) (durability + 2));
+                    break;
+            }
+            if (durability >= maxDurability) {
+                tool.setType(Material.AIR);
+            }
+            // Force-update item
+            setItemInHand(tool);
         }
-
-        broadcastBlockBreakAnimation(digging, stage);
     }
 
     /**
