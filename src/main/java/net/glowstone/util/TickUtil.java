@@ -5,6 +5,8 @@ package net.glowstone.util;
  */
 public final class TickUtil {
 
+    private static final int TICKS_PER_SECOND = 20;
+
     private TickUtil() {
     }
 
@@ -14,7 +16,7 @@ public final class TickUtil {
      * @return The corresponding number of ticks.
      */
     public static int secondsToTicks(int seconds) {
-        return 20 * seconds;
+        return TICKS_PER_SECOND * seconds;
     }
 
     /**
@@ -23,7 +25,7 @@ public final class TickUtil {
      * @return The corresponding number of ticks.
      */
     public static long secondsToTicks(long seconds) {
-        return 20 * seconds;
+        return TICKS_PER_SECOND * seconds;
     }
 
     /**
@@ -32,7 +34,7 @@ public final class TickUtil {
      * @return The corresponding number of ticks.
      */
     public static int minutesToTicks(int minutes) {
-        return 20 * 60 * minutes;
+        return TICKS_PER_SECOND * 60 * minutes;
     }
 
     /**
@@ -41,6 +43,6 @@ public final class TickUtil {
      * @return The corresponding number of ticks.
      */
     public static int minutesToTicks(double minutes) {
-        return (int) (20 * 60 * minutes);
+        return (int) (TICKS_PER_SECOND * 60 * minutes);
     }
 }
