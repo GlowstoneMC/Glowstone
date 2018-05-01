@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 /**
- * Utility class to ease conversion from standard time units to in-game ticks..
+ * Utility class to ease conversion from standard time units to in-game ticks.
  */
 public final class TickUtil {
 
