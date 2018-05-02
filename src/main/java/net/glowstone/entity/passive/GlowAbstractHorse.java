@@ -12,6 +12,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
@@ -26,12 +27,12 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
 
     private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
             .<Material, Integer>builder()
-            .put(Material.SUGAR, 600)
-            .put(Material.WHEAT, 400)
-            .put(Material.APPLE, 1200)
-            .put(Material.GOLDEN_CARROT, 1200)
-            .put(Material.GOLDEN_APPLE, 4800)
-            .put(Material.HAY_BLOCK, 3600)
+            .put(Material.SUGAR, TickUtil.secondsToTicks(30))
+            .put(Material.WHEAT, TickUtil.secondsToTicks(20))
+            .put(Material.APPLE, TickUtil.minutesToTicks(1))
+            .put(Material.GOLDEN_CARROT, TickUtil.minutesToTicks(1))
+            .put(Material.GOLDEN_APPLE, TickUtil.minutesToTicks(4))
+            .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(3))
             .build();
 
     @Getter

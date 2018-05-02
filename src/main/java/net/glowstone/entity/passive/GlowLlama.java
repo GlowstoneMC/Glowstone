@@ -2,12 +2,12 @@ package net.glowstone.entity.passive;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.inventory.GlowLlamaInventory;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,8 +24,8 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
 
     private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
             .<Material, Integer>builder()
-            .put(Material.WHEAT, 200)
-            .put(Material.HAY_BLOCK, 1800)
+            .put(Material.WHEAT, TickUtil.secondsToTicks(10))
+            .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(1.5))
             .build();
 
     /**

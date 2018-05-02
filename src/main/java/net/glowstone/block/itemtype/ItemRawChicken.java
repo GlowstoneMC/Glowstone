@@ -1,6 +1,7 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.TickUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -18,7 +19,8 @@ public class ItemRawChicken extends ItemFood {
         }
 
         if (Math.random() < 0.3) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 30 * 20, 0), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER,
+                    TickUtil.secondsToTicks(30), 0), true);
         }
         return true;
     }

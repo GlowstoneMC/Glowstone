@@ -2,6 +2,7 @@ package net.glowstone.entity.ai;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowLivingEntity;
+import net.glowstone.util.TickUtil;
 
 public class LookAroundTask extends EntityTask {
 
@@ -18,12 +19,12 @@ public class LookAroundTask extends EntityTask {
 
     @Override
     public int getDurationMin() {
-        return 2 * 20;
+        return TickUtil.secondsToTicks(2);
     }
 
     @Override
     public int getDurationMax() {
-        return 4 * 20;
+        return TickUtil.secondsToTicks(4);
     }
 
     @Override
