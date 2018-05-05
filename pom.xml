@@ -58,6 +58,24 @@
       <artifactId>glowkit</artifactId>
       <version>${api.version}</version>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm-all</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>6.1.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-commons</artifactId>
+      <version>6.1.1</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
