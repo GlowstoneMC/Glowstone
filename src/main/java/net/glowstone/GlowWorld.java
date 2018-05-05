@@ -2080,6 +2080,22 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public <T> void spawnParticle(Particle particle, List<Player> receivers, Player source,
+        double x, double y, double z, int count, double offsetX, double offsetY, double offsetZ,
+        double extra, T data) {
+        if (receivers == null) {
+            receivers = getPlayers();
+        }
+
+        for (Player player : receivers) {
+            if (player.canSee(source) && ((GlowPlayer) player).canSeeEntity((GlowPlayer) source)) {
+                player.spawnParticle(particle, x, y, z, count, offsetX, offsetY, offsetZ, extra,
+                    data);
+            }
+        }
+    }
+
+    @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
         checkNotNull(metadataKey);
         checkNotNull(newMetadataValue);
