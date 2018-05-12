@@ -58,6 +58,7 @@ import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import net.glowstone.util.RayUtil;
+import net.glowstone.util.TickUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
 import org.bukkit.BlockChangeDelegate;
@@ -119,20 +120,13 @@ import org.bukkit.util.Vector;
 public class GlowWorld implements World {
 
     /**
-     * The length in ticks of one Minecraft day.
-     */
-    public static final long DAY_LENGTH = 24000;
-    /**
      * The metadata store for world objects.
      */
     private static final MetadataStore<World> metadata = new WorldMetadataStore();
-    private static final int TICKS_PER_SECOND = 20;
-    private static final int HALF_DAY_IN_TICKS = 12000;
-    private static final int WEEK_IN_TICKS = 14 * HALF_DAY_IN_TICKS;
     /**
      * The length in ticks between autosaves (5 minutes).
      */
-    private static final int AUTOSAVE_TIME = TICKS_PER_SECOND * 60 * 5;
+    private static final int AUTOSAVE_TIME = TickUtil.minutesToTicks(5);
     /**
      * The maximum height of ocean water.
      */
@@ -583,7 +577,7 @@ public class GlowWorld implements World {
     }
 
     private void informPlayersOfTime() {
-        if (fullTime % (30 * TICKS_PER_SECOND) == 0) {
+        if (fullTime % (30 * TickUtil.TICKS_PER_SECOND) == 0) {
             // Only send the time every 30 seconds; clients are smart.
             getRawPlayers().forEach(GlowPlayer::sendTime);
         }
@@ -598,7 +592,7 @@ public class GlowWorld implements World {
 
         // Modulus by 24000, the tick length of a day
         if (gameRuleMap.getBoolean("doDaylightCycle")) {
-            time = (time + 1) % DAY_LENGTH;
+            time = (time + 1) % TickUtil.TICKS_PER_DAY;
         }
     }
 
@@ -630,7 +624,7 @@ public class GlowWorld implements World {
     }
 
     private void skipRestOfNight(List<GlowPlayer> players) {
-        fullTime = (fullTime / DAY_LENGTH + 1) * DAY_LENGTH;
+        fullTime = (fullTime / TickUtil.TICKS_PER_DAY + 1) * TickUtil.TICKS_PER_DAY;
         time = 0;
         wakeUpAllPlayers(players, true);
         // true = send time to all players because we just changed it (to 0), above
@@ -1615,7 +1609,8 @@ public class GlowWorld implements World {
 
     @Override
     public void setTime(long time) {
-        this.time = (time % DAY_LENGTH + DAY_LENGTH) % DAY_LENGTH;
+        this.time = (time % TickUtil.TICKS_PER_DAY + TickUtil.TICKS_PER_DAY)
+                % TickUtil.TICKS_PER_DAY;
 
         getRawPlayers().forEach(GlowPlayer::sendTime);
     }
@@ -1642,11 +1637,11 @@ public class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (currentlyRaining) {
-            setWeatherDuration(
-                    ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setWeatherDuration(ThreadLocalRandom.current().nextInt(TickUtil.TICKS_PER_HALF_DAY)
+                    + TickUtil.TICKS_PER_HALF_DAY);
         } else {
-            setWeatherDuration(
-                    ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setWeatherDuration(ThreadLocalRandom.current().nextInt(TickUtil.TICKS_PER_WEEK)
+                    + TickUtil.TICKS_PER_HALF_DAY);
         }
 
         // update players
@@ -1668,11 +1663,11 @@ public class GlowWorld implements World {
 
         // Numbers borrowed from CraftBukkit.
         if (this.thundering) {
-            setThunderDuration(ThreadLocalRandom.current().nextInt(HALF_DAY_IN_TICKS)
-                    + 180 * TICKS_PER_SECOND);
+            setThunderDuration(ThreadLocalRandom.current().nextInt(TickUtil.TICKS_PER_HALF_DAY)
+                    + TickUtil.minutesToTicks(3));
         } else {
-            setThunderDuration(
-                    ThreadLocalRandom.current().nextInt(WEEK_IN_TICKS) + HALF_DAY_IN_TICKS);
+            setThunderDuration(ThreadLocalRandom.current().nextInt(TickUtil.TICKS_PER_WEEK)
+                            + TickUtil.TICKS_PER_WEEK);
         }
     }
 
