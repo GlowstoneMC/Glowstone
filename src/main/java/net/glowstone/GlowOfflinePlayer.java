@@ -43,8 +43,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      * @param profile The profile associated with the player. Must not be null.
      */
     public GlowOfflinePlayer(GlowServer server, GlowPlayerProfile profile) {
-        checkNotNull(server, "server must not be null");
-        checkNotNull(profile, "profile must not be null");
+        checkNotNull(server, "server must not be null"); // NON-NLS
+        checkNotNull(profile, "profile must not be null"); // NON-NLS
         this.server = server;
         this.profile = profile;
         loadData();
@@ -60,8 +60,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
      */
     public static CompletableFuture<GlowOfflinePlayer> getOfflinePlayer(GlowServer server,
             UUID uuid) {
-        checkNotNull(server, "server must not be null");
-        checkNotNull(uuid, "UUID must not be null");
+        checkNotNull(server, "server must not be null"); // NON-NLS
+        checkNotNull(uuid, "UUID must not be null"); // NON-NLS
         return ProfileCache.getProfile(uuid)
                 .thenApplyAsync((profile) -> new GlowOfflinePlayer(server, profile));
     }
