@@ -136,8 +136,9 @@ public class LocalizedStringsTest {
             }
         }
 
-        assertTrue(bundleKeys.isEmpty());
-        assertTrue(missingRegisteredKeys.isEmpty());
+        assertTrue("Resource file contains unused keys: " + bundleKeys, bundleKeys.isEmpty());
+        assertTrue("LocalizedStrings refers to nonexistent keys: " + missingRegisteredKeys,
+                missingRegisteredKeys.isEmpty());
     }
 
     private void validateLocalizedString(Set<String> bundleKeys, Set<String> missingRegisteredKeys,
