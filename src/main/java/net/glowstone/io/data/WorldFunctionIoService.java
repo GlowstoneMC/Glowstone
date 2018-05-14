@@ -2,11 +2,8 @@ package net.glowstone.io.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.data.CommandFunction;
 import net.glowstone.i18n.LocalizedStrings;
@@ -15,6 +12,8 @@ import net.glowstone.io.FunctionIoService;
 public class WorldFunctionIoService implements FunctionIoService {
 
     private static final String FUNCTIONS_DIR_NAME = "functions";
+    public static final String FUNCTION_EXT = ".mcfunction";
+    public static final int FUNCTION_EXT_LENGTH = FUNCTION_EXT.length();
 
     private final File dataDir;
     private final GlowWorld world;
@@ -48,9 +47,9 @@ public class WorldFunctionIoService implements FunctionIoService {
         for (File file : parent.listFiles()) {
             if (file.isDirectory()) {
                 functions.addAll(functionsInside(namespace, location + file.getName() + "/", file));
-            } else if (file.getName().endsWith(".mcfunction")) { // NON-NLS
+            } else if (file.getName().endsWith(FUNCTION_EXT)) { // NON-NLS
                 functions.add(CommandFunction.read(namespace, location + file.getName()
-                    .substring(0, file.getName().length() - ".mcfunction".length()), file)); // NON-NLS
+                    .substring(0, file.getName().length() - FUNCTION_EXT_LENGTH), file)); // NON-NLS
             }
         }
         return functions;
