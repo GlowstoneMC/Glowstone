@@ -2,6 +2,7 @@ package net.glowstone;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.LocalizedStrings.Glowstone.Kick;
 import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -139,15 +141,14 @@ public class EventFactory {
 
         if (nameBans.isBanned(player.getName())) {
             event.disallow(Result.KICK_BANNED,
-                    "Banned: " + nameBans.getBanEntry(player.getName()).getReason());
+                    Kick.BANNED.get(nameBans.getBanEntry(player.getName()).getReason()));
         } else if (ipBans.isBanned(addressString)) {
             event.disallow(Result.KICK_BANNED,
-                    "Banned: " + ipBans.getBanEntry(addressString).getReason());
+                    Kick.BANNED.get(ipBans.getBanEntry(addressString).getReason()));
         } else if (server.hasWhitelist() && !player.isWhitelisted()) {
-            event.disallow(Result.KICK_WHITELIST, "You are not whitelisted on this server.");
+            event.disallow(Result.KICK_WHITELIST, Kick.WHITELIST.get());
         } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
-            event.disallow(Result.KICK_FULL,
-                    "The server is full (" + player.getServer().getMaxPlayers() + " players).");
+            event.disallow(Result.KICK_FULL, Kick.FULL.get(server.getMaxPlayers()));
         }
 
         return callEvent(event);

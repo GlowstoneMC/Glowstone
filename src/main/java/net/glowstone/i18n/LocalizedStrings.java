@@ -307,5 +307,13 @@ public interface LocalizedStrings {
                     new LocalizedStringImpl("glowstone.command.error.unknown-command");
             }
         }
+
+        interface Kick {
+            LocalizedString BANNED = new LocalizedStringImpl("glowstone.kick.banned");
+
+            LocalizedString FULL = new LocalizedStringImpl("glowstone.kick.full");
+
+            LocalizedString WHITELIST = new LocalizedStringImpl("glowstone.kick.whitelist");
+        }
     }
 }
