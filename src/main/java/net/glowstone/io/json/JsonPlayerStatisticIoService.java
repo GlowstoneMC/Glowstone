@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.util.StatisticMap;
 import org.json.simple.JSONObject;
@@ -32,7 +33,7 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
      */
     private File getPlayerFile(UUID uuid) {
         if (!statsDir.isDirectory() && !statsDir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + statsDir);
+            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(statsDir);
         }
         return new File(statsDir, uuid + ".json");
     }
@@ -58,14 +59,13 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
                         longValue = (Long) entry.getValue();
                     } else if (entry.getValue() instanceof JSONObject) {
                         JSONObject object = (JSONObject) entry.getValue();
-                        if (object.containsKey("value")) {
-                            longValue = (Long) object.get("value");
+                        if (object.containsKey("value")) { // NON-NLS
+                            longValue = (Long) object.get("value"); // NON-NLS
                         }
                     } else {
-                        GlowServer.logger.warning(String.format(
-                                "Unknown statistic type for '%s': %s (%s)",
+                        LocalizedStrings.Console.Warn.Io.JSON_STAT_UNKNOWN.log(
                                 entry.getKey(), entry.getValue(),
-                                entry.getValue().getClass().getSimpleName()));
+                                entry.getValue().getClass().getSimpleName());
                     }
                     if (longValue != null) {
                         player.getStatisticMap().getValues()

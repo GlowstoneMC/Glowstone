@@ -2,7 +2,6 @@ package net.glowstone;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -188,7 +187,7 @@ public class EventFactory {
 
     public PlayerJoinEvent onPlayerJoin(Player player) {
         return callEvent(new PlayerJoinEvent(player,
-                ChatColor.YELLOW + player.getName() + " joined the game"));
+                LocalizedStrings.Glowstone.Player.JOINED.get(ChatColor.YELLOW, player.getName())));
     }
 
     public PlayerKickEvent onPlayerKick(Player player, String reason) {
@@ -197,7 +196,7 @@ public class EventFactory {
 
     public PlayerQuitEvent onPlayerQuit(Player player) {
         return callEvent(new PlayerQuitEvent(player,
-                ChatColor.YELLOW + player.getName() + " left the game"));
+                LocalizedStrings.Glowstone.Player.LEFT.get(ChatColor.YELLOW, player.getName())));
     }
 
     /**

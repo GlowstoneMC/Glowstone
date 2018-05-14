@@ -6,11 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.generator.structures.GlowStructure;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.StructureDataService;
 import net.glowstone.io.structure.StructureStorage;
 import net.glowstone.io.structure.StructureStore;
@@ -37,7 +37,7 @@ public class NbtStructureDataService implements StructureDataService {
         server = ServerProvider.getServer();
 
         if (!structureDir.isDirectory() && !structureDir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + structureDir);
+            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(structureDir);
         }
     }
 
@@ -48,11 +48,10 @@ public class NbtStructureDataService implements StructureDataService {
             File structureFile = new File(structureDir, store.getId() + ".dat");
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
-                    CompoundTag data = new CompoundTag();
-                    data = in.readCompound();
+                    CompoundTag data = in.readCompound();
                     if (data.isCompound("data")) { // NON-NLS
                         data = data.getCompound("data"); // NON-NLS
-                        if (data.isCompound("Features")) {
+                        if (data.isCompound("Features")) { // NON-NLS
                             CompoundTag features = data.getCompound("Features"); // NON-NLS
                             features.getValue().keySet().stream().filter(features::isCompound)
                                 .forEach(key -> {
@@ -64,12 +63,10 @@ public class NbtStructureDataService implements StructureDataService {
                                 });
                         }
                     } else {
-                        server.getLogger().log(Level.SEVERE, "No data tag in " + structureFile);
+                        LocalizedStrings.Console.Error.Structure.NO_DATA.log(structureFile);
                     }
                 } catch (IOException e) {
-                    server.getLogger()
-                        .log(Level.SEVERE, "Failed to read structure data from " + structureFile,
-                            e);
+                    LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
                 }
             }
         }
@@ -98,21 +95,19 @@ public class NbtStructureDataService implements StructureDataService {
                             }
                         }
                     } catch (IOException e) {
-                        server.getLogger().log(Level.SEVERE,
-                            "Failed to read structure data from " + structureFile, e);
+                        LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
                     }
                 }
                 String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);
-                data.putCompound("Features", features);
+                data.putCompound("Features", features); // NON-NLS
                 CompoundTag root = new CompoundTag();
-                root.putCompound("data", data);
+                root.putCompound("data", data); // NON-NLS
                 try (NbtOutputStream nbtOut = new NbtOutputStream(
                     new FileOutputStream(structureFile))) {
                     nbtOut.writeTag(root);
                 } catch (IOException e) {
-                    server.getLogger()
-                        .log(Level.SEVERE, "Failed to write structure data to " + structureFile, e);
+                    LocalizedStrings.Console.Error.Structure.IO_WRITE.log(e, structureFile);
                 }
                 structure.setDirty(false);
             }

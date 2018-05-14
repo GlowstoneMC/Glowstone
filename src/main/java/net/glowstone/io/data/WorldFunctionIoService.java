@@ -2,12 +2,14 @@ package net.glowstone.io.data;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.data.CommandFunction;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.FunctionIoService;
 
 public class WorldFunctionIoService implements FunctionIoService {
@@ -35,8 +37,7 @@ public class WorldFunctionIoService implements FunctionIoService {
                 functions.addAll(namespaceFunctions);
             }
         } catch (IOException ex) {
-            GlowServer.logger.log(Level.SEVERE,
-                "Error while loading functions for world '" + world.getName() + "'", ex);
+            LocalizedStrings.Console.Error.Function.FILE_READ.log(ex, world.getName());
         }
         return functions;
     }
@@ -47,9 +48,9 @@ public class WorldFunctionIoService implements FunctionIoService {
         for (File file : parent.listFiles()) {
             if (file.isDirectory()) {
                 functions.addAll(functionsInside(namespace, location + file.getName() + "/", file));
-            } else if (file.getName().endsWith(".mcfunction")) {
+            } else if (file.getName().endsWith(".mcfunction")) { // NON-NLS
                 functions.add(CommandFunction.read(namespace, location + file.getName()
-                    .substring(0, file.getName().length() - ".mcfunction".length()), file));
+                    .substring(0, file.getName().length() - ".mcfunction".length()), file)); // NON-NLS
             }
         }
         return functions;

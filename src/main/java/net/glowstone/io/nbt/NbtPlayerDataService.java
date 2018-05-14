@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -39,7 +40,7 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private File getPlayerFile(UUID uuid) {
         if (!playerDir.isDirectory() && !playerDir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + playerDir);
+            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(playerDir);
         }
         return new File(playerDir, uuid + ".dat");
     }
@@ -60,7 +61,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         for (File file : files) {
             // first, make sure it looks like a player file
             String name = file.getName();
-            if (name.length() != 40 || !name.endsWith(".dat")) {
+            if (name.length() != 40 || !name.endsWith(".dat")) { // NON-NLS
                 continue;
             }
 
@@ -96,9 +97,8 @@ public class NbtPlayerDataService implements PlayerDataService {
             try (NbtInputStream in = new NbtInputStream(new FileInputStream(playerFile))) {
                 playerTag = in.readCompound();
             } catch (IOException e) {
-                player.kickPlayer("Failed to read player data!");
-                server.getLogger().log(Level.SEVERE,
-                    "Failed to read data for " + player.getName() + ": " + playerFile, e);
+                player.kickPlayer(LocalizedStrings.Glowstone.Kick.FILE_READ.get());
+                LocalizedStrings.Console.Error.Io.PLAYER_READ.log(e, player.getName(), playerFile);
             }
         }
         readDataImpl(player, playerTag);
@@ -112,12 +112,12 @@ public class NbtPlayerDataService implements PlayerDataService {
         try (NbtOutputStream out = new NbtOutputStream(new FileOutputStream(playerFile))) {
             out.writeTag(tag);
         } catch (IOException e) {
-            player.kickPlayer("Failed to save player data!");
-            server.getLogger().log(Level.SEVERE,
-                "Failed to write data for " + player.getName() + ": " + playerFile, e);
+            player.kickPlayer(LocalizedStrings.Glowstone.Kick.FILE_WRITE.get());
+            LocalizedStrings.Console.Error.Io.PLAYER_WRITE.log(e, player.getName(), playerFile);
         }
     }
 
+    @SuppressWarnings("HardCodedStringLiteral")
     private class NbtPlayerReader implements PlayerReader {
 
         private CompoundTag tag = new CompoundTag();
@@ -129,8 +129,7 @@ public class NbtPlayerDataService implements PlayerDataService {
                     tag = in.readCompound();
                     hasPlayed = true;
                 } catch (IOException e) {
-                    server.getLogger()
-                        .log(Level.SEVERE, "Failed to read data for player: " + playerFile, e);
+                    LocalizedStrings.Console.Error.Io.PLAYER_READ_UNKNOWN.log(e, playerFile);
                 }
             }
         }
