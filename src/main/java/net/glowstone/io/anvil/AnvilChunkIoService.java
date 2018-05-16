@@ -16,8 +16,10 @@ import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunkSnapshot;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.entity.EntityStorage;
+import net.glowstone.io.entity.UnknownEntityTypeException;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
@@ -111,15 +113,10 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 try {
                     // note that creating the entity is sufficient to add it to the world
                     EntityStorage.loadEntity(chunk.getWorld(), entityTag);
+                } catch (UnknownEntityTypeException e) {
+                    LocalizedStrings.Console.Warn.Entity.UNKNOWN.log(chunk, e.getIdOrTag());
                 } catch (Exception e) {
-                    String id = entityTag.isString("id") ? entityTag.getString("id") : "<missing>";
-                    if (e.getMessage() != null && e.getMessage()
-                        .startsWith("Unknown entity type to load:")) {
-                        GlowServer.logger.warning("Unknown entity in " + chunk + ": " + id);
-                    } else {
-                        GlowServer.logger
-                            .log(Level.WARNING, "Error loading entity in " + chunk + ": " + id, e);
-                    }
+                    LocalizedStrings.Console.Warn.Entity.LOADING_ERROR.log(e, chunk);
                 }
             }
         }

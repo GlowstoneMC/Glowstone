@@ -190,6 +190,16 @@ public interface LocalizedStrings {
         }
 
         interface Warn {
+            interface Entity {
+                LoggableLocalizedString LOADING_ERROR = new LoggableLocalizedStringImpl(
+                        "console.entity.loading-error", Level.WARNING
+                );
+
+                LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
+                        "console.entity.unknown", Level.WARNING
+                );
+            }
+
             interface Event {
                 LoggableLocalizedString INTERRUPTED = new LoggableLocalizedStringImpl(
                         "console.event.interrupted", Level.WARNING
@@ -306,6 +316,13 @@ public interface LocalizedStrings {
                 LocalizedString UNKNOWN_COMMAND =
                     new LocalizedStringImpl("glowstone.command.error.unknown-command");
             }
+        }
+
+        interface Entity {
+            LocalizedString UNKNOWN_TYPE_WITH_ID =
+                    new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
+            LocalizedString UNKNOWN_TYPE_NO_ID =
+                    new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
         }
     }
 }

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.TagType;
@@ -172,14 +173,10 @@ public abstract class EntityStore<T extends GlowEntity> {
         try {
             // note that creating the entity is sufficient to add it to the world
             return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
+        } catch (UnknownEntityTypeException e) {
+            LocalizedStrings.Console.Warn.Entity.UNKNOWN.log(vehicle, e.getIdOrTag());
         } catch (Exception e) {
-            String id = compoundTag.isString("id") ? compoundTag.getString("id") : "<missing>";
-            if (e.getMessage() != null && e.getMessage()
-                .startsWith("Unknown entity type to load:")) {
-                GlowServer.logger.warning("Skipping Entity with id " + id);
-            } else {
-                GlowServer.logger.log(Level.WARNING, "Error loading entity " + id, e);
-            }
+            LocalizedStrings.Console.Warn.Entity.LOADING_ERROR.log(e, vehicle);
         }
         return null;
     }
