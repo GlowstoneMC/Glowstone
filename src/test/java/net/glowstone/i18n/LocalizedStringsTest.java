@@ -111,6 +111,15 @@ public class LocalizedStringsTest {
         verifyNoMoreInteractions(mockLogger);
     }
 
+    /**
+     * This test verifies that each {@link LocalizedString} instance in {@link LocalizedStrings}
+     * corresponds to an entry in {@code strings.properties}, and that each entry in
+     * {@code strings.properties} corresponds to <em>at least</em> one {@link LocalizedString}. More
+     * than one are allowed for the same entry, since a string may be used for logging at multiple
+     * levels.
+     *
+     * @throws Exception if refactoring causes reflection issues
+     */
     @Test
     void testForBundleCompatibility() throws Exception {
         final Set<String> bundleKeys = STRINGS.keySet();
