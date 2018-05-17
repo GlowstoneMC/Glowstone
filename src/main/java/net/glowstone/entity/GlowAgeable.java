@@ -11,6 +11,7 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
+import net.glowstone.util.TickUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,10 +26,10 @@ import org.bukkit.inventory.ItemStack;
  */
 public class GlowAgeable extends GlowCreature implements Ageable {
 
-    private static final int AGE_BABY = -24000;
+    private static final int AGE_BABY = -TickUtil.minutesToTicks(20);
     private static final int AGE_ADULT = 0;
-    private static final int BREEDING_AGE = 6000;
-    private static final int MAX_GROW_AGE = -9 * 20;
+    private static final int BREEDING_AGE = TickUtil.minutesToTicks(5);
+    private static final int MAX_GROW_AGE = -TickUtil.secondsToTicks(9);
     protected float width;
     protected float height;
     @Getter

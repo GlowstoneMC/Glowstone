@@ -11,6 +11,7 @@ import lombok.Setter;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.DestroyEntitiesMessage;
 import net.glowstone.net.message.play.entity.SpawnXpOrbMessage;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -21,7 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
-    private static final int LIFETIME = 5 * 60 * 20;
+    private static final int LIFETIME = TickUtil.minutesToTicks(5);
 
     @Getter
     @Setter

@@ -13,6 +13,7 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -34,7 +35,7 @@ public class GlowItem extends GlowEntity implements Item {
     /**
      * The number of ticks (equal to 5 minutes) that item entities should live for.
      */
-    private static final int LIFETIME = 5 * 60 * 20;
+    private static final int LIFETIME = TickUtil.minutesToTicks(5);
 
     /**
      * The remaining delay until this item may be picked up.

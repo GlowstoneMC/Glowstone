@@ -42,7 +42,7 @@ public class OreVein implements TerrainObject {
             double q = random.nextDouble() * amount / 16.0D;
             double radiusH = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2.0D;
             double radiusV = (Math.sin(i * (float) Math.PI / amount) + 1 * q + 1) / 2.0D;
-            for (int x = (int) (originX - radiusH); x <= (int) (originX - radiusH); x++) {
+            for (int x = (int) (originX - radiusH); x <= (int) (originX + radiusH); x++) {
 
                 // scale the center of x to the range [-1, 1] within the circle
                 double squaredNormalizedX = normalizedSquaredCoordinate(originX, radiusH, x);

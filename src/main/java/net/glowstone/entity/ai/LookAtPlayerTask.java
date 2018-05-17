@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -25,12 +26,12 @@ public class LookAtPlayerTask extends EntityTask {
 
     @Override
     public int getDurationMin() {
-        return 4 * 20;
+        return TickUtil.secondsToTicks(4);
     }
 
     @Override
     public int getDurationMax() {
-        return 6 * 20;
+        return TickUtil.secondsToTicks(6);
     }
 
     @Override

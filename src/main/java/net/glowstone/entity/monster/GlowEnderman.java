@@ -20,6 +20,11 @@ public class GlowEnderman extends GlowMonster implements Enderman {
     }
 
     @Override
+    public boolean teleportRandomly() {
+        return false; // TODO: teleport Enderman
+    }
+
+    @Override
     public void setCarriedMaterial(MaterialData type) {
         carriedMaterial = type;
         if (type == null) {
