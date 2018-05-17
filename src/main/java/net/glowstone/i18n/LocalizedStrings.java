@@ -229,6 +229,15 @@ public interface LocalizedStrings {
         }
 
         interface Warn {
+            interface Entity {
+                LoggableLocalizedString LOADING_ERROR = new LoggableLocalizedStringImpl(
+                        "console.entity.loading-error", Level.WARNING
+                );
+
+                LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
+                        "console.entity.unknown", Level.WARNING
+                );
+            }
 
             interface Event {
                 LoggableLocalizedString INTERRUPTED = new LoggableLocalizedStringImpl(
@@ -382,6 +391,13 @@ public interface LocalizedStrings {
             LocalizedString JOINED = new LocalizedStringImpl("glowstone.player.joined");
 
             LocalizedString LEFT = new LocalizedStringImpl("glowstone.player.left");
+        }
+
+        interface Entity {
+            LocalizedString UNKNOWN_TYPE_WITH_ID =
+                    new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
+            LocalizedString UNKNOWN_TYPE_NO_ID =
+                    new LocalizedStringImpl("glowstone.entity.unknown-type-with-id")
         }
     }
 }
