@@ -397,7 +397,7 @@ public interface LocalizedStrings {
             LocalizedString UNKNOWN_TYPE_WITH_ID =
                     new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
             LocalizedString UNKNOWN_TYPE_NO_ID =
-                    new LocalizedStringImpl("glowstone.entity.unknown-type-with-id")
+                    new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
         }
     }
 }
