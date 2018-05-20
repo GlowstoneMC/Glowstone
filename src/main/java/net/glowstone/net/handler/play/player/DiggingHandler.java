@@ -51,6 +51,9 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         boolean blockBroken = false;
         boolean revert = false;
         if (message.getState() == DiggingMessage.START_DIGGING) {
+            if (block.equals(player.getDigging()) || block.isLiquid()) {
+                return;
+            }
             // call interact event
             Action action = Action.LEFT_CLICK_BLOCK;
             Block eventBlock = block;
@@ -96,78 +99,12 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (message.getState() == DiggingMessage.CANCEL_DIGGING) {
             player.setDigging(null);
         } else if (message.getState() == DiggingMessage.FINISH_DIGGING) {
-            // shouldn't happen in creative mode
-
-            // todo: verification against malicious clients
-            blockBroken = block.equals(player.getDigging());
-
-            if (blockBroken && holding.getType().getMaxDurability() != 0
-                && holding.getType() != Material.AIR && holding.getDurability() != holding.getType()
-                .getMaxDurability()) {
-                switch (block.getType()) {
-                    case GRASS:
-                    case DIRT:
-                    case SAND:
-                    case GRAVEL:
-                    case MYCEL:
-                    case SOUL_SAND:
-                        switch (holding.getType()) {
-                            case WOOD_SPADE:
-                            case STONE_SPADE:
-                            case IRON_SPADE:
-                            case GOLD_SPADE:
-                            case DIAMOND_SPADE:
-                                holding.setDurability((short) (holding.getDurability() + 1));
-                                break;
-                            default:
-                                holding.setDurability((short) (holding.getDurability() + 2));
-                                break;
-                        }
-                        break;
-                    case LOG:
-                    case LOG_2:
-                    case WOOD:
-                    case CHEST:
-                        switch (holding.getType()) {
-                            case WOOD_AXE:
-                            case STONE_AXE:
-                            case IRON_AXE:
-                            case GOLD_AXE:
-                            case DIAMOND_AXE:
-                                holding.setDurability((short) (holding.getDurability() + 1));
-                                break;
-                            default:
-                                holding.setDurability((short) (holding.getDurability() + 2));
-                                break;
-                        }
-                        break;
-                    case STONE:
-                    case COBBLESTONE:
-                        switch (holding.getType()) {
-                            case WOOD_PICKAXE:
-                            case STONE_PICKAXE:
-                            case IRON_PICKAXE:
-                            case GOLD_PICKAXE:
-                            case DIAMOND_PICKAXE:
-                                holding.setDurability((short) (holding.getDurability() + 1));
-                                break;
-                            default:
-                                holding.setDurability((short) (holding.getDurability() + 2));
-                                break;
-                        }
-                        break;
-                    default:
-                        holding.setDurability((short) (holding.getDurability() + 2));
-                        break;
-                }
-                if (holding.getType().getMaxDurability() != 0 && holding.getDurability() >= holding
-                    .getType().getMaxDurability()) {
-                    holding.setType(Material.AIR);
-                }
-                // Force-update item
-                player.setItemInHand(holding);
+            // Update client with block if digging isn't actually finished
+            // (FINISH_DIGGING is client's guess based on wall-clock time, not ticks, and is
+            // untrusted)
+            if (!block.isEmpty()) {
+                player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
             }
-            player.setDigging(null);
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
             player.dropItemInHand(false);
             return;
