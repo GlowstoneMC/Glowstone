@@ -3,7 +3,6 @@ package net.glowstone.generator.objects;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.Random;
 import java.util.SortedSet;
-import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;

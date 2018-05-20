@@ -1,17 +1,13 @@
 package net.glowstone.generator.objects;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 /**
  * A patch replaces specified blocks within a cylinder. It will delete flowers, tall grass and
