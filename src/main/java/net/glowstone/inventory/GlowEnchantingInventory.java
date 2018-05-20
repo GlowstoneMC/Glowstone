@@ -61,32 +61,35 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
                     }
                     copyPosition(location, loc);
                     loc.add(x, 0, z);
-                    if (loc.getBlock().isEmpty()) {
-                        loc.add(0, 1, 0);
-                        if (loc.getBlock().isEmpty()) {
-                            copyPosition(location, loc);
+                    if (!loc.getBlock().isEmpty()) {
+                        continue;
+                    }
+                    loc.add(0, 1, 0);
+                    if (!loc.getBlock().isEmpty()) {
+                        continue;
+                    }
+                    copyPosition(location, loc);
 
-                            //diagonal and straight
-                            loc.add(x << 1, y, z << 1);
-                            if (loc.getBlock().getType() == Material.BOOKSHELF) {
-                                count++;
-                            }
+                    //diagonal and straight
+                    loc.add(x << 1, y, z << 1);
+                    if (loc.getBlock().getType() == Material.BOOKSHELF) {
+                        count++;
+                    }
 
-                            if (x != 0 && z != 0) {
-                                //one block diagonal and one straight
-                                copyPosition(location, loc);
-                                loc.add(x << 1, y, z);
-                                if (loc.getBlock().getType() == Material.BOOKSHELF) {
-                                    ++count;
-                                }
+                    if (x == 0 || z == 0) {
+                        continue;
+                    }
+                    //one block diagonal and one straight
+                    copyPosition(location, loc);
+                    loc.add(x << 1, y, z);
+                    if (loc.getBlock().getType() == Material.BOOKSHELF) {
+                        ++count;
+                    }
 
-                                copyPosition(location, loc);
-                                loc.add(x, y, z << 1);
-                                if (loc.getBlock().getType() == Material.BOOKSHELF) {
-                                    ++count;
-                                }
-                            }
-                        }
+                    copyPosition(location, loc);
+                    loc.add(x, y, z << 1);
+                    if (loc.getBlock().getType() == Material.BOOKSHELF) {
+                        ++count;
                     }
                 }
             }

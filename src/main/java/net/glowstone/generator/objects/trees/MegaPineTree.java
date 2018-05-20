@@ -64,23 +64,24 @@ public class MegaPineTree extends MegaRedwoodTree {
     private void generatePodzolPatch(int sourceX, int sourceY, int sourceZ, World world) {
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
-                if (Math.abs(x) != 2 || Math.abs(z) != 2) {
-                    for (int y = 2; y >= -3; y--) {
-                        Block block = world
-                            .getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
-                        if (block.getType() == Material.GRASS || block.getType() == Material.DIRT) {
-                            BlockState state = block.getState();
-                            state.setType(Material.DIRT);
-                            DirtType dirtType = DirtType.PODZOL;
-                            if (world.getBlockAt(sourceX + x, sourceY + y + 1, sourceZ + z)
-                                .getType().isOccluding()) {
-                                dirtType = DirtType.NORMAL;
-                            }
-                            state.setData(new Dirt(dirtType));
-                            state.update(true);
-                        } else if (!block.isEmpty() && sourceY + y < sourceY) {
-                            break;
+                if (Math.abs(x) == 2 && Math.abs(z) == 2) {
+                    continue;
+                }
+                for (int y = 2; y >= -3; y--) {
+                    Block block = world
+                        .getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
+                    if (block.getType() == Material.GRASS || block.getType() == Material.DIRT) {
+                        BlockState state = block.getState();
+                        state.setType(Material.DIRT);
+                        DirtType dirtType = DirtType.PODZOL;
+                        if (world.getBlockAt(sourceX + x, sourceY + y + 1, sourceZ + z)
+                            .getType().isOccluding()) {
+                            dirtType = DirtType.NORMAL;
                         }
+                        state.setData(new Dirt(dirtType));
+                        state.update(true);
+                    } else if (!block.isEmpty() && sourceY + y < sourceY) {
+                        break;
                     }
                 }
             }

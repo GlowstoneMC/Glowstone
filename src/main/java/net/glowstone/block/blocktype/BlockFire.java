@@ -109,83 +109,92 @@ public class BlockFire extends BlockNeedsAttached {
             state.update(true);
         }
 
-        if (!isInfiniteFire) {
-            if (!hasNearFlammableBlock(block)) {
-                // there's no flammable blocks around, stop fire
-                if (age > 3 || block.getRelative(BlockFace.DOWN).isEmpty()) {
-                    block.breakNaturally();
-                    world.cancelPulse(block);
-                }
-            } else if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable()
-                && ThreadLocalRandom.current().nextInt(4) == 0) {
-                // if fire reached max age, bottom block is not flammable, 25% chance to stop fire
+        if (isInfiniteFire) {
+            return;
+        }
+        if (!hasNearFlammableBlock(block)) {
+            // there's no flammable blocks around, stop fire
+            if (age > 3 || block.getRelative(BlockFace.DOWN).isEmpty()) {
                 block.breakNaturally();
                 world.cancelPulse(block);
-            } else {
-                // fire propagation / block burning
+            }
+            return;
+        }
+        if (age == MAX_FIRE_AGE && !block.getRelative(BlockFace.DOWN).isFlammable()
+            && ThreadLocalRandom.current().nextInt(4) == 0) {
+            // if fire reached max age, bottom block is not flammable, 25% chance to stop fire
+            block.breakNaturally();
+            world.cancelPulse(block);
+            return;
+        }
+        // fire propagation / block burning
 
-                // burn blocks around
-                boolean isWet = GlowBiomeClimate.isWet(block);
-                for (Entry<BlockFace, Integer> entry : BURNRESISTANCE_MAP.entrySet()) {
-                    burnBlock(block.getRelative(entry.getKey()), block,
-                        entry.getValue() - (isWet ? 50 : 0), age);
-                }
+        // burn blocks around
+        boolean isWet = GlowBiomeClimate.isWet(block);
+        for (Entry<BlockFace, Integer> entry : BURNRESISTANCE_MAP.entrySet()) {
+            burnBlock(block.getRelative(entry.getKey()), block,
+                entry.getValue() - (isWet ? 50 : 0), age);
+        }
 
-                Difficulty difficulty = world.getDifficulty();
-                int difficultyModifier;
-                switch (difficulty) {
-                    case EASY:
-                        difficultyModifier = 7;
-                        break;
-                    case NORMAL:
-                        difficultyModifier = 14;
-                        break;
-                    case HARD:
-                        difficultyModifier = 21;
-                        break;
-                    default:
-                        difficultyModifier = 0;
-                        break;
-                }
+        Difficulty difficulty = world.getDifficulty();
+        int difficultyModifier;
+        switch (difficulty) {
+            case EASY:
+                difficultyModifier = 7;
+                break;
+            case NORMAL:
+                difficultyModifier = 14;
+                break;
+            case HARD:
+                difficultyModifier = 21;
+                break;
+            default:
+                difficultyModifier = 0;
+                break;
+        }
 
-                // try to propagate fire in a 3x3x6 box
-                for (int x = -1; x <= 1; x++) {
-                    for (int z = -1; z <= 1; z++) {
-                        for (int y = -1; y <= 4; y++) {
-                            if (x != 0 || z != 0 || y != 0) {
-                                GlowBlock propagationBlock = world
-                                    .getBlockAt(block.getLocation().add(x, y, z));
-                                int flameResistance = getFlameResistance(propagationBlock);
-                                if (flameResistance > 0) {
-                                    int resistance =
-                                        (40 + difficultyModifier + flameResistance) / (30 + age);
-                                    if (isWet) {
-                                        resistance /= 2;
-                                    }
-                                    if ((!world.hasStorm() || !isRainingAround(propagationBlock))
-                                        && resistance > 0 && ThreadLocalRandom.current()
-                                        .nextInt(y > 1 ? 100 + 100 * (y - 1) : 100) <= resistance) {
-                                        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(
-                                            propagationBlock, IgniteCause.SPREAD, block);
-                                        EventFactory.getInstance()
-                                                .callEvent(igniteEvent);
-                                        if (!igniteEvent.isCancelled()) {
-                                            if (propagationBlock.getType() == Material.TNT) {
-                                                BlockTnt.igniteBlock(propagationBlock, false);
-                                            } else {
-                                                int increasedAge = increaseFireAge(age);
-                                                state = propagationBlock.getState();
-                                                state.setType(Material.FIRE);
-                                                state.setRawData((byte) (increasedAge > MAX_FIRE_AGE
-                                                    ? MAX_FIRE_AGE : increasedAge));
-                                                state.update(true);
-                                                world.requestPulse(propagationBlock);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+        // try to propagate fire in a 3x3x6 box
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                for (int y = -1; y <= 4; y++) {
+                    if (x == 0 && z == 0 && y == 0) {
+                        continue;
+                    }
+                    GlowBlock propagationBlock = world
+                        .getBlockAt(block.getLocation().add(x, y, z));
+                    int flameResistance = getFlameResistance(propagationBlock);
+                    if (flameResistance <= 0) {
+                        continue;
+                    }
+                    int resistance =
+                        (40 + difficultyModifier + flameResistance) / (30 + age);
+                    if (isWet) {
+                        resistance /= 2;
+                    }
+                    if ((world.hasStorm() && isRainingAround(propagationBlock))
+                            || resistance <= 0
+                            || ThreadLocalRandom.current().nextInt(
+                                    y > 1 ? 100 + 100 * (y - 1) : 100)
+                            > resistance) {
+                        continue;
+                    }
+                    BlockIgniteEvent igniteEvent = new BlockIgniteEvent(
+                        propagationBlock, IgniteCause.SPREAD, block);
+                    EventFactory.getInstance()
+                            .callEvent(igniteEvent);
+                    if (igniteEvent.isCancelled()) {
+                        continue;
+                    }
+                    if (propagationBlock.getType() == Material.TNT) {
+                        BlockTnt.igniteBlock(propagationBlock, false);
+                    } else {
+                        int increasedAge = increaseFireAge(age);
+                        state = propagationBlock.getState();
+                        state.setType(Material.FIRE);
+                        state.setRawData((byte) (increasedAge > MAX_FIRE_AGE
+                            ? MAX_FIRE_AGE : increasedAge));
+                        state.update(true);
+                        world.requestPulse(propagationBlock);
                     }
                 }
             }

@@ -69,20 +69,21 @@ public class DarkOakTree extends GenericTree {
             }
 
             Material material = blockTypeAt(centerX, blockY + y, centerZ, world);
-            if (material == Material.AIR || material == Material.LEAVES) {
-                trunkTopY = blockY + y;
-                // SELF, SOUTH, EAST, SOUTH EAST
-                delegate.setTypeAndRawData(world, centerX, blockY + y, centerZ,
-                    Material.LOG_2, 1);
-                delegate
-                    .setTypeAndRawData(world, centerX, blockY + y, centerZ + 1,
-                        Material.LOG_2, 1);
-                delegate
-                    .setTypeAndRawData(world, centerX + 1, blockY + y, centerZ,
-                        Material.LOG_2, 1);
-                delegate.setTypeAndRawData(world, centerX + 1, blockY + y,
-                    centerZ + 1, Material.LOG_2, 1);
+            if (material != Material.AIR && material != Material.LEAVES) {
+                continue;
             }
+            trunkTopY = blockY + y;
+            // SELF, SOUTH, EAST, SOUTH EAST
+            delegate.setTypeAndRawData(world, centerX, blockY + y, centerZ,
+                Material.LOG_2, 1);
+            delegate
+                .setTypeAndRawData(world, centerX, blockY + y, centerZ + 1,
+                    Material.LOG_2, 1);
+            delegate
+                .setTypeAndRawData(world, centerX + 1, blockY + y, centerZ,
+                    Material.LOG_2, 1);
+            delegate.setTypeAndRawData(world, centerX + 1, blockY + y,
+                centerZ + 1, Material.LOG_2, 1);
         }
 
         // generates leaves
@@ -113,27 +114,28 @@ public class DarkOakTree extends GenericTree {
         // generates some trunk excrescences
         for (int x = -1; x <= 2; x++) {
             for (int z = -1; z <= 2; z++) {
-                if ((x == -1 || z == -1 || x == 2 || z == 2) && random.nextInt(3) == 0) {
-                    for (int y = 0; y < random.nextInt(3) + 2; y++) {
-                        Material material = blockTypeAt(
-                                blockX + x, trunkTopY - y - 1, blockZ + z, world);
-                        if (material == Material.AIR || material == Material.LEAVES) {
-                            delegate.setTypeAndRawData(world, blockX + x,
-                                trunkTopY - y - 1, blockZ + z, Material.LOG_2, 1);
-                        }
+                if ((x != -1 && z != -1 && x != 2 && z != 2) || random.nextInt(3) != 0) {
+                    continue;
+                }
+                for (int y = 0; y < random.nextInt(3) + 2; y++) {
+                    Material material = blockTypeAt(
+                            blockX + x, trunkTopY - y - 1, blockZ + z, world);
+                    if (material == Material.AIR || material == Material.LEAVES) {
+                        delegate.setTypeAndRawData(world, blockX + x,
+                            trunkTopY - y - 1, blockZ + z, Material.LOG_2, 1);
                     }
+                }
 
-                    // leaves below the canopy
-                    for (int i = -1; i <= 1; i++) {
-                        for (int j = -1; j <= 1; j++) {
-                            setLeaves(centerX + x + i, trunkTopY, centerZ + z + j, world);
-                        }
+                // leaves below the canopy
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        setLeaves(centerX + x + i, trunkTopY, centerZ + z + j, world);
                     }
-                    for (int i = -2; i <= 2; i++) {
-                        for (int j = -2; j <= 2; j++) {
-                            if (Math.abs(i) < 2 || Math.abs(j) < 2) {
-                                setLeaves(centerX + x + i, trunkTopY - 1, centerZ + z + j, world);
-                            }
+                }
+                for (int i = -2; i <= 2; i++) {
+                    for (int j = -2; j <= 2; j++) {
+                        if (Math.abs(i) < 2 || Math.abs(j) < 2) {
+                            setLeaves(centerX + x + i, trunkTopY - 1, centerZ + z + j, world);
                         }
                     }
                 }

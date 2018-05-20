@@ -85,70 +85,73 @@ public class BlockLeaves extends BlockType {
     @Override
     public void updateBlock(GlowBlock block) {
         GlowBlockState state = block.getState();
-        if ((state.getRawData() & 0x08) != 0
-            && (state.getRawData() & 0x04) == 0) { // check decay is on and decay is on
-            GlowWorld world = block.getWorld();
+        if ((state.getRawData() & 0x08) == 0
+                || (state.getRawData() & 0x04) != 0) {
+            // check decay is off or decay is off
+            return;
+        }
+        GlowWorld world = block.getWorld();
 
-            // build a 9x9x9 box to map neighboring blocks
+        // build a 9x9x9 box to map neighboring blocks
+        for (int x = 0; x < 9; x++) {
+            for (int z = 0; z < 9; z++) {
+                for (int y = 0; y < 9; y++) {
+                    GlowBlock b = world
+                        .getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
+                    byte val = 127;
+                    if (b.getType() == Material.LOG || b.getType() == Material.LOG_2) {
+                        val = 0;
+                    } else if (b.getType() == Material.LEAVES
+                        || b.getType() == Material.LEAVES_2) {
+                        val = -1;
+                    }
+                    setBlockInMap(val, x, y, z);
+                }
+            }
+        }
+
+        // browse the map in several pass to detect connected leaves:
+        // leaf block that is 5 blocks away from log or without connection
+        // to another connected leaves block will decay
+        for (int i = 0; i < 4; i++) {
             for (int x = 0; x < 9; x++) {
                 for (int z = 0; z < 9; z++) {
                     for (int y = 0; y < 9; y++) {
-                        GlowBlock b = world
-                            .getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
-                        byte val = 127;
-                        if (b.getType() == Material.LOG || b.getType() == Material.LOG_2) {
-                            val = 0;
-                        } else if (b.getType() == Material.LEAVES
-                            || b.getType() == Material.LEAVES_2) {
-                            val = -1;
+                        if (getBlockInMap(x, y, z) != i) {
+                            continue;
                         }
-                        setBlockInMap(val, x, y, z);
-                    }
-                }
-            }
-
-            // browse the map in several pass to detect connected leaves:
-            // leaf block that is 5 blocks away from log or without connection
-            // to another connected leaves block will decay
-            for (int i = 0; i < 4; i++) {
-                for (int x = 0; x < 9; x++) {
-                    for (int z = 0; z < 9; z++) {
-                        for (int y = 0; y < 9; y++) {
-                            if (getBlockInMap(x, y, z) == i) {
-                                if (getBlockInMap(x - 1, y, z) == -1) {
-                                    setBlockInMap((byte) (i + 1), x - 1, y, z);
-                                }
-                                if (getBlockInMap(x, y - 1, z) == -1) {
-                                    setBlockInMap((byte) (i + 1), x, y - 1, z);
-                                }
-                                if (getBlockInMap(x, y, z - 1) == -1) {
-                                    setBlockInMap((byte) (i + 1), x, y, z - 1);
-                                }
-                                if (getBlockInMap(x + 1, y, z) == -1) {
-                                    setBlockInMap((byte) (i + 1), x + 1, y, z);
-                                }
-                                if (getBlockInMap(x, y + 1, z) == -1) {
-                                    setBlockInMap((byte) (i + 1), x, y + 1, z);
-                                }
-                                if (getBlockInMap(x, y, z + 1) == -1) {
-                                    setBlockInMap((byte) (i + 1), x, y, z + 1);
-                                }
-                            }
+                        if (getBlockInMap(x - 1, y, z) == -1) {
+                            setBlockInMap((byte) (i + 1), x - 1, y, z);
+                        }
+                        if (getBlockInMap(x, y - 1, z) == -1) {
+                            setBlockInMap((byte) (i + 1), x, y - 1, z);
+                        }
+                        if (getBlockInMap(x, y, z - 1) == -1) {
+                            setBlockInMap((byte) (i + 1), x, y, z - 1);
+                        }
+                        if (getBlockInMap(x + 1, y, z) == -1) {
+                            setBlockInMap((byte) (i + 1), x + 1, y, z);
+                        }
+                        if (getBlockInMap(x, y + 1, z) == -1) {
+                            setBlockInMap((byte) (i + 1), x, y + 1, z);
+                        }
+                        if (getBlockInMap(x, y, z + 1) == -1) {
+                            setBlockInMap((byte) (i + 1), x, y, z + 1);
                         }
                     }
                 }
             }
+        }
 
-            if (getBlockInMap(4, 4, 4) < 0) { // leaf decay
-                LeavesDecayEvent decayEvent = new LeavesDecayEvent(block);
-                EventFactory.getInstance().callEvent(decayEvent);
-                if (!decayEvent.isCancelled()) {
-                    block.breakNaturally();
-                }
-            } else { // cancel decay check on this leaves block
-                state.setRawData((byte) (state.getRawData() & -0x09));
-                state.update(true);
+        if (getBlockInMap(4, 4, 4) < 0) { // leaf decay
+            LeavesDecayEvent decayEvent = new LeavesDecayEvent(block);
+            EventFactory.getInstance().callEvent(decayEvent);
+            if (!decayEvent.isCancelled()) {
+                block.breakNaturally();
             }
+        } else { // cancel decay check on this leaves block
+            state.setRawData((byte) (state.getRawData() & -0x09));
+            state.update(true);
         }
     }
 

@@ -61,13 +61,12 @@ public class BigOakTree extends GenericTree {
                     for (int z = -nodeDistance; z <= nodeDistance; z++) {
                         double sizeX = Math.abs(x) + 0.5D;
                         double sizeZ = Math.abs(z) + 0.5D;
-                        if (sizeX * sizeX + sizeZ * sizeZ <= size * size) {
-                            if (overridables.contains(blockTypeAt(
-                                    node.getX() + x, node.getY() + y, node.getZ() + z, world))) {
-                                delegate.setTypeAndRawData(world, node.getX() + x,
-                                        node.getY() + y, node.getZ() + z, Material.LEAVES,
-                                        leavesType);
-                            }
+                        if (sizeX * sizeX + sizeZ * sizeZ <= size * size && overridables.contains(
+                                blockTypeAt(node.getX() + x, node.getY() + y, node.getZ() + z,
+                                        world))) {
+                            delegate.setTypeAndRawData(world, node.getX() + x,
+                                    node.getY() + y, node.getZ() + z, Material.LEAVES,
+                                    leavesType);
                         }
                     }
                 }

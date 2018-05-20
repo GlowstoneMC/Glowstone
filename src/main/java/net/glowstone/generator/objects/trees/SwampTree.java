@@ -38,6 +38,9 @@ public class SwampTree extends CocoaTree {
     @Override
     public boolean canPlace(int baseX, int baseY, int baseZ, World world) {
         for (int y = baseY; y <= baseY + 1 + height; y++) {
+            if (y < 0 || y >= 256) { // height out of range
+                return false;
+            }
             // Space requirement
             int radius = 1; // default radius if above first block
             if (y == baseY) {
@@ -48,20 +51,17 @@ public class SwampTree extends CocoaTree {
             // check for block collision on horizontal slices
             for (int x = baseX - radius; x <= baseX + radius; x++) {
                 for (int z = baseZ - radius; z <= baseZ + radius; z++) {
-                    if (y >= 0 && y < 256) {
-                        // we can overlap some blocks around
-                        Material type = blockTypeAt(x, y, z, world);
-                        if (!overridables.contains(type)) {
-                            // the trunk can be immersed by 1 block of water
-                            if (type == Material.WATER || type == Material.STATIONARY_WATER) {
-                                if (y > baseY) {
-                                    return false;
-                                }
-                            } else {
-                                return false;
-                            }
+                    // we can overlap some blocks around
+                    Material type = blockTypeAt(x, y, z, world);
+                    if (overridables.contains(type)) {
+                        continue;
+                    }
+                    // the trunk can be immersed by 1 block of water
+                    if (type == Material.WATER || type == Material.STATIONARY_WATER) {
+                        if (y > baseY) {
+                            return false;
                         }
-                    } else { // height out of range
+                    } else {
                         return false;
                     }
                 }

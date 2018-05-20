@@ -322,7 +322,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(1, DamageCause.FIRE);
             // not applying additional fire ticks after dying in fire
             stoodInFire = !isDead();
-        } else if (getLocation().getBlock().getType() == Material.LAVA 
+        } else if (getLocation().getBlock().getType() == Material.LAVA
                 || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
             damage(4, DamageCause.LAVA);
             if (swamInLava) {
@@ -332,7 +332,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 swamInLava = true;
             }
         } else if (isTouchingMaterial(Material.FIRE)
-                || isTouchingMaterial(Material.LAVA) 
+                || isTouchingMaterial(Material.LAVA)
                 || isTouchingMaterial(Material.STATIONARY_LAVA)) {
             damage(1, DamageCause.FIRE);
             // increment the ticks stood adjacent to fire or lava
@@ -803,81 +803,82 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
         this.health = health;
         metadata.set(MetadataIndex.HEALTH, (float) health);
-
         for (Objective objective : getServer().getScoreboardManager().getMainScoreboard()
                 .getObjectivesByCriteria(Criterias.HEALTH)) {
             objective.getScore(getName()).setScore((int) health);
         }
+        if (health > 0) {
+            return;
+        }
 
-        if (health <= 0) {
-            active = false;
-            Sound deathSound = getDeathSound();
-            if (deathSound != null && !isSilent()) {
-                world.playSound(location, deathSound, getSoundVolume(), getSoundPitch());
+        // Killed
+        active = false;
+        Sound deathSound = getDeathSound();
+        if (deathSound != null && !isSilent()) {
+            world.playSound(location, deathSound, getSoundVolume(), getSoundPitch());
+        }
+        playEffect(EntityEffect.DEATH);
+        if (this instanceof GlowPlayer) {
+            GlowPlayer player = (GlowPlayer) this;
+            ItemStack mainHand = player.getInventory().getItemInMainHand();
+            ItemStack offHand = player.getInventory().getItemInOffHand();
+            if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
+                player.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
+                player.setHealth(1.0);
+                active = true;
+                return;
+            } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
+                player.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
+                player.setHealth(1.0);
+                active = true;
+                return;
             }
-            playEffect(EntityEffect.DEATH);
-            if (this instanceof GlowPlayer) {
-                GlowPlayer player = (GlowPlayer) this;
-                ItemStack mainHand = player.getInventory().getItemInMainHand();
-                ItemStack offHand = player.getInventory().getItemInOffHand();
-                if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
-                    player.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
-                    player.setHealth(1.0);
-                    active = true;
-                    return;
-                } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
-                    player.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
-                    player.setHealth(1.0);
-                    active = true;
-                    return;
-                }
-                List<ItemStack> items = new ArrayList<>();
-                if (!world.getGameRuleMap().getBoolean("keepInventory")) {
-                    items = Arrays.stream(player.getInventory().getContents())
-                            .filter(stack -> !InventoryUtil.isEmpty(stack))
-                            .collect(Collectors.toList());
-                    player.getInventory().clear();
-                }
-                PlayerDeathEvent event = new PlayerDeathEvent(player, items, 0,
-                        player.getDisplayName() + " died.");
-                EventFactory.getInstance().callEvent(event);
-                server.broadcastMessage(event.getDeathMessage());
-                for (ItemStack item : items) {
-                    world.dropItemNaturally(getLocation(), item);
-                }
-                player.setShoulderEntityRight(null);
-                player.setShoulderEntityLeft(null);
-                player.incrementStatistic(Statistic.DEATHS);
-            } else {
-                EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
-                if (world.getGameRuleMap().getBoolean("doMobLoot")) {
-                    LootData data = LootingManager.generate(this);
-                    deathEvent.getDrops().addAll(data.getItems());
-                    // Only drop experience when hit by a player within 5 seconds (100 game ticks)
-                    if (ticksLived - playerDamageTick <= 100 && data.getExperience() > 0) {
-                        // split experience
-                        Integer[] values = ExperienceSplitter.cut(data.getExperience());
-                        for (Integer exp : values) {
-                            ThreadLocalRandom random = ThreadLocalRandom.current();
-                            double modX = random.nextDouble() - 0.5;
-                            double modZ = random.nextDouble() - 0.5;
-                            Location xpLocation = new Location(world,
-                                    location.getBlockX() + 0.5 + modX, location.getY(),
-                                    location.getBlockZ() + 0.5 + modZ);
-                            GlowExperienceOrb orb = (GlowExperienceOrb) world
-                                    .spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
-                            orb.setExperience(exp);
-                            orb.setSourceEntityId(this.getUniqueId());
-                            if (getLastDamager() != null) {
-                                orb.setTriggerEntityId(getLastDamager().getUniqueId());
-                            }
+            List<ItemStack> items = new ArrayList<>();
+            if (!world.getGameRuleMap().getBoolean("keepInventory")) {
+                items = Arrays.stream(player.getInventory().getContents())
+                        .filter(stack -> !InventoryUtil.isEmpty(stack))
+                        .collect(Collectors.toList());
+                player.getInventory().clear();
+            }
+            PlayerDeathEvent event = new PlayerDeathEvent(player, items, 0,
+                    player.getDisplayName() + " died.");
+            EventFactory.getInstance().callEvent(event);
+            server.broadcastMessage(event.getDeathMessage());
+            for (ItemStack item : items) {
+                world.dropItemNaturally(getLocation(), item);
+            }
+            player.setShoulderEntityRight(null);
+            player.setShoulderEntityLeft(null);
+            player.incrementStatistic(Statistic.DEATHS);
+        } else {
+            EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
+            if (world.getGameRuleMap().getBoolean("doMobLoot")) {
+                LootData data = LootingManager.generate(this);
+                deathEvent.getDrops().addAll(data.getItems());
+                // Only drop experience when hit by a player within 5 seconds (100 game ticks)
+                if (ticksLived - playerDamageTick <= 100 && data.getExperience() > 0) {
+                    // split experience
+                    Integer[] values = ExperienceSplitter.cut(data.getExperience());
+                    ThreadLocalRandom random = ThreadLocalRandom.current();
+                    for (Integer exp : values) {
+                        double modX = random.nextDouble() - 0.5;
+                        double modZ = random.nextDouble() - 0.5;
+                        Location xpLocation = new Location(world,
+                                location.getBlockX() + 0.5 + modX, location.getY(),
+                                location.getBlockZ() + 0.5 + modZ);
+                        GlowExperienceOrb orb = (GlowExperienceOrb) world
+                                .spawnEntity(xpLocation, EntityType.EXPERIENCE_ORB);
+                        orb.setExperience(exp);
+                        orb.setSourceEntityId(this.getUniqueId());
+                        if (getLastDamager() != null) {
+                            orb.setTriggerEntityId(getLastDamager().getUniqueId());
                         }
                     }
                 }
-                deathEvent = EventFactory.getInstance().callEvent(deathEvent);
-                for (ItemStack item : deathEvent.getDrops()) {
-                    world.dropItemNaturally(getLocation(), item);
-                }
+            }
+            deathEvent = EventFactory.getInstance().callEvent(deathEvent);
+            for (ItemStack item : deathEvent.getDrops()) {
+                world.dropItemNaturally(getLocation(), item);
             }
         }
     }

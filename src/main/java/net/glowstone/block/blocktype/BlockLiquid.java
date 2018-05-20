@@ -118,39 +118,38 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     private void calculateFlow(GlowBlock block) {
-        if (!block.getState().isFlowed()) {
-            GlowBlockState state = block.getState();
-            // see if we can flow down
-            if (block.getY() > 0) {
-                if (calculateTarget(block.getRelative(DOWN), DOWN, true)) {
-                    if (!block.getRelative(UP).isLiquid()
-                        && Byte.compare(state.getRawData(), STRENGTH_SOURCE) == 0) {
-                        for (BlockFace face : SIDES) {
-                            calculateTarget(block.getRelative(face), face, true);
-                        }
-                    }
-                } else {
-                    // we can't flow down, or if we're a source block, let's flow horizontally
-                    // search 5 blocks out
-                    for (int j = 1; j < 6; j++) {
-                        // from each horizontal face
-                        for (BlockFace face : SIDES) {
-                            if (calculateTarget(block.getRelative(face, j).getRelative(DOWN), face,
-                                false) && calculateTarget(block.getRelative(face), face, true)) {
-                                state.setFlowed(true);
-                            }
-                        }
-                        // if we already found a match at this radius, stop
-                        if (state.isFlowed()) {
-                            return;
-                        }
-                    }
-                    for (BlockFace face : SIDES) {
-                        calculateTarget(block.getRelative(face), face, true);
-                    }
-                    state.setFlowed(true);
+        // see if we can flow down
+        if (block.getState().isFlowed() || block.getY() <= 0) {
+            return;
+        }
+        GlowBlockState state = block.getState();
+        if (calculateTarget(block.getRelative(DOWN), DOWN, true)) {
+            if (!block.getRelative(UP).isLiquid()
+                && Byte.compare(state.getRawData(), STRENGTH_SOURCE) == 0) {
+                for (BlockFace face : SIDES) {
+                    calculateTarget(block.getRelative(face), face, true);
                 }
             }
+        } else {
+            // we can't flow down, or if we're a source block, let's flow horizontally
+            // search 5 blocks out
+            for (int j = 1; j < 6; j++) {
+                // from each horizontal face
+                for (BlockFace face : SIDES) {
+                    if (calculateTarget(block.getRelative(face, j).getRelative(DOWN), face,
+                        false) && calculateTarget(block.getRelative(face), face, true)) {
+                        state.setFlowed(true);
+                    }
+                }
+                // if we already found a match at this radius, stop
+                if (state.isFlowed()) {
+                    return;
+                }
+            }
+            for (BlockFace face : SIDES) {
+                calculateTarget(block.getRelative(face), face, true);
+            }
+            state.setFlowed(true);
         }
     }
 

@@ -29,12 +29,11 @@ public class TpCommand extends VanillaCommand {
         if (!testPermission(sender)) {
             return false;
         }
-        if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
-            return false;
-        }
-        if (args.length <= 2) {
-            if (args.length == 1) {
+        switch (args.length) {
+            case 0:
+                sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+                return false;
+            case 1:
                 Entity from;
                 if (sender instanceof Player) {
                     from = (Entity) sender;
@@ -71,7 +70,7 @@ public class TpCommand extends VanillaCommand {
                         return true;
                     }
                 }
-            } else {
+            case 2:
                 Entity destination;
                 String fromName = args[0];
                 String destName = args[1];
@@ -147,11 +146,10 @@ public class TpCommand extends VanillaCommand {
                         .getName(destination));
                     return true;
                 }
-            }
-        } else {
-            sender
-                .sendMessage(ChatColor.RED + "Coordinate-based teleporting is not supported yet!");
-            return false;
+            default:
+                sender.sendMessage(
+                        ChatColor.RED + "Coordinate-based teleporting is not supported yet!");
+                return false;
         }
     }
 }
