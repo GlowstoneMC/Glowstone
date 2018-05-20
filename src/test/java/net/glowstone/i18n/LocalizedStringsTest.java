@@ -111,10 +111,19 @@ public class LocalizedStringsTest {
         verifyNoMoreInteractions(mockLogger);
     }
 
+    /**
+     * This test verifies that each {@link LocalizedString} instance in {@link LocalizedStrings}
+     * corresponds to an entry in {@code strings.properties}, and that each entry in
+     * {@code strings.properties} corresponds to <em>at least</em> one {@link LocalizedString}. More
+     * than one are allowed for the same entry, since a string may be used for logging at multiple
+     * levels.
+     *
+     * @throws Exception if refactoring causes reflection issues
+     */
     @Test
     void testForBundleCompatibility() throws Exception {
         final Set<String> bundleKeys = STRINGS.keySet();
-
+        final Set<String> unusedKeys = new HashSet<>(bundleKeys);
         final Set<String> missingRegisteredKeys = new HashSet<>();
 
         Deque<Class<?>> classesToScan = new ArrayDeque<>(Arrays.asList(LocalizedStrings.class.getDeclaredClasses()));
@@ -126,7 +135,8 @@ public class LocalizedStringsTest {
                     && Modifier.isFinal(field.getModifiers())) {
                     Object value = field.get(null);
                     if (value instanceof LocalizedStringImpl) {
-                        validateLocalizedString(bundleKeys, missingRegisteredKeys, (LocalizedStringImpl) value);
+                        validateLocalizedString(bundleKeys, missingRegisteredKeys, unusedKeys,
+                                (LocalizedStringImpl) value);
                     } else {
                         fail("Field '" + field + "' does not contain an object of type '" + LocalizedStringImpl.class.getName() + "'.");
                     }
@@ -136,14 +146,16 @@ public class LocalizedStringsTest {
             }
         }
 
-        assertTrue(bundleKeys.isEmpty());
-        assertTrue(missingRegisteredKeys.isEmpty());
+        assertTrue("Resource file contains unused keys: " + unusedKeys, unusedKeys.isEmpty());
+        assertTrue("LocalizedStrings refers to nonexistent keys: " + missingRegisteredKeys,
+                missingRegisteredKeys.isEmpty());
     }
 
     private void validateLocalizedString(Set<String> bundleKeys, Set<String> missingRegisteredKeys,
-                                         LocalizedStringImpl localized) {
+            Set<String> unusedKeys, LocalizedStringImpl localized) {
         String key = localized.getKey();
-        if (bundleKeys.remove(key)) {
+        if (bundleKeys.contains(key)) {
+            unusedKeys.remove(key);
             String configValue = STRINGS.getString(key);
             String objectValue = localized.get();
 

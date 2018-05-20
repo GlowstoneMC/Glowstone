@@ -36,7 +36,7 @@ public class GlowPluginTypeDetector {
      */
     public void scan() {
         LocalizedStrings.Console.Info.Plugin.SCANNING.log();
-        File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar"));
+        File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar")); // NON-NLS
         if (files == null || files.length == 0) {
             return;
         }
