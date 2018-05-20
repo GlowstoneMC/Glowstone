@@ -3,6 +3,7 @@ package net.glowstone.i18n;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import lombok.Getter;
+import org.bukkit.command.CommandSender;
 
 class LocalizedStringImpl implements LocalizedString {
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings");
@@ -30,6 +31,11 @@ class LocalizedStringImpl implements LocalizedString {
     @Override
     public String get(Object... args) {
         return MessageFormat.format(get(), args);
+    }
+
+    @Override
+    public void send(CommandSender recipient, Object... args) {
+        recipient.sendMessage(get(args));
     }
 
 }
