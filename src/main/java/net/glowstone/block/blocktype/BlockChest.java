@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -10,13 +8,15 @@ import net.glowstone.block.entity.ChestEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
-import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Chest;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class BlockChest extends BlockContainer {
 
@@ -26,8 +26,15 @@ public class BlockChest extends BlockContainer {
         this(false);
     }
 
+    /**
+     * Creates a block type for chest functionality with optional trapped behavior.
+     *
+     * @param isTrapped If the chest uses the trapped behavior
+     */
     public BlockChest(boolean isTrapped) {
+        super();
         this.isTrapped = isTrapped;
+        addFunction(Functions.Interact.CHEST);
     }
 
     private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing,
@@ -113,23 +120,6 @@ public class BlockChest extends BlockContainer {
         } else {
             warnMaterialData(Chest.class, data);
         }
-    }
-
-    @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
-        BlockState state = block.getState();
-        if (state instanceof org.bukkit.block.Chest) {
-            org.bukkit.block.Chest chest = (org.bukkit.block.Chest) state;
-            player.openInventory(chest.getInventory());
-            player.incrementStatistic(Statistic.CHEST_OPENED);
-            return true;
-        }
-
-        GlowServer.logger
-            .warning("Calling blockInteract on BlockChest, but BlockState is " + state);
-
-        return false;
     }
 
     @Override

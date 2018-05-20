@@ -21,6 +21,11 @@ public class BlockVine extends BlockClimbable {
     private static final BlockFace[] HORIZONTAL_FACES = {BlockFace.NORTH, BlockFace.SOUTH,
         BlockFace.EAST, BlockFace.WEST};
 
+    public BlockVine() {
+        super();
+        addFunction(Functions.Absorb.ALWAYS);
+    }
+
     private static BlockFace getClockwiseFace(BlockFace face) {
         switch (face) {
             case NORTH:
@@ -82,11 +87,6 @@ public class BlockVine extends BlockClimbable {
         } else {
             warnMaterialData(Vine.class, data);
         }
-    }
-
-    @Override
-    public boolean canAbsorb(GlowBlock block, BlockFace face, ItemStack holding) {
-        return true;
     }
 
     @Override

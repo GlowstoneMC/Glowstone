@@ -101,6 +101,10 @@ import net.glowstone.block.blocktype.BlockWater;
 import net.glowstone.block.blocktype.BlockWeb;
 import net.glowstone.block.blocktype.BlockWoodenTrapDoor;
 import net.glowstone.block.blocktype.BlockWorkbench;
+import net.glowstone.block.function.GlowBlockFunctionHandler;
+import net.glowstone.block.function.GlowItemFunctionHandler;
+import net.glowstone.block.function.ItemFunction;
+import net.glowstone.block.function.ItemFunctionHandler;
 import net.glowstone.block.itemtype.ItemArmorStand;
 import net.glowstone.block.itemtype.ItemBanner;
 import net.glowstone.block.itemtype.ItemBoat;
@@ -155,11 +159,14 @@ public final class ItemTable {
     private static final ItemTable INSTANCE = new ItemTable();
 
     static {
-        INSTANCE.registerBuiltins();
+        INSTANCE.init();
     }
 
     private final EnumMap<Material, ItemType> materialToType = new EnumMap<>(Material.class);
     private final Map<NamespacedKey, ItemType> extraTypes = new HashMap<>();
+    private final Map<String, ItemFunctionHandler> itemFunctionHandlers = new HashMap<>();
+    private final ItemFunctionHandler itemFunctionHandler = new GlowItemFunctionHandler();
+    private final ItemFunctionHandler blockFunctionHandler = new GlowBlockFunctionHandler();
     private int nextBlockId;
     private int nextItemId;
 
@@ -167,6 +174,15 @@ public final class ItemTable {
     // Data
 
     private ItemTable() {
+    }
+
+    private void init() {
+        registerBuiltins();
+        assignHandler("block.place.allow", blockFunctionHandler);
+        assignHandler("block.interact", blockFunctionHandler);
+        assignHandler("block.pulse", blockFunctionHandler);
+        assignHandler("block.pulse.rate", blockFunctionHandler);
+        assignHandler("block.pulse.multiple", blockFunctionHandler);
     }
 
     public static ItemTable instance() {
@@ -629,4 +645,34 @@ public final class ItemTable {
         return null;
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Functions
+
+    /**
+     * Assigns a function handler to accept new function registrations of this type.
+     * @param functionality The type of function this function handler accepts
+     * @param handler The handler
+     * @return The resultant handler that will be used to handle functions of this type
+     */
+    public ItemFunctionHandler assignHandler(String functionality, ItemFunctionHandler handler) {
+        return itemFunctionHandlers.putIfAbsent(functionality, handler);
+    }
+
+    /**
+     * Get the function handler that accepts functions of this type.
+     * @param functionality The function type
+     * @return The function handler
+     */
+    public ItemFunctionHandler getFunctionHandler(String functionality) {
+        return itemFunctionHandlers.get(functionality);
+    }
+
+    /**
+     * Add this function to the specified item's behavior
+     * @param item The item
+     * @param function The function to add
+     */
+    public void addFunction(ItemType item, ItemFunction function) {
+        itemFunctionHandlers.get(function.getFunctionality()).accept(item, function);
+    }
 }

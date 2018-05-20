@@ -6,6 +6,7 @@ import java.util.Collections;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.function.BlockFunctions;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,10 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class BlockCactus extends BlockType {
 
-    @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        Material below = block.getRelative(BlockFace.DOWN).getType();
-        return (below == Material.CACTUS || below == Material.SAND) && !hasNearBlocks(block);
+    public BlockCactus() {
+        super();
+        addFunction(Functions.PlaceAllow.CACTUS);
     }
 
     @Override
@@ -75,16 +75,7 @@ public class BlockCactus extends BlockType {
         }
     }
 
-    private boolean hasNearBlocks(GlowBlock block) {
-        for (BlockFace face : SIDES) {
-            if (!canPlaceNear(block.getRelative(face).getType())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean canPlaceNear(Material type) {
+    private static boolean canPlaceNear(Material type) {
         // TODO: return true for non-buildable blocks
         switch (type) {
             case GRASS:
@@ -132,5 +123,31 @@ public class BlockCactus extends BlockType {
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
         // Overridden for cactus to remove data from the dropped item
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CACTUS)));
+    }
+  
+    /**
+     * Builtin block functions specific to cactus.
+     */
+    public static class Functions {
+
+        public static class PlaceAllow {
+
+            /**
+             * Check for allowing place for cactus.
+             */
+            public static final BlockFunctions.BlockFunctionPlaceAllow CACTUS = (block,
+                against) -> {
+                Material below = block.getRelative(BlockFace.DOWN).getType();
+                boolean hasSurroundingBlocks = false;
+                for (BlockFace face : SIDES) {
+                    if (!canPlaceNear(block.getRelative(face).getType())) {
+                        hasSurroundingBlocks = true;
+                        break;
+                    }
+                }
+                return ((below == Material.CACTUS) || below == Material.SAND)
+                    && !hasSurroundingBlocks;
+            };
+        }
     }
 }

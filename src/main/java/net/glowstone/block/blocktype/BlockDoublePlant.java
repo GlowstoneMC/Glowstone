@@ -49,29 +49,6 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
     }
 
     @Override
-    public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
-        MaterialData data = block.getState().getData();
-        if (data instanceof DoublePlant) {
-            DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
-            if (species == DoublePlantSpecies.PLANT_APEX) {
-                GlowBlock blockUnder = block.getRelative(BlockFace.DOWN);
-                if (!(blockUnder.getState().getData() instanceof DoublePlant)) {
-                    return;
-                }
-                blockUnder.setType(Material.AIR);
-            } else {
-                GlowBlock blockTop = block.getRelative(BlockFace.UP);
-                if (!(blockTop.getState().getData() instanceof DoublePlant)) {
-                    return;
-                }
-                blockTop.setType(Material.AIR);
-            }
-        } else {
-            warnMaterialData(DoublePlant.class, data);
-        }
-    }
-
-    @Override
     public boolean isFertilizable(GlowBlock block) {
         MaterialData data = block.getState().getData();
         if (data instanceof DoublePlant) {
