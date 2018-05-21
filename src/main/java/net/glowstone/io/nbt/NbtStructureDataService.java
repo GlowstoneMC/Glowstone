@@ -49,7 +49,7 @@ public class NbtStructureDataService implements StructureDataService {
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = in.readCompound();
-                    if (!data.readCompound("data", innerData -> innerData.readCompound( // NON-NLS
+                    if (!data.readCompound("data", innerData -> innerData.readCompound(// NON-NLS
                             "Features", features -> features.getValue().keySet().stream() // NON-NLS
                                 .filter(features::isCompound)
                                 .forEach(key -> {
@@ -60,8 +60,6 @@ public class NbtStructureDataService implements StructureDataService {
                                         .hashCode(), structure);
                                 })))) {
                         LocalizedStrings.Console.Error.Structure.NO_DATA.log(structureFile);
-                                });
-                        }
                     }
                 } catch (IOException e) {
                     LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
