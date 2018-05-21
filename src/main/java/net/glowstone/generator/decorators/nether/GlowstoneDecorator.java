@@ -34,30 +34,32 @@ public class GlowstoneDecorator extends BlockDecorator {
             int sourceY = 4 + random.nextInt(120);
 
             Block block = world.getBlockAt(sourceX, sourceY, sourceZ);
-            if (block.isEmpty()
-                && block.getRelative(BlockFace.UP).getType() == Material.NETHERRACK) {
-                BlockState state = block.getState();
-                state.setType(Material.GLOWSTONE);
-                state.update(true);
+            if (!block.isEmpty()
+                    || block.getRelative(BlockFace.UP).getType() != Material.NETHERRACK) {
+                continue;
+            }
+            BlockState state = block.getState();
+            state.setType(Material.GLOWSTONE);
+            state.update(true);
 
-                for (int j = 0; j < 1500; j++) {
-                    int x = sourceX + random.nextInt(8) - random.nextInt(8);
-                    int z = sourceZ + random.nextInt(8) - random.nextInt(8);
-                    int y = sourceY - random.nextInt(12);
-                    block = world.getBlockAt(x, y, z);
-                    if (block.isEmpty()) {
-                        int glowstoneBlockCount = 0;
-                        for (BlockFace face : SIDES) {
-                            if (block.getRelative(face).getType() == Material.GLOWSTONE) {
-                                glowstoneBlockCount++;
-                            }
-                        }
-                        if (glowstoneBlockCount == 1) {
-                            state = block.getState();
-                            state.setType(Material.GLOWSTONE);
-                            state.update(true);
-                        }
+            for (int j = 0; j < 1500; j++) {
+                int x = sourceX + random.nextInt(8) - random.nextInt(8);
+                int z = sourceZ + random.nextInt(8) - random.nextInt(8);
+                int y = sourceY - random.nextInt(12);
+                block = world.getBlockAt(x, y, z);
+                if (!block.isEmpty()) {
+                    continue;
+                }
+                int glowstoneBlockCount = 0;
+                for (BlockFace face : SIDES) {
+                    if (block.getRelative(face).getType() == Material.GLOWSTONE) {
+                        glowstoneBlockCount++;
                     }
+                }
+                if (glowstoneBlockCount == 1) {
+                    state = block.getState();
+                    state.setType(Material.GLOWSTONE);
+                    state.update(true);
                 }
             }
         }

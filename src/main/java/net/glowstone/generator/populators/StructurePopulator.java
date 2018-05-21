@@ -32,23 +32,25 @@ public class StructurePopulator extends BlockPopulator {
             boolean placed = false;
             for (int x = cx - 8; x <= cx + 8 && !placed; x++) {
                 for (int z = cz - 8; z <= cz + 8 && !placed; z++) {
-                    if (world.getChunkAt(x, z).isLoaded() || world.getChunkAt(x, z).load(true)) {
-                        random.setSeed(x * randX + z * randZ ^ world.getSeed());
-                        Map<Integer, GlowStructure> structures = ((GlowWorld) world)
-                            .getStructures();
-                        int key = GlowChunk.Key.of(x, z).hashCode();
-                        if (!structures.containsKey(key)) {
-                            for (StructureStore<?> store : StructureStorage.getStructureStores()) {
-                                GlowStructure structure = store
-                                    .createNewStructure((GlowWorld) world, random, x, z);
-                                if (structure.shouldGenerate(random)) {
-                                    structure.setDirty(true);
-                                    structures.put(key, structure);
-                                    GlowServer.logger.finer("structure in chunk " + x + "," + z);
-                                    placed = true;
-                                    break;
-                                }
-                            }
+                    if (!world.getChunkAt(x, z).isLoaded() && !world.getChunkAt(x, z).load(true)) {
+                        continue;
+                    }
+                    random.setSeed(x * randX + z * randZ ^ world.getSeed());
+                    Map<Integer, GlowStructure> structures = ((GlowWorld) world)
+                        .getStructures();
+                    int key = GlowChunk.Key.of(x, z).hashCode();
+                    if (structures.containsKey(key)) {
+                        continue;
+                    }
+                    for (StructureStore<?> store : StructureStorage.getStructureStores()) {
+                        GlowStructure structure = store
+                            .createNewStructure((GlowWorld) world, random, x, z);
+                        if (structure.shouldGenerate(random)) {
+                            structure.setDirty(true);
+                            structures.put(key, structure);
+                            GlowServer.logger.finer("structure in chunk " + x + "," + z);
+                            placed = true;
+                            break;
                         }
                     }
                 }

@@ -1,27 +1,19 @@
 package net.glowstone.generator.objects;
 
-import com.google.common.collect.ImmutableSortedSet;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.SortedSet;
 import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.material.DoublePlant;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 public class Lake implements TerrainObject {
 
     private static final double MAX_DIAMETER = 16.0D;
     private static final double MAX_HEIGHT = 8.0D;
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
-    private static final SortedSet<Material> PLANT_TYPES =
-            ImmutableSortedSet.of(Material.LONG_GRASS, Material.YELLOW_FLOWER,
-        Material.RED_ROSE, Material.DOUBLE_PLANT, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM);
     private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND,
         Biome.MUSHROOM_ISLAND_SHORE};
     private final Material type;
@@ -90,19 +82,7 @@ public class Lake implements TerrainObject {
                     }
                     if (y >= (int) MAX_HEIGHT / 2) {
                         type = Material.AIR;
-                        if (PLANT_TYPES.contains(blockAboveType)) {
-                            if (blockAboveType == Material.DOUBLE_PLANT) {
-                                Block blockAboveBlock = blockAbove
-                                        .getRelative(BlockFace.UP);
-                                MaterialData blockAboveData
-                                        = blockAboveBlock.getState().getData();
-                                if (blockAboveData instanceof DoublePlant
-                                        && ((DoublePlant) blockAboveData).getSpecies()
-                                                == DoublePlantSpecies.PLANT_APEX) {
-                                    blockAboveBlock.setType(Material.AIR);
-                                }
-                            }
-                            blockAbove.setType(Material.AIR);
+                        if (TerrainObject.killPlantAbove(block)) {
                             break;
                         }
                         if (this.type == Material.STATIONARY_WATER && (

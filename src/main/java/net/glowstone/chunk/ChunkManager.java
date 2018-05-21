@@ -83,7 +83,7 @@ public final class ChunkManager {
         biomeGrid = MapLayer.initialize(
                 world.getSeed(), world.getEnvironment(), world.getWorldType());
     }
-    
+
     /**
      * Gets a chunk object representing the specified coordinates, which might not yet be loaded.
      *
@@ -290,11 +290,8 @@ public final class ChunkManager {
                         int maxHeight = chunkData.getMaxHeight();
                         for (int k = 0; k < maxHeight; ++k) {
                             MaterialData materialData = chunkData.getTypeAndData(i, k, j);
-                            if (materialData != null) {
-                                glowChunkData.setBlock(i, k, j, materialData);
-                            } else {
-                                glowChunkData.setBlock(i, k, j, new MaterialData(Material.AIR));
-                            }
+                            glowChunkData.setBlock(i, k, j, materialData == null
+                                    ? new MaterialData(Material.AIR) : materialData);
                         }
                     }
                 }

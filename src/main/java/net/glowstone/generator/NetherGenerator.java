@@ -273,38 +273,38 @@ public class NetherGenerator extends GlowChunkGenerator {
         for (int y = 127; y >= 0; y--) {
             if (y <= random.nextInt(5) || y >= 127 - random.nextInt(5)) {
                 chunkData.setBlock(x, y, z, Material.BEDROCK);
-            } else {
-                Material mat = chunkData.getType(x, y, z);
-                if (mat == Material.AIR) {
-                    deep = -1;
-                } else if (mat == Material.NETHERRACK) {
-                    if (deep == -1) {
-                        if (surfaceHeight <= 0) {
-                            topMat = Material.AIR;
+                continue;
+            }
+            Material mat = chunkData.getType(x, y, z);
+            if (mat == Material.AIR) {
+                deep = -1;
+            } else if (mat == Material.NETHERRACK) {
+                if (deep == -1) {
+                    if (surfaceHeight <= 0) {
+                        topMat = Material.AIR;
+                        groundMat = Material.NETHERRACK;
+                    } else if (y >= 60 && y <= 65) {
+                        topMat = Material.NETHERRACK;
+                        groundMat = Material.NETHERRACK;
+                        if (gravel) {
+                            topMat = Material.GRAVEL;
                             groundMat = Material.NETHERRACK;
-                        } else if (y >= 60 && y <= 65) {
-                            topMat = Material.NETHERRACK;
-                            groundMat = Material.NETHERRACK;
-                            if (gravel) {
-                                topMat = Material.GRAVEL;
-                                groundMat = Material.NETHERRACK;
-                            }
-                            if (soulSand) {
-                                topMat = Material.SOUL_SAND;
-                                groundMat = Material.SOUL_SAND;
-                            }
                         }
+                        if (soulSand) {
+                            topMat = Material.SOUL_SAND;
+                            groundMat = Material.SOUL_SAND;
+                        }
+                    }
 
-                        deep = surfaceHeight;
-                        if (y >= 63) {
-                            chunkData.setBlock(x, y, z, topMat);
-                        } else {
-                            chunkData.setBlock(x, y, z, groundMat);
-                        }
-                    } else if (deep > 0) {
-                        deep--;
+                    deep = surfaceHeight;
+                    if (y >= 63) {
+                        chunkData.setBlock(x, y, z, topMat);
+                    } else {
                         chunkData.setBlock(x, y, z, groundMat);
                     }
+                } else if (deep > 0) {
+                    deep--;
+                    chunkData.setBlock(x, y, z, groundMat);
                 }
             }
         }

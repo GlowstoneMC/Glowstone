@@ -187,36 +187,35 @@ public class ClearCommand extends VanillaCommand {
                 ChatColor.RED + "Could not clear the inventory of " + player.getName()
                     + ", no items to remove");
             return false;
+        }
+        if (material == null) {
+            player.getInventory().clear();
         } else {
-            if (material == null) {
-                player.getInventory().clear();
-            } else {
-                int remaining = maxCount;
-                for (ItemStack stack : player.getInventory().getContents()) {
-                    if (stack.getType() == material && (data == -1 || data == stack.getData()
-                        .getData())) {
-                        // matches type and data
-                        if (maxCount == -1) {
-                            player.getInventory().remove(stack);
-                        } else if (maxCount == 0) {
-                            sender.sendMessage(player.getName() + " has " + count
-                                + " items that match the criteria");
-                            return true;
-                        } else {
-                            for (int i = 0; i < stack.getAmount(); i++) {
-                                if (remaining > 0) {
-                                    stack.setAmount(stack.getAmount() - 1);
-                                    remaining--;
-                                }
+            int remaining = maxCount;
+            for (ItemStack stack : player.getInventory().getContents()) {
+                if (stack.getType() == material && (data == -1 || data == stack.getData()
+                    .getData())) {
+                    // matches type and data
+                    if (maxCount == -1) {
+                        player.getInventory().remove(stack);
+                    } else if (maxCount == 0) {
+                        sender.sendMessage(player.getName() + " has " + count
+                            + " items that match the criteria");
+                        return true;
+                    } else {
+                        for (int i = 0; i < stack.getAmount(); i++) {
+                            if (remaining > 0) {
+                                stack.setAmount(stack.getAmount() - 1);
+                                remaining--;
                             }
                         }
                     }
                 }
             }
-            sender.sendMessage(
-                "Cleared the inventory of " + player.getName() + ", removing " + count + " items");
-            return true;
         }
+        sender.sendMessage(
+            "Cleared the inventory of " + player.getName() + ", removing " + count + " items");
+        return true;
     }
 
     @Override

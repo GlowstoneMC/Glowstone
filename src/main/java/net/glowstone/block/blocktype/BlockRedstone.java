@@ -138,10 +138,7 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case LEVER:
                     Lever lever = (Lever) target.getState().getData();
                     if (lever.isPowered()) {
-                        if (me.getData() != 15) {
-                            me.setData((byte) 15);
-                            extraUpdate(me);
-                        }
+                        setFullyPowered(me);
                         return;
                     }
                     break;
@@ -149,83 +146,60 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case WOOD_BUTTON:
                     Button button = (Button) target.getState().getData();
                     if (button.isPowered()) {
-                        if (me.getData() != 15) {
-                            me.setData((byte) 15);
-                            extraUpdate(me);
-                        }
+                        setFullyPowered(me);
                         return;
                     }
                     break;
                 case DIODE_BLOCK_ON:
                     Diode diode = (Diode) target.getState().getData();
                     if (face == diode.getFacing().getOppositeFace()) {
-                        if (me.getData() != 15) {
-                            me.setData((byte) 15);
-                            extraUpdate(me);
-                        }
+                        setFullyPowered(me);
                         return;
                     }
                     break;
                 case REDSTONE_BLOCK:
                 case REDSTONE_TORCH_ON:
-                    if (me.getData() != 15) {
-                        me.setData((byte) 15);
-                        extraUpdate(me);
-                    }
+                    setFullyPowered(me);
                     return;
                 case OBSERVER:
                     boolean powered = BlockObserver.isPowered(target);
                     BlockFace outputFace = BlockObserver.getFace(target).getOppositeFace();
                     if (powered && target.getRelative(outputFace).getLocation()
                         .equals(me.getLocation())) {
-                        if (me.getData() != 15) {
-                            me.setData((byte) 15);
-                            extraUpdate(me);
-                        }
+                        setFullyPowered(me);
                         return;
                     }
                     break;
                 default:
-                    if (target.getType().isSolid() && target.getRelative(BlockFace.DOWN).getType()
-                        == Material.REDSTONE_TORCH_ON) {
-                        if (me.getData() != 15) {
-                            me.setData((byte) 15);
-                            extraUpdate(me);
-                        }
+                    if (!target.getType().isSolid()) {
+                        continue;
+                    }
+                    if (target.getRelative(BlockFace.DOWN).getType()
+                            == Material.REDSTONE_TORCH_ON) {
+                        setFullyPowered(me);
                         return;
                     }
-                    if (target.getType().isSolid()) {
-                        for (BlockFace face2 : ADJACENT) {
-                            GlowBlock target2 = target.getRelative(face2);
-                            if (target2.getType() == Material.DIODE_BLOCK_ON
-                                && ((Diode) target2.getState().getData()).getFacing() == target2
+                    for (BlockFace face2 : ADJACENT) {
+                        GlowBlock target2 = target.getRelative(face2);
+                        if (target2.getType() == Material.DIODE_BLOCK_ON
+                            && ((Diode) target2.getState().getData()).getFacing() == target2
+                            .getFace(target)) {
+                            setFullyPowered(me);
+                            return;
+                        } else if (target2.getType() == Material.STONE_BUTTON
+                            || target2.getType() == Material.WOOD_BUTTON) {
+                            Button button2 = (Button) target2.getState().getData();
+                            if (button2.isPowered() && button2.getAttachedFace() == target2
                                 .getFace(target)) {
-                                if (me.getData() != 15) {
-                                    me.setData((byte) 15);
-                                    extraUpdate(me);
-                                }
+                                setFullyPowered(me);
                                 return;
-                            } else if (target2.getType() == Material.STONE_BUTTON
-                                || target2.getType() == Material.WOOD_BUTTON) {
-                                Button button2 = (Button) target2.getState().getData();
-                                if (button2.isPowered() && button2.getAttachedFace() == target2
-                                    .getFace(target)) {
-                                    if (me.getData() != 15) {
-                                        me.setData((byte) 15);
-                                        extraUpdate(me);
-                                    }
-                                    return;
-                                }
-                            } else if (target2.getType() == Material.LEVER) {
-                                Lever lever2 = (Lever) target2.getState().getData();
-                                if (lever2.isPowered() && lever2.getAttachedFace() == target2
-                                    .getFace(target)) {
-                                    if (me.getData() != 15) {
-                                        me.setData((byte) 15);
-                                        extraUpdate(me);
-                                    }
-                                    return;
-                                }
+                            }
+                        } else if (target2.getType() == Material.LEVER) {
+                            Lever lever2 = (Lever) target2.getState().getData();
+                            if (lever2.isPowered() && lever2.getAttachedFace() == target2
+                                .getFace(target)) {
+                                setFullyPowered(me);
+                                return;
                             }
                         }
                     }
@@ -261,12 +235,25 @@ public class BlockRedstone extends BlockNeedsAttached {
 
         if (power != me.getData()) {
             me.setData(power);
-            extraUpdate(me);
+            updateConnected(me);
             new PulseTask(me, true, 1, true).startPulseTask();
         }
     }
 
-    private void extraUpdate(GlowBlock block) {
+    /**
+     * Sets a redstone dust block to the fully-powered state and, if it wasn't already in that
+     * state, updates connected blocks so that power propagates.
+     *
+     * @param block the block to update
+     */
+    protected static void setFullyPowered(GlowBlock block) {
+        if (block.getData() != 15) {
+            block.setData((byte) 15);
+            updateConnected(block);
+        }
+    }
+
+    private static void updateConnected(GlowBlock block) {
         ItemTable itemTable = ItemTable.instance();
         for (BlockFace face : calculateConnections(block)) {
             GlowBlock target = block.getRelative(face);

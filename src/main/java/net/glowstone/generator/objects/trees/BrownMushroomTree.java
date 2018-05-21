@@ -48,17 +48,16 @@ public class BrownMushroomTree extends GenericTree {
             // check for block collision on horizontal slices
             for (int x = baseX - radius; x <= baseX + radius; x++) {
                 for (int z = baseZ - radius; z <= baseZ + radius; z++) {
-                    if (y >= 0 && y < 256) {
-                        // skip source block check
-                        if (y != baseY || x != baseX || z != baseZ) {
-                            // we can overlap leaves around
-                            Material type = blockTypeAt(x, y, z, world);
-                            if (!overridables.contains(type)) {
-                                return false;
-                            }
-                        }
-                    } else { // height out of range
+                    if (y < 0 || y >= 256) { // height out of range
                         return false;
+                    }
+                    // skip source block check
+                    if (y != baseY || x != baseX || z != baseZ) {
+                        // we can overlap leaves around
+                        Material type = blockTypeAt(x, y, z, world);
+                        if (!overridables.contains(type)) {
+                            return false;
+                        }
                     }
                 }
             }
