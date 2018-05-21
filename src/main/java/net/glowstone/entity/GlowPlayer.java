@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.GlowServer.logger;
 
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -38,7 +39,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.GlowWorldBorder;
 import net.glowstone.block.GlowBlock;
@@ -66,6 +66,7 @@ import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
+import net.glowstone.inventory.ToolType;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
 import net.glowstone.map.GlowMapCanvas;
@@ -114,6 +115,7 @@ import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Convert;
+import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
@@ -492,6 +494,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * The number of ticks elapsed since the player started digging.
      */
     private long diggingTicks = 0;
+    /**
+     * The total number of ticks needed to dig the current block.
+     */
+    private long totalDiggingTicks = Long.MAX_VALUE;
     /**
      * The one itemstack the player is currently usage and associated time.
      */
@@ -2468,7 +2474,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             session.sendAndRelease(new PluginMessage("MC|StopSound", buffer.array()),
                 buffer);
         } catch (IOException e) {
-            GlowServer.logger.info("Failed to send stop-sound event.");
+            logger.info("Failed to send stop-sound event.");
             e.printStackTrace();
         }
     }
@@ -3386,12 +3392,31 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param block the block to start breaking
      */
     public void setDigging(GlowBlock block) {
+        if (Objects.equals(block, digging)) {
+            return;
+        }
         if (block == null) {
-            if (digging != null) {
-                // remove the animation
-                broadcastBlockBreakAnimation(digging, 10);
-            }
+            totalDiggingTicks = Long.MAX_VALUE;
+            // remove the animation
+            broadcastBlockBreakAnimation(digging, 10);
         } else {
+            double hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
+            double breakingTimeMultiplier = 5; // default of 5 when using bare hands
+            ItemStack tool = getItemInHand();
+            if (tool != null) {
+                Material toolType = tool.getType();
+                if (block.getType() == Material.WEB && ToolType.SWORD.matches(toolType)) {
+                    breakingTimeMultiplier = 0.1;
+                } else if (block.getType() == Material.WOOL && toolType == Material.SHEARS) {
+                    breakingTimeMultiplier = 0.3;
+                } else {
+                    ToolType effectiveTool = block.getMaterialValues().getTool();
+                    if (effectiveTool != null && effectiveTool.matches(toolType)) {
+                        breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
+                    }
+                }
+            }
+            totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
         }
@@ -3417,19 +3442,84 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private void pulseDigging() {
         ++diggingTicks;
 
-        float hardness = digging.getMaterialValues().getHardness() * 20; // seconds to ticks
-
-        // TODO: take into account the tool used to mine (ineffective=5x, effective=1.5x, material
-        // multiplier, etc.). For now, assuming hands are used and the block is not dropped.
-        hardness *= 5;
-
-        double completion = (double) diggingTicks / hardness;
-        int stage = (int) (completion * 10);
-        if (stage > 9) {
-            stage = 9;
+        if (diggingTicks < totalDiggingTicks) {
+            int stage = (int) (10 * (double) diggingTicks / totalDiggingTicks);
+            broadcastBlockBreakAnimation(digging, stage);
+            return;
         }
-
-        broadcastBlockBreakAnimation(digging, stage);
+        ItemStack tool = getItemInHand();
+        short durability = tool.getDurability();
+        short maxDurability = tool.getType().getMaxDurability();
+        if (!InventoryUtil.isEmpty(tool) && maxDurability != 0 && durability != maxDurability) {
+            int baseDamage; // Before applying unbreaking enchantment
+            switch (digging.getType()) {
+                case GRASS:
+                case DIRT:
+                case SAND:
+                case GRAVEL:
+                case MYCEL:
+                case SOUL_SAND:
+                    switch (tool.getType()) {
+                        case WOOD_SPADE:
+                        case STONE_SPADE:
+                        case IRON_SPADE:
+                        case GOLD_SPADE:
+                        case DIAMOND_SPADE:
+                            baseDamage = 1;
+                            break;
+                        default:
+                            baseDamage = 2;
+                            break;
+                    }
+                    break;
+                case LOG:
+                case LOG_2:
+                case WOOD:
+                case CHEST:
+                    switch (tool.getType()) {
+                        case WOOD_AXE:
+                        case STONE_AXE:
+                        case IRON_AXE:
+                        case GOLD_AXE:
+                        case DIAMOND_AXE:
+                            baseDamage = 1;
+                            break;
+                        default:
+                            baseDamage = 2;
+                            break;
+                    }
+                    break;
+                case STONE:
+                case COBBLESTONE:
+                    switch (tool.getType()) {
+                        case WOOD_PICKAXE:
+                        case STONE_PICKAXE:
+                        case IRON_PICKAXE:
+                        case GOLD_PICKAXE:
+                        case DIAMOND_PICKAXE:
+                            baseDamage = 1;
+                            break;
+                        default:
+                            baseDamage = 2;
+                            break;
+                    }
+                    break;
+                default:
+                    baseDamage = 2;
+                    break;
+            }
+            for (int i = 0; i < baseDamage; i++) {
+                tool = InventoryUtil.damageItem(this, tool);
+            }
+            // Force-update item
+            setItemInHand(tool);
+            // Break the block
+            digging.breakNaturally(tool);
+            // Send block status to clients
+            world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
+                    digging.getLocation(), Material.AIR, (byte) 0));
+            setDigging(null);
+        }
     }
 
     /**

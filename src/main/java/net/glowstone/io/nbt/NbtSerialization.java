@@ -16,8 +16,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 /**
- * Utility methods for transforming various objects to and from NBT.
+ * Utility methods for transforming various objects to and from NBT. All strings in this class are
+ * subtag names and thus not localizable.
  */
+@SuppressWarnings("HardCodedStringLiteral")
 public final class NbtSerialization {
 
     private NbtSerialization() {

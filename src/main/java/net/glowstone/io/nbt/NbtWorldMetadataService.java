@@ -8,10 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.UUID;
-import java.util.logging.Level;
 import net.glowstone.GlowWorld;
 import net.glowstone.GlowWorldBorder;
 import net.glowstone.ServerProvider;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
@@ -20,8 +20,11 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.WorldType;
 
+@SuppressWarnings("HardCodedStringLiteral")
 public class NbtWorldMetadataService implements WorldMetadataService {
 
+    private static final String UUID_FILE = "uid.dat"; // NON-NLS
+    private static final String LEVEL_FILE = "level.dat"; // NON-NLS
     private final GlowWorld world;
     private final File dir;
     private final Server server;
@@ -41,7 +44,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         server = ServerProvider.getServer();
 
         if (!dir.isDirectory() && !dir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + dir);
+            LocalizedStrings.Console.Error.Io.MKDIR.log(dir);
         }
     }
 
@@ -49,12 +52,12 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     public WorldFinalValues readWorldData() {
         // determine UUID of world
         UUID uid = null;
-        File uuidFile = new File(dir, "uid.dat");
+        File uuidFile = new File(dir, UUID_FILE);
         if (uuidFile.exists()) {
             try (DataInputStream in = new DataInputStream(new FileInputStream(uuidFile))) {
                 uid = new UUID(in.readLong(), in.readLong());
             } catch (IOException e) {
-                handleWorldException("uid.dat", e);
+                handleWorldException(UUID_FILE, e);
             }
         }
         if (uid == null) {
@@ -63,18 +66,16 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // read in world information
         CompoundTag level = new CompoundTag();
-        File levelFile = new File(dir, "level.dat");
+        File levelFile = new File(dir, LEVEL_FILE);
         if (levelFile.exists()) {
             try (NbtInputStream in = new NbtInputStream(new FileInputStream(levelFile))) {
                 CompoundTag levelOuter = in.readCompound();
                 level = levelOuter.tryGetCompound("Data").orElseGet(() -> {
-                    server.getLogger().warning(
-                            "Loading world \"" + world.getName()
-                                    + "\": reading from root, not Data");
+                    LocalizedStrings.Console.Warn.Io.NO_WORLD_DATA_TAG.log(world.getName());
                     return levelOuter;
                 });
             } catch (IOException e) {
-                handleWorldException("level.dat", e);
+                handleWorldException(LEVEL_FILE, e);
             }
         }
 
@@ -158,8 +159,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // strip single-player Player tag if it exists
         if (level.isCompound("Player")) {
-            server.getLogger()
-                .warning("World \"" + world.getName() + "\": removing single-player Player tag");
+            LocalizedStrings.Console.Warn.Io.REMOVING_SINGLE_PLAYER.log(world.getName());
             level.remove("Player");
         }
 
@@ -171,13 +171,12 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
     private void handleWorldException(String file, IOException e) {
         server.unloadWorld(world, false);
-        server.getLogger()
-            .log(Level.SEVERE, "Unable to access " + file + " for world " + world.getName(), e);
+        LocalizedStrings.Console.Error.Io.WORLD_READ.log(e, file, world.getName());
     }
 
     @Override
     public void writeWorldData() throws IOException {
-        File uuidFile = new File(dir, "uid.dat");
+        File uuidFile = new File(dir, UUID_FILE);
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(uuidFile))) {
             UUID uuid = world.getUID();
             out.writeLong(uuid.getMostSignificantBits());
@@ -236,10 +235,10 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         CompoundTag root = new CompoundTag();
         root.putCompound("Data", out);
         try (NbtOutputStream nbtOut = new NbtOutputStream(
-            new FileOutputStream(new File(dir, "level.dat")))) {
+            new FileOutputStream(new File(dir, LEVEL_FILE)))) {
             nbtOut.writeTag(root);
         } catch (IOException e) {
-            handleWorldException("level.dat", e);
+            handleWorldException(LEVEL_FILE, e);
         }
     }
 }

@@ -15,6 +15,12 @@ public interface LocalizedStrings {
                     "console.classpath.load-failed", Level.WARNING
             );
 
+            interface Function {
+                LoggableLocalizedString FILE_READ = new LoggableLocalizedStringImpl(
+                        "console.function.load-failed", Level.SEVERE
+                );
+            }
+
             interface Import {
                 LoggableLocalizedString NO_MESSAGE = new LoggableLocalizedStringImpl(
                         "console.import.failed.no-message", Level.WARNING
@@ -22,6 +28,26 @@ public interface LocalizedStrings {
 
                 LoggableLocalizedString WITH_MESSAGE = new LoggableLocalizedStringImpl(
                         "console.import.failed.with-message", Level.WARNING
+                );
+            }
+
+            interface Io {
+
+                LoggableLocalizedString MKDIR = new LoggableLocalizedStringImpl(
+                        "console.io.mkdir-failed", Level.SEVERE
+                );
+
+                LoggableLocalizedString PLAYER_READ = new LoggableLocalizedStringImpl(
+                        "console.io.player-read-failed", Level.SEVERE);
+
+                LoggableLocalizedString PLAYER_READ_UNKNOWN = new LoggableLocalizedStringImpl(
+                        "console.io.player-read-failed-unknown", Level.SEVERE);
+
+                LoggableLocalizedString PLAYER_WRITE = new LoggableLocalizedStringImpl(
+                        "console.io.player-write-failed", Level.SEVERE);
+
+                LoggableLocalizedString WORLD_READ = new LoggableLocalizedStringImpl(
+                        "console.io.world-read-failed", Level.SEVERE
                 );
             }
 
@@ -66,6 +92,18 @@ public interface LocalizedStrings {
             );
 
             interface Structure {
+                LoggableLocalizedString IO_READ = new LoggableLocalizedStringImpl(
+                        "console.structure.io-read", Level.SEVERE
+                );
+
+                LoggableLocalizedString IO_WRITE = new LoggableLocalizedStringImpl(
+                        "console.structure.io-write", Level.SEVERE
+                );
+
+                LoggableLocalizedString NO_DATA = new LoggableLocalizedStringImpl(
+                        "console.structure.no-data", Level.SEVERE
+                );
+
                 LoggableLocalizedString UNKNOWN_PIECE_TYPE = new LoggableLocalizedStringImpl(
                         "console.structure.unknown-piece-type", Level.SEVERE
                 );
@@ -76,6 +114,7 @@ public interface LocalizedStrings {
                         "console.uuid.interrupted", Level.SEVERE
                 );
             }
+
         }
 
         interface Info {
@@ -220,6 +259,24 @@ public interface LocalizedStrings {
                 );
             }
 
+            interface Io {
+                LoggableLocalizedString JSON_STAT_UNKNOWN = new LoggableLocalizedStringImpl(
+                        "console.io.json.stat-unknown", Level.WARNING
+                );
+
+                LoggableLocalizedString MKDIR_FAILED = new LoggableLocalizedStringImpl(
+                        "console.io.mkdir-failed", Level.WARNING
+                );
+
+                LoggableLocalizedString NO_WORLD_DATA_TAG = new LoggableLocalizedStringImpl(
+                        "console.io.no-world-data-tag", Level.WARNING
+                );
+
+                LoggableLocalizedString REMOVING_SINGLE_PLAYER = new LoggableLocalizedStringImpl(
+                        "console.io.removing-single-player", Level.WARNING
+                );
+            }
+
             LoggableLocalizedString OFFLINE = new LoggableLocalizedStringImpl(
                     "console.offline", Level.WARNING
             );
@@ -316,6 +373,24 @@ public interface LocalizedStrings {
                 LocalizedString UNKNOWN_COMMAND =
                     new LocalizedStringImpl("glowstone.command.error.unknown-command");
             }
+        }
+
+        interface Kick {
+            LocalizedString BANNED = new LocalizedStringImpl("glowstone.kick.banned");
+
+            LocalizedString FILE_READ = new LocalizedStringImpl("glowstone.kick.file-read");
+
+            LocalizedString FILE_WRITE = new LocalizedStringImpl("glowstone.kick.file-write");
+
+            LocalizedString FULL = new LocalizedStringImpl("glowstone.kick.full");
+
+            LocalizedString WHITELIST = new LocalizedStringImpl("glowstone.kick.whitelist");
+        }
+
+        interface Player {
+            LocalizedString JOINED = new LocalizedStringImpl("glowstone.player.joined");
+
+            LocalizedString LEFT = new LocalizedStringImpl("glowstone.player.left");
         }
 
         interface Entity {

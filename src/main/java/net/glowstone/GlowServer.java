@@ -1902,8 +1902,8 @@ public class GlowServer implements Server {
             firstword = firstword.substring(0, firstword.indexOf(' '));
         }
 
-        sender.sendMessage(LocalizedStrings.Glowstone.Command.Error.UNKNOWN_COMMAND.get(
-            ChatColor.GRAY, firstword));
+        LocalizedStrings.Glowstone.Command.Error.UNKNOWN_COMMAND.send(
+                sender, ChatColor.GRAY, firstword);
         return false;
     }
 
