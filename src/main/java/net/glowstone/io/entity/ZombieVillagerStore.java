@@ -30,9 +30,6 @@ public class ZombieVillagerStore extends ZombieStore<GlowZombieVillager> {
                 .map(GlowVillager::getProfessionById)
                 .orElseGet(() -> getRandomProfession(ThreadLocalRandom.current())));
         entity.setConversionTime(compound.tryGetInt("ConversionTime").orElse(-1));
-        if (!compound.readInt("ConversionTime", entity::setConversionTime)) {
-            entity.setConversionTime(-1);
-        }
         compound.readUuid("ConversionPlayerMost", "ConversionPlayerLeast",
                 entity::setConversionPlayer);
     }
