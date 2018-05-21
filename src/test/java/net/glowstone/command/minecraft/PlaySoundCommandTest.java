@@ -31,7 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
-public class PlaySoundCommandTest {
+public class PlaySoundCommandTest extends CommandTest {
 
     private Player fakePlayer1, fakePlayer2, fakePlayer3;
 
@@ -39,14 +39,13 @@ public class PlaySoundCommandTest {
 
     private GlowServer server;
 
-    private CommandSender sender, opSender, opPlayer;
-
-    private Command command;
+    protected CommandSender opSender;
+    protected CommandSender opPlayer;
 
     @Before
     public void before() {
+        super.before();
         command = new PlaySoundCommand();
-        sender = PowerMockito.mock(CommandSender.class);
         opSender = PowerMockito.mock(CommandSender.class);
         opPlayer = PowerMockito.mock(Player.class);
         server = PowerMockito.mock(GlowServer.class);
@@ -87,13 +86,6 @@ public class PlaySoundCommandTest {
 
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
-    }
-
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test

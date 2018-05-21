@@ -15,11 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
-public class SetIdleTimeoutCommandTest {
+public class SetIdleTimeoutCommandTest extends CommandTest {
 
-    private CommandSender sender, opSender;
-
-    private Command command;
+    private CommandSender opSender;
 
     @BeforeEach
     public void before() {
@@ -29,15 +27,6 @@ public class SetIdleTimeoutCommandTest {
 
         Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         ServerProvider.setMockServer(PowerMockito.mock(GlowServer.class));
-    }
-
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        final boolean commandResult = command.execute(sender, "label", new String[0]);
-
-        MatcherAssert.assertThat(commandResult, is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test
