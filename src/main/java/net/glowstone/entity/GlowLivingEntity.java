@@ -834,7 +834,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 active = true;
                 return;
             }
-            List<ItemStack> items;
+            List<ItemStack> items = null;
             boolean dropInventory = !world.getGameRuleMap().getBoolean("keepInventory");
             if (dropInventory) {
                 items = Arrays.stream(player.getInventory().getContents())
