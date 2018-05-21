@@ -103,8 +103,12 @@ public class ItemBow extends ItemTimedUsage {
             if (ThreadLocalRandom.current().nextDouble() < 0.2) {
                 launchedArrow.setCritical(true);
             }
-            // TODO: Is main hand always the correct slot?
-            player.setItemInHand(InventoryUtil.damageItem(player, bow));
+
+            if (player.getItemInHand() == bow) {
+                player.setItemInHand(InventoryUtil.damageItem(player, bow));
+            } else {
+                player.getInventory().setItemInOffHand(InventoryUtil.damageItem(player, bow));
+            }
         }
         player.setUsageItem(null);
         player.setUsageTime(0);
