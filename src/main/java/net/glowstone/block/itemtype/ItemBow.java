@@ -104,8 +104,8 @@ public class ItemBow extends ItemTimedUsage {
                 launchedArrow.setCritical(true);
             }
 
-            if (player.getItemInHand().getType() == Material.BOW) {
-                player.setItemInHand(InventoryUtil.damageItem(player, bow));
+            if (player.getInventory().getItemInMainHand().getType() == Material.BOW) {
+                player.getInventory().setItemInMainHand(InventoryUtil.damageItem(player, bow));
             } else {
                 player.getInventory().setItemInOffHand(InventoryUtil.damageItem(player, bow));
             }

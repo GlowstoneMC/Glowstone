@@ -49,7 +49,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Override
     protected void pulsePhysics() {
         super.pulsePhysics();
-        if (!isOnGround()) {
+        if (!isInBlock()) {
             if (isTouchingMaterial(Material.WATER)
                     || isTouchingMaterial(Material.STATIONARY_WATER)) {
                 setFireTicks(0);
@@ -72,7 +72,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Override
     public void pulse() {
         super.pulse();
-        if (isOnGround() && getLife() >= TICKS_TO_LIVE_ON_GROUND) {
+        if (isInBlock() && getLife() >= TICKS_TO_LIVE_ON_GROUND) {
             remove();
         }
     }
@@ -143,11 +143,17 @@ public class GlowArrow extends GlowProjectile implements Arrow {
         customPickupStatus = pickupStatus;
     }
 
+    @Override
     public Block getAttachedBlock() {
-        if (isOnGround()) {
+        if (isInBlock()) {
             return getLocation().getBlock();
         }
         return null;
+    }
+
+    @Override
+    public boolean isInBlock() {
+        return isOnGround();
     }
 
     @Override
