@@ -3,7 +3,6 @@ package net.glowstone.io.nbt;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.ItemIds;

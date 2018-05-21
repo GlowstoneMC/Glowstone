@@ -1,7 +1,5 @@
 package net.glowstone.io.entity;
 
-import java.util.Optional;
-import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.monster.GlowEnderman;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
