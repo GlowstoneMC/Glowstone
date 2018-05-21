@@ -72,12 +72,11 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             if (type == null || duration < 0) {
                 return;
             }
-            final int[] amplifier = {0};
+            final int amplifier = compound.tryGetInt("Amplifier").orElse(0);
             boolean ambient = compound.getBoolDefaultFalse("Ambient");
-            compound.readInt("Amplifier", x -> amplifier[0] = x);
             // bool "ShowParticles"
 
-            entity.addPotionEffect(new PotionEffect(type, duration, amplifier[0], ambient), true);
+            entity.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
         });
 
         EntityEquipment equip = entity.getEquipment();

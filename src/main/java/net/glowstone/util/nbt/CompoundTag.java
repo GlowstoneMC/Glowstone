@@ -426,6 +426,16 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         return false;
     }
 
+    /**
+     * Returns the value of a long subtag if it is present.
+     *
+     * @param key the key to look up
+     * @return an Optional with the value of that tag if it's present and is a long; an empty
+     *         optional otherwise
+     */
+    public Optional<Long> tryGetLong(String key) {
+        return tryGetTag(key, LongTag.class);
+    }
 
     /**
      * Applies the given function to an integer subtag if it is present.

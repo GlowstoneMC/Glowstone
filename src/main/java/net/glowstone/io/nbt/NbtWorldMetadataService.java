@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.glowstone.GlowWorld;
@@ -80,10 +79,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         }
 
         // seed
-        final long[] seed = {0L};
-        if (level.readLong("RandomSeed", x -> seed[0] = x)) {
-            level.remove("RandomSeed");
-        }
+        final long seed = level.tryGetLong("RandomSeed").orElse(0L);
 
         // time of day and weather status
         if (level.readBoolean("thundering", world::setThundering)) {
@@ -170,7 +166,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         // save unknown tags for later
         unknownTags = level;
 
-        return new WorldFinalValues(seed[0], uid);
+        return new WorldFinalValues(seed, uid);
     }
 
     private void handleWorldException(String file, IOException e) {

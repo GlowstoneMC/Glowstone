@@ -28,9 +28,7 @@ public class MobSpawnerEntity extends BlockEntity {
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
         spawning = tag.tryGetString("EntityId").map(EntityType::fromName).orElse(DEFAULT);
-        if (!tag.readInt("Delay", this::setDelay)) {
-            delay = 0;
-        }
+        delay = tag.tryGetInt("Delay").orElse(0);
     }
 
     @Override
