@@ -88,6 +88,7 @@ public class MesaGroundGenerator extends GroundGenerator {
         }
 
         int chunkX = x;
+        int chunkZ = z;
         x &= 0xF;
         z &= 0xF;
 
@@ -119,8 +120,9 @@ public class MesaGroundGenerator extends GroundGenerator {
                             topMat = colored ? GRASS : COARSE_DIRT;
                             chunkData.setBlock(x, y, z, topMat);
                         } else if (y > seaLevel + 2 + surfaceHeight) {
-                            int color = colorLayer[(y + (int) Math
-                                    .round(colorNoise.noise(chunkX, chunkX, 0.5D, 2.0D) * 2.0D))
+                            int color = colorLayer[
+                                    (y + (int) Math.round(
+                                            colorNoise.noise(chunkX, chunkZ, 0.5D, 2.0D) * 2.0D))
                                     % colorLayer.length];
                             setColoredGroundLayer(chunkData, x, y, z,
                                     y < seaLevel || y > 128 ? 1 : colored ? color : -1);
@@ -136,8 +138,9 @@ public class MesaGroundGenerator extends GroundGenerator {
                     if (groundSet) {
                         chunkData.setBlock(x, y, z, groundMaterial);
                     } else {
-                        int color = colorLayer[(y + (int) Math
-                                .round(colorNoise.noise(chunkX, chunkX, 0.5D, 2.0D) * 2.0D))
+                        int color = colorLayer[
+                                (y + (int) Math.round(
+                                        colorNoise.noise(chunkX, chunkZ, 0.5D, 2.0D) * 2.0D))
                                 % colorLayer.length];
                         setColoredGroundLayer(chunkData, x, y, z, color);
                     }

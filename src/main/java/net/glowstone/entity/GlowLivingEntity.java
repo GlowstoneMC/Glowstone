@@ -827,14 +827,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 player.setHealth(1.0);
                 active = true;
                 return;
-            } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
+            }
+            if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
                 player.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
                 player.setHealth(1.0);
                 active = true;
                 return;
             }
-            List<ItemStack> items = new ArrayList<>();
-            if (!world.getGameRuleMap().getBoolean("keepInventory")) {
+            List<ItemStack> items;
+            boolean dropInventory = !world.getGameRuleMap().getBoolean("keepInventory");
+            if (dropInventory) {
                 items = Arrays.stream(player.getInventory().getContents())
                         .filter(stack -> !InventoryUtil.isEmpty(stack))
                         .collect(Collectors.toList());
@@ -844,8 +846,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     player.getDisplayName() + " died.");
             EventFactory.getInstance().callEvent(event);
             server.broadcastMessage(event.getDeathMessage());
-            for (ItemStack item : items) {
-                world.dropItemNaturally(getLocation(), item);
+            if (dropInventory) {
+                for (ItemStack item : items) {
+                    world.dropItemNaturally(getLocation(), item);
+                }
             }
             player.setShoulderEntityRight(null);
             player.setShoulderEntityLeft(null);

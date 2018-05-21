@@ -138,7 +138,7 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case LEVER:
                     Lever lever = (Lever) target.getState().getData();
                     if (lever.isPowered()) {
-                        updateDataTo15(me);
+                        setFullyPowered(me);
                         return;
                     }
                     break;
@@ -146,27 +146,27 @@ public class BlockRedstone extends BlockNeedsAttached {
                 case WOOD_BUTTON:
                     Button button = (Button) target.getState().getData();
                     if (button.isPowered()) {
-                        updateDataTo15(me);
+                        setFullyPowered(me);
                         return;
                     }
                     break;
                 case DIODE_BLOCK_ON:
                     Diode diode = (Diode) target.getState().getData();
                     if (face == diode.getFacing().getOppositeFace()) {
-                        updateDataTo15(me);
+                        setFullyPowered(me);
                         return;
                     }
                     break;
                 case REDSTONE_BLOCK:
                 case REDSTONE_TORCH_ON:
-                    updateDataTo15(me);
+                    setFullyPowered(me);
                     return;
                 case OBSERVER:
                     boolean powered = BlockObserver.isPowered(target);
                     BlockFace outputFace = BlockObserver.getFace(target).getOppositeFace();
                     if (powered && target.getRelative(outputFace).getLocation()
                         .equals(me.getLocation())) {
-                        updateDataTo15(me);
+                        setFullyPowered(me);
                         return;
                     }
                     break;
@@ -176,7 +176,7 @@ public class BlockRedstone extends BlockNeedsAttached {
                     }
                     if (target.getRelative(BlockFace.DOWN).getType()
                             == Material.REDSTONE_TORCH_ON) {
-                        updateDataTo15(me);
+                        setFullyPowered(me);
                         return;
                     }
                     for (BlockFace face2 : ADJACENT) {
@@ -184,21 +184,21 @@ public class BlockRedstone extends BlockNeedsAttached {
                         if (target2.getType() == Material.DIODE_BLOCK_ON
                             && ((Diode) target2.getState().getData()).getFacing() == target2
                             .getFace(target)) {
-                            updateDataTo15(me);
+                            setFullyPowered(me);
                             return;
                         } else if (target2.getType() == Material.STONE_BUTTON
                             || target2.getType() == Material.WOOD_BUTTON) {
                             Button button2 = (Button) target2.getState().getData();
                             if (button2.isPowered() && button2.getAttachedFace() == target2
                                 .getFace(target)) {
-                                updateDataTo15(me);
+                                setFullyPowered(me);
                                 return;
                             }
                         } else if (target2.getType() == Material.LEVER) {
                             Lever lever2 = (Lever) target2.getState().getData();
                             if (lever2.isPowered() && lever2.getAttachedFace() == target2
                                 .getFace(target)) {
-                                updateDataTo15(me);
+                                setFullyPowered(me);
                                 return;
                             }
                         }
@@ -235,23 +235,25 @@ public class BlockRedstone extends BlockNeedsAttached {
 
         if (power != me.getData()) {
             me.setData(power);
-            extraUpdate(me);
+            updateConnected(me);
             new PulseTask(me, true, 1, true).startPulseTask();
         }
     }
 
     /**
-     * Sets the block data to 15 and calls {@link #extraUpdate(GlowBlock)} if it wasn't already 15.
-     * @param me the block to update
+     * Sets a redstone dust block to the fully-powered state and, if it wasn't already in that
+     * state, updates connected blocks so that power propagates.
+     *
+     * @param block the block to update
      */
-    protected void updateDataTo15(GlowBlock me) {
-        if (me.getData() != 15) {
-            me.setData((byte) 15);
-            extraUpdate(me);
+    protected static void setFullyPowered(GlowBlock block) {
+        if (block.getData() != 15) {
+            block.setData((byte) 15);
+            updateConnected(block);
         }
     }
 
-    private void extraUpdate(GlowBlock block) {
+    private static void updateConnected(GlowBlock block) {
         ItemTable itemTable = ItemTable.instance();
         for (BlockFace face : calculateConnections(block)) {
             GlowBlock target = block.getRelative(face);
