@@ -203,13 +203,14 @@ public class ClearCommand extends VanillaCommand {
                             + " items that match the criteria");
                         return true;
                     } else {
-                        for (int i = 0; i < stack.getAmount(); i++) {
-                            if (remaining > 0) {
-                                stack.setAmount(stack.getAmount() - 1);
-                                remaining--;
-                            }
-                        }
+                        int oldAmount = stack.getAmount();
+                        int removed = Math.min(oldAmount, remaining);
+                        stack.setAmount(oldAmount - removed);
+                        remaining -= removed;
                     }
+                }
+                if (remaining == 0) {
+                    break;
                 }
             }
         }
