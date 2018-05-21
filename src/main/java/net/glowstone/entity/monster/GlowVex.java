@@ -3,6 +3,7 @@ package net.glowstone.entity.monster;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -22,7 +23,7 @@ public class GlowVex extends GlowMonster implements Vex {
     public GlowVex(Location loc) {
         super(loc, EntityType.VEX, 14);
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        lifeTicks = (random.nextInt(75) + 33) * 20;
+        lifeTicks = TickUtil.secondsToTicks((random.nextInt(75) + 33));
         setBoundingBox(0.4, 0.8);
     }
 

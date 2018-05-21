@@ -9,6 +9,7 @@ import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -78,10 +79,10 @@ public class EffectCommand extends VanillaCommand {
                 return false;
             }
 
-            int duration = 30 * 20;
+            int duration = TickUtil.secondsToTicks(30);
             if (args.length >= 3 && args[2] != null) {
                 try {
-                    duration = Integer.parseInt(args[2]) * 20;
+                    duration = TickUtil.secondsToTicks(Integer.parseInt(args[2]));
                 } catch (NumberFormatException exc) {
                     sender.sendMessage(ChatColor.RED + args[2] + " is not a valid integer");
                     return false;

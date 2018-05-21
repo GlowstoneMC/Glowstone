@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.util.TickUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
@@ -67,7 +68,7 @@ public class WeatherCommand extends VanillaCommand {
             sender.sendMessage("Changing to rain and thunder");
         }
         if (duration != null) {
-            world.setWeatherDuration(duration * 20);
+            world.setWeatherDuration(TickUtil.secondsToTicks(duration));
         }
         return true;
     }

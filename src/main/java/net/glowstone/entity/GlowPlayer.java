@@ -117,6 +117,7 @@ import net.glowstone.util.Convert;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
 import net.glowstone.util.TextMessage;
+import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -3087,7 +3088,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setPlayerTime(long time, boolean relative) {
-        timeOffset = (time % GlowWorld.DAY_LENGTH + GlowWorld.DAY_LENGTH) % GlowWorld.DAY_LENGTH;
+        timeOffset = (time % TickUtil.TICKS_PER_DAY + TickUtil.TICKS_PER_DAY)
+                % TickUtil.TICKS_PER_DAY;
         playerTimeRelative = relative;
         sendTime();
     }
@@ -3096,7 +3098,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     public long getPlayerTime() {
         if (playerTimeRelative) {
             // add timeOffset ticks to current time
-            return (world.getTime() + timeOffset) % GlowWorld.DAY_LENGTH;
+            return (world.getTime() + timeOffset) % TickUtil.TICKS_PER_DAY;
         } else {
             // return time offset
             return timeOffset;

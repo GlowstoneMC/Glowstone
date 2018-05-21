@@ -639,7 +639,7 @@ public class GlowServer implements Server {
 
         if (getProxySupport()) {
             if (getOnlineMode()) {
-                logger.warning("console.info.proxy.online");
+                LocalizedStrings.Console.Info.Proxy.ONLINE.log();
             } else {
                 LocalizedStrings.Console.Info.PROXY.log();
             }

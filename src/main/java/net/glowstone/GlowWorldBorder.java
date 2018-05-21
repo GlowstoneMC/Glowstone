@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.WorldBorderMessage;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
@@ -122,7 +123,7 @@ public class GlowWorldBorder implements WorldBorder {
             setSize(size);
             return;
         }
-        long ticks = seconds * 20;
+        long ticks = TickUtil.secondsToTicks(seconds);
         step = (size - this.size) / (double) ticks;
         sizeLerpTarget = size;
         sizeLerpTime = seconds;
