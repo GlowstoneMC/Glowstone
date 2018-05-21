@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.glowstone.GlowWorld;
@@ -66,14 +67,13 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         File levelFile = new File(dir, "level.dat");
         if (levelFile.exists()) {
             try (NbtInputStream in = new NbtInputStream(new FileInputStream(levelFile))) {
-                level = in.readCompound();
-                CompoundTag data = level.tryGetCompound("Data");
-                if (data != null) {
-                    level = data;
-                } else {
+                CompoundTag levelOuter = in.readCompound();
+                level = levelOuter.tryGetCompound("Data").orElseGet(() -> {
                     server.getLogger().warning(
-                        "Loading world \"" + world.getName() + "\": reading from root, not Data");
-                }
+                            "Loading world \"" + world.getName()
+                                    + "\": reading from root, not Data");
+                    return levelOuter;
+                });
             } catch (IOException e) {
                 handleWorldException("level.dat", e);
             }

@@ -1,5 +1,6 @@
 package net.glowstone.block.entity;
 
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -25,15 +26,9 @@ public class FlowerPotEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        final Material[] item = {null};
-        // NBT data uses material ID names (post-1.8).
-        if (!tag.readString("Item", itemString -> item[0] = ItemIds.getItem(itemString))) {
-            // NBT data uses material IDs (pre-1.8).
-            tag.readInt("Item", itemInt -> item[0] = Material.getMaterial(itemInt));
-        }
-        if (item[0] != null) {
-            tag.readInt("Data", data -> this.contents = item[0].getNewData((byte) data));
-        }
+        tag.tryGetMaterial("Item").ifPresent(
+            item -> this.contents = item.getNewData(
+                    (byte) (int) (tag.tryGetInt("Data").orElse(0))));
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.glowstone.io.nbt;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.constants.ItemIds;
@@ -124,24 +125,22 @@ public final class NbtSerialization {
      * @return The world, or null if none could be found.
      */
     public static World readWorld(GlowServer server, CompoundTag compound) {
-        final World[] world = {null};
-        compound.readUuid("WorldUUIDMost", "WorldUUIDLeast",
-            uuid -> world[0] = server.getWorld(uuid));
-        if (world[0] == null) {
-            compound.readString("World", name -> world[0] = server.getWorld(name));
+        World world = compound
+                .tryGetUuid("WorldUUIDMost", "WorldUUIDLeast")
+                .map(server::getWorld)
+                .orElseGet(() -> compound.tryGetString("World")
+                .map(server::getWorld)
+                .orElse(null));
+        if (world == null) {
+            world = compound
+                    .tryGetInt("Dimension")
+                    .map(World.Environment::getEnvironment)
+                    .flatMap(env -> server.getWorlds().stream()
+                            .filter(serverWorld -> env == serverWorld.getEnvironment())
+                            .findFirst())
+                    .orElse(null);
         }
-        if (world[0] == null) {
-            compound.readInt("Dimension", dim -> {
-                // FIXME: Linear time
-                for (World serverWorld : server.getWorlds()) {
-                    if (serverWorld.getEnvironment().getId() == dim) {
-                        world[0] = serverWorld;
-                        break;
-                    }
-                }
-            });
-        }
-        return world[0];
+        return world;
     }
 
     /**

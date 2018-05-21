@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import net.glowstone.entity.AttributeManager;
 import net.glowstone.entity.AttributeManager.Modifier;
@@ -106,17 +107,9 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             });
             am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
         });
-        CompoundTag leash = compound.tryGetCompound("Leash");
-        if (leash == null) {
-            compound.readBoolean("Leashed", leashSet -> {
-                if (leashSet) {
-                    // We know that there was something leashed, but not what entity it was
-                    // This can happen, when for example Minecart got leashed
-                    // We still have to make sure that we drop a Leash Item
-                    entity.setLeashHolderUniqueId(UUID.randomUUID());
-                }
-            });
-        } else {
+        Optional<CompoundTag> maybeLeash = compound.tryGetCompound("Leash");
+        if (maybeLeash.isPresent()) {
+            CompoundTag leash = maybeLeash.get();
             if (!leash.readUuid("UUIDMost", "UUIDLeast", entity::setLeashHolderUniqueId)
                     && leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
@@ -127,6 +120,15 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                         .getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
                 entity.setLeashHolder(leashHitch);
             }
+        } else {
+            compound.readBoolean("Leashed", leashSet -> {
+                if (leashSet) {
+                    // We know that there was something leashed, but not what entity it was
+                    // This can happen, when for example Minecart got leashed
+                    // We still have to make sure that we drop a Leash Item
+                    entity.setLeashHolderUniqueId(UUID.randomUUID());
+                }
+            });
         }
     }
 

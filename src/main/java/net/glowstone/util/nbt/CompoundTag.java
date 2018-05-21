@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
@@ -17,11 +18,14 @@ import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import net.glowstone.constants.ItemIds;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
 import net.glowstone.util.FloatConsumer;
 import net.glowstone.util.ShortConsumer;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -300,15 +304,13 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * or isn't compound.
      *
      * @param key the key to look up
-     * @return the tag value
+     * @return the tag value, or an empty optional if the tag doesn't exist or isn't compound
      */
-    @Nullable
-    public CompoundTag tryGetCompound(String key) {
-        CompoundTag tag = this;
-        if (tag.isCompound(key)) {
-            return tag.getCompound(key);
+    public Optional<CompoundTag> tryGetCompound(String key) {
+        if (isCompound(key)) {
+            return Optional.of(getCompound(key));
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -320,13 +322,9 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
     public boolean readCompound(String key, Consumer<? super CompoundTag> consumer) {
-        CompoundTag tag = tryGetCompound(key);
-        if (tag != null) {
-            consumer.accept(tag);
-            return true;
-        } else {
-            return false;
-        }
+        Optional<CompoundTag> tag = tryGetCompound(key);
+        tag.ifPresent(consumer);
+        return tag.isPresent();
     }
 
     private <V, T extends Tag<V>> boolean readTag(String key, Class<T> clazz,
@@ -336,6 +334,10 @@ public class CompoundTag extends Tag<Map<String, Tag>>
             return true;
         }
         return false;
+    }
+
+    private <T> Optional<T> tryGetTag(String key, Class<? extends Tag<T>> clazz) {
+        return is(key, clazz) ? Optional.of(get(key, clazz)) : Optional.empty();
     }
 
     /**
@@ -589,6 +591,66 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     }
 
     /**
+     * Reads a material from a name or ID, depending on the tag type. Returns null if the tag isn't
+     * present or is a list or compound tag.
+     *
+     * @param key the key to look up
+     * @return the Material denoted by that key, if present and readable; null otherwise
+     */
+    public Optional<Material> tryGetMaterial(String key) {
+        if (!containsKey(key)) {
+            return Optional.empty();
+        }
+        switch (value.get(key).getType()) {
+            case STRING:
+                String id = getString(key);
+                if (id.isEmpty()) {
+                    return Optional.empty();
+                }
+                if (!id.contains(":")) {
+                    // There is no namespace, so prepend the default minecraft: namespace
+                    id = "minecraft:" + id;
+                }
+                Material type = ItemIds.getBlock(id);
+                if (type == null) {
+                    // Not a block, might be an item
+                    type = ItemIds.getItem(id);
+                }
+                return Optional.ofNullable(type);
+            case INT:
+                return Optional.ofNullable(Material.getMaterial(getInt(key)));
+            case SHORT:
+                return Optional.ofNullable(Material.getMaterial(getShort(key)));
+            case BYTE:
+                return Optional.ofNullable(Material.getMaterial(getByte(key)));
+            default:
+                return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns the value of a string subtag if it is present.
+     *
+     * @param key the key to look up
+     * @return an Optional with the value of that tag if it's present and is a string; an empty
+     *         optional otherwise
+     */
+    public Optional<String> tryGetString(String key) {
+        return tryGetTag(key, StringTag.class);
+    }
+
+    /**
+     * Returns the value of an int subtag if it is present.
+     *
+     * @param key the key to look up
+     * @return an Optional with the value of that tag if it's present and is an int; an empty
+     *         optional otherwise
+     */
+    public Optional<Integer> tryGetInt(String key) {
+        return tryGetTag(key, IntTag.class);
+    }
+
+    /**
      * Applies the given function to a UUID extracted from the given pair of long subtags, if they
      * both exist.
      *
@@ -603,6 +665,13 @@ public class CompoundTag extends Tag<Map<String, Tag>>
             return true;
         }
         return false;
+    }
+
+    public Optional<UUID> tryGetUuid(String keyMost, String keyLeast) {
+        if (isLong(keyMost) && isLong(keyLeast)) {
+            return Optional.of(new UUID(getLong(keyMost), getLong(keyLeast)));
+        }
+        return Optional.empty();
     }
 
     /**

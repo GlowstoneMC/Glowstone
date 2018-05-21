@@ -75,8 +75,8 @@ public class NbtStructureDataService implements StructureDataService {
     public void writeStructuresData(Map<Integer, GlowStructure> structures) {
         for (GlowStructure structure : structures.values()) {
             if (structure.isDirty()) {
-                CompoundTag data = null;
-                CompoundTag features = new CompoundTag();
+                CompoundTag data;
+                CompoundTag features;
                 CompoundTag feature = new CompoundTag();
                 CompoundTag inputRoot;
                 StructureStore<GlowStructure> store = StructureStorage
@@ -86,20 +86,16 @@ public class NbtStructureDataService implements StructureDataService {
                     try (NbtInputStream in = new NbtInputStream(
                             new FileInputStream(structureFile))) {
                         inputRoot = in.readCompound();
-                        data = inputRoot.tryGetCompound("data");
-                        if (data != null) {
-                            CompoundTag maybeFeatures = data.tryGetCompound("Features");
-                            if (maybeFeatures != null) {
-                                features = maybeFeatures;
-                            }
-                        }
+                        data = inputRoot.tryGetCompound("data").orElseGet(CompoundTag::new);
                     } catch (IOException e) {
                         server.getLogger().log(Level.SEVERE,
                             "Failed to read structure data from " + structureFile, e);
+                        data = new CompoundTag();
                     }
-                }
-                if (data == null) {
+                    features = data.tryGetCompound("Features").orElseGet(CompoundTag::new);
+                } else {
                     data = new CompoundTag();
+                    features = new CompoundTag();
                 }
                 String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);

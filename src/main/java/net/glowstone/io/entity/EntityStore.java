@@ -2,6 +2,7 @@ package net.glowstone.io.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 import lombok.Data;
@@ -84,9 +85,10 @@ public abstract class EntityStore<T extends GlowEntity> {
             entity.getCustomTags().addAll(list);
         });
         tag.readInt("PortalCooldown", entity::setPortalCooldown);
-        if (!tag.readUuid("UUIDMost", "UUIDLeast", entity::setUniqueId)) {
-            tag.readString("UUID", uuidString -> entity.setUniqueId(UUID.fromString(uuidString)));
-        }
+        Optional.ofNullable(
+                tag.tryGetUuid("UUIDMost", "UUIDLeast")
+                .orElseGet(() -> tag.tryGetString("UUID").map(UUID::fromString).orElse(null)))
+                .ifPresent(entity::setUniqueId);
         tag.iterateCompoundList("Passengers", entityTag -> {
             Entity passenger = loadPassenger(entity, entityTag);
             if (passenger != null) {

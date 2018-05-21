@@ -1,5 +1,6 @@
 package net.glowstone.io.entity;
 
+import java.util.Optional;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.monster.GlowEnderman;
 import net.glowstone.util.nbt.CompoundTag;
@@ -16,36 +17,14 @@ class EndermanStore extends MonsterStore<GlowEnderman> {
     @Override
     public void load(GlowEnderman entity, CompoundTag compound) {
         super.load(entity, compound);
-        final MaterialData[] carried = {null};
         // Load carried block. May be saved as a String or short ID.
         // If the id is 0 or AIR, it is ignored.
-        if (!compound.readShort("carried", id -> {
-            Material type = Material.getMaterial(id);
-            if (type != null && type != Material.AIR) {
-                carried[0] = new MaterialData(type);
-            }
-        })) {
-            compound.readString("carried", id -> {
-                if (!id.isEmpty()) {
-                    if (!id.contains(":")) {
-                        // There is no namespace, so prepend the default minecraft: namespace
-                        id = "minecraft:" + id;
-                    }
-                    Material type = ItemIds.getBlock(id);
-                    if (type == null) {
-                        // Not a block, might be an item
-                        type = ItemIds.getItem(id);
-                    }
-                    if (type != null && type != Material.AIR) {
-                        carried[0] = new MaterialData(type);
-                    }
-                }
-            });
-        }
-        if (carried[0] != null) {
-            compound.readShort("carriedData", data -> carried[0].setData((byte) data));
-            entity.setCarriedMaterial(carried[0]);
-        }
+        compound.tryGetMaterial("carried")
+                .map(MaterialData::new)
+                .ifPresent(carried -> {
+                    compound.readShort("carriedData", data -> carried.setData((byte) data));
+                    entity.setCarriedMaterial(carried);
+                });
     }
 
     @Override

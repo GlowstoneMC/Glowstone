@@ -29,15 +29,14 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
         tag.readBooleanNegated("NoGravity", entity::setGravity);
         tag.readBoolean("ShowArms", entity::setArms);
         tag.readBoolean("Small", entity::setSmall);
-        CompoundTag pose = tag.tryGetCompound("Pose");
-        if (pose != null) {
+        tag.tryGetCompound("Pose").ifPresent(pose -> {
             entity.setBodyPose(readSafeAngle(pose, "Body"));
             entity.setLeftArmPose(readSafeAngle(pose, "LeftArm"));
             entity.setRightArmPose(readSafeAngle(pose, "RightArm"));
             entity.setLeftLegPose(readSafeAngle(pose, "LeftLeg"));
             entity.setRightLegPose(readSafeAngle(pose, "RightLeg"));
             entity.setHeadPose(readSafeAngle(pose, "Head"));
-        }
+        });
     }
 
     @Override
