@@ -26,7 +26,7 @@ class SheepStore extends AgeableStore<GlowSheep> {
         if (!compound.readByte(COLOR_KEY, color -> entity.setColor(DyeColor.values()[color]))) {
             entity.setColor(DyeColor.WHITE);
         }
-        entity.setSheared(compound.getBoolDefaultFalse(SHEARED_KEY));
+        entity.setSheared(compound.getBoolean(SHEARED_KEY, false));
     }
 
     @Override

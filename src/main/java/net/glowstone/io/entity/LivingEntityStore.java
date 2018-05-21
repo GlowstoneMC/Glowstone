@@ -73,7 +73,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                 return;
             }
             final int amplifier = compound.tryGetInt("Amplifier").orElse(0);
-            boolean ambient = compound.getBoolDefaultFalse("Ambient");
+            boolean ambient = compound.getBoolean("Ambient", false);
             // bool "ShowParticles"
 
             entity.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);

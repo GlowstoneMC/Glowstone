@@ -138,13 +138,6 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     ////////////////////////////////////////////////////////////////////////////
     // Simple gets
 
-    public boolean getBoolDefaultFalse(String key) {
-        return isByte(key) && getByte(key) != 0;
-    }
-
-    public boolean getBoolDefaultTrue(String key) {
-        return !isByte(key) || getByte(key) != 0;
-    }
 
     /**
      * Returns the value of a {@code byte} subtag.
@@ -192,6 +185,18 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     @Override
     public boolean getBoolean(String key) {
         return getByte(key) != 0;
+    }
+
+
+    /**
+     * Returns the boolean value of a {@code byte} subtag if present, or a default otherwise.
+     *
+     * @param key the key to look up
+     * @param defaultValue the value to return if the subtag is missing
+     * @return the tag value as a boolean, or defaultValue if it's not a byte
+     */
+    public boolean getBoolean(String key, boolean defaultValue) {
+        return isByte(key) ? getBoolean(key) : defaultValue;
     }
 
     /**

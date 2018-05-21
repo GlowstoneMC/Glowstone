@@ -88,7 +88,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // initialize the chunk
         chunk.initializeSections(sections);
-        chunk.setPopulated(levelTag.getBoolDefaultFalse("TerrainPopulated"));
+        chunk.setPopulated(levelTag.getBoolean("TerrainPopulated", false));
 
         // read biomes
         levelTag.readByteArray("Biomes", chunk::setBiomes);

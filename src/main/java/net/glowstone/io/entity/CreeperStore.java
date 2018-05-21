@@ -16,7 +16,7 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
         compound.readBoolean("powered", entity::setPowered);
         entity.setExplosionRadius(compound.tryGetInt("ExplosionRadius").orElse(3));
         entity.setMaxFuseTicks(compound.tryGetInt("Fuse").orElse(30));
-        entity.setIgnited(compound.getBoolDefaultFalse("ignited"));
+        entity.setIgnited(compound.getBoolean("ignited", false));
     }
 
     @Override

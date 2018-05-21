@@ -47,8 +47,8 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
 
         type = Type.values()[explosion.getByte("Type")];
 
-        boolean flicker = explosion.getBoolDefaultFalse("Flicker");
-        boolean trail = explosion.getBoolDefaultFalse("Trail");
+        boolean flicker = explosion.getBoolean("Flicker", false);
+        boolean trail = explosion.getBoolean("Trail", false);
 
         explosion.readIntArray("FadeColors", fadeInts -> {
             for (int fade : fadeInts) {
