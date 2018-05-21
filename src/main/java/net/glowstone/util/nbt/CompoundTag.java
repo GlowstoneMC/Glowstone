@@ -682,6 +682,13 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         return false;
     }
 
+    /**
+     * Returns a UUID extracted from the given pair of long subtags, if they both exist.
+     *
+     * @param keyMost the key to look up the high word of the UUID
+     * @param keyLeast the key to look up the low word of the UUID
+     * @return the UUID, or an empty Optional if either tag is missing or not long type
+     */
     public Optional<UUID> tryGetUuid(String keyMost, String keyLeast) {
         if (isLong(keyMost) && isLong(keyLeast)) {
             return Optional.of(new UUID(getLong(keyMost), getLong(keyLeast)));
