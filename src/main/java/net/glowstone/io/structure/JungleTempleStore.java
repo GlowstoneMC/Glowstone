@@ -17,19 +17,10 @@ public class JungleTempleStore extends TemplePieceStore<GlowJungleTemple> {
     @Override
     public void load(GlowJungleTemple structurePiece, CompoundTag compound) {
         super.load(structurePiece, compound);
-
-        if (compound.isByte("placedTrap1")) {
-            structurePiece.setHasPlacedTrap1(compound.getByte("placedTrap1") != 0);
-        }
-        if (compound.isByte("placedTrap2")) {
-            structurePiece.setHasPlacedTrap2(compound.getByte("placedTrap2") != 0);
-        }
-        if (compound.isByte("placedMainChest")) {
-            structurePiece.setHasPlacedMainChest(compound.getByte("placedMainChest") != 0);
-        }
-        if (compound.isByte("placedHiddenChest")) {
-            structurePiece.setHasPlacedHiddenChest(compound.getByte("placedHiddenChest") != 0);
-        }
+        compound.readBoolean("placedTrap1", structurePiece::setHasPlacedTrap1);
+        compound.readBoolean("placedTrap2", structurePiece::setHasPlacedTrap2);
+        compound.readBoolean("placedMainChest", structurePiece::setHasPlacedMainChest);
+        compound.readBoolean("placedHiddenChest", structurePiece::setHasPlacedHiddenChest);
     }
 
     @Override

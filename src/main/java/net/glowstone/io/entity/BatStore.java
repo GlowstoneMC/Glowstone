@@ -19,12 +19,7 @@ class BatStore extends LivingEntityStore<GlowBat> {
     @Override
     public void load(GlowBat entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte("BatFlags")) {
-            entity.setAwake(compound.getBool("BatFlags"));
-        } else {
-            entity.setAwake(true);
-        }
-
+        entity.setAwake(compound.getBoolean("BatFlags", true));
     }
 
     @Override

@@ -23,17 +23,10 @@ class SheepStore extends AgeableStore<GlowSheep> {
     @Override
     public void load(GlowSheep entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte(COLOR_KEY)) {
-            entity.setColor(DyeColor.values()[compound.getByte(COLOR_KEY)]);
-        } else {
+        if (!compound.readByte(COLOR_KEY, color -> entity.setColor(DyeColor.values()[color]))) {
             entity.setColor(DyeColor.WHITE);
         }
-
-        if (compound.isByte(SHEARED_KEY)) {
-            entity.setSheared(compound.getBool(SHEARED_KEY));
-        } else {
-            entity.setSheared(false);
-        }
+        entity.setSheared(compound.getBoolean(SHEARED_KEY, false));
     }
 
     @Override

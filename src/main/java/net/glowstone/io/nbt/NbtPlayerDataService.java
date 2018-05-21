@@ -175,37 +175,26 @@ public class NbtPlayerDataService implements PlayerDataService {
         @Override
         public long getFirstPlayed() {
             checkOpen();
-            if (tag.isCompound("bukkit")) {
-                CompoundTag bukkit = tag.getCompound("bukkit");
-                if (bukkit.isLong("firstPlayed")) {
-                    return bukkit.getLong("firstPlayed");
-                }
-            }
-            return 0;
+            long[] out = {0};
+            tag.readCompound("bukkit", bukkit -> bukkit.readLong("firstPlayed", x -> out[0] = x));
+            return out[0];
         }
 
         @Override
         public long getLastPlayed() {
             checkOpen();
-            if (tag.isCompound("bukkit")) {
-                CompoundTag bukkit = tag.getCompound("bukkit");
-                if (bukkit.isLong("lastPlayed")) {
-                    return bukkit.getLong("lastPlayed");
-                }
-            }
-            return 0;
+            long[] out = {0};
+            tag.readCompound("bukkit", bukkit -> bukkit.readLong("lastPlayed", x -> out[0] = x));
+            return out[0];
         }
 
         @Override
         public String getLastKnownName() {
             checkOpen();
-            if (tag.isCompound("bukkit")) {
-                CompoundTag bukkit = tag.getCompound("bukkit");
-                if (bukkit.isString("lastKnownName")) {
-                    return bukkit.getString("lastKnownName");
-                }
-            }
-            return null;
+            String[] out = {null};
+            tag.readCompound("bukkit",
+                bukkit -> bukkit.readString("lastKnownName", x -> out[0] = x));
+            return out[0];
         }
 
         @Override

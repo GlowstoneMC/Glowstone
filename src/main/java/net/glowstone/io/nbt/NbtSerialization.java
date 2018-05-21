@@ -9,7 +9,6 @@ import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -35,24 +34,24 @@ public final class NbtSerialization {
      * @return The resulting ItemStack, or null.
      */
     public static ItemStack readItem(CompoundTag tag) {
-        Material material;
-        if (tag.isString("id")) {
-            material = ItemIds.getItem(tag.getString("id"));
-        } else if (tag.isShort("id")) {
-            material = Material.getMaterial(tag.getShort("id"));
-        } else {
+        final Material[] material = {null};
+        if ((!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
+                        && !tag.readShort("id", id -> material[0] = Material.getMaterial(id)))
+                || material[0] == null || material[0] == Material.AIR) {
             return null;
         }
-        short damage = tag.isShort("Damage") ? tag.getShort("Damage") : 0;
-        byte count = tag.isByte("Count") ? tag.getByte("Count") : 0;
-
-        if (material == null || material == Material.AIR || count == 0) {
+        final byte[] count = {0};
+        tag.readByte("Count", x -> count[0] = x);
+        if (count[0] == 0) {
             return null;
         }
-        ItemStack stack = new ItemStack(material, count, damage);
-        if (tag.isCompound("tag")) {
-            stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag.getCompound("tag")));
-        }
+        final short[] damage = {0};
+        tag.readShort("Damage", x -> damage[0] = x);
+        ItemStack stack = new ItemStack(material[0], count[0], damage[0]);
+        // This is slightly different than what tag.readItem would do, since we specify the
+        // material separately.
+        tag.readCompound("tag",
+            subtag -> stack.setItemMeta(GlowItemFactory.instance().readNbt(material[0], subtag)));
         return stack;
     }
 
@@ -92,13 +91,11 @@ public final class NbtSerialization {
     public static ItemStack[] readInventory(List<CompoundTag> tagList, int start, int size) {
         ItemStack[] items = new ItemStack[size];
         for (CompoundTag tag : tagList) {
-            if (!tag.isByte("Slot")) {
-                continue;
-            }
-            byte slot = tag.getByte("Slot");
-            if (slot >= start && slot < start + size) {
-                items[slot - start] = readItem(tag);
-            }
+            tag.readByte("Slot", slot -> {
+                if (slot >= start && slot < start + size) {
+                    items[slot - start] = readItem(tag);
+                }
+            });
         }
         return items;
     }
@@ -129,23 +126,20 @@ public final class NbtSerialization {
      * @return The world, or null if none could be found.
      */
     public static World readWorld(GlowServer server, CompoundTag compound) {
-        World world = null;
-        if (compound.isLong("WorldUUIDLeast") && compound.isLong("WorldUUIDMost")) {
-            long uuidLeast = compound.getLong("WorldUUIDLeast");
-            long uuidMost = compound.getLong("WorldUUIDMost");
-            world = server.getWorld(new UUID(uuidMost, uuidLeast));
-        }
-        if (world == null && compound.isString("World")) {
-            world = server.getWorld(compound.getString("World"));
-        }
-        if (world == null && compound.isInt("Dimension")) {
-            int dim = compound.getInt("Dimension");
-            for (World serverWorld : server.getWorlds()) {
-                if (serverWorld.getEnvironment().getId() == dim) {
-                    world = serverWorld;
-                    break;
-                }
-            }
+        World world = compound
+                .tryGetUuid("WorldUUIDMost", "WorldUUIDLeast")
+                .map(server::getWorld)
+                .orElseGet(() -> compound.tryGetString("World")
+                .map(server::getWorld)
+                .orElse(null));
+        if (world == null) {
+            world = compound
+                    .tryGetInt("Dimension")
+                    .map(World.Environment::getEnvironment)
+                    .flatMap(env -> server.getWorlds().stream()
+                            .filter(serverWorld -> env == serverWorld.getEnvironment())
+                            .findFirst())
+                    .orElse(null);
         }
         return world;
     }
@@ -179,25 +173,24 @@ public final class NbtSerialization {
      */
     public static Location listTagsToLocation(World world, CompoundTag tag) {
         // check for position list
-        if (tag.isList("Pos", TagType.DOUBLE)) {
-            List<Double> pos = tag.getList("Pos", TagType.DOUBLE);
+        final Location[] out = {null};
+        tag.readDoubleList("Pos", pos -> {
             if (pos.size() == 3) {
                 Location location = new Location(world, pos.get(0), pos.get(1), pos.get(2));
 
                 // check for rotation
-                if (tag.isList("Rotation", TagType.FLOAT)) {
-                    List<Float> rot = tag.getList("Rotation", TagType.FLOAT);
+                tag.readFloatList("Rotation", rot -> {
                     if (rot.size() == 2) {
                         location.setYaw(rot.get(0));
                         location.setPitch(rot.get(1));
                     }
-                }
+                });
 
-                return location;
+                out[0] = location;
             }
-        }
+        });
 
-        return null;
+        return out[0];
     }
 
     /**

@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -87,21 +86,16 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
-        Map<Enchantment, Integer> result = null;
-
-        if (tag.isList(name, TagType.COMPOUND)) {
-            Iterable<CompoundTag> enchs = tag.getCompoundList(name);
-            for (CompoundTag enchantmentTag : enchs) {
-                if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
-                    Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
-                    if (result == null) {
-                        result = new HashMap<>(4);
-                    }
-                    result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
-                }
+        Map<Enchantment, Integer> result = new HashMap<>(4);
+        tag.iterateCompoundList(name, enchantmentTag -> {
+            if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
+                Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
+                result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
             }
+        });
+        if (result.isEmpty()) {
+            return null;
         }
-
         return result;
     }
 
@@ -182,15 +176,10 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     void readNbt(CompoundTag tag) {
-        if (tag.isCompound("display")) {
-            CompoundTag display = tag.getCompound("display");
-            if (display.isString("Name")) {
-                setDisplayName(display.getString("Name"));
-            }
-            if (display.isList("Lore", TagType.STRING)) {
-                setLore(display.getList("Lore", TagType.STRING));
-            }
-        }
+        tag.readCompound("display", display -> {
+            display.readString("Name", this::setDisplayName);
+            display.readStringList("Lore", this::setLore);
+        });
 
         //TODO currently ignoring level restriction, is that right?
         Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
@@ -201,13 +190,8 @@ public class GlowMetaItem implements ItemMeta {
                 enchants.putAll(tagEnchants);
             }
         }
-
-        if (tag.isInt("HideFlags")) {
-            hideFlag = tag.getInt("HideFlags");
-        }
-        if (tag.isByte("Unbreakable")) {
-            unbreakable = tag.getBool("Unbreakable");
-        }
+        tag.readInt("HideFlags", flags -> hideFlag = flags);
+        tag.readBoolean("Unbreakable", this::setUnbreakable);
     }
 
     @Override

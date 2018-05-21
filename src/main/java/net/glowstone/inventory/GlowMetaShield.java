@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -36,13 +35,9 @@ public class GlowMetaShield extends GlowMetaBanner {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isList("Patterns", TagType.COMPOUND)) {
-            List<CompoundTag> patterns = tag.getCompoundList("Patterns");
-            this.patterns = BlockBanner.fromNbt(patterns);
-        }
-        if (tag.isInt("Base")) {
-            this.baseColor = DyeColor.getByWoolData((byte) tag.getInt("Base"));
-        }
+        tag.readCompoundList("Patterns", patterns -> this.patterns = BlockBanner.fromNbt(patterns)
+        );
+        tag.readInt("Base", color -> this.baseColor = DyeColor.getByWoolData((byte) color));
     }
 
     @Override

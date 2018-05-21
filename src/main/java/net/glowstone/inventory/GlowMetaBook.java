@@ -8,7 +8,6 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -105,19 +104,13 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isString("author")) {
-            author = tag.getString("author");
-        }
-        if (tag.isString("title")) {
-            title = tag.getString("title");
-        }
-        if (tag.isList("pages", TagType.STRING)) {
-            pages = tag.getList("pages", TagType.STRING);
+        tag.readString("author", this::setAuthor);
+        tag.readString("title", this::setTitle);
+        tag.readStringList("pages", pages -> {
+            this.pages = pages;
             filterPages();
-        }
-        if (tag.isInt("generation")) {
-            generation = tag.getInt("generation");
-        }
+        });
+        tag.readInt("generation", x -> generation = x);
     }
 
     ////////////////////////////////////////////////////////////////////////////

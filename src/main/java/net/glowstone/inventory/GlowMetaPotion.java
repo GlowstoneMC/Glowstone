@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -55,8 +54,8 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
         int duration = tag.getInt("Duration");
         int amplifier = tag.getByte("Amplifier");
-        boolean ambient = tag.isByte("Ambient") && tag.getBool("Ambient");
-        boolean particles = !tag.isByte("ShowParticles") || tag.getBool("ShowParticles");
+        boolean ambient = tag.getBoolean("Ambient", false);
+        boolean particles = tag.getBoolean("ShowParticles", true);
 
         return new PotionEffect(type, duration, amplifier, ambient, particles);
     }
@@ -120,19 +119,10 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-
-        if (tag.isList("CustomEffects", TagType.COMPOUND)) {
-            List<CompoundTag> customEffects = tag.getCompoundList("CustomEffects");
-            for (CompoundTag effect : customEffects) {
-                addCustomEffect(fromNbt(effect), true);
-            }
-        }
-        if (tag.isString("Potion")) {
-            this.basePotionData = dataFromString(tag.getString("Potion"));
-        }
-        if (tag.isInt("CustomPotionColor")) {
-            this.color = Color.fromRGB(tag.getInt("CustomPotionColor"));
-        }
+        tag.iterateCompoundList("CustomEffects", effect -> addCustomEffect(fromNbt(effect), true)
+        );
+        tag.readString("Potion", potion -> setBasePotionData(dataFromString(potion)));
+        tag.readInt("CustomPotionColor", color -> this.color = Color.fromRGB(color));
     }
 
     @Override

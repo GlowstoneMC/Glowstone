@@ -39,10 +39,8 @@ public class SignEntity extends BlockEntity {
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
         for (int i = 0; i < lines.length; ++i) {
-            String key = "Text" + (i + 1);
-            if (tag.isString(key)) {
-                lines[i] = TextMessage.decode(tag.getString(key));
-            }
+            final int finalI = i;
+            tag.readString("Text" + (i + 1), line -> lines[finalI] = TextMessage.decode(line));
         }
     }
 

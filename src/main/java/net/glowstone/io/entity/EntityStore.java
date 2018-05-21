@@ -2,9 +2,8 @@ package net.glowstone.io.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.logging.Level;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import net.glowstone.entity.GlowEntity;
 import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -65,41 +63,6 @@ public abstract class EntityStore<T extends GlowEntity> {
     // - int "PortalCooldown"
 
     /**
-     * Invokes the given method with the value of an int subtag, if that subtag is present.
-     *
-     * @param tag the parent tag
-     * @param key the subtag key
-     * @param consumer the method to be invoked with the int value if one is present
-     */
-    protected static void handleIntIfPresent(CompoundTag tag, String key, IntConsumer consumer) {
-        if (tag.isInt(key)) {
-            consumer.accept(tag.getInt(key));
-        }
-    }
-
-    /**
-     * {@link Consumer}&lt;Float&gt; without the boxing.
-     */
-    @FunctionalInterface
-    protected interface FloatConsumer {
-        void accept(float value);
-    }
-
-    /**
-     * Invokes the given method with the value of an int subtag, if that subtag is present.
-     *
-     * @param tag the parent tag
-     * @param key the subtag key
-     * @param consumer the method to be invoked with the int value if one is present
-     */
-    protected static void handleFloatIfPresent(
-            CompoundTag tag, String key, FloatConsumer consumer) {
-        if (tag.isFloat(key)) {
-            consumer.accept(tag.getFloat(key));
-        }
-    }
-
-    /**
      * Load data into an existing entity of the appropriate type from the given compound tag.
      *
      * @param entity The target entity.
@@ -108,54 +71,31 @@ public abstract class EntityStore<T extends GlowEntity> {
     public void load(T entity, CompoundTag tag) {
         // id, world, and location are handled by EntityStore
         // base stuff for all entities is here:
-
-        if (tag.isList("Motion", TagType.DOUBLE)) {
-            entity
-                .setVelocity(NbtSerialization.listToVector(tag.getList("Motion", TagType.DOUBLE)));
-        }
-        handleFloatIfPresent(tag, "FallDistance", entity::setFallDistance);
-        if (tag.isShort("Fire")) {
-            entity.setFireTicks(tag.getShort("Fire"));
-        }
-        if (tag.isByte("OnGround")) {
-            entity.setOnGround(tag.getBool("OnGround"));
-        }
-        if (tag.isByte("NoGravity")) {
-            entity.setGravity(!tag.getBool("NoGravity"));
-        }
-        if (tag.isByte("Silent")) {
-            entity.setSilent(tag.getBool("Silent"));
-        }
-        if (tag.isByte("Glowing")) {
-            entity.setGlowing(tag.getBool("Glowing"));
-        }
-        if (tag.isByte("Invulnerable")) {
-            entity.setInvulnerable(tag.getBool("Invulnerable"));
-        }
-        if (tag.isList("Tags", TagType.STRING)) {
-            List<String> list = tag.getList("Tags", TagType.STRING);
+        tag.readDoubleList("Motion",
+            list -> entity.setVelocity(NbtSerialization.listToVector(list)));
+        tag.readFloat("FallDistance", entity::setFallDistance);
+        tag.readShort("Fire", entity::setFireTicks);
+        tag.readBoolean("OnGround", entity::setOnGround);
+        tag.readBooleanNegated("NoGravity", entity::setGravity);
+        tag.readBoolean("Silent", entity::setSilent);
+        tag.readBoolean("Glowing", entity::setGlowing);
+        tag.readBoolean("Invulnerable", entity::setInvulnerable);
+        tag.readStringList("Tags", list -> {
             entity.getCustomTags().clear();
             entity.getCustomTags().addAll(list);
-        }
-        handleIntIfPresent(tag, "PortalCooldown", entity::setPortalCooldown);
-
-        if (tag.isLong("UUIDMost") && tag.isLong("UUIDLeast")) {
-            UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
-            entity.setUniqueId(uuid);
-        } else if (tag.isString("UUID")) {
-            // deprecated string format
-            UUID uuid = UUID.fromString(tag.getString("UUID"));
-            entity.setUniqueId(uuid);
-        }
-
-        if (tag.isList("Passengers", TagType.COMPOUND)) {
-            for (CompoundTag entityTag : tag.getCompoundList("Passengers")) {
-                Entity passenger = loadPassenger(entity, entityTag);
-                if (passenger != null) {
-                    entity.addPassenger(passenger);
-                }
+        });
+        tag.readInt("PortalCooldown", entity::setPortalCooldown);
+        // TODO: Refactor using JDK9's Optional.or() once JDK8 support ends
+        Optional.ofNullable(
+                tag.tryGetUuid("UUIDMost", "UUIDLeast")
+                .orElseGet(() -> tag.tryGetString("UUID").map(UUID::fromString).orElse(null)))
+                .ifPresent(entity::setUniqueId);
+        tag.iterateCompoundList("Passengers", entityTag -> {
+            Entity passenger = loadPassenger(entity, entityTag);
+            if (passenger != null) {
+                entity.addPassenger(passenger);
             }
-        }
+        });
     }
 
     private Entity loadPassenger(T vehicle, CompoundTag compoundTag) {

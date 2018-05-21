@@ -15,12 +15,10 @@ public class EnderDragonStore extends EntityStore<GlowEnderDragon> {
     @Override
     public void load(GlowEnderDragon entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isInt("DragonPhase")) {
-            entity.setPhase(EnderDragon.Phase.values()[tag.getInt("DragonPhase")]);
-        } else {
-            entity.setPhase(EnderDragon.Phase.HOVER);
-        }
+        entity.setPhase(
+                tag.tryGetInt("DragonPhase")
+                        .map(phase -> EnderDragon.Phase.values()[phase])
+                        .orElse(EnderDragon.Phase.HOVER));
     }
 
     @Override

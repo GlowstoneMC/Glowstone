@@ -12,19 +12,10 @@ abstract class TemplePieceStore<T extends GlowTemplePiece> extends StructurePiec
     @Override
     public void load(T structurePiece, CompoundTag compound) {
         super.load(structurePiece, compound);
-
-        if (compound.isInt("Width")) {
-            structurePiece.setWidth(compound.getInt("Width"));
-        }
-        if (compound.isInt("Height")) {
-            structurePiece.setHeight(compound.getInt("Height"));
-        }
-        if (compound.isInt("Depth")) {
-            structurePiece.setDepth(compound.getInt("Depth"));
-        }
-        if (compound.isInt("HPos")) {
-            structurePiece.setHorizPos(compound.getInt("HPos"));
-        }
+        compound.readInt("Width", structurePiece::setWidth);
+        compound.readInt("Height", structurePiece::setHeight);
+        compound.readInt("Depth", structurePiece::setDepth);
+        compound.readInt("HPos", structurePiece::setHorizPos);
     }
 
     @Override

@@ -7,7 +7,6 @@ import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 
 @Data
 public final class PlayerRecipeMonitor {
@@ -50,22 +49,12 @@ public final class PlayerRecipeMonitor {
      * @param playerData an NBT tag containing a compound subtag named recipeBook
      */
     public void read(CompoundTag playerData) {
-        if (!playerData.isCompound("recipeBook")) {
-            return;
-        }
-        CompoundTag recipeBook = playerData.getCompound("recipeBook");
-        if (recipeBook.isByte("isFilteringCraftable")) {
-            setFilterCraftable(recipeBook.getBool("isFilteringCraftable"));
-        }
-        if (recipeBook.isByte("isGuiOpen")) {
-            setBookOpen(recipeBook.getBool("isGuiOpen"));
-        }
-        if (recipeBook.isList("recipes", TagType.STRING)) {
-            recipes.addAll(recipeBook.getList("recipes", TagType.STRING));
-        }
-        if (recipeBook.isList("toBeDisplayed", TagType.STRING)) {
-            toBeDisplayed.addAll(recipeBook.getList("toBeDisplayed", TagType.STRING));
-        }
+        playerData.tryGetCompound("recipeBook").ifPresent(recipeBook -> {
+            recipeBook.readBoolean("isFilteringCraftable", this::setFilterCraftable);
+            recipeBook.readBoolean("isGuiOpen", this::setBookOpen);
+            recipeBook.readStringList("recipes", recipes::addAll);
+            recipeBook.readStringList("toBeDisplayed", toBeDisplayed::addAll);
+        });
     }
 
     /**

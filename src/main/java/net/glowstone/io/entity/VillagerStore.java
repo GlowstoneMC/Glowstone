@@ -19,62 +19,39 @@ class VillagerStore extends AgeableStore<GlowVillager> {
     @Override
     public void load(GlowVillager entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isInt("Profession")) {
-            int professionId = compound.getInt("Profession");
-            if (GlowVillager.isValidProfession(professionId)) {
-                entity.setProfession(GlowVillager.getProfessionById(professionId));
-            }
-        }
-        if (compound.isInt("Career")) {
-            int id = compound.getInt("Career");
-            Villager.Career career = GlowVillager.getCareerById(id, entity.getProfession());
-            if (career != null) {
-                entity.setCareer(career);
-            }
-        }
-        if (compound.isInt("Riches")) {
-            entity.setRiches(compound.getInt("Riches"));
-        }
-        if (compound.isByte("Willing")) {
-            entity.setWilling(compound.getBool("Willing"));
-        }
-        if (compound.isInt("CareerLevel")) {
-            entity.setCareerLevel(compound.getInt("CareerLevel"));
-        } else if (entity.getCareer() != null) {
-            entity.setCareerLevel(1);
-        }
+        compound.tryGetInt("Profession")
+                .filter(GlowVillager::isValidProfession)
+                .map(GlowVillager::getProfessionById)
+                .ifPresent(entity::setProfession);
+        compound.tryGetInt("Career")
+                .map(id -> GlowVillager.getCareerById(id, entity.getProfession()))
+                .ifPresent(career -> {
+                    entity.setCareer(career);
+                    entity.setCareerLevel(compound.tryGetInt("CareerLevel").orElse(1));
+                });
+        compound.readInt("Riches", entity::setRiches);
+        compound.readBoolean("Willing", entity::setWilling);
         // Recipes
-        if (compound.isCompound("Offers")) {
-            CompoundTag offers = compound.getCompound("Offers");
-            if (offers.isCompoundList("Recipes")) {
+        compound.readCompound("Offers", offers -> offers.readCompoundList("Recipes",
+            recipesList -> {
                 entity.clearRecipes(); // clear defaults
-                List<CompoundTag> recipesList = offers.getCompoundList("Recipes");
-                List<MerchantRecipe> recipes = new ArrayList<>();
+                List<MerchantRecipe> recipes = new ArrayList<>(recipesList.size());
                 for (CompoundTag recipeTag : recipesList) {
-                    CompoundTag sellTag = recipeTag.getCompound("sell");
-                    CompoundTag buy1tag = recipeTag.getCompound("buy");
-                    CompoundTag buy2tag = null;
-                    if (recipeTag.isCompound("buyB")) {
-                        buy2tag = recipeTag.getCompound("buyB");
-                    }
-                    List<ItemStack> ingredients = new ArrayList<>();
-                    ItemStack sell = NbtSerialization.readItem(sellTag);
-                    ItemStack buy = NbtSerialization.readItem(buy1tag);
-                    ingredients.add(buy);
-                    if (buy2tag != null) {
-                        ingredients.add(NbtSerialization.readItem(buy2tag));
-                    }
-                    boolean experienceReward = recipeTag.getBool("rewardExp");
-                    int uses = recipeTag.getInt("uses");
-                    int maxUses = recipeTag.getInt("maxUses");
-                    MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
-                        experienceReward);
-                    recipe.setIngredients(ingredients);
-                    recipes.add(recipe);
+                    recipeTag.readItem("sell", sell -> {
+                        List<ItemStack> ingredients = new ArrayList<>(2);
+                        recipeTag.readItem("buy", ingredients::add);
+                        recipeTag.readItem("buyB", ingredients::add);
+                        boolean experienceReward = recipeTag.getBoolean("rewardExp", false);
+                        int uses = recipeTag.getInt("uses");
+                        int maxUses = recipeTag.getInt("maxUses");
+                        MerchantRecipe recipe = new MerchantRecipe(sell, uses, maxUses,
+                                experienceReward);
+                        recipe.setIngredients(ingredients);
+                        recipes.add(recipe);
+                    });
                 }
                 entity.setRecipes(recipes);
-            }
-        }
+            }));
 
         //TODO: remaining data
     }

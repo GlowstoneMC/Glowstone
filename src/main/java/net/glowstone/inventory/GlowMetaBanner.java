@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -91,16 +90,12 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isCompound("BlockEntityTag")) {
-            CompoundTag blockEntityTag = tag.getCompound("BlockEntityTag");
-            if (blockEntityTag.isList("Patterns", TagType.COMPOUND)) {
-                List<CompoundTag> patterns = blockEntityTag.getCompoundList("Patterns");
-                this.patterns = BlockBanner.fromNbt(patterns);
-            }
-            if (blockEntityTag.isInt("Base")) {
-                this.baseColor = DyeColor.getByWoolData((byte) blockEntityTag.getInt("Base"));
-            }
-        }
+        tag.readCompound("BlockEntityTag", blockEntityTag -> {
+            blockEntityTag.readCompoundList(
+                    "Patterns", patterns -> this.patterns = BlockBanner.fromNbt(patterns));
+            blockEntityTag.readInt(
+                    "Base", colorInt -> this.baseColor = DyeColor.getByWoolData((byte) colorInt));
+        });
     }
 
     @Override

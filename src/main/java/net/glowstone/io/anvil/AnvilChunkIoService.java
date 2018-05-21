@@ -23,7 +23,6 @@ import net.glowstone.io.entity.UnknownEntityTypeException;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -89,37 +88,29 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // initialize the chunk
         chunk.initializeSections(sections);
-        chunk.setPopulated(levelTag.getBool("TerrainPopulated"));
+        chunk.setPopulated(levelTag.getBoolean("TerrainPopulated", false));
 
         // read biomes
-        if (levelTag.isByteArray("Biomes")) {
-            chunk.setBiomes(levelTag.getByteArray("Biomes"));
-        }
+        levelTag.readByteArray("Biomes", chunk::setBiomes);
         // read height map
-        if (levelTag.isIntArray("HeightMap")) {
-            chunk.setHeightMap(levelTag.getIntArray("HeightMap"));
-        } else {
+        if (!levelTag.readIntArray("HeightMap", chunk::setHeightMap)) {
             chunk.automaticHeightMap();
         }
 
         // read slime chunk
-        if (levelTag.isByte("isSlimeChunk")) {
-            chunk.setIsSlimeChunk(levelTag.getByte("isSlimeChunk"));
-        }
+        levelTag.readByte("isSlimeChunk", chunk::setIsSlimeChunk);
 
         // read entities
-        if (levelTag.isList("Entities", TagType.COMPOUND)) {
-            for (CompoundTag entityTag : levelTag.getCompoundList("Entities")) {
-                try {
-                    // note that creating the entity is sufficient to add it to the world
-                    EntityStorage.loadEntity(chunk.getWorld(), entityTag);
-                } catch (UnknownEntityTypeException e) {
-                    LocalizedStrings.Console.Warn.Entity.UNKNOWN.log(chunk, e.getIdOrTag());
-                } catch (Exception e) {
-                    LocalizedStrings.Console.Warn.Entity.LOADING_ERROR.log(e, chunk);
-                }
+        levelTag.iterateCompoundList("Entities", entityTag -> {
+            try {
+                // note that creating the entity is sufficient to add it to the world
+                EntityStorage.loadEntity(chunk.getWorld(), entityTag);
+            } catch (UnknownEntityTypeException e) {
+                LocalizedStrings.Console.Warn.Entity.UNKNOWN.log(chunk, e.getIdOrTag());
+            } catch (Exception e) {
+                LocalizedStrings.Console.Warn.Entity.LOADING_ERROR.log(e, chunk);
             }
-        }
+        });
 
         // read block entities
         List<CompoundTag> storedBlockEntities = levelTag.getCompoundList("TileEntities");
@@ -148,32 +139,29 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
         }
 
-        if (levelTag.isList("TileTicks", TagType.COMPOUND)) {
-            List<CompoundTag> tileTicks = levelTag.getCompoundList("TileTicks");
-            for (CompoundTag tileTick : tileTicks) {
-                int tileX = tileTick.getInt("x");
-                int tileY = tileTick.getInt("y");
-                int tileZ = tileTick.getInt("z");
-                String id = tileTick.getString("i");
-                Material material = ItemIds.getBlock(id);
-                if (material == null) {
-                    GlowServer.logger
-                        .warning("Unknown block '" + id + "' when loading chunk block ticks.");
-                    continue;
-                }
-                GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
-                if (material != block.getType()) {
-                    continue;
-                }
-                // TODO tick delay: tileTick.getInt("t");
-                // TODO ordering: tileTick.getInt("p");
-                BlockType type = ItemTable.instance().getBlock(material);
-                if (type == null) {
-                    continue;
-                }
-                block.getWorld().requestPulse(block);
+        levelTag.iterateCompoundList("TileTicks", tileTick -> {
+            int tileX = tileTick.getInt("x");
+            int tileY = tileTick.getInt("y");
+            int tileZ = tileTick.getInt("z");
+            String id = tileTick.getString("i");
+            Material material = ItemIds.getBlock(id);
+            if (material == null) {
+                GlowServer.logger
+                    .warning("Unknown block '" + id + "' when loading chunk block ticks.");
+                return;
             }
-        }
+            GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
+            if (material != block.getType()) {
+                return;
+            }
+            // TODO tick delay: tileTick.getInt("t");
+            // TODO ordering: tileTick.getInt("p");
+            BlockType type = ItemTable.instance().getBlock(material);
+            if (type == null) {
+                return;
+            }
+            block.getWorld().requestPulse(block);
+        });
 
         return true;
     }

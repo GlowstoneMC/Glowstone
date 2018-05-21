@@ -22,9 +22,7 @@ public class BoatStore extends EntityStore<GlowBoat> {
     @Override
     public void load(GlowBoat entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isString("Type")) {
-            entity.setWoodType(toTreeSpecies(tag.getString("Type")));
-        }
+        tag.readString("Type", type -> entity.setWoodType(toTreeSpecies(type)));
     }
 
     @Override

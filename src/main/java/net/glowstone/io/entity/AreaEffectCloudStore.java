@@ -37,32 +37,28 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
     @Override
     public void load(GlowAreaEffectCloud entity, CompoundTag tag) {
         super.load(entity, tag);
-        handleIntIfPresent(tag, COLOR, rgb -> entity.setColor(Color.fromRGB(rgb)));
-        handleIntIfPresent(tag, DURATION, entity::setDuration);
-        handleIntIfPresent(tag, REAPPLICATION_DELAY, entity::setReapplicationDelay);
-        handleIntIfPresent(tag, WAIT_TIME, entity::setWaitTime);
+        tag.readInt(COLOR, rgb -> entity.setColor(Color.fromRGB(rgb)));
+        tag.readInt(DURATION, entity::setDuration);
+        tag.readInt(REAPPLICATION_DELAY, entity::setReapplicationDelay);
+        tag.readInt(WAIT_TIME, entity::setWaitTime);
         // TODO: OWNER_UUID_LEAST, OWNER_UUID_MOST
-        handleIntIfPresent(tag, DURATION_ON_USE, entity::setDurationOnUse);
-        handleFloatIfPresent(tag, RADIUS, entity::setRadius);
-        handleFloatIfPresent(tag, RADIUS_ON_USE, entity::setRadiusOnUse);
-        handleFloatIfPresent(tag, RADIUS_PER_TICK, entity::setRadiusPerTick);
-        if (tag.isString(PARTICLE)) {
-            final String particle = tag.getString(PARTICLE);
-
+        tag.readInt(DURATION_ON_USE, entity::setDurationOnUse);
+        tag.readFloat(RADIUS, entity::setRadius);
+        tag.readFloat(RADIUS_ON_USE, entity::setRadiusOnUse);
+        tag.readFloat(RADIUS_PER_TICK, entity::setRadiusPerTick);
+        tag.readString(PARTICLE, particle -> {
             try {
                 entity.setParticle(Particle.valueOf(particle));
             } catch (IllegalArgumentException e) {
                 GlowServer.logger.warning(() -> String.format(
                         "Ignoring invalid particle type %s in tag %s", particle, tag));
             }
-        }
+        });
         // TODO: Potion
-        if (tag.isCompoundList(EFFECTS)) {
-            tag.getCompoundList(EFFECTS)
-                    .stream()
-                    .map(GlowMetaPotion::fromNbt)
-                    .forEach(effect -> entity.addCustomEffect(effect, false));
-        }
+        tag.readCompoundList(EFFECTS, effects -> effects
+            .stream()
+            .map(GlowMetaPotion::fromNbt)
+            .forEach(effect -> entity.addCustomEffect(effect, false)));
     }
 
     @Override

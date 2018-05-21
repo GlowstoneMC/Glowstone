@@ -9,7 +9,6 @@ import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
 public class FlowerPotEntity extends BlockEntity {
@@ -25,16 +24,9 @@ public class FlowerPotEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-
-        int contentsData = tag.isInt("Data") ? tag.getInt("Data") : 0;
-
-        if (tag.isString("Item") && !tag.getString("Item").isEmpty()) {
-            // NBT data uses material ID names (post-1.8).
-            contents = ItemIds.getItem(tag.getString("Item")).getNewData((byte) contentsData);
-        } else if (tag.isInt("Item")) {
-            // NBT data uses material IDs (pre-1.8).
-            contents = Material.getMaterial(tag.getInt("Item")).getNewData((byte) contentsData);
-        }
+        tag.tryGetMaterial("Item").ifPresent(
+            item -> this.contents = item.getNewData(
+                    (byte) (int) (tag.tryGetInt("Data").orElse(0))));
     }
 
     @Override

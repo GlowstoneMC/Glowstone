@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
@@ -23,32 +22,21 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void load(GlowArmorStand entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.containsKey("Marker")) {
-            entity.setMarker(tag.getBool("Marker"));
-        }
-        if (tag.containsKey("Invisible")) {
-            entity.setVisible(!tag.getBool("Invisible"));
-        }
-        if (tag.containsKey("NoBasePlate")) {
-            entity.setBasePlate(!tag.getBool("NoBasePlate"));
-        }
-        if (tag.containsKey("NoGravity")) {
-            entity.setGravity(!tag.getBool("NoGravity"));
-        }
-        if (tag.containsKey("ShowArms")) {
-            entity.setArms(tag.getBool("ShowArms"));
-        }
-        if (tag.containsKey("Small")) {
-            entity.setSmall(tag.getBool("Small"));
-        }
-        if (tag.isCompound("Pose")) {
-            entity.setBodyPose(readSafeAngle(tag.getCompound("Pose"), "Body"));
-            entity.setLeftArmPose(readSafeAngle(tag.getCompound("Pose"), "LeftArm"));
-            entity.setRightArmPose(readSafeAngle(tag.getCompound("Pose"), "RightArm"));
-            entity.setLeftLegPose(readSafeAngle(tag.getCompound("Pose"), "LeftLeg"));
-            entity.setRightLegPose(readSafeAngle(tag.getCompound("Pose"), "RightLeg"));
-            entity.setHeadPose(readSafeAngle(tag.getCompound("Pose"), "Head"));
-        }
+        tag.readBoolean("Marker", entity::setMarker);
+        tag.readBooleanNegated("Invisible", entity::setVisible);
+        tag.readBoolean("Marker", entity::setMarker);
+        tag.readBooleanNegated("NoBasePlate", entity::setBasePlate);
+        tag.readBooleanNegated("NoGravity", entity::setGravity);
+        tag.readBoolean("ShowArms", entity::setArms);
+        tag.readBoolean("Small", entity::setSmall);
+        tag.tryGetCompound("Pose").ifPresent(pose -> {
+            entity.setBodyPose(readSafeAngle(pose, "Body"));
+            entity.setLeftArmPose(readSafeAngle(pose, "LeftArm"));
+            entity.setRightArmPose(readSafeAngle(pose, "RightArm"));
+            entity.setLeftLegPose(readSafeAngle(pose, "LeftLeg"));
+            entity.setRightLegPose(readSafeAngle(pose, "RightLeg"));
+            entity.setHeadPose(readSafeAngle(pose, "Head"));
+        });
     }
 
     @Override
@@ -79,12 +67,14 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     }
 
     private EulerAngle readSafeAngle(CompoundTag tag, String key) {
-        if (tag.isList(key, TagType.FLOAT)) {
-            List<Float> list = tag.getList(key, TagType.FLOAT);
-            return new EulerAngle(Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
-                Math.toRadians(list.get(2)));
-        } else {
-            return EulerAngle.ZERO;
-        }
+        final EulerAngle[] out = {EulerAngle.ZERO};
+        tag.readFloatList(key, list -> {
+            if (list.size() >= 3) {
+                out[0] = new EulerAngle(
+                        Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
+                        Math.toRadians(list.get(2)));
+            }
+        });
+        return out[0];
     }
 }

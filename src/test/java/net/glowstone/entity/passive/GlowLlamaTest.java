@@ -6,8 +6,6 @@ import java.util.EnumSet;
 import org.bukkit.Material;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.bukkit.Material;
-import org.junit.Test;
 
 public class GlowLlamaTest extends GlowChestedHorseTest<GlowLlama> {
     public GlowLlamaTest() {

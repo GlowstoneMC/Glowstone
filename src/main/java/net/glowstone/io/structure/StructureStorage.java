@@ -78,16 +78,11 @@ public final class StructureStorage {
                     "Unknown structure type: \"" + compound.getString("id") + "\"");
         }
 
-        int x = 0;
-        int z = 0;
-        if (compound.isInt("ChunkX")) {
-            x = compound.getInt("ChunkX");
-        }
-        if (compound.isInt("ChunkZ")) {
-            z = compound.getInt("ChunkZ");
-        }
-
-        return createStructure(world, x, z, store, compound);
+        final int[] x = {0};
+        final int[] z = {0};
+        compound.readInt("ChunkX", value -> x[0] = value);
+        compound.readInt("ChunkZ", value -> z[0] = value);
+        return createStructure(world, x[0], z[0], store, compound);
     }
 
     /**

@@ -49,20 +49,16 @@ public class NbtStructureDataService implements StructureDataService {
             if (structureFile.exists()) {
                 try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
                     CompoundTag data = in.readCompound();
-                    if (data.isCompound("data")) { // NON-NLS
-                        data = data.getCompound("data"); // NON-NLS
-                        if (data.isCompound("Features")) { // NON-NLS
-                            CompoundTag features = data.getCompound("Features"); // NON-NLS
-                            features.getValue().keySet().stream().filter(features::isCompound)
+                    if (!data.readCompound("data", innerData -> innerData.readCompound(// NON-NLS
+                            "Features", features -> features.getValue().keySet().stream() // NON-NLS
+                                .filter(features::isCompound)
                                 .forEach(key -> {
                                     GlowStructure structure = StructureStorage
                                         .loadStructure(world, features.getCompound(key));
                                     structures.put(GlowChunk.Key
                                         .of(structure.getChunkX(), structure.getChunkZ())
                                         .hashCode(), structure);
-                                });
-                        }
-                    } else {
+                                })))) {
                         LocalizedStrings.Console.Error.Structure.NO_DATA.log(structureFile);
                     }
                 } catch (IOException e) {
@@ -77,26 +73,26 @@ public class NbtStructureDataService implements StructureDataService {
     public void writeStructuresData(Map<Integer, GlowStructure> structures) {
         for (GlowStructure structure : structures.values()) {
             if (structure.isDirty()) {
-                CompoundTag data = new CompoundTag();
-                CompoundTag features = new CompoundTag();
+                CompoundTag data;
+                CompoundTag features;
                 CompoundTag feature = new CompoundTag();
+                CompoundTag inputRoot;
                 StructureStore<GlowStructure> store = StructureStorage
                     .saveStructure(structure, feature);
                 File structureFile = new File(structureDir, store.getId() + ".dat");
                 if (structureFile.exists()) {
                     try (NbtInputStream in = new NbtInputStream(
-                        new FileInputStream(structureFile))) {
-                        data = new CompoundTag();
-                        data = in.readCompound();
-                        if (data.isCompound("data")) { // NON-NLS
-                            data = data.getCompound("data"); // NON-NLS
-                            if (data.isCompound("Features")) { // NON-NLS
-                                features = data.getCompound("Features"); // NON-NLS
-                            }
-                        }
+                            new FileInputStream(structureFile))) {
+                        inputRoot = in.readCompound();
+                        data = inputRoot.tryGetCompound("data").orElseGet(CompoundTag::new);
                     } catch (IOException e) {
                         LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
+                        data = new CompoundTag();
                     }
+                    features = data.tryGetCompound("Features").orElseGet(CompoundTag::new);
+                } else {
+                    data = new CompoundTag();
+                    features = new CompoundTag();
                 }
                 String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);

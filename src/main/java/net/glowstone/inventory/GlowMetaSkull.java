@@ -98,10 +98,11 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
         if (tag.containsKey("SkullOwner")) {
-            if (tag.isString("SkullOwner")) {
-                owner.set(GlowPlayerProfile.getProfile(tag.getString("SkullOwner")).join());
-            } else if (tag.isCompound("SkullOwner")) {
-                owner.set(GlowPlayerProfile.fromNbt(tag.getCompound("SkullOwner")).join());
+            if (!tag.readString("SkullOwner",
+                name -> owner.set(GlowPlayerProfile.getProfile(name).join()))) {
+                tag.readCompound("SkullOwner",
+                    skullOwner -> owner.set(GlowPlayerProfile.fromNbt(skullOwner).join())
+                );
             }
         }
     }

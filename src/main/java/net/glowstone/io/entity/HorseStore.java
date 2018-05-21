@@ -15,24 +15,14 @@ public class HorseStore extends AbstractHorseStore<GlowHorse> {
     @Override
     public void load(GlowHorse entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte("EatingHaystack")) {
-            entity.setEatingHay(compound.getBool("EatingHaystack"));
-        }
-        if (compound.isInt("Variant")) {
-            entity.setStyle(Horse.Style.values()[compound.getInt("Variant") >>> 8]);
-            entity.setColor(Horse.Color.values()[compound.getInt("Variant") & 0xFF]);
-        }
-        if (compound.isInt("Temper")) {
-            entity.setTemper(compound.getInt("Temper"));
-        }
-        if (compound.containsKey("ArmorItem")) {
-            entity.getInventory()
-                .setArmor(NbtSerialization.readItem(compound.getCompound("ArmorItem")));
-        }
-        if (compound.containsKey("SaddleItem")) {
-            entity.getInventory()
-                .setSaddle(NbtSerialization.readItem(compound.getCompound("SaddleItem")));
-        }
+        compound.readBoolean("EatingHaystack", entity::setEatingHay);
+        compound.readInt("Variant", variant -> {
+            entity.setStyle(Horse.Style.values()[variant >>> 8]);
+            entity.setColor(Horse.Color.values()[variant & 0xFF]);
+        });
+        compound.readInt("Temper", entity::setTemper);
+        compound.readItem("ArmorItem", entity.getInventory()::setArmor);
+        compound.readItem("SaddleItem", entity.getInventory()::setSaddle);
     }
 
     @Override

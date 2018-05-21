@@ -19,19 +19,8 @@ class ZombieStore<T extends GlowZombie> extends MonsterStore<GlowZombie> {
     @Override
     public void load(GlowZombie entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isByte("IsBaby")) {
-            entity.setBaby(tag.getBool("IsBaby"));
-        } else {
-            entity.setBaby(false);
-        }
-
-        if (tag.isByte("CanBreakDoors")) {
-            entity.setCanBreakDoors(tag.getBool("CanBreakDoors"));
-        } else {
-            entity.setCanBreakDoors(true);
-        }
-
+        entity.setBaby(tag.getBoolean("IsBaby", false));
+        entity.setCanBreakDoors(tag.getBoolean("CanBreakDoors", true));
     }
 
     @Override

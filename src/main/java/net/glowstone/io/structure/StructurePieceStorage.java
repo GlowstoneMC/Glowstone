@@ -64,8 +64,7 @@ public final class StructurePieceStorage {
         StructurePieceStore<?> store = idTable.get(compound.getString("id"));
         if (store == null) {
             LocalizedStrings.Console.Error.Structure.UNKNOWN_PIECE_TYPE.log(
-                compound.getString("id")
-            );
+                compound.getString("id"));
             return null;
         }
 

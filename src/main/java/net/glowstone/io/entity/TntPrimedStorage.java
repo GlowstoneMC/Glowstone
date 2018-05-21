@@ -19,16 +19,12 @@ class TntPrimedStorage extends EntityStore<GlowTntPrimed> {
     @Override
     public void load(GlowTntPrimed entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isByte("Fuse")) {
-            entity.setFuseTicks(tag.getByte("Fuse"));
-        }
+        tag.readByte("Fuse", entity::setFuseTicks);
     }
 
     @Override
     public void save(GlowTntPrimed entity, CompoundTag tag) {
         super.save(entity, tag);
-
         tag.putByte("Fuse", entity.getFuseTicks());
     }
 }

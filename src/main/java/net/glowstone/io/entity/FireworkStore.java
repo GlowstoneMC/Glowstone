@@ -1,6 +1,5 @@
 package net.glowstone.io.entity;
 
-import java.util.UUID;
 import net.glowstone.entity.passive.GlowFirework;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -21,21 +20,10 @@ public class FireworkStore extends EntityStore<GlowFirework> {
     @Override
     public void load(GlowFirework entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isInt("Life")) {
-            entity.setTicksLived(tag.getInt("Life"));
-        }
-        if (tag.isInt("LifeTime")) {
-            entity.setLifeTime(tag.getInt("LifeTime"));
-        }
-        if (tag.isCompound("FireworksItem")) {
-            entity.setFireworkItem(NbtSerialization.readItem(tag.getCompound("FireworksItem")));
-        }
-        if (tag.isLong("SpawningEntityMost") && tag.isLong("SpawningEntityLeast")) {
-            UUID uuid = new UUID(tag.getLong("SpawningEntityMost"),
-                tag.getLong("SpawningEntityLeast"));
-            entity.setSpawningEntity(uuid);
-        }
+        tag.readInt("Life", entity::setTicksLived);
+        tag.readInt("LifeTime", entity::setLifeTime);
+        tag.readItem("FireworksItem", entity::setFireworkItem);
+        tag.readUuid("SpawningEntityMost", "SpawningEntityLeast", entity::setSpawningEntity);
     }
 
     @Override

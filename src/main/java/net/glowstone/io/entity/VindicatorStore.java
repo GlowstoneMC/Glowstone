@@ -13,9 +13,7 @@ public class VindicatorStore extends MonsterStore<GlowVindicator> {
     @Override
     public void load(GlowVindicator entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isByte("Johnny")) {
-            entity.setJohnny(tag.getBool("Johnny"));
-        }
+        tag.readBoolean("Johnny", entity::setJohnny);
     }
 
     @Override

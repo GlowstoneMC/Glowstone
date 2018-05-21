@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import net.glowstone.entity.AttributeManager;
 import net.glowstone.entity.AttributeManager.Modifier;
@@ -15,7 +16,6 @@ import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -53,109 +53,64 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
     @Override
     public void load(T entity, CompoundTag compound) {
         super.load(entity, compound);
-
-        if (compound.isShort("Air")) {
-            entity.setRemainingAir(compound.getShort("Air"));
+        compound.readShort("Air", entity::setRemainingAir);
+        compound.readString("CustomName", entity::setCustomName);
+        compound.readBoolean("CustomNameVisible", entity::setCustomNameVisible);
+        if (!compound.readFloat("HealF", entity::setHealth)) {
+            compound.readShort("Health", entity::setHealth);
         }
-        if (compound.isString("CustomName")) {
-            entity.setCustomName(compound.getString("CustomName"));
-        }
-        if (compound.isByte("CustomNameVisible")) {
-            entity.setCustomNameVisible(compound.getBool("CustomNameVisible"));
-        }
-
-        if (compound.isFloat("HealF")) {
-            entity.setHealth(compound.getFloat("HealF"));
-        } else if (compound.isShort("Health")) {
-            entity.setHealth(compound.getShort("Health"));
-        }
-        if (compound.isShort("AttackTime")) {
-            entity.setNoDamageTicks(compound.getShort("AttackTime"));
-        }
-        if (compound.isByte("FallFlying")) {
-            entity.setFallFlying(compound.getBool("FallFlying"));
-        }
-
-        if (compound.isList("ActiveEffects", TagType.COMPOUND)) {
-            for (CompoundTag effect : compound.getCompoundList("ActiveEffects")) {
-                // should really always have every field, but be forgiving if possible
-                if (!effect.isByte("Id") || !effect.isInt("Duration")) {
-                    continue;
-                }
-
-                PotionEffectType type = PotionEffectType.getById(effect.getByte("Id"));
-                int duration = effect.getInt("Duration");
-                if (type == null || duration < 0) {
-                    continue;
-                }
-                int amplifier = 0;
-                boolean ambient = false;
-
-                if (compound.isByte("Amplifier")) {
-                    amplifier = compound.getByte("Amplifier");
-                }
-                if (compound.isByte("Ambient")) {
-                    ambient = compound.getBool("Ambient");
-                }
-                // bool "ShowParticles"
-
-                entity.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
+        compound.readShort("AttackTime", entity::setNoDamageTicks);
+        compound.readBoolean("FallFlying", entity::setFallFlying);
+        compound.iterateCompoundList("ActiveEffects", effect -> {
+            // should really always have every field, but be forgiving if possible
+            if (!effect.isByte("Id") || !effect.isInt("Duration")) {
+                return;
             }
-        }
+
+            PotionEffectType type = PotionEffectType.getById(effect.getByte("Id"));
+            int duration = effect.getInt("Duration");
+            if (type == null || duration < 0) {
+                return;
+            }
+            final int amplifier = compound.tryGetInt("Amplifier").orElse(0);
+            boolean ambient = compound.getBoolean("Ambient", false);
+            // bool "ShowParticles"
+
+            entity.addPotionEffect(new PotionEffect(type, duration, amplifier, ambient), true);
+        });
 
         EntityEquipment equip = entity.getEquipment();
         if (equip != null) {
             loadEquipment(entity, equip, compound);
         }
-        if (compound.isByte("CanPickUpLoot")) {
-            entity.setCanPickupItems(compound.getBool("CanPickUpLoot"));
-        }
-
-        if (compound.isList("Attributes", TagType.COMPOUND)) {
-            List<CompoundTag> attributes = compound.getCompoundList("Attributes");
-            AttributeManager am = entity.getAttributeManager();
-
-            for (CompoundTag tag : attributes) {
-                if (!tag.isString("Name") || !tag.isDouble("Base")) {
-                    continue;
-                }
-                List<Modifier> modifiers = null;
-                if (tag.isList("Modifiers", TagType.COMPOUND)) {
-                    modifiers = new ArrayList<>();
-
-                    List<CompoundTag> modifierTags = tag.getCompoundList("Modifiers");
-                    for (CompoundTag modifierTag : modifierTags) {
-                        if (modifierTag.isDouble("Amount")
-                                && modifierTag.isString("Name")
-                                && modifierTag.isInt("Operation")
-                                && modifierTag.isLong("UUIDLeast")
-                                && modifierTag.isLong("UUIDMost")) {
-                            modifiers.add(new Modifier(
-                                    modifierTag.getString("Name"),
-                                    new UUID(modifierTag.getLong("UUIDLeast"),
-                                            modifierTag.getLong("UUIDMost")),
-                                    modifierTag.getDouble("Amount"),
-                                    (byte) modifierTag.getInt("Operation")));
-                        }
-                    }
-                }
-
-                am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+        compound.readBoolean("CanPickUpLoot", entity::setCanPickupItems);
+        AttributeManager am = entity.getAttributeManager();
+        compound.iterateCompoundList("Attributes", tag -> {
+            if (!tag.isString("Name") || !tag.isDouble("Base")) {
+                return;
             }
-        }
-
-        if (compound.isByte("Leashed") && compound.getBool("Leashed") && !compound
-                .isCompound("Leash")) {
-            // We know that there was something leashed, but not what entity it was
-            // This can happen, when for example Minecart got leashed
-            // We still have to make sure that we drop a Leash Item
-            entity.setLeashHolderUniqueId(UUID.randomUUID());
-        } else if (compound.isCompound("Leash")) {
-            CompoundTag leash = compound.getCompound("Leash");
-            if (leash.isLong("UUIDMost") && leash.isLong("UUIDLeast")) {
-                UUID uuid = new UUID(leash.getLong("UUIDMost"), leash.getLong("UUIDLeast"));
-                entity.setLeashHolderUniqueId(uuid);
-            } else if (leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
+            List<Modifier> modifiers = null;
+            tag.iterateCompoundList("Modifiers", modifierTag -> {
+                if (modifierTag.isDouble("Amount")
+                        && modifierTag.isString("Name")
+                        && modifierTag.isInt("Operation")
+                        && modifierTag.isLong("UUIDLeast")
+                        && modifierTag.isLong("UUIDMost")) {
+                    modifiers.add(new Modifier(
+                            modifierTag.getString("Name"),
+                            new UUID(modifierTag.getLong("UUIDLeast"),
+                                    modifierTag.getLong("UUIDMost")),
+                            modifierTag.getDouble("Amount"),
+                            (byte) modifierTag.getInt("Operation")));
+                }
+            });
+            am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+        });
+        Optional<CompoundTag> maybeLeash = compound.tryGetCompound("Leash");
+        if (maybeLeash.isPresent()) {
+            CompoundTag leash = maybeLeash.get();
+            if (!leash.readUuid("UUIDMost", "UUIDLeast", entity::setLeashHolderUniqueId)
+                    && leash.isInt("X") && leash.isInt("Y") && leash.isInt("Z")) {
                 int x = leash.getInt("X");
                 int y = leash.getInt("Y");
                 int z = leash.getInt("Z");
@@ -164,62 +119,58 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                         .getLeashHitchAt(new Location(entity.getWorld(), x, y, z).getBlock());
                 entity.setLeashHolder(leashHitch);
             }
+        } else {
+            compound.readBoolean("Leashed", leashSet -> {
+                if (leashSet) {
+                    // We know that there was something leashed, but not what entity it was
+                    // This can happen, when for example Minecart got leashed
+                    // We still have to make sure that we drop a Leash Item
+                    entity.setLeashHolderUniqueId(UUID.randomUUID());
+                }
+            });
         }
     }
 
     private void loadEquipment(T entity, EntityEquipment equip, CompoundTag compound) {
         // Deprecated since 15w31a, left here for compatibilty for now
-        if (compound.isList("Equipment", TagType.COMPOUND)) {
-            List<CompoundTag> list = compound.getCompoundList("Equipment");
-
+        compound.readCompoundList("Equipment", list -> {
             equip.setItemInMainHand(getItem(list, 0));
             equip.setBoots(getItem(list, 1));
             equip.setLeggings(getItem(list, 2));
             equip.setChestplate(getItem(list, 3));
             equip.setHelmet(getItem(list, 4));
-        }
+        });
         // Deprecated since 15w31a, left here for compatibilty for now
-        if (compound.isList("DropChances", TagType.FLOAT)) {
-            List<Float> list = compound.getList("DropChances", TagType.FLOAT);
-
+        compound.readFloatList("DropChances", list -> {
             equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
             equip.setBootsDropChance(getOrDefault(list, 1, 1f));
             equip.setLeggingsDropChance(getOrDefault(list, 2, 1f));
             equip.setChestplateDropChance(getOrDefault(list, 3, 1f));
             equip.setHelmetDropChance(getOrDefault(list, 4, 1f));
-        }
-
-        if (compound.isList("HandItems", TagType.COMPOUND)) {
-            List<CompoundTag> list = compound.getCompoundList("HandItems");
-
+        });
+        compound.readCompoundList("HandItems", list -> {
             equip.setItemInMainHand(getItem(list, 0));
             equip.setItemInOffHand(getItem(list, 1));
-        }
-        if (compound.isList("ArmorItems", TagType.COMPOUND)) {
-            List<CompoundTag> list = compound.getCompoundList("ArmorItems");
-
+        });
+        compound.readCompoundList("ArmorItems", list -> {
             equip.setBoots(getItem(list, 0));
             equip.setLeggings(getItem(list, 1));
             equip.setChestplate(getItem(list, 2));
             equip.setHelmet(getItem(list, 3));
-        }
+        });
 
         // set of dropchances on a player throws an UnsupportedOperationException
         if (!(entity instanceof Player)) {
-            if (compound.isList("HandDropChances", TagType.FLOAT)) {
-                List<Float> list = compound.getList("HandDropChances", TagType.FLOAT);
-
+            compound.readFloatList("HandDropChances", list -> {
                 equip.setItemInMainHandDropChance(getOrDefault(list, 0, 1f));
                 equip.setItemInOffHandDropChance(getOrDefault(list, 1, 1f));
-            }
-            if (compound.isList("ArmorDropChances", TagType.FLOAT)) {
-                List<Float> list = compound.getList("ArmorDropChances", TagType.FLOAT);
-
+            });
+            compound.readFloatList("ArmorDropChances", list -> {
                 equip.setBootsDropChance(getOrDefault(list, 0, 1f));
                 equip.setLeggingsDropChance(getOrDefault(list, 1, 1f));
                 equip.setChestplateDropChance(getOrDefault(list, 2, 1f));
                 equip.setHelmetDropChance(getOrDefault(list, 3, 1f));
-            }
+            });
         }
     }
 

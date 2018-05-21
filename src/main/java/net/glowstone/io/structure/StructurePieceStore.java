@@ -33,20 +33,15 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      * @param compound The structure piece's tag.
      */
     public void load(T structurePiece, CompoundTag compound) {
-        if (compound.isInt("GD")) {
-            structurePiece.setUnknownGd(compound.getInt("GD"));
-        }
-        if (compound.isInt("O")) {
-            structurePiece.setNumericOrientation(compound.getInt("O"));
-        }
-        if (compound.isIntArray("BB")) {
-            int[] bb = compound.getIntArray("BB");
+        compound.readInt("GD", structurePiece::setUnknownGd);
+        compound.readInt("O", structurePiece::setNumericOrientation);
+        compound.readIntArray("BB", bb -> {
             if (bb.length == 6) {
                 StructureBoundingBox boundingBox = new StructureBoundingBox(
                     new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structurePiece.setBoundingBox(boundingBox);
             }
-        }
+        });
     }
 
     /**

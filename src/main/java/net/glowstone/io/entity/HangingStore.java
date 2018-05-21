@@ -15,9 +15,8 @@ public abstract class HangingStore<T extends GlowHangingEntity> extends EntitySt
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
 
-        if (tag.isByte("Facing")) {
-            entity.setFacingDirection(HangingFace.values()[tag.getByte("Facing")].getBlockFace());
-        }
+        tag.readByte("Facing", facing ->
+            entity.setFacingDirection(HangingFace.values()[facing].getBlockFace()));
     }
 
     @Override

@@ -20,8 +20,6 @@ public class SplashPotionStore<T extends GlowSplashPotion> extends ProjectileSto
     @Override
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isCompound("Potion")) {
-            entity.setItem(NbtSerialization.readItem(tag.getCompound("Potion")));
-        }
+        tag.readItem("Potion", entity::setItem);
     }
 }
