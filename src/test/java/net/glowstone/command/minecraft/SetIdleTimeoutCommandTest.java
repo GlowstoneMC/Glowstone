@@ -7,25 +7,20 @@ import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
 public class SetIdleTimeoutCommandTest extends CommandTest {
 
-    private CommandSender opSender;
-
-    @BeforeEach
+    @Before
+    @Override
     public void before() {
-        sender = PowerMockito.mock(CommandSender.class);
-        opSender = PowerMockito.mock(CommandSender.class);
+        super.before();
         command = new SetIdleTimeoutCommand();
 
-        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         ServerProvider.setMockServer(PowerMockito.mock(GlowServer.class));
     }
 

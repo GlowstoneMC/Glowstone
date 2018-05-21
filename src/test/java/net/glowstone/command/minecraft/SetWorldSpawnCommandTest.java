@@ -23,18 +23,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class})
-public class SetWorldSpawnCommandTest {
+public class SetWorldSpawnCommandTest extends CommandTest {
 
-    private CommandSender sender, opSender, opPlayer;
+    protected CommandSender opPlayer;
 
     private GlowWorld world;
 
-    private Command command;
-
     @Before
+    @Override
     public void before() {
-        sender = PowerMockito.mock(CommandSender.class);
-        opSender = PowerMockito.mock(CommandSender.class);
+        super.before();
         opPlayer = PowerMockito.mock(Player.class);
         world = PowerMockito.mock(GlowWorld.class);
         command = new SetWorldSpawnCommand();
@@ -50,13 +48,6 @@ public class SetWorldSpawnCommandTest {
 
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
-    }
-
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test

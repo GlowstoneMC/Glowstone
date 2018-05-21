@@ -14,29 +14,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class StopCommandTest {
+public class StopCommandTest extends CommandTest {
     private GlowServer server;
 
-    private CommandSender sender, opSender;
-
-    private Command command;
-
     @BeforeEach
+    @Override
     public void before() {
+        super.before();
         command = new StopCommand();
-        sender = Mockito.mock(CommandSender.class);
-        opSender = Mockito.mock(CommandSender.class);
         server = Mockito.mock(GlowServer.class);
         ServerProvider.setMockServer(server);
-        when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         when(opSender.getServer()).thenReturn(server);
-    }
-
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-                + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test

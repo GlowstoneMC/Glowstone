@@ -6,24 +6,26 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Objects;
 import net.glowstone.GlowWorld;
 import net.glowstone.testutils.InMemoryBlockStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
-public class TestForBlocksCommandTest {
-    private TestForBlocksCommand command;
+public class TestForBlocksCommandTest extends CommandTest {
     private InMemoryBlockStorage blockStorage;
     private Player opPlayer;
     private GlowWorld world;
 
-    @BeforeEach
-    public void before() throws Exception {
+    @Override
+    @Before
+    public void before() {
+        super.before();
         command = new TestForBlocksCommand();
         blockStorage = new InMemoryBlockStorage();
         opPlayer = PowerMockito.mock(Player.class);

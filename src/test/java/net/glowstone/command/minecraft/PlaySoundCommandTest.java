@@ -39,14 +39,12 @@ public class PlaySoundCommandTest extends CommandTest {
 
     private GlowServer server;
 
-    protected CommandSender opSender;
     protected CommandSender opPlayer;
 
     @Before
     public void before() {
         super.before();
         command = new PlaySoundCommand();
-        opSender = PowerMockito.mock(CommandSender.class);
         opPlayer = PowerMockito.mock(Player.class);
         server = PowerMockito.mock(GlowServer.class);
         world = PowerMockito.mock(GlowWorld.class);
@@ -66,7 +64,6 @@ public class PlaySoundCommandTest extends CommandTest {
         Mockito.when(fakePlayer2.getType()).thenReturn(EntityType.PLAYER);
         Mockito.when(fakePlayer3.getType()).thenReturn(EntityType.PLAYER);
 
-        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opSender.getServer()).thenReturn(server);
 
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);

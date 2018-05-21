@@ -27,13 +27,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
-public class SpawnPointCommandTest {
+public class SpawnPointCommandTest extends CommandTest {
 
-    private CommandSender sender, opSender, opPlayer;
+    private CommandSender opPlayer;
 
     private Player fakePlayer1, fakePlayer2, fakePlayer3;
-
-    private Command command;
 
     private GlowWorld world;
 
@@ -41,14 +39,12 @@ public class SpawnPointCommandTest {
 
     @Before
     public void before() {
+        super.before();
         server = PowerMockito.mock(GlowServer.class);
-
         fakePlayer1 = PowerMockito.mock(Player.class);
         fakePlayer2 = PowerMockito.mock(Player.class);
         fakePlayer3 = PowerMockito.mock(Player.class);
 
-        sender = PowerMockito.mock(CommandSender.class);
-        opSender = PowerMockito.mock(CommandSender.class);
         opPlayer = PowerMockito.mock(Player.class);
         world = PowerMockito.mock(GlowWorld.class);
         command = new SpawnPointCommand();
@@ -64,7 +60,6 @@ public class SpawnPointCommandTest {
         Mockito.when(fakePlayer2.getType()).thenReturn(EntityType.PLAYER);
         Mockito.when(fakePlayer3.getType()).thenReturn(EntityType.PLAYER);
 
-        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opSender.getServer()).thenReturn(server);
 
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);

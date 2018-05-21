@@ -20,14 +20,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class})
-public class ToggleDownfallCommandTest {
+public class ToggleDownfallCommandTest extends CommandTest {
 
     private World world;
 
-    private Command command;
-
-    private CommandSender sender, opSender;
-
+    @Override
     @Before
     public void before() {
         world = PowerMockito.mock(GlowWorld.class);
@@ -38,11 +35,6 @@ public class ToggleDownfallCommandTest {
         Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
-    }
-
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
     }
 
     @Test

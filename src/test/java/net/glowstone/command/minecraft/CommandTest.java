@@ -21,6 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest({Bukkit.class, CommandUtils.class})
 public abstract class CommandTest {
     protected CommandSender sender;
+    protected CommandSender opSender;
     protected Command command;
 
     @Test
@@ -33,5 +34,7 @@ public abstract class CommandTest {
     @Before
     public void before() {
         sender = PowerMockito.mock(CommandSender.class);
+        opSender = PowerMockito.mock(CommandSender.class);
+        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
     }
 }
