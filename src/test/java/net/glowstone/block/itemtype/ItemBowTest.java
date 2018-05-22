@@ -1,5 +1,10 @@
 package net.glowstone.block.itemtype;
 
+import static net.glowstone.TestUtils.checkInventory;
+import static org.bukkit.Material.ARROW;
+import static org.bukkit.Material.BOW;
+import static org.bukkit.Material.SPECTRAL_ARROW;
+import static org.bukkit.Material.TIPPED_ARROW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,6 +20,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableSortedSet;
+import java.util.Set;
+import java.util.function.Predicate;
+import net.glowstone.TestUtils;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.entity.projectile.GlowSpectralArrow;
@@ -41,6 +50,14 @@ import org.mockito.Mockito;
 
 public class ItemBowTest extends ItemTypeTest {
     public static final Vector POSITIVE_X_DIRECTION = new Vector(1, 0, 0);
+    private static final Set<Material> ARROW_TYPES = ImmutableSortedSet.of(
+            ARROW, TIPPED_ARROW, SPECTRAL_ARROW);
+    private static final Predicate<ItemStack> ARROW_MATCHER
+            = TestUtils.itemTypeMatcher(ARROW_TYPES);
+    private static final Predicate<ItemStack> BOW_WITH_DAMAGE_1
+            = TestUtils.itemTypeMatcher(BOW).and(item -> item.getDurability() == 1);
+    private static final Predicate<ItemStack> BOW_WITH_DAMAGE_NOT_1
+            = TestUtils.itemTypeMatcher(BOW).and(item -> item.getDurability() != 1);
     private ItemBow bow;
     private ItemStack bowItemStack;
     private GlowArrow launchedArrow;
@@ -51,7 +68,7 @@ public class ItemBowTest extends ItemTypeTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        bowItemStack = new ItemStack(Material.BOW);
+        bowItemStack = new ItemStack(BOW);
         inventory.setItemInMainHand(bowItemStack);
         doCallRealMethod().when(player).setItemInHand(any(ItemStack.class));
         bow = new ItemBow();
@@ -78,32 +95,6 @@ public class ItemBowTest extends ItemTypeTest {
         return Mockito.mock(GlowPlayer.class);
     }
 
-    private void scanInventory(boolean expectBow, int expectedBowDamage, int expectedArrows) {
-        boolean foundBow = false;
-        int arrows = 0;
-        for (ItemStack item : inventory.getContents()) {
-            switch (item.getType()) {
-                case BOW:
-                    assertTrue("Unexpected bow found", expectBow);
-                    assertFalse("Duplicate bow found", foundBow);
-                    foundBow = true;
-                    assertEquals((long) expectedBowDamage, (long) item.getDurability());
-                    break;
-                case ARROW:
-                case SPECTRAL_ARROW:
-                case TIPPED_ARROW:
-                    arrows += item.getAmount();
-                    break;
-                default:
-                    // do nothing
-            }
-        }
-        assertEquals(expectedArrows, arrows);
-        if (expectBow) {
-            assertTrue("No bow found", foundBow);
-        }
-    }
-
     @Test
     public void testBasicFunctions() {
         ItemStack arrows = new ItemStack(Material.ARROW, 2);
@@ -120,12 +111,20 @@ public class ItemBowTest extends ItemTypeTest {
         verify(player, times(1)).launchProjectile(Arrow.class);
         verify(player, times(1)).setUsageItem(null);
         verify(player, times(1)).setUsageTime(0);
-        scanInventory(true, 1, 1);
+        checkInventory(inventory, 1, BOW_WITH_DAMAGE_1);
+        checkInventory(inventory, 0,
+                BOW_WITH_DAMAGE_NOT_1);
+        checkInventory(inventory, 1,
+                item -> ARROW_TYPES.contains(item.getType()));
 
         // Shooting a second time should consume the last arrow
         bow.startUse(player, bowItemStack);
         bow.endUse(player, bowItemStack);
-        scanInventory(true, 2, 0);
+        checkInventory(inventory, 1,
+                item -> item.getType() == BOW && item.getDurability() == 2);
+        checkInventory(inventory, 0,
+                item -> item.getType() == BOW && item.getDurability() != 2);
+        checkInventory(inventory, 0, ARROW_MATCHER);
     }
 
     @Test
@@ -144,7 +143,12 @@ public class ItemBowTest extends ItemTypeTest {
         verify(player, times(1)).launchProjectile(SpectralArrow.class);
         verify(player, times(1)).setUsageItem(null);
         verify(player, times(1)).setUsageTime(0);
-        scanInventory(true, 1, 0);
+        checkInventory(inventory, 1,
+                BOW_WITH_DAMAGE_1);
+        checkInventory(inventory, 0,
+                BOW_WITH_DAMAGE_NOT_1);
+        checkInventory(inventory, 0,
+                item -> ARROW_TYPES.contains(item.getType()));
     }
 
     @Test
@@ -173,7 +177,12 @@ public class ItemBowTest extends ItemTypeTest {
         verify(launchedTippedArrow, times(1)).addCustomEffect(eq(effect), anyBoolean());
         verify(player, times(1)).setUsageItem(null);
         verify(player, times(1)).setUsageTime(0);
-        scanInventory(true, 1, 0);
+        checkInventory(inventory, 1,
+                BOW_WITH_DAMAGE_1);
+        checkInventory(inventory, 0,
+                BOW_WITH_DAMAGE_NOT_1);
+        checkInventory(inventory, 0,
+                item -> ARROW_TYPES.contains(item.getType()));
     }
 
     @Test
@@ -205,10 +214,12 @@ public class ItemBowTest extends ItemTypeTest {
     public void testBreakBow() {
         ItemStack arrow = new ItemStack(Material.ARROW, 1);
         inventory.addItem(arrow);
-        bowItemStack.setDurability(Material.BOW.getMaxDurability());
+        bowItemStack.setDurability(BOW.getMaxDurability());
         bow.startUse(player, bowItemStack);
         bow.endUse(player, bowItemStack);
-        scanInventory(false, 0, 0);
+        checkInventory(inventory, 0, item -> BOW == item.getType());
+        checkInventory(inventory, 0,
+                item -> ARROW_TYPES.contains(item.getType()));
     }
 
     @Test
@@ -220,6 +231,9 @@ public class ItemBowTest extends ItemTypeTest {
         bowItemStack.setItemMeta(meta);
         bow.startUse(player, bowItemStack);
         bow.endUse(player, bowItemStack);
-        scanInventory(true, 1, 1);
+        checkInventory(inventory, 1, BOW_WITH_DAMAGE_1);
+        checkInventory(inventory, 0, BOW_WITH_DAMAGE_NOT_1);
+        checkInventory(inventory, 1,
+                item -> ARROW_TYPES.contains(item.getType()));
     }
 }

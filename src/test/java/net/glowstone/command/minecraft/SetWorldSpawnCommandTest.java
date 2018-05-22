@@ -33,19 +33,12 @@ public class SetWorldSpawnCommandTest extends CommandTest {
     @Override
     public void before() {
         super.before();
-        opPlayer = PowerMockito.mock(Player.class);
         world = PowerMockito.mock(GlowWorld.class);
+        opPlayer = prepareMockPlayers(
+                new Location(world, 10.5, 20.0, 30.5), null, world, "ChuckNorris")[0];
         command = new SetWorldSpawnCommand();
-
-        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
-
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
-        Mockito.when(opPlayer.getName()).thenReturn("ChuckNorris");
-        Mockito.when(((Entity) opPlayer).getLocation())
-            .thenReturn(new Location(world, 10.5, 20.0, 30.5));
-
         Mockito.when(world.getMaxHeight()).thenReturn(50);
-
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
     }

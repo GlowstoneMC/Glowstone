@@ -27,57 +27,25 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
-public class SpawnPointCommandTest extends CommandTest {
+public class SpawnPointCommandTest extends CommandTestWithFakePlayers {
 
     private CommandSender opPlayer;
 
-    private Player fakePlayer1, fakePlayer2, fakePlayer3;
-
-    private GlowWorld world;
-
-    private GlowServer server;
+    public SpawnPointCommandTest() {
+        super("player1", "player2", "thePlayer3");
+    }
 
     @Before
     public void before() {
         super.before();
-        server = PowerMockito.mock(GlowServer.class);
-        fakePlayer1 = PowerMockito.mock(Player.class);
-        fakePlayer2 = PowerMockito.mock(Player.class);
-        fakePlayer3 = PowerMockito.mock(Player.class);
 
         opPlayer = PowerMockito.mock(Player.class);
-        world = PowerMockito.mock(GlowWorld.class);
         command = new SpawnPointCommand();
-
-        final Location location = new Location(world, 10.5, 20.0, 30.5);
-        Mockito.when(fakePlayer1.getName()).thenReturn("player1");
-        Mockito.when(fakePlayer2.getName()).thenReturn("player2");
-        Mockito.when(fakePlayer3.getName()).thenReturn("thePlayer3");
-        Mockito.when(fakePlayer1.getLocation()).thenReturn(location);
-        Mockito.when(fakePlayer2.getLocation()).thenReturn(location);
-        Mockito.when(fakePlayer3.getLocation()).thenReturn(location);
-        Mockito.when(fakePlayer1.getType()).thenReturn(EntityType.PLAYER);
-        Mockito.when(fakePlayer2.getType()).thenReturn(EntityType.PLAYER);
-        Mockito.when(fakePlayer3.getType()).thenReturn(EntityType.PLAYER);
-
         Mockito.when(opSender.getServer()).thenReturn(server);
-
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opPlayer.getName()).thenReturn("ChuckNorris");
         Mockito.when(((Entity) opPlayer).getLocation()).thenReturn(location);
-
-        Mockito.doReturn(ImmutableList.of(fakePlayer1, fakePlayer2, fakePlayer3))
-            .when(server).getOnlinePlayers();
-
         Mockito.when(world.getMaxHeight()).thenReturn(50);
-        Mockito.when(world.getEntities())
-            .thenReturn(ImmutableList.of(fakePlayer1, fakePlayer2, fakePlayer3));
-
-        PowerMockito.mockStatic(Bukkit.class);
-        Mockito.when(Bukkit.getPlayerExact("player1")).thenReturn(fakePlayer1);
-        Mockito.when(Bukkit.getPlayerExact("player2")).thenReturn(fakePlayer2);
-        Mockito.when(Bukkit.getPlayerExact("thePlayer3")).thenReturn(fakePlayer3);
-
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
     }

@@ -182,7 +182,12 @@ public class ClearCommand extends VanillaCommand {
     private boolean clearAll(CommandSender sender, Player player, Material material, int data,
         int maxCount) {
         int count = countAllItems(player.getInventory(), material, data, maxCount);
-        if (count == 0 && maxCount != 0) {
+        if (maxCount == 0) {
+            sender.sendMessage(player.getName() + " has " + count
+                    + " items that match the criteria");
+            return true;
+        }
+        if (count == 0) {
             sender.sendMessage(
                 ChatColor.RED + "Could not clear the inventory of " + player.getName()
                     + ", no items to remove");
@@ -198,10 +203,6 @@ public class ClearCommand extends VanillaCommand {
                     // matches type and data
                     if (maxCount == -1) {
                         player.getInventory().remove(stack);
-                    } else if (maxCount == 0) {
-                        sender.sendMessage(player.getName() + " has " + count
-                            + " items that match the criteria");
-                        return true;
                     } else {
                         int oldAmount = stack.getAmount();
                         int removed = Math.min(oldAmount, remaining);
