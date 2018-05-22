@@ -13,14 +13,16 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
-public class SetIdleTimeoutCommandTest extends CommandTest {
+public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand> {
+
+    public SetIdleTimeoutCommandTest() {
+        super(SetIdleTimeoutCommand::new);
+    }
 
     @Before
     @Override
     public void before() {
         super.before();
-        command = new SetIdleTimeoutCommand();
-
         ServerProvider.setMockServer(PowerMockito.mock(GlowServer.class));
     }
 

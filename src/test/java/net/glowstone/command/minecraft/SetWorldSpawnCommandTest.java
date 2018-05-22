@@ -9,10 +9,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +20,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class})
-public class SetWorldSpawnCommandTest extends CommandTest {
+public class SetWorldSpawnCommandTest extends CommandTest<SetWorldSpawnCommand> {
 
     protected CommandSender opPlayer;
 
     private GlowWorld world;
+
+    public SetWorldSpawnCommandTest() {
+        super(SetWorldSpawnCommand::new);
+    }
 
     @Before
     @Override
@@ -36,7 +37,6 @@ public class SetWorldSpawnCommandTest extends CommandTest {
         world = PowerMockito.mock(GlowWorld.class);
         opPlayer = prepareMockPlayers(
                 new Location(world, 10.5, 20.0, 30.5), null, world, "ChuckNorris")[0];
-        command = new SetWorldSpawnCommand();
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(world.getMaxHeight()).thenReturn(50);
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))

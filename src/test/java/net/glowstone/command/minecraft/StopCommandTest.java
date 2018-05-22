@@ -7,21 +7,21 @@ import static org.mockito.Mockito.when;
 
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class StopCommandTest extends CommandTest {
+public class StopCommandTest extends CommandTest<StopCommand> {
     private GlowServer server;
+
+    public StopCommandTest() {
+        super(StopCommand::new);
+    }
 
     @BeforeEach
     @Override
     public void before() {
         super.before();
-        command = new StopCommand();
         server = Mockito.mock(GlowServer.class);
         ServerProvider.setMockServer(server);
         when(opSender.getServer()).thenReturn(server);

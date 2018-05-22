@@ -7,8 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -19,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,10 +29,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
-public abstract class CommandTest {
+public abstract class CommandTest<T extends Command> {
     protected CommandSender sender;
     protected CommandSender opSender;
-    protected Command command;
+    protected T command;
+    protected final Supplier<T> commandSupplier;
+
+    protected CommandTest(Supplier<T> commandSupplier) {
+        this.commandSupplier = commandSupplier;
+    }
 
     @Test
     public void testExecuteFailsWithoutPermission() {
@@ -45,6 +48,7 @@ public abstract class CommandTest {
 
     @Before
     public void before() {
+        command = commandSupplier.get();
         sender = PowerMockito.mock(CommandSender.class);
         opSender = PowerMockito.mock(CommandSender.class);
         Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);

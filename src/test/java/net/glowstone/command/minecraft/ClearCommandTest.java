@@ -15,21 +15,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class ClearCommandTest extends CommandTestWithFakePlayers {
+public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
     private GlowPlayerInventory inventory;
 
     public ClearCommandTest() {
-        super("ChuckNorris");
+        super(ClearCommand::new, "ChuckNorris");
     }
 
     @Override
     @Before
     public void before() {
         super.before();
-        /* FIXME: Intended to prevent NPE in ItemStack.toString(), but causes failures: */
         when(Bukkit.getItemFactory()).thenReturn(GlowItemFactory.instance());
-        /**/
-        command = new ClearCommand();
         inventory = new GlowPlayerInventory(fakePlayers[0]);
         inventory.setItemInMainHand(new ItemStack(Material.DIRT, 32));
         inventory.setItemInOffHand(new ItemStack(Material.DIAMOND_AXE, 1, (short) 30));

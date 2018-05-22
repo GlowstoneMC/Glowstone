@@ -8,7 +8,6 @@ import java.util.Collections;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.World;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,19 +19,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommandUtils.class})
-public class ToggleDownfallCommandTest extends CommandTest {
+public class ToggleDownfallCommandTest extends CommandTest<ToggleDownfallCommand> {
 
     private World world;
+
+    public ToggleDownfallCommandTest() {
+        super(ToggleDownfallCommand::new);
+    }
 
     @Override
     @Before
     public void before() {
+        super.before();
         world = PowerMockito.mock(GlowWorld.class);
-        command = new ToggleDownfallCommand();
-        sender = PowerMockito.mock(CommandSender.class);
-        opSender = PowerMockito.mock(CommandSender.class);
-
-        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
     }

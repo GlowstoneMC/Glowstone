@@ -6,16 +6,12 @@ import static org.mockito.Matchers.eq;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,12 +23,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
-public class SpawnPointCommandTest extends CommandTestWithFakePlayers {
+public class SpawnPointCommandTest extends CommandTestWithFakePlayers<SpawnPointCommand> {
 
     private CommandSender opPlayer;
 
     public SpawnPointCommandTest() {
-        super("player1", "player2", "thePlayer3");
+        super(SpawnPointCommand::new, "player1", "player2", "thePlayer3");
     }
 
     @Before
@@ -40,7 +36,6 @@ public class SpawnPointCommandTest extends CommandTestWithFakePlayers {
         super.before();
 
         opPlayer = PowerMockito.mock(Player.class);
-        command = new SpawnPointCommand();
         Mockito.when(opSender.getServer()).thenReturn(server);
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opPlayer.getName()).thenReturn("ChuckNorris");

@@ -1,20 +1,22 @@
 package net.glowstone.command.minecraft;
 
+import java.util.function.Supplier;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.command.Command;
 import org.powermock.api.mockito.PowerMockito;
 
-public abstract class CommandTestWithFakePlayers extends CommandTest {
+public abstract class CommandTestWithFakePlayers<T extends Command> extends CommandTest<T> {
     private final String[] names;
     protected GlowWorld world;
     protected GlowServer server;
     protected GlowPlayer[] fakePlayers;
     protected Location location;
 
-    protected CommandTestWithFakePlayers(String... names) {
+    protected CommandTestWithFakePlayers(Supplier<T> commandSupplier, String... names) {
+        super(commandSupplier);
         this.names = names;
     }
 

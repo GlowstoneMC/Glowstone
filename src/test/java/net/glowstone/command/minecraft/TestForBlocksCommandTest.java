@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.Objects;
 import net.glowstone.GlowWorld;
 import net.glowstone.testutils.InMemoryBlockStorage;
 import org.bukkit.ChatColor;
@@ -17,16 +16,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
-public class TestForBlocksCommandTest extends CommandTest {
+public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> {
     private InMemoryBlockStorage blockStorage;
     private Player opPlayer;
     private GlowWorld world;
+
+    public TestForBlocksCommandTest() {
+        super(TestForBlocksCommand::new);
+    }
 
     @Override
     @Before
     public void before() {
         super.before();
-        command = new TestForBlocksCommand();
         blockStorage = new InMemoryBlockStorage();
         opPlayer = PowerMockito.mock(Player.class);
         world = PowerMockito.mock(GlowWorld.class);

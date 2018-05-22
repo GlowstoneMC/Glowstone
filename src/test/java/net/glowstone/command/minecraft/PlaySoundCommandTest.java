@@ -26,19 +26,18 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
-public class PlaySoundCommandTest extends CommandTestWithFakePlayers {
+public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCommand> {
 
     protected CommandSender opPlayer;
 
     public PlaySoundCommandTest() {
-        super("player1", "player2", "thePlayer3");
+        super(PlaySoundCommand::new, "player1", "player2", "thePlayer3");
     }
 
     @Before
     public void before() {
         super.before();
         opPlayer = PowerMockito.mock(Player.class);
-        command = new PlaySoundCommand();
         Mockito.when(sender.getServer()).thenReturn(server);
         Mockito.when(opSender.getServer()).thenReturn(server);
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
