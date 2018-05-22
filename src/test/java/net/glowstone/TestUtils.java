@@ -29,9 +29,14 @@ public class TestUtils {
                 matches += item.getAmount();
             }
         }
+        /* TODO once ItemStack.toString() is fixed for tests:
         assertEquals(
-                String.format("Expected exactly %d items but found %d, matching %s against:%n%s",
+                String.format("Expected exactly %d items but found %d, matching {%s} against:%n%s",
                         expectedMatches, matches, filter, inventory), expectedMatches, matches);
+        */
+        assertEquals(
+                String.format("Expected exactly %d items but found %d, matching {%s}",
+                        expectedMatches, matches, filter), expectedMatches, matches);
     }
 
     /**
