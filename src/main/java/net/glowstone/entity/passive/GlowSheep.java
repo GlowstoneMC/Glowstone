@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -17,6 +18,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
 
@@ -93,7 +95,12 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     if (isSheared()) {
                         return false;
                     }
-
+                    PlayerShearEntityEvent shearEvent = EventFactory.getInstance().callEvent(
+                            new PlayerShearEntityEvent(player, this)
+                    );
+                    if (shearEvent.isCancelled()) {
+                        return false;
+                    }
                     if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                         if (hand.getDurability() < 238) {
                             hand.setDurability((short) (hand.getDurability() + 1));
@@ -116,12 +123,12 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     Dye dye = (Dye) hand.getData();
                     DyeColor color = dye.getColor();
 
-                    SheepDyeWoolEvent event = new SheepDyeWoolEvent(this, color);
-                    if (event.isCancelled()) {
+                    SheepDyeWoolEvent dyeEvent = new SheepDyeWoolEvent(this, color);
+                    if (dyeEvent.isCancelled()) {
                         return false;
                     }
 
-                    color = event.getColor();
+                    color = dyeEvent.getColor();
 
                     if (color.equals(getColor())) {
                         return false;
