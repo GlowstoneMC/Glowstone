@@ -19,16 +19,7 @@ import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.BanList;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.UnsafeValues;
-import org.bukkit.Warning;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
@@ -67,6 +58,8 @@ public class ServerShim implements Server {
     public static void install() {
         if (!(ServerProvider.getServer() instanceof ServerShim)) {
             ServerProvider.setMockServer(new ServerShim());
+        }
+        if (Bukkit.getServer() == null) {
             Bukkit.setServer(ServerProvider.getMockServer());
         }
     }
