@@ -65,8 +65,9 @@ import org.mockito.Mockito;
 public class ServerShim implements Server {
 
     public static void install() {
-        if (ServerProvider.getServer() == null) {
-            Bukkit.setServer(new ServerShim());
+        if (!(ServerProvider.getServer() instanceof ServerShim)) {
+            ServerProvider.setMockServer(new ServerShim());
+            Bukkit.setServer(ServerProvider.getMockServer());
         }
     }
 
