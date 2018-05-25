@@ -325,6 +325,7 @@
         </executions>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
       <plugin>
