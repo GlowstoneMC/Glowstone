@@ -140,7 +140,7 @@ public class BlockCauldron extends BlockNeedsTool {
         CauldronLevelChangeEvent event = EventFactory.getInstance().callEvent(
                 new CauldronLevelChangeEvent(block, entity, reason, oldLevel, newLevel));
         if (!event.isCancelled()) {
-            block.setData((byte) newLevel);
+            block.setData((byte) event.getNewLevel());
         }
         return !event.isCancelled();
     }
