@@ -55,12 +55,16 @@ public interface IAlgorithm {
                 continue;
             }
 
-            if (!materialAt.isSolid()) {
+            if (materialAt.equals(Material.AIR) && location.getWorld().getBlockAt(
+                  neighbor.add(new Vector(0, -1, 0)).toLocation(
+                        location.getWorld())).getType().equals(Material.AIR)) {
+                continue;
+            }
 
-                if (start.getBlockY() - neighbor.getBlockY() > 1
-                      || start.getBlockY() - neighbor.getBlockY() < -1) {
-                    continue;
-                }
+            if (materialAt.isSolid()  && location.getWorld().getBlockAt(
+                  neighbor.add(new Vector(0, 1, 0)).toLocation(
+                        location.getWorld())).getType().isSolid()) {
+                continue;
             }
             neighbors.put(neighbor, materialWeights.getOrDefault(materialAt, 0.0));
         }
