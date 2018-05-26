@@ -70,8 +70,6 @@ public abstract class CommandTest<T extends Command> {
             Mockito.doReturn(ImmutableList.copyOf(players)).when(server).getOnlinePlayers();
         }
         if (world != null) {
-            // Can't use ImmutableList here because we're building List<Entity> from GlowPlayer[]
-            // FIXME: Redefine World.getEntities() to return List<? extends Entity>
             when(world.getEntities()).thenReturn(ImmutableList.copyOf(players));
         }
         return players;
