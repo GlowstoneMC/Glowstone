@@ -11,6 +11,12 @@ public interface LocalizedStrings {
                 );
             }
 
+            interface BlockEntity {
+                LoggableLocalizedString READ_ERROR = new LoggableLocalizedStringImpl(
+                        "console.block-entity.read-error"
+                )
+            }
+
             LoggableLocalizedString CLASSPATH = new LoggableLocalizedStringImpl(
                     "console.classpath.load-failed", Level.WARNING
             );
@@ -205,6 +211,10 @@ public interface LocalizedStrings {
                     "console.ready", Level.INFO
             );
 
+            LoggableLocalizedString RECIPE_COUNTS = new LoggableLocalizedStringImpl(
+                    "console.recipe.counts", Level.INFO
+            )
+
             LoggableLocalizedString SAVE = new LoggableLocalizedStringImpl(
                     "console.save", Level.INFO
             );
@@ -229,6 +239,27 @@ public interface LocalizedStrings {
         }
 
         interface Warn {
+
+            interface BlockEntity {
+                LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
+                        "console.block-entity.unknown", Level.WARNING
+                )
+            }
+
+            interface Chunk {
+                LoggableLocalizedString SECTION_DUP = new LoggableLocalizedStringImpl(
+                        "console.chunk.section-dup", Level.WARNING
+                );
+
+                LoggableLocalizedString SECTION_OOB = new LoggableLocalizedStringImpl(
+                        "console.chunk.section-oob", Level.WARNING
+                );
+
+                LoggableLocalizedString UNKNOWN_BLOCK_TO_TICK = new LoggableLocalizedStringImpl(
+                        "console.chunk.unknown-block-to-tick", Level.WARNING
+                );
+            }
+
             interface Entity {
                 LoggableLocalizedString LOADING_ERROR = new LoggableLocalizedStringImpl(
                         "console.entity.loading-error", Level.WARNING
@@ -347,6 +378,12 @@ public interface LocalizedStrings {
                 LoggableLocalizedString TIMEOUT = new LoggableLocalizedStringImpl(
                         "console.profile.timeout", Level.WARNING
                 );
+            }
+
+            interface Recipe {
+                LoggableLocalizedString NO_DEFAULTS = new LoggableLocalizedStringImpl(
+                        "console.recipe.no-defaults", Level.WARNING
+                )
             }
 
             interface Uuid {

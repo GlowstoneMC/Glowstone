@@ -84,12 +84,14 @@ public class NbtStructureDataService implements StructureDataService {
                     try (NbtInputStream in = new NbtInputStream(
                             new FileInputStream(structureFile))) {
                         inputRoot = in.readCompound();
-                        data = inputRoot.tryGetCompound("data").orElseGet(CompoundTag::new);
+                        data = inputRoot.tryGetCompound("data") //NON-NLS
+                                .orElseGet(CompoundTag::new);
                     } catch (IOException e) {
                         LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
                         data = new CompoundTag();
                     }
-                    features = data.tryGetCompound("Features").orElseGet(CompoundTag::new);
+                    features = data.tryGetCompound("Features") //NON-NLS
+                            .orElseGet(CompoundTag::new);
                 } else {
                     data = new CompoundTag();
                     features = new CompoundTag();
