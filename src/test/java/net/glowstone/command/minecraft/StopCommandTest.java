@@ -7,36 +7,24 @@ import static org.mockito.Mockito.when;
 
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class StopCommandTest {
+public class StopCommandTest extends CommandTest<StopCommand> {
     private GlowServer server;
 
-    private CommandSender sender, opSender;
-
-    private Command command;
-
-    @BeforeEach
-    public void before() {
-        command = new StopCommand();
-        sender = Mockito.mock(CommandSender.class);
-        opSender = Mockito.mock(CommandSender.class);
-        server = Mockito.mock(GlowServer.class);
-        ServerProvider.setMockServer(server);
-        when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
-        when(opSender.getServer()).thenReturn(server);
+    public StopCommandTest() {
+        super(StopCommand::new);
     }
 
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-                + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
+    @BeforeEach
+    @Override
+    public void before() {
+        super.before();
+        server = Mockito.mock(GlowServer.class);
+        ServerProvider.setMockServer(server);
+        when(opSender.getServer()).thenReturn(server);
     }
 
     @Test

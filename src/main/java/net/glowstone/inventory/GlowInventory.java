@@ -527,6 +527,20 @@ public class GlowInventory implements Inventory {
 
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        sb.append(" for ").append(getHolder()).append(":\n");
+        for (GlowInventorySlot slot : slots) {
+            ItemStack item = slot.getItem();
+            SlotType type = slot.getType();
+            if (type != SlotType.CONTAINER || !InventoryUtil.isEmpty(item)) {
+                sb.append(item).append(" in ").append(slot.getType()).append('\n');
+            }
+        }
+        return sb.toString();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Contains
 

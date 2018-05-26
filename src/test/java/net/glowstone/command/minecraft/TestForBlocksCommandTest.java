@@ -12,19 +12,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
-public class TestForBlocksCommandTest {
-    private TestForBlocksCommand command;
+public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> {
     private InMemoryBlockStorage blockStorage;
     private Player opPlayer;
     private GlowWorld world;
 
-    @BeforeEach
-    public void before() throws Exception {
-        command = new TestForBlocksCommand();
+    public TestForBlocksCommandTest() {
+        super(TestForBlocksCommand::new);
+    }
+
+    @Override
+    @Before
+    public void before() {
+        super.before();
         blockStorage = new InMemoryBlockStorage();
         opPlayer = PowerMockito.mock(Player.class);
         world = PowerMockito.mock(GlowWorld.class);

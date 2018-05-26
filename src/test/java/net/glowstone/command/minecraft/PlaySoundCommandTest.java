@@ -7,19 +7,14 @@ import static org.mockito.Matchers.eq;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
-import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,69 +26,25 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
-public class PlaySoundCommandTest {
+public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCommand> {
 
-    private Player fakePlayer1, fakePlayer2, fakePlayer3;
+    protected CommandSender opPlayer;
 
-    private GlowWorld world;
-
-    private GlowServer server;
-
-    private CommandSender sender, opSender, opPlayer;
-
-    private Command command;
+    public PlaySoundCommandTest() {
+        super(PlaySoundCommand::new, "player1", "player2", "thePlayer3");
+    }
 
     @Before
     public void before() {
-        command = new PlaySoundCommand();
-        sender = PowerMockito.mock(CommandSender.class);
-        opSender = PowerMockito.mock(CommandSender.class);
+        super.before();
         opPlayer = PowerMockito.mock(Player.class);
-        server = PowerMockito.mock(GlowServer.class);
-        world = PowerMockito.mock(GlowWorld.class);
-
-        fakePlayer1 = PowerMockito.mock(GlowPlayer.class);
-        fakePlayer2 = PowerMockito.mock(GlowPlayer.class);
-        fakePlayer3 = PowerMockito.mock(GlowPlayer.class);
-
-        final Location location = new Location(world, 10.5, 20.0, 30.5);
-        Mockito.when(fakePlayer1.getName()).thenReturn("player1");
-        Mockito.when(fakePlayer2.getName()).thenReturn("player2");
-        Mockito.when(fakePlayer3.getName()).thenReturn("thePlayer3");
-        Mockito.when(fakePlayer1.getLocation()).thenReturn(location);
-        Mockito.when(fakePlayer2.getLocation()).thenReturn(location);
-        Mockito.when(fakePlayer3.getLocation()).thenReturn(location);
-        Mockito.when(fakePlayer1.getType()).thenReturn(EntityType.PLAYER);
-        Mockito.when(fakePlayer2.getType()).thenReturn(EntityType.PLAYER);
-        Mockito.when(fakePlayer3.getType()).thenReturn(EntityType.PLAYER);
-
-        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
+        Mockito.when(sender.getServer()).thenReturn(server);
         Mockito.when(opSender.getServer()).thenReturn(server);
-
         Mockito.when(opPlayer.hasPermission(Mockito.anyString())).thenReturn(true);
         Mockito.when(opPlayer.getName()).thenReturn("ChuckNorris");
         Mockito.when(((Entity) opPlayer).getLocation()).thenReturn(location);
-
-        Mockito.doReturn(ImmutableList.of(fakePlayer1, fakePlayer2, fakePlayer3))
-            .when(server).getOnlinePlayers();
-
-        Mockito.when(world.getEntities())
-            .thenReturn(ImmutableList.of(fakePlayer1, fakePlayer2, fakePlayer3));
-
-        PowerMockito.mockStatic(Bukkit.class);
-        Mockito.when(Bukkit.getPlayerExact("player1")).thenReturn(fakePlayer1);
-        Mockito.when(Bukkit.getPlayerExact("player2")).thenReturn(fakePlayer2);
-        Mockito.when(Bukkit.getPlayerExact("thePlayer3")).thenReturn(fakePlayer3);
-
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
-    }
-
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test

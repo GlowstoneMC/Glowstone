@@ -7,37 +7,23 @@ import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
-public class SetIdleTimeoutCommandTest {
+public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand> {
 
-    private CommandSender sender, opSender;
-
-    private Command command;
-
-    @BeforeEach
-    public void before() {
-        sender = PowerMockito.mock(CommandSender.class);
-        opSender = PowerMockito.mock(CommandSender.class);
-        command = new SetIdleTimeoutCommand();
-
-        Mockito.when(opSender.hasPermission(Mockito.anyString())).thenReturn(true);
-        ServerProvider.setMockServer(PowerMockito.mock(GlowServer.class));
+    public SetIdleTimeoutCommandTest() {
+        super(SetIdleTimeoutCommand::new);
     }
 
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        final boolean commandResult = command.execute(sender, "label", new String[0]);
-
-        MatcherAssert.assertThat(commandResult, is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
+    @Before
+    @Override
+    public void before() {
+        super.before();
+        ServerProvider.setMockServer(PowerMockito.mock(GlowServer.class));
     }
 
     @Test
