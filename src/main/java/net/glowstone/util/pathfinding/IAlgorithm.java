@@ -51,15 +51,15 @@ public interface IAlgorithm {
             final Material materialAt = location.getWorld().getBlockAt(
                   neighbor.toLocation(location.getWorld())).getType();
 
+            if (blockedMaterials.contains(materialAt)) {
+                continue;
+            }
+
             if (!materialAt.isSolid()) {
-                if (neighbor.getBlockY() >= start.getBlockY()) {
-                    if (start.getBlockY() - neighbor.getBlockY() > 1) {
-                        continue;
-                    }
-                } else {
-                    if (start.getBlockY() - neighbor.getBlockY() > 1) {
-                        continue;
-                    }
+
+                if (start.getBlockY() - neighbor.getBlockY() > 1
+                      || start.getBlockY() - neighbor.getBlockY() < -1) {
+                    continue;
                 }
             }
             neighbors.put(neighbor, materialWeights.getOrDefault(materialAt, 0.0));
