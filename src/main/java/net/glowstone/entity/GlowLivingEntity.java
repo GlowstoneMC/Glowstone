@@ -67,6 +67,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -519,7 +520,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void setRemainingAir(int ticks) {
-        remainingAir = Math.min(ticks, maximumAir);
+        ticks = Math.min(ticks, maximumAir);
+        if (ticks == remainingAir) {
+            return;
+        }
+        EntityAirChangeEvent event = EventFactory.getInstance().callEvent(
+                new EntityAirChangeEvent(this, remainingAir)
+        );
+        if (event.isCancelled()) {
+            return;
+        }
+        remainingAir = event.getAmount();
     }
 
     @Override
