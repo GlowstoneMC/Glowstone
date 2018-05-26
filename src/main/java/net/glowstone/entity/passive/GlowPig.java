@@ -52,7 +52,7 @@ public class GlowPig extends GlowAnimal implements Pig {
                 if (hand.getType() == Material.SADDLE) {
                     setSaddle(true);
                     if (player.getGameMode() != GameMode.CREATIVE) {
-                        player.getInventory().consumeItemInMainHand();
+                        player.getInventory().consumeItemInHand(message.getHandSlot());
                     }
                     return true;
                 }

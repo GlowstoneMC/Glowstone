@@ -2,6 +2,7 @@ package net.glowstone.entity.passive;
 
 import java.util.UUID;
 import lombok.Getter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.TameableFlags;
@@ -12,6 +13,7 @@ import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
+import org.bukkit.event.entity.EntityTameEvent;
 
 public abstract class GlowTameable extends GlowAnimal implements Tameable {
 
@@ -100,5 +102,17 @@ public abstract class GlowTameable extends GlowAnimal implements Tameable {
      */
     public void setSitting(boolean isSitting) {
         metadata.setBit(META_STATUS, TameableFlags.IS_SITTING, isSitting);
+    }
+
+    /**
+     * Fires an {@link EntityTameEvent}, and checks whether it was cancelled.
+     *
+     * @param owner the {@link AnimalTamer} performing the action.
+     * @return false if the event was cancelled, true otherwise.
+     */
+    protected boolean fireEntityTameEvent(AnimalTamer owner) {
+        return !EventFactory.getInstance().callEvent(
+                new EntityTameEvent(this, owner)
+        ).isCancelled();
     }
 }

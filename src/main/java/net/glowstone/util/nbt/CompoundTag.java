@@ -44,6 +44,11 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         super(TagType.COMPOUND);
     }
 
+    public CompoundTag(Map<String, Tag> value) {
+        this();
+        this.value.putAll(value);
+    }
+
     @Override
     protected void valueToString(StringBuilder builder) {
         builder.append(value.size()).append(" entries\n{\n");
@@ -285,8 +290,17 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     public <V> List<V> getList(String key, TagType type) {
         List<? extends Tag> original = getTagList(key, type);
         List<V> result = new ArrayList<>(original.size());
-        result.addAll(
-                original.stream().map(item -> (V) item.getValue()).collect(Collectors.toList()));
+        if (type == TagType.COMPOUND) {
+            result.addAll(
+                    original.stream().map(
+                        item -> (V) new CompoundTag((Map<String, Tag>) item.getValue()))
+                            .collect(Collectors.toList()));
+        } else {
+            result.addAll(
+                    original.stream().map(
+                        item -> (V) item.getValue()).collect(Collectors.toList()));
+        }
+
         return result;
     }
 

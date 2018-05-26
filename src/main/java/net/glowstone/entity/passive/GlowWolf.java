@@ -3,15 +3,24 @@ package net.glowstone.entity.passive;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.Sets;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Dye;
 
 public class GlowWolf extends GlowTameable implements Wolf {
 
@@ -97,6 +106,46 @@ public class GlowWolf extends GlowTameable implements Wolf {
     public void setOwner(AnimalTamer animalTamer) {
         // TODO
         super.setOwner(animalTamer);
+    }
+
+    @Override
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        GlowServer.logger.info(String.valueOf(message));
+        boolean result = super.entityInteract(player, message);
+        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
+            if (result) {
+                return false;
+            }
+            ItemStack hand = InventoryUtil.itemOrEmpty(
+                    player.getInventory().getItem(message.getHandSlot()));
+            if (!isTamed() && hand.getType() == Material.BONE) {
+                // One in 3 chances of taming
+                if (ThreadLocalRandom.current().nextInt(3) == 0
+                        && fireEntityTameEvent(player)) {
+                    setCollarColor(DyeColor.RED);
+                    setTamed(true);
+                    setOwner(player);
+                    world.spawnParticle(Particle.HEART, location, 1);
+                    // Replenish health
+                    setHealth(getMaxHealth());
+                    setSitting(true);
+                }
+                player.getInventory().consumeItemInHand(message.getHandSlot());
+                return true;
+            }
+            if (isTamed() && Objects.equals(getOwnerUniqueId(), player.getUniqueId())) {
+                if (hand.getType() == Material.INK_SACK) {
+                    Dye dye = (Dye) hand.getData();
+                    DyeColor color = dye.getColor();
+                    setCollarColor(color);
+                    player.getInventory().consumeItemInHand(message.getHandSlot());
+                    return true;
+                }
+                setSitting(!isSitting());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

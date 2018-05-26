@@ -89,7 +89,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             if (!tag.isString("Name") || !tag.isDouble("Base")) {
                 return;
             }
-            List<Modifier> modifiers = null;
+            List<Modifier> modifiers = new ArrayList<>();
             tag.iterateCompoundList("Modifiers", modifierTag -> {
                 if (modifierTag.isDouble("Amount")
                         && modifierTag.isString("Name")

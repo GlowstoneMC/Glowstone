@@ -1,10 +1,9 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
@@ -24,8 +23,11 @@ import org.bukkit.util.Vector;
 
 public class BlockCauldron extends BlockNeedsTool {
 
-    private static final Collection<ItemStack> DROP = Arrays
-        .asList(new ItemStack(Material.CAULDRON_ITEM));
+    private static final byte LEVEL_EMPTY = 0;
+    private static final byte LEVEL_FULL = 3;
+
+    private static final Collection<ItemStack> DROP = Collections
+        .singletonList(new ItemStack(Material.CAULDRON_ITEM));
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
@@ -61,8 +63,8 @@ public class BlockCauldron extends BlockNeedsTool {
 
     private void fillCauldron(GlowPlayer player, GlowBlock block) {
         // fired when a player fills the cauldron using a water bucket
-        if (block.getData() < 3) {
-            if (!setCauldronLevel(block, 3, player,
+        if (block.getData() < LEVEL_FULL) {
+            if (!setCauldronLevel(block, LEVEL_FULL, player,
                     CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) {
                 return;
             }
@@ -74,7 +76,7 @@ public class BlockCauldron extends BlockNeedsTool {
 
     private void fillBottle(GlowPlayer player, GlowBlock block) {
         // fired when a player fills an empty bottle from the cauldron
-        if (block.getData() > 0) {
+        if (block.getData() > LEVEL_EMPTY) {
             if (!setCauldronLevel(block, block.getData() - 1, player,
                     CauldronLevelChangeEvent.ChangeReason.BOTTLE_FILL)) {
                 return;
@@ -98,7 +100,7 @@ public class BlockCauldron extends BlockNeedsTool {
             return false;
         }
 
-        if (block.getData() > 0) {
+        if (block.getData() > LEVEL_EMPTY) {
             ItemStack inHand = player.getItemInHand();
             BannerMeta meta = (BannerMeta) inHand.getItemMeta();
             List<Pattern> layers = meta.getPatterns();
@@ -119,7 +121,7 @@ public class BlockCauldron extends BlockNeedsTool {
 
     private boolean bleachLeatherArmor(GlowPlayer player, GlowBlock block) {
         // fired when a player bleaches a leather armor piece using the cauldron
-        if (block.getData() > 0) {
+        if (block.getData() > LEVEL_EMPTY) {
             if (!setCauldronLevel(block, block.getData() - 1, player,
                     CauldronLevelChangeEvent.ChangeReason.ARMOR_WASH)) {
                 return false;

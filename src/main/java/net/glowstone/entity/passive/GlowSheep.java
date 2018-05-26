@@ -135,7 +135,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     }
 
                     if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().consumeItemInMainHand();
+                        player.getInventory().consumeItemInHand(message.getHandSlot());
                     }
 
                     setColor(color);

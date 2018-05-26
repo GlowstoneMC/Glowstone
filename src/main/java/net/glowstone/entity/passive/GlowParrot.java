@@ -62,7 +62,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
     }
 
     public void setImitatedEntity(LivingEntity livingEntity) {
-
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     /**
@@ -109,21 +109,22 @@ public class GlowParrot extends GlowTameable implements Parrot {
             if (hand.getType() == Material.COOKIE) {
                 damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                 world.spawnParticle(Particle.SPELL, location, 1);
-                player.getInventory().consumeItemInMainHand();
+                player.getInventory().consumeItemInHand(message.getHandSlot());
             } else if (!isTamed() && hand.getType() == Material.SEEDS) {
-                if (ThreadLocalRandom.current().nextInt(3) == 0) {
+                // One in 3 chances of taming
+                if (ThreadLocalRandom.current().nextInt(3) == 0
+                        && fireEntityTameEvent(player)) {
                     setTamed(true);
                     setOwner(player);
                     world.spawnParticle(Particle.HEART, location, 1);
                 }
-                world.playSound(getLocation(), Sound.ENTITY_PARROT_EAT, 1.0F,
+                world.playSound(location, Sound.ENTITY_PARROT_EAT, 1.0F,
                     SoundUtil.randomReal(0.2F) + 1F);
-                player.getInventory().consumeItemInMainHand();
+                player.getInventory().consumeItemInHand(message.getHandSlot());
                 return true;
             }
             // TODO: sitting only happens on crouch
-            if (isTamed() && getOwnerUniqueId() != null && getOwnerUniqueId()
-                .equals(player.getUniqueId())) {
+            if (isTamed() && Objects.equals(getOwnerUniqueId(), player.getUniqueId())) {
                 if (!player.getLeftShoulderTag().isEmpty() && !player.getRightShoulderTag()
                     .isEmpty()) {
                     return super.entityInteract(player, message);

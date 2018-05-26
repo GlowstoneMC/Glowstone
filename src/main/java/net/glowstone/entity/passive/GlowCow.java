@@ -43,7 +43,7 @@ public class GlowCow extends GlowAnimal implements Cow {
                 return false;
             }
 
-            player.getInventory().consumeItemInMainHand();
+            player.getInventory().consumeItemInHand(message.getHandSlot());
 
             if (player.getInventory().firstEmpty() == -1) {
                 GlowItem item = player.getWorld()
