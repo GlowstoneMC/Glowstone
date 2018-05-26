@@ -13,7 +13,6 @@ import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.util.pathfinding.IAlgorithm;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.util.Vector;
 
 
@@ -59,22 +58,19 @@ public class AStarAlgorithm implements IAlgorithm {
 
             passed.add(current);
 
-            for (Vector neighbor : getNeighbors(current.toLocation(startPoint.getWorld()),
-                  Sets.newHashSet(blockedMaterials))) {
-                if (passed.contains(neighbor)) {
+            for (Map.Entry<Vector, Double> neighbor : getNeighbors(current.toLocation(
+                  startPoint.getWorld()), materialWeights,
+                  Sets.newHashSet(blockedMaterials)).entrySet()) {
+                if (passed.contains(neighbor.getKey())) {
                     continue;
                 }
 
-                double cost = costs.get(current) + current.distanceSquared(neighbor);
-                if (materialWeights.size() > 0) {
-                    final Material materialAt = getMaterialAt(startPoint.getWorld(), neighbor);
-                    cost += materialWeights.getOrDefault(materialAt, 0.0);
-                }
-
-                if (!costs.containsKey(neighbor) || cost < costs.get(neighbor)) {
-                    costs.put(neighbor, cost);
-                    open.add(neighbor);
-                    parents.put(neighbor, current);
+                double cost = costs.get(current) + neighbor.getValue()
+                              + current.distanceSquared(neighbor.getKey());
+                if (!costs.containsKey(neighbor.getKey()) || cost < costs.get(neighbor.getKey())) {
+                    costs.put(neighbor.getKey(), cost);
+                    open.add(neighbor.getKey());
+                    parents.put(neighbor.getKey(), current);
                 }
             }
         }
@@ -86,10 +82,5 @@ public class AStarAlgorithm implements IAlgorithm {
         }
         Collections.reverse(path);
         return path;
-    }
-
-    private Material getMaterialAt(final World world, final Vector vector) {
-        return world.getBlockAt(vector.getBlockX(), vector.getBlockY(),
-                                vector.getBlockZ()).getType();
     }
 }

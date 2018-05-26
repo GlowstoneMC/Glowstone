@@ -1,8 +1,7 @@
 package net.glowstone.util.pathfinding;
 
 import com.google.common.collect.Sets;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,27 +34,36 @@ public interface IAlgorithm {
     /**
      * Used to get the locations, as vectors, of neighboring blocks.
      * @param location The location used in the calculation of neighbors.
+     * @param materialWeights A map containing a {@link Material material} key, with
+     *                        a {@link Double cost} as the value.
      * @param blockedMaterials A set of materials that should be ignored.
      *
-     * @return A list of locations, after removing ignored materials, that neighbor
+     * @return A map of locations and their costs, after removing ignored materials, that neighbor
      *         the specified block.
      */
-    default List<Vector> getNeighbors(final Location location,
-                                      final Set<Material> blockedMaterials) {
-        List<Vector> neighbors = new ArrayList<>();
+    default Map<Vector, Double> getNeighbors(final Location location,
+                                             final Map<Material, Double> materialWeights,
+                                             final Set<Material> blockedMaterials) {
+        Map<Vector, Double> neighbors = new HashMap<>();
         final Vector start = location.toVector();
-        neighbors.addAll(getFaceNeighbors(start));
-        neighbors.addAll(getCornerNeighbors(start));
 
-        Iterator<Vector> it  = neighbors.iterator();
-
-        it.forEachRemaining((vector) -> {
+        for (Vector neighbor : getFaceNeighbors(start)) {
             final Material materialAt = location.getWorld().getBlockAt(
-                  vector.toLocation(location.getWorld())).getType();
-            if (!materialAt.isSolid() || blockedMaterials.contains(materialAt)) {
-                it.remove();
+                  neighbor.toLocation(location.getWorld())).getType();
+
+            if (!materialAt.isSolid()) {
+                if (neighbor.getBlockY() >= start.getBlockY()) {
+                    if (start.getBlockY() - neighbor.getBlockY() > 1) {
+                        continue;
+                    }
+                } else {
+                    if (start.getBlockY() - neighbor.getBlockY() > 1) {
+                        continue;
+                    }
+                }
             }
-        });
+            neighbors.put(neighbor, materialWeights.getOrDefault(materialAt, 0.0));
+        }
 
         return neighbors;
     }
