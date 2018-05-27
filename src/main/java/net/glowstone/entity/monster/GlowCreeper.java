@@ -62,7 +62,7 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         super.damage(amount, source, cause);
-        if (DamageCause.LIGHTNING.equals(cause)) {
+        if (DamageCause.LIGHTNING.equals(cause) && !isPowered()) {
             CreeperPowerEvent event = EventFactory.getInstance()
                     .callEvent(new CreeperPowerEvent(
                             this,
