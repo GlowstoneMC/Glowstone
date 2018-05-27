@@ -21,6 +21,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -129,10 +130,17 @@ public class GlowItem extends GlowEntity implements Item {
                     if (entity != this && ((GlowItem) entity).getItemStack()
                             .isSimilar(getItemStack())) {
                         ItemStack clone = getItemStack().clone();
-                        clone.setAmount(
-                                ((GlowItem) entity).getItemStack().getAmount() + clone.getAmount());
-                        entity.remove();
-                        setItemStack(clone);
+
+                        ItemMergeEvent event = EventFactory.getInstance()
+                                .callEvent(new ItemMergeEvent((GlowItem) entity, this));
+
+                        if (!event.isCancelled()) {
+                            clone.setAmount(
+                                    ((GlowItem) entity).getItemStack().getAmount()
+                                            + clone.getAmount());
+                            entity.remove();
+                            setItemStack(clone);
+                        }
                     }
                 }
             }
