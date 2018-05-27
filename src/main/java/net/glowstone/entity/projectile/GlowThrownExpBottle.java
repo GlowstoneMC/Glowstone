@@ -1,6 +1,8 @@
 package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
+
+import net.glowstone.EventFactory;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
@@ -9,6 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ThrownExpBottle;
+import org.bukkit.event.entity.ExpBottleEvent;
 
 public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBottle {
 
@@ -28,6 +31,9 @@ public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBott
 
     private void spawnOrb() {
         int xp = ThreadLocalRandom.current().nextInt(9) + 3;
+        ExpBottleEvent event = EventFactory.getInstance()
+                .callEvent(new ExpBottleEvent(this, xp));
+        xp = event.getExperience();
         ExperienceOrb orb = (ExperienceOrb) world.spawnEntity(location, EntityType.EXPERIENCE_ORB);
         orb.setExperience(xp);
         if (orb instanceof GlowExperienceOrb) {
