@@ -13,8 +13,8 @@ public interface LocalizedStrings {
 
             interface BlockEntity {
                 LoggableLocalizedString READ_ERROR = new LoggableLocalizedStringImpl(
-                        "console.block-entity.read-error"
-                )
+                        "console.block-entity.read-error", Level.SEVERE
+                );
             }
 
             LoggableLocalizedString CLASSPATH = new LoggableLocalizedStringImpl(
@@ -213,7 +213,7 @@ public interface LocalizedStrings {
 
             LoggableLocalizedString RECIPE_COUNTS = new LoggableLocalizedStringImpl(
                     "console.recipe.counts", Level.INFO
-            )
+            );
 
             LoggableLocalizedString SAVE = new LoggableLocalizedStringImpl(
                     "console.save", Level.INFO
@@ -243,7 +243,7 @@ public interface LocalizedStrings {
             interface BlockEntity {
                 LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
                         "console.block-entity.unknown", Level.WARNING
-                )
+                );
             }
 
             interface Chunk {
@@ -383,7 +383,7 @@ public interface LocalizedStrings {
             interface Recipe {
                 LoggableLocalizedString NO_DEFAULTS = new LoggableLocalizedStringImpl(
                         "console.recipe.no-defaults", Level.WARNING
-                )
+                );
             }
 
             interface Uuid {

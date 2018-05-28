@@ -39,9 +39,8 @@ public final class CraftingManager implements Iterable<Recipe> {
     private final Map<Material, Integer> furnaceFuels = new HashMap<>();
 
     /**
-     * Get the amount of layers in the crafting matrix.
-     * <p>
-     * <p>This assumes all Minecraft recipes have an item stack of 1 for all items in the recipe.
+     * Get the amount of layers in the crafting matrix. This assumes all Minecraft recipes have an
+     * item stack of 1 for all items in the recipe.
      *
      * @param items The items in the crafting matrix.
      * @return The number of stacks for a recipe.
@@ -328,11 +327,8 @@ public final class CraftingManager implements Iterable<Recipe> {
     }
 
     /**
-     * Get a list of all recipes for a given item.
-     * <p>
-     * <p>The stack size is ignored in comparisons.
-     * <p>
-     * <p>If the durability is -1, it will match any data value.
+     * Get a list of all recipes for a given item. The stack size is ignored in comparisons.
+     * If the durability is -1, it will match any data value.
      *
      * @param result The item whose recipes you want
      * @return The list of recipes
@@ -467,16 +463,16 @@ public final class CraftingManager implements Iterable<Recipe> {
                 .loadConfiguration(new InputStreamReader(in));
 
         // shaped
-        for (Map<?, ?> data : config.getMapList("shaped")) { //NON-NLS
+        for (Map<?, ?> data : config.getMapList("shaped")) { // NON-NLS
             ItemStack resultStack =
-                    ItemStack.deserialize((Map<String, Object>) data.get("result")); //NON-NLS
+                    ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS
             NamespacedKey key = readKey(data, resultStack);
             ShapedRecipe recipe = new ShapedRecipe(key, resultStack);
-            List<String> shape = (List<String>) data.get("shape"); //NON-NLS
+            List<String> shape = (List<String>) data.get("shape"); // NON-NLS
             recipe.shape(shape.toArray(new String[shape.size()]));
 
             Map<String, Map<String, Object>> ingredients = (Map<String, Map<String, Object>>) data
-                    .get("ingredients"); //NON-NLS
+                    .get("ingredients"); // NON-NLS
             for (Entry<String, Map<String, Object>> entry : ingredients.entrySet()) {
                 ItemStack stack = ItemStack.deserialize(entry.getValue());
                 recipe.setIngredient(entry.getKey().charAt(0), stack.getData());
@@ -486,14 +482,14 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
 
         // shapeless
-        for (Map<?, ?> data : config.getMapList("shapeless")) { //NON-NLS
+        for (Map<?, ?> data : config.getMapList("shapeless")) { // NON-NLS
             ItemStack resultStack =
-                    ItemStack.deserialize((Map<String, Object>) data.get("result")); //NON-NLS
+                    ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS
             NamespacedKey key = readKey(data, resultStack);
             ShapelessRecipe recipe = new ShapelessRecipe(key, resultStack);
 
             List<Map<String, Object>> ingreds
-                    = (List<Map<String, Object>>) data.get("ingredients"); //NON-NLS
+                    = (List<Map<String, Object>>) data.get("ingredients"); // NON-NLS
             for (Map<String, Object> entry : ingreds) {
                 recipe.addIngredient(ItemStack.deserialize(entry).getData());
             }
@@ -502,12 +498,12 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
 
         // furnace
-        for (Map<?, ?> data : config.getMapList("furnace")) { //NON-NLS
+        for (Map<?, ?> data : config.getMapList("furnace")) { // NON-NLS
             ItemStack inputStack
-                    = ItemStack.deserialize((Map<String, Object>) data.get("input")); //NON-NLS
+                    = ItemStack.deserialize((Map<String, Object>) data.get("input")); // NON-NLS
             ItemStack resultStack
-                    = ItemStack.deserialize((Map<String, Object>) data.get("result")); //NON-NLS
-            float xp = ((Number) data.get("xp")).floatValue(); //NON-NLS
+                    = ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS
+            float xp = ((Number) data.get("xp")).floatValue(); // NON-NLS
             furnaceRecipes.add(
                     new FurnaceRecipe(resultStack, inputStack.getType(), inputStack.getDurability(),
                             xp));
@@ -516,8 +512,8 @@ public final class CraftingManager implements Iterable<Recipe> {
 
     private NamespacedKey readKey(Map<?, ?> data, ItemStack result) {
         NamespacedKey key;
-        if (data.containsKey("key")) { //NON-NLS
-            String keyRaw = (String) data.get("key"); //NON-NLS
+        if (data.containsKey("key")) { // NON-NLS
+            String keyRaw = (String) data.get("key"); // NON-NLS
             if (keyRaw.indexOf(':') == -1) {
                 key = new NamespacedKey(NamespacedKey.MINECRAFT, keyRaw);
             } else {
