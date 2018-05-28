@@ -7,6 +7,7 @@ import static org.mockito.Matchers.eq;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
+import net.glowstone.command.CommandTestWithFakePlayers;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

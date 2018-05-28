@@ -6,6 +6,7 @@ import static org.mockito.Matchers.eq;
 
 import java.util.Collections;
 import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandTest;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

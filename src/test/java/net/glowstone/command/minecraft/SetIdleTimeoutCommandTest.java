@@ -6,6 +6,7 @@ import static org.mockito.Matchers.eq;
 import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.command.CommandTest;
 import org.bukkit.ChatColor;
 import org.hamcrest.MatcherAssert;
 import org.junit.Before;

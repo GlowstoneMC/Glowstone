@@ -1,4 +1,4 @@
-package net.glowstone.command.minecraft;
+package net.glowstone.command;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
