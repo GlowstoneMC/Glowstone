@@ -29,7 +29,7 @@ public class TeleportCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) {
-            return true;
+            return false;
         }
         if (args.length < 4 || args.length == 5) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
