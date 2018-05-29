@@ -32,11 +32,11 @@ public class BoatStore extends EntityStore<GlowBoat> {
     }
 
     private String toString(TreeSpecies species) {
-        return species == TreeSpecies.REDWOOD ? "spruce" : species.name().toLowerCase();
+        return species == TreeSpecies.REDWOOD ? "spruce" : species.name().toLowerCase(); // NON-NLS
     }
 
     private TreeSpecies toTreeSpecies(String species) {
-        if (species.equalsIgnoreCase("spruce")) {
+        if (species.equalsIgnoreCase("spruce")) { // NON-NLS
             return TreeSpecies.REDWOOD;
         }
         Optional<TreeSpecies> any = Arrays.stream(TreeSpecies.values())

@@ -7,6 +7,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
+import org.jetbrains.annotations.NonNls;
 
 class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
@@ -66,7 +67,7 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
         );
     }
 
-    private EulerAngle readSafeAngle(CompoundTag tag, String key) {
+    private EulerAngle readSafeAngle(CompoundTag tag, @NonNls String key) {
         final EulerAngle[] out = {EulerAngle.ZERO};
         tag.readFloatList(key, list -> {
             if (list.size() >= 3) {

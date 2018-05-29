@@ -890,7 +890,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         put(key, new ByteArrayTag(value));
     }
 
-    public void putString(@NonNls String key, String value) {
+    public void putString(@NonNls String key, @NonNls String value) {
         put(key, new StringTag(value));
     }
 

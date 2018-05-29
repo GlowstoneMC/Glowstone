@@ -5,9 +5,10 @@ import net.glowstone.entity.projectile.GlowSplashPotion;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NonNls;
 
 public class SplashPotionStore<T extends GlowSplashPotion> extends ProjectileStore<T> {
-    public SplashPotionStore(Class<T> clazz, String id, Function<Location, T> constructor) {
+    public SplashPotionStore(Class<T> clazz, @NonNls String id, Function<Location, T> constructor) {
         super(clazz, id, constructor);
     }
 
