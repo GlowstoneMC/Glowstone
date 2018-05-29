@@ -22,12 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -157,6 +153,7 @@ import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -819,46 +816,16 @@ public class GlowServer implements Server {
 
     private void checkTransfer(String name, String suffix, Environment environment) {
         // todo: import things like per-dimension villages.dat when those are implemented
-        Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId())
+        File srcFile = new File(new File(getWorldContainer(), name), "DIM" + environment.getId());
+        Path srcPath = srcFile
                 .toPath();
-        Path destPath = new File(getWorldContainer(), name + suffix).toPath();
+        File dstFile = new File(getWorldContainer(), name + suffix);
+        Path destPath = dstFile.toPath();
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
             LocalizedStrings.Console.Info.IMPORT.log(destPath, srcPath);
             try {
-                Files.walkFileTree(srcPath, new FileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult preVisitDirectory(Path dir,
-                            BasicFileAttributes attrs) throws IOException {
-                        Path target = destPath.resolve(srcPath.relativize(dir));
-                        if (!Files.exists(target)) {
-                            Files.createDirectory(target);
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult visitFile(Path file,
-                            BasicFileAttributes attrs) throws IOException {
-                        Files.copy(file, destPath.resolve(srcPath
-                                .relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult visitFileFailed(Path file,
-                            IOException exc) throws IOException {
-                        LocalizedStrings.Console.Error.Import.WITH_MESSAGE.log(
-                            exc, srcPath.relativize(file)
-                        );
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult postVisitDirectory(Path dir,
-                            IOException exc) throws IOException {
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
+                Files.createDirectories(destPath);
+                FileUtils.copyDirectory(srcFile, dstFile);
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
                 LocalizedStrings.Console.Error.Import.NO_MESSAGE.log(e, srcPath);
