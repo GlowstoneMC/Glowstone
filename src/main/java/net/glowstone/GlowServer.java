@@ -825,40 +825,7 @@ public class GlowServer implements Server {
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
             LocalizedStrings.Console.Info.IMPORT.log(destPath, srcPath);
             try {
-                Files.walkFileTree(srcPath, new FileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult preVisitDirectory(Path dir,
-                            BasicFileAttributes attrs) throws IOException {
-                        Path target = destPath.resolve(srcPath.relativize(dir));
-                        if (!Files.exists(target)) {
-                            Files.createDirectory(target);
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult visitFile(Path file,
-                            BasicFileAttributes attrs) throws IOException {
-                        Files.copy(file, destPath.resolve(srcPath
-                                .relativize(file)), StandardCopyOption.COPY_ATTRIBUTES);
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult visitFileFailed(Path file,
-                            IOException exc) throws IOException {
-                        LocalizedStrings.Console.Error.Import.WITH_MESSAGE.log(
-                            exc, srcPath.relativize(file)
-                        );
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult postVisitDirectory(Path dir,
-                            IOException exc) throws IOException {
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
+                Files.createDirectories(destPath);
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
                 LocalizedStrings.Console.Error.Import.NO_MESSAGE.log(e, srcPath);
