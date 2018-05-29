@@ -2229,7 +2229,7 @@ public class GlowServer implements Server {
         // find generator based on configuration
         ConfigurationSection worlds = config.getWorlds();
         if (worlds != null) {
-            String genName = worlds.getString(name + ".generator", null);
+            String genName = worlds.getString(name + ".generator", null); // NON-NLS
             ChunkGenerator generator = WorldCreator
                     .getGeneratorForName(name, genName, getConsoleSender());
             if (generator != null) {
