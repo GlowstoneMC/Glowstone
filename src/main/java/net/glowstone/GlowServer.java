@@ -825,7 +825,7 @@ public class GlowServer implements Server {
             LocalizedStrings.Console.Info.IMPORT.log(destPath, srcPath);
             try {
                 Files.createDirectories(destPath);
-                FileUtils.copyDirectory(srcFile, destFile);
+                FileUtils.copyDirectory(srcFile, dstFile);
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
                 LocalizedStrings.Console.Error.Import.NO_MESSAGE.log(e, srcPath);
