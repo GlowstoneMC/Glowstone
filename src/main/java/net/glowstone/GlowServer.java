@@ -119,7 +119,6 @@ import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
 import net.glowstone.generator.SuperflatGenerator;
 import net.glowstone.generator.TheEndGenerator;
-import net.glowstone.i18n.LocalizedPermission;
 import net.glowstone.i18n.LocalizedPermissions;
 import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.inventory.GlowInventory;
