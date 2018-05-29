@@ -153,6 +153,7 @@ import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -815,13 +816,16 @@ public class GlowServer implements Server {
 
     private void checkTransfer(String name, String suffix, Environment environment) {
         // todo: import things like per-dimension villages.dat when those are implemented
-        Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId())
+        File srcFile = new File(new File(getWorldContainer(), name), "DIM" + environment.getId());
+        Path srcPath = srcFile
                 .toPath();
-        Path destPath = new File(getWorldContainer(), name + suffix).toPath();
+        File dstFile = new File(getWorldContainer(), name + suffix);
+        Path destPath = dstFile.toPath();
         if (Files.exists(srcPath) && !Files.exists(destPath)) {
             LocalizedStrings.Console.Info.IMPORT.log(destPath, srcPath);
             try {
                 Files.createDirectories(destPath);
+                FileUtils.copyDirectory(srcFile, destFile);
                 Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
             } catch (IOException e) {
                 LocalizedStrings.Console.Error.Import.NO_MESSAGE.log(e, srcPath);
