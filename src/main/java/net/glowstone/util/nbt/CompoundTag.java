@@ -24,6 +24,7 @@ import net.glowstone.util.FloatConsumer;
 import net.glowstone.util.ShortConsumer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -72,11 +73,11 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key The key.
      * @return True if the key is in the map.
      */
-    public boolean containsKey(String key) {
+    public boolean containsKey(@NonNls String key) {
         return value.containsKey(key);
     }
 
-    public void remove(String key) {
+    public void remove(@NonNls String key) {
         value.remove(key);
     }
 
@@ -148,7 +149,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public byte getByte(String key) {
+    public byte getByte(@NonNls String key) {
         if (isInt(key)) {
             return (byte) getInt(key);
         }
@@ -161,7 +162,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public short getShort(String key) {
+    public short getShort(@NonNls String key) {
         if (isInt(key)) {
             return (short) getInt(key);
         }
@@ -174,7 +175,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public int getInt(String key) {
+    public int getInt(@NonNls String key) {
         if (isByte(key)) {
             return (int) getByte(key);
         } else if (isShort(key)) {
@@ -186,7 +187,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     }
 
     @Override
-    public boolean getBoolean(String key) {
+    public boolean getBoolean(@NonNls String key) {
         return getByte(key) != 0;
     }
 
@@ -198,7 +199,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param defaultValue the value to return if the subtag is missing
      * @return the tag value as a boolean, or defaultValue if it's not a byte
      */
-    public boolean getBoolean(String key, boolean defaultValue) {
+    public boolean getBoolean(@NonNls String key, boolean defaultValue) {
         return isByte(key) ? getBoolean(key) : defaultValue;
     }
 
@@ -208,7 +209,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public long getLong(String key) {
+    public long getLong(@NonNls String key) {
         if (isInt(key)) {
             return (long) getInt(key);
         }
@@ -221,7 +222,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public float getFloat(String key) {
+    public float getFloat(@NonNls String key) {
         if (isDouble(key)) {
             return (float) getDouble(key);
         } else if (isInt(key)) {
@@ -236,7 +237,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public double getDouble(String key) {
+    public double getDouble(@NonNls String key) {
         if (isFloat(key)) {
             return (double) getFloat(key);
         } else if (isInt(key)) {
@@ -251,7 +252,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public byte[] getByteArray(String key) {
+    public byte[] getByteArray(@NonNls String key) {
         return get(key, ByteArrayTag.class);
     }
 
@@ -261,7 +262,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public String getString(String key) {
+    public String getString(@NonNls String key) {
         return get(key, StringTag.class);
     }
 
@@ -271,7 +272,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public int[] getIntArray(String key) {
+    public int[] getIntArray(@NonNls String key) {
         return get(key, IntArrayTag.class);
     }
 
@@ -287,7 +288,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return the tag value
      */
     @SuppressWarnings("unchecked")
-    public <V> List<V> getList(String key, TagType type) {
+    public <V> List<V> getList(@NonNls String key, TagType type) {
         List<? extends Tag> original = getTagList(key, type);
         List<V> result = new ArrayList<>(original.size());
         if (type == TagType.COMPOUND) {
@@ -310,7 +311,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value
      */
-    public CompoundTag getCompound(String key) {
+    public CompoundTag getCompound(@NonNls String key) {
         return getTag(key, CompoundTag.class);
     }
 
@@ -323,7 +324,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return the tag value, or an empty optional if the tag doesn't exist or isn't compound
      */
-    public Optional<CompoundTag> tryGetCompound(String key) {
+    public Optional<CompoundTag> tryGetCompound(@NonNls String key) {
         if (isCompound(key)) {
             return Optional.of(getCompound(key));
         }
@@ -338,13 +339,13 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readCompound(String key, Consumer<? super CompoundTag> consumer) {
+    public boolean readCompound(@NonNls String key, Consumer<? super CompoundTag> consumer) {
         Optional<CompoundTag> tag = tryGetCompound(key);
         tag.ifPresent(consumer);
         return tag.isPresent();
     }
 
-    private <V, T extends Tag<V>> boolean readTag(String key, Class<T> clazz,
+    private <V, T extends Tag<V>> boolean readTag(@NonNls String key, Class<T> clazz,
             Consumer<? super V> consumer) {
         if (is(key, clazz)) {
             consumer.accept(get(key, clazz));
@@ -353,7 +354,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         return false;
     }
 
-    private <T> Optional<T> tryGetTag(String key, Class<? extends Tag<T>> clazz) {
+    private <T> Optional<T> tryGetTag(@NonNls String key, Class<? extends Tag<T>> clazz) {
         return is(key, clazz) ? Optional.of(get(key, clazz)) : Optional.empty();
     }
 
@@ -364,7 +365,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readFloat(String key, FloatConsumer consumer) {
+    public boolean readFloat(@NonNls String key, FloatConsumer consumer) {
         // Avoid boxing by not delegating to readTag
         if (isFloat(key)) {
             consumer.accept(getFloat(key));
@@ -380,7 +381,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readDouble(String key, DoubleConsumer consumer) {
+    public boolean readDouble(@NonNls String key, DoubleConsumer consumer) {
         // Avoid boxing by not delegating to readTag
         if (isDouble(key)) {
             consumer.accept(getDouble(key));
@@ -396,7 +397,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readInt(String key, IntConsumer consumer) {
+    public boolean readInt(@NonNls String key, IntConsumer consumer) {
         // Avoid boxing by not delegating to readTag
         if (isInt(key)) {
             consumer.accept(getInt(key));
@@ -412,7 +413,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readByteArray(String key, Consumer<? super byte[]> consumer) {
+    public boolean readByteArray(@NonNls String key, Consumer<? super byte[]> consumer) {
         return readTag(key, ByteArrayTag.class, consumer);
     }
 
@@ -423,7 +424,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readIntArray(String key, Consumer<? super int[]> consumer) {
+    public boolean readIntArray(@NonNls String key, Consumer<? super int[]> consumer) {
         return readTag(key, IntArrayTag.class, consumer);
     }
 
@@ -434,7 +435,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readLong(String key, LongConsumer consumer) {
+    public boolean readLong(@NonNls String key, LongConsumer consumer) {
         // Avoid boxing by not delegating to readTag
         if (isLong(key)) {
             consumer.accept(getLong(key));
@@ -450,7 +451,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return an Optional with the value of that tag if it's present and is a long; an empty
      *         optional otherwise
      */
-    public Optional<Long> tryGetLong(String key) {
+    public Optional<Long> tryGetLong(@NonNls String key) {
         return tryGetTag(key, LongTag.class);
     }
 
@@ -461,7 +462,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readShort(String key, ShortConsumer consumer) {
+    public boolean readShort(@NonNls String key, ShortConsumer consumer) {
         // Avoid boxing by not delegating to readTag
         if (isShort(key)) {
             consumer.accept(getShort(key));
@@ -479,7 +480,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readItem(String key, Consumer<? super ItemStack> consumer) {
+    public boolean readItem(@NonNls String key, Consumer<? super ItemStack> consumer) {
         return readCompound(key, tag -> consumer.accept(NbtSerialization.readItem(tag)));
     }
 
@@ -490,7 +491,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readBoolean(String key, Consumer<? super Boolean> consumer) {
+    public boolean readBoolean(@NonNls String key, Consumer<? super Boolean> consumer) {
         // For a boolean, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
         return readTag(key, ByteTag.class, byteVal -> consumer.accept(byteVal != 0));
@@ -503,7 +504,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readByte(String key, Consumer<? super Byte> consumer) {
+    public boolean readByte(@NonNls String key, Consumer<? super Byte> consumer) {
         // For a byte, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
         return readTag(key, ByteTag.class, consumer);
@@ -517,7 +518,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readBooleanNegated(String key, Consumer<? super Boolean> consumer) {
+    public boolean readBooleanNegated(@NonNls String key, Consumer<? super Boolean> consumer) {
         // For a boolean, boxing carries no penalty, per
         // https://stackoverflow.com/questions/27698911/why-there-is-no-booleanconsumer-in-java-8
         return readTag(key, ByteTag.class, byteVal -> consumer.accept(byteVal == 0));
@@ -526,9 +527,6 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     /**
      * Applies the given function to a list subtag if it is present, converting it to a list of
      * values first.
-     * Multiple strings can be passed in to operate on a sub-subtag, as with
-     * {@link #tryGetCompound(String)}, except that the last one must be a list rather than
-     * compound subtag.
      *
      * @param <T> the type to convert the list entries to
      * @param key the key to look up
@@ -536,7 +534,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public <T> boolean readList(String key, TagType type, Consumer<? super List<T>> consumer) {
+    public <T> boolean readList(@NonNls String key, TagType type,
+            Consumer<? super List<T>> consumer) {
         // Can't use readTag because of the list-element type check
         if (isList(key, type)) {
             consumer.accept(getList(key, type));
@@ -554,7 +553,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readCompoundList(String key, Consumer<? super List<CompoundTag>> consumer) {
+    public boolean readCompoundList(@NonNls String key,
+            Consumer<? super List<CompoundTag>> consumer) {
         return readList(key, TagType.COMPOUND, consumer);
     }
 
@@ -566,7 +566,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was iterated over (even if it was empty); false otherwise
      */
-    public boolean iterateCompoundList(String key, Consumer<? super CompoundTag> consumer) {
+    public boolean iterateCompoundList(@NonNls String key, Consumer<? super CompoundTag> consumer) {
         return readCompoundList(key, compoundTags -> compoundTags.forEach(consumer));
     }
 
@@ -578,7 +578,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readStringList(String key, Consumer<? super List<String>> consumer) {
+    public boolean readStringList(@NonNls String key, Consumer<? super List<String>> consumer) {
         return readList(key, TagType.STRING, consumer);
     }
 
@@ -590,7 +590,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readFloatList(String key, Consumer<? super List<Float>> consumer) {
+    public boolean readFloatList(@NonNls String key, Consumer<? super List<Float>> consumer) {
         return readList(key, TagType.FLOAT, consumer);
     }
 
@@ -602,7 +602,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readDoubleList(String key, Consumer<? super List<Double>> consumer) {
+    public boolean readDoubleList(@NonNls String key, Consumer<? super List<Double>> consumer) {
         return readList(key, TagType.DOUBLE, consumer);
     }
 
@@ -613,18 +613,20 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tag exists and was passed to the consumer; false otherwise
      */
-    public boolean readString(String key, Consumer<? super String> consumer) {
+    public boolean readString(@NonNls String key, Consumer<? super String> consumer) {
         return readTag(key, StringTag.class, consumer);
     }
 
     /**
-     * Reads a material from a name or ID, depending on the tag type. Returns null if the tag isn't
-     * present or is a list or compound tag.
+     * Reads a material from a string ID or numeric ID, depending on the tag type. Returns null if
+     * the tag isn't present, its type is neither string nor any integral type, or its value isn't
+     * a valid material ID.
      *
      * @param key the key to look up
-     * @return the Material denoted by that key, if present and readable; null otherwise
+     * @return the Material denoted by that key, if present and readable; an empty Optional
+     *         otherwise
      */
-    public Optional<Material> tryGetMaterial(String key) {
+    public Optional<Material> tryGetMaterial(@NonNls String key) {
         if (!containsKey(key)) {
             return Optional.empty();
         }
@@ -662,7 +664,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return an Optional with the value of that tag if it's present and is a string; an empty
      *         optional otherwise
      */
-    public Optional<String> tryGetString(String key) {
+    public Optional<String> tryGetString(@NonNls String key) {
         return tryGetTag(key, StringTag.class);
     }
 
@@ -673,7 +675,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return an Optional with the value of that tag if it's present and is an int; an empty
      *         optional otherwise
      */
-    public Optional<Integer> tryGetInt(String key) {
+    public Optional<Integer> tryGetInt(@NonNls String key) {
         return tryGetTag(key, IntTag.class);
     }
 
@@ -686,7 +688,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param consumer the function to apply
      * @return true if the tags exist and were passed to the consumer; false otherwise
      */
-    public boolean readUuid(String keyMost, String keyLeast, Consumer<? super UUID> consumer) {
+    public boolean readUuid(@NonNls String keyMost, @NonNls String keyLeast,
+            Consumer<? super UUID> consumer) {
         if (isLong(keyMost) && isLong(keyLeast)) {
             consumer.accept(new UUID(getLong(keyMost), getLong(keyLeast)));
             return true;
@@ -701,7 +704,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param keyLeast the key to look up the low word of the UUID
      * @return the UUID, or an empty Optional if either tag is missing or not long type
      */
-    public Optional<UUID> tryGetUuid(String keyMost, String keyLeast) {
+    public Optional<UUID> tryGetUuid(@NonNls String keyMost, @NonNls String keyLeast) {
         if (isLong(keyMost) && isLong(keyLeast)) {
             return Optional.of(new UUID(getLong(keyMost), getLong(keyLeast)));
         }
@@ -715,7 +718,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return the tag value
      */
     @SuppressWarnings("unchecked")
-    public List<CompoundTag> getCompoundList(String key) {
+    public List<CompoundTag> getCompoundList(@NonNls String key) {
         return (List<CompoundTag>) getTagList(key, TagType.COMPOUND);
     }
 
@@ -728,7 +731,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@code byte}; false otherwise
      */
-    public boolean isByte(String key) {
+    public boolean isByte(@NonNls String key) {
         return is(key, ByteTag.class);
     }
 
@@ -748,7 +751,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is an {@code int}; false otherwise
      */
-    public boolean isInt(String key) {
+    public boolean isInt(@NonNls String key) {
         return is(key, IntTag.class);
     }
 
@@ -758,7 +761,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@code long}; false otherwise
      */
-    public boolean isLong(String key) {
+    public boolean isLong(@NonNls String key) {
         return is(key, LongTag.class);
     }
 
@@ -768,7 +771,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@code float}; false otherwise
      */
-    public boolean isFloat(String key) {
+    public boolean isFloat(@NonNls String key) {
         return is(key, FloatTag.class);
     }
 
@@ -778,7 +781,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@code double}; false otherwise
      */
-    public boolean isDouble(String key) {
+    public boolean isDouble(@NonNls String key) {
         return is(key, DoubleTag.class);
     }
 
@@ -788,7 +791,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@code byte[]}; false otherwise
      */
-    public boolean isByteArray(String key) {
+    public boolean isByteArray(@NonNls String key) {
         return is(key, ByteArrayTag.class);
     }
 
@@ -798,7 +801,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@link String}; false otherwise
      */
-    public boolean isString(String key) {
+    public boolean isString(@NonNls String key) {
         return is(key, StringTag.class);
     }
 
@@ -808,7 +811,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is an {@code int[]}; false otherwise
      */
-    public boolean isIntArray(String key) {
+    public boolean isIntArray(@NonNls String key) {
         return is(key, IntArrayTag.class);
     }
 
@@ -822,7 +825,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param type the {@link TagType} of the list's elements
      * @return true if the subtag exists and is a {@link List}; false otherwise
      */
-    public boolean isList(String key, TagType type) {
+    public boolean isList(@NonNls String key, TagType type) {
         if (!is(key, ListTag.class)) {
             return false;
         }
@@ -836,7 +839,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@link CompoundTag}; false otherwise
      */
-    public boolean isCompound(String key) {
+    public boolean isCompound(@NonNls String key) {
         return is(key, CompoundTag.class);
     }
 
@@ -848,50 +851,50 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return true if the subtag exists and is a {@link List} with elements of type
      *         {@link CompoundTag}; false otherwise
      */
-    public boolean isCompoundList(String key) {
+    public boolean isCompoundList(@NonNls String key) {
         return isList(key, TagType.COMPOUND);
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Simple sets
 
-    public void putBool(String key, boolean value) {
+    public void putBool(@NonNls String key, boolean value) {
         putByte(key, value ? 1 : 0);
     }
 
-    public void putByte(String key, int value) {
+    public void putByte(@NonNls String key, int value) {
         put(key, new ByteTag((byte) value));
     }
 
-    public void putShort(String key, int value) {
+    public void putShort(@NonNls String key, int value) {
         put(key, new ShortTag((short) value));
     }
 
-    public void putInt(String key, int value) {
+    public void putInt(@NonNls String key, int value) {
         put(key, new IntTag(value));
     }
 
-    public void putLong(String key, long value) {
+    public void putLong(@NonNls String key, long value) {
         put(key, new LongTag(value));
     }
 
-    public void putFloat(String key, double value) {
+    public void putFloat(@NonNls String key, double value) {
         put(key, new FloatTag((float) value));
     }
 
-    public void putDouble(String key, double value) {
+    public void putDouble(@NonNls String key, double value) {
         put(key, new DoubleTag(value));
     }
 
-    public void putByteArray(String key, byte... value) {
+    public void putByteArray(@NonNls String key, byte... value) {
         put(key, new ByteArrayTag(value));
     }
 
-    public void putString(String key, String value) {
+    public void putString(@NonNls String key, String value) {
         put(key, new StringTag(value));
     }
 
-    public void putIntArray(String key, int... value) {
+    public void putIntArray(@NonNls String key, int... value) {
         put(key, new IntArrayTag(value));
     }
 
@@ -907,7 +910,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param value the list contents, as objects to convert to tags
      * @param tagCreator a function that will convert each V to an element tag
      */
-    public <V> void putList(String key, TagType type, List<V> value,
+    public <V> void putList(@NonNls String key, TagType type, List<V> value,
             Function<? super V, ? extends Tag> tagCreator) {
         List<Tag> result = new ArrayList<>(value.size());
         for (V item : value) {
@@ -916,7 +919,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         put(key, new ListTag<>(type, result));
     }
 
-    public void putCompound(String key, CompoundTag tag) {
+    public void putCompound(@NonNls String key, CompoundTag tag) {
         put(key, tag);
     }
 
@@ -926,7 +929,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to write to
      * @param list the list contents as compound tags
      */
-    public void putCompoundList(String key, List<CompoundTag> list) {
+    public void putCompoundList(@NonNls String key, List<CompoundTag> list) {
         put(key, new ListTag<>(TagType.COMPOUND, list));
     }
 
@@ -936,7 +939,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to write to
      * @param list the list contents as strings, to convert to string tags
      */
-    public void putStringList(String key, List<String> list) {
+    public void putStringList(@NonNls String key, List<String> list) {
         putList(key, TagType.STRING, list, StringTag::new);
     }
 
@@ -946,7 +949,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to write to
      * @param list the list contents as floats, to convert to float tags
      */
-    public void putFloatList(String key, List<Float> list) {
+    public void putFloatList(@NonNls String key, List<Float> list) {
         putList(key, TagType.FLOAT, list, FloatTag::new);
     }
 
@@ -956,7 +959,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to write to
      * @param list the list contents as doubles, to convert to double tags
      */
-    public void putDoubleList(String key, List<Double> list) {
+    public void putDoubleList(@NonNls String key, List<Double> list) {
         putList(key, TagType.DOUBLE, list, DoubleTag::new);
     }
 
@@ -966,14 +969,14 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to write to
      * @param list the list contents as longs, to convert to long tags
      */
-    public void putLongList(String key, List<Long> list) {
+    public void putLongList(@NonNls String key, List<Long> list) {
         putList(key, TagType.LONG, list, LongTag::new);
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Accessor helpers
 
-    private <T extends Tag<?>> boolean is(String key, Class<T> clazz) {
+    private <T extends Tag<?>> boolean is(@NonNls String key, Class<T> clazz) {
         if (!containsKey(key)) {
             return false;
         }
@@ -987,12 +990,12 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         value.put(key, tag);
     }
 
-    private <V, T extends Tag<V>> V get(String key, Class<T> clazz) {
+    private <V, T extends Tag<V>> V get(@NonNls String key, Class<T> clazz) {
         return getTag(key, clazz).getValue();
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Tag<?>> T getTag(String key, Class<T> clazz) {
+    private <T extends Tag<?>> T getTag(@NonNls String key, Class<T> clazz) {
         if (!is(key, clazz)) {
             throw new IllegalArgumentException(
                     "Compound does not contain " + clazz.getSimpleName() + " \"" + key + "\"");
@@ -1000,7 +1003,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         return (T) value.get(key);
     }
 
-    private List<? extends Tag> getTagList(String key, TagType type) {
+    private List<? extends Tag> getTagList(@NonNls String key, TagType type) {
         ListTag<?> tag = getTag(key, ListTag.class);
         if (tag.getValue().isEmpty()) {
             // empty lists are allowed to be the wrong type
