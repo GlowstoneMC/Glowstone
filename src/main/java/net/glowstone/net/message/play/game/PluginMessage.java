@@ -8,11 +8,12 @@ import java.io.IOException;
 import java.util.logging.Level;
 import lombok.Data;
 import net.glowstone.GlowServer;
+import org.jetbrains.annotations.NonNls;
 
 @Data
 public final class PluginMessage implements Message {
 
-    private final String channel;
+    @NonNls private final String channel;
     private final byte[] data;
 
     /**
@@ -22,7 +23,7 @@ public final class PluginMessage implements Message {
      * @param text the contents as a string
      * @return a message for {@code channel} containing a UTF8-encoded copy of {@code text}
      */
-    public static PluginMessage fromString(String channel, String text) {
+    public static PluginMessage fromString(@NonNls String channel, String text) {
         ByteBuf buf = Unpooled.buffer(5 + text.length());
         try {
             ByteBufUtils.writeUTF8(buf, text);
