@@ -119,6 +119,8 @@ import net.glowstone.generator.NetherGenerator;
 import net.glowstone.generator.OverworldGenerator;
 import net.glowstone.generator.SuperflatGenerator;
 import net.glowstone.generator.TheEndGenerator;
+import net.glowstone.i18n.LocalizedPermission;
+import net.glowstone.i18n.LocalizedPermissions;
 import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowItemFactory;
@@ -1350,15 +1352,9 @@ public class GlowServer implements Server {
             commandMap.registerServerAliases();
             DefaultPermissions.registerCorePermissions();
             // Default permissions
-            this.permissionRoot = DefaultPermissions
-                    .registerPermission("minecraft", "Gives the user the ability to use all "
-                            + "Minecraft utilities and commands");
-            this.permissionRootCommand = DefaultPermissions
-                    .registerPermission("minecraft.command", "Gives the user the ability to use "
-                            + "all Minecraft commands", permissionRoot);
-            DefaultPermissions
-                    .registerPermission("minecraft.command.tell", "Allows the user to send a "
-                            + "private message", PermissionDefault.TRUE, permissionRootCommand);
+            this.permissionRoot = LocalizedPermissions.ROOT.register();
+            this.permissionRootCommand = LocalizedPermissions.COMMAND.register(permissionRoot);
+            LocalizedPermissions.TELL.register(PermissionDefault.TRUE, permissionRootCommand);
             permissionRootCommand.recalculatePermissibles();
             permissionRoot.recalculatePermissibles();
             helpMap.initializeCommands();
