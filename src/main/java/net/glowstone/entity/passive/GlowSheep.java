@@ -1,6 +1,8 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
@@ -8,6 +10,8 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.MetadataMap;
+import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.DyeColor;
@@ -126,6 +130,11 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     SheepDyeWoolEvent dyeEvent = EventFactory.getInstance().callEvent(
                             new SheepDyeWoolEvent(this, color));
                     if (dyeEvent.isCancelled()) {
+                        List<MetadataMap.Entry> entryList = new ArrayList<>();
+                        entryList.add(new MetadataMap.Entry(
+                                MetadataIndex.SHEEP_DATA, getColorByte()));
+                        player.getSession().send(new EntityMetadataMessage(
+                                getEntityId(), entryList));
                         return false;
                     }
 
