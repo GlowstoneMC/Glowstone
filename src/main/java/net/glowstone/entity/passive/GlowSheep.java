@@ -123,7 +123,8 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     Dye dye = (Dye) hand.getData();
                     DyeColor color = dye.getColor();
 
-                    SheepDyeWoolEvent dyeEvent = new SheepDyeWoolEvent(this, color);
+                    SheepDyeWoolEvent dyeEvent = EventFactory.getInstance().callEvent(
+                            new SheepDyeWoolEvent(this, color));
                     if (dyeEvent.isCancelled()) {
                         return false;
                     }
