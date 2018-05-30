@@ -42,6 +42,17 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
      * @param value the new value
      */
     public void set(MetadataIndex index, Object value) {
+        set(index, value, false);
+    }
+
+    /**
+     * Sets the value of a metadata field.
+     *
+     * @param index the field to set
+     * @param value the new value
+     * @param force if the value should be forced as a change regardless of equality
+     */
+    public void set(MetadataIndex index, Object value, boolean force) {
         // take numbers down to the correct precision
         if (value != null) {
             if (value instanceof Number) {
@@ -72,7 +83,7 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
         }
 
         Object prev = map.put(index, value);
-        if (!Objects.equals(prev, value)) {
+        if (force || !Objects.equals(prev, value)) {
             changes.add(new Entry(index, value));
         }
     }
