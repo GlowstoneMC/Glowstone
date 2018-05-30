@@ -135,6 +135,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                                 MetadataIndex.SHEEP_DATA, getColorByte()));
                         player.getSession().send(new EntityMetadataMessage(
                                 getEntityId(), entryList));
+                        player.updateInventory();
                         return false;
                     }
 
