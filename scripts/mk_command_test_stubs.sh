@@ -15,9 +15,9 @@ package ${PACKAGE};\n\
 import net.glowstone.command.CommandTest;\n\
 \n\
 public class ${SIMPLE_NAME} extends CommandTest<${SUBJECT}> {\n\
-    \n\
+\n\
     // TODO: Add more tests.\n\
-    \n\
+\n\
     public ${SIMPLE_NAME}() {\n\
         super(${SUBJECT}::new);\n\
     }\n\
