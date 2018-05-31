@@ -15,7 +15,6 @@ public final class PlayerAbilitiesHandler implements
 
         GlowPlayer player = session.getPlayer();
         boolean flying = (message.getFlags() & 0x02) != 0;
-
-        player.setFlying(player.getAllowFlight() && flying);
+        player.setFlying(flying);
     }
 }

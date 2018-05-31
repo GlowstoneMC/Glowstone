@@ -175,6 +175,7 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.player.PlayerUnregisterChannelEvent;
@@ -1643,7 +1644,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setFlying(boolean value) {
-        flying = value && canFly;
+        if (flying != (flying = value && canFly)) {
+            EventFactory.getInstance().callEvent(
+                    new PlayerToggleFlightEvent(this, flying));
+        }
         sendAbilities();
     }
 
