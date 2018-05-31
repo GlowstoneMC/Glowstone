@@ -143,6 +143,7 @@ import net.glowstone.util.CompatibilityBundle;
 import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.GlowServerIcon;
 import net.glowstone.util.GlowUnsafeValues;
+import net.glowstone.util.NoInline;
 import net.glowstone.util.OpenCompute;
 import net.glowstone.util.SecurityUtils;
 import net.glowstone.util.ShutdownMonitorThread;
@@ -230,11 +231,11 @@ public class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.12.2";
+    public static final String GAME_VERSION = NoInline.of("1.12.2");
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 340;
+    public static final int PROTOCOL_VERSION = NoInline.of(340);
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
