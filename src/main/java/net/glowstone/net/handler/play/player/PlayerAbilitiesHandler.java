@@ -17,20 +17,26 @@ public final class PlayerAbilitiesHandler implements
         // other values should match what we've sent in the past but are ignored here
 
         GlowPlayer player = session.getPlayer();
-        boolean flying = (message.getFlags() & 0x02) != 0;
+        boolean flyingFlag = (message.getFlags() & 0x02) != 0;
+
+        // the current flying state
         boolean isFlying = player.isFlying();
         boolean canFly = player.getAllowFlight();
-        if (isFlying != flying) {
-            if (!flying || canFly) {
+        if (isFlying != flyingFlag) {
+            if (!flyingFlag || canFly) {
                 PlayerToggleFlightEvent event = EventFactory.getInstance()
-                        .callEvent(new PlayerToggleFlightEvent(player, flying));
-                boolean creative = player.getGameMode() == GameMode.CREATIVE;
-                int flags = (creative ? 8 : 0) | (canFly ? 4 : 0)
-                        | (isFlying ? 2 : 0) | (creative ? 1 : 0);
-                // division is conversion from Bukkit to MC units
-                session.send(new PlayerAbilitiesMessage(flags,
-                        player.getFlySpeed() / 2F,
-                        player.getWalkSpeed() / 2F));
+                        .callEvent(new PlayerToggleFlightEvent(player, flyingFlag));
+                if (event.isCancelled()) {
+                    boolean creative = player.getGameMode() == GameMode.CREATIVE;
+                    int flags = (creative ? 8 : 0) | (canFly ? 4 : 0)
+                            | (isFlying ? 2 : 0) | (creative ? 1 : 0);
+                    // division is conversion from Bukkit to MC units
+                    session.send(new PlayerAbilitiesMessage(flags,
+                            player.getFlySpeed() / 2F,
+                            player.getWalkSpeed() / 2F));
+                } else {
+                    player.setFlying(flyingFlag);
+                }
             }
         }
     }
