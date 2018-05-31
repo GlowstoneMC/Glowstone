@@ -229,11 +229,11 @@ public class GlowServer implements Server {
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.12.2";
+    public static final String GAME_VERSION = NoInline.of("1.12.2");
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 340;
+    public static final int PROTOCOL_VERSION = NoInline.of(340);
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
