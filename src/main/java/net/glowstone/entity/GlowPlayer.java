@@ -1644,11 +1644,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setFlying(boolean value) {
-        if (flying != (flying = value && canFly)) {
-            EventFactory.getInstance().callEvent(
-                    new PlayerToggleFlightEvent(this, flying));
+        boolean flying = value && canFly;
+        PlayerToggleFlightEvent event = EventFactory.getInstance().callEvent(
+                new PlayerToggleFlightEvent(this, flying));
+        if (!event.isCancelled()) {
+            this.flying = flying;
+            sendAbilities();
         }
-        sendAbilities();
     }
 
     @Override
