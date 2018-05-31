@@ -2196,11 +2196,12 @@ public class GlowServer implements Server {
                 .collect(Collectors.toSet());
     }
 
-    @Override
-    public GlowWorld getWorld(String name) {
-        return worlds.getWorld(name);
-    }
-
+    /**
+     * Sends a {@link GlowPlayer} their abilities regarding
+     * flying and walking.
+     *
+     * @param player The player who is being sent their abilities.
+     */
     public void sendPlayerAbilities(GlowPlayer player) {
         boolean creative = player.getGameMode() == GameMode.CREATIVE;
         int flags = (creative ? 8 : 0) | (player.getAllowFlight() ? 4 : 0)
@@ -2208,6 +2209,11 @@ public class GlowServer implements Server {
         // division is conversion from Bukkit to MC units
         player.getSession().send(new PlayerAbilitiesMessage(flags,
                 player.getFlySpeed() / 2F, player.getWalkSpeed() / 2F));
+    }
+
+    @Override
+    public GlowWorld getWorld(String name) {
+        return worlds.getWorld(name);
     }
 
     ////////////////////////////////////////////////////////////////////////////
