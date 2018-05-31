@@ -5,6 +5,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
+import org.bukkit.GameMode;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 public final class PlayerAbilitiesHandler implements
@@ -18,11 +19,18 @@ public final class PlayerAbilitiesHandler implements
         GlowPlayer player = session.getPlayer();
         boolean flying = (message.getFlags() & 0x02) != 0;
         boolean isFlying = player.isFlying();
+        boolean canFly = player.getAllowFlight();
         if (isFlying != flying) {
-            if (!flying || player.getAllowFlight()) {
+            if (!flying || canFly) {
                 PlayerToggleFlightEvent event = EventFactory.getInstance()
                         .callEvent(new PlayerToggleFlightEvent(player, flying));
-                player.setFlying(event.isCancelled() ? isFlying : flying);
+                boolean creative = player.getGameMode() == GameMode.CREATIVE;
+                int flags = (creative ? 8 : 0) | (canFly ? 4 : 0)
+                        | (isFlying ? 2 : 0) | (creative ? 1 : 0);
+                // division is conversion from Bukkit to MC units
+                session.send(new PlayerAbilitiesMessage(flags,
+                        player.getFlySpeed() / 2F,
+                        player.getWalkSpeed() / 2F));
             }
         }
     }
