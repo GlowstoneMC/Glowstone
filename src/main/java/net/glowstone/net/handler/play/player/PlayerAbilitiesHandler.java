@@ -16,14 +16,14 @@ public final class PlayerAbilitiesHandler implements
         // other values should match what we've sent in the past but are ignored here
 
         GlowPlayer player = session.getPlayer();
-        if (!player.getAllowFlight()) {
-            return;
-        }
         boolean flying = (message.getFlags() & 0x02) != 0;
-        PlayerToggleFlightEvent event = EventFactory.getInstance().callEvent(
-                new PlayerToggleFlightEvent(player, flying));
-        if (!event.isCancelled()) {
-            player.setFlying(flying);
+        boolean isFlying = player.isFlying();
+        if (isFlying != flying) {
+            if (!flying || player.getAllowFlight()) {
+                PlayerToggleFlightEvent event = EventFactory.getInstance()
+                        .callEvent(new PlayerToggleFlightEvent(player, flying));
+                player.setFlying(event.isCancelled() ? isFlying : flying);
+            }
         }
     }
 }
