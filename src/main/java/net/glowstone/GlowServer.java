@@ -143,6 +143,7 @@ import net.glowstone.util.CompatibilityBundle;
 import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.GlowServerIcon;
 import net.glowstone.util.GlowUnsafeValues;
+import net.glowstone.util.NoInline;
 import net.glowstone.util.OpenCompute;
 import net.glowstone.util.SecurityUtils;
 import net.glowstone.util.ShutdownMonitorThread;
