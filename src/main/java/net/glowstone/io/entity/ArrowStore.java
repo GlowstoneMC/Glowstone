@@ -4,10 +4,11 @@ import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowArrow;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NonNls;
 
 public class ArrowStore<T extends GlowArrow> extends ProjectileStore<T> {
 
-    public ArrowStore(Class<T> clazz, String id, Function<Location, T> constructor) {
+    public ArrowStore(Class<T> clazz, @NonNls String id, Function<Location, T> constructor) {
         super(clazz, id, constructor);
     }
 

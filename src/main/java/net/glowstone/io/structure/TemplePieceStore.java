@@ -2,10 +2,11 @@ package net.glowstone.io.structure;
 
 import net.glowstone.generator.structures.GlowTemplePiece;
 import net.glowstone.util.nbt.CompoundTag;
+import org.jetbrains.annotations.NonNls;
 
 abstract class TemplePieceStore<T extends GlowTemplePiece> extends StructurePieceStore<T> {
 
-    public TemplePieceStore(Class<T> clazz, String id) {
+    public TemplePieceStore(Class<T> clazz, @NonNls String id) {
         super(clazz, id);
     }
 

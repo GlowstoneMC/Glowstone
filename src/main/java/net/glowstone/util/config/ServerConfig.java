@@ -30,6 +30,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.FileUtil;
+import org.jetbrains.annotations.NonNls;
 import org.yaml.snakeyaml.error.YAMLException;
 
 /**
@@ -212,7 +213,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         return config.getConfigurationSection("worlds");
     }
 
-    public File getFile(String filename) {
+    public File getFile(@NonNls String filename) {
         return new File(directory, filename);
     }
 

@@ -3,6 +3,7 @@ package net.glowstone.util.library;
 import com.google.common.collect.ComparisonChain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Encapsulates the identifying pieces of a library in a Maven repository, its group ID and
@@ -23,7 +24,7 @@ public class LibraryKey implements Comparable<LibraryKey> {
     @Getter
     private final String artifactId;
 
-    public LibraryKey(String groupId, String artifactId) {
+    public LibraryKey(@NonNls String groupId, @NonNls String artifactId) {
         this.groupId = groupId;
         this.artifactId = artifactId;
     }

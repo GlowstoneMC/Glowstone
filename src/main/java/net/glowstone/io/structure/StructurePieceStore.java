@@ -5,6 +5,7 @@ import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * The base for structure piece store classes.
@@ -15,7 +16,7 @@ import org.bukkit.util.Vector;
 public abstract class StructurePieceStore<T extends GlowStructurePiece> {
 
     private final Class<T> type;
-    private final String id;
+    @NonNls private final String id;
 
     /**
      * Create a structure piece of this store's type.

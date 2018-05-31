@@ -39,6 +39,7 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Attribute;
 import org.fusesource.jansi.Ansi.Color;
 import org.fusesource.jansi.AnsiConsole;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * A meta-class to handle all logging and input-related console improvements. Portions are heavily
@@ -47,9 +48,9 @@ import org.fusesource.jansi.AnsiConsole;
 public final class ConsoleManager {
 
     private static final Logger logger = Logger.getLogger("");
-    private static String CONSOLE_DATE = "HH:mm:ss";
-    private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    private static String CONSOLE_PROMPT = ">";
+    @NonNls private static String CONSOLE_DATE = "HH:mm:ss";
+    @NonNls private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    @NonNls private static String CONSOLE_PROMPT = ">";
     private final GlowServer server;
     private final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
@@ -206,9 +207,9 @@ public final class ConsoleManager {
             // colorize or strip all colors
             for (ChatColor color : colors) {
                 if (replacements.containsKey(color)) {
-                    string = string.replaceAll("(?i)" + color, replacements.get(color));
+                    string = string.replaceAll("(?i)" + color, replacements.get(color)); // NON-NLS
                 } else {
-                    string = string.replaceAll("(?i)" + color, "");
+                    string = string.replaceAll("(?i)" + color, ""); // NON-NLS
                 }
             }
             return string + Ansi.ansi().reset();
@@ -231,7 +232,7 @@ public final class ConsoleManager {
             reset();
 
             if (!record.isEmpty() && !record.equals(separator)) {
-                logger.logp(level, "LoggerOutputStream", "log" + level, record);
+                logger.logp(level, "LoggerOutputStream", "log" + level, record); // NON-NLS
             }
         }
     }
@@ -245,7 +246,7 @@ public final class ConsoleManager {
 
         public RotatingFileHandler(String template) {
             this.template = template;
-            rotate = template.contains("%D");
+            rotate = template.contains("%D"); // NON-NLS
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             filename = calculateFilename();
             updateOutput();
@@ -272,7 +273,7 @@ public final class ConsoleManager {
         }
 
         private String calculateFilename() {
-            return template.replace("%D", dateFormat.format(new Date()));
+            return template.replace("%D", dateFormat.format(new Date())); // NON-NLS
         }
 
         @Override
@@ -418,7 +419,7 @@ public final class ConsoleManager {
         // Permissible
 
         @Override
-        public boolean isPermissionSet(String name) {
+        public boolean isPermissionSet(@NonNls String name) {
             return perm.isPermissionSet(name);
         }
 
@@ -428,7 +429,7 @@ public final class ConsoleManager {
         }
 
         @Override
-        public boolean hasPermission(String name) {
+        public boolean hasPermission(@NonNls String name) {
             return perm.hasPermission(name);
         }
 
@@ -438,7 +439,8 @@ public final class ConsoleManager {
         }
 
         @Override
-        public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+        public PermissionAttachment addAttachment(Plugin plugin,
+                @NonNls String name, boolean value) {
             return perm.addAttachment(plugin, name, value);
         }
 
@@ -448,7 +450,7 @@ public final class ConsoleManager {
         }
 
         @Override
-        public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
+        public PermissionAttachment addAttachment(Plugin plugin, @NonNls String name, boolean value,
                 int ticks) {
             return perm.addAttachment(plugin, name, value, ticks);
         }

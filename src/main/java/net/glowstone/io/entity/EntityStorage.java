@@ -42,6 +42,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * The class responsible for mapping entity types to their storage methods and reading and writing
@@ -146,7 +147,7 @@ public final class EntityStorage {
         final FireballStore<GlowFireball> fireballStore
                 = new FireballStore<>(GlowFireball.class, "fireball", GlowFireball::new);
         bind(fireballStore);
-        idTable.put("small_fireball", fireballStore);
+        idTable.put("small_fireball", fireballStore); // NON-NLS
         bind(new FireballStore<>(GlowWitherSkull.class, "wither_skull", GlowWitherSkull::new));
         bind(new ArrowStore<>(GlowSpectralArrow.class, "spectral_arrow", GlowSpectralArrow::new));
         bind(new PaintingStore());
@@ -199,8 +200,8 @@ public final class EntityStorage {
             throw new IllegalArgumentException("Entity has no type");
         }
         String id = compound.getString("id");
-        if (id.startsWith("minecraft:")) {
-            id = id.substring("minecraft:".length());
+        if (id.startsWith("minecraft:")) { // NON-NLS
+            id = id.substring("minecraft:".length()); // NON-NLS
         }
         EntityStore<?> store = idTable.get(id);
         if (store == null) {
@@ -237,7 +238,7 @@ public final class EntityStorage {
     /**
      * Finds a store by entity class, throwing an exception if not found.
      */
-    private static EntityStore<?> find(Class<? extends GlowEntity> clazz, String type) {
+    private static EntityStore<?> find(Class<? extends GlowEntity> clazz, @NonNls String type) {
         EntityStore<?> store = classTable.get(clazz);
         if (store == null) {
             // todo: maybe try to look up a parent class's store if one isn't found

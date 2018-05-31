@@ -85,6 +85,12 @@
       <artifactId>flow-network</artifactId>
       <version>1.2.4-SNAPSHOT</version>
     </dependency>
+    <!-- NonNls annotation: https://mvnrepository.com/artifact/org.jetbrains/annotations -->
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>16.0.2</version>
+    </dependency>
     <!-- Kotlin -->
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>

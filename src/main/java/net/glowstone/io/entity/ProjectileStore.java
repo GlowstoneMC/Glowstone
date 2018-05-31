@@ -4,6 +4,7 @@ import java.util.function.Function;
 import net.glowstone.entity.projectile.GlowProjectile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NonNls;
 
 class ProjectileStore<T extends GlowProjectile> extends EntityStore<T> {
 
@@ -16,7 +17,7 @@ class ProjectileStore<T extends GlowProjectile> extends EntityStore<T> {
      * @param id the entity-type name used in NBT
      * @param constructor {@code clazz}'s constructor taking a Location
      */
-    public ProjectileStore(Class<T> clazz, String id,
+    public ProjectileStore(Class<T> clazz, @NonNls String id,
             Function<Location, T> constructor) {
         super(clazz, id);
         this.constructor = constructor;
