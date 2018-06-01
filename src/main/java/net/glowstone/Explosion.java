@@ -24,6 +24,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -127,14 +128,26 @@ public final class Explosion {
 
         Set<BlockVector> droppedBlocks = calculateBlocks();
 
+        // The 'blocks' list should mutable for event calls.
         List<Block> blocks = toBlockList(droppedBlocks);
-        EntityExplodeEvent event = EventFactory.getInstance().callEvent(
-                new EntityExplodeEvent(source, location, blocks, yield));
-        if (event.isCancelled()) {
-            return false;
-        }
 
-        yield = event.getYield();
+        if (source != null) {
+            EntityExplodeEvent event = EventFactory.getInstance().callEvent(
+                    new EntityExplodeEvent(source, location, blocks, yield));
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            yield = event.getYield();
+        } else {
+            BlockExplodeEvent event = EventFactory.getInstance().callEvent(
+                    new BlockExplodeEvent(location.getBlock(), blocks, yield));
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            yield = event.getYield();
+        }
 
         playOutSoundAndParticles();
 
