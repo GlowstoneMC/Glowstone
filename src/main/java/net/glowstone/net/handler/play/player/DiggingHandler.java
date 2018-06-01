@@ -26,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
@@ -128,9 +129,15 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (message.getState() == DiggingMessage.SWAP_ITEM_IN_HAND) {
             ItemStack main = player.getInventory().getItemInMainHand();
             ItemStack off = player.getInventory().getItemInOffHand();
-            player.getInventory().setItemInOffHand(main);
-            player.getInventory().setItemInMainHand(off);
-            player.updateInventory();
+
+            PlayerSwapHandItemsEvent event = EventFactory.getInstance().callEvent(
+                    new PlayerSwapHandItemsEvent(player, off, main));
+
+            if (!event.isCancelled()) {
+                player.getInventory().setItemInOffHand(main);
+                player.getInventory().setItemInMainHand(off);
+                player.updateInventory();
+            }
             return;
         } else {
             return;
