@@ -7,6 +7,7 @@ import net.glowstone.entity.projectile.GlowFireball;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NonNls;
 
 public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
 
@@ -14,7 +15,7 @@ public class FireballStore<T extends GlowFireball> extends ProjectileStore<T> {
     private static final String YIELD_INT = "ExplosionPower";
     private static final String YIELD_FLOAT = "glowstone:ExplosionPowerFloat";
 
-    public FireballStore(Class<T> clazz, String id, Function<Location, T> constructor) {
+    public FireballStore(Class<T> clazz, @NonNls String id, Function<Location, T> constructor) {
         super(clazz, id, constructor);
     }
 

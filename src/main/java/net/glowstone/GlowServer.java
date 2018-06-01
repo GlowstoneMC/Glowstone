@@ -143,6 +143,7 @@ import net.glowstone.util.CompatibilityBundle;
 import net.glowstone.util.GlowHelpMap;
 import net.glowstone.util.GlowServerIcon;
 import net.glowstone.util.GlowUnsafeValues;
+import net.glowstone.util.NoInline;
 import net.glowstone.util.OpenCompute;
 import net.glowstone.util.SecurityUtils;
 import net.glowstone.util.ShutdownMonitorThread;
@@ -214,6 +215,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * The core class of the Glowstone server.
@@ -225,15 +227,15 @@ public class GlowServer implements Server {
     /**
      * The logger for this class.
      */
-    public static final Logger logger = Logger.getLogger("Minecraft");
+    public static final Logger logger = Logger.getLogger("Minecraft"); // NON-NLS
     /**
      * The game version supported by the server.
      */
-    public static final String GAME_VERSION = "1.12.2";
+    public static final String GAME_VERSION = NoInline.of("1.12.2");
     /**
      * The protocol version supported by the server.
      */
-    public static final int PROTOCOL_VERSION = 340;
+    public static final int PROTOCOL_VERSION = NoInline.of(340);
     /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
@@ -450,8 +452,9 @@ public class GlowServer implements Server {
         fishingRewardManager = new FishingRewardManager();
         advancements = new HashMap<>();
         // test advancement
-        GlowAdvancement advancement = new GlowAdvancement(NamespacedKey.minecraft("test"), null);
-        advancement.addCriterion("minecraft:test/criterion");
+        GlowAdvancement advancement
+                = new GlowAdvancement(NamespacedKey.minecraft("test"), null); // NON-NLS
+        advancement.addCriterion("minecraft:test/criterion"); // NON-NLS
         advancement.setDisplay(new GlowAdvancementDisplay(
                 new TextMessage(LocalizedStrings.Glowstone.Advancement.TITLE.get()),
                 new TextMessage("=)"),
@@ -522,12 +525,12 @@ public class GlowServer implements Server {
 
     private static ServerConfig parseArguments(String... args) {
         Map<Key, Object> parameters = new EnumMap<>(Key.class);
-        String configDirName = "config";
-        String configFileName = "glowstone.yml";
+        @NonNls String configDirName = "config";
+        @NonNls String configFileName = "glowstone.yml";
 
         // Calculate acceptable parameters
         for (int i = 0; i < args.length; i++) {
-            String opt = args[i];
+            @NonNls String opt = args[i];
 
             if (opt.isEmpty() || opt.charAt(0) != '-') {
 
@@ -660,14 +663,14 @@ public class GlowServer implements Server {
             // gets the max flops device across platforms on the computer
             for (CLPlatform platform : CLPlatform.listCLPlatforms()) {
                 if (platform.isAtLeast(openClMajor, openClMinor) && platform
-                        .isExtensionAvailable("cl_khr_fp64")) {
+                        .isExtensionAvailable("cl_khr_fp64")) { // NON-NLS
                     for (CLDevice device : platform.listCLDevices()) {
                         if (device.getType() == CLDevice.Type.GPU) {
                             int flops = device.getMaxComputeUnits() * device.getMaxClockFrequency();
                             LocalizedStrings.Console.Info.Opencl.FOUND_DEVICE.log(
                                 device, flops
                             );
-                            if (device.getVendor().contains("Intel")) {
+                            if (device.getVendor().contains("Intel")) { // NON-NLS
                                 if (flops > maxIntelFlops) {
                                     maxIntelFlops = flops;
                                     LocalizedStrings.Console.Info.Opencl.BEST.log(platform);
@@ -802,13 +805,19 @@ public class GlowServer implements Server {
                 .generateStructures(structs));
         if (getAllowNether()) {
             checkTransfer(name, "_nether", Environment.NETHER);
-            createWorld(WorldCreator.name(name + "_nether").environment(Environment.NETHER)
-                    .seed(seed).type(type).generateStructures(structs));
+            createWorld(WorldCreator.name(name + "_nether") // NON-NLS
+                    .environment(Environment.NETHER)
+                    .seed(seed)
+                    .type(type)
+                    .generateStructures(structs));
         }
         if (getAllowEnd()) {
             checkTransfer(name, "_the_end", Environment.THE_END);
-            createWorld(WorldCreator.name(name + "_the_end").environment(Environment.THE_END)
-                    .seed(seed).type(type).generateStructures(structs));
+            createWorld(WorldCreator.name(name + "_the_end") // NON-NLS
+                    .environment(Environment.THE_END)
+                    .seed(seed)
+                    .type(type)
+                    .generateStructures(structs));
         }
 
         // Finish loading plugins
@@ -817,7 +826,7 @@ public class GlowServer implements Server {
         scheduler.start();
     }
 
-    private void checkTransfer(String name, String suffix, Environment environment) {
+    private void checkTransfer(String name, @NonNls String suffix, Environment environment) {
         // todo: import things like per-dimension villages.dat when those are implemented
         Path srcPath = new File(new File(getWorldContainer(), name), "DIM" + environment.getId())
                 .toPath();
@@ -859,7 +868,8 @@ public class GlowServer implements Server {
                         return FileVisitResult.CONTINUE;
                     }
                 });
-                Files.copy(srcPath.resolve("../level.dat"), destPath.resolve("level.dat"));
+                Files.copy(
+                        srcPath.resolve("../level.dat"), destPath.resolve("level.dat")); // NON-NLS
             } catch (IOException e) {
                 LocalizedStrings.Console.Error.Import.NO_MESSAGE.log(e, srcPath);
             }
@@ -1019,7 +1029,7 @@ public class GlowServer implements Server {
     private boolean serverContainsLibrary(Library library) {
         return this.getClass().getResource(
                 String.format(
-                        "/META-INF/maven/%s/%s/pom.xml",
+                        "/META-INF/maven/%s/%s/pom.xml", // NON-NLS
                         library.getGroupId(),
                         library.getArtifactId()
                 )
@@ -1093,7 +1103,7 @@ public class GlowServer implements Server {
                     if (naether != null) {
                         naether.addDependency(
                             String.format(
-                                "%s:%s:jar:%s",
+                                "%s:%s:jar:%s", // NON-NLS
                                 library.getGroupId(),
                                 library.getArtifactId(),
                                 library.getVersion()
@@ -1167,6 +1177,7 @@ public class GlowServer implements Server {
     /**
      * Loads all plugins, calling onLoad, &c.
      */
+    @SuppressWarnings("HardCodedStringLiteral")
     private void loadPlugins() {
         // clear the map
         commandMap.clearCommands();
@@ -1714,15 +1725,15 @@ public class GlowServer implements Server {
     public String getName() {
         String title = GlowServer.class.getPackage().getImplementationTitle();
         if (title == null) {
-            title = "Glowstone";
+            title = "Glowstone"; // NON-NLS
         }
         return title;
     }
 
     @Override
     public String getVersion() {
-        return GlowServer.class.getPackage().getImplementationVersion() + " (MC: " + GAME_VERSION
-                + ")";
+        return GlowServer.class.getPackage().getImplementationVersion()
+                + " (MC: " + GAME_VERSION + ")"; // NON-NLS
     }
 
     @Override
@@ -2219,7 +2230,7 @@ public class GlowServer implements Server {
         // find generator based on configuration
         ConfigurationSection worlds = config.getWorlds();
         if (worlds != null) {
-            String genName = worlds.getString(name + ".generator", null);
+            String genName = worlds.getString(name + ".generator", null); // NON-NLS
             ChunkGenerator generator = WorldCreator
                     .getGeneratorForName(name, genName, getConsoleSender());
             if (generator != null) {

@@ -46,7 +46,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
     // todo: consider the session.lock file
 
     public AnvilChunkIoService(File dir) {
-        cache = new RegionFileCache(dir, ".mca");
+        cache = new RegionFileCache(dir, ".mca"); // NON-NLS
     }
 
     @Override
@@ -65,22 +65,20 @@ public final class AnvilChunkIoService implements ChunkIoService {
         CompoundTag levelTag;
         try (NbtInputStream nbt = new NbtInputStream(in, false)) {
             CompoundTag root = nbt.readCompound();
-            levelTag = root.getCompound("Level");
+            levelTag = root.getCompound("Level"); // NON-NLS
         }
 
         // read the vertical sections
-        List<CompoundTag> sectionList = levelTag.getCompoundList("Sections");
+        List<CompoundTag> sectionList = levelTag.getCompoundList("Sections"); // NON-NLS
         ChunkSection[] sections = new ChunkSection[GlowChunk.SEC_COUNT];
         for (CompoundTag sectionTag : sectionList) {
-            int y = sectionTag.getByte("Y");
+            int y = sectionTag.getByte("Y"); // NON-NLS
             if (y < 0 || y > GlowChunk.SEC_COUNT) {
-                GlowServer.logger.log(Level.WARNING,
-                        "Out of bounds chunk section at y " + y + " in " + chunk + "!");
+                LocalizedStrings.Console.Warn.Chunk.SECTION_OOB.log(y, chunk);
                 continue;
             }
             if (sections[y] != null) {
-                GlowServer.logger
-                    .log(Level.WARNING, "Multiple chunk sections at y " + y + " in " + chunk + "!");
+                LocalizedStrings.Console.Warn.Chunk.SECTION_DUP.log(y, chunk);
                 continue;
             }
             sections[y] = ChunkSection.fromNbt(sectionTag);
@@ -88,20 +86,20 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
         // initialize the chunk
         chunk.initializeSections(sections);
-        chunk.setPopulated(levelTag.getBoolean("TerrainPopulated", false));
+        chunk.setPopulated(levelTag.getBoolean("TerrainPopulated", false)); // NON-NLS
 
         // read biomes
-        levelTag.readByteArray("Biomes", chunk::setBiomes);
+        levelTag.readByteArray("Biomes", chunk::setBiomes); // NON-NLS
         // read height map
-        if (!levelTag.readIntArray("HeightMap", chunk::setHeightMap)) {
+        if (!levelTag.readIntArray("HeightMap", chunk::setHeightMap)) { // NON-NLS
             chunk.automaticHeightMap();
         }
 
         // read slime chunk
-        levelTag.readByte("isSlimeChunk", chunk::setIsSlimeChunk);
+        levelTag.readByte("isSlimeChunk", chunk::setIsSlimeChunk); // NON-NLS
 
         // read entities
-        levelTag.iterateCompoundList("Entities", entityTag -> {
+        levelTag.iterateCompoundList("Entities", entityTag -> { // NON-NLS
             try {
                 // note that creating the entity is sufficient to add it to the world
                 EntityStorage.loadEntity(chunk.getWorld(), entityTag);
@@ -113,41 +111,38 @@ public final class AnvilChunkIoService implements ChunkIoService {
         });
 
         // read block entities
-        List<CompoundTag> storedBlockEntities = levelTag.getCompoundList("TileEntities");
+        List<CompoundTag> storedBlockEntities = levelTag.getCompoundList("TileEntities"); // NON-NLS
         BlockEntity blockEntity;
         for (CompoundTag blockEntityTag : storedBlockEntities) {
-            int tx = blockEntityTag.getInt("x");
-            int ty = blockEntityTag.getInt("y");
-            int tz = blockEntityTag.getInt("z");
+            int tx = blockEntityTag.getInt("x"); // NON-NLS
+            int ty = blockEntityTag.getInt("y"); // NON-NLS
+            int tz = blockEntityTag.getInt("z"); // NON-NLS
             blockEntity = chunk
                 .createEntity(tx & 0xf, ty, tz & 0xf, chunk.getType(tx & 0xf, tz & 0xf, ty));
             if (blockEntity != null) {
                 try {
                     blockEntity.loadNbt(blockEntityTag);
                 } catch (Exception ex) {
-                    String id = blockEntityTag.isString("id") ? blockEntityTag.getString("id")
-                        : "<missing>";
-                    GlowServer.logger.log(Level.SEVERE,
-                        "Error loading block entity at " + blockEntity.getBlock() + ": " + id, ex);
+                    String id = blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
+                    LocalizedStrings.Console.Error.BlockEntity.READ_ERROR.log(
+                            ex, blockEntity.getBlock(), id);
                 }
             } else {
                 String id =
-                    blockEntityTag.isString("id") ? blockEntityTag.getString("id") : "<missing>";
-                GlowServer.logger.warning(
-                    "Unknown block entity at " + chunk.getWorld().getName() + "," + tx + "," + ty
-                        + "," + tz + ": " + id);
+                        blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
+                LocalizedStrings.Console.Warn.BlockEntity.UNKNOWN.log(
+                        chunk.getWorld().getName(), tx, ty, tz, id);
             }
         }
 
-        levelTag.iterateCompoundList("TileTicks", tileTick -> {
-            int tileX = tileTick.getInt("x");
-            int tileY = tileTick.getInt("y");
-            int tileZ = tileTick.getInt("z");
-            String id = tileTick.getString("i");
+        levelTag.iterateCompoundList("TileTicks", tileTick -> { // NON-NLS
+            int tileX = tileTick.getInt("x"); // NON-NLS
+            int tileY = tileTick.getInt("y"); // NON-NLS
+            int tileZ = tileTick.getInt("z"); // NON-NLS
+            String id = tileTick.getString("i"); // NON-NLS
             Material material = ItemIds.getBlock(id);
             if (material == null) {
-                GlowServer.logger
-                    .warning("Unknown block '" + id + "' when loading chunk block ticks.");
+                LocalizedStrings.Console.Warn.Chunk.UNKNOWN_BLOCK_TO_TICK.log(id);
                 return;
             }
             GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
@@ -177,10 +172,10 @@ public final class AnvilChunkIoService implements ChunkIoService {
         CompoundTag levelTags = new CompoundTag();
 
         // core properties
-        levelTags.putInt("xPos", chunk.getX());
-        levelTags.putInt("zPos", chunk.getZ());
-        levelTags.putBool("TerrainPopulated", chunk.isPopulated());
-        levelTags.putLong("LastUpdate", 0);
+        levelTags.putInt("xPos", chunk.getX()); // NON-NLS
+        levelTags.putInt("zPos", chunk.getZ()); // NON-NLS
+        levelTags.putBool("TerrainPopulated", chunk.isPopulated()); // NON-NLS
+        levelTags.putLong("LastUpdate", 0); // NON-NLS
 
         // chunk sections
         List<CompoundTag> sectionTags = new ArrayList<>();
@@ -193,19 +188,19 @@ public final class AnvilChunkIoService implements ChunkIoService {
             }
 
             CompoundTag sectionTag = new CompoundTag();
-            sectionTag.putByte("Y", i);
+            sectionTag.putByte("Y", i); // NON-NLS
             sec.optimize();
             sec.writeToNbt(sectionTag);
             sectionTags.add(sectionTag);
         }
-        levelTags.putCompoundList("Sections", sectionTags);
+        levelTags.putCompoundList("Sections", sectionTags); // NON-NLS
 
         // height map and biomes
-        levelTags.putIntArray("HeightMap", snapshot.getRawHeightmap());
-        levelTags.putByteArray("Biomes", snapshot.getRawBiomes());
+        levelTags.putIntArray("HeightMap", snapshot.getRawHeightmap()); // NON-NLS
+        levelTags.putByteArray("Biomes", snapshot.getRawBiomes()); // NON-NLS
 
         // Save Slime Chunk
-        levelTags.putByte("isSlimeChunk", snapshot.isSlimeChunk() ? 1 : 0);
+        levelTags.putByte("isSlimeChunk", snapshot.isSlimeChunk() ? 1 : 0); // NON-NLS
 
         // entities
         List<CompoundTag> entities = new ArrayList<>();

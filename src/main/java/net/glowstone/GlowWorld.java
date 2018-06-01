@@ -110,6 +110,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * A class which represents the in-game world.
@@ -448,7 +449,7 @@ public class GlowWorld implements World {
      * @param desc A description for this chunk lock.
      * @return The ChunkLock.
      */
-    public ChunkLock newChunkLock(String desc) {
+    public ChunkLock newChunkLock(@NonNls String desc) {
         return new ChunkLock(chunkManager, name + ": " + desc);
     }
 
@@ -1953,12 +1954,12 @@ public class GlowWorld implements World {
     // Game rules
 
     @Override
-    public String getGameRuleValue(String rule) {
+    public String getGameRuleValue(@NonNls String rule) {
         return gameRuleMap.getString(rule);
     }
 
     @Override
-    public boolean setGameRuleValue(String rule, String value) {
+    public boolean setGameRuleValue(@NonNls String rule, String value) {
         if (!gameRuleMap.setValue(rule, value)) {
             return false;
         }

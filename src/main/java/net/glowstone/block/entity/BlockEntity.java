@@ -7,6 +7,7 @@ import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Base class for block entities (blocks with NBT data) in the world. Most access to block entities
@@ -53,7 +54,7 @@ public abstract class BlockEntity {
      *
      * @param saveId The ID.
      */
-    protected final void setSaveId(String saveId) {
+    protected final void setSaveId(@NonNls String saveId) {
         if (this.saveId != null) {
             throw new IllegalStateException("Can only set saveId once");
         }

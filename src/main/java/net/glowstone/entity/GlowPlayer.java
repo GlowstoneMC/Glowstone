@@ -1359,7 +1359,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
-        ret.put("name", getName());
+        ret.put("name", getName()); // NON-NLS
         return ret;
     }
 
@@ -1895,9 +1895,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean teleport(Location location, TeleportCause cause) {
-        checkNotNull(location, "location cannot be null");
-        checkNotNull(location.getWorld(), "location's world cannot be null");
-        checkNotNull(cause, "cause cannot be null");
+        checkNotNull(location, "location cannot be null"); // NON-NLS
+        checkNotNull(location.getWorld(), "location's world cannot be null"); // NON-NLS
+        checkNotNull(cause, "cause cannot be null"); // NON-NLS
         if (this.location != null && this.location.getWorld() != null) {
             PlayerTeleportEvent event
                     = new PlayerTeleportEvent(this, this.location, location, cause);
@@ -2471,7 +2471,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         try {
             ByteBufUtils.writeUTF8(buffer, source); //Source
             ByteBufUtils.writeUTF8(buffer, sound); //Sound
-            session.sendAndRelease(new PluginMessage("MC|StopSound", buffer.array()),
+            session.sendAndRelease(new PluginMessage("MC|StopSound", buffer.array()), // NON-NLS
                 buffer);
         } catch (IOException e) {
             logger.info("Failed to send stop-sound event.");
@@ -3350,7 +3350,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 buf.writeBytes(channel.getBytes(StandardCharsets.UTF_8));
                 buf.writeByte(0);
             }
-            session.sendAndRelease(new PluginMessage("REGISTER", buf.array()), buf);
+            session.sendAndRelease(new PluginMessage("REGISTER", buf.array()), buf); // NON-NLS
         }
     }
 

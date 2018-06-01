@@ -15,6 +15,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * The base for entity store classes.
@@ -27,6 +28,7 @@ public abstract class EntityStore<T extends GlowEntity> {
 
     private static final CompoundTag EMPTY_TAG = new CompoundTag();
     protected final Class<? extends T> type;
+    @NonNls
     protected final String entityType;
 
     public EntityStore(Class<? extends T> type, EntityType entityType) {

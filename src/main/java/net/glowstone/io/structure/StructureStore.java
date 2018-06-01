@@ -10,6 +10,7 @@ import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * The base for structure store classes.
@@ -20,7 +21,7 @@ import org.bukkit.util.Vector;
 public abstract class StructureStore<T extends GlowStructure> {
 
     private final Class<T> type;
-    private final String id;
+    @NonNls private final String id;
 
     /**
      * Create a structure of this store's type in the given world. The load method will be called

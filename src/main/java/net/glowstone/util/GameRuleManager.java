@@ -2,6 +2,7 @@ package net.glowstone.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Container for the game rule map for worlds.
@@ -56,7 +57,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * @param value the value to set, cannot be null or be represented as null
      * @return true if set, false otherwise
      */
-    public boolean setValue(String rule, Object value) {
+    public boolean setValue(@NonNls String rule, Object value) {
         if (rule != null && value != null && value.toString() != null) {
             gameRules.put(rule, value.toString());
             return true;
@@ -70,7 +71,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * @param rule the rule to lookup
      * @return true if defined, false otherwise
      */
-    public boolean isGameRule(String rule) {
+    public boolean isGameRule(@NonNls String rule) {
         return rule != null && gameRules.containsKey(rule);
     }
 
@@ -95,7 +96,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * @param rule the rule to look up
      * @return the boolean value, or false
      */
-    public boolean getBoolean(String rule) {
+    public boolean getBoolean(@NonNls String rule) {
         if (isGameRule(rule)) {
             String value = getString(rule);
             if (value != null) {
@@ -106,7 +107,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
     }
 
     @Override
-    public int getInt(String key) {
+    public int getInt(@NonNls String key) {
         return getInt(key, 0);
     }
 
@@ -118,7 +119,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * @param def the default value
      * @return the integer value of the rule, or the default
      */
-    public int getInt(String rule, int def) {
+    public int getInt(@NonNls String rule, int def) {
         if (isGameRule(rule)) {
             String value = getString(rule);
             try {
