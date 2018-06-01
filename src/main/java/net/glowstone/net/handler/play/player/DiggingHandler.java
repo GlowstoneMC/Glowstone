@@ -129,10 +129,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (message.getState() == DiggingMessage.SWAP_ITEM_IN_HAND) {
             ItemStack main = player.getInventory().getItemInMainHand();
             ItemStack off = player.getInventory().getItemInOffHand();
-
             PlayerSwapHandItemsEvent event = EventFactory.getInstance().callEvent(
                     new PlayerSwapHandItemsEvent(player, off, main));
-
             if (!event.isCancelled()) {
                 player.getInventory().setItemInOffHand(main);
                 player.getInventory().setItemInMainHand(off);
