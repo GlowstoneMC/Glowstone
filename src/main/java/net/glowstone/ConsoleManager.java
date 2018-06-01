@@ -232,7 +232,8 @@ public final class ConsoleManager {
             reset();
 
             if (!record.isEmpty() && !record.equals(separator)) {
-                logger.logp(level, "LoggerOutputStream", "log" + level, record); // NON-NLS
+                logger.logp(level, "LoggerOutputStream", "log" + level,
+                    record); // NON-NLS
             }
         }
     }
@@ -293,15 +294,14 @@ public final class ConsoleManager {
         }
     }
 
-
-
     private class CommandCompleter implements Completer {
 
         @Override
         public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
             List<String> completions = null;
             try {
-                completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap().tabComplete(sender, line.line()));
+                completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap()
+                    .tabComplete(sender, line.line()));
             } catch (Exception e) {
                 GlowServer.logger.log(Level.WARNING, "Error while tab completing", e);
             }
@@ -324,24 +324,27 @@ public final class ConsoleManager {
             String command = null;
             while (running) {
                 try {
-                    if (command != null && !(command = command.trim()).isEmpty()) {
-                        reader.getTerminal().writer().println(colorize(
-                            "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
-                                + '"'));
-                        if (command.startsWith("$")) {
-                            server.getScheduler().runTask(null,
-                                new EvalTask(command.substring(1), command.startsWith("$$")));
-                        } else if (command.startsWith("!")) {
-                            server.getScheduler()
-                                .runTask(null, new ConsoleTask(command.substring(1)));
-                        } else {
-                            server.getScheduler().runTask(null, new CommandTask(command));
-                        }
-                    }
+                    command = reader.readLine();
                 } catch (CommandException ex) {
-                    logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
+                    logger.log(Level.WARNING, "Exception while executing command: " + command,
+                        ex);
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "Error while reading commands", ex);
+                }
+
+                if (command != null && !(command = command.trim()).isEmpty()) {
+                    reader.getTerminal().writer().println(colorize(
+                        "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
+                            + '"'));
+                    if (command.startsWith("$")) {
+                        server.getScheduler().runTask(null,
+                            new EvalTask(command.substring(1), command.startsWith("$$")));
+                    } else if (command.startsWith("!")) {
+                        server.getScheduler()
+                            .runTask(null, new ConsoleTask(command.substring(1)));
+                    } else {
+                        server.getScheduler().runTask(null, new CommandTask(command));
+                    }
                 }
             }
         }
