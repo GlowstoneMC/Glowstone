@@ -1,41 +1,37 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.objects.GlowMinecart;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 public class MinecartStore extends EntityStore<GlowMinecart> {
 
-    private GlowMinecart.MinecartType type;
+    private GlowMinecart.MinecartType minecartType;
 
-    public MinecartStore(GlowMinecart.MinecartType type) {
-        super((Class<GlowMinecart>) type.getMinecartClass(), type.getEntityType());
-        this.type = type;
+    public MinecartStore(GlowMinecart.MinecartType minecartType) {
+        super(minecartType.getMinecartClass(), minecartType.getEntityType());
+        this.minecartType = minecartType;
     }
 
     @Override
     public GlowMinecart createEntity(Location location, CompoundTag compound) {
-        try {
-            Constructor<? extends GlowMinecart> constructor = type.getMinecartClass().getConstructor(Location.class);
-            return constructor.newInstance(location);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Function<? super Location, ? extends GlowMinecart> creator = minecartType.getCreator();
+        return creator == null ? null : creator.apply(location);
     }
 
     @Override
     public void load(GlowMinecart entity, CompoundTag tag) {
         super.load(entity, tag);
         if (entity instanceof InventoryHolder) {
-            InventoryHolder inv = (InventoryHolder) entity;
-            if (inv.getInventory() != null) {
-                inv.getInventory().setContents(NbtSerialization.readInventory(tag.getCompoundList("Items"), 0, inv.getInventory().getSize()));
+            Inventory inventory = ((InventoryHolder) entity).getInventory();
+            if (inventory != null) {
+                tag.readCompoundList("Items",
+                    items -> inventory.setContents(NbtSerialization.readInventory(
+                        items, 0, inventory.getSize())));
             }
         }
         // todo
@@ -47,7 +43,8 @@ public class MinecartStore extends EntityStore<GlowMinecart> {
         if (entity instanceof InventoryHolder) {
             InventoryHolder inv = (InventoryHolder) entity;
             if (inv.getInventory() != null) {
-                tag.putCompoundList("Items", NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
+                tag.putCompoundList("Items",
+                        NbtSerialization.writeInventory(inv.getInventory().getContents(), 0));
             }
         }
         // todo

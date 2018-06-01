@@ -1,10 +1,15 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.FlowerPotEntity;
-import net.glowstone.block.state.GlowFlowerPot;
+import net.glowstone.block.entity.state.GlowFlowerPot;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GrassSpecies;
@@ -15,8 +20,6 @@ import org.bukkit.material.FlowerPot;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
-
-import java.util.*;
 
 public class BlockFlowerPot extends BlockType {
 
@@ -41,7 +44,8 @@ public class BlockFlowerPot extends BlockType {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
 
@@ -53,7 +57,8 @@ public class BlockFlowerPot extends BlockType {
             GlowFlowerPot pot = (GlowFlowerPot) state;
             ItemStack heldItem = player.getItemInHand();
             // Only change contents if there is none and if the held item is valid pot contents.
-            if (pot.getContents() == null && heldItem != null && isValidContents(heldItem.getData())) {
+            if (pot.getContents() == null && heldItem != null && isValidContents(
+                heldItem.getData())) {
                 pot.setContents(heldItem.getData().clone()); // Null-check in isValidContents.
                 return pot.update();
             }

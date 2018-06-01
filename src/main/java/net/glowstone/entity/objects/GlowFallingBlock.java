@@ -1,11 +1,15 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
-import net.glowstone.util.Position;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,17 +19,21 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
+    private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
+    @Getter
+    @Setter
     private Material material;
     private boolean canHurtEntities;
+    @Setter
     private boolean dropItem;
+    @Getter
+    @Setter
     private byte blockData;
     private Location sourceLocation;
+    @Getter
+    @Setter
     private CompoundTag blockEntityCompoundTag;
 
     // todo: implement falling block damage
@@ -41,7 +49,16 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         this(location, material, blockData, null);
     }
 
-    public GlowFallingBlock(Location location, Material material, byte blockData, BlockEntity blockEntity) {
+    /**
+     * Creates an instance for the given entity.
+     *
+     * @param location the falling block's location
+     * @param material the falling block's material
+     * @param blockData the falling block's data value
+     * @param blockEntity the entity
+     */
+    public GlowFallingBlock(Location location, Material material, byte blockData,
+        BlockEntity blockEntity) {
         super(location);
         blockEntityCompoundTag = null;
         if (blockEntity != null) {
@@ -50,32 +67,13 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         }
         this.sourceLocation = location.clone();
         setBoundingBox(0.98, 0.98);
-        setDrag(0.98, false);
-        setGravityAccel(new Vector(0, -0.02, 0));
+        setAirDrag(0.98);
+        setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
 
         setMaterial(material);
         setDropItem(true);
         setHurtEntities(true);
         this.blockData = blockData;
-    }
-
-    @Override
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
-    }
-
-    @Override
-    public boolean getDropItem() {
-        return dropItem;
-    }
-
-    @Override
-    public void setDropItem(boolean dropItem) {
-        this.dropItem = dropItem;
     }
 
     @Override
@@ -89,51 +87,24 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     }
 
     @Override
-    public byte getBlockData() {
-        return blockData;
-    }
-
-    public void setBlockData(byte blockData) {
-        this.blockData = blockData;
-    }
-
-    @Override
-    public Location getOrigin() {
-        return null;
-    }
-
-    public CompoundTag getBlockEntityCompoundTag() {
-        return blockEntityCompoundTag;
-    }
-
-    public void setBlockEntityCompoundTag(CompoundTag blockEntityCompoundTag) {
-        this.blockEntityCompoundTag = blockEntityCompoundTag;
-    }
-
-    @Override
     public int getBlockId() {
         return material.getId();
     }
 
-    public Location getSourceLoc() {
-        return sourceLocation;
+    @Override
+    public boolean getDropItem() {
+        return dropItem;
     }
 
     @Override
     public List<Message> createSpawnMessage() {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
-
-        int yaw = Position.getIntYaw(location);
-        int pitch = Position.getIntPitch(location);
 
         // Note the shift amount has changed previously,
         // if block data doesn't appear to work check this value.
         int blockIdData = getBlockId() | getBlockData() << 12;
 
-        return Arrays.asList(
-                new SpawnObjectMessage(id, getUniqueId(), 70, x, y, z, pitch, yaw, blockIdData)
+        return Collections.singletonList(
+            new SpawnObjectMessage(entityId, getUniqueId(), 70, location, blockIdData)
         );
     }
 
@@ -167,7 +138,8 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 }
                 // todo: add event if desired
                 if (getDropItem()) {
-                    world.dropItemNaturally(location, new ItemStack(material, 1, (short) 0, getBlockData()));
+                    world.dropItemNaturally(location,
+                        new ItemStack(material, 1, (short) 0, getBlockData()));
                 }
                 if (replaceBlock) {
                     placeFallingBlock();
@@ -175,10 +147,6 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 remove();
             } else {
                 placeFallingBlock();
-                if (material == Material.ANVIL) {
-                    Random random = new Random();
-                    world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
-                }
                 remove();
             }
         }
@@ -197,6 +165,11 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 }
             }
         }
+        if (material == Material.ANVIL) {
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F
+                    + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
+        }
     }
 
 
@@ -214,8 +187,9 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             case LAVA:
             case STATIONARY_LAVA:
                 return false;
+            default:
+                return true;
         }
-        return true;
     }
 
 }

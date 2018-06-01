@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public final class WindowPropertyMessage implements Message {
 
-    private final int id, property, value;
+    private final int id;
+    private final int property;
+    private final int value;
 
 }

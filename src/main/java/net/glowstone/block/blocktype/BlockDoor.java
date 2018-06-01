@@ -31,7 +31,8 @@ public class BlockDoor extends BlockType {
     }
 
     @Override
-    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType,
+        byte newData) {
         if (newType != Material.AIR) {
             return;
         }
@@ -54,7 +55,8 @@ public class BlockDoor extends BlockType {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         // place the door and calculate the facing
         super.placeBlock(player, state, face, holding, clickedLoc);
 
@@ -64,41 +66,36 @@ public class BlockDoor extends BlockType {
             return;
         }
 
-        BlockFace facing = player.getDirection();
+        BlockFace facing = player.getCardinalFacing();
         ((Door) data).setFacingDirection(facing.getOppositeFace());
 
         // modify facing for double-doors
         GlowBlock leftBlock = null;
+        byte newDirectionData = 0;
         switch (facing) {
             case NORTH:
                 leftBlock = state.getBlock().getRelative(BlockFace.WEST);
+                newDirectionData = 6;
                 break;
             case WEST:
                 leftBlock = state.getBlock().getRelative(BlockFace.SOUTH);
+                newDirectionData = 5;
                 break;
             case SOUTH:
                 leftBlock = state.getBlock().getRelative(BlockFace.EAST);
+                newDirectionData = 4;
                 break;
             case EAST:
                 leftBlock = state.getBlock().getRelative(BlockFace.NORTH);
+                newDirectionData = 7;
                 break;
+            default:
+                // do nothing
+                // TODO: Does this lead to the correct behavior when player is facing up or down?
         }
 
         if (leftBlock != null && leftBlock.getState().getData() instanceof Door) {
-            switch (facing) {
-                case NORTH:
-                    data.setData((byte) 6);
-                    break;
-                case WEST:
-                    data.setData((byte) 5);
-                    break;
-                case SOUTH:
-                    data.setData((byte) 4);
-                    break;
-                case EAST:
-                    data.setData((byte) 7);
-                    break;
-            }
+            data.setData(newDirectionData);
         }
 
         // place top half of door
@@ -117,7 +114,8 @@ public class BlockDoor extends BlockType {
      * Opens and closes the door when right-clicked by the player.
      */
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         // handles opening and closing the door
         if (block.getType() == Material.IRON_DOOR_BLOCK) {
             return false;

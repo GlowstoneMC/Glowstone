@@ -3,12 +3,11 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.CombatEventMessage;
 import net.glowstone.net.message.play.player.CombatEventMessage.Event;
 import net.glowstone.util.TextMessage;
-
-import java.io.IOException;
 
 public final class CombatEventCodec implements Codec<CombatEventMessage> {
 
@@ -19,14 +18,14 @@ public final class CombatEventCodec implements Codec<CombatEventMessage> {
         switch (event) {
             case END_COMBAT: {
                 int duration = ByteBufUtils.readVarInt(buffer);
-                int entityID = buffer.readInt();
-                return new CombatEventMessage(event, duration, entityID);
+                int entityId = buffer.readInt();
+                return new CombatEventMessage(event, duration, entityId);
             }
             case ENTITY_DEAD:
-                int playerID = ByteBufUtils.readVarInt(buffer);
-                int entityID = buffer.readInt();
+                int playerId = ByteBufUtils.readVarInt(buffer);
+                int entityId = buffer.readInt();
                 TextMessage message = GlowBufUtils.readChat(buffer);
-                return new CombatEventMessage(event, playerID, entityID, message);
+                return new CombatEventMessage(event, playerId, entityId, message);
             default:
                 return new CombatEventMessage(event);
         }
@@ -37,10 +36,10 @@ public final class CombatEventCodec implements Codec<CombatEventMessage> {
         ByteBufUtils.writeVarInt(buf, message.getEvent().ordinal());
         if (message.getEvent() == Event.END_COMBAT) {
             ByteBufUtils.writeVarInt(buf, message.getDuration());
-            buf.writeInt(message.getEntityID());
+            buf.writeInt(message.getEntityId());
         } else if (message.getEvent() == Event.ENTITY_DEAD) {
-            ByteBufUtils.writeVarInt(buf, message.getPlayerID());
-            buf.writeInt(message.getEntityID());
+            ByteBufUtils.writeVarInt(buf, message.getPlayerId());
+            buf.writeInt(message.getEntityId());
             GlowBufUtils.writeChat(buf, message.getMessage());
         }
         return buf;

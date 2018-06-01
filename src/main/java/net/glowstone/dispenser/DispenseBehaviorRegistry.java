@@ -1,11 +1,11 @@
 package net.glowstone.dispenser;
 
-import org.bukkit.Material;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.bukkit.Material;
 
 public class DispenseBehaviorRegistry {
+
     private final Map<Material, DispenseBehavior> dispenseBehaviorMap = new ConcurrentHashMap<>();
 
     public void putBehavior(Material material, DispenseBehavior behavior) {
@@ -16,14 +16,20 @@ public class DispenseBehaviorRegistry {
         dispenseBehaviorMap.remove(material);
     }
 
+    /**
+     * Returns the dispense behavior for the given item type.
+     *
+     * @param material the item type to look up
+     * @return the dispense behavior
+     */
     public DispenseBehavior getBehavior(Material material) {
         if (material == null) {
-            return new DefaultDispenseBehavior();
+            return DefaultDispenseBehavior.INSTANCE;
         }
 
         DispenseBehavior behavior = dispenseBehaviorMap.get(material);
         if (behavior == null) {
-            return new DefaultDispenseBehavior();
+            return DefaultDispenseBehavior.INSTANCE;
         }
 
         return behavior;

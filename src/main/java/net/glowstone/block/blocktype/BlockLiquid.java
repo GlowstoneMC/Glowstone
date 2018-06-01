@@ -1,5 +1,13 @@
 package net.glowstone.block.blocktype;
 
+import static org.bukkit.block.BlockFace.DOWN;
+import static org.bukkit.block.BlockFace.EAST;
+import static org.bukkit.block.BlockFace.NORTH;
+import static org.bukkit.block.BlockFace.SOUTH;
+import static org.bukkit.block.BlockFace.UP;
+import static org.bukkit.block.BlockFace.WEST;
+
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -11,8 +19,6 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import static org.bukkit.block.BlockFace.*;
-
 public abstract class BlockLiquid extends BlockType {
 
     private static final byte STRENGTH_SOURCE = 0;
@@ -23,8 +29,14 @@ public abstract class BlockLiquid extends BlockType {
 
     private static final int TICK_RATE_WATER = 4;
     private static final int TICK_RATE_LAVA = 20;
+    /**
+     * Get the bucket type to replace the empty bucket when the liquid has been collected.
+     *
+     * @return The associated bucket types material
+     */
+    @Getter
     private final Material bucketType;
-    private BlockFace[] sides = {NORTH, EAST, SOUTH, WEST};
+
     protected BlockLiquid(Material bucketType) {
         this.bucketType = bucketType;
     }
@@ -69,16 +81,6 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     /**
-     * Get the bucket type to replace the empty bucket when the liquid has
-     * been collected.
-     *
-     * @return The associated bucket types material
-     */
-    public Material getBucketType() {
-        return bucketType;
-    }
-
-    /**
      * Check if the BlockState block is collectible by a bucket.
      *
      * @param block The block state to check
@@ -87,7 +89,8 @@ public abstract class BlockLiquid extends BlockType {
     public abstract boolean isCollectible(GlowBlockState block);
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         // 0 = Full liquid block
         state.setType(getMaterial());
         state.setRawData((byte) 0);
@@ -95,8 +98,10 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
-        if (block.getState().getFlowed() && !(isWater(newType) || newType == Material.LAVA || newType == Material.STATIONARY_LAVA)) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
+        if (block.getState().isFlowed() && !(isWater(newType) || newType == Material.LAVA
+            || newType == Material.STATIONARY_LAVA)) {
             block.getState().setFlowed(false);
         }
         block.getWorld().requestPulse(block);
@@ -113,44 +118,48 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     private void calculateFlow(GlowBlock block) {
-        if (!block.getState().getFlowed()) {
-            GlowBlockState state = block.getState();
-            // see if we can flow down
-            if (block.getY() > 0) {
-                if (calculateTarget(block.getRelative(DOWN), DOWN, true)) {
-                    if (!block.getRelative(UP).isLiquid() && Byte.compare(state.getRawData(), STRENGTH_SOURCE) == 0) {
-                        for (BlockFace face : sides) {
-                            calculateTarget(block.getRelative(face), face, true);
-                        }
-                    }
-                } else {
-                    // we can't flow down, or if we're a source block, let's flow horizontally
-                    // search 5 blocks out
-                    for (int j = 1; j < 6; j++) {
-                        // from each horizontal face
-                        for (BlockFace face : sides) {
-                            if (calculateTarget(block.getRelative(face, j).getRelative(DOWN), face, false) && calculateTarget(block.getRelative(face), face, true)) {
-                                state.setFlowed(true);
-                            }
-                        }
-                        // if we already found a match at this radius, stop
-                        if (state.getFlowed()) {
-                            return;
-                        }
-                    }
-                    for (BlockFace face : sides) {
-                        calculateTarget(block.getRelative(face), face, true);
-                    }
-                    state.setFlowed(true);
+        // see if we can flow down
+        if (block.getState().isFlowed() || block.getY() <= 0) {
+            return;
+        }
+        GlowBlockState state = block.getState();
+        if (calculateTarget(block.getRelative(DOWN), DOWN, true)) {
+            if (!block.getRelative(UP).isLiquid()
+                && Byte.compare(state.getRawData(), STRENGTH_SOURCE) == 0) {
+                for (BlockFace face : SIDES) {
+                    calculateTarget(block.getRelative(face), face, true);
                 }
             }
+        } else {
+            // we can't flow down, or if we're a source block, let's flow horizontally
+            // search 5 blocks out
+            for (int j = 1; j < 6; j++) {
+                // from each horizontal face
+                for (BlockFace face : SIDES) {
+                    if (calculateTarget(block.getRelative(face, j).getRelative(DOWN), face,
+                        false) && calculateTarget(block.getRelative(face), face, true)) {
+                        state.setFlowed(true);
+                    }
+                }
+                // if we already found a match at this radius, stop
+                if (state.isFlowed()) {
+                    return;
+                }
+            }
+            for (BlockFace face : SIDES) {
+                calculateTarget(block.getRelative(face), face, true);
+            }
+            state.setFlowed(true);
         }
     }
 
     private boolean calculateTarget(GlowBlock target, BlockFace direction, boolean flow) {
-        if (!target.getChunk().isLoaded()) // Don't flow inside unloaded chunks
+        // Don't flow inside unloaded chunks
+        if (!target.getChunk().isLoaded()) {
             return false;
-        if (target.getType() == Material.AIR || ItemTable.instance().getBlock(target.getType()) instanceof BlockNeedsAttached) {
+        }
+        if (target.getType() == Material.AIR || ItemTable.instance()
+            .getBlock(target.getType()) instanceof BlockNeedsAttached) {
             // we flowed
             if (flow) {
                 flow(target.getRelative(direction.getOppositeFace()), direction);
@@ -160,7 +169,8 @@ public abstract class BlockLiquid extends BlockType {
         if (target.isLiquid()) {
             // let's mix
             if (flow) {
-                mix(target, direction, target.getRelative(direction.getOppositeFace()).getType(), target.getType());
+                mix(target, direction, target.getRelative(direction.getOppositeFace()).getType(),
+                    target.getType());
             }
             return true;
         }
@@ -176,7 +186,9 @@ public abstract class BlockLiquid extends BlockType {
         }
         byte strength = fromToEvent.getBlock().getState().getRawData();
         if (DOWN != fromToEvent.getFace()) {
-            if (Byte.compare(strength, isWater(fromToEvent.getBlock().getType()) || fromToEvent.getBlock().getBiome() == Biome.HELL ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) < 0) {
+            if (Byte.compare(strength, isWater(fromToEvent.getBlock().getType())
+                || fromToEvent.getBlock().getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
+                : STRENGTH_MIN_LAVA) < 0) {
                 // decrease the strength
                 strength += 1;
             } else {
@@ -193,7 +205,8 @@ public abstract class BlockLiquid extends BlockType {
         toBlock.getWorld().requestPulse(toBlock);
     }
 
-    private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial, Material targetMaterial) {
+    private void mix(GlowBlock target, BlockFace direction, Material flowingMaterial,
+        Material targetMaterial) {
         if (flowingMaterial == Material.WATER && targetMaterial == Material.LAVA) {
             if (target.getState().getRawData() == STRENGTH_SOURCE) {
                 target.setType(Material.OBSIDIAN);
@@ -201,11 +214,13 @@ public abstract class BlockLiquid extends BlockType {
                 target.setType(Material.COBBLESTONE);
             }
         }
-        if (flowingMaterial == Material.LAVA && (targetMaterial == Material.WATER || targetMaterial == Material.STATIONARY_WATER)) {
+        if (flowingMaterial == Material.LAVA && (targetMaterial == Material.WATER
+            || targetMaterial == Material.STATIONARY_WATER)) {
             if (direction == DOWN) {
                 target.setType(Material.STONE);
             }
-            if (direction == NORTH || direction == SOUTH || direction == EAST || direction == WEST) {
+            if (direction == NORTH || direction == SOUTH || direction == EAST
+                || direction == WEST) {
                 target.setType(Material.COBBLESTONE);
             }
         }
@@ -222,16 +237,22 @@ public abstract class BlockLiquid extends BlockType {
             int count = 0;
             for (BlockFace face : faces) {
                 if (block.getRelative(face).getType() == block.getType()) {
-                    if (count < 2 && face != UP && Byte.compare(block.getRelative(face).getState().getRawData(), STRENGTH_SOURCE) == 0) {
+                    if (count < 2 && face != UP
+                        && Byte.compare(block.getRelative(face).getState().getRawData(),
+                            STRENGTH_SOURCE) == 0) {
                         count++;
                     }
-                    if (!connected && face == UP || Byte.compare(block.getRelative(face).getState().getRawData(), block.getState().getRawData()) < 0) {
+                    if (!connected && face == UP
+                        || Byte.compare(block.getRelative(face).getState().getRawData(),
+                            block.getState().getRawData()) < 0) {
                         connected = true;
                         if (block.getWorld().getServer().getClassicWater()) {
                             block.getState().setRawData(STRENGTH_SOURCE);
                         }
                     }
-                    if (block.getWorld().getServer().getClassicWater() && Byte.compare(block.getRelative(face).getState().getRawData(), STRENGTH_SOURCE) == 0) {
+                    if (block.getWorld().getServer().getClassicWater()
+                        && Byte.compare(block.getRelative(face).getState().getRawData(),
+                            STRENGTH_SOURCE) == 0) {
                         block.getRelative(face).setType(Material.AIR);
                     }
                 }
@@ -245,7 +266,9 @@ public abstract class BlockLiquid extends BlockType {
                 return;
             }
         }
-        if (!(Byte.compare(block.getState().getRawData(), isWater(block.getType()) || block.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER : STRENGTH_MIN_LAVA) == 0) || block.getRelative(DOWN).getType() == Material.AIR) {
+        if (!(Byte.compare(block.getState().getRawData(),
+            isWater(block.getType()) || block.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
+                : STRENGTH_MIN_LAVA) == 0) || block.getRelative(DOWN).getType() == Material.AIR) {
             calculateFlow(block);
         }
     }
@@ -257,6 +280,7 @@ public abstract class BlockLiquid extends BlockType {
 
     @Override
     public int getPulseTickSpeed(GlowBlock block) {
-        return isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER : TICK_RATE_LAVA;
+        return isWater(block.getType()) || block.getBiome() == Biome.HELL ? TICK_RATE_WATER
+            : TICK_RATE_LAVA;
     }
 }

@@ -4,7 +4,7 @@ import com.flowpowered.network.Message;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.scoreboard.RenderType;
+import net.glowstone.scoreboard.RenderType;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,11 +16,14 @@ public final class ScoreboardObjectiveMessage implements Message {
     private final RenderType renderType;
 
     public static ScoreboardObjectiveMessage create(String name, String displayName) {
-        return new ScoreboardObjectiveMessage(name, displayName, Action.CREATE.ordinal(), RenderType.INTEGER);
+        return new ScoreboardObjectiveMessage(name, displayName, Action.CREATE.ordinal(),
+            RenderType.INTEGER);
     }
 
-    public static ScoreboardObjectiveMessage create(String name, String displayName, RenderType renderType) {
-        return new ScoreboardObjectiveMessage(name, displayName, Action.CREATE.ordinal(), renderType);
+    public static ScoreboardObjectiveMessage create(String name, String displayName,
+        RenderType renderType) {
+        return new ScoreboardObjectiveMessage(name, displayName, Action.CREATE.ordinal(),
+            renderType);
     }
 
     public static ScoreboardObjectiveMessage remove(String name) {
@@ -28,11 +31,14 @@ public final class ScoreboardObjectiveMessage implements Message {
     }
 
     public static ScoreboardObjectiveMessage update(String name, String displayName) {
-        return new ScoreboardObjectiveMessage(name, displayName, Action.UPDATE.ordinal(), RenderType.INTEGER);
+        return new ScoreboardObjectiveMessage(name, displayName, Action.UPDATE.ordinal(),
+            RenderType.INTEGER);
     }
 
-    public static ScoreboardObjectiveMessage update(String name, String displayName, RenderType renderType) {
-        return new ScoreboardObjectiveMessage(name, displayName, Action.UPDATE.ordinal(), renderType);
+    public static ScoreboardObjectiveMessage update(String name, String displayName,
+        RenderType renderType) {
+        return new ScoreboardObjectiveMessage(name, displayName, Action.UPDATE.ordinal(),
+            renderType);
     }
 
     private enum Action {

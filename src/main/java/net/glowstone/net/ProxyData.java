@@ -1,43 +1,56 @@
 package net.glowstone.net;
 
-import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.entity.meta.profile.PlayerProperty;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.UuidUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 /**
  * Container for proxy (e.g. BungeeCord) player data spoofing.
  */
+@AllArgsConstructor
 public final class ProxyData {
 
-    private String securityKey; // Lilypad security key - not used by us
-    private String hostname;
-    private InetSocketAddress address;
-    private String name;
-    private UUID uuid;
-    private List<PlayerProperty> properties;
+    /**
+     * The Lilypad security key sent by the proxy, or null if not present.
+     */
+    @Getter
+    private String securityKey;
 
-    public ProxyData(String securityKey, String hostname, InetSocketAddress address, String name, UUID uuid, List<PlayerProperty> properties) {
-        this.securityKey = securityKey;
-        this.hostname = hostname;
-        this.address = address;
-        this.name = name;
-        this.uuid = uuid;
-        this.properties = properties;
-    }
+    /** The spoofed hostname to use instead of the actual one. */
+    @Getter
+    private String hostname;
+
+    /**
+     * The spoofed address to use instead of the actual one.
+     *
+     * @return The spoofed address.
+     */
+    @Getter
+    private InetSocketAddress address;
+
+    /** The player name for the spoofed profile, or null if not specified. */
+    private String name;
+
+    /** The player UUID for the spoofed profile. */
+    private UUID uuid;
+
+    /** The player properties for the spoofed profile. */
+    private List<ProfileProperty> properties;
 
     /**
      * Create a proxy data structure for a session from the given source text.
      *
-     * @param session    The session to create the data for.
+     * @param session The session to create the data for.
      * @param sourceText Contents of the hostname field of the handshake.
      * @throws Exception if an error occurs parsing the source text.
      */
@@ -55,7 +68,8 @@ public final class ProxyData {
             // LilyPad also spoofs the port, unlike Bungee
             hostname = (String) payload.get("h");
             uuid = UuidUtils.fromFlatString((String) payload.get("u"));
-            address = new InetSocketAddress((String) payload.get("rIp"), ((Long) payload.get("rP")).intValue());
+            address = new InetSocketAddress(
+                    (String) payload.get("rIp"), ((Long) payload.get("rP")).intValue());
 
             // Extract properties, if available
             if (payload.containsKey("p")) {
@@ -67,7 +81,7 @@ public final class ProxyData {
                     String propName = (String) prop.get("n");
                     String value = (String) prop.get("v");
                     String signature = (String) prop.get("s");
-                    properties.add(new PlayerProperty(propName, value, signature));
+                    properties.add(new ProfileProperty(propName, value, signature));
                 }
             } else {
                 properties = new ArrayList<>(0);
@@ -82,7 +96,8 @@ public final class ProxyData {
 
         String[] parts = sourceText.split("\0");
         if (parts.length != 3 && parts.length != 4) {
-            throw new IllegalArgumentException("parts length was " + parts.length + ", should be 3 or 4");
+            throw new IllegalArgumentException(
+                    "parts length was " + parts.length + ", should be 3 or 4");
         }
 
         // Set values that aren't supported or present to null
@@ -104,38 +119,11 @@ public final class ProxyData {
                 String propName = (String) propJson.get("name");
                 String value = (String) propJson.get("value");
                 String signature = (String) propJson.get("signature");
-                properties.add(new PlayerProperty(propName, value, signature));
+                properties.add(new ProfileProperty(propName, value, signature));
             }
         } else {
             properties = new ArrayList<>(0);
         }
-    }
-
-    /**
-     * Gets the security key sent by the proxy, if any.
-     *
-     * @return The security key, or null if not present.
-     */
-    public String getSecurityKey() {
-        return securityKey;
-    }
-
-    /**
-     * Get the spoofed hostname to use instead of the actual one.
-     *
-     * @return The spoofed hostname.
-     */
-    public String getHostname() {
-        return hostname;
-    }
-
-    /**
-     * Get the spoofed address to use instead of the actual one.
-     *
-     * @return The spoofed address.
-     */
-    public InetSocketAddress getAddress() {
-        return address;
     }
 
     /**
@@ -144,18 +132,20 @@ public final class ProxyData {
      * @param name The player name.
      * @return The spoofed profile.
      */
-    public PlayerProfile getProfile(String name) {
-        return new PlayerProfile(name, uuid, properties);
+    public GlowPlayerProfile getProfile(String name) {
+        return new GlowPlayerProfile(name, uuid, properties, true);
     }
 
     /**
-     * Get a spoofed profile to use. Returns null if the proxy did not send a
-     * username as part of the payload.
+     * Get a spoofed profile to use. Returns null if the proxy did not send a username as part of
+     * the payload.
      *
      * @return The spoofed profile.
      */
-    public PlayerProfile getProfile() {
-        if (name == null) return null;
-        return new PlayerProfile(name, uuid, properties);
+    public GlowPlayerProfile getProfile() {
+        if (name == null) {
+            return null;
+        }
+        return new GlowPlayerProfile(name, uuid, properties, true);
     }
 }

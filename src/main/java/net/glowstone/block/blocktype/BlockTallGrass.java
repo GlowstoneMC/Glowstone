@@ -1,10 +1,13 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.GrassSpecies;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -13,23 +16,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DoublePlant;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import org.bukkit.material.types.DoublePlantSpecies;
 
 public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        int typeIdBelow = block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
+        int typeIdBelow = block.getWorld()
+            .getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
         Material typeBelow = Material.getMaterial(typeIdBelow);
-        return typeBelow == Material.GRASS || typeBelow == Material.DIRT || typeBelow == Material.SOIL;
+        return typeBelow == Material.GRASS || typeBelow == Material.DIRT
+            || typeBelow == Material.SOIL;
     }
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (random.nextFloat() < .125) {
+        if (ThreadLocalRandom.current().nextFloat() < .125) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
         }
         return BlockDropless.EMPTY_STACK;
@@ -71,15 +73,15 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
             if (species == GrassSpecies.NORMAL || species == GrassSpecies.FERN_LIKE) {
                 GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
                 if (headBlockState.getType() == Material.AIR) {
-                    DoublePlantSpecies doublePlantSpecies = species == GrassSpecies.FERN_LIKE ?
-                            DoublePlantSpecies.LARGE_FERN : DoublePlantSpecies.DOUBLE_TALLGRASS;
+                    DoublePlantSpecies doublePlantSpecies = species == GrassSpecies.FERN_LIKE
+                            ? DoublePlantSpecies.LARGE_FERN : DoublePlantSpecies.DOUBLE_TALLGRASS;
                     GlowBlockState blockState = block.getState();
                     blockState.setType(Material.DOUBLE_PLANT);
                     blockState.setData(new DoublePlant(doublePlantSpecies));
                     headBlockState.setType(Material.DOUBLE_PLANT);
                     headBlockState.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
                     BlockGrowEvent growEvent = new BlockGrowEvent(block, blockState);
-                    EventFactory.callEvent(growEvent);
+                    EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         blockState.update(true);
                         headBlockState.update(true);

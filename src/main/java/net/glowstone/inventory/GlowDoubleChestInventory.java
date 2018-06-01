@@ -1,7 +1,7 @@
 package net.glowstone.inventory;
 
 import com.google.common.collect.ImmutableList;
-import net.glowstone.block.state.GlowChest;
+import net.glowstone.block.entity.state.GlowChest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
@@ -12,15 +12,21 @@ public class GlowDoubleChestInventory extends GlowSuperInventory implements Doub
 
     private GlowChest first;
 
+    /**
+     * Creates an instance for the given double chest.
+     *
+     * @param first the north or west half of the chest
+     * @param second the south or east half of the chest
+     */
     public GlowDoubleChestInventory(GlowChest first, GlowChest second) {
         initialize(
-                // Inventories
-                ImmutableList.of(
-                        (GlowInventory) first.getBlockInventory(),
-                        (GlowInventory) second.getBlockInventory()
-                ),
-                new DoubleChest(this), // Holder
-                InventoryType.CHEST // Type
+            // Inventories
+            ImmutableList.of(
+                (GlowInventory) first.getBlockInventory(),
+                (GlowInventory) second.getBlockInventory()
+            ),
+            new DoubleChest(this), // Holder
+            InventoryType.CHEST // Type
         );
         this.first = first;
     }

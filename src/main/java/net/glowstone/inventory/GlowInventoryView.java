@@ -1,5 +1,8 @@
 package net.glowstone.inventory;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.glowstone.entity.GlowHumanEntity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
@@ -10,11 +13,32 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Standard implementation of InventoryView for most inventories.
  */
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class GlowInventoryView extends InventoryView {
 
+    /**
+     * The player.
+     */
     private final HumanEntity player;
+
+    /**
+     * The inventory type.
+     */
+    // NB: by spec, getter ought to return CREATIVE instead of CRAFTING if player is in creative
+    // mode
+    // but this messes up the calculations in InventoryView which expect CRAFTING but also
+    // apply to CREATIVE.
     private final InventoryType type;
-    private final Inventory top, bottom;
+    /**
+     * The inventory in the top half of the window.
+     */
+    private final Inventory topInventory;
+    /**
+     * The inventory in the bottom half of the window.
+     */
+    private final Inventory bottomInventory;
 
     /**
      * Create the default inventory view for this player.
@@ -29,26 +53,21 @@ public class GlowInventoryView extends InventoryView {
      * Create an inventory view for this player looking at a given top inventory.
      *
      * @param player The player.
-     * @param top    The top inventory.
+     * @param topInventory The top inventory.
      */
-    public GlowInventoryView(HumanEntity player, Inventory top) {
-        this(player, top.getType(), top, player.getInventory());
+    public GlowInventoryView(HumanEntity player, Inventory topInventory) {
+        this(player, topInventory.getType(), topInventory, player.getInventory());
     }
 
     /**
      * Create an inventory view for a player.
      *
      * @param player The player.
-     * @param type   The inventory type.
-     * @param top    The top inventory.
-     * @param bottom The bottom inventory.
+     * @param type The inventory type.
+     * @param topInventory The top inventory.
+     * @param bottomInventory The bottom inventory.
      */
-    public GlowInventoryView(HumanEntity player, InventoryType type, Inventory top, Inventory bottom) {
-        this.player = player;
-        this.type = type;
-        this.top = top;
-        this.bottom = bottom;
-    }
+
 
     /**
      * Check if an inventory view is the player's default inventory view.
@@ -57,7 +76,9 @@ public class GlowInventoryView extends InventoryView {
      * @return Whether it is a player's default inventory view.
      */
     public static boolean isDefault(InventoryView view) {
-        return view.getBottomInventory() instanceof GlowPlayerInventory && view.getTopInventory() == ((GlowPlayerInventory) view.getBottomInventory()).getCraftingInventory();
+        return view.getBottomInventory() instanceof GlowPlayerInventory
+                && view.getTopInventory() == ((GlowPlayerInventory) view.getBottomInventory())
+                .getCraftingInventory();
     }
 
     @Override
@@ -78,35 +99,13 @@ public class GlowInventoryView extends InventoryView {
      * @param slot The slot to check.
      */
     private void checkSlot(int slot) {
-        if (slot == OUTSIDE) return;
+        if (slot == OUTSIDE) {
+            return;
+        }
 
         int size = countSlots();
         if (slot < 0 || slot >= size) {
             throw new IllegalArgumentException("Slot out of range [0," + size + "): " + slot);
         }
     }
-
-    @Override
-    public Inventory getTopInventory() {
-        return top;
-    }
-
-    @Override
-    public Inventory getBottomInventory() {
-        return bottom;
-    }
-
-    @Override
-    public HumanEntity getPlayer() {
-        return player;
-    }
-
-    @Override
-    public InventoryType getType() {
-        // NB: by spec, ought to return CREATIVE instead of CRAFTING if player is in creative mode
-        // but this messes up the calculations in InventoryView which expect CRAFTING but also
-        // apply to CREATIVE.
-        return type;
-    }
-
 }

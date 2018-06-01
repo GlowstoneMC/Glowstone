@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public final class EnchantItemMessage implements Message {
 
-    private final int window, enchantment;
+    private final int window;
+    private final int enchantment;
 
 }

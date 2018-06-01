@@ -23,7 +23,8 @@ public final class EntityStatusMessage implements Message {
     public static final int OP_LEVEL_3 = 27;
     public static final int OP_LEVEL_4 = 28;
 
-    private final int id, status;
+    private final int id;
+    private final int status;
 
     public EntityStatusMessage(int id, EntityEffect effect) {
         this(id, effect.getData());

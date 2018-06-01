@@ -1,5 +1,8 @@
 package net.glowstone.generator.structures;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
@@ -10,12 +13,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.material.*;
+import org.bukkit.material.Chest;
+import org.bukkit.material.Diode;
+import org.bukkit.material.Dispenser;
+import org.bukkit.material.Lever;
+import org.bukkit.material.PistonBaseMaterial;
+import org.bukkit.material.Stairs;
+import org.bukkit.material.TripwireHook;
+import org.bukkit.material.Vine;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 public class GlowJungleTemple extends GlowTemplePiece {
 
@@ -64,12 +70,13 @@ public class GlowJungleTemple extends GlowTemplePiece {
     }
 
     @Override
-    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox, BlockStateDelegate delegate) {
+    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox,
+        BlockStateDelegate delegate) {
         if (!super.generate(world, random, boundingBox, delegate)) {
             return false;
         }
 
-        adjustHPos(world);
+        adjustHorizPos(world);
 
         boundingBox.offset(new Vector(0, -4, 0));
 
@@ -91,7 +98,8 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fillWithRandomMaterial(new Vector(0, 4, 0), new Vector(11, 4, 14), random, stones);
         Stairs entranceStairs = new Stairs(Material.COBBLESTONE_STAIRS);
         entranceStairs.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
-        builder.fill(new Vector(4, 4, 0), new Vector(7, 4, 0), entranceStairs.getItemType(), entranceStairs);
+        builder.fill(new Vector(4, 4, 0), new Vector(7, 4, 0), entranceStairs.getItemType(),
+            entranceStairs);
         builder.fill(new Vector(1, 1, 1), new Vector(10, 3, 13), Material.AIR);
         builder.fill(new Vector(5, 4, 7), new Vector(6, 4, 9), Material.AIR);
 
@@ -123,7 +131,8 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fillWithRandomMaterial(new Vector(1, 10, 1), new Vector(10, 10, 4), random, stones);
         builder.fillWithRandomMaterial(new Vector(8, 10, 5), new Vector(10, 10, 9), random, stones);
         builder.fillWithRandomMaterial(new Vector(1, 10, 5), new Vector(3, 10, 9), random, stones);
-        builder.fillWithRandomMaterial(new Vector(1, 10, 10), new Vector(10, 10, 13), random, stones);
+        builder
+            .fillWithRandomMaterial(new Vector(1, 10, 10), new Vector(10, 10, 13), random, stones);
         builder.fillWithRandomMaterial(new Vector(3, 11, 3), new Vector(8, 11, 5), random, stones);
         builder.fillWithRandomMaterial(new Vector(7, 11, 6), new Vector(8, 11, 8), random, stones);
         builder.fillWithRandomMaterial(new Vector(3, 11, 6), new Vector(4, 11, 8), random, stones);
@@ -139,8 +148,10 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.fillWithRandomMaterial(new Vector(9, 8, 0), new Vector(9, 9, 0), random, stones);
         builder.fillWithRandomMaterial(new Vector(5, 10, 0), new Vector(6, 10, 0), random, stones);
         for (int i = 0; i < 6; i++) {
-            builder.fillWithRandomMaterial(new Vector(11, 8, 2 + i * 2), new Vector(11, 9, 2 + i * 2), random, stones);
-            builder.fillWithRandomMaterial(new Vector(0, 8, 2 + i * 2), new Vector(0, 9, 2 + i * 2), random, stones);
+            builder.fillWithRandomMaterial(new Vector(11, 8, 2 + (i << 1)),
+                new Vector(11, 9, 2 + (i << 1)), random, stones);
+            builder.fillWithRandomMaterial(new Vector(0, 8, 2 + (i << 1)),
+                new Vector(0, 9, 2 + (i << 1)), random, stones);
         }
         builder.setBlockWithRandomMaterial(new Vector(11, 10, 5), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(11, 10, 9), random, stones);
@@ -154,26 +165,32 @@ public class GlowJungleTemple extends GlowTemplePiece {
         // roof decorations
         builder.fillWithRandomMaterial(new Vector(2, 11, 2), new Vector(2, 13, 2), random, stones);
         builder.fillWithRandomMaterial(new Vector(9, 11, 2), new Vector(9, 13, 2), random, stones);
-        builder.fillWithRandomMaterial(new Vector(9, 11, 12), new Vector(9, 13, 12), random, stones);
-        builder.fillWithRandomMaterial(new Vector(2, 11, 12), new Vector(2, 13, 12), random, stones);
+        builder
+            .fillWithRandomMaterial(new Vector(9, 11, 12), new Vector(9, 13, 12), random, stones);
+        builder
+            .fillWithRandomMaterial(new Vector(2, 11, 12), new Vector(2, 13, 12), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(4, 13, 4), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(7, 13, 4), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(7, 13, 10), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(4, 13, 10), random, stones);
         Stairs roofStairsN = new Stairs(Material.COBBLESTONE_STAIRS);
         roofStairsN.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
-        builder.fill(new Vector(5, 13, 6), new Vector(6, 13, 6), roofStairsN.getItemType(), roofStairsN);
+        builder.fill(new Vector(5, 13, 6), new Vector(6, 13, 6), roofStairsN.getItemType(),
+            roofStairsN);
         builder.fillWithRandomMaterial(new Vector(5, 13, 7), new Vector(6, 13, 7), random, stones);
         Stairs roofStairsS = new Stairs(Material.COBBLESTONE_STAIRS);
         roofStairsS.setFacingDirection(getRelativeFacing(BlockFace.NORTH));
-        builder.fill(new Vector(5, 13, 8), new Vector(6, 13, 8), roofStairsS.getItemType(), roofStairsS);
+        builder.fill(new Vector(5, 13, 8), new Vector(6, 13, 8), roofStairsS.getItemType(),
+            roofStairsS);
 
         // 1st floor inside
         for (int i = 0; i < 6; i++) {
-            builder.fillWithRandomMaterial(new Vector(1, 3, 2 + i * 2), new Vector(3, 3, 2 + i * 2), random, stones);
+            builder.fillWithRandomMaterial(new Vector(1, 3, 2 + (i << 1)),
+                new Vector(3, 3, 2 + (i << 1)), random, stones);
         }
         for (int i = 0; i < 7; i++) {
-            builder.fillWithRandomMaterial(new Vector(1, 1, 1 + i * 2), new Vector(1, 2, 1 + i * 2), random, stones);
+            builder.fillWithRandomMaterial(new Vector(1, 1, 1 + (i << 1)),
+                new Vector(1, 2, 1 + (i << 1)), random, stones);
         }
         builder.setBlockWithRandomMaterial(new Vector(2, 2, 1), random, stones);
         builder.setBlock(new Vector(3, 1, 1), Material.MOSSY_COBBLESTONE);
@@ -210,14 +227,19 @@ public class GlowJungleTemple extends GlowTemplePiece {
         builder.setBlock(new Vector(10, 2, 9), Material.MOSSY_COBBLESTONE);
         builder.fillWithRandomMaterial(new Vector(8, 1, 8), new Vector(8, 1, 10), random, stones);
         builder.fill(new Vector(8, 2, 11), new Vector(10, 2, 11), Material.SMOOTH_BRICK, 3);
-        Lever lever = new Lever(Material.LEVER, (byte) 4); // workaround for bukkit, can't set an attached BlockFace
+        Lever lever = new Lever(Material.LEVER,
+            (byte) 4); // workaround for bukkit, can't set an attached BlockFace
         lever.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.fill(new Vector(8, 2, 12), new Vector(10, 2, 12), lever.getItemType(), lever);
         if (!placedTrap1) {
-            placedTrap1 = builder.createRandomItemsContainer(new Vector(3, 2, 1), random, dispenserContent, new Dispenser(getRelativeFacing(BlockFace.SOUTH)), 2);
+            placedTrap1 = builder
+                .createRandomItemsContainer(new Vector(3, 2, 1), random, dispenserContent,
+                    new Dispenser(getRelativeFacing(BlockFace.SOUTH)), 2);
         }
         if (!placedTrap2) {
-            placedTrap2 = builder.createRandomItemsContainer(new Vector(9, 2, 3), random, dispenserContent, new Dispenser(getRelativeFacing(BlockFace.WEST)), 2);
+            placedTrap2 = builder
+                .createRandomItemsContainer(new Vector(9, 2, 3), random, dispenserContent,
+                    new Dispenser(getRelativeFacing(BlockFace.WEST)), 2);
         }
         Vine vine = new Vine(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST);
         builder.setBlock(new Vector(3, 2, 2), vine.getItemType(), vine);
@@ -254,17 +276,22 @@ public class GlowJungleTemple extends GlowTemplePiece {
         repeater.setFacingDirection(getRelativeFacing(BlockFace.SOUTH));
         builder.setBlock(new Vector(10, 2, 10), repeater.getItemType(), repeater);
         if (!placedMainChest) {
-            placedMainChest = builder.createRandomItemsContainer(new Vector(8, 1, 3), random, chestContent, new Chest(getRelativeFacing(BlockFace.WEST)), random.nextInt(5) + 2);
+            placedMainChest = builder
+                .createRandomItemsContainer(new Vector(8, 1, 3), random, chestContent,
+                    new Chest(getRelativeFacing(BlockFace.WEST)), random.nextInt(5) + 2);
         }
         if (!placedHiddenChest) {
-            placedHiddenChest = builder.createRandomItemsContainer(new Vector(9, 1, 10), random, chestContent, new Chest(getRelativeFacing(BlockFace.NORTH)), random.nextInt(5) + 2);
+            placedHiddenChest = builder
+                .createRandomItemsContainer(new Vector(9, 1, 10), random, chestContent,
+                    new Chest(getRelativeFacing(BlockFace.NORTH)), random.nextInt(5) + 2);
         }
 
         // 2nd floor inside
         for (int i = 0; i < 4; i++) {
             Stairs stairsS = new Stairs(Material.COBBLESTONE_STAIRS);
             stairsS.setFacingDirection(getRelativeFacing(BlockFace.NORTH));
-            builder.fill(new Vector(5, 4 - i, 6 + i), new Vector(6, 4 - i, 6 + i), stairsS.getItemType(), stairsS);
+            builder.fill(new Vector(5, 4 - i, 6 + i), new Vector(6, 4 - i, 6 + i),
+                stairsS.getItemType(), stairsS);
         }
         builder.fillWithRandomMaterial(new Vector(4, 5, 10), new Vector(7, 6, 10), random, stones);
         builder.setBlockWithRandomMaterial(new Vector(4, 5, 9), random, stones);

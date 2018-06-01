@@ -1,50 +1,72 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
-    PotionData potion;
+    @Getter
+    @Setter
+    PotionData basePotionData;
     List<PotionEffect> effects = new ArrayList<>();
+    @Getter
+    @Setter
     Color color = null;
 
-    public GlowMetaPotion(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link PotionMeta}, its color, {@link PotionData} and {@link PotionEffect}s are copied;
+     * otherwise, the new potion has no effects.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaPotion(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaPotion)) return;
-
-        GlowMetaPotion potion = (GlowMetaPotion) meta;
-        effects.addAll(potion.effects);
-        this.potion = potion.potion;
+        if (!(meta instanceof PotionMeta)) {
+            return;
+        }
+        this.copyFrom((PotionMeta) meta);
     }
 
-    public static PotionEffect fromNBT(CompoundTag tag) {
+    /**
+     * Reads a {@link PotionEffect} from an NBT compound tag.
+     *
+     * @param tag a potion effect NBT compound tag
+     * @return {@code tag} as a {@link PotionEffect}
+     */
+    public static PotionEffect fromNbt(CompoundTag tag) {
         PotionEffectType type = PotionEffectType.getById(tag.getByte("Id"));
         int duration = tag.getInt("Duration");
         int amplifier = tag.getByte("Amplifier");
-        boolean ambient = tag.isByte("Ambient") && tag.getBool("Ambient");
-        boolean particles = !tag.isByte("ShowParticles") || tag.getBool("ShowParticles");
+        boolean ambient = tag.getBoolean("Ambient", false);
+        boolean particles = tag.getBoolean("ShowParticles", true);
 
         return new PotionEffect(type, duration, amplifier, ambient, particles);
     }
 
-    public static CompoundTag toNBT(PotionEffect effect) {
+    /**
+     * Converts a {@link PotionEffect} to an NBT compound tag.
+     *
+     * @param effect the potion effect
+     * @return {@code effect} as an NBT compound tag
+     */
+    public static CompoundTag toNbt(PotionEffect effect) {
         CompoundTag tag = new CompoundTag();
 
         tag.putByte("Id", effect.getType().getId());
@@ -58,7 +80,8 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.POTION || material == Material.SPLASH_POTION || material == Material.TIPPED_ARROW || material == Material.LINGERING_POTION;
+        return material == Material.POTION || material == Material.SPLASH_POTION
+            || material == Material.TIPPED_ARROW || material == Material.LINGERING_POTION;
     }
 
     @Override
@@ -83,10 +106,11 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         super.writeNbt(tag);
 
         if (hasCustomEffects()) {
-            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNBT).collect(Collectors.toList());
+            List<CompoundTag> customEffects = effects.stream().map(GlowMetaPotion::toNbt)
+                .collect(Collectors.toList());
             tag.putCompoundList("CustomEffects", customEffects);
         }
-        tag.putString("Potion", dataToString());
+        tag.putString("Potion", dataToString(basePotionData));
         if (this.color != null) {
             tag.putInt("CustomPotionColor", this.color.asRGB());
         }
@@ -95,29 +119,10 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-
-        if (tag.isList("CustomEffects", TagType.COMPOUND)) {
-            List<CompoundTag> customEffects = tag.getCompoundList("CustomEffects");
-            for (CompoundTag effect : customEffects) {
-                addCustomEffect(fromNBT(effect), true);
-            }
-        }
-        if (tag.isString("Potion")) {
-            this.potion = dataFromString(tag.getString("Potion"));
-        }
-        if (tag.isInt("CustomPotionColor")) {
-            this.color = Color.fromRGB(tag.getInt("CustomPotionColor"));
-        }
-    }
-
-    @Override
-    public void setBasePotionData(PotionData potionData) {
-        this.potion = potionData;
-    }
-
-    @Override
-    public PotionData getBasePotionData() {
-        return this.potion;
+        tag.iterateCompoundList("CustomEffects", effect -> addCustomEffect(fromNbt(effect), true)
+        );
+        tag.readString("Potion", potion -> setBasePotionData(dataFromString(potion)));
+        tag.readInt("CustomPotionColor", color -> this.color = Color.fromRGB(color));
     }
 
     @Override
@@ -135,7 +140,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         checkNotNull(effect, "PotionEffect cannot be null.");
 
         for (PotionEffect eff : effects) {
-            if (eff.getType() == effect.getType() && !overwrite) return false;
+            if (eff.getType() == effect.getType() && !overwrite) {
+                return false;
+            }
         }
 
         effects.add(effect);
@@ -159,10 +166,17 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
     @Override
     public boolean hasCustomEffect(PotionEffectType type) {
         for (PotionEffect effect : effects) {
-            if (effect.getType() == type) return true;
+            if (effect.getType() == type) {
+                return true;
+            }
         }
 
         return false;
+    }
+
+    @Override
+    public void clearCustomEffects0() {
+        clearCustomEffects();
     }
 
     @Override
@@ -170,13 +184,17 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         PotionEffect main = null;
         for (PotionEffect effect : effects) {
             if (effect.getType() == type) {
-                if (effects.indexOf(effect) == 0) return false;
+                if (effects.indexOf(effect) == 0) {
+                    return false;
+                }
                 main = effect;
                 effects.remove(effect);
                 break;
             }
         }
-        if (main == null) return false;
+        if (main == null) {
+            return false;
+        }
 
         effects.add(0, main);
         return true;
@@ -184,7 +202,9 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
 
     @Override
     public boolean clearCustomEffects() {
-        if (effects.isEmpty()) return false;
+        if (effects.isEmpty()) {
+            return false;
+        }
         effects.clear();
         return true;
     }
@@ -194,29 +214,20 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         return color != null;
     }
 
-    @Override
-    public Color getColor() {
-        return color;
-    }
-
-    @Override
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     /**
-     * Converts the PotionData of this item meta to a Potion ID string
+     * Converts a PotionData to a Potion ID string.
      *
+     * @param basePotionData the PotionData to convert
      * @return the Potion ID string
      */
-    private String dataToString() {
+    public static String dataToString(PotionData basePotionData) {
         String name = "minecraft:";
-        if (potion.isExtended()) {
+        if (basePotionData.isExtended()) {
             name += "long_";
-        } else if (potion.isUpgraded()) {
+        } else if (basePotionData.isUpgraded()) {
             name += "strong_";
         }
-        return name + PotionTypeTable.toName(potion.getType());
+        return name + PotionTypeTable.toName(basePotionData.getType());
     }
 
     /**
@@ -227,9 +238,11 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
      */
     private PotionData dataFromString(String string) {
         PotionType type;
-        boolean extended = false, upgraded = false;
-        if (string.startsWith("minecraft:"))
+        boolean extended = false;
+        boolean upgraded = false;
+        if (string.startsWith("minecraft:")) {
             string = string.replace("minecraft:", "");
+        }
         if (string.startsWith("long_")) {
             string = string.replace("long_", "");
             extended = true;
@@ -261,29 +274,31 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         }
 
         /**
-         * Converts a Vanilla Potion ID to an equivalent Bukkit PotionType
+         * Converts a Vanilla Potion ID to an equivalent Bukkit PotionType.
          *
          * @param name the Vanilla Potion ID
          * @return the PotionType equivalent
          */
         static PotionType fromName(String name) {
             for (PotionTypeTable table : values()) {
-                if (name.equalsIgnoreCase(table.name))
+                if (name.equalsIgnoreCase(table.name)) {
                     return table.type;
+                }
             }
             return PotionType.valueOf(name.toUpperCase());
         }
 
         /**
-         * Converts a Bukkit PotionType to an equivalent Vanilla Potion ID
+         * Converts a Bukkit PotionType to an equivalent Vanilla Potion ID.
          *
          * @param type the Bukkit PotionType
          * @return the Vanilla Potion ID equivalent
          */
         static String toName(PotionType type) {
             for (PotionTypeTable table : values()) {
-                if (type == table.type)
+                if (type == table.type) {
                     return table.name;
+                }
             }
             return type.name().toLowerCase();
         }

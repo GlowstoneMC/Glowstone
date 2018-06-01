@@ -1,13 +1,13 @@
 package net.glowstone.inventory;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import lombok.Getter;
 import net.glowstone.constants.ItemIds;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Tracker for when items in an inventory are changed.
@@ -18,7 +18,27 @@ public final class InventoryMonitor {
 
     private final InventoryView view;
     private final ItemStack[] slots;
-    private final int size, id;
+    /**
+     * Get the number of slots in this inventory view.
+     *
+     * @return The number of slots.
+     */
+    @Getter
+    private final int size;
+    /**
+     * The network ID of this inventory view.
+     *
+     * @return The id.
+     */
+    @Getter
+    private final int id;
+
+    /**
+     * Get the network type ID of this inventory view.
+     *
+     * @return The type id.
+     */
+    @Getter
     private final String type;
 
     /**
@@ -27,13 +47,18 @@ public final class InventoryMonitor {
      * @param view The view to monitor.
      */
     public InventoryMonitor(InventoryView view) {
-        boolean isDefault = GlowInventoryView.isDefault(view);
         this.view = view;
-        size = view.countSlots();
+        if (view.getTopInventory().getType() != InventoryType.CRAFTING
+            && view.getBottomInventory().getType() == InventoryType.PLAYER) {
+            // Don't send armor/shield slots when looking in an inventory
+            size = view.countSlots() - 5;
+        } else {
+            size = view.countSlots();
+        }
         slots = new ItemStack[size];
 
         // determine id and type id
-        if (isDefault) {
+        if (GlowInventoryView.isDefault(view)) {
             id = 0;
         } else {
             id = nextId;
@@ -118,40 +143,15 @@ public final class InventoryMonitor {
      * @return The contents.
      */
     public ItemStack[] getContents() {
+        // TODO: Defensive deep copy
         return slots;
-    }
-
-    /**
-     * Get the number of slots in this inventory view.
-     *
-     * @return The number of slots.
-     */
-    public int getSize() {
-        return size;
-    }
-
-    /**
-     * Get the network ID of this inventory view.
-     *
-     * @return The id.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Get the network type ID of this inventory view.
-     *
-     * @return The type id.
-     */
-    public String getType() {
-        return type;
     }
 
     /**
      * An entry which has been changed.
      */
     public static class Entry {
+
         public final int slot;
         public final ItemStack item;
 

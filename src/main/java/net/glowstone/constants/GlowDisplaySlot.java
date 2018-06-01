@@ -1,10 +1,9 @@
 package net.glowstone.constants;
 
-import org.bukkit.scoreboard.DisplaySlot;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Arrays;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.bukkit.scoreboard.DisplaySlot;
 
 /**
  * ID number mappings for {@link DisplaySlot}s.

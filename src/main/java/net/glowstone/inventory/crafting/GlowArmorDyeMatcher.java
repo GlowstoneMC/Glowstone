@@ -1,20 +1,19 @@
 package net.glowstone.inventory.crafting;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemMatcher;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GlowArmorDyeMatcher extends ItemMatcher {
 
-    public static final MaterialMatcher LEATHERS = material -> material.equals(Material.LEATHER_HELMET)
+    public static final MaterialMatcher LEATHERS = material ->
+        material.equals(Material.LEATHER_HELMET)
             || material.equals(Material.LEATHER_CHESTPLATE)
             || material.equals(Material.LEATHER_LEGGINGS)
             || material.equals(Material.LEATHER_BOOTS);
@@ -25,7 +24,9 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
         List<Color> colors = new ArrayList<>();
 
         for (ItemStack item : matrix) {
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
 
             if (item.getType() == Material.INK_SACK) {
                 Color color = ((Dye) item.getData()).getColor().getColor();
@@ -34,7 +35,9 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
             }
 
             if (LEATHERS.matches(item.getType())) {
-                if (armor != null) return null; // Can't dye more than one item
+                if (armor != null) {
+                    return null; // Can't dye more than one item
+                }
                 armor = item;
                 continue;
             }
@@ -42,8 +45,12 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
             return null; // Non-armor item
         }
 
-        if (armor == null) return null; // No armor
-        if (colors.isEmpty()) return null; // No colors
+        if (armor == null) {
+            return null; // No armor
+        }
+        if (colors.isEmpty()) {
+            return null; // No colors
+        }
 
         LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta();
         Color base = meta.getColor();

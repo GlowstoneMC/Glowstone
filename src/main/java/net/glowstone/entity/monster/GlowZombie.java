@@ -1,6 +1,7 @@
 package net.glowstone.entity.monster;
 
 import com.flowpowered.network.Message;
+import java.util.List;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.HostileMobState;
 import net.glowstone.entity.ai.MobState;
@@ -12,16 +13,25 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Zombie;
 
-import java.util.List;
-
 public class GlowZombie extends GlowMonster implements Zombie {
 
     private boolean canBreakDoors;
 
+    /**
+     * Creates a zombie.
+     *
+     * @param loc the location
+     */
     public GlowZombie(Location loc) {
         this(loc, EntityType.ZOMBIE);
     }
 
+    /**
+     * Creates a zombie.
+     *
+     * @param loc the location
+     * @param type the zombie type
+     */
     public GlowZombie(Location loc, EntityType type) {
         super(loc, type, 20);
         setBoundingBox(0.6, 1.8);
@@ -61,14 +71,14 @@ public class GlowZombie extends GlowMonster implements Zombie {
     }
 
     @Override
-    public void setVillagerProfession(Profession profession) {
-        //Field has been removed as of 1.11
-    }
-
-    @Override
     public Profession getVillagerProfession() {
         //Field has been removed as of 1.11
         return Profession.NORMAL;
+    }
+
+    @Override
+    public void setVillagerProfession(Profession profession) {
+        //Field has been removed as of 1.11
     }
 
     public boolean isCanBreakDoors() {
@@ -100,5 +110,10 @@ public class GlowZombie extends GlowMonster implements Zombie {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ZOMBIE_AMBIENT;
+    }
+
+    @Override
+    public boolean isUndead() {
+        return true;
     }
 }

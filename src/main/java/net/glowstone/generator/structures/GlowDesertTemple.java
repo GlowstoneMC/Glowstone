@@ -1,5 +1,6 @@
 package net.glowstone.generator.structures;
 
+import java.util.Random;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.generator.structures.util.StructureBuilder;
@@ -12,8 +13,6 @@ import org.bukkit.material.Chest;
 import org.bukkit.material.Stairs;
 import org.bukkit.material.Step;
 import org.bukkit.util.Vector;
-
-import java.util.Random;
 
 public class GlowDesertTemple extends GlowTemplePiece {
 
@@ -62,7 +61,8 @@ public class GlowDesertTemple extends GlowTemplePiece {
     }
 
     @Override
-    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox, BlockStateDelegate delegate) {
+    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox,
+        BlockStateDelegate delegate) {
         if (!super.generate(world, random, boundingBox, delegate)) {
             return false;
         }
@@ -75,8 +75,10 @@ public class GlowDesertTemple extends GlowTemplePiece {
         }
         builder.fill(new Vector(0, 14, 0), new Vector(20, 18, 20), Material.SANDSTONE);
         for (int i = 1; i <= 9; i++) {
-            builder.fill(new Vector(i, i + 18, i), new Vector(20 - i, i + 18, 20 - i), Material.SANDSTONE);
-            builder.fill(new Vector(i + 1, i + 18, i + 1), new Vector(19 - i, i + 18, 19 - i), Material.AIR);
+            builder.fill(new Vector(i, i + 18, i), new Vector(20 - i, i + 18, 20 - i),
+                Material.SANDSTONE);
+            builder.fill(new Vector(i + 1, i + 18, i + 1), new Vector(19 - i, i + 18, 19 - i),
+                Material.AIR);
         }
         // east tower
         builder.fill(new Vector(0, 18, 0), new Vector(4, 27, 4), Material.SANDSTONE, Material.AIR);
@@ -104,7 +106,8 @@ public class GlowDesertTemple extends GlowTemplePiece {
             builder.setBlock(new Vector(2, 21 + i, 4 + i), stairsN.getItemType(), stairsN);
         }
         // west tower
-        builder.fill(new Vector(16, 18, 0), new Vector(20, 27, 4), Material.SANDSTONE, Material.AIR);
+        builder
+            .fill(new Vector(16, 18, 0), new Vector(20, 27, 4), Material.SANDSTONE, Material.AIR);
         builder.fill(new Vector(17, 28, 1), new Vector(19, 28, 3), Material.SANDSTONE);
         builder.setBlock(new Vector(18, 28, 0), stairsN.getItemType(), stairsN);
         builder.setBlock(new Vector(20, 28, 2), stairsE.getItemType(), stairsE);
@@ -122,24 +125,33 @@ public class GlowDesertTemple extends GlowTemplePiece {
         // tower symbols
         for (int i = 0; i < 2; i++) {
             // front
-            builder.fill(new Vector(1 + i * 16, 20, 0), new Vector(1 + i * 16, 21, 0), Material.SANDSTONE, 2);
-            builder.fill(new Vector(2 + i * 16, 20, 0), new Vector(2 + i * 16, 21, 0), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(3 + i * 16, 20, 0), new Vector(3 + i * 16, 21, 0), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(1 + i * 16, 22, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(2 + i * 16, 22, 0), Material.SANDSTONE, 1);
-            builder.setBlock(new Vector(3 + i * 16, 22, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(1 + i * 16, 23, 0), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(2 + i * 16, 23, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(3 + i * 16, 23, 0), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(1 + i * 16, 24, 0), Material.STAINED_CLAY, 1);
-            builder.setBlock(new Vector(2 + i * 16, 24, 0), Material.SANDSTONE, 1);
-            builder.setBlock(new Vector(3 + i * 16, 24, 0), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(1 + i * 16, 25, 0), new Vector(3 + i * 16, 25, 0), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(1 + i * 16, 26, 0), new Vector(3 + i * 16, 26, 0), Material.SANDSTONE, 2);
+            builder.fill(new Vector(1 + (i << 4), 20, 0), new Vector(1 + (i << 4), 21, 0),
+                Material.SANDSTONE, 2);
+            builder.fill(new Vector(2 + (i << 4), 20, 0), new Vector(2 + (i << 4), 21, 0),
+                Material.STAINED_CLAY, 1);
+            builder.fill(new Vector(3 + (i << 4), 20, 0), new Vector(3 + (i << 4), 21, 0),
+                Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(1 + (i << 4), 22, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(2 + (i << 4), 22, 0), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(3 + (i << 4), 22, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(1 + (i << 4), 23, 0), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(2 + (i << 4), 23, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(3 + (i << 4), 23, 0), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(1 + (i << 4), 24, 0), Material.STAINED_CLAY, 1);
+            builder.setBlock(new Vector(2 + (i << 4), 24, 0), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(3 + (i << 4), 24, 0), Material.STAINED_CLAY, 1);
+            builder.fill(new Vector(1 + (i << 4), 25, 0), new Vector(3 + (i << 4), 25, 0),
+                Material.STAINED_CLAY, 1);
+            builder.fill(new Vector(1 + (i << 4), 26, 0), new Vector(3 + (i << 4), 26, 0),
+                Material.SANDSTONE, 2);
             // side
-            builder.fill(new Vector(i * 20, 20, 1), new Vector(i * 20, 21, 1), Material.SANDSTONE, 2);
-            builder.fill(new Vector(i * 20, 20, 2), new Vector(i * 20, 21, 2), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(i * 20, 20, 3), new Vector(i * 20, 21, 3), Material.SANDSTONE, 2);
+            builder
+                .fill(new Vector(i * 20, 20, 1), new Vector(i * 20, 21, 1), Material.SANDSTONE, 2);
+            builder
+                .fill(new Vector(i * 20, 20, 2), new Vector(i * 20, 21, 2), Material.STAINED_CLAY,
+                    1);
+            builder
+                .fill(new Vector(i * 20, 20, 3), new Vector(i * 20, 21, 3), Material.SANDSTONE, 2);
             builder.setBlock(new Vector(i * 20, 22, 1), Material.STAINED_CLAY, 1);
             builder.setBlock(new Vector(i * 20, 22, 2), Material.SANDSTONE, 1);
             builder.setBlock(new Vector(i * 20, 22, 3), Material.STAINED_CLAY, 1);
@@ -149,8 +161,11 @@ public class GlowDesertTemple extends GlowTemplePiece {
             builder.setBlock(new Vector(i * 20, 24, 1), Material.STAINED_CLAY, 1);
             builder.setBlock(new Vector(i * 20, 24, 2), Material.SANDSTONE, 1);
             builder.setBlock(new Vector(i * 20, 24, 3), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(i * 20, 25, 1), new Vector(i * 20, 25, 3), Material.STAINED_CLAY, 1);
-            builder.fill(new Vector(i * 20, 26, 1), new Vector(i * 20, 26, 3), Material.SANDSTONE, 2);
+            builder
+                .fill(new Vector(i * 20, 25, 1), new Vector(i * 20, 25, 3), Material.STAINED_CLAY,
+                    1);
+            builder
+                .fill(new Vector(i * 20, 26, 1), new Vector(i * 20, 26, 3), Material.SANDSTONE, 2);
         }
         // front entrance
         builder.fill(new Vector(8, 18, 1), new Vector(12, 22, 4), Material.SANDSTONE, Material.AIR);
@@ -179,7 +194,8 @@ public class GlowDesertTemple extends GlowTemplePiece {
         builder.fill(new Vector(4, 19, 1), new Vector(8, 21, 3), Material.SANDSTONE, Material.AIR);
         builder.fill(new Vector(4, 19, 2), new Vector(8, 20, 2), Material.AIR);
         // corridor to west tower
-        builder.fill(new Vector(12, 19, 1), new Vector(16, 21, 3), Material.SANDSTONE, Material.AIR);
+        builder
+            .fill(new Vector(12, 19, 1), new Vector(16, 21, 3), Material.SANDSTONE, Material.AIR);
         builder.fill(new Vector(12, 19, 2), new Vector(16, 20, 2), Material.AIR);
         // pillars in the middle of 1st floor
         builder.fill(new Vector(8, 19, 8), new Vector(8, 21, 8), Material.SANDSTONE, 2);
@@ -198,10 +214,10 @@ public class GlowDesertTemple extends GlowTemplePiece {
         builder.fill(new Vector(18, 19, 12), new Vector(18, 19, 18), Material.SANDSTONE);
         builder.fill(new Vector(3, 19, 18), new Vector(18, 19, 18), Material.SANDSTONE);
         for (int i = 0; i < 7; i++) {
-            builder.setBlock(new Vector(4, 19, 5 + i * 2), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(4, 20, 5 + i * 2), Material.SANDSTONE, 1);
-            builder.setBlock(new Vector(16, 19, 5 + i * 2), Material.SANDSTONE, 2);
-            builder.setBlock(new Vector(16, 20, 5 + i * 2), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(4, 19, 5 + (i << 1)), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(4, 20, 5 + (i << 1)), Material.SANDSTONE, 1);
+            builder.setBlock(new Vector(16, 19, 5 + (i << 1)), Material.SANDSTONE, 2);
+            builder.setBlock(new Vector(16, 20, 5 + (i << 1)), Material.SANDSTONE, 1);
         }
         // floor symbols
         builder.setBlock(new Vector(9, 18, 9), Material.STAINED_CLAY, 1);
@@ -237,16 +253,24 @@ public class GlowDesertTemple extends GlowTemplePiece {
 
         RandomItemsContent chestContent = getChestContent();
         if (!hasPlacedChest0) {
-            hasPlacedChest0 = builder.createRandomItemsContainer(new Vector(10, 3, 12), random, chestContent, new Chest(getRelativeFacing(BlockFace.NORTH)), random.nextInt(5) + 2);
+            hasPlacedChest0 = builder
+                .createRandomItemsContainer(new Vector(10, 3, 12), random, chestContent,
+                    new Chest(getRelativeFacing(BlockFace.NORTH)), random.nextInt(5) + 2);
         }
         if (!hasPlacedChest1) {
-            hasPlacedChest1 = builder.createRandomItemsContainer(new Vector(8, 3, 10), random, chestContent, new Chest(getRelativeFacing(BlockFace.EAST)), random.nextInt(5) + 2);
+            hasPlacedChest1 = builder
+                .createRandomItemsContainer(new Vector(8, 3, 10), random, chestContent,
+                    new Chest(getRelativeFacing(BlockFace.EAST)), random.nextInt(5) + 2);
         }
         if (!hasPlacedChest2) {
-            hasPlacedChest2 = builder.createRandomItemsContainer(new Vector(10, 3, 8), random, chestContent, new Chest(getRelativeFacing(BlockFace.SOUTH)), random.nextInt(5) + 2);
+            hasPlacedChest2 = builder
+                .createRandomItemsContainer(new Vector(10, 3, 8), random, chestContent,
+                    new Chest(getRelativeFacing(BlockFace.SOUTH)), random.nextInt(5) + 2);
         }
         if (!hasPlacedChest3) {
-            hasPlacedChest3 = builder.createRandomItemsContainer(new Vector(12, 3, 10), random, chestContent, new Chest(getRelativeFacing(BlockFace.WEST)), random.nextInt(5) + 2);
+            hasPlacedChest3 = builder
+                .createRandomItemsContainer(new Vector(12, 3, 10), random, chestContent,
+                    new Chest(getRelativeFacing(BlockFace.WEST)), random.nextInt(5) + 2);
         }
 
         return true;

@@ -17,9 +17,11 @@ public class BlockRedstoneOre extends BlockRandomDrops {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
-        EntityChangeBlockEvent changeBlockEvent = new EntityChangeBlockEvent(player, block, Material.GLOWING_REDSTONE_ORE, (byte) 0);
-        EventFactory.callEvent(changeBlockEvent);
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
+        EntityChangeBlockEvent changeBlockEvent = new EntityChangeBlockEvent(player, block,
+            Material.GLOWING_REDSTONE_ORE, (byte) 0);
+        EventFactory.getInstance().callEvent(changeBlockEvent);
         if (!changeBlockEvent.isCancelled()) {
             GlowBlockState state = block.getState();
             state.setType(Material.GLOWING_REDSTONE_ORE);

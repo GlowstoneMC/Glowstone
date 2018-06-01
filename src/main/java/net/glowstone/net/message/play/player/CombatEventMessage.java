@@ -12,7 +12,8 @@ public final class CombatEventMessage implements Message {
 
     private final Event event;
     private final int duration;
-    private final int entityID, playerID;
+    private final int entityId;
+    private final int playerId;
     private final TextMessage message;
 
     // BEGIN_COMBAT
@@ -21,13 +22,13 @@ public final class CombatEventMessage implements Message {
     }
 
     // END_COMBAT
-    public CombatEventMessage(Event event, int duration, int entityID) {
-        this(event, duration, entityID, 0, null);
+    public CombatEventMessage(Event event, int duration, int entityId) {
+        this(event, duration, entityId, 0, null);
     }
 
     // ENTITY_DEAD
-    public CombatEventMessage(Event event, int entityID, int playerID, TextMessage message) {
-        this(event, 0, entityID, playerID, message);
+    public CombatEventMessage(Event event, int entityId, int playerId, TextMessage message) {
+        this(event, 0, entityId, playerId, message);
     }
 
     public enum Event {

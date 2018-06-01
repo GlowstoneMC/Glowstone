@@ -1,26 +1,28 @@
 package net.glowstone.io.nbt;
 
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowServer;
-import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.ProfileCache;
-import net.glowstone.io.PlayerDataService;
-import net.glowstone.io.entity.EntityStorage;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import net.glowstone.GlowOfflinePlayer;
+import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.io.PlayerDataService;
+import net.glowstone.io.entity.EntityStorage;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 
 /**
  * Standard NBT-based player data storage.
@@ -29,7 +31,6 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private final GlowServer server;
     private final File playerDir;
-    private Map<String, UUID> uuidCache = new HashMap<>();
 
     public NbtPlayerDataService(GlowServer server, File playerDir) {
         this.server = server;
@@ -38,7 +39,7 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private File getPlayerFile(UUID uuid) {
         if (!playerDir.isDirectory() && !playerDir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + playerDir);
+            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(playerDir);
         }
         return new File(playerDir, uuid + ".dat");
     }
@@ -48,18 +49,18 @@ public class NbtPlayerDataService implements PlayerDataService {
     }
 
     @Override
-    public List<OfflinePlayer> getOfflinePlayers() {
+    public CompletableFuture<Collection<OfflinePlayer>> getOfflinePlayers() {
         // list files in directory
         File[] files = playerDir.listFiles();
         if (files == null) {
-            return Arrays.asList();
+            return CompletableFuture.completedFuture(Arrays.asList());
         }
 
-        List<OfflinePlayer> result = new ArrayList<>(files.length);
+        List<CompletableFuture<GlowOfflinePlayer>> futures = new ArrayList<>(files.length);
         for (File file : files) {
             // first, make sure it looks like a player file
             String name = file.getName();
-            if (name.length() != 40 || !name.endsWith(".dat")) {
+            if (name.length() != 40 || !name.endsWith(".dat")) { // NON-NLS
                 continue;
             }
 
@@ -72,35 +73,14 @@ public class NbtPlayerDataService implements PlayerDataService {
             }
 
             // creating the OfflinePlayer will read the data
-            result.add(new GlowOfflinePlayer(server, uuid));
+            futures.add(GlowOfflinePlayer.getOfflinePlayer(server, uuid));
         }
 
-        return result;
-    }
+        CompletableFuture<Void> gotAll = CompletableFuture.allOf(futures.toArray(
+                new CompletableFuture[futures.size()]));
 
-    @Override
-    public UUID lookupUUID(String name) {
-        if (uuidCache.containsKey(name)) {
-            return uuidCache.get(name);
-        }
-
-        for (OfflinePlayer player : getOfflinePlayers()) {
-            if (name.equalsIgnoreCase(player.getName())) {
-                uuidCache.put(name, player.getUniqueId());
-                return player.getUniqueId();
-            }
-        }
-
-        // In online mode, find the Mojang UUID if possible
-        if (Bukkit.getServer().getOnlineMode() || ((GlowServer) Bukkit.getServer()).getProxySupport()) {
-            UUID uuid = ProfileCache.getUUID(name);
-            if (uuid != null) {
-                return uuid;
-            }
-        }
-
-        // Fall back to the offline-mode UUID
-        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
+        return gotAll.thenApplyAsync((v) ->
+                futures.stream().map((f) -> f.join()).collect(Collectors.toList()));
     }
 
     @Override
@@ -113,11 +93,11 @@ public class NbtPlayerDataService implements PlayerDataService {
         File playerFile = getPlayerFile(player.getUniqueId());
         CompoundTag playerTag = new CompoundTag();
         if (playerFile.exists()) {
-            try (NBTInputStream in = new NBTInputStream(new FileInputStream(playerFile))) {
+            try (NbtInputStream in = new NbtInputStream(new FileInputStream(playerFile))) {
                 playerTag = in.readCompound();
             } catch (IOException e) {
-                player.kickPlayer("Failed to read player data!");
-                server.getLogger().log(Level.SEVERE, "Failed to read data for " + player.getName() + ": " + playerFile, e);
+                player.kickPlayer(LocalizedStrings.Glowstone.Kick.FILE_READ.get());
+                LocalizedStrings.Console.Error.Io.PLAYER_READ.log(e, player.getName(), playerFile);
             }
         }
         readDataImpl(player, playerTag);
@@ -128,25 +108,27 @@ public class NbtPlayerDataService implements PlayerDataService {
         File playerFile = getPlayerFile(player.getUniqueId());
         CompoundTag tag = new CompoundTag();
         EntityStorage.save(player, tag);
-        try (NBTOutputStream out = new NBTOutputStream(new FileOutputStream(playerFile))) {
+        try (NbtOutputStream out = new NbtOutputStream(new FileOutputStream(playerFile))) {
             out.writeTag(tag);
         } catch (IOException e) {
-            player.kickPlayer("Failed to save player data!");
-            server.getLogger().log(Level.SEVERE, "Failed to write data for " + player.getName() + ": " + playerFile, e);
+            player.kickPlayer(LocalizedStrings.Glowstone.Kick.FILE_WRITE.get());
+            LocalizedStrings.Console.Error.Io.PLAYER_WRITE.log(e, player.getName(), playerFile);
         }
     }
 
+    @SuppressWarnings("HardCodedStringLiteral")
     private class NbtPlayerReader implements PlayerReader {
+
         private CompoundTag tag = new CompoundTag();
         private boolean hasPlayed;
 
         public NbtPlayerReader(File playerFile) {
             if (playerFile.exists()) {
-                try (NBTInputStream in = new NBTInputStream(new FileInputStream(playerFile))) {
+                try (NbtInputStream in = new NbtInputStream(new FileInputStream(playerFile))) {
                     tag = in.readCompound();
                     hasPlayed = true;
                 } catch (IOException e) {
-                    server.getLogger().log(Level.SEVERE, "Failed to read data for player: " + playerFile, e);
+                    LocalizedStrings.Console.Error.Io.PLAYER_READ_UNKNOWN.log(e, playerFile);
                 }
             }
         }
@@ -176,7 +158,8 @@ public class NbtPlayerDataService implements PlayerDataService {
         public Location getBedSpawnLocation() {
             checkOpen();
             // check that all fields are present
-            if (!tag.isString("SpawnWorld") || !tag.isInt("SpawnX") || !tag.isInt("SpawnY") || !tag.isInt("SpawnZ")) {
+            if (!tag.isString("SpawnWorld") || !tag.isInt("SpawnX") || !tag.isInt("SpawnY") || !tag
+                .isInt("SpawnZ")) {
                 return null;
             }
             // look up world
@@ -185,43 +168,33 @@ public class NbtPlayerDataService implements PlayerDataService {
                 return null;
             }
             // return location
-            return new Location(world, tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"));
+            return new Location(world, tag.getInt("SpawnX"), tag.getInt("SpawnY"),
+                tag.getInt("SpawnZ"));
         }
 
         @Override
         public long getFirstPlayed() {
             checkOpen();
-            if (tag.isCompound("bukkit")) {
-                CompoundTag bukkit = tag.getCompound("bukkit");
-                if (bukkit.isLong("firstPlayed")) {
-                    return bukkit.getLong("firstPlayed");
-                }
-            }
-            return 0;
+            long[] out = {0};
+            tag.readCompound("bukkit", bukkit -> bukkit.readLong("firstPlayed", x -> out[0] = x));
+            return out[0];
         }
 
         @Override
         public long getLastPlayed() {
             checkOpen();
-            if (tag.isCompound("bukkit")) {
-                CompoundTag bukkit = tag.getCompound("bukkit");
-                if (bukkit.isLong("lastPlayed")) {
-                    return bukkit.getLong("lastPlayed");
-                }
-            }
-            return 0;
+            long[] out = {0};
+            tag.readCompound("bukkit", bukkit -> bukkit.readLong("lastPlayed", x -> out[0] = x));
+            return out[0];
         }
 
         @Override
         public String getLastKnownName() {
             checkOpen();
-            if (tag.isCompound("bukkit")) {
-                CompoundTag bukkit = tag.getCompound("bukkit");
-                if (bukkit.isString("lastKnownName")) {
-                    return bukkit.getString("lastKnownName");
-                }
-            }
-            return null;
+            String[] out = {null};
+            tag.readCompound("bukkit",
+                bukkit -> bukkit.readString("lastKnownName", x -> out[0] = x));
+            return out[0];
         }
 
         @Override

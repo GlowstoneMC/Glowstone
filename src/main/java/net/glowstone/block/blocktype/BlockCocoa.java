@@ -1,5 +1,9 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -15,16 +19,11 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
-    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
-
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
         MaterialData data = state.getData();
         if (data instanceof CocoaPlant) {
@@ -44,7 +43,8 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
         BlockFace face = against.getOppositeFace();
-        if (Arrays.asList(FACES).contains(face) && block.getRelative(face).getType() == Material.LOG) {
+        if (Arrays.asList(SIDES).contains(face)
+            && block.getRelative(face).getType() == Material.LOG) {
             MaterialData data = block.getRelative(face).getState().getData();
             if (data instanceof Tree) {
                 if (((Tree) data).getSpecies() == TreeSpecies.JUNGLE) {
@@ -65,7 +65,8 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
             if (((CocoaPlant) data).getSize() == CocoaPlantSize.LARGE) {
                 amount = 3;
             }
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.INK_SACK, amount, (short) 3)));
+            return Collections.unmodifiableList(
+                Arrays.asList(new ItemStack(Material.INK_SACK, amount, (short) 3)));
         } else {
             warnMaterialData(CocoaPlant.class, data);
         }
@@ -111,7 +112,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
             GlowBlockState state = block.getState();
             state.setData(cocoa);
             BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-            EventFactory.callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 state.update(true);
             }
@@ -126,7 +127,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
         if (data instanceof CocoaPlant) {
             CocoaPlant cocoa = (CocoaPlant) data;
             CocoaPlantSize size = cocoa.getSize();
-            if (size != CocoaPlantSize.LARGE && random.nextInt(5) == 0) {
+            if (size != CocoaPlantSize.LARGE && ThreadLocalRandom.current().nextInt(5) == 0) {
                 if (size == CocoaPlantSize.SMALL) {
                     cocoa.setSize(CocoaPlantSize.MEDIUM);
                 } else if (size == CocoaPlantSize.MEDIUM) {
@@ -137,7 +138,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
                 GlowBlockState state = block.getState();
                 state.setData(cocoa);
                 BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-                EventFactory.callEvent(growEvent);
+                EventFactory.getInstance().callEvent(growEvent);
                 if (!growEvent.isCancelled()) {
                     state.update(true);
                 }

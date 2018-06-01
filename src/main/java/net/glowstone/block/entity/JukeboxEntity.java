@@ -1,14 +1,18 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.state.GlowJukebox;
+import net.glowstone.block.entity.state.GlowJukebox;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.inventory.ItemStack;
 
 public class JukeboxEntity extends BlockEntity {
 
+    @Getter
+    @Setter
     private ItemStack playing;
 
     public JukeboxEntity(GlowBlock block) {
@@ -19,7 +23,9 @@ public class JukeboxEntity extends BlockEntity {
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        playing = tag.containsKey("RecordItem") ? NbtSerialization.readItem(tag.getCompound("RecordItem")) : null;
+        playing =
+            tag.containsKey("RecordItem") ? NbtSerialization.readItem(tag.getCompound("RecordItem"))
+                : null;
     }
 
     @Override
@@ -31,13 +37,5 @@ public class JukeboxEntity extends BlockEntity {
     @Override
     public GlowBlockState getState() {
         return new GlowJukebox(block);
-    }
-
-    public ItemStack getPlaying() {
-        return playing;
-    }
-
-    public void setPlaying(ItemStack playing) {
-        this.playing = playing;
     }
 }

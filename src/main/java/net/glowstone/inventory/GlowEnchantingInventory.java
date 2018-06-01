@@ -1,5 +1,8 @@
 package net.glowstone.inventory;
 
+import static net.glowstone.util.Position.copyPosition;
+
+import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,15 +11,21 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.ItemStack;
 
-import static net.glowstone.util.Position.copyPosition;
-
 public class GlowEnchantingInventory extends GlowInventory implements EnchantingInventory {
+
     private static final int ITEM_SLOT = 0;
     private static final int LAPIS_SLOT = 1;
 
+    @Getter
     private final Location location;
     private final EnchantmentManager enchantmentManager;
 
+    /**
+     * Creates an instance for an enchanting table.
+     *
+     * @param location the enchanting table's location
+     * @param player the enchanting player
+     */
     public GlowEnchantingInventory(Location location, GlowPlayer player) {
         super(player, InventoryType.ENCHANTING);
 
@@ -34,6 +43,11 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
         enchantmentManager.onPlayerEnchant(clicked);
     }
 
+    /**
+     * Returns the number of bookshelf blocks that are raising this enchanting table's level.
+     *
+     * @return the number of bookshelf blocks affecting this table
+     */
     public int getBookshelfCount() {
         int count = 0;
 
@@ -42,35 +56,40 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
         for (int y = 0; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
-                    if (z == 0 && x == 0) continue;
+                    if (z == 0 && x == 0) {
+                        continue;
+                    }
                     copyPosition(location, loc);
                     loc.add(x, 0, z);
-                    if (loc.getBlock().isEmpty()) {
-                        loc.add(0, 1, 0);
-                        if (loc.getBlock().isEmpty()) {
-                            copyPosition(location, loc);
+                    if (!loc.getBlock().isEmpty()) {
+                        continue;
+                    }
+                    loc.add(0, 1, 0);
+                    if (!loc.getBlock().isEmpty()) {
+                        continue;
+                    }
+                    copyPosition(location, loc);
 
-                            //diagonal and straight
-                            loc.add(x * 2, y, z * 2);
-                            if (loc.getBlock().getType() == Material.BOOKSHELF) {
-                                count++;
-                            }
+                    //diagonal and straight
+                    loc.add(x << 1, y, z << 1);
+                    if (loc.getBlock().getType() == Material.BOOKSHELF) {
+                        count++;
+                    }
 
-                            if (x != 0 && z != 0) {
-                                //one block diagonal and one straight
-                                copyPosition(location, loc);
-                                loc.add(x * 2, y, z);
-                                if (loc.getBlock().getType() == Material.BOOKSHELF) {
-                                    ++count;
-                                }
+                    if (x == 0 || z == 0) {
+                        continue;
+                    }
+                    //one block diagonal and one straight
+                    copyPosition(location, loc);
+                    loc.add(x << 1, y, z);
+                    if (loc.getBlock().getType() == Material.BOOKSHELF) {
+                        ++count;
+                    }
 
-                                copyPosition(location, loc);
-                                loc.add(x, y, z * 2);
-                                if (loc.getBlock().getType() == Material.BOOKSHELF) {
-                                    ++count;
-                                }
-                            }
-                        }
+                    copyPosition(location, loc);
+                    loc.add(x, y, z << 1);
+                    if (loc.getBlock().getType() == Material.BOOKSHELF) {
+                        ++count;
                     }
                 }
             }
@@ -80,13 +99,14 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     }
 
     @Override
+    public void setItem(ItemStack item) {
+        setItem(ITEM_SLOT, item);
+    }
+
+    @Override
     public void setItem(int index, ItemStack item) {
         super.setItem(index, item);
         enchantmentManager.invalidate();
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
     @Override
@@ -97,11 +117,6 @@ public class GlowEnchantingInventory extends GlowInventory implements Enchanting
     @Override
     public ItemStack getItem() {
         return getItem(ITEM_SLOT);
-    }
-
-    @Override
-    public void setItem(ItemStack item) {
-        setItem(ITEM_SLOT, item);
     }
 
     @Override

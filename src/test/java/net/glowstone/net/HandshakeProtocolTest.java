@@ -10,7 +10,7 @@ import net.glowstone.net.protocol.HandshakeProtocol;
 public class HandshakeProtocolTest extends BaseProtocolTest {
 
     private static final Message[] TEST_MESSAGES = new Message[]{
-            new HandshakeMessage(1, "127.0.0.1", 25565, 1)
+        new HandshakeMessage(1, "127.0.0.1", 25565, 1)
     };
 
     public HandshakeProtocolTest() {

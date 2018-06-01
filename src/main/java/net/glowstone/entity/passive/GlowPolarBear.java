@@ -14,12 +14,10 @@ public class GlowPolarBear extends GlowAnimal implements PolarBear {
         setBoundingBox(1.3, 1.4);
     }
 
-    @Override
     public boolean isStanding() {
         return metadata.getBoolean(MetadataIndex.POLARBEAR_STANDING);
     }
 
-    @Override
     public void setStanding(boolean standing) {
         metadata.set(MetadataIndex.POLARBEAR_STANDING, standing);
     }

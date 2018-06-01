@@ -2,7 +2,20 @@ package net.glowstone.chunk;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -20,21 +33,25 @@ import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-
 /**
  * Represents a chunk of the map.
  *
  * @author Graham Edgecombe
  */
-public final class GlowChunk implements Chunk {
+public class GlowChunk implements Chunk {
 
     /**
-     * The dimensions of a chunk (width: x, height: z, depth: y).
+     * The width of a chunk (x axis).
      */
-    public static final int WIDTH = 16, HEIGHT = 16, DEPTH = 256;
+    public static final int WIDTH = 16;
+    /**
+     * The height of a chunk (z axis).
+     */
+    public static final int HEIGHT = 16;
+    /**
+     * The depth of a chunk (y axis).
+     */
+    public static final int DEPTH = 256;
     /**
      * The Y depth of a single chunk section.
      */
@@ -46,11 +63,18 @@ public final class GlowChunk implements Chunk {
     /**
      * The world of this chunk.
      */
+    @Getter
     private final GlowWorld world;
     /**
-     * The coordinates of this chunk.
+     * The x-coordinate of this chunk.
      */
-    private final int x, z;
+    @Getter
+    private final int x;
+    /**
+     * The z-coordinate of this chunk.
+     */
+    @Getter
+    private final int z;
     /**
      * The block entities that reside in this chunk.
      */
@@ -61,25 +85,32 @@ public final class GlowChunk implements Chunk {
     private final Set<GlowEntity> entities = ConcurrentHashMap.newKeySet(4);
     /**
      * The array of chunk sections this chunk contains, or null if it is unloaded.
+     *
+     * @return The chunk sections array.
      */
+    @Getter
     private ChunkSection[] sections;
-
     /**
      * The array of biomes this chunk contains, or null if it is unloaded.
      */
     private byte[] biomes;
-
     /**
-     * The height map values values of each column, or null if it is unloaded.
-     * The height for a column is one plus the y-index of the highest non-air
-     * block in the column.
+     * The height map values values of each column, or null if it is unloaded. The height for a
+     * column is one plus the y-index of the highest non-air block in the column.
      */
     private byte[] heightMap;
     /**
-     * Whether the chunk has been populated by special features.
-     * Used in map generation.
+     * Whether the chunk has been populated by special features. Used in map generation.
+     *
+     * @param populated Population status.
+     * @return Population status.
      */
+    @Getter
+    @Setter
     private boolean populated;
+
+    @Setter
+    private int isSlimeChunk = -1;
 
     /**
      * Creates a new chunk with a specified X and Z coordinate.
@@ -93,26 +124,11 @@ public final class GlowChunk implements Chunk {
         this.z = z;
     }
 
-    @Override
-    public String toString() {
-        return "GlowChunk{world=" + world.getName() + ",x=" + x + ",z=" + z + '}';
-    }
-
-    @Override
-    public GlowWorld getWorld() {
-        return world;
-    }
-
-    @Override
-    public int getX() {
-        return x;
-    }
-
     // ======== Basic stuff ========
 
     @Override
-    public int getZ() {
-        return z;
+    public String toString() {
+        return "GlowChunk{world=" + world.getName() + ",x=" + x + ",z=" + z + '}';
     }
 
     @Override
@@ -135,6 +151,11 @@ public final class GlowChunk implements Chunk {
         return getBlockEntities();
     }
 
+    /**
+     * Returns the states of the block entities (e.g. container blocks) in this chunk.
+     *
+     * @return the states of the block entities in this chunk
+     */
     public GlowBlockState[] getBlockEntities() {
         List<GlowBlockState> states = new ArrayList<>(blockEntities.size());
         for (BlockEntity blockEntity : blockEntities.values()) {
@@ -151,35 +172,36 @@ public final class GlowChunk implements Chunk {
         return Collections.unmodifiableCollection(blockEntities.values());
     }
 
+    /**
+     * Formula taken from Minecraft Gamepedia.
+     * https://minecraft.gamepedia.com/Slime#.22Slime_chunks.22
+     */
+    @Override
+    public boolean isSlimeChunk() {
+        if (isSlimeChunk == -1) {
+            boolean isSlimeChunk = new Random(this.world.getSeed()
+                    + (long) (this.x * this.x * 0x4c1906)
+                    + (long) (this.x * 0x5ac0db)
+                    + (long) (this.z * this.z) * 0x4307a7L
+                    + (long) (this.z * 0x5f24f) ^ 0x3ad8025f).nextInt(10) == 0;
+
+            this.isSlimeChunk = (isSlimeChunk ? 1 : 0);
+        }
+
+        return this.isSlimeChunk == 1;
+    }
+
     @Override
     public GlowChunkSnapshot getChunkSnapshot() {
         return getChunkSnapshot(true, false, false);
     }
 
     @Override
-    public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome, boolean includeBiomeTempRain) {
+    public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome,
+            boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot(x, z, world, sections,
-                includeMaxBlockY ? heightMap.clone() : null,
-                includeBiome ? biomes.clone() : null,
-                includeBiomeTempRain);
-    }
-
-    /**
-     * Gets whether this chunk has been populated by special features.
-     *
-     * @return Population status.
-     */
-    public boolean isPopulated() {
-        return populated;
-    }
-
-    /**
-     * Sets the population status of this chunk.
-     *
-     * @param populated Population status.
-     */
-    public void setPopulated(boolean populated) {
-        this.populated = populated;
+                includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null,
+                includeBiomeTempRain, isSlimeChunk());
     }
 
     @Override
@@ -192,21 +214,14 @@ public final class GlowChunk implements Chunk {
         return load(true);
     }
 
-    // ======== Helper Functions ========
-
     @Override
     public boolean load(boolean generate) {
-        return isLoaded() || world.getChunkManager().loadChunk(x, z, generate);
+        return isLoaded() || world.getChunkManager().loadChunk(this, generate);
     }
 
     @Override
     public boolean unload() {
         return unload(true, true);
-    }
-
-    @Override
-    public boolean isSlimeChunk() {
-        return false; // TODO: implement slime chunks
     }
 
     @Override
@@ -228,7 +243,8 @@ public final class GlowChunk implements Chunk {
             return false;
         }
 
-        if (EventFactory.callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
+        if (EventFactory.getInstance()
+                .callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
             return false;
         }
 
@@ -245,22 +261,26 @@ public final class GlowChunk implements Chunk {
         return true;
     }
 
+    // ======== Helper Functions ========
+
     /**
      * Initialize this chunk from the given sections.
      *
-     * @param initSections The {@link ChunkSection}s to use.  Should have a length of {@value #SEC_COUNT}.
+     * @param initSections The {@link ChunkSection}s to use. Should have a length of {@value
+     *         #SEC_COUNT}.
      */
     public void initializeSections(ChunkSection[] initSections) {
-        initializeSections(initSections, true);
-    }
-
-    public void initializeSections(ChunkSection[] initSections, boolean createBlockEnts) {
         if (isLoaded()) {
-            GlowServer.logger.log(Level.SEVERE, "Tried to initialize already loaded chunk (" + x + "," + z + ")", new Throwable());
+            GlowServer.logger.log(Level.SEVERE,
+                    "Tried to initialize already loaded chunk (" + x + "," + z + ")",
+                    new Throwable());
             return;
         }
         if (initSections.length != SEC_COUNT) {
-            GlowServer.logger.log(Level.WARNING, "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was " + initSections.length, new Throwable());
+            GlowServer.logger.log(Level.WARNING,
+                    "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was "
+                            + initSections.length,
+                    new Throwable());
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
@@ -270,43 +290,32 @@ public final class GlowChunk implements Chunk {
 
         for (int y = 0; y < SEC_COUNT && y < initSections.length; y++) {
             if (initSections[y] != null) {
-                initializeSection(y, initSections[y], createBlockEnts);
+                initializeSection(y, initSections[y]);
             }
         }
     }
 
     private void initializeSection(int y, ChunkSection section) {
-        initializeSection(y, section, true);
-    }
-
-    private void initializeSection(int y, ChunkSection section, boolean createBlockEnts) {
         sections[y] = section;
-
-        // block entity initialization
-        if (createBlockEnts) {
-            for (int i = 0; i < sections.length; ++i) {
-                int by = 16 * i;
-                for (int cx = 0; cx < WIDTH; ++cx) {
-                    for (int cz = 0; cz < HEIGHT; ++cz) {
-                        for (int cy = by; cy < by + 16; ++cy) {
-                            createEntity(cx, cy, cz, getType(cx, cz, cy));
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
      * If needed, create a new block entity at the given location.
+     *
+     * @param cx the X coordinate of the BlockEntity
+     * @param cy the Y coordinate of the BlockEntity
+     * @param cz the Z coordinate of the BlockEntity
+     * @param type the type of BlockEntity
+     * @return The BlockEntity that was created.
      */
-    private void createEntity(int cx, int cy, int cz, int type) {
+    public BlockEntity createEntity(int cx, int cy, int cz, int type) {
         Material material = Material.getMaterial(type);
 
         switch (material) {
             case SIGN:
             case SIGN_POST:
             case WALL_SIGN:
+            case BED_BLOCK:
             case CHEST:
             case TRAPPED_CHEST:
             case BURNING_FURNACE:
@@ -351,20 +360,30 @@ public final class GlowChunk implements Chunk {
             case DAYLIGHT_DETECTOR_INVERTED:
             case REDSTONE_COMPARATOR_OFF:
             case REDSTONE_COMPARATOR_ON:
-                BlockType blockType = ItemTable.instance().getBlock(type);
-                if (blockType == null) return;
+                BlockType blockType = ItemTable.instance().getBlock(material);
+                if (blockType == null) {
+                    return null;
+                }
 
                 try {
                     BlockEntity entity = blockType.createBlockEntity(this, cx, cy, cz);
-                    if (entity == null) return;
+                    if (entity == null) {
+                        return null;
+                    }
 
                     blockEntities.put(coordinateToIndex(cx, cz, cy), entity);
+                    return entity;
                 } catch (Exception ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
+                    GlowServer.logger
+                            .log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
+                    return null;
                 }
-                break;
+            default:
+                return null;
         }
     }
+
+    // ======== Data access ========
 
     /**
      * Attempt to get the ChunkSection at the specified height.
@@ -381,17 +400,6 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Get all ChunkSection of this chunk.
-     *
-     * @return The chunk sections array.
-     */
-    public ChunkSection[] getSections() {
-        return sections;
-    }
-
-    // ======== Data access ========
-
-    /**
      * Attempt to get the block entity located at the given coordinates.
      *
      * @param x The X coordinate.
@@ -400,7 +408,9 @@ public final class GlowChunk implements Chunk {
      * @return A GlowBlockState if the entity exists, or null otherwise.
      */
     public BlockEntity getEntity(int x, int y, int z) {
-        if (y >= DEPTH || y < 0) return null;
+        if (y >= DEPTH || y < 0) {
+            return null;
+        }
         load();
         return blockEntities.get(coordinateToIndex(x, z, y));
     }
@@ -421,14 +431,15 @@ public final class GlowChunk implements Chunk {
     /**
      * Sets the type of a block within this chunk.
      *
-     * @param x    The X coordinate.
-     * @param z    The Z coordinate.
-     * @param y    The Y coordinate.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param y The Y coordinate.
      * @param type The type.
      */
     public void setType(int x, int z, int y, int type) {
-        if (type < 0 || type > 0xfff)
+        if (type < 0 || type > 0xfff) {
             throw new IllegalArgumentException("Block type out of range: " + type);
+        }
 
         ChunkSection section = getSection(y);
         if (section == null) {
@@ -506,18 +517,23 @@ public final class GlowChunk implements Chunk {
     /**
      * Sets the metadata of a block within this chunk.
      *
-     * @param x        The X coordinate.
-     * @param z        The Z coordinate.
-     * @param y        The Y coordinate.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param y The Y coordinate.
      * @param metaData The metadata.
      */
     public void setMetaData(int x, int z, int y, int metaData) {
-        if (metaData < 0 || metaData >= 16)
+        if (metaData < 0 || metaData >= 16) {
             throw new IllegalArgumentException("Metadata out of range: " + metaData);
+        }
         ChunkSection section = getSection(y);
-        if (section == null) return;  // can't set metadata on an empty section
+        if (section == null) {
+            return;  // can't set metadata on an empty section
+        }
         int type = section.getType(x, y, z);
-        if (type == 0) return;  // can't set metadata on air
+        if (type == 0) {
+            return;  // can't set metadata on air
+        }
         section.setType(x, y, z, (char) (type & 0xfff0 | metaData));
     }
 
@@ -537,14 +553,16 @@ public final class GlowChunk implements Chunk {
     /**
      * Sets the sky light level of a block within this chunk.
      *
-     * @param x        The X coordinate.
-     * @param z        The Z coordinate.
-     * @param y        The Y coordinate.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param y The Y coordinate.
      * @param skyLight The sky light level.
      */
     public void setSkyLight(int x, int z, int y, int skyLight) {
         ChunkSection section = getSection(y);
-        if (section == null) return;  // can't set light on an empty section
+        if (section == null) {
+            return;  // can't set light on an empty section
+        }
         section.setSkyLight(x, y, z, (byte) skyLight);
     }
 
@@ -564,14 +582,16 @@ public final class GlowChunk implements Chunk {
     /**
      * Sets the block light level of a block within this chunk.
      *
-     * @param x          The X coordinate.
-     * @param z          The Z coordinate.
-     * @param y          The Y coordinate.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
+     * @param y The Y coordinate.
      * @param blockLight The block light level.
      */
     public void setBlockLight(int x, int z, int y, int blockLight) {
         ChunkSection section = getSection(y);
-        if (section == null) return;  // can't set light on an empty section
+        if (section == null) {
+            return;  // can't set light on an empty section
+        }
         section.setBlockLight(x, y, z, (byte) blockLight);
     }
 
@@ -583,19 +603,23 @@ public final class GlowChunk implements Chunk {
      * @return The biome.
      */
     public int getBiome(int x, int z) {
-        if (biomes == null && !load()) return 0;
+        if (biomes == null && !load()) {
+            return 0;
+        }
         return biomes[z * WIDTH + x] & 0xFF;
     }
 
     /**
-     * Sets the biome of a column within this chunk,
+     * Sets the biome of a column within this chunk.
      *
-     * @param x     The X coordinate.
-     * @param z     The Z coordinate.
+     * @param x The X coordinate.
+     * @param z The Z coordinate.
      * @param biome The biome.
      */
     public void setBiome(int x, int z, int biome) {
-        if (biomes == null) return;
+        if (biomes == null) {
+            return;
+        }
         biomes[z * WIDTH + x] = (byte) biome;
     }
 
@@ -622,7 +646,9 @@ public final class GlowChunk implements Chunk {
      * @return The height map value.
      */
     public int getHeight(int x, int z) {
-        if (heightMap == null && !load()) return 0;
+        if (heightMap == null && !load()) {
+            return 0;
+        }
         return heightMap[z * WIDTH + x] & 0xff;
     }
 
@@ -643,6 +669,8 @@ public final class GlowChunk implements Chunk {
         }
     }
 
+    // ======== Helper functions ========
+
     /**
      * Automatically fill the height map after chunks have been initialized.
      */
@@ -654,7 +682,7 @@ public final class GlowChunk implements Chunk {
                 break;
             }
         }
-        int y = (sy + 1) * 16;
+        int y = (sy + 1) << 4;
         for (int x = 0; x < WIDTH; ++x) {
             for (int z = 0; z < HEIGHT; ++z) {
                 heightMap[z * WIDTH + x] = (byte) lowerHeightMap(x, y, z);
@@ -663,8 +691,7 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Converts a three-dimensional coordinate to an index within the
-     * one-dimensional arrays.
+     * Converts a three-dimensional coordinate to an index within the one-dimensional arrays.
      *
      * @param x The X coordinate.
      * @param z The Z coordinate.
@@ -672,15 +699,17 @@ public final class GlowChunk implements Chunk {
      * @return The index within the arrays.
      */
     private int coordinateToIndex(int x, int z, int y) {
-        if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH)
-            throw new IndexOutOfBoundsException("Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
+        if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH) {
+            throw new IndexOutOfBoundsException(
+                    "Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
+        }
 
         return (y * HEIGHT + z) * WIDTH + x;
     }
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
-     * this entire chunk to them.
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire
+     * chunk to them.
      *
      * @return The {@link ChunkDataMessage}.
      */
@@ -690,11 +719,9 @@ public final class GlowChunk implements Chunk {
         return toMessage(world.getEnvironment() == Environment.NORMAL);
     }
 
-    // ======== Helper functions ========
-
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
-     * this entire chunk to them.
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream this entire
+     * chunk to them.
      *
      * @param skylight Whether to include skylight data.
      * @return The {@link ChunkDataMessage}.
@@ -704,8 +731,8 @@ public final class GlowChunk implements Chunk {
     }
 
     /**
-     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream
-     * parts of this chunk to them.
+     * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream parts of this
+     * chunk to them.
      *
      * @param skylight Whether to include skylight data.
      * @param entireChunk Whether to send all chunk sections.
@@ -749,26 +776,67 @@ public final class GlowChunk implements Chunk {
             buf.writeBytes(biomes);
         }
 
-        ArrayList<CompoundTag> blockEntities = new ArrayList<>();
+        Set<CompoundTag> blockEntities = new HashSet<>();
         for (BlockEntity blockEntity : getRawBlockEntities()) {
             CompoundTag tag = new CompoundTag();
             blockEntity.saveNbt(tag);
             blockEntities.add(tag);
         }
 
-        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities.toArray(new CompoundTag[blockEntities.size()]));
+        return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities);
     }
 
     /**
-     * A chunk key represents the X and Z coordinates of a chunk in a manner
-     * suitable for use as a key in a hash table or set.
+     * A chunk key represents the X and Z coordinates of a chunk in a manner suitable for use as a
+     * key in a hash table or set.
      */
     @Data
     public static final class Key {
-        /**
-         * The coordinates.
-         */
-        private final int x, z;
-    }
 
+        // Key cache storage
+        private static final Long2ObjectOpenHashMap<Key> keys
+                = new Long2ObjectOpenHashMap<>(512, 0.5F);
+
+        /**
+         * The x-coordinate.
+         */
+        private final int x;
+        /**
+         * The z-coordinate.
+         */
+        private final int z;
+        /**
+         * A pre-computed hash code based on the coordinates.
+         */
+        private final int hashCode;
+
+        private Key(int x, int z) {
+            this.x = x;
+            this.z = z;
+            this.hashCode = x * 31 + z;
+        }
+
+        private static long mapCode(int x, int z) {
+            return (((long) x) << 32) | (z & 0xffffffffL);
+        }
+
+        public static Key of(int x, int z) {
+            long id = mapCode(x, z);
+            return keys.computeIfAbsent(id, l -> new Key(x, z));
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Key) {
+                Key otherKey = ((Key) obj);
+                return x == otherKey.x && z == otherKey.z;
+            }
+            return false;
+        }
+    }
 }

@@ -1,5 +1,17 @@
 package net.glowstone.entity.meta.profile;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import javax.net.ssl.HttpsURLConnection;
 import net.glowstone.GlowServer;
 import net.glowstone.util.UuidUtils;
 import org.json.simple.JSONArray;
@@ -7,15 +19,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * Methods for accessing Mojang servers to look up player profiles and UUIDs.
@@ -28,12 +31,12 @@ class PlayerDataFetcher {
     private static final String UUID_URL = "https://api.mojang.com/profiles/minecraft";
 
     /**
-     * Look up the PlayerProfile for a given UUID.
+     * Look up the GlowPlayerProfile for a given UUID.
      *
      * @param uuid The UUID to look up.
-     * @return The resulting PlayerProfile, or null on failure.
+     * @return The resulting GlowPlayerProfile, contains a null name on failure.
      */
-    public static PlayerProfile getProfile(UUID uuid) {
+    public static GlowPlayerProfile getProfile(UUID uuid) {
         InputStream is;
         try {
             URL url = new URL(PROFILE_URL + UuidUtils.toFlatString(uuid) + PROFILE_URL_SUFFIX);
@@ -42,7 +45,7 @@ class PlayerDataFetcher {
             is = conn.getInputStream();
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile");
-            return null;
+            return new GlowPlayerProfile(null, uuid, true);
         }
 
         JSONObject json;
@@ -50,16 +53,16 @@ class PlayerDataFetcher {
             if (br.ready()) {
                 json = (JSONObject) new JSONParser().parse(br);
             } else {
-                return new PlayerProfile(null, uuid);
+                return new GlowPlayerProfile(null, uuid, true);
             }
         } catch (ParseException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to parse profile response", e);
-            return null;
+            return new GlowPlayerProfile(null, uuid, true);
         } catch (IOException e) {
             GlowServer.logger.log(Level.WARNING, "Failed to look up profile", e);
-            return null;
+            return new GlowPlayerProfile(null, uuid, true);
         }
-        return PlayerProfile.fromJson(json);
+        return GlowPlayerProfile.fromJson(json);
     }
 
     /**
@@ -68,7 +71,7 @@ class PlayerDataFetcher {
      * @param playerName The name to look up.
      * @return The UUID, or null on failure.
      */
-    public static UUID getUUID(String playerName) {
+    public static UUID getUuid(String playerName) {
         HttpsURLConnection conn;
         try {
             URL url = new URL(UUID_URL);

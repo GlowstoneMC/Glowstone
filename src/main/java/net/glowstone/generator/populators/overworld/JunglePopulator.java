@@ -1,5 +1,9 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 import net.glowstone.generator.decorators.overworld.MelonDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.BigOakTree;
@@ -12,20 +16,18 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
 public class JunglePopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.MUTATED_JUNGLE};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree.class, 10),
-            new TreeDecoration(JungleBush.class, 50), new TreeDecoration(MegaJungleTree.class, 15),
-            new TreeDecoration(CocoaTree.class, 30)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree::new, 10),
+        new TreeDecoration(JungleBush::new, 50), new TreeDecoration(MegaJungleTree::new, 15),
+        new TreeDecoration(CocoaTree::new, 30)};
 
     private final MelonDecorator melonDecorator = new MelonDecorator();
 
+    /**
+     * Creates a populator specialized for jungles.
+     */
     public JunglePopulator() {
         treeDecorator.setAmount(65);
         treeDecorator.setTrees(TREES);
@@ -51,8 +53,8 @@ public class JunglePopulator extends BiomePopulator {
             int y = world.getHighestBlockYAt(x, z);
             Block sourceBlock = world.getBlockAt(x, y, z);
             BlockStateDelegate delegate = new BlockStateDelegate();
-            JungleBush bush = new JungleBush(random, sourceBlock.getLocation(), delegate);
-            if (bush.generate()) {
+            JungleBush bush = new JungleBush(random, delegate);
+            if (bush.generate(sourceBlock.getLocation())) {
                 delegate.updateBlockStates();
             }
         }

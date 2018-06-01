@@ -1,5 +1,9 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.FlowerDecoration;
 import net.glowstone.generator.decorators.overworld.MushroomDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
@@ -11,21 +15,22 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
 public class SwamplandPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.SWAMPLAND, Biome.MUTATED_SWAMPLAND};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(SwampTree.class, 1)};
-    private static final FlowerDecoration[] FLOWERS = {new FlowerDecoration(FlowerType.BLUE_ORCHID, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(SwampTree::new, 1)};
+    private static final FlowerDecoration[] FLOWERS = {
+        new FlowerDecoration(FlowerType.BLUE_ORCHID, 1)};
 
-    protected final MushroomDecorator swamplandBrownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
-    protected final MushroomDecorator swamplandRedMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
+    protected final MushroomDecorator swamplandBrownMushroomDecorator = new MushroomDecorator(
+        Material.BROWN_MUSHROOM);
+    protected final MushroomDecorator swamplandRedMushroomDecorator = new MushroomDecorator(
+        Material.RED_MUSHROOM);
     protected final WaterLilyDecorator waterlilyDecorator = new WaterLilyDecorator();
 
+    /**
+     * Creates a populator for the Swamp and Swamp M biomes.
+     */
     public SwamplandPopulator() {
         sandPatchDecorator.setAmount(0);
         gravelPatchDecorator.setAmount(0);

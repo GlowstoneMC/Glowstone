@@ -1,6 +1,10 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import java.util.List;
+import java.util.Random;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowHorseInventory;
@@ -8,21 +12,30 @@ import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.inventory.HorseInventory;
 
-import java.util.List;
-import java.util.Random;
-
 public class GlowHorse extends GlowAbstractHorse implements Horse {
 
+    @Getter
+    @Setter
     private Variant variant = Variant.values()[new Random().nextInt(2)];
-    private Color horseColor = Color.values()[new Random().nextInt(6)];
-    private Style horseStyle = Style.values()[new Random().nextInt(3)];
+    @Getter
+    private Color color = Color.values()[new Random().nextInt(6)];
+    @Getter
+    private Style style = Style.values()[new Random().nextInt(3)];
+    @Getter
+    @Setter
     private boolean eatingHay;
+    @Setter
     private boolean hasReproduced;
+    @Getter
+    @Setter
     private int temper;
+    @Getter
+    @Setter
     private HorseInventory inventory = new GlowHorseInventory(this);
 
     public GlowHorse(Location location) {
@@ -31,33 +44,15 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     }
 
     @Override
-    public Variant getVariant() {
-        return variant;
-    }
-
-    @Override
-    public void setVariant(Variant variant) {
-        this.variant = variant;
-    }
-
-    @Override
-    public Color getColor() {
-        return horseColor;
-    }
-
-    @Override
     public void setColor(Color color) {
-        horseColor = color;
-    }
-
-    @Override
-    public Style getStyle() {
-        return horseStyle;
+        this.color = color;
+        metadata.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
     }
 
     @Override
     public void setStyle(Style style) {
-        horseStyle = style;
+        this.style = style;
+        metadata.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
     }
 
     @Override
@@ -71,37 +66,8 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
         // Field has been removed in 1.11
     }
 
-    @Override
-    public HorseInventory getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(HorseInventory inventory) {
-        this.inventory = inventory;
-    }
-
-    public boolean isEatingHay() {
-        return eatingHay;
-    }
-
-    public void setEatingHay(boolean eatingHay) {
-        this.eatingHay = eatingHay;
-    }
-
     public boolean hasReproduced() {
         return hasReproduced;
-    }
-
-    public void setHasReproduced(boolean hasReproduced) {
-        this.hasReproduced = hasReproduced;
-    }
-
-    public int getTemper() {
-        return temper;
-    }
-
-    public void setTemper(int temper) {
-        this.temper = temper;
     }
 
     @Override
@@ -110,12 +76,12 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
         MetadataMap map = new MetadataMap(GlowHorse.class);
         map.set(MetadataIndex.HORSE_STYLE, getHorseStyleData());
         map.set(MetadataIndex.HORSE_ARMOR, getHorseArmorData());
-        messages.add(new EntityMetadataMessage(id, map.getEntryList()));
+        messages.add(new EntityMetadataMessage(entityId, map.getEntryList()));
         return messages;
     }
 
     private int getHorseStyleData() {
-        return horseColor.ordinal() & 0xFF | horseStyle.ordinal() << 8;
+        return color.ordinal() & 0xFF | style.ordinal() << 8;
     }
 
     private int getHorseArmorData() {
@@ -144,5 +110,13 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_HORSE_AMBIENT;
+    }
+
+    @Override
+    public Ageable createBaby() {
+        GlowHorse baby = (GlowHorse) super.createBaby();
+        baby.setColor(getColor());
+        baby.setStyle(getStyle());
+        return baby;
     }
 }

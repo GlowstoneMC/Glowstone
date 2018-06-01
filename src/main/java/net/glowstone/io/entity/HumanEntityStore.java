@@ -1,18 +1,16 @@
 package net.glowstone.io.entity;
 
+import java.util.List;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.config.ServerConfig;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
-
-import java.util.List;
 
 abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityStore<T> {
 
@@ -26,39 +24,32 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
     @Override
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isInt("XpSeed")) {
-            entity.setXpSeed(tag.getInt("XpSeed"));
-        }
-
-        if (tag.isInt("playerGameType")) {
-            GlowServer server = (GlowServer) Bukkit.getServer();
+        tag.readInt("XpSeed", entity::setXpSeed);
+        tag.readInt("playerGameType", gameType -> {
+            GlowServer server = (GlowServer) ServerProvider.getServer();
             if (!server.getConfig().getBoolean(ServerConfig.Key.FORCE_GAMEMODE)) {
-                GameMode mode = GameMode.getByValue(tag.getInt("playerGameType"));
+                GameMode mode = GameMode.getByValue(gameType);
                 if (mode != null) {
                     entity.setGameMode(mode);
                 }
             } else {
                 entity.setGameMode(server.getDefaultGameMode());
             }
-        }
-        if (tag.isInt("SelectedItemSlot")) {
-            entity.getInventory().setHeldItemSlot(tag.getInt("SelectedItemSlot"));
-        }
+        });
+        tag.readInt("SelectedItemSlot", entity.getInventory()::setHeldItemSlot);
         // Sleeping and SleepTimer are ignored on load.
 
-        if (tag.isList("Inventory", TagType.COMPOUND)) {
+        tag.readCompoundList("Inventory", items -> {
             PlayerInventory inventory = entity.getInventory();
-            List<CompoundTag> items = tag.getCompoundList("Inventory");
-            inventory.setStorageContents(NbtSerialization.readInventory(items, 0, inventory.getSize() - 5));
+            inventory.setStorageContents(
+                NbtSerialization.readInventory(items, 0, inventory.getSize() - 5));
             inventory.setArmorContents(NbtSerialization.readInventory(items, 100, 4));
             inventory.setExtraContents(NbtSerialization.readInventory(items, -106, 1));
-        }
-        if (tag.isList("EnderItems", TagType.COMPOUND)) {
+        });
+        tag.readCompoundList("EnderItems", items -> {
             Inventory inventory = entity.getEnderChest();
-            List<CompoundTag> items = tag.getCompoundList("EnderItems");
             inventory.setContents(NbtSerialization.readInventory(items, 0, inventory.getSize()));
-        }
+        });
     }
 
     @Override
@@ -68,8 +59,10 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         // humans don't have these properties
         tag.remove("CustomName");
         tag.remove("CustomNameVisible");
-        tag.remove("Equipment");
-        tag.remove("DropChances");
+        tag.remove("HandItems");
+        tag.remove("ArmorItems");
+        tag.remove("HandDropChances");
+        tag.remove("ArmorDropChances");
         tag.remove("CanPickUpLoot");
         tag.remove("PersistenceRequired");
         tag.remove("Leashed");
@@ -84,7 +77,8 @@ abstract class HumanEntityStore<T extends GlowHumanEntity> extends LivingEntityS
         // inventory
         List<CompoundTag> inventory;
         inventory = NbtSerialization.writeInventory(entity.getInventory().getStorageContents(), 0);
-        inventory.addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
+        inventory
+            .addAll(NbtSerialization.writeInventory(entity.getInventory().getArmorContents(), 100));
         inventory.add(NbtSerialization.writeItem(entity.getInventory().getItemInOffHand(), -106));
         tag.putCompoundList("Inventory", inventory);
 

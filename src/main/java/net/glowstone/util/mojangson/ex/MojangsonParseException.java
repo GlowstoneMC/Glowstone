@@ -1,7 +1,11 @@
 package net.glowstone.util.mojangson.ex;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 public class MojangsonParseException extends Exception {
 
+    @Getter
     private ParseExceptionReason reason;
 
     public MojangsonParseException(String message, ParseExceptionReason reason) {
@@ -9,28 +13,18 @@ public class MojangsonParseException extends Exception {
         this.reason = reason;
     }
 
-    public ParseExceptionReason getReason() {
-        return reason;
-    }
-
     @Override
     public String getMessage() {
         return reason.getMessage() + ": " + super.getMessage();
     }
 
+    @RequiredArgsConstructor
     public enum ParseExceptionReason {
         INVALID_FORMAT_NUM("Given value is not numerical"),
         UNEXPECTED_SYMBOL("Unexpected symbol in Mojangson string"),
         INCOMPATIBLE_TYPE("List does not support given tag type.");
 
-        private String message;
-
-        ParseExceptionReason(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
+        @Getter
+        private final String message;
     }
 }

@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -8,9 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 public class BlockSnowBlock extends BlockType {
 
@@ -35,7 +34,7 @@ public class BlockSnowBlock extends BlockType {
             state.setType(Material.AIR);
             state.setData(new MaterialData(Material.AIR));
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
+            EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }

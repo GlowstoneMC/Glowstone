@@ -1,57 +1,57 @@
 package net.glowstone.entity.meta.profile;
 
-import net.glowstone.GlowServer;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 
 /**
  * Cached methods for accessing Mojang servers to find UUIDs and player profiles.
  */
 public class ProfileCache {
-    private static Map<String, UUID> uuidCache = new HashMap<>();
-    private static Map<UUID, PlayerProfile> profileCache = new HashMap<>();
+
+    private static final Map<String, UUID> uuidCache = new HashMap<>();
+    private static final Map<UUID, GlowPlayerProfile> profileCache = new HashMap<>();
 
     /**
-     * Look up the PlayerProfile for a given UUID.
+     * Look up the GlowPlayerProfile for a given UUID.
      *
      * @param uuid The UUID to look up.
-     * @return The resulting PlayerProfile, or null on failure.
+     * @return A GlowPlayerProfile future, contains a null name if the lookup failed.
      */
-    public static PlayerProfile getProfile(UUID uuid) {
+    public static CompletableFuture<GlowPlayerProfile> getProfile(UUID uuid) {
         if (profileCache.containsKey(uuid)) {
-            return profileCache.get(uuid);
+            return CompletableFuture.completedFuture(profileCache.get(uuid));
         }
-        profileCache.put(uuid, PlayerDataFetcher.getProfile(uuid));
-        return profileCache.get(uuid);
+        CompletableFuture<GlowPlayerProfile> profileFuture = CompletableFuture
+                .supplyAsync(() -> PlayerDataFetcher.getProfile(uuid));
+        profileFuture.thenAccept(profile -> profileCache.put(uuid, profile));
+        return profileFuture;
     }
 
     /**
      * Look up the UUID for a given username.
      *
      * @param playerName The name to look up.
-     * @return The UUID, or null on failure.
+     * @return A UUID future, UUID may be null on failure.
      */
-    public static UUID getUUID(String playerName) {
+    public static CompletableFuture<UUID> getUuid(String playerName) {
         if (uuidCache.containsKey(playerName)) {
-            return uuidCache.get(playerName);
+            return CompletableFuture.completedFuture(uuidCache.get(playerName));
         }
-        UUID uuid = null;
-        CompletableFuture<UUID> uuidFuture = CompletableFuture.supplyAsync(() -> PlayerDataFetcher.getUUID(playerName));
-        uuidFuture.thenAcceptAsync(uid -> uuidCache.put(playerName, uid));
-        try {
-            uuid = uuidFuture.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException e) {
-            GlowServer.logger.log(Level.SEVERE, "UUID Cache interrupted: ", e);
-        } catch (TimeoutException e) {
-            GlowServer.logger.log(Level.SEVERE, "UUID Cache lookup timed out: ", e);
-        }
-        return uuid;
+        CompletableFuture<UUID> uuidFuture = CompletableFuture
+                .supplyAsync(() -> PlayerDataFetcher.getUuid(playerName));
+        uuidFuture.thenAccept(uid -> uuidCache.put(playerName, uid));
+        return uuidFuture;
+    }
+
+    /**
+     * Look up the UUID for a given username, but only in the cache and not on the Mojang server.
+     *
+     * @param playerName The name to look up.
+     * @return A UUID, or null if it's not found in the cache.
+     */
+    public static UUID getUuidCached(String playerName) {
+        return uuidCache.get(playerName);
     }
 }

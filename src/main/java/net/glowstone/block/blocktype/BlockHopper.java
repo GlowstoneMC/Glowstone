@@ -1,11 +1,12 @@
 package net.glowstone.block.blocktype;
 
+import java.util.HashMap;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ContainerEntity;
 import net.glowstone.block.entity.HopperEntity;
-import net.glowstone.block.state.GlowHopper;
+import net.glowstone.block.entity.state.GlowHopper;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
@@ -14,18 +15,25 @@ import net.glowstone.inventory.ToolType;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.*;
+import org.bukkit.material.Hopper;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Rails;
+import org.bukkit.material.Sign;
+import org.bukkit.material.Step;
+import org.bukkit.material.WoodenStep;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
 
 public class BlockHopper extends BlockContainer {
 
+    /**
+     * Sets a hopper to face a given direction.
+     * @param bs the hopper's BlockState
+     * @param face the direction to face
+     */
     public void setFacingDirection(BlockState bs, BlockFace face) {
         byte data;
         switch (face) {
@@ -58,7 +66,8 @@ public class BlockHopper extends BlockContainer {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         setFacingDirection(state, face.getOppositeFace());
         state.getBlock().getWorld().requestPulse(state.getBlock());
@@ -89,11 +98,11 @@ public class BlockHopper extends BlockContainer {
     private void pullItems(GlowBlock block, HopperEntity hopper) {
         GlowBlock source = block.getRelative(BlockFace.UP);
         MaterialData data = source.getState().getData();
-        if (!source.getType().isSolid() ||
-                (data instanceof Step && !((Step) data).isInverted()) ||
-                (data instanceof WoodenStep && !((WoodenStep) data).isInverted()) ||
-                (data instanceof Sign) ||
-                (data instanceof Rails)) {
+        if (!source.getType().isSolid()
+                || (data instanceof Step && !((Step) data).isInverted())
+                || (data instanceof WoodenStep && !((WoodenStep) data).isInverted())
+                || (data instanceof Sign)
+                || (data instanceof Rails)) {
             GlowItem item = getFirstDroppedItem(source.getLocation());
             if (item == null) {
                 return;
@@ -105,9 +114,11 @@ public class BlockHopper extends BlockContainer {
             } else {
                 item.remove();
             }
-        } else if (source.getBlockEntity() != null && source.getBlockEntity() instanceof ContainerEntity) {
+        } else if (source.getBlockEntity() != null && source
+            .getBlockEntity() instanceof ContainerEntity) {
             ContainerEntity sourceContainer = (ContainerEntity) source.getBlockEntity();
-            if (sourceContainer.getInventory() == null || sourceContainer.getInventory().getContents().length == 0) {
+            if (sourceContainer.getInventory() == null
+                || sourceContainer.getInventory().getContents().length == 0) {
                 return;
             }
             ItemStack item = getFirstItem(sourceContainer);
@@ -135,7 +146,8 @@ public class BlockHopper extends BlockContainer {
         if (target.getType() != null && target.getBlockEntity() instanceof ContainerEntity) {
             if (target.getState() instanceof GlowHopper) {
                 if (((Hopper) block.getState().getData()).getFacing() == BlockFace.DOWN) {
-                    // If the hopper is facing downwards, the target hopper can do the pulling task itself
+                    // If the hopper is facing downwards, the target hopper can do the pulling task
+                    // itself
                     return false;
                 }
             }
@@ -145,7 +157,8 @@ public class BlockHopper extends BlockContainer {
             }
             ItemStack clone = item.clone();
             clone.setAmount(1);
-            if (((ContainerEntity) target.getBlockEntity()).getInventory().addItem(clone).size() > 0) {
+            if (((ContainerEntity) target.getBlockEntity()).getInventory().addItem(clone).size()
+                > 0) {
                 return false;
             }
 
@@ -161,7 +174,9 @@ public class BlockHopper extends BlockContainer {
 
     private GlowItem getFirstDroppedItem(Location location) {
         for (Entity entity : location.getChunk().getEntities()) {
-            if (location.getBlockX() != entity.getLocation().getBlockX() || location.getBlockY() != entity.getLocation().getBlockY() || location.getBlockZ() != entity.getLocation().getBlockZ()) {
+            if (location.getBlockX() != entity.getLocation().getBlockX()
+                || location.getBlockY() != entity.getLocation().getBlockY()
+                || location.getBlockZ() != entity.getLocation().getBlockZ()) {
                 continue;
             }
             if (entity.getType() != EntityType.DROPPED_ITEM) {

@@ -1,15 +1,13 @@
 package net.glowstone.io.entity;
 
+import java.util.Arrays;
+import java.util.List;
 import net.glowstone.entity.objects.GlowArmorStand;
-import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.EulerAngle;
-
-import java.util.Arrays;
-import java.util.List;
+import org.jetbrains.annotations.NonNls;
 
 class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
 
@@ -25,52 +23,26 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
     @Override
     public void load(GlowArmorStand entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isList("Equipment", TagType.COMPOUND)) {
-            List<CompoundTag> equip = tag.getCompoundList("Equipment");
-            entity.setItemInHand(NbtSerialization.readItem(equip.get(0)));
-            entity.setBoots(NbtSerialization.readItem(equip.get(1)));
-            entity.setLeggings(NbtSerialization.readItem(equip.get(2)));
-            entity.setChestplate(NbtSerialization.readItem(equip.get(3)));
-            entity.setHelmet(NbtSerialization.readItem(equip.get(4)));
-        }
-        if (tag.containsKey("Marker")) {
-            entity.setMarker(tag.getBool("Marker"));
-        }
-        if (tag.containsKey("Invisible")) {
-            entity.setVisible(!tag.getBool("Invisible"));
-        }
-        if (tag.containsKey("NoBasePlate")) {
-            entity.setBasePlate(!tag.getBool("NoBasePlate"));
-        }
-        if (tag.containsKey("NoGravity")) {
-            entity.setGravity(!tag.getBool("NoGravity"));
-        }
-        if (tag.containsKey("ShowArms")) {
-            entity.setArms(tag.getBool("ShowArms"));
-        }
-        if (tag.containsKey("Small")) {
-            entity.setSmall(tag.getBool("Small"));
-        }
-        if (tag.isCompound("Pose")) {
-            entity.setBodyPose(readSafeAngle(tag.getCompound("Pose"), "Body"));
-            entity.setLeftArmPose(readSafeAngle(tag.getCompound("Pose"), "LeftArm"));
-            entity.setRightArmPose(readSafeAngle(tag.getCompound("Pose"), "RightArm"));
-            entity.setLeftLegPose(readSafeAngle(tag.getCompound("Pose"), "LeftLeg"));
-            entity.setRightLegPose(readSafeAngle(tag.getCompound("Pose"), "RightLeg"));
-            entity.setHeadPose(readSafeAngle(tag.getCompound("Pose"), "Head"));
-        }
+        tag.readBoolean("Marker", entity::setMarker);
+        tag.readBooleanNegated("Invisible", entity::setVisible);
+        tag.readBoolean("Marker", entity::setMarker);
+        tag.readBooleanNegated("NoBasePlate", entity::setBasePlate);
+        tag.readBooleanNegated("NoGravity", entity::setGravity);
+        tag.readBoolean("ShowArms", entity::setArms);
+        tag.readBoolean("Small", entity::setSmall);
+        tag.tryGetCompound("Pose").ifPresent(pose -> {
+            entity.setBodyPose(readSafeAngle(pose, "Body"));
+            entity.setLeftArmPose(readSafeAngle(pose, "LeftArm"));
+            entity.setRightArmPose(readSafeAngle(pose, "RightArm"));
+            entity.setLeftLegPose(readSafeAngle(pose, "LeftLeg"));
+            entity.setRightLegPose(readSafeAngle(pose, "RightLeg"));
+            entity.setHeadPose(readSafeAngle(pose, "Head"));
+        });
     }
 
     @Override
     public void save(GlowArmorStand entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putCompoundList("Equipment", Arrays.asList(
-                NbtSerialization.writeItem(entity.getItemInHand(), -1),
-                NbtSerialization.writeItem(entity.getBoots(), -1),
-                NbtSerialization.writeItem(entity.getLeggings(), -1),
-                NbtSerialization.writeItem(entity.getChestplate(), -1),
-                NbtSerialization.writeItem(entity.getHelmet(), -1)
-        ));
         tag.putBool("Marker", entity.isMarker());
         tag.putBool("Invisible", !entity.isVisible());
         tag.putBool("NoBasePlate", !entity.hasBasePlate());
@@ -78,29 +50,32 @@ class ArmorStandStore extends LivingEntityStore<GlowArmorStand> {
         tag.putBool("ShowArms", entity.hasArms());
         tag.putBool("Small", entity.isSmall());
         CompoundTag pose = new CompoundTag();
-        pose.putList("Body", TagType.FLOAT, toFloatList(entity.getBodyPose()));
-        pose.putList("LeftArm", TagType.FLOAT, toFloatList(entity.getLeftArmPose()));
-        pose.putList("RightArm", TagType.FLOAT, toFloatList(entity.getRightArmPose()));
-        pose.putList("LeftLeg", TagType.FLOAT, toFloatList(entity.getLeftLegPose()));
-        pose.putList("RightLeg", TagType.FLOAT, toFloatList(entity.getRightLegPose()));
-        pose.putList("Head", TagType.FLOAT, toFloatList(entity.getHeadPose()));
+        pose.putFloatList("Body", toFloatList(entity.getBodyPose()));
+        pose.putFloatList("LeftArm", toFloatList(entity.getLeftArmPose()));
+        pose.putFloatList("RightArm", toFloatList(entity.getRightArmPose()));
+        pose.putFloatList("LeftLeg", toFloatList(entity.getLeftLegPose()));
+        pose.putFloatList("RightLeg", toFloatList(entity.getRightLegPose()));
+        pose.putFloatList("Head", toFloatList(entity.getHeadPose()));
         tag.putCompound("Pose", pose);
     }
 
-    private List<Float> toFloatList(EulerAngle angle) {
+    private static List<Float> toFloatList(EulerAngle angle) {
         return Arrays.asList(
-                (float) Math.toDegrees(angle.getX()),
-                (float) Math.toDegrees(angle.getY()),
-                (float) Math.toDegrees(angle.getZ())
+            (float) Math.toDegrees(angle.getX()),
+            (float) Math.toDegrees(angle.getY()),
+            (float) Math.toDegrees(angle.getZ())
         );
     }
 
-    private EulerAngle readSafeAngle(CompoundTag tag, String key) {
-        if (tag.isList(key, TagType.FLOAT)) {
-            List<Float> list = tag.getList(key, TagType.FLOAT);
-            return new EulerAngle(Math.toRadians(list.get(0)), Math.toRadians(list.get(1)), Math.toRadians(list.get(2)));
-        } else {
-            return EulerAngle.ZERO;
-        }
+    private EulerAngle readSafeAngle(CompoundTag tag, @NonNls String key) {
+        final EulerAngle[] out = {EulerAngle.ZERO};
+        tag.readFloatList(key, list -> {
+            if (list.size() >= 3) {
+                out[0] = new EulerAngle(
+                        Math.toRadians(list.get(0)), Math.toRadians(list.get(1)),
+                        Math.toRadians(list.get(2)));
+            }
+        });
+        return out[0];
     }
 }

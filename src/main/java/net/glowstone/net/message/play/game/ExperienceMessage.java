@@ -7,6 +7,7 @@ import lombok.Data;
 public final class ExperienceMessage implements Message {
 
     private final float barValue;
-    private final int level, totalExp;
+    private final int level;
+    private final int totalExp;
 
 }

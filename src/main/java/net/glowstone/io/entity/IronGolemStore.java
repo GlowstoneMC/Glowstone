@@ -7,18 +7,13 @@ import org.bukkit.entity.EntityType;
 class IronGolemStore extends MonsterStore<GlowIronGolem> {
 
     public IronGolemStore() {
-        super(GlowIronGolem.class, EntityType.IRON_GOLEM);
+        super(GlowIronGolem.class, EntityType.IRON_GOLEM, GlowIronGolem::new);
     }
 
     @Override
     public void load(GlowIronGolem entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte("PlayerCreated")) {
-            entity.setPlayerCreated(compound.getBool("PlayerCreated"));
-        } else {
-            entity.setPlayerCreated(true);
-        }
-
+        entity.setPlayerCreated(compound.getBoolean("PlayerCreated", true));
     }
 
     @Override

@@ -1,22 +1,48 @@
 package net.glowstone.entity.ai;
 
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
 import net.glowstone.entity.GlowLivingEntity;
 
-import java.util.Random;
+public abstract class EntityTask implements Comparable<EntityTask> {
 
-public abstract class EntityTask {
-
-    protected static final Random random = new Random();
-
+    /**
+     * The name of this EntityTask. Must be unique to each EntityTask implementation.
+     *
+     * @return the name of this EntityTask.
+     */
+    @Getter
     private final String name;
+    /**
+     * Whether this task is currently being executed.
+     *
+     * @return true if this task is being executed, false otherwise.
+     */
+    @Getter
     private boolean executing = false;
     private int duration = 0;
+    /**
+     * Whether this task is paused.
+     *
+     * @return whether this task is paused.
+     */
+    @Getter
     private boolean paused = false;
 
     public EntityTask(String name) {
         this.name = name;
     }
 
+    @Override
+    public int compareTo(EntityTask other) {
+        return 0; // TODO: AI task priority
+    }
+
+    /**
+     * Advances this task by a tick on the given entity.
+     *
+     * @param entity the entity to run on
+     */
     public final void pulse(GlowLivingEntity entity) {
         if (paused || entity.isDead() || !entity.hasAI()) {
             return;
@@ -36,7 +62,9 @@ public abstract class EntityTask {
             return;
         }
         if (!executing && shouldStart(entity)) {
-            duration = getDurationMin() == getDurationMax() ? getDurationMin() : random.nextInt(getDurationMax() - getDurationMin()) + getDurationMin();
+            duration = getDurationMin() == getDurationMax() ? getDurationMin()
+                : ThreadLocalRandom.current().nextInt(getDurationMax() - getDurationMin())
+                    + getDurationMin();
             executing = true;
             start(entity);
         }
@@ -54,30 +82,14 @@ public abstract class EntityTask {
     }
 
     /**
-     * Whether this task is currently being executed.
-     *
-     * @return true if this task is being executed, false otherwise.
-     */
-    public final boolean isExecuting() {
-        return executing;
-    }
-
-    /**
-     * Whether this task is paused.
-     *
-     * @return whether this task is paused.
-     */
-    public final boolean isPaused() {
-        return paused;
-    }
-
-    /**
      * Resumes the previously paused task for this entity.
      *
      * @param entity the entity in question.
      */
     public final void resume(GlowLivingEntity entity) {
-        if (!isPaused()) return;
+        if (!isPaused()) {
+            return;
+        }
         paused = false;
     }
 
@@ -87,31 +99,22 @@ public abstract class EntityTask {
      * @param entity the entity in question.
      */
     public final void pause(GlowLivingEntity entity) {
-        if (isPaused()) return;
+        if (isPaused()) {
+            return;
+        }
         reset(entity);
         paused = true;
     }
 
     /**
-     * The name of this EntityTask. Must be unique to each EntityTask implementation.
-     *
-     * @return the name of this EntityTask.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * The minimum duration of this task.
-     * This value is ignored if this task is instant.
+     * The minimum duration of this task. This value is ignored if this task is instant.
      *
      * @return the minimum duration of this task, in ticks.
      */
     public abstract int getDurationMin();
 
     /**
-     * The maximum duration of this task.
-     * This value is ignored if this task is instant.
+     * The maximum duration of this task. This value is ignored if this task is instant.
      *
      * @return the maximum duration of this task, in ticks.
      */
@@ -147,8 +150,8 @@ public abstract class EntityTask {
     public abstract void execute(GlowLivingEntity entity);
 
     /**
-     * Whether this task is instant.
-     * An "instant" task will be executed every tick while the entity is alive.
+     * Whether this task is instant. An "instant" task will be executed every tick while the entity
+     * is alive.
      *
      * @return the entity in question.
      */

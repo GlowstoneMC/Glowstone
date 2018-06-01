@@ -3,13 +3,13 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.util.UUID;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 
-import java.io.IOException;
-import java.util.UUID;
-
 public final class SpawnObjectCodec implements Codec<SpawnObjectMessage> {
+
     @Override
     public SpawnObjectMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);

@@ -1,19 +1,26 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
 import net.glowstone.entity.GlowHumanEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.crafting.CraftingManager;
 import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.util.InventoryUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 
 /**
@@ -38,28 +45,40 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     /**
      * The crafting inventory.
+     *
+     * @return The GlowCraftingInventory attached to this player
      */
-    private final GlowCraftingInventory crafting;
+    @Getter
+    private final GlowCraftingInventory craftingInventory;
     /**
-     * Tracker for inventory drags.
+     * Tracker for inventory drags by this player.
+     *
+     * @return The DragTracker.
      */
-    private final DragTracker tracker = new DragTracker();
+    @Getter
+    private final DragTracker dragTracker = new DragTracker();
     /**
      * The current held item slot.
      */
-    private int heldSlot;
+    @Getter
+    private int heldItemSlot;
     /**
      * The human entity for this inventory, stored for location.
      */
     private GlowHumanEntity owner;
 
+    /**
+     * Creates the instance for the given player's inventory.
+     *
+     * @param owner the player who owns this inventory
+     */
     public GlowPlayerInventory(GlowHumanEntity owner) {
         // all player inventories are ID 0
         // 36 = 4 rows of 9
         // + 4 = armor, completed inventory
         // + 1 = off hand slot
         super(owner, InventoryType.PLAYER, SIZE);
-        crafting = new GlowCraftingInventory(owner, InventoryType.CRAFTING);
+        craftingInventory = new GlowCraftingInventory(owner, InventoryType.CRAFTING);
         this.owner = owner;
         for (int i = 0; i <= 8; i++) {
             getSlot(i).setType(SlotType.QUICKBAR);
@@ -73,23 +92,20 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     // Internals
 
     public static boolean canEquipInHelmetSlot(Material material) {
-        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN || material == Material.SKULL_ITEM;
+        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN
+                || material == Material.SKULL_ITEM;
     }
 
     /**
-     * Get the crafting inventory.
+     * Sets which hotbar slot is the main-hand item.
      *
-     * @return The GlowCraftingInventory attached to this player
+     * @param slot the slot number, starting with 0 (1 less than the default keyboard shortcut)
      */
-    public GlowCraftingInventory getCraftingInventory() {
-        return crafting;
-    }
-
     public void setRawHeldItemSlot(int slot) {
         if (slot < 0 || slot > 8) {
             throw new IllegalArgumentException(slot + " not in range 0..8");
         }
-        heldSlot = slot;
+        heldItemSlot = slot;
         setItemInMainHand(getItemInMainHand());  // send to player again just in case
     }
 
@@ -111,7 +127,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot, ItemStack clickedItem) {
+    public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
+                                 ItemStack clickedItem) {
         GlowInventory top = (GlowInventory) view.getTopInventory();
 
         // If this is the default inventory try to equip the item as armor first
@@ -130,12 +147,14 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
         if (topAllowsShiftClick) {
             if (top.getType().equals(InventoryType.FURNACE)) {
-                CraftingManager cm = ((GlowServer) Bukkit.getServer()).getCraftingManager();
+                CraftingManager cm = ((GlowServer) ServerProvider.getServer()).getCraftingManager();
                 if (cm.getFurnaceRecipe(clickedItem) != null) {
-                    // move items are be burnable to the input slot  TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?
+                    // move items are be burnable to the input slot
+                    // TODO: Use of variable (INPUT_SLOT) instead of hard coded value ?
                     clickedItem = top.tryToFillSlots(clickedItem, 0, -1);
                 } else if (cm.isFuel(clickedItem.getType())) {
-                    // move fuel items direct to fuel slot   TODO: Use of variable (FUEL_SLOT) instead of hard coded value ?
+                    // move fuel items direct to fuel slot
+                    // TODO: Use of variable (FUEL_SLOT) instead of hard coded value ?
                     clickedItem = top.tryToFillSlots(clickedItem, 1, -1);
                 } else {
                     // switch them between hotbar and main inventory depending on where they are now
@@ -167,15 +186,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     ////////////////////////////////////////////////////////////////////////////
     // Overrides
-
-    /**
-     * Get the DragTracker associated with this player.
-     *
-     * @return The DragTracker.
-     */
-    public DragTracker getDragTracker() {
-        return tracker;
-    }
 
     @Override
     public HumanEntity getHolder() {
@@ -223,6 +233,9 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             case HEAD:
                 setHelmet(item);
                 break;
+            default:
+                // TODO: should this raise a warning?
+                // do nothing
         }
     }
 
@@ -323,12 +336,12 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public ItemStack getItemInMainHand() {
-        return getItem(heldSlot).clone();
+        return getItem(heldItemSlot).clone();
     }
 
     @Override
     public void setItemInMainHand(ItemStack item) {
-        setItem(heldSlot, item);
+        setItem(heldItemSlot, item);
     }
 
     @Override
@@ -354,11 +367,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     }
 
     @Override
-    public int getHeldItemSlot() {
-        return heldSlot;
-    }
-
-    @Override
     public void setHeldItemSlot(int slot) {
         setRawHeldItemSlot(slot);
 
@@ -372,11 +380,22 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         return owner.getLocation();
     }
 
+    /**
+     * Remove all matching items from the inventory.
+     *
+     * @param type the item to remove, or null to remove everything
+     * @param data the data value to match on, or null to match all data values
+     * @return the number of items (not stacks) removed
+     */
     public int clear(Material type, MaterialData data) {
+        if (type == Material.AIR) {
+            return 0;
+        }
         int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
-            if (stack != null && (type == null || stack.getType() == type) && (data == null || stack.getData().equals(data))) {
+            if (stack != null && (type == null || stack.getType() == type) && (data == null || stack
+                    .getData().equals(data))) {
                 setItem(i, InventoryUtil.createEmptyStack());
                 if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared
@@ -393,7 +412,8 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
         int numCleared = 0;
         for (int i = 0; i < getSize(); ++i) {
             ItemStack stack = getItem(i);
-            if (stack != null && (id == -1 || stack.getTypeId() == id) && (data == -1 || stack.getData().getData() == data)) {
+            if (stack != null && (id == -1 || stack.getTypeId() == id) && (data == -1
+                    || stack.getData().getData() == data)) {
                 setItem(i, InventoryUtil.createEmptyStack());
                 if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared
@@ -472,5 +492,52 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     @Override
     public void setBootsDropChance(float chance) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Consumes an item or the full stack in the main hand slot.
+     *
+     * @param wholeStack True if we should remove the complete stack.
+     * @return The number of item really consumed.
+     */
+    public int consumeItemInMainHand(boolean wholeStack) {
+        return super.consumeItem(heldItemSlot, wholeStack);
+    }
+
+    /**
+     * Consumes an item in the main hand slot.
+     *
+     * @return The number of item really consumed.
+     */
+    public int consumeItemInMainHand() {
+        return this.consumeItemInMainHand(false);
+    }
+
+    /**
+     * Consumes an item in a hand slot.
+     *
+     * @param slot The {@link EquipmentSlot hand slot} to consume, which must be either
+     *             {@link EquipmentSlot#HAND} or {@link EquipmentSlot#OFF_HAND}.
+     * @return The number of item really consumed.
+     */
+    public int consumeItemInHand(EquipmentSlot slot) {
+        return consumeItemInHand(slot, false);
+    }
+
+    /**
+     * Consumes an item in a hand slot.
+     *
+     * @param slot The {@link EquipmentSlot hand slot} to consume, which must be either
+     *             {@link EquipmentSlot#HAND} or {@link EquipmentSlot#OFF_HAND}.
+     * @param wholeStack True if we should remove the complete stack.
+     * @return The number of item really consumed.
+     */
+    public int consumeItemInHand(EquipmentSlot slot, boolean wholeStack) {
+        checkArgument(slot == EquipmentSlot.HAND
+                        || slot == EquipmentSlot.OFF_HAND, "Not a valid hand slot.");
+        if (slot == EquipmentSlot.HAND) {
+            return consumeItemInMainHand(wholeStack);
+        }
+        return consumeItem(OFF_HAND_SLOT, wholeStack);
     }
 }

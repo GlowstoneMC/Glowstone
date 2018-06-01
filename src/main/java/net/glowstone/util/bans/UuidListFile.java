@@ -1,71 +1,105 @@
 package net.glowstone.util.bans;
 
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import org.bukkit.OfflinePlayer;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Common management for whitelist and ops list files.
  */
 public final class UuidListFile extends JsonListFile {
 
+    private Map<UUID, Entry> entriesByUuid = new ConcurrentHashMap<>();
+
+    @Override
+    public void load() {
+        super.load();
+        for (BaseEntry entry : entries) {
+            entriesByUuid.put(((Entry) entry).uuid, (Entry) entry);
+        }
+    }
+
     public UuidListFile(File file) {
         super(file);
     }
 
-    public List<UUID> getUUIDs() {
-        List<UUID> result = new ArrayList<>(entries.size());
-        result.addAll(entries.stream().map(baseEntry -> ((Entry) baseEntry).uuid).collect(Collectors.toList()));
-        return result;
+    /**
+     * Returns a {@link GlowPlayerProfile} for each player whose UUID is in the list file.
+     *
+     * @return a list of {@link GlowPlayerProfile} instances
+     */
+    public List<GlowPlayerProfile> getProfiles() {
+        return entries
+                .stream()
+                .parallel()
+                .map(entry -> {
+                    try {
+                        return ProfileCache.getProfile(((Entry) entry).uuid).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
-    public List<PlayerProfile> getProfiles() {
-        List<PlayerProfile> result = new ArrayList<>(entries.size());
-        for (BaseEntry baseEntry : entries) {
-            Entry entry = (Entry) baseEntry;
-            PlayerProfile profile = ProfileCache.getProfile(entry.uuid);
-            if (profile == null) {
-                profile = new PlayerProfile(entry.fallbackName, entry.uuid);
-            }
-            result.add(profile);
-        }
-        return result;
+    /**
+     * Searches for a UUID.
+     *
+     * @param uuid the UUID to search for
+     * @return true if the UUID is present; false otherwise
+     */
+    public boolean containsUuid(UUID uuid) {
+        return entriesByUuid.containsKey(uuid);
     }
 
-    public boolean containsUUID(UUID uuid) {
-        for (BaseEntry baseEntry : entries) {
-            if (uuid.equals(((Entry) baseEntry).uuid)) {
-                return true;
-            }
-        }
-        return false;
+    /**
+     * Checks whether the player with a given UUID is in this list.
+     *
+     * @param profile the player whose UUID will be looked up
+     * @return whether the player is on this list
+     */
+    public boolean containsProfile(GlowPlayerProfile profile) {
+        return containsUuid(profile.getId());
     }
 
-    public boolean containsProfile(PlayerProfile profile) {
-        for (BaseEntry baseEntry : entries) {
-            if (profile.getUniqueId().equals(((Entry) baseEntry).uuid)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * If the given player is not already on this list, adds that player and saves the change to
+     * disk.
+     *
+     * @param player the player to add
+     */
     public void add(OfflinePlayer player) {
-        if (!containsUUID(player.getUniqueId())) {
-            entries.add(new Entry(player.getUniqueId(), player.getName()));
+        UUID playerUuid = player.getUniqueId();
+        if (!containsUuid(playerUuid)) {
+            Entry newEntry = new Entry(playerUuid, player.getName());
+            entries.add(newEntry);
+            entriesByUuid.put(playerUuid, newEntry);
             save();
         }
     }
 
-    public void remove(PlayerProfile profile) {
+    /**
+     * If the given player is on this list, removes that player and saves the change to disk.
+     *
+     * @param profile the player to remove
+     */
+    public void remove(GlowPlayerProfile profile) {
+        UUID playerUuid = profile.getId();
+        entriesByUuid.remove(playerUuid);
+        // FIXME: Unnecessary linear time
         Iterator<BaseEntry> iter = entries.iterator();
         boolean modified = false;
         while (iter.hasNext()) {
-            if (((Entry) iter.next()).uuid.equals(profile.getUniqueId())) {
+            if (((Entry) iter.next()).uuid.equals(playerUuid)) {
                 iter.remove();
                 modified = true;
             }
@@ -80,7 +114,8 @@ public final class UuidListFile extends JsonListFile {
         return new Entry(UUID.fromString(map.get("uuid")), map.get("name"));
     }
 
-    private class Entry implements BaseEntry {
+    private static class Entry implements BaseEntry {
+
         private final UUID uuid;
         private final String fallbackName;
 
@@ -91,8 +126,8 @@ public final class UuidListFile extends JsonListFile {
 
         @Override
         public Map<String, String> write() {
-            PlayerProfile profile = ProfileCache.getProfile(uuid);
-            String name = profile != null ? profile.getName() != null ? profile.getName() : fallbackName : fallbackName;
+            GlowPlayerProfile profile = ProfileCache.getProfile(uuid).join();
+            String name = profile.getName() != null ? profile.getName() : fallbackName;
             Map<String, String> result = new HashMap<>(2);
             result.put("uuid", uuid.toString());
             result.put("name", name);

@@ -1,5 +1,12 @@
 package net.glowstone.block.blocktype;
 
+import static org.bukkit.block.BlockFace.DOWN;
+import static org.bukkit.block.BlockFace.EAST;
+import static org.bukkit.block.BlockFace.NORTH;
+import static org.bukkit.block.BlockFace.SOUTH;
+import static org.bukkit.block.BlockFace.UP;
+import static org.bukkit.block.BlockFace.WEST;
+
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
@@ -7,37 +14,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import static org.bukkit.block.BlockFace.*;
-
 public class BlockDirectional extends BlockType {
 
     private final boolean opposite;
 
     public BlockDirectional(boolean opposite) {
         this.opposite = opposite;
-    }
-
-    @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
-        super.placeBlock(player, state, face, holding, clickedLoc);
-
-        BlockFace faceHead = calculateFace(player, state); // the direction of the block
-        state.setRawData((byte) getRawFace(opposite ? faceHead.getOppositeFace() : faceHead));
-    }
-
-    protected BlockFace calculateFace(GlowPlayer player, GlowBlockState state) {
-        Location pLoc = player.getLocation(); // the location of the player
-        Location bLoc = state.getLocation();  // the location of the block
-
-        if (Math.abs(pLoc.getBlockX() - bLoc.getBlockX()) < 2.0F && Math.abs(pLoc.getBlockZ() - bLoc.getBlockZ()) < 2.0F) {
-            double offset = pLoc.getBlockY() + player.getEyeHeight();
-            if (offset - bLoc.getBlockY() > 2.0)
-                return BlockFace.UP;
-
-            if (bLoc.getBlockY() - offset > 0.0)
-                return DOWN;
-        }
-        return player.getDirection().getOppositeFace();
     }
 
     protected static int getRawFace(BlockFace face) {
@@ -54,8 +36,10 @@ public class BlockDirectional extends BlockType {
                 return 4;
             case EAST:
                 return 5;
+            default:
+                // TODO: Should this raise a warning?
+                return 0;
         }
-        return 0;
     }
 
     protected static BlockFace getFace(byte raw) {
@@ -72,7 +56,35 @@ public class BlockDirectional extends BlockType {
                 return WEST;
             case 5:
                 return EAST;
+            default:
+                return null;
         }
-        return null;
+    }
+
+    @Override
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
+        super.placeBlock(player, state, face, holding, clickedLoc);
+
+        BlockFace faceHead = calculateFace(player, state); // the direction of the block
+        state.setRawData((byte) getRawFace(opposite ? faceHead.getOppositeFace() : faceHead));
+    }
+
+    protected BlockFace calculateFace(GlowPlayer player, GlowBlockState state) {
+        Location playerLoc = player.getLocation(); // the location of the player
+        Location blockLoc = state.getLocation();  // the location of the block
+
+        if (Math.abs(playerLoc.getBlockX() - blockLoc.getBlockX()) < 2.0F
+            && Math.abs(playerLoc.getBlockZ() - blockLoc.getBlockZ()) < 2.0F) {
+            double offset = playerLoc.getBlockY() + player.getEyeHeight();
+            if (offset - blockLoc.getBlockY() > 2.0) {
+                return BlockFace.UP;
+            }
+
+            if (blockLoc.getBlockY() - offset > 0.0) {
+                return DOWN;
+            }
+        }
+        return player.getCardinalFacing().getOppositeFace();
     }
 }

@@ -1,13 +1,17 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.state.GlowBrewingStand;
+import net.glowstone.block.entity.state.GlowBrewingStand;
 import net.glowstone.inventory.GlowBrewerInventory;
 import net.glowstone.util.nbt.CompoundTag;
 
 public class BrewingStandEntity extends ContainerEntity {
 
+    @Getter
+    @Setter
     private int brewTime;
 
     public BrewingStandEntity(GlowBlock block) {
@@ -15,20 +19,10 @@ public class BrewingStandEntity extends ContainerEntity {
         setSaveId("minecraft:brewing_stand");
     }
 
-    public int getBrewTime() {
-        return brewTime;
-    }
-
-    public void setBrewTime(int brewTime) {
-        this.brewTime = brewTime;
-    }
-
     @Override
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
-        if (tag.isInt("BrewTime")) {
-            brewTime = tag.getInt("BrewTime");
-        }
+        tag.readInt("BrewTime", this::setBrewTime);
     }
 
     @Override

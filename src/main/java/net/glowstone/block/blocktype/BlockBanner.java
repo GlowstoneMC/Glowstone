@@ -1,10 +1,14 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.BannerEntity;
-import net.glowstone.block.state.GlowBanner;
+import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.entity.state.GlowBanner;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
@@ -19,18 +23,18 @@ import org.bukkit.material.Banner;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 public class BlockBanner extends BlockType {
 
     public BlockBanner() {
         setDrops(new ItemStack(Material.BANNER));
     }
 
-    public static List<CompoundTag> toNBT(List<Pattern> banner) {
+    /**
+     * Converts banner patterns to NBT tags.
+     * @param banner a list of banner patterns
+     * @return the patterns as NBT tags
+     */
+    public static List<CompoundTag> toNbt(List<Pattern> banner) {
         List<CompoundTag> patterns = new ArrayList<>();
         for (Pattern pattern : banner) {
             CompoundTag layerTag = new CompoundTag();
@@ -41,7 +45,12 @@ public class BlockBanner extends BlockType {
         return patterns;
     }
 
-    public static List<Pattern> fromNBT(List<CompoundTag> tag) {
+    /**
+     * Converts NBT tags to banner patterns.
+     * @param tag a list of banner patterns as NBT tags
+     * @return the patterns as Pattern instances
+     */
+    public static List<Pattern> fromNbt(List<CompoundTag> tag) {
         List<Pattern> banner = new ArrayList<>();
         for (CompoundTag layer : tag) {
             PatternType patternType = PatternType.getByIdentifier(layer.getString("Pattern"));
@@ -70,7 +79,8 @@ public class BlockBanner extends BlockType {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (!(data instanceof Banner)) {
@@ -86,7 +96,8 @@ public class BlockBanner extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         GlowBanner banner = (GlowBanner) block.getState();
         banner.setBaseColor(DyeColor.getByDyeData((byte) holding.getDurability()));
         BannerMeta meta = (BannerMeta) holding.getItemMeta();

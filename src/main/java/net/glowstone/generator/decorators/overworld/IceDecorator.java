@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import net.glowstone.generator.objects.BlockPatch;
 import net.glowstone.generator.objects.IceSpike;
 import org.bukkit.Chunk;
@@ -7,11 +8,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 
-import java.util.Random;
-
 public class IceDecorator extends BlockPopulator {
 
-    private static final Material[] OVERRIDABLES = {Material.DIRT, Material.GRASS, Material.SNOW_BLOCK, Material.ICE};
+    private static final Material[] OVERRIDABLES = {Material.DIRT, Material.GRASS,
+        Material.SNOW_BLOCK, Material.ICE};
 
     @Override
     public void populate(World world, Random random, Chunk chunk) {
@@ -26,7 +26,8 @@ public class IceDecorator extends BlockPopulator {
                 y--;
             }
             if (world.getBlockAt(x, y, z).getType() == Material.SNOW_BLOCK) {
-              new BlockPatch(Material.PACKED_ICE, 4, 1, OVERRIDABLES).generate(world, random, x, y, z);
+                new BlockPatch(Material.PACKED_ICE, 4, 1, OVERRIDABLES)
+                    .generate(world, random, x, y, z);
             }
         }
 
@@ -38,7 +39,7 @@ public class IceDecorator extends BlockPopulator {
                 y--;
             }
             if (world.getBlockAt(x, y, z).getType() == Material.SNOW_BLOCK) {
-              new IceSpike().generate(world, random, x, y, z);
+                new IceSpike().generate(world, random, x, y, z);
             }
         }
     }

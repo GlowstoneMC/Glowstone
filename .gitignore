@@ -6,10 +6,8 @@
 .idea
 build
 out
-classes
 nbproject
 bin
-lib
 doc
 target
 !.gitignore
@@ -19,5 +17,7 @@ target
 dependency-reduced-pom.xml
 .classpath
 .project
-.settings/
+.settings
 .db
+.DS_Store
+.vscode

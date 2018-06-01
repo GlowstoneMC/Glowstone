@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -9,16 +12,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 public class BlockSugarCane extends BlockNeedsAttached {
 
-    private static final BlockFace[] DIRECT_FACES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH};
-
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
@@ -51,7 +49,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
         }
 
         GlowBlock blockAbove = block.getRelative(BlockFace.UP);
-        // check it's the highest block of cactus
+        // check it's the highest block of sugar cane
         if (blockAbove.isEmpty()) {
             // check the current cane height
             Block blockBelow = block.getRelative(BlockFace.DOWN);
@@ -74,7 +72,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
                     state.setType(Material.SUGAR_CANE_BLOCK);
                     state.setRawData((byte) 0);
                     BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
-                    EventFactory.callEvent(growEvent);
+                    EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         state.update(true);
                     }
@@ -85,7 +83,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
     }
 
     private boolean isNearWater(Block block) {
-        for (BlockFace face : DIRECT_FACES) {
+        for (BlockFace face : SIDES) {
             switch (block.getRelative(face).getType()) {
                 case WATER:
                 case STATIONARY_WATER:
@@ -100,6 +98,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+        // Overridden for sugar cane to remove data from the dropped item
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SUGAR_CANE)));
     }
 }

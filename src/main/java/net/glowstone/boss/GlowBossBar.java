@@ -1,5 +1,13 @@
 package net.glowstone.boss;
 
+import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.player.BossBarMessage;
 import net.glowstone.util.TextMessage;
@@ -9,23 +17,42 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
 public class GlowBossBar implements BossBar {
 
+    @Getter
     private final UUID uniqueId;
+    private final Set<BarFlag> flags = new HashSet<>();
+    private final Set<Player> players = new HashSet<>();
+    @Getter
     private String title;
+    @Getter
     private BarColor color;
+    @Getter
     private BarStyle style;
-    private final List<BarFlag> flags = new ArrayList<>();
+    @Getter
     private double progress = 1.0;
-    private final List<Player> players = new ArrayList<>();
+    @Getter
     private boolean visible = true;
 
-    public GlowBossBar(String title, BarColor color, BarStyle style, double progress, BarFlag... flags) {
+    /**
+     * Creates a boss bar.
+     *
+     * @param title the bar's title
+     * @param color the bar's color
+     * @param style the bar's style
+     * @param progress the initial progress
+     * @param flags the flags
+     */
+    public GlowBossBar(String title, BarColor color, BarStyle style, double progress,
+            BarFlag... flags) {
+        Preconditions.checkNotNull(title);
+        Preconditions.checkNotNull(color);
+        Preconditions.checkNotNull(style);
+        Preconditions.checkNotNull(flags);
+        for (BarFlag flag : flags) {
+            Preconditions.checkNotNull(flag);
+        }
+
         this.uniqueId = UUID.randomUUID();
         this.title = title;
         this.color = color;
@@ -39,66 +66,64 @@ public class GlowBossBar implements BossBar {
     }
 
     @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
     public void setTitle(String title) {
+        Preconditions.checkNotNull(title);
         this.title = title;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_TITLE, new TextMessage(title)));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_TITLE, new
+                    TextMessage(title)));
         }
-    }
-
-    @Override
-    public BarColor getColor() {
-        return color;
     }
 
     @Override
     public void setColor(BarColor color) {
+        Preconditions.checkNotNull(color);
         this.color = color;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE, BossBarMessage.Color.fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE,
+                    BossBarMessage.Color
+                    .fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
         }
     }
 
     @Override
-    public BarStyle getStyle() {
-        return style;
-    }
-
-    @Override
     public void setStyle(BarStyle style) {
+        Preconditions.checkNotNull(style);
         this.style = style;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE, BossBarMessage.Color.fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_STYLE,
+                    BossBarMessage.Color
+                    .fromBarColor(color), BossBarMessage.Division.fromBarStyle(style)));
         }
     }
 
     @Override
     public void removeFlag(BarFlag flag) {
+        Preconditions.checkNotNull(flag);
         if (flags.contains(flag)) {
             flags.remove(flag);
             if (isVisible()) {
-                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS, flagsToByte()));
+                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS,
+                        flagsToByte()));
             }
         }
     }
 
     @Override
     public void addFlag(BarFlag flag) {
-        if (!flags.contains(flag) && flag != null) {
+        Preconditions.checkNotNull(flag);
+        if (!flags.contains(flag)) {
             flags.add(flag);
             if (isVisible()) {
-                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS, flagsToByte()));
+                sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_FLAGS,
+                        flagsToByte()));
             }
         }
     }
 
     @Override
     public boolean hasFlag(BarFlag flag) {
+        Preconditions.checkNotNull(flag);
         return flags.contains(flag);
     }
 
@@ -106,30 +131,34 @@ public class GlowBossBar implements BossBar {
     public void setProgress(double progress) {
         this.progress = progress;
         if (isVisible()) {
-            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_HEALTH, (float) progress));
+            sendUpdate(new BossBarMessage(getUniqueId(), BossBarMessage.Action.UPDATE_HEALTH,
+                    (float) progress));
         }
     }
 
     @Override
-    public double getProgress() {
-        return progress;
-    }
-
-    @Override
     public void addPlayer(Player player) {
+        Preconditions.checkNotNull(player);
         if (!players.contains(player)) {
             players.add(player);
             if (isVisible()) {
                 sendUpdate(player, createAddAction());
+                if (player instanceof GlowPlayer) {
+                    ((GlowPlayer) player).addBossBar(this);
+                }
             }
         }
     }
 
     @Override
     public void removePlayer(Player player) {
+        Preconditions.checkNotNull(player);
         if (players.contains(player)) {
             if (isVisible()) {
                 sendUpdate(player, createRemoveAction());
+                if (player instanceof GlowPlayer) {
+                    ((GlowPlayer) player).removeBossBar(this);
+                }
             }
             players.remove(player);
         }
@@ -140,12 +169,17 @@ public class GlowBossBar implements BossBar {
         if (isVisible()) {
             sendUpdate(createRemoveAction());
         }
+        for (Player player : players) {
+            if (player instanceof GlowPlayer) {
+                ((GlowPlayer) player).removeBossBar(this);
+            }
+        }
         players.clear();
     }
 
     @Override
     public List<Player> getPlayers() {
-        return players;
+        return new ArrayList<>(players);
     }
 
     @Override
@@ -161,11 +195,6 @@ public class GlowBossBar implements BossBar {
     }
 
     @Override
-    public boolean isVisible() {
-        return visible;
-    }
-
-    @Override
     public void show() {
         setVisible(true);
     }
@@ -173,10 +202,6 @@ public class GlowBossBar implements BossBar {
     @Override
     public void hide() {
         setVisible(false);
-    }
-
-    public UUID getUniqueId() {
-        return uniqueId;
     }
 
     private byte flagsToByte() {
@@ -194,7 +219,9 @@ public class GlowBossBar implements BossBar {
     }
 
     private BossBarMessage createAddAction() {
-        return new BossBarMessage(getUniqueId(), BossBarMessage.Action.ADD, new TextMessage(title), (float) progress, BossBarMessage.Color.fromBarColor(color), BossBarMessage.Division.fromBarStyle(style), flagsToByte());
+        return new BossBarMessage(getUniqueId(), BossBarMessage.Action.ADD, new TextMessage(title),
+                (float) progress, BossBarMessage.Color.fromBarColor(color),
+                BossBarMessage.Division.fromBarStyle(style), flagsToByte());
     }
 
     private BossBarMessage createRemoveAction() {
@@ -202,7 +229,7 @@ public class GlowBossBar implements BossBar {
     }
 
     private void sendUpdate(BossBarMessage message) {
-        for (Player player : getPlayers()) {
+        for (Player player : this.players) {
             sendUpdate(player, message);
         }
     }
@@ -217,9 +244,12 @@ public class GlowBossBar implements BossBar {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() != GlowBossBar.class) {
-            return false;
-        }
-        return ((GlowBossBar) obj).getUniqueId() == this.getUniqueId();
+        return obj.getClass() == GlowBossBar.class && ((GlowBossBar) obj).getUniqueId() == this
+                .getUniqueId();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[GlowBossBar %s named %s]", getUniqueId(), getTitle());
     }
 }

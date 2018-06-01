@@ -1,27 +1,28 @@
 package net.glowstone.block.blocktype;
 
 import com.google.common.collect.Sets;
+import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.BlockMaterialValidator;
 import net.glowstone.util.TaxicabBlockIterator;
 import org.bukkit.Material;
-import org.bukkit.material.types.SpongeType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sponge;
+import org.bukkit.material.types.SpongeType;
 import org.bukkit.util.Vector;
-
-import java.util.Set;
 
 public class BlockSponge extends BlockType {
 
-    private static final Set<Material> WATER_MATERIALS = Sets.immutableEnumSet(Material.WATER, Material.STATIONARY_WATER);
+    private static final Set<Material> WATER_MATERIALS = Sets
+        .immutableEnumSet(Material.WATER, Material.STATIONARY_WATER);
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         // TODO: Move this to a new method when physics works and run this on neighbour change too.
 
         MaterialData data = holding.getData();

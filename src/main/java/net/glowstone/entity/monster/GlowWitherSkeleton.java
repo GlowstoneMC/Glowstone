@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.WitherSkeleton;
 
 public class GlowWitherSkeleton extends GlowSkeleton implements WitherSkeleton {
+
     public GlowWitherSkeleton(Location loc) {
         super(loc, EntityType.WITHER_SKELETON, 20);
         setBoundingBox(0.7, 2.4);

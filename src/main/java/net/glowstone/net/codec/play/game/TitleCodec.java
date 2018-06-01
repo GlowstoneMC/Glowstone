@@ -3,11 +3,10 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.TitleMessage;
 import net.glowstone.net.message.play.game.TitleMessage.Action;
 import net.glowstone.util.TextMessage;
-
-import java.io.IOException;
 
 public final class TitleCodec implements Codec<TitleMessage> {
 
@@ -45,6 +44,9 @@ public final class TitleCodec implements Codec<TitleMessage> {
                 buf.writeInt(message.getStay());
                 buf.writeInt(message.getFadeOut());
                 break;
+            default:
+                // TODO: Should this raise a warning?
+                // do nothing
         }
         return buf;
     }

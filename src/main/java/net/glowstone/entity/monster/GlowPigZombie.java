@@ -1,30 +1,26 @@
 package net.glowstone.entity.monster;
 
+import java.util.Random;
+import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
-
-import java.util.Random;
-import java.util.UUID;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 
+    @Getter
+    @Setter
     private int anger;
+    @Getter
+    @Setter
     private UUID hurtBy;
 
     public GlowPigZombie(Location loc) {
         super(loc, EntityType.PIG_ZOMBIE);
-    }
-
-    @Override
-    public int getAnger() {
-        return anger;
-    }
-
-    @Override
-    public void setAnger(int level) {
-        anger = level;
     }
 
     @Override
@@ -34,16 +30,11 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Override
     public void setAngry(boolean angry) {
-        if (!angry) anger = 0;
-        else if (isAngry()) anger = (int) (new Random().nextGaussian() * 400) + 400;
-    }
-
-    public UUID getHurtBy() {
-        return hurtBy;
-    }
-
-    public void setHurtBy(UUID hurtBy) {
-        this.hurtBy = hurtBy;
+        if (!angry) {
+            anger = 0;
+        } else if (isAngry()) {
+            anger = (int) (new Random().nextGaussian() * 400) + 400;
+        }
     }
 
     @Override
@@ -59,5 +50,13 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ZOMBIE_PIG_AMBIENT;
+    }
+
+    @Override
+    public boolean canTakeDamage(DamageCause damageCause) {
+        if (damageCause == DamageCause.FIRE || damageCause == DamageCause.LAVA) {
+            return false;
+        }
+        return super.canTakeDamage(damageCause);
     }
 }

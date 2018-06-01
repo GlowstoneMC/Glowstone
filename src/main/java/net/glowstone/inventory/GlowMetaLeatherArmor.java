@@ -1,30 +1,32 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Map;
+import lombok.Getter;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMeta {
 
+    private static final Color DEFAULT_LEATHER_COLOR
+            = GlowItemFactory.instance().getDefaultLeatherColor();
+    @Getter
     private Color color = GlowItemFactory.instance().getDefaultLeatherColor();
 
-    public GlowMetaLeatherArmor(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link LeatherArmorMeta}, its color is copied; otherwise, the new item is undyed.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaLeatherArmor(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaLeatherArmor)) {
-            return;
+        if (meta instanceof LeatherArmorMeta) {
+            color = ((LeatherArmorMeta) meta).getColor();
         }
-        GlowMetaLeatherArmor armor = (GlowMetaLeatherArmor) meta;
-        color = armor.color;
-    }
-
-    @Override
-    public Color getColor() {
-        return color;
     }
 
     @Override
@@ -70,13 +72,9 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-
-        if (tag.isCompound("display")) {
-            CompoundTag display = tag.getCompound("display");
-            if (display.isInt("color")) {
-                color = Color.fromRGB(display.getInt("color"));
-            }
-        }
+        tag.readCompound("display", display ->
+                display.readInt("color", rgb -> color = Color.fromRGB(rgb))
+        );
     }
 
     @Override
@@ -85,6 +83,6 @@ public class GlowMetaLeatherArmor extends GlowMetaItem implements LeatherArmorMe
     }
 
     private boolean hasColor() {
-        return !color.equals(GlowItemFactory.instance().getDefaultLeatherColor());
+        return !color.equals(DEFAULT_LEATHER_COLOR);
     }
 }

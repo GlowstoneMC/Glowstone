@@ -1,22 +1,36 @@
 package net.glowstone.entity.monster;
 
+import lombok.Getter;
 import net.glowstone.Explosion;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-public class GlowWither extends GlowMonster implements Wither {
+public class GlowWither extends GlowBoss implements Wither {
 
+    @Getter
     private int invulnerableTicks;
-    private Entity centerTarget, leftTarget, rightTarget;
+    @Getter
+    private Entity centerTarget;
+    @Getter
+    private Entity leftTarget;
+    @Getter
+    private Entity rightTarget;
 
+    /**
+     * Creates a wither.
+     *
+     * @param loc the location
+     */
     public GlowWither(Location loc) {
-        super(loc, EntityType.WITHER, 300);
+        super(loc, EntityType.WITHER, 300, "Wither", BarColor.BLUE, BarStyle.SOLID);
         setInvulnerableTicks(220);
         setCenterTarget(null);
         setLeftTarget(null);
@@ -32,40 +46,43 @@ public class GlowWither extends GlowMonster implements Wither {
         super.damage(amount, source, cause);
     }
 
-    public int getInvulnerableTicks() {
-        return invulnerableTicks;
-    }
-
     public void setInvulnerableTicks(int invulnerableTicks) {
         this.invulnerableTicks = invulnerableTicks;
         this.metadata.set(MetadataIndex.WITHER_INVULN_TIME, invulnerableTicks);
     }
 
-    public Entity getCenterTarget() {
-        return centerTarget;
-    }
-
+    /**
+     * Sets the center target.
+     *
+     * @param centerTarget the new center target
+     */
     public void setCenterTarget(Entity centerTarget) {
         this.centerTarget = centerTarget;
-        this.metadata.set(MetadataIndex.WITHER_TARGET_1, centerTarget == null ? 0 : centerTarget.getEntityId());
+        setTargetMetadata(centerTarget, MetadataIndex.WITHER_TARGET_1);
     }
 
-    public Entity getLeftTarget() {
-        return leftTarget;
+    private void setTargetMetadata(Entity target, MetadataIndex index) {
+        this.metadata.set(index, target == null ? 0 : target.getEntityId());
     }
 
+    /**
+     * Sets the left target.
+     *
+     * @param leftTarget the new left target
+     */
     public void setLeftTarget(Entity leftTarget) {
         this.leftTarget = leftTarget;
-        this.metadata.set(MetadataIndex.WITHER_TARGET_2, leftTarget == null ? 0 : leftTarget.getEntityId());
+        setTargetMetadata(leftTarget, MetadataIndex.WITHER_TARGET_2);
     }
 
-    public Entity getRightTarget() {
-        return rightTarget;
-    }
-
+    /**
+     * Sets the right target.
+     *
+     * @param rightTarget the new right target
+     */
     public void setRightTarget(Entity rightTarget) {
         this.rightTarget = rightTarget;
-        this.metadata.set(MetadataIndex.WITHER_TARGET_3, rightTarget == null ? 0 : rightTarget.getEntityId());
+        setTargetMetadata(rightTarget, MetadataIndex.WITHER_TARGET_3);
     }
 
     @Override
@@ -100,5 +117,10 @@ public class GlowWither extends GlowMonster implements Wither {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_WITHER_AMBIENT;
+    }
+
+    @Override
+    public boolean isUndead() {
+        return true;
     }
 }

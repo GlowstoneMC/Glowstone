@@ -1,7 +1,18 @@
 package net.glowstone.scoreboard;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.glowstone.constants.GlowDisplaySlot;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.scoreboard.ScoreboardDisplayMessage;
@@ -10,14 +21,11 @@ import net.glowstone.net.message.play.scoreboard.ScoreboardScoreMessage;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.*;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 /**
  * Scoreboard implementation.
@@ -25,7 +33,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class GlowScoreboard implements Scoreboard {
 
     // Objectives
-    private final EnumMap<DisplaySlot, GlowObjective> displaySlots = new EnumMap<>(DisplaySlot.class);
+    private final EnumMap<DisplaySlot, GlowObjective> displaySlots = new EnumMap<>(
+        DisplaySlot.class);
     private final HashMap<String, GlowObjective> objectives = new HashMap<>();
     private final HashMap<String, Set<GlowObjective>> criteriaMap = new HashMap<>();
 
@@ -43,8 +52,7 @@ public final class GlowScoreboard implements Scoreboard {
     // Internals
 
     /**
-     * Send a player this scoreboard's contents and subscribe them to future
-     * changes.
+     * Send a player this scoreboard's contents and subscribe them to future changes.
      *
      * @param player The player to subscribe.
      */
@@ -52,18 +60,22 @@ public final class GlowScoreboard implements Scoreboard {
         // send all the setup stuff
         // objectives
         for (GlowObjective objective : objectives.values()) {
-            player.getSession().send(ScoreboardObjectiveMessage.create(objective.getName(), objective.getDisplayName()));
+            player.getSession().send(
+                ScoreboardObjectiveMessage.create(objective.getName(), objective.getDisplayName()));
         }
         // display slots
         for (DisplaySlot slot : DisplaySlot.values()) {
             GlowObjective objective = displaySlots.get(slot);
             String name = objective != null ? objective.getName() : "";
-            player.getSession().send(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), name));
+            player.getSession()
+                .send(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), name));
         }
         // scores
         for (Entry<String, Set<GlowScore>> entry : scoreMap.entrySet()) {
             for (GlowScore score : entry.getValue()) {
-                player.getSession().send(new ScoreboardScoreMessage(entry.getKey(), score.getObjective().getName(), score.getScore()));
+                player.getSession().send(
+                    new ScoreboardScoreMessage(entry.getKey(), score.getObjective().getName(),
+                        score.getScore()));
             }
         }
         // teams
@@ -76,8 +88,7 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     /**
-     * Clear the player's scoreboard contents and unsubscribe them from
-     * future changes.
+     * Clear the player's scoreboard contents and unsubscribe them from future changes.
      *
      * @param player The player to unsubscribe.
      */
@@ -114,7 +125,7 @@ public final class GlowScoreboard implements Scoreboard {
     /**
      * Set the objective displayed in the given slot.
      *
-     * @param slot      The display slot.
+     * @param slot The display slot.
      * @param objective The objective to display there, possibly null.
      */
     void setDisplaySlot(DisplaySlot slot, GlowObjective objective) {
@@ -128,7 +139,8 @@ public final class GlowScoreboard implements Scoreboard {
         // new objective is now in this display slot
         if (objective != null) {
             // update objective's display slot
-            broadcast(new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), objective.getName()));
+            broadcast(
+                new ScoreboardDisplayMessage(GlowDisplaySlot.getId(slot), objective.getName()));
             objective.displaySlot = slot;
         } else {
             // no objective
@@ -169,11 +181,7 @@ public final class GlowScoreboard implements Scoreboard {
      * @return The set of objectives.
      */
     Set<GlowObjective> getForCriteria(String criteria) {
-        Set<GlowObjective> result = criteriaMap.get(criteria);
-        if (result == null) {
-            result = new HashSet<>();
-            criteriaMap.put(criteria, result);
-        }
+        Set<GlowObjective> result = criteriaMap.computeIfAbsent(criteria, k -> new HashSet<>());
         return result;
     }
 
@@ -184,11 +192,7 @@ public final class GlowScoreboard implements Scoreboard {
      * @return The set of scores.
      */
     Set<GlowScore> getScoresForName(String entry) {
-        Set<GlowScore> result = scoreMap.get(entry);
-        if (result == null) {
-            result = new HashSet<>();
-            scoreMap.put(entry, result);
-        }
+        Set<GlowScore> result = scoreMap.computeIfAbsent(entry, k -> new HashSet<>());
         return result;
     }
 
@@ -196,23 +200,27 @@ public final class GlowScoreboard implements Scoreboard {
      * Update what team a player is associated with.
      *
      * @param player The player.
-     * @param team   The team, or null for no team.
+     * @param team The team, or null for no team.
      */
     void setPlayerTeam(OfflinePlayer player, GlowTeam team) {
         GlowTeam previous = entryTeams.put(player.getName(), team);
         if (previous != null && previous.hasPlayer(player)) {
             previous.removeEntry(player.getName());
-            broadcast(ScoreboardTeamMessage.removePlayers(previous.getName(), Arrays.asList(player.getName())));
+            broadcast(ScoreboardTeamMessage
+                .removePlayers(previous.getName(), Arrays.asList(player.getName())));
         }
         if (team != null) {
-            broadcast(ScoreboardTeamMessage.addPlayers(team.getName(), Arrays.asList(player.getName())));
+            broadcast(
+                ScoreboardTeamMessage.addPlayers(team.getName(), Arrays.asList(player.getName())));
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Objectives
 
-    public Objective registerNewObjective(String name, String criteria) throws IllegalArgumentException {
+    @Override
+    public Objective registerNewObjective(String name, String criteria)
+        throws IllegalArgumentException {
         checkNotNull(name, "Name cannot be null");
         checkNotNull(criteria, "Criteria cannot be null");
         checkArgument(!objectives.containsKey(name), "Objective \"" + name + "\" already exists");
@@ -221,28 +229,34 @@ public final class GlowScoreboard implements Scoreboard {
         objectives.put(name, objective);
         getForCriteria(criteria).add(objective);
 
-        broadcast(ScoreboardObjectiveMessage.create(name, objective.getDisplayName(), RenderType.INTEGER));
+        broadcast(ScoreboardObjectiveMessage
+            .create(name, objective.getDisplayName(), RenderType.INTEGER));
 
         return objective;
     }
 
+    @Override
     public Objective getObjective(String name) throws IllegalArgumentException {
         return objectives.get(name);
     }
 
-    public Set<Objective> getObjectivesByCriteria(String criteria) throws IllegalArgumentException {
-        return ImmutableSet.copyOf(getForCriteria(criteria));
-    }
-
-    public Set<Objective> getObjectives() {
-        return ImmutableSet.copyOf(objectives.values());
-    }
-
+    @Override
     public Objective getObjective(DisplaySlot slot) throws IllegalArgumentException {
         checkNotNull(slot, "Slot cannot be null");
         return displaySlots.get(slot);
     }
 
+    @Override
+    public Set<Objective> getObjectivesByCriteria(String criteria) throws IllegalArgumentException {
+        return ImmutableSet.copyOf(getForCriteria(criteria));
+    }
+
+    @Override
+    public Set<Objective> getObjectives() {
+        return ImmutableSet.copyOf(objectives.values());
+    }
+
+    @Override
     public void clearSlot(DisplaySlot slot) throws IllegalArgumentException {
         checkNotNull(slot, "Slot cannot be null");
         setDisplaySlot(slot, null);
@@ -251,6 +265,7 @@ public final class GlowScoreboard implements Scoreboard {
     ////////////////////////////////////////////////////////////////////////////
     // Teams
 
+    @Override
     public Team registerNewTeam(String name) throws IllegalArgumentException {
         checkNotNull(name, "Name cannot be null");
         checkArgument(!teams.containsKey(name), "Team \"" + name + "\" already exists");
@@ -261,6 +276,7 @@ public final class GlowScoreboard implements Scoreboard {
         return team;
     }
 
+    @Override
     public Team getPlayerTeam(OfflinePlayer player) throws IllegalArgumentException {
         checkNotNull(player, "Player cannot be null");
         return entryTeams.get(player.getName());
@@ -272,11 +288,13 @@ public final class GlowScoreboard implements Scoreboard {
         return entryTeams.get(entry);
     }
 
+    @Override
     public Team getTeam(String teamName) throws IllegalArgumentException {
         checkNotNull(teamName, "Team name cannot be null");
         return teams.get(teamName);
     }
 
+    @Override
     public Set<Team> getTeams() {
         return ImmutableSet.copyOf(teams.values());
     }
@@ -284,10 +302,12 @@ public final class GlowScoreboard implements Scoreboard {
     ////////////////////////////////////////////////////////////////////////////
     // Scores
 
+    @Override
     public Set<String> getEntries() {
         return ImmutableSet.copyOf(scoreMap.keySet());
     }
 
+    @Override
     public Set<Score> getScores(String entry) throws IllegalArgumentException {
         checkNotNull(entry, "Entry cannot be null");
 
@@ -299,6 +319,13 @@ public final class GlowScoreboard implements Scoreboard {
         }
     }
 
+    @Override
+    public Set<Score> getScores(OfflinePlayer player) throws IllegalArgumentException {
+        checkNotNull(player, "Player cannot be null");
+        return getScores(player.getName());
+    }
+
+    @Override
     public void resetScores(String entry) throws IllegalArgumentException {
         checkNotNull(entry, "Entry cannot be null");
 
@@ -309,24 +336,16 @@ public final class GlowScoreboard implements Scoreboard {
         scoreMap.remove(entry);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // OfflinePlayer methods
-
-    @Deprecated
-    public Set<OfflinePlayer> getPlayers() {
-        Set<OfflinePlayer> result = getEntries().stream().map(Bukkit::getOfflinePlayer).collect(Collectors.toSet());
-        return Collections.unmodifiableSet(result);
-    }
-
-    @Deprecated
-    public Set<Score> getScores(OfflinePlayer player) throws IllegalArgumentException {
-        checkNotNull(player, "Player cannot be null");
-        return getScores(player.getName());
-    }
-
-    @Deprecated
+    @Override
     public void resetScores(OfflinePlayer player) throws IllegalArgumentException {
         checkNotNull(player, "Player cannot be null");
         resetScores(player.getName());
+    }
+
+    @Override
+    public Set<OfflinePlayer> getPlayers() {
+        Set<OfflinePlayer> result = getEntries().stream().map(Bukkit::getOfflinePlayer)
+            .collect(Collectors.toSet());
+        return Collections.unmodifiableSet(result);
     }
 }

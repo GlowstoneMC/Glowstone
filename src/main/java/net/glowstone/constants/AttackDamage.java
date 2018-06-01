@@ -3,8 +3,8 @@ package net.glowstone.constants;
 import org.bukkit.Material;
 
 /**
- * Map of attack damage values and durability costs for various weapon types,
- * until better item type support is available.
+ * Map of attack damage values and durability costs for various weapon types, until better item type
+ * support is available.
  */
 public final class AttackDamage {
 
@@ -12,14 +12,16 @@ public final class AttackDamage {
     }
 
     /**
-     * Gets the damage an item in-hand would cause without added benefits. This
-     * assumes a non-critical attack.
+     * Gets the damage an item in-hand would cause without added benefits. This assumes a
+     * non-critical attack.
      *
      * @param material the item type
      * @return the raw damage caused by that item
      */
     public static float getMeleeDamage(Material material) {
-        if (material == null) return 0.0f;
+        if (material == null) {
+            return 0.0f;
+        }
 
         switch (material) {
             case WOOD_SPADE:
@@ -73,7 +75,9 @@ public final class AttackDamage {
      * @return the durability points lost, or 0
      */
     public static short getMeleeDurabilityLoss(Material material) {
-        if (material == null) return 0;
+        if (material == null) {
+            return 0;
+        }
 
         switch (material) {
             case WOOD_AXE:

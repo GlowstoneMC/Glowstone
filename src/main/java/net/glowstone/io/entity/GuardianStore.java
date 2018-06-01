@@ -7,13 +7,13 @@ import org.bukkit.entity.EntityType;
 class GuardianStore extends MonsterStore<GlowGuardian> {
 
     public GuardianStore() {
-        super(GlowGuardian.class, EntityType.GUARDIAN);
+        super(GlowGuardian.class, EntityType.GUARDIAN, GlowGuardian::new);
     }
 
     @Override
     public void load(GlowGuardian entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setElder(compound.getBool("Elder"));
+        entity.setElder(compound.getBoolean("Elder", false));
     }
 
     @Override

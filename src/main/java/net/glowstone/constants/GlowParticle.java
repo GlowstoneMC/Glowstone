@@ -1,14 +1,13 @@
 package net.glowstone.constants;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Id mappings for particles.
@@ -27,10 +26,10 @@ public final class GlowParticle {
         set(Particle.EXPLOSION_LARGE, Effect.EXPLOSION_LARGE, 1); // largeexplode
         set(Particle.EXPLOSION_HUGE, Effect.EXPLOSION_HUGE, 2);  // hugeexplosion
         set(Particle.FIREWORKS_SPARK, Effect.FIREWORKS_SPARK, 3); // fireworksSpark
-        set(Particle.WATER_BUBBLE, Effect.BUBBLE, 4); // bubble
-        set(Particle.WATER_SPLASH, Effect.SPLASH, 5); // splash
-        set(Particle.WATER_WAKE, Effect.WAKE, 6); // wake
-        set(Particle.SUSPENDED, Effect.UNDERWATER, 7); // suspended
+        set(Particle.WATER_BUBBLE, 4); // bubble
+        set(Particle.WATER_SPLASH, 5); // splash
+        set(Particle.WATER_WAKE, 6); // wake
+        set(Particle.SUSPENDED, 7); // suspended
         set(Particle.SUSPENDED_DEPTH, Effect.VOID_FOG, 8); // depthsuspend
         set(Particle.CRIT, Effect.CRIT, 9); // crit
         set(Particle.CRIT_MAGIC, Effect.MAGIC_CRIT, 10); // magicCrit
@@ -58,13 +57,9 @@ public final class GlowParticle {
         set(Particle.SNOW_SHOVEL, Effect.SNOW_SHOVEL, 32); // snowshovel
         set(Particle.SLIME, Effect.SLIME, 33); // slime
         set(Particle.HEART, Effect.HEART, 34); // heart
-        set(Particle.BARRIER, Effect.BARRIER, 35); // barrier
         set(Particle.ITEM_CRACK, Effect.ITEM_BREAK, 36); // iconcrack_(id)_(data)
         set(Particle.BLOCK_CRACK, Effect.TILE_BREAK, 37); // blockcrack_(id+(data<<12))
         set(Particle.BLOCK_DUST, Effect.TILE_DUST, 38); // blockdust_(id)
-        set(Particle.WATER_DROP, Effect.RAIN, 39); // droplet
-        set(Particle.ITEM_TAKE, Effect.ITEM_TAKE, 40); // take
-        set(Particle.MOB_APPEARANCE, Effect.MOB_APPEARANCE, 41); // mobappearance
     }
 
     private GlowParticle() {
@@ -107,8 +102,8 @@ public final class GlowParticle {
                 }
 
                 // http://wiki.vg/Protocol#Particle
-                // data "Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2, "blockcrack",
-                // and "blockdust" have lengths of 1, the rest have 0"
+                // data 'Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of
+                // 2, "blockcrack" and "blockdust" have lengths of 1, the rest have 0'
                 // iconcrack_(id)_(data) 36
                 return new int[]{material.getItemTypeId(), material.getData()};
             case TILE_BREAK:
@@ -137,12 +132,12 @@ public final class GlowParticle {
      */
     public static int[] getExtData(Particle particle, Object object) {
         if (particle.getDataType() == Void.class) {
-            return new int[0];
+            return EMPTY;
         }
 
         if (particle.getDataType() == MaterialData.class) {
             if (object == null) {
-                return new int[]{0};
+                return ONE_EMPTY;
             }
 
             MaterialData material = (MaterialData) object;
@@ -158,8 +153,8 @@ public final class GlowParticle {
             ItemStack item = (ItemStack) object;
 
             // http://wiki.vg/Protocol#Particle
-            // data "Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2, "blockcrack",
-            // and "blockdust" have lengths of 1, the rest have 0"
+            // data 'Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2,
+            // "blockcrack" and "blockdust" have lengths of 1, the rest have 0'
             // iconcrack_(id)_(data) 36
             return new int[]{item.getTypeId(), item.getDurability()};
         }
@@ -170,8 +165,8 @@ public final class GlowParticle {
 
 
     /**
-     * Determine whether a particle type is considered long distance, meaning
-     * it has a higher visible range than normal.
+     * Determine whether a particle type is considered long distance, meaning it has a higher
+     * visible range than normal.
      *
      * @param particle the Particle.
      * @return True if the particle is long distance.
@@ -181,16 +176,15 @@ public final class GlowParticle {
             case EXPLOSION:
             case EXPLOSION_LARGE:
             case EXPLOSION_HUGE:
-            case MOB_APPEARANCE:
                 return true;
+            default:
+                return false;
         }
-
-        return false;
     }
 
     /**
-     * Determine whether a particle type is considered long distance, meaning
-     * it has a higher visible range than normal.
+     * Determine whether a particle type is considered long distance, meaning it has a higher
+     * visible range than normal.
      *
      * @param particle the Particle.
      * @return True if the particle is long distance.
@@ -202,13 +196,17 @@ public final class GlowParticle {
             case EXPLOSION_HUGE:
             case MOB_APPEARANCE:
                 return true;
+            default:
+                return false;
         }
-
-        return false;
     }
 
     private static void set(Particle particle, Effect effect, int id) {
         ids.put(particle, id);
         ids.put(effect, id);
+    }
+
+    private static void set(Particle particle, int id) {
+        ids.put(particle, id);
     }
 }

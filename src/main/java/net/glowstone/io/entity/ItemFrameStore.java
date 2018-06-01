@@ -1,5 +1,6 @@
 package net.glowstone.io.entity;
 
+import net.glowstone.entity.GlowHangingEntity.HangingFace;
 import net.glowstone.entity.objects.GlowItemFrame;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
@@ -7,40 +8,29 @@ import org.bukkit.Location;
 import org.bukkit.Rotation;
 import org.bukkit.entity.EntityType;
 
-class ItemFrameStore extends EntityStore<GlowItemFrame> {
+class ItemFrameStore extends HangingStore<GlowItemFrame> {
 
     public ItemFrameStore() {
         super(GlowItemFrame.class, EntityType.ITEM_FRAME);
     }
 
+    @Override
     public GlowItemFrame createEntity(Location location, CompoundTag compound) {
         // item frame will be set by loading code below
-        int facing = compound.getByte("Facing");
-        GlowItemFrame itemFrame = new GlowItemFrame(null, location, null);
-        itemFrame.setFacingDirectionNumber(facing);
-        return itemFrame;
+        return new GlowItemFrame(null, location, null);
     }
 
     @Override
     public void load(GlowItemFrame entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isByte("Facing")) {
-            entity.setFacingDirectionNumber(tag.getByte("Facing"));
-        }
-        if (tag.isCompound("Item")) {
-            entity.setItemInFrame(NbtSerialization.readItem(tag.getCompound("Item")));
-        }
-
-        if (tag.isInt("Rotation")) {
-            entity.setRotation(Rotation.values()[tag.getInt("Rotation")]);
-        }
+        tag.readItem("Item", entity::setItem);
+        tag.readInt("Rotation", rotation -> entity.setRotation(Rotation.values()[rotation]));
     }
 
     @Override
     public void save(GlowItemFrame entity, CompoundTag tag) {
         super.save(entity, tag);
-        tag.putByte("Facing", entity.getFacingNumber());
+        tag.putByte("Facing", HangingFace.getByBlockFace(entity.getFacing()).ordinal());
         tag.putCompound("Item", NbtSerialization.writeItem(entity.getItem(), -1));
         tag.putInt("Rotation", entity.getRotation().ordinal());
     }

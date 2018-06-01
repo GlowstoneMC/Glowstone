@@ -1,27 +1,33 @@
 package net.glowstone.scoreboard;
 
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTOutputStream;
-import net.glowstone.util.nbt.TagType;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Team;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NbtOutputStream;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Team;
 
 public class NbtScoreboardIoWriter {
-    public static void writeMainScoreboard(File path, GlowScoreboard scoreboard) throws IOException {
+
+    /**
+     * Saves a scoreboard to a compressed NBT file.
+     *
+     * @param path the file path to write to
+     * @param scoreboard the scoreboard to save
+     * @throws IOException if the file cannot be written
+     */
+    public static void writeMainScoreboard(File path, GlowScoreboard scoreboard)
+        throws IOException {
         CompoundTag root = new CompoundTag();
         CompoundTag data = new CompoundTag();
         root.putCompound("data", data);
-        try (NBTOutputStream nbt = new NBTOutputStream(getDataOutputStream(path), true)) {
+        try (NbtOutputStream nbt = new NbtOutputStream(getDataOutputStream(path), true)) {
             writeObjectives(data, scoreboard);
             writeScores(data, scoreboard);
             writeTeams(data, scoreboard);
@@ -47,7 +53,7 @@ public class NbtScoreboardIoWriter {
             objectiveNbt.putString("CriteriaName", objective.getCriteria());
             objectiveNbt.putString("DisplayName", objective.getDisplayName());
             objectiveNbt.putString("Name", objective.getName());
-            objectiveNbt.putString("RenderType", objective.getType().name());
+            objectiveNbt.putString("RenderType", ((GlowObjective) objective).getType().name());
 
             objectives.add(objectiveNbt);
         }
@@ -62,7 +68,7 @@ public class NbtScoreboardIoWriter {
                 scoreNbt.putInt("Score", score.getScore());
                 scoreNbt.putString("Name", score.getEntry());
                 scoreNbt.putString("Objective", score.getObjective().getName());
-                scoreNbt.putByte("Locked", score.getLocked() ? 1 : 0);
+                scoreNbt.putByte("Locked", ((GlowScore) score).getLocked() ? 1 : 0);
 
                 scores.add(scoreNbt);
             }
@@ -76,7 +82,8 @@ public class NbtScoreboardIoWriter {
             CompoundTag teamNbt = new CompoundTag();
             teamNbt.putByte("AllowFriendlyFire", team.allowFriendlyFire() ? 1 : 0);
             teamNbt.putByte("SeeFriendlyInvisibles", team.canSeeFriendlyInvisibles() ? 1 : 0);
-            teamNbt.putString("NameTagVisibility", team.getOption(Team.Option.NAME_TAG_VISIBILITY).name().toLowerCase());
+            teamNbt.putString("NameTagVisibility",
+                team.getOption(Team.Option.NAME_TAG_VISIBILITY).name().toLowerCase());
             switch (team.getOption(Team.Option.DEATH_MESSAGE_VISIBILITY)) {
                 case NEVER:
                     teamNbt.putString("DeathMessageVisibility", "never");
@@ -107,11 +114,11 @@ public class NbtScoreboardIoWriter {
             teamNbt.putString("Name", team.getName());
             teamNbt.putString("Prefix", team.getPrefix());
             teamNbt.putString("Suffix", team.getSuffix());
-            teamNbt.putString("TeamColor", team.getColor().name().toLowerCase());
+            teamNbt.putString("TeamColor", ((GlowTeam) team).getColor().name().toLowerCase());
 
-            List<String> players = team.getEntries().stream().collect(Collectors.toList());
+            List<String> players = new ArrayList<>(team.getEntries());
 
-            teamNbt.putList("Players", TagType.STRING, players);
+            teamNbt.putStringList("Players", players);
             teams.add(teamNbt);
         }
         root.putCompoundList("Teams", teams);

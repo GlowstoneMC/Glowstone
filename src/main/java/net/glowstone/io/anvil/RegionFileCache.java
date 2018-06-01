@@ -1,15 +1,13 @@
-package net.glowstone.io.anvil;
-
 /*
- ** 2011 January 5
- **
- ** The author disclaims copyright to this source code.  In place of
- ** a legal notice, here is a blessing:
- **
- **    May you do good and not evil.
- **    May you find forgiveness for yourself and forgive others.
- **    May you share freely, never taking more than you give.
- **/
+ * 2011 January 5
+ *
+ * The author disclaims copyright to this source code. In place of
+ * a legal notice, here is a blessing:
+ *
+ *    May you do good and not evil.
+ *    May you find forgiveness for yourself and forgive others.
+ *    May you share freely, never taking more than you give.
+ */
 
 /*
  * 2011 February 16
@@ -24,27 +22,49 @@ package net.glowstone.io.anvil;
  */
 
 /*
- * Some changes have been made as part of the Glowstone project.
+ * Later changes made by the Glowstone project.
  */
 
-import net.glowstone.GlowServer;
+package net.glowstone.io.anvil;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
+import net.glowstone.GlowServer;
+import net.glowstone.ServerProvider;
+import net.glowstone.util.config.ServerConfig.Key;
 
 /**
- * A simple cache and wrapper for efficiently accessing multiple RegionFiles
- * simultaneously.
+ * A simple cache and wrapper for efficiently accessing multiple RegionFiles simultaneously.
  */
 public class RegionFileCache {
 
-    private static final int MAX_CACHE_SIZE = 256;
+    private static final int MAX_CACHE_SIZE =
+            ((GlowServer) ServerProvider.getServer()).getConfig().getInt(Key.REGION_CACHE_SIZE);
 
-    private final Map<File, Reference<RegionFile>> cache = new HashMap<>();
+    private static final RemovalListener<File, RegionFile> removalListener = removal -> {
+        try {
+            removal.getValue().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    };
+
+    private LoadingCache<File, RegionFile> regions = CacheBuilder.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .maximumSize(MAX_CACHE_SIZE)
+            .removalListener(removalListener)
+            .build(new CacheLoader<File, RegionFile>() {
+                @Override
+                public RegionFile load(File file) throws Exception {
+                    return new RegionFile(file);
+                }
+            });
 
     private final String extension;
     private final File regionDir;
@@ -54,36 +74,24 @@ public class RegionFileCache {
         regionDir = new File(basePath, "region");
     }
 
-    public RegionFile getRegionFile(int chunkX, int chunkZ) throws IOException {
-        File file = new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension);
-
-        Reference<RegionFile> ref = cache.get(file);
-
-        if (ref != null && ref.get() != null) {
-            return ref.get();
-        }
-
+    /**
+     * Returns the region file where a chunk is stored, opening it if necessary. Both the region
+     * file and the directory containing it will be created if they don't exist.
+     *
+     * @param chunkX the absolute chunk X coordinate
+     * @param chunkZ the absolute chunk Z coordinate
+     * @return the region file
+     */
+    public RegionFile getRegionFile(int chunkX, int chunkZ) {
         if (!regionDir.isDirectory() && !regionDir.mkdirs()) {
             GlowServer.logger.warning("Failed to create directory: " + regionDir);
         }
-
-        if (cache.size() >= MAX_CACHE_SIZE) {
-            clear();
-        }
-
-        RegionFile reg = new RegionFile(file);
-        cache.put(file, new SoftReference<>(reg));
-        return reg;
+        return regions.getUnchecked(
+                new File(regionDir, "r." + (chunkX >> 5) + "." + (chunkZ >> 5) + extension));
     }
 
-    public void clear() throws IOException {
-        for (Reference<RegionFile> ref : cache.values()) {
-            RegionFile value = ref.get();
-            if (value != null) {
-                value.close();
-            }
-        }
-        cache.clear();
+    public void clear() throws RejectedExecutionException {
+        regions.invalidateAll();
     }
 
 }

@@ -1,6 +1,28 @@
 package net.glowstone;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
+import lombok.Getter;
 import net.glowstone.util.compiler.EvalTask;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.ConsoleCommandSender;
@@ -12,37 +34,40 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
-import org.jline.reader.*;
+import org.jetbrains.annotations.NonNls;
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 
 /**
  * Handles all logging and input-related console improvements.
  */
 public final class ConsoleManager {
 
-    private GlowServer server;
+    private static final Logger logger = Logger.getLogger("");
+    @NonNls private static String CONSOLE_DATE = "HH:mm:ss";
+    @NonNls private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    @NonNls private static String CONSOLE_PROMPT = ">";
+    private final GlowServer server;
+    private static final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
+    private final ChatColor[] colors = ChatColor.values();
     protected LineReader reader;
     private boolean color;
-
+    /**
+     * Returns this ConsoleManager's console as a ConsoleCommandSender.
+     *
+     * @return the ConsoleCommandSender instance for this ConsoleManager's console
+     */
+    @Getter
     private ConsoleCommandSender sender;
 
     protected boolean running;
 
     private ConsoleHandler handler;
-    private static String CONSOLE_DATE = "HH:mm:ss";
-
-    private static final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
 
     static {
         addReplacement(ChatColor.BLACK, "\u001B[0;30;22m");
@@ -73,6 +98,11 @@ public final class ConsoleManager {
         replacements.put(formatting, ansi);
     }
 
+    /**
+     * Creates the instance for the given server.
+     *
+     * @param server the server
+     */
     public ConsoleManager(GlowServer server) {
         this.server = server;
         GlowServer.logger.setUseParentHandlers(false);
@@ -97,6 +127,9 @@ public final class ConsoleManager {
         handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, color));
     }
 
+    /**
+     * Starts the console.
+     */
     public void start() {
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
@@ -108,15 +141,31 @@ public final class ConsoleManager {
         }
     }
 
+    /**
+     * Stops all console-log handlers.
+     */
     public void stop() {
         running = false;
     }
 
-    public ConsoleCommandSender getSender() {
-        return sender;
+    /**
+     * Adds a console-log handler writing to the given file.
+     *
+     * @param logfile the file path
+     */
+    public void startFile(String logfile) {
+        File parent = new File(logfile).getParentFile();
+        if (!parent.isDirectory() && !parent.mkdirs()) {
+            logger.warning("Could not create log folder: " + parent);
+        }
+        Handler fileHandler = new RotatingFileHandler(logfile);
+        FILE_DATE = server.getConsoleLogDateFormat();
+        fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
+        logger.addHandler(fileHandler);
     }
 
     private class DateOutputFormatter extends Formatter {
+
         private final SimpleDateFormat date;
         private final boolean color;
 
@@ -126,6 +175,7 @@ public final class ConsoleManager {
         }
 
         @Override
+        @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
         public String format(LogRecord record) {
             StringBuilder builder = new StringBuilder();
 
@@ -141,6 +191,8 @@ public final class ConsoleManager {
             builder.append('\n');
 
             if (record.getThrown() != null) {
+                // StringWriter's close() is trivial
+                @SuppressWarnings("resource")
                 StringWriter writer = new StringWriter();
                 record.getThrown().printStackTrace(new PrintWriter(writer));
                 builder.append(writer);
@@ -164,7 +216,87 @@ public final class ConsoleManager {
         return string;
     }
 
+    private static class LoggerOutputStream extends ByteArrayOutputStream {
+
+        private final String separator = System.getProperty("line.separator");
+        private final Level level;
+
+        public LoggerOutputStream(Level level) {
+            this.level = level;
+        }
+
+        @Override
+        public synchronized void flush() throws IOException {
+            super.flush();
+            String record = toString();
+            reset();
+
+            if (!record.isEmpty() && !record.equals(separator)) {
+                logger.logp(level, "LoggerOutputStream", "log" + level, record); // NON-NLS
+            }
+        }
+    }
+
+    private static class RotatingFileHandler extends StreamHandler {
+
+        private final SimpleDateFormat dateFormat;
+        private final String template;
+        private final boolean rotate;
+        private String filename;
+
+        public RotatingFileHandler(String template) {
+            this.template = template;
+            rotate = template.contains("%D"); // NON-NLS
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            filename = calculateFilename();
+            updateOutput();
+        }
+
+        private void updateOutput() {
+            try {
+                setOutputStream(new FileOutputStream(filename, true));
+            } catch (IOException ex) {
+                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
+            }
+        }
+
+        private void checkRotate() {
+            if (rotate) {
+                String newFilename = calculateFilename();
+                if (!filename.equals(newFilename)) {
+                    filename = newFilename;
+                    // note that the console handler doesn't see this message
+                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
+                    updateOutput();
+                }
+            }
+        }
+
+        private String calculateFilename() {
+            return template.replace("%D", dateFormat.format(new Date())); // NON-NLS
+        }
+
+        @Override
+        public synchronized void publish(LogRecord record) {
+            if (!isLoggable(record)) {
+                return;
+            }
+            checkRotate();
+            super.publish(record);
+            super.flush();
+        }
+
+        @Override
+        public synchronized void flush() {
+            checkRotate();
+            super.flush();
+        }
+    }
+
+
+
     private class CommandCompleter implements Completer {
+
         @Override
         public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
             List<String> completions = null;
@@ -181,6 +313,7 @@ public final class ConsoleManager {
     }
 
     private class ConsoleCommandThread extends Thread {
+
         ConsoleCommandThread() {
             setName("ConsoleCommandThread");
             setDaemon(true);
@@ -191,38 +324,44 @@ public final class ConsoleManager {
             String command = null;
             while (running) {
                 try {
-                    command = reader.readLine();
-                } catch (CommandException e) {
-                    GlowServer.logger.log(Level.WARNING, "Exception while executing command: " + command, e);
-                } catch (Exception e) {
-                    GlowServer.logger.log(Level.SEVERE, "Error while reading commands", e);
-                }
-
-                if (command != null && !(command = command.trim()).isEmpty()) {
-                    reader.getTerminal().writer().println(colorize("====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command + '"'));
-                    if (command.startsWith("$")) {
-                        server.getScheduler().runTask(null, new EvalTask(command.substring(1), command.startsWith("$$")));
-                    } else if (command.startsWith("!")) {
-                        server.getScheduler().runTask(null, new ConsoleTask(command.substring(1)));
-                    } else {
-                        server.getScheduler().runTask(null, new CommandTask(command));
+                    if (command != null && !(command = command.trim()).isEmpty()) {
+                        reader.getTerminal().writer().println(colorize(
+                            "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
+                                + '"'));
+                        if (command.startsWith("$")) {
+                            server.getScheduler().runTask(null,
+                                new EvalTask(command.substring(1), command.startsWith("$$")));
+                        } else if (command.startsWith("!")) {
+                            server.getScheduler()
+                                .runTask(null, new ConsoleTask(command.substring(1)));
+                        } else {
+                            server.getScheduler().runTask(null, new CommandTask(command));
+                        }
                     }
+                } catch (CommandException ex) {
+                    logger.log(Level.WARNING, "Exception while executing command: " + command, ex);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "Error while reading commands", ex);
                 }
             }
         }
     }
 
     private class CommandTask implements Runnable {
+
         private final String command;
 
-        CommandTask(String command) {
+        public CommandTask(String command) {
             this.command = command;
         }
 
         @Override
         public void run() {
-            ServerCommandEvent event = EventFactory.callEvent(new ServerCommandEvent(sender, command));
-            server.dispatchCommand(sender, event.getCommand());
+            ServerCommandEvent event = EventFactory.getInstance()
+                    .callEvent(new ServerCommandEvent(sender, command));
+            if (!event.isCancelled()) {
+                server.dispatchCommand(sender, event.getCommand());
+            }
         }
     }
 
@@ -249,14 +388,31 @@ public final class ConsoleManager {
     }
 
     private class ColoredCommandSender implements ConsoleCommandSender {
+
         private final PermissibleBase perm = new PermissibleBase(this);
 
         ////////////////////////////////////////////////////////////////////////
         // CommandSender
+        private Spigot spigot = new Spigot() {
+            @Override
+            public void sendMessage(BaseComponent component) {
+                ColoredCommandSender.this.sendMessage(component);
+            }
+
+            @Override
+            public void sendMessage(BaseComponent... components) {
+                ColoredCommandSender.this.sendMessage(components);
+            }
+        };
 
         @Override
         public String getName() {
             return "CONSOLE";
+        }
+
+        @Override
+        public Spigot spigot() {
+            return spigot;
         }
 
         @Override
@@ -283,14 +439,15 @@ public final class ConsoleManager {
 
         @Override
         public void setOp(boolean value) {
-            throw new UnsupportedOperationException("Cannot change operator status of server console");
+            throw new UnsupportedOperationException(
+                    "Cannot change operator status of server console");
         }
 
         ////////////////////////////////////////////////////////////////////////
         // Permissible
 
         @Override
-        public boolean isPermissionSet(String name) {
+        public boolean isPermissionSet(@NonNls String name) {
             return perm.isPermissionSet(name);
         }
 
@@ -300,7 +457,7 @@ public final class ConsoleManager {
         }
 
         @Override
-        public boolean hasPermission(String name) {
+        public boolean hasPermission(@NonNls String name) {
             return perm.hasPermission(name);
         }
 
@@ -310,7 +467,8 @@ public final class ConsoleManager {
         }
 
         @Override
-        public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+        public PermissionAttachment addAttachment(Plugin plugin,
+                @NonNls String name, boolean value) {
             return perm.addAttachment(plugin, name, value);
         }
 
@@ -320,7 +478,8 @@ public final class ConsoleManager {
         }
 
         @Override
-        public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+        public PermissionAttachment addAttachment(Plugin plugin, @NonNls String name, boolean value,
+                int ticks) {
             return perm.addAttachment(plugin, name, value, ticks);
         }
 
@@ -368,7 +527,8 @@ public final class ConsoleManager {
         }
 
         @Override
-        public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+        public void abandonConversation(Conversation conversation,
+                ConversationAbandonedEvent details) {
 
         }
 
@@ -377,4 +537,5 @@ public final class ConsoleManager {
 
         }
     }
+
 }

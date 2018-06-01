@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public final class AttachEntityMessage implements Message {
 
-    private final int attached, holding;
+    private final int attached;
+    private final int holding;
 
 }

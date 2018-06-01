@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -10,16 +11,15 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 
 public class BlockLava extends BlockLiquid {
 
-    private static final BlockFace[] FLAMMABLE_FACES = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-
     public BlockLava() {
         super(Material.LAVA_BUCKET);
     }
 
     @Override
     public boolean isCollectible(GlowBlockState target) {
-        return (target.getType() == Material.LAVA || target.getType() == Material.STATIONARY_LAVA) &&
-                (target.getRawData() == 0 || target.getRawData() == 8); // 8 for backwards compatibility
+        return (target.getType() == Material.LAVA || target.getType() == Material.STATIONARY_LAVA)
+            &&
+            (target.getRawData() == 0 || target.getRawData() == 8); // 8 for backwards compatibility
     }
 
     @Override
@@ -28,16 +28,19 @@ public class BlockLava extends BlockLiquid {
         if (!block.getWorld().getGameRuleMap().getBoolean("doFireTick")) {
             return;
         }
-        int n = random.nextInt(3);
+        int n = ThreadLocalRandom.current().nextInt(3);
         if (n == 0) {
             for (int i = 0; i < 3; i++) {
-                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 0, -1 + random.nextInt(3)).getBlock();
-                GlowBlock bAbove = b.getRelative(BlockFace.UP);
-                if (bAbove.isEmpty() && b.isFlammable()) {
-                    BlockIgniteEvent igniteEvent = new BlockIgniteEvent(bAbove, IgniteCause.LAVA, block);
-                    EventFactory.callEvent(igniteEvent);
+                GlowBlock b = (GlowBlock) block.getLocation()
+                    .add(-1 + ThreadLocalRandom.current().nextInt(3), 0,
+                        -1 + ThreadLocalRandom.current().nextInt(3)).getBlock();
+                GlowBlock aboveB = b.getRelative(BlockFace.UP);
+                if (aboveB.isEmpty() && b.isFlammable()) {
+                    BlockIgniteEvent igniteEvent = new BlockIgniteEvent(aboveB, IgniteCause.LAVA,
+                        block);
+                    EventFactory.getInstance().callEvent(igniteEvent);
                     if (!igniteEvent.isCancelled()) {
-                        GlowBlockState state = bAbove.getState();
+                        GlowBlockState state = aboveB.getState();
                         state.setType(Material.FIRE);
                         state.update(true);
                     }
@@ -45,11 +48,14 @@ public class BlockLava extends BlockLiquid {
             }
         } else {
             for (int i = 0; i < n; i++) {
-                GlowBlock b = (GlowBlock) block.getLocation().add(-1 + random.nextInt(3), 1, -1 + random.nextInt(3)).getBlock();
+                GlowBlock b = (GlowBlock) block.getLocation()
+                    .add(-1 + ThreadLocalRandom.current().nextInt(3), 1,
+                        -1 + ThreadLocalRandom.current().nextInt(3)).getBlock();
                 if (b.isEmpty()) {
                     if (hasNearFlammableBlock(b)) {
-                        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(b, IgniteCause.LAVA, block);
-                        EventFactory.callEvent(igniteEvent);
+                        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(b, IgniteCause.LAVA,
+                            block);
+                        EventFactory.getInstance().callEvent(igniteEvent);
                         if (!igniteEvent.isCancelled()) {
                             GlowBlockState state = b.getState();
                             state.setType(Material.FIRE);
@@ -66,7 +72,7 @@ public class BlockLava extends BlockLiquid {
 
     private boolean hasNearFlammableBlock(GlowBlock block) {
         // check there's at least a flammable block around
-        for (BlockFace face : FLAMMABLE_FACES) {
+        for (BlockFace face : ADJACENT) {
             if (block.getRelative(face).isFlammable()) {
                 return true;
             }

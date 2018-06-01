@@ -1,5 +1,9 @@
 package net.glowstone.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticMessage;
@@ -8,11 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
 import org.bukkit.entity.EntityType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * A container for achievement and statistic tracking.
@@ -29,11 +28,7 @@ public final class StatisticMap {
     // Helpers
 
     private int getValue(String key) {
-        if (values.containsKey(key)) {
-            return values.get(key);
-        } else {
-            return 0;
-        }
+        return values.getOrDefault(key, 0);
     }
 
     private void setValue(String key, int value) {
@@ -46,15 +41,19 @@ public final class StatisticMap {
 
     private String name(Statistic stat, Material mat) {
         if (mat.isBlock()) {
-            checkArgument(stat.getType() == Type.BLOCK, "Statistic " + stat + " is not a block statistic");
+            checkArgument(
+                    stat.getType() == Type.BLOCK,
+                    "Statistic " + stat + " is not a block statistic");
         } else {
-            checkArgument(stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
+            checkArgument(
+                    stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
         }
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private String name(Statistic stat, EntityType type) {
-        checkArgument(stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
+        checkArgument(
+                stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -109,6 +108,7 @@ public final class StatisticMap {
     }
 
     public Map<String, Integer> getValues() {
+        // TODO: Replace with facade
         return values;
     }
 }

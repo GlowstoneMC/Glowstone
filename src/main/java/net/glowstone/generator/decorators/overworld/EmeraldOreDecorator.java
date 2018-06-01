@@ -1,11 +1,10 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.Random;
 
 public class EmeraldOreDecorator extends BlockPopulator {
 

@@ -7,8 +7,10 @@ import lombok.Data;
 public final class ClientSettingsMessage implements Message {
 
     private final String locale;
-    private final int viewDistance, chatFlags;
+    private final int viewDistance;
+    private final int chatFlags;
     private final boolean chatColors;
-    private final int skinFlags, hand;
+    private final int skinFlags;
+    private final int hand;
 
 }

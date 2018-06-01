@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -14,14 +16,11 @@ import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BlockEnderPortalFrame extends BlockDropless {
-    private static final BlockFace[] DIRECTION = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         state.setType(Material.ENDER_PORTAL_FRAME);
         switch (getOppositeBlockFace(player.getLocation(), false).getOppositeFace()) {
             case NORTH:
@@ -43,7 +42,8 @@ public class BlockEnderPortalFrame extends BlockDropless {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         ItemStack item = player.getItemInHand();
         if (item != null && item.getType() == Material.EYE_OF_ENDER) {
             if ((block.getData() & 0x4) != 0) {
@@ -68,7 +68,8 @@ public class BlockEnderPortalFrame extends BlockDropless {
     private void searchForCompletedPortal(GlowPlayer player, GlowBlock changed) {
         for (int i = 0; i < 4; i++) {
             for (int j = -1; j <= 1; j++) {
-                GlowBlock center = changed.getRelative(DIRECTION[i], 2).getRelative(DIRECTION[(i + 1) % 4], j);
+                GlowBlock center = changed.getRelative(SIDES[i], 2)
+                    .getRelative(SIDES[(i + 1) % 4], j);
                 if (isCompletedPortal(center)) {
                     createPortal(player, center);
                     return;
@@ -83,8 +84,10 @@ public class BlockEnderPortalFrame extends BlockDropless {
     private boolean isCompletedPortal(GlowBlock center) {
         for (int i = 0; i < 4; i++) {
             for (int j = -1; j <= 1; j++) {
-                GlowBlock block = center.getRelative(DIRECTION[i], 2).getRelative(DIRECTION[(i + 1) % 4], j);
-                if (block.getType() != Material.ENDER_PORTAL_FRAME || (block.getData() & 0x4) == 0) {
+                GlowBlock block = center.getRelative(SIDES[i], 2)
+                    .getRelative(SIDES[(i + 1) % 4], j);
+                if (block.getType() != Material.ENDER_PORTAL_FRAME
+                    || (block.getData() & 0x4) == 0) {
                     return false;
                 }
             }
@@ -104,7 +107,9 @@ public class BlockEnderPortalFrame extends BlockDropless {
                 blocks.add(state);
             }
         }
-        if (!EventFactory.callEvent(new EntityCreatePortalEvent(player, blocks, PortalType.ENDER)).isCancelled()) {
+        if (!EventFactory.getInstance()
+                .callEvent(new EntityCreatePortalEvent(player, blocks, PortalType.ENDER))
+                .isCancelled()) {
             for (BlockState state : blocks) {
                 state.update(true);
             }

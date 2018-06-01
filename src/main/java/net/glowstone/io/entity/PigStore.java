@@ -7,17 +7,13 @@ import org.bukkit.entity.EntityType;
 class PigStore extends AgeableStore<GlowPig> {
 
     public PigStore() {
-        super(GlowPig.class, EntityType.PIG);
+        super(GlowPig.class, EntityType.PIG, GlowPig::new);
     }
 
     @Override
     public void load(GlowPig entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte("Saddle")) {
-            entity.setSaddle(compound.getBool("Saddle"));
-        } else {
-            entity.setSaddle(false);
-        }
+        entity.setSaddle(compound.getBoolean("Saddle", false));
     }
 
     @Override

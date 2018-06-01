@@ -1,16 +1,15 @@
 package net.glowstone.generator.populators.nether;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 import net.glowstone.generator.objects.OreType;
 import net.glowstone.generator.objects.OreVein;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
 
 /**
  * Populates the world with ores.
@@ -36,9 +35,7 @@ public class OrePopulator extends BlockPopulator {
 
                 int sourceX = cx + random.nextInt(16);
                 int sourceZ = cz + random.nextInt(16);
-                int sourceY = oreType.getMinY() == oreType.getMaxY() ?
-                        random.nextInt(oreType.getMinY()) + random.nextInt(oreType.getMinY()) :
-                        random.nextInt(oreType.getMaxY() - oreType.getMinY()) + oreType.getMinY();
+                int sourceY = oreType.getRandomHeight(random);
 
                 new OreVein(oreType).generate(world, random, sourceX, sourceY, sourceZ);
             }

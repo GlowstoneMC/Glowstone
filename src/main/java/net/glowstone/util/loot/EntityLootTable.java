@@ -7,9 +7,15 @@ import org.json.simple.JSONObject;
 @Data
 public class EntityLootTable {
 
+    private static final LootItem[] NO_ITEMS = new LootItem[0];
     private final LootItem[] items;
     private final LootRandomValues experience;
 
+    /**
+     * Parses a loot table from JSON.
+     *
+     * @param object a loot table in JSON form
+     */
     public EntityLootTable(JSONObject object) {
         if (object.containsKey("experience")) {
             this.experience = new LootRandomValues((JSONObject) object.get("experience"));
@@ -24,7 +30,7 @@ public class EntityLootTable {
                 this.items[i] = new LootItem(json);
             }
         } else {
-            this.items = new LootItem[0];
+            this.items = NO_ITEMS;
         }
     }
 }

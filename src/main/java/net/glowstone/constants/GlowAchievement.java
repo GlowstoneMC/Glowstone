@@ -1,9 +1,43 @@
 package net.glowstone.constants;
 
-import org.bukkit.Achievement;
-
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.bukkit.Achievement.*;
+import static org.bukkit.Achievement.ACQUIRE_IRON;
+import static org.bukkit.Achievement.BAKE_CAKE;
+import static org.bukkit.Achievement.BOOKCASE;
+import static org.bukkit.Achievement.BREED_COW;
+import static org.bukkit.Achievement.BREW_POTION;
+import static org.bukkit.Achievement.BUILD_BETTER_PICKAXE;
+import static org.bukkit.Achievement.BUILD_FURNACE;
+import static org.bukkit.Achievement.BUILD_HOE;
+import static org.bukkit.Achievement.BUILD_PICKAXE;
+import static org.bukkit.Achievement.BUILD_SWORD;
+import static org.bukkit.Achievement.BUILD_WORKBENCH;
+import static org.bukkit.Achievement.COOK_FISH;
+import static org.bukkit.Achievement.DIAMONDS_TO_YOU;
+import static org.bukkit.Achievement.ENCHANTMENTS;
+import static org.bukkit.Achievement.END_PORTAL;
+import static org.bukkit.Achievement.EXPLORE_ALL_BIOMES;
+import static org.bukkit.Achievement.FLY_PIG;
+import static org.bukkit.Achievement.FULL_BEACON;
+import static org.bukkit.Achievement.GET_BLAZE_ROD;
+import static org.bukkit.Achievement.GET_DIAMONDS;
+import static org.bukkit.Achievement.GHAST_RETURN;
+import static org.bukkit.Achievement.KILL_COW;
+import static org.bukkit.Achievement.KILL_ENEMY;
+import static org.bukkit.Achievement.KILL_WITHER;
+import static org.bukkit.Achievement.MAKE_BREAD;
+import static org.bukkit.Achievement.MINE_WOOD;
+import static org.bukkit.Achievement.NETHER_PORTAL;
+import static org.bukkit.Achievement.ON_A_RAIL;
+import static org.bukkit.Achievement.OPEN_INVENTORY;
+import static org.bukkit.Achievement.OVERKILL;
+import static org.bukkit.Achievement.OVERPOWERED;
+import static org.bukkit.Achievement.SNIPE_SKELETON;
+import static org.bukkit.Achievement.SPAWN_WITHER;
+import static org.bukkit.Achievement.THE_END;
+import static org.bukkit.Achievement.values;
+
+import org.bukkit.Achievement;
 
 /**
  * Name mappings for Bukkit Achievements.

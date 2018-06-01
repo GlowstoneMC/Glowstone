@@ -1,38 +1,43 @@
 package net.glowstone.io.nbt;
 
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-import net.glowstone.chunk.GlowChunk.Key;
-import net.glowstone.generator.structures.GlowStructure;
-import net.glowstone.io.StructureDataService;
-import net.glowstone.io.structure.StructureStorage;
-import net.glowstone.io.structure.StructureStore;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
-import org.bukkit.Bukkit;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
+import net.glowstone.GlowWorld;
+import net.glowstone.ServerProvider;
+import net.glowstone.chunk.GlowChunk;
+import net.glowstone.generator.structures.GlowStructure;
+import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.io.StructureDataService;
+import net.glowstone.io.structure.StructureStorage;
+import net.glowstone.io.structure.StructureStore;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
+import org.bukkit.Server;
 
 public class NbtStructureDataService implements StructureDataService {
 
     private final GlowWorld world;
     private final File structureDir;
-    private final GlowServer server;
+    private final Server server;
 
+    /**
+     * Creates the instance for the given world's structures.
+     *
+     * @param world the world
+     * @param structureDir the world's structure-data folder, which is created if it doesn't exist
+     */
     public NbtStructureDataService(GlowWorld world, File structureDir) {
         this.world = world;
         this.structureDir = structureDir;
-        server = (GlowServer) Bukkit.getServer();
+        server = ServerProvider.getServer();
 
         if (!structureDir.isDirectory() && !structureDir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + structureDir);
+            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(structureDir);
         }
     }
 
@@ -42,23 +47,22 @@ public class NbtStructureDataService implements StructureDataService {
         for (StructureStore<?> store : StructureStorage.getStructureStores()) {
             File structureFile = new File(structureDir, store.getId() + ".dat");
             if (structureFile.exists()) {
-                try (NBTInputStream in = new NBTInputStream(new FileInputStream(structureFile))) {
-                    CompoundTag data = new CompoundTag();
-                    data = in.readCompound();
-                    if (data.isCompound("data")) {
-                        data = data.getCompound("data");
-                        if (data.isCompound("Features")) {
-                            CompoundTag features = data.getCompound("Features");
-                            features.getValue().keySet().stream().filter(features::isCompound).forEach(key -> {
-                                GlowStructure structure = StructureStorage.loadStructure(world, features.getCompound(key));
-                                structures.put(new Key(structure.getChunkX(), structure.getChunkZ()).hashCode(), structure);
-                            });
-                        }
-                    } else {
-                        server.getLogger().log(Level.SEVERE, "No data tag in " + structureFile);
+                try (NbtInputStream in = new NbtInputStream(new FileInputStream(structureFile))) {
+                    CompoundTag data = in.readCompound();
+                    if (!data.readCompound("data", innerData -> innerData.readCompound(// NON-NLS
+                            "Features", features -> features.getValue().keySet().stream() // NON-NLS
+                                .filter(features::isCompound)
+                                .forEach(key -> {
+                                    GlowStructure structure = StructureStorage
+                                        .loadStructure(world, features.getCompound(key));
+                                    structures.put(GlowChunk.Key
+                                        .of(structure.getChunkX(), structure.getChunkZ())
+                                        .hashCode(), structure);
+                                })))) {
+                        LocalizedStrings.Console.Error.Structure.NO_DATA.log(structureFile);
                     }
                 } catch (IOException e) {
-                    server.getLogger().log(Level.SEVERE, "Failed to read structure data from " + structureFile, e);
+                    LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
                 }
             }
         }
@@ -69,34 +73,39 @@ public class NbtStructureDataService implements StructureDataService {
     public void writeStructuresData(Map<Integer, GlowStructure> structures) {
         for (GlowStructure structure : structures.values()) {
             if (structure.isDirty()) {
-                CompoundTag root = new CompoundTag();
-                CompoundTag data = new CompoundTag();
-                CompoundTag features = new CompoundTag();
+                CompoundTag data;
+                CompoundTag features;
                 CompoundTag feature = new CompoundTag();
-                StructureStore<GlowStructure> store = StructureStorage.saveStructure(structure, feature);
+                CompoundTag inputRoot;
+                StructureStore<GlowStructure> store = StructureStorage
+                    .saveStructure(structure, feature);
                 File structureFile = new File(structureDir, store.getId() + ".dat");
                 if (structureFile.exists()) {
-                    try (NBTInputStream in = new NBTInputStream(new FileInputStream(structureFile))) {
-                        data = new CompoundTag();
-                        data = in.readCompound();
-                        if (data.isCompound("data")) {
-                            data = data.getCompound("data");
-                            if (data.isCompound("Features")) {
-                                features = data.getCompound("Features");
-                            }
-                        }
+                    try (NbtInputStream in = new NbtInputStream(
+                            new FileInputStream(structureFile))) {
+                        inputRoot = in.readCompound();
+                        data = inputRoot.tryGetCompound("data") // NON-NLS
+                                .orElseGet(CompoundTag::new);
                     } catch (IOException e) {
-                        server.getLogger().log(Level.SEVERE, "Failed to read structure data from " + structureFile, e);
+                        LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
+                        data = new CompoundTag();
                     }
+                    features = data.tryGetCompound("Features") // NON-NLS
+                            .orElseGet(CompoundTag::new);
+                } else {
+                    data = new CompoundTag();
+                    features = new CompoundTag();
                 }
                 String key = "[" + structure.getChunkX() + "," + structure.getChunkZ() + "]";
                 features.putCompound(key, feature);
-                data.putCompound("Features", features);
-                root.putCompound("data", data);
-                try (NBTOutputStream nbtOut = new NBTOutputStream(new FileOutputStream(structureFile))) {
+                data.putCompound("Features", features); // NON-NLS
+                CompoundTag root = new CompoundTag();
+                root.putCompound("data", data); // NON-NLS
+                try (NbtOutputStream nbtOut = new NbtOutputStream(
+                    new FileOutputStream(structureFile))) {
                     nbtOut.writeTag(root);
                 } catch (IOException e) {
-                    server.getLogger().log(Level.SEVERE, "Failed to write structure data to " + structureFile, e);
+                    LocalizedStrings.Console.Error.Structure.IO_WRITE.log(e, structureFile);
                 }
                 structure.setDirty(false);
             }

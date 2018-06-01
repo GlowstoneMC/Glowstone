@@ -1,6 +1,8 @@
 package net.glowstone.entity.monster;
 
+import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -9,43 +11,57 @@ import org.bukkit.util.BlockVector;
 
 public class GlowShulker extends GlowMonster implements Shulker {
 
-    private Facing direction;
-    private byte shieldHeight;
+    @Getter
     private Location attachment;
 
+    /**
+     * Creates a shulker facing down.
+     *
+     * @param loc the location
+     */
     public GlowShulker(Location loc) {
+        this(loc, Facing.DOWN);
+    }
+
+    /**
+     * Creates a shulker facing the given direction.
+     *
+     * @param loc the location
+     * @param direction the direction to initially face
+     */
+    public GlowShulker(Location loc, Facing direction) {
         super(loc, EntityType.SHULKER, 30);
-        setDirection(Facing.DOWN); // todo
+        setDirection(direction);
         setShieldHeight((byte) 0);
-        setAttachment(null); // todo
+        setAttachment(loc);
     }
 
     public Facing getFacingDirection() {
-        return direction;
+        return Facing.values()[metadata.getByte(MetadataIndex.SHULKER_FACING_DIRECTION)];
     }
 
     public void setDirection(Facing direction) {
-        this.direction = direction;
         this.metadata.set(MetadataIndex.SHULKER_FACING_DIRECTION, direction.ordinal());
     }
 
     public byte getShieldHeight() {
-        return shieldHeight;
+        return metadata.getByte(MetadataIndex.SHULKER_SHIELD_HEIGHT);
     }
 
     public void setShieldHeight(byte shieldHeight) {
-        this.shieldHeight = shieldHeight;
         this.metadata.set(MetadataIndex.SHULKER_SHIELD_HEIGHT, shieldHeight);
     }
 
-    public Location getAttachment() {
-        return attachment;
-    }
-
+    /**
+     * Sets the point where this shulker is attached, or null to detach the shulker.
+     *
+     * @param attachment the new attachment point, or null to detach
+     */
     public void setAttachment(Location attachment) {
         this.attachment = attachment;
         if (attachment != null) {
-            this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, new BlockVector(attachment.toVector()));
+            this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION,
+                new BlockVector(attachment.toVector()));
         } else {
             this.metadata.set(MetadataIndex.SHULKER_ATTACHMENT_POSITION, null);
         }
@@ -58,7 +74,7 @@ public class GlowShulker extends GlowMonster implements Shulker {
 
     @Override
     protected Sound getHurtSound() {
-        if (shieldHeight == 0) {
+        if (getShieldHeight() == 0) {
             return Sound.ENTITY_SHULKER_HURT_CLOSED;
         }
         return Sound.ENTITY_SHULKER_HURT;
@@ -67,6 +83,16 @@ public class GlowShulker extends GlowMonster implements Shulker {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SHULKER_AMBIENT;
+    }
+
+    @Override
+    public DyeColor getColor() {
+        return DyeColor.getByWoolData(metadata.getByte(MetadataIndex.SHULKER_COLOR));
+    }
+
+    @Override
+    public void setColor(DyeColor color) {
+        metadata.set(MetadataIndex.SHULKER_COLOR, color.getWoolData());
     }
 
     public enum Facing {

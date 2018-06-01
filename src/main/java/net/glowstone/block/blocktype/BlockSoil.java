@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -10,11 +11,10 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-
 public class BlockSoil extends BlockType {
 
-    private Material[] possibleCrops = {Material.CROPS, Material.CARROT, Material.POTATO, Material.MELON_STEM, Material.PUMPKIN_STEM};
+    private Material[] possibleCrops = {Material.CROPS, Material.CARROT, Material.POTATO,
+        Material.MELON_STEM, Material.PUMPKIN_STEM};
 
     public BlockSoil() {
         setDrops(new ItemStack(Material.DIRT, 1));
@@ -30,14 +30,16 @@ public class BlockSoil extends BlockType {
         if (isNearWater(block) || GlowBiomeClimate.isRainy(block)) {
             block.setData((byte) 7); // set this block as fully wet
         } else if (block.getData() > 0) {
-            block.setData((byte) (block.getData() - 1)); // if this block is wet, it becomes less wet
-        } else if (!Arrays.asList(possibleCrops).contains(block.getRelative(BlockFace.UP).getType())) {
+            block
+                .setData((byte) (block.getData() - 1)); // if this block is wet, it becomes less wet
+        } else if (!Arrays.asList(possibleCrops)
+            .contains(block.getRelative(BlockFace.UP).getType())) {
             // turns block back to dirt if nothing is planted on
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
             state.setRawData((byte) 0);
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
+            EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }

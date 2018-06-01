@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Silverfish;
 
 public class GlowSilverfish extends GlowMonster implements Silverfish {
+
     public GlowSilverfish(Location loc) {
         super(loc, EntityType.SILVERFISH, 8);
         setBoundingBox(0.4, 0.3);
@@ -24,5 +25,10 @@ public class GlowSilverfish extends GlowMonster implements Silverfish {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SILVERFISH_AMBIENT;
+    }
+
+    @Override
+    public boolean isArthropod() {
+        return true;
     }
 }

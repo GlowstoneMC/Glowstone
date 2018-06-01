@@ -26,16 +26,9 @@ class ItemStore extends EntityStore<GlowItem> {
     @Override
     public void load(GlowItem entity, CompoundTag tag) {
         super.load(entity, tag);
-
-        if (tag.isCompound("Item")) {
-            entity.setItemStack(NbtSerialization.readItem(tag.getCompound("Item")));
-        }
-        if (tag.isShort("Age")) {
-            entity.setTicksLived(tag.getShort("Age"));
-        }
-        if (tag.isShort("PickupDelay")) {
-            entity.setPickupDelay(tag.getShort("PickupDelay"));
-        }
+        tag.readItem("Item", entity::setItemStack);
+        tag.readShort("Age", entity::setTicksLived);
+        tag.readShort("PickupDelay", entity::setPickupDelay);
     }
 
     @Override

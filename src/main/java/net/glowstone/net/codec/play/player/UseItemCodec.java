@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.player.UseItemMessage;
 
-import java.io.IOException;
-
 public class UseItemCodec implements Codec<UseItemMessage> {
+
     @Override
     public UseItemMessage decode(ByteBuf buffer) throws IOException {
         int hand = ByteBufUtils.readVarInt(buffer);

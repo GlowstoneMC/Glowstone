@@ -1,15 +1,18 @@
 package net.glowstone.scoreboard;
 
-import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Getter;
+import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.scoreboard.Criterias;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 
 /**
  * Scoreboard objective and associated data.
@@ -20,10 +23,19 @@ public final class GlowObjective implements Objective {
     private final String criteria;
     private final HashMap<String, GlowScore> scores = new HashMap<>();
     DisplaySlot displaySlot;
+    @Getter
     private GlowScoreboard scoreboard;
     private String displayName;
     private RenderType renderType;
 
+    /**
+     * Creates a scoreboard objective.
+     *
+     * @param scoreboard the scoreboard to add to
+     * @param name the name of the objective
+     * @param criteria one of the constants from {@link Criterias}, or anything else if this score
+     *         is only modified by commands and/or plugins.
+     */
     public GlowObjective(GlowScoreboard scoreboard, String name, String criteria) {
         this.scoreboard = scoreboard;
         this.name = name;
@@ -32,10 +44,12 @@ public final class GlowObjective implements Objective {
         displayName = name;
     }
 
-    public GlowScoreboard getScoreboard() {
-        return scoreboard;
-    }
-
+    /**
+     * Removes this objective from the scoreboard.
+     *
+     * @throws IllegalStateException if this objective already isn't registered with a scoreboard
+     */
+    @Override
     public void unregister() throws IllegalStateException {
         checkValid();
         for (Entry<String, GlowScore> entry : scores.entrySet()) {
@@ -54,35 +68,56 @@ public final class GlowObjective implements Objective {
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    @Override
     public String getName() throws IllegalStateException {
         checkValid();
         return name;
     }
 
+    @Override
     public String getCriteria() throws IllegalStateException {
         checkValid();
         return criteria;
     }
 
+    @Override
     public String getDisplayName() throws IllegalStateException {
         checkValid();
         return displayName;
     }
 
-    public void setDisplayName(String displayName) throws IllegalStateException, IllegalArgumentException {
+    /**
+     * Sets the display name.
+     *
+     * @param displayName the new display name, up to 32 characters long
+     * @throws IllegalArgumentException if {@code displayName} is null or longer than 32 characters
+     * @throws IllegalStateException if this objective isn't registered with a scoreboard
+     */
+    @Override
+    public void setDisplayName(String displayName)
+        throws IllegalStateException, IllegalArgumentException {
         checkValid();
         checkNotNull(displayName, "displayName cannot be null");
-        checkArgument(displayName.length() <= 32, "displayName cannot be longer than 32 characters");
+        checkArgument(displayName.length() <= 32,
+            "displayName cannot be longer than 32 characters");
 
         this.displayName = displayName;
         scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
     }
 
+    @Override
     public DisplaySlot getDisplaySlot() throws IllegalStateException {
         checkValid();
         return displaySlot;
     }
 
+    /**
+     * Sets the {@link DisplaySlot} where this objective displays.
+     *
+     * @param slot the DisplaySlot, or null to hide the objective
+     * @throws IllegalStateException if this objective isn't registered with a scoreboard
+     */
+    @Override
     public void setDisplaySlot(DisplaySlot slot) throws IllegalStateException {
         checkValid();
         if (slot != displaySlot) {
@@ -95,13 +130,18 @@ public final class GlowObjective implements Objective {
         }
     }
 
-    @Override
     public RenderType getType() throws IllegalStateException {
         checkValid();
         return renderType;
     }
 
-    @Override
+    /**
+     * Sets the {@link RenderType} for this objective.
+     *
+     * @param renderType the new render type
+     * @throws IllegalArgumentException if {@code renderType} is null
+     * @throws IllegalStateException if this objective isn't registered with a scoreboard
+     */
     public void setType(RenderType renderType) throws IllegalStateException {
         checkValid();
         checkNotNull(renderType, "RenderType cannot be null");
@@ -109,6 +149,7 @@ public final class GlowObjective implements Objective {
         scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
     }
 
+    @Override
     public boolean isModifiable() throws IllegalStateException {
         checkValid();
         return !criteria.equalsIgnoreCase(Criterias.HEALTH);
@@ -117,17 +158,33 @@ public final class GlowObjective implements Objective {
     ////////////////////////////////////////////////////////////////////////////
     // Score management
 
+    /**
+     * Returns a score, creating it if necessary.
+     *
+     * @param entry the key (e.g. player name or team name)
+     * @return the score for {@code entry}
+     * @throws IllegalArgumentException if {@code entry} is null
+     * @throws IllegalStateException if this objective isn't registered with a scoreboard
+     */
+    @Override
     public Score getScore(String entry) throws IllegalArgumentException, IllegalStateException {
         checkNotNull(entry, "Entry cannot be null");
         checkValid();
 
-        GlowScore score = scores.get(entry);
-        if (score == null) {
-            score = new GlowScore(this, entry);
-            scores.put(entry, score);
-            scoreboard.getScoresForName(entry).add(score);
-        }
-        return score;
+        return scores.computeIfAbsent(entry, entryCopy -> {
+            GlowScore score = new GlowScore(this, entryCopy);
+            scores.put(entryCopy, score);
+            scoreboard.getScoresForName(entryCopy).add(score);
+            return score;
+        });
+    }
+
+    @Override
+    @Deprecated
+    public Score getScore(OfflinePlayer player)
+        throws IllegalArgumentException, IllegalStateException {
+        checkNotNull(player, "Player cannot be null");
+        return getScore(player.getName());
     }
 
     /**
@@ -139,16 +196,18 @@ public final class GlowObjective implements Objective {
         scores.remove(entry);
     }
 
-    @Deprecated
-    public Score getScore(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
-        checkNotNull(player, "Player cannot be null");
-        return getScore(player.getName());
-    }
-
     public void setRenderType(String renderType) {
         // TODO
     }
 
+    /**
+     * Returns whether a score is defined.
+     *
+     * @param entry the key (e.g. player name or team name)
+     * @return true if the score exists; false otherwise
+     * @throws IllegalArgumentException if {@code entry} is null
+     * @throws IllegalStateException if this objective isn't registered with a scoreboard
+     */
     public boolean hasScore(String entry) throws IllegalArgumentException, IllegalStateException {
         checkNotNull(entry, "Entry cannot be null");
         checkValid();

@@ -12,10 +12,9 @@ import com.flowpowered.network.service.HandlerLookupService;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.glowstone.GlowServer;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import net.glowstone.GlowServer;
 
 public abstract class GlowProtocol extends AbstractProtocol {
 
@@ -23,6 +22,12 @@ public abstract class GlowProtocol extends AbstractProtocol {
     private final CodecLookupService outboundCodecs;
     private final HandlerLookupService handlers;
 
+    /**
+     * Creates an instance.
+     *
+     * @param name the name of the protocol
+     * @param highestOpcode the highest opcode this protocol will use
+     */
     public GlowProtocol(String name, int highestOpcode) {
         super(name);
         inboundCodecs = new CodecLookupService(highestOpcode + 1);
@@ -30,7 +35,9 @@ public abstract class GlowProtocol extends AbstractProtocol {
         handlers = new HandlerLookupService();
     }
 
-    protected <M extends Message, C extends Codec<? super M>, H extends MessageHandler<?, ? super M>> void inbound(int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
+    protected <M extends Message, C extends Codec<? super M>,
+            H extends MessageHandler<?, ? super M>> void inbound(
+        int opcode, Class<M> message, Class<C> codec, Class<H> handler) {
         try {
             inboundCodecs.bind(message, codec, opcode);
             handlers.bind(message, handler);
@@ -39,7 +46,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
         }
     }
 
-    protected <M extends Message, C extends Codec<? super M>> void outbound(int opcode, Class<M> message, Class<C> codec) {
+    protected <M extends Message, C extends Codec<? super M>> void outbound(int opcode,
+        Class<M> message, Class<C> codec) {
         try {
             outboundCodecs.bind(message, codec, opcode);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -51,7 +59,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
     public <M extends Message> MessageHandler<?, M> getMessageHandle(Class<M> clazz) {
         MessageHandler<?, M> handler = handlers.find(clazz);
         if (handler == null) {
-            GlowServer.logger.warning("No message handler for: " + clazz.getSimpleName() + " in " + getName());
+            GlowServer.logger
+                .warning("No message handler for: " + clazz.getSimpleName() + " in " + getName());
         }
         return handler;
     }
@@ -70,11 +79,13 @@ public abstract class GlowProtocol extends AbstractProtocol {
             opcode = ByteBufUtils.readVarInt(buf);
             return inboundCodecs.find(opcode);
         } catch (IOException e) {
-            throw new UnknownPacketException("Failed to read packet data (corrupt?)", opcode, length);
+            throw new UnknownPacketException("Failed to read packet data (corrupt?)", opcode,
+                length);
         } catch (IllegalOpcodeException e) {
             // go back to before opcode, so that skipping length doesn't skip too much
             buf.resetReaderIndex();
-            throw new UnknownPacketException("Opcode received is not a registered codec on the server!", opcode, length);
+            throw new UnknownPacketException(
+                "Opcode received is not a registered codec on the server!", opcode, length);
         }
     }
 
@@ -82,7 +93,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
     public <M extends Message> CodecRegistration getCodecRegistration(Class<M> clazz) {
         CodecRegistration reg = outboundCodecs.find(clazz);
         if (reg == null) {
-            GlowServer.logger.warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
+            GlowServer.logger
+                .warning("No codec to write: " + clazz.getSimpleName() + " in " + getName());
         }
         return reg;
     }
@@ -93,8 +105,8 @@ public abstract class GlowProtocol extends AbstractProtocol {
         ByteBuf opcodeBuffer = Unpooled.buffer(5);
         ByteBufUtils.writeVarInt(opcodeBuffer, codec.getOpcode());
         ByteBufUtils.writeVarInt(out, opcodeBuffer.readableBytes() + data.readableBytes());
-        ByteBufUtils.writeVarInt(out, codec.getOpcode());
         opcodeBuffer.release();
+        ByteBufUtils.writeVarInt(out, codec.getOpcode());
         return out;
     }
 

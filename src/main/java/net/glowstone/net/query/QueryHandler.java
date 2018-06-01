@@ -4,16 +4,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
-import net.glowstone.GlowServer;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Class for handling UDP packets according to the minecraft server query protocol.
@@ -32,7 +31,7 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private QueryServer queryServer;
 
     /**
-     * Whether the a plugin list should be included in responses.
+     * Whether the plugin list should be included in responses.
      */
     private boolean showPlugins;
 
@@ -111,7 +110,8 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private void handleFullStats(ChannelHandlerContext ctx, DatagramPacket packet, int sessionId) {
         GlowServer server = queryServer.getServer();
 
-        StringBuilder plugins = new StringBuilder("Glowstone ").append(server.getVersion()).append(" on Bukkit ").append(server.getBukkitVersion());
+        StringBuilder plugins = new StringBuilder("Glowstone ").append(server.getVersion())
+            .append(" on Bukkit ").append(server.getBukkitVersion());
         if (showPlugins) {
             char delim = ':';
             for (Plugin plugin : server.getPluginManager().getPlugins()) {
@@ -136,7 +136,8 @@ public class QueryHandler extends SimpleChannelInboundHandler<DatagramPacket> {
         buf.writeByte(ACTION_STATS);
         buf.writeInt(sessionId);
         // constant: splitnum\x00\x80\x00
-        buf.writeBytes(new byte[]{0x73, 0x70, 0x6C, 0x69, 0x74, 0x6E, 0x75, 0x6D, 0x00, (byte) 0x80, 0x00});
+        buf.writeBytes(
+            new byte[]{0x73, 0x70, 0x6C, 0x69, 0x74, 0x6E, 0x75, 0x6D, 0x00, (byte) 0x80, 0x00});
         for (Entry<String, Object> e : data.entrySet()) {
             writeString(buf, e.getKey());
             writeString(buf, String.valueOf(e.getValue()));

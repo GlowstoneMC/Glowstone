@@ -1,9 +1,8 @@
 package net.glowstone.util;
 
+import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-
-import java.util.Set;
 
 public class BlockMaterialValidator implements Validator<Block> {
 

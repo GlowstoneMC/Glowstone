@@ -2600,7 +2600,52 @@ shaped:
   ingredients:
     e:
       type: WOOD
-      damage: 32767
+      damage: 0
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_SPRUCE
+  ingredients:
+    e:
+      type: WOOD
+      damage: 1
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_BIRCH
+  ingredients:
+    e:
+      type: WOOD
+      damage: 2
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_JUNGLE
+  ingredients:
+    e:
+      type: WOOD
+      damage: 3
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_ACACIA
+  ingredients:
+    e:
+      type: WOOD
+      damage: 4
+  shape:
+  - e e
+  - eee
+- result:
+    type: BOAT_DARK_OAK
+  ingredients:
+    e:
+      type: WOOD
+      damage: 5
   shape:
   - e e
   - eee
@@ -3604,6 +3649,7 @@ shaped:
       type: LOG_2
   shape:
   - a
+  key: acacia_planks
 - result:
     type: WOOD
     damage: 5
@@ -3829,4 +3875,42 @@ shaped:
   shape:
   - aaa
   - aaa
+  - aaa
+- result:
+    type: CONCRETE_POWDER
+    damage: 15
+  ingredients:
+    a:
+      type: SAND
+    b:
+      type: GRAVEL
+    c:
+      type: INK_SACK
+  shape:
+  - aba
+  - bcb
+  - aba
+- result:
+    type: END_CRYSTAL
+  ingredients:
+    a:
+      type: GLASS
+    b:
+      type: GHAST_TEAR
+    c:
+      type: EYE_OF_ENDER
+  shape:
+  - aaa
+  - aca
+  - aba
+- result:
+    type: PAINTING
+  ingredients:
+    a:
+      type: STICK
+    b:
+      type: WOOL
+  shape:
+  - aaa
+  - aba
   - aaa

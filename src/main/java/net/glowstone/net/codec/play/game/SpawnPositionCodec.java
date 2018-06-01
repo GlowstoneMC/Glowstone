@@ -2,13 +2,13 @@ package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.SpawnPositionMessage;
 import org.bukkit.util.BlockVector;
 
-import java.io.IOException;
-
 public final class SpawnPositionCodec implements Codec<SpawnPositionMessage> {
+
     @Override
     public SpawnPositionMessage decode(ByteBuf buffer) throws IOException {
         BlockVector pos = GlowBufUtils.readBlockPosition(buffer);

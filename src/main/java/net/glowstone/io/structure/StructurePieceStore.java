@@ -1,35 +1,27 @@
 package net.glowstone.io.structure;
 
+import lombok.Data;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * The base for structure piece store classes.
  *
  * @param <T> The type of structure piece being stored.
  */
+@Data
 public abstract class StructurePieceStore<T extends GlowStructurePiece> {
-    private final String id;
-    private final Class<T> clazz;
 
-    public StructurePieceStore(Class<T> clazz, String id) {
-        this.id = id;
-        this.clazz = clazz;
-    }
-
-    public final String getId() {
-        return id;
-    }
-
-    public final Class<T> getType() {
-        return clazz;
-    }
+    private final Class<T> type;
+    @NonNls private final String id;
 
     /**
-     * Create a structure piece of this store's type. The load method will
-     * be called separately.
+     * Create a structure piece of this store's type.
+     *
+     * <p>The load method will be called separately.
      *
      * @return The structure piece.
      */
@@ -39,32 +31,28 @@ public abstract class StructurePieceStore<T extends GlowStructurePiece> {
      * Load structure piece data of the appropriate type from the given compound tag.
      *
      * @param structurePiece The target structure piece.
-     * @param compound       The structure piece's tag.
+     * @param compound The structure piece's tag.
      */
     public void load(T structurePiece, CompoundTag compound) {
-        if (compound.isInt("GD")) {
-            structurePiece.setGD(compound.getInt("GD"));
-        }
-        if (compound.isInt("O")) {
-            structurePiece.setNumericOrientation(compound.getInt("O"));
-        }
-        if (compound.isIntArray("BB")) {
-            int[] bb = compound.getIntArray("BB");
+        compound.readInt("GD", structurePiece::setUnknownGd);
+        compound.readInt("O", structurePiece::setNumericOrientation);
+        compound.readIntArray("BB", bb -> {
             if (bb.length == 6) {
-                StructureBoundingBox boundingBox = new StructureBoundingBox(new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
+                StructureBoundingBox boundingBox = new StructureBoundingBox(
+                    new Vector(bb[0], bb[1], bb[2]), new Vector(bb[3], bb[4], bb[5]));
                 structurePiece.setBoundingBox(boundingBox);
             }
-        }
+        });
     }
 
     /**
      * Save information about this structure piece to the given tag.
      *
      * @param structurePiece The structure piece to save.
-     * @param compound       The target tag.
+     * @param compound The target tag.
      */
     public void save(T structurePiece, CompoundTag compound) {
-        compound.putInt("GD", structurePiece.getGD());
+        compound.putInt("GD", structurePiece.getUnknownGd());
         compound.putInt("O", structurePiece.getNumericOrientation());
         StructureBoundingBox boundingBox = structurePiece.getBoundingBox();
         int[] bb = new int[6];

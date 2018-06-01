@@ -2,11 +2,11 @@ package net.glowstone.net.codec.status;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.status.StatusPingMessage;
 
-import java.io.IOException;
-
 public final class StatusPingCodec implements Codec<StatusPingMessage> {
+
     @Override
     public StatusPingMessage decode(ByteBuf byteBuf) throws IOException {
         return new StatusPingMessage(byteBuf.readLong());

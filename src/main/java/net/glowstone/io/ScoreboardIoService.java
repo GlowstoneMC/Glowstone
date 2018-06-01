@@ -1,14 +1,15 @@
 package net.glowstone.io;
 
+import java.io.IOException;
 import net.glowstone.scoreboard.GlowScoreboard;
 
-import java.io.IOException;
-
 /**
- * Provider of scoreboard I/O services. Implemented by classes to provide
- * a way of saving and loading scoreboards to external storage
+ * Provider of scoreboard I/O services.
+ *
+ * <p>Implemented by classes to provide a way of saving and loading scoreboards to external storage
  */
 public interface ScoreboardIoService {
+
     /**
      * Loads the main scoreboard.
      *

@@ -1,14 +1,18 @@
 package net.glowstone.generator.objects.trees;
 
-import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.Location;
-
 import java.util.Random;
+import net.glowstone.util.BlockStateDelegate;
 
 public class BirchTree extends GenericTree {
 
-    public BirchTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    /**
+     * Initializes this tree with a random height, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     */
+    public BirchTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         setHeight(random.nextInt(3) + 5);
         setTypes(2, 2);
     }

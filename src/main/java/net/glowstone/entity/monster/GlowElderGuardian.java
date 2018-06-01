@@ -6,6 +6,7 @@ import org.bukkit.entity.ElderGuardian;
 import org.bukkit.entity.EntityType;
 
 public class GlowElderGuardian extends GlowGuardian implements ElderGuardian {
+
     public GlowElderGuardian(Location loc) {
         super(loc, EntityType.ELDER_GUARDIAN, 80);
         setBoundingBox(1.9975, 1.9975);

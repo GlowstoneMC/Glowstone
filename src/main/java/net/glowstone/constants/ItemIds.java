@@ -1,13 +1,19 @@
 package net.glowstone.constants;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.bukkit.util.StringUtil;
 
 /**
  * Temporary mappings for Minecraft's string-based item ids.
@@ -17,6 +23,7 @@ public final class ItemIds {
     private static final Map<Integer, String> names = new HashMap<>();
     private static final Map<String, Integer> items = new HashMap<>();
     private static final Map<String, Integer> blocks = new HashMap<>();
+    private static final Set<String> ids = new HashSet<>();
 
     static {
         // blocks
@@ -231,7 +238,7 @@ public final class ItemIds {
         both(205, "purpur_slab");
         both(206, "end_bricks");
         block(207, "beetroots");
-        block(208, "grass_path");
+        both(208, "grass_path");
         block(209, "end_gateway");
         block(210, "repeating_command_block");
         block(211, "chain_command_block");
@@ -258,6 +265,24 @@ public final class ItemIds {
         both(232, "green_shulker_box");
         both(233, "red_shulker_box");
         both(234, "black_shulker_box");
+        both(235, "white_glazed_terracotta");
+        both(236, "orange_glazed_terracotta");
+        both(237, "magenta_glazed_terracotta");
+        both(238, "light_blue_glazed_terracotta");
+        both(239, "yellow_glazed_terracotta");
+        both(240, "lime_glazed_terracotta");
+        both(241, "pink_glazed_terracotta");
+        both(242, "gray_glazed_terracotta");
+        both(243, "silver_glazed_terracotta");
+        both(244, "cyan_glazed_terracotta");
+        both(245, "purple_glazed_terracotta");
+        both(246, "blue_glazed_terracotta");
+        both(247, "brown_glazed_terracotta");
+        both(248, "green_glazed_terracotta");
+        both(249, "red_glazed_terracotta");
+        both(250, "black_glazed_terracotta");
+        both(251, "concrete");
+        both(252, "concrete_powder");
         block(255, "structure_block");
         // items
         item(256, "iron_shovel");
@@ -456,6 +481,7 @@ public final class ItemIds {
         item(449, "totem");
         item(450, "shulker_shell");
         item(452, "iron_nugget");
+        item(453, "knowledge_book");
         item(2256, "record_13");
         item(2257, "record_cat");
         item(2258, "record_blocks");
@@ -468,6 +494,8 @@ public final class ItemIds {
         item(2265, "record_ward");
         item(2266, "record_11");
         item(2267, "record_wait");
+
+        ids.addAll(items.keySet());
     }
 
     private ItemIds() {
@@ -511,8 +539,8 @@ public final class ItemIds {
     }
 
     /**
-     * Verify that a given material is a valid item. All non-blocks are valid
-     * items, but some blocks cannot be represented as items.
+     * Verify that a given material is a valid item. All non-blocks are valid items, but some blocks
+     * cannot be represented as items.
      *
      * @param material The material to verify.
      * @return true if the material is a valid item.
@@ -522,8 +550,8 @@ public final class ItemIds {
     }
 
     /**
-     * Convert an ItemStack which may have a type that is unrepresentable as
-     * an item to one that does, or to an empty stack if this is not possible.
+     * Convert an ItemStack which may have a type that is unrepresentable as an item to one that
+     * does, or to an empty stack if this is not possible.
      *
      * @param stack The stack to sanitize.
      * @return The sanitized stack, or null.
@@ -541,6 +569,30 @@ public final class ItemIds {
             stack.setType(item);
         }
         return stack;
+    }
+
+    /**
+     * Gets a copy of the list of registered item IDs, in their name-spaced form.
+     *
+     * @return a copy of the list of registered item IDs.
+     */
+    public static Collection<String> getIds() {
+        return Collections.unmodifiableSet(ids);
+    }
+
+    /**
+     * Generates a list of possible tab-completion item ID entries for a given prefix.
+     *
+     * @param prefix the item ID prefix.
+     * @return a list of tab-completed item ID entries.
+     */
+    public static List<String> getTabCompletion(String prefix) {
+        prefix = prefix.toLowerCase();
+        if (!"minecraft:".startsWith(prefix)) {
+            int colon = prefix.indexOf(':');
+            prefix = "minecraft:" + prefix.substring(colon == -1 ? 0 : (colon + 1));
+        }
+        return StringUtil.copyPartialMatches(prefix, ids, new ArrayList<>(ids.size()));
     }
 
     private static void block(int id, String key) {

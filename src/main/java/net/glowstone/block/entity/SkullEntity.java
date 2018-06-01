@@ -1,21 +1,28 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.blocktype.BlockSkull;
-import net.glowstone.block.state.GlowSkull;
+import net.glowstone.block.entity.state.GlowSkull;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.SkullType;
 import org.bukkit.material.Skull;
 
 public class SkullEntity extends BlockEntity {
 
+    @Getter
+    @Setter
     private byte type;
+    @Getter
+    @Setter
     private byte rotation;
-    private PlayerProfile owner;
+    @Getter
+    private GlowPlayerProfile owner;
 
     public SkullEntity(GlowBlock block) {
         super(block);
@@ -32,12 +39,12 @@ public class SkullEntity extends BlockEntity {
         }
         if (tag.containsKey("Owner")) {
             CompoundTag ownerTag = tag.getCompound("Owner");
-            owner = PlayerProfile.fromNBT(ownerTag);
+            owner = GlowPlayerProfile.fromNbt(ownerTag).join();
         } else if (tag.containsKey("ExtraType")) {
             // Pre-1.8 uses just a name, instead of a profile object
             String name = tag.getString("ExtraType");
             if (name != null && !name.isEmpty()) {
-                owner = PlayerProfile.getProfile(name);
+                owner = GlowPlayerProfile.getProfile(name).join();
             }
         }
     }
@@ -50,7 +57,7 @@ public class SkullEntity extends BlockEntity {
             tag.putByte("Rot", rotation);
         }
         if (type == BlockSkull.getType(SkullType.PLAYER) && owner != null) {
-            tag.putCompound("Owner", owner.toNBT());
+            tag.putCompound("Owner", owner.toNbt());
         }
     }
 
@@ -67,27 +74,7 @@ public class SkullEntity extends BlockEntity {
         player.sendBlockEntityChange(getBlock().getLocation(), GlowBlockEntity.SKULL, nbt);
     }
 
-    public byte getType() {
-        return type;
-    }
-
-    public void setType(byte type) {
-        this.type = type;
-    }
-
-    public byte getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(byte rotation) {
-        this.rotation = rotation;
-    }
-
-    public PlayerProfile getOwner() {
-        return owner;
-    }
-
-    public void setOwner(PlayerProfile owner) {
+    public void setOwner(GlowPlayerProfile owner) {
         this.owner = owner;
         type = BlockSkull.getType(SkullType.PLAYER);
     }

@@ -7,7 +7,8 @@ import lombok.Data;
 public final class PlayerAbilitiesMessage implements Message {
 
     private final int flags;
-    private final float flySpeed, walkSpeed;
+    private final float flySpeed;
+    private final float walkSpeed;
 
 }
 

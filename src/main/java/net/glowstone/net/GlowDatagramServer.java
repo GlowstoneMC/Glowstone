@@ -4,32 +4,45 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.kqueue.KQueueDatagramChannel;
+import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import net.glowstone.GlowServer;
-
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import net.glowstone.GlowServer;
 
 public abstract class GlowDatagramServer extends GlowNetworkServer {
+
     protected final EventLoopGroup group;
     protected final Bootstrap bootstrap;
 
+    /**
+     * Creates an instance for the specified server.
+     *
+     * @param server the associated GlowServer
+     * @param latch The countdown latch used during server startup to wait for network server
+     *         binding.
+     */
     public GlowDatagramServer(GlowServer server, CountDownLatch latch) {
         super(server, latch);
-        boolean epoll = Epoll.isAvailable();
-        group = epoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        boolean epoll = GlowServer.EPOLL;
+        boolean kqueue = GlowServer.KQUEUE;
+        group = epoll ? new EpollEventLoopGroup() : kqueue ? new KQueueEventLoopGroup()
+            : new NioEventLoopGroup();
         bootstrap = new Bootstrap();
 
         bootstrap
-                .group(group)
-                .channel(epoll ? EpollDatagramChannel.class : NioDatagramChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true);
+            .group(group)
+            .channel(epoll ? EpollDatagramChannel.class : kqueue ? KQueueDatagramChannel.class
+                : NioDatagramChannel.class)
+            .option(ChannelOption.SO_KEEPALIVE, true);
     }
 
+    @Override
     public ChannelFuture bind(InetSocketAddress address) {
         return this.bootstrap.bind(address).addListener(future -> {
             if (future.isSuccess()) {
@@ -40,7 +53,16 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
         });
     }
 
+    @Override
     public void shutdown() {
-        bootstrap.group().shutdownGracefully();
+        bootstrap.config().group().shutdownGracefully();
+
+        try {
+            bootstrap.config().group().terminationFuture().sync();
+        } catch (InterruptedException e) {
+            GlowServer.logger.log(Level.SEVERE,
+                "Datagram server shutdown process interrupted!",
+                e);
+        }
     }
 }

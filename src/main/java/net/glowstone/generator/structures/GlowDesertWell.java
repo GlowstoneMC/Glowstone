@@ -1,5 +1,6 @@
 package net.glowstone.generator.structures;
 
+import java.util.Random;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
 import net.glowstone.generator.structures.util.StructureBuilder;
 import net.glowstone.util.BlockStateDelegate;
@@ -8,8 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-import java.util.Random;
-
 public class GlowDesertWell extends GlowStructurePiece {
 
     public GlowDesertWell(Location location) {
@@ -17,7 +16,8 @@ public class GlowDesertWell extends GlowStructurePiece {
     }
 
     @Override
-    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox, BlockStateDelegate delegate) {
+    public boolean generate(World world, Random random, StructureBoundingBox genBoundingBox,
+        BlockStateDelegate delegate) {
         if (!super.generate(world, random, boundingBox, delegate)) {
             return false;
         }
@@ -25,7 +25,8 @@ public class GlowDesertWell extends GlowStructurePiece {
         boundingBox.offset(new Vector(-2, -2, -2));
 
         StructureBuilder builder = new StructureBuilder(world, this, genBoundingBox, delegate);
-        while (builder.getBlockState(new Vector(2, 1, 2)).getType() == Material.AIR && boundingBox.getMin().getBlockY() > 0) {
+        while (builder.getBlockState(new Vector(2, 1, 2)).getType() == Material.AIR
+            && boundingBox.getMin().getBlockY() > 0) {
             boundingBox.offset(new Vector(0, -1, 0));
         }
 
@@ -36,7 +37,7 @@ public class GlowDesertWell extends GlowStructurePiece {
         for (int x = 0; x < 5; x++) {
             for (int z = 0; z < 5; z++) {
                 if (builder.getBlockState(new Vector(x, 0, z)).getType() == Material.AIR
-                        && builder.getBlockState(new Vector(x, -1, z)).getType() == Material.AIR) {
+                    && builder.getBlockState(new Vector(x, -1, z)).getType() == Material.AIR) {
                     return false;
                 }
             }

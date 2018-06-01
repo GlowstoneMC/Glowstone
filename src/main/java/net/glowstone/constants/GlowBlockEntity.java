@@ -1,8 +1,12 @@
 package net.glowstone.constants;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
- * Name mappings for magic values in UpdateBlockEntity packet
+ * Name mappings for magic values in UpdateBlockEntity packet.
  */
+@RequiredArgsConstructor
 public enum GlowBlockEntity {
     MOB_SPAWNER_POTENTIALS(1),
     COMMAND_BLOCK(2),
@@ -13,20 +17,14 @@ public enum GlowBlockEntity {
     STRUCTURE(7),
     END_GATEWAY(8),
     SIGN(9),
-    SHULKER_BOX(10);
-
-    private final int value;
-
-    GlowBlockEntity(int value) {
-        this.value = value;
-    }
+    SHULKER_BOX(10),
+    BED(11),;
 
     /**
-     * Gets the magic number associated with this GlowBlockEntity
+     * Gets the magic number associated with this GlowBlockEntity.
      *
      * @return the magic number
      */
-    public int getValue() {
-        return value;
-    }
+    @Getter
+    private final int value;
 }

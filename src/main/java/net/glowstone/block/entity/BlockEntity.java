@@ -1,18 +1,26 @@
 package net.glowstone.block.entity;
 
+import lombok.Getter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.block.Block;
+import org.jetbrains.annotations.NonNls;
 
 /**
- * Base class for block entities (blocks with NBT data) in the world.
- * Most access to block entities should occur through the Bukkit BlockState API.
+ * Base class for block entities (blocks with NBT data) in the world. Most access to block entities
+ * should occur through the Bukkit BlockState API.
  */
 public abstract class BlockEntity {
 
+    /**
+     * Get the block this BlockEntity is associated with.
+     *
+     * @return The entity's block.
+     */
+    @Getter
     protected final GlowBlock block;
     private String saveId;
 
@@ -29,32 +37,24 @@ public abstract class BlockEntity {
     // Utility stuff
 
     /**
-     * Get the block this BlockEntity is associated with.
-     *
-     * @return The entity's block.
-     */
-    public final Block getBlock() {
-        return block;
-    }
-
-    /**
      * Update this BlockEntity's visible state to all players in range.
      */
     public final void updateInRange() {
-        Key key = new Key(block.getChunk().getX(), block.getChunk().getZ());
-        block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key)).forEach(this::update);
+        Key key = GlowChunk.Key.of(block.getX() >> 4, block.getZ() >> 4);
+        block.getWorld().getRawPlayers().stream().filter(player -> player.canSeeChunk(key))
+            .forEach(this::update);
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // World I/O
 
     /**
-     * Set the text ID this block entity is saved to disk with. If this is not
-     * set, then load and save of the "id" tag must be performed manually.
+     * Set the text ID this block entity is saved to disk with. If this is not set, then load and
+     * save of the "id" tag must be performed manually.
      *
      * @param saveId The ID.
      */
-    protected final void setSaveId(String saveId) {
+    protected final void setSaveId(@NonNls String saveId) {
         if (this.saveId != null) {
             throw new IllegalStateException("Can only set saveId once");
         }
@@ -70,7 +70,8 @@ public abstract class BlockEntity {
         // verify id and coordinates
         if (saveId != null) {
             if (!tag.isString("id") || !tag.getString("id").equals(saveId)) {
-                throw new IllegalArgumentException("Expected block entity id of " + saveId + ", got " + tag.getString("id"));
+                throw new IllegalArgumentException(
+                    "Expected block entity id of " + saveId + ", got " + tag.getString("id"));
             }
         }
 
@@ -79,9 +80,13 @@ public abstract class BlockEntity {
             int x = tag.getInt("x");
             int y = tag.getInt("y");
             int z = tag.getInt("z");
-            int rx = block.getX(), ry = block.getY(), rz = block.getZ();
+            int rx = block.getX();
+            int ry = block.getY();
+            int rz = block.getZ();
             if (x != rx || y != ry || z != rz) {
-                throw new IllegalArgumentException("Tried to load block entity with coords (" + x + "," + y + "," + z + ") into (" + rx + "," + ry + "," + rz + ")");
+                throw new IllegalArgumentException(
+                    "Tried to load block entity with coords (" + x + "," + y + "," + z + ") into ("
+                        + rx + "," + ry + "," + rz + ")");
             }
         }
     }

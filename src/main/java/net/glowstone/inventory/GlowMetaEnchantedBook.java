@@ -1,25 +1,35 @@
 package net.glowstone.inventory;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentStorageMeta {
+
     private Map<Enchantment, Integer> storedEnchants;
 
-    public GlowMetaEnchantedBook(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link EnchantmentStorageMeta}, its enchantments are copied; otherwise, the new book has no
+     * enchantments.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaEnchantedBook(ItemMeta meta) {
         super(meta);
 
-        if (!(meta instanceof GlowMetaEnchantedBook)) return;
+        if (!(meta instanceof EnchantmentStorageMeta)) {
+            return;
+        }
 
-        GlowMetaEnchantedBook book = (GlowMetaEnchantedBook) meta;
+        EnchantmentStorageMeta book = (EnchantmentStorageMeta) meta;
         if (book.hasStoredEnchants()) {
-            storedEnchants = new HashMap<>(book.storedEnchants);
+            storedEnchants = new HashMap<>(book instanceof GlowMetaEnchantedBook
+                    ? ((GlowMetaEnchantedBook) book).storedEnchants : book.getStoredEnchants());
         }
     }
 
@@ -55,10 +65,11 @@ public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentSt
         //TODO currently ignoring level restriction, is that right?
         Map<Enchantment, Integer> enchants = readNbtEnchants("StoredEnchantments", tag);
         if (enchants != null) {
-            if (storedEnchants == null)
+            if (storedEnchants == null) {
                 storedEnchants = enchants;
-            else
+            } else {
                 storedEnchants.putAll(enchants);
+            }
         }
     }
 
@@ -79,7 +90,8 @@ public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentSt
 
     @Override
     public Map<Enchantment, Integer> getStoredEnchants() {
-        return hasStoredEnchants() ? Collections.unmodifiableMap(storedEnchants) : Collections.emptyMap();
+        return hasStoredEnchants() ? Collections.unmodifiableMap(storedEnchants)
+                : Collections.emptyMap();
     }
 
     @Override
@@ -88,7 +100,8 @@ public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentSt
             storedEnchants = new HashMap<>(4);
         }
 
-        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench.getMaxLevel()) {
+        if (ignoreLevelRestriction || level >= ench.getStartLevel() && level <= ench
+                .getMaxLevel()) {
             Integer old = storedEnchants.put(ench, level);
             return old == null || old != level;
         }
@@ -102,11 +115,14 @@ public class GlowMetaEnchantedBook extends GlowMetaItem implements EnchantmentSt
 
     @Override
     public boolean hasConflictingStoredEnchant(Enchantment ench) {
-        if (!hasStoredEnchants()) return false;
+        if (!hasStoredEnchants()) {
+            return false;
+        }
 
         for (Enchantment e : storedEnchants.keySet()) {
-            if (e.conflictsWith(ench))
+            if (e.conflictsWith(ench)) {
                 return true;
+            }
         }
 
         return false;

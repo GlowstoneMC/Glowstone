@@ -1,27 +1,29 @@
 package net.glowstone.inventory;
 
+import java.util.List;
 import net.glowstone.util.collection.SuperList;
 import net.glowstone.util.collection.SuperSet;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.List;
-
 /**
  * Inventory which delegate to other Inventory objects.
  */
 public class GlowSuperInventory extends GlowInventory {
+
     private List<GlowInventory> parents;
 
     protected GlowSuperInventory() {
     }
 
-    public GlowSuperInventory(List<GlowInventory> parents, InventoryHolder owner, InventoryType type) {
+    public GlowSuperInventory(List<GlowInventory> parents, InventoryHolder owner,
+        InventoryType type) {
         initialize(parents, owner, type);
     }
 
-    public GlowSuperInventory(List<GlowInventory> parents, InventoryHolder owner, InventoryType type, String title) {
+    public GlowSuperInventory(List<GlowInventory> parents, InventoryHolder owner,
+        InventoryType type, String title) {
         initialize(parents, owner, type, title);
     }
 
@@ -36,11 +38,13 @@ public class GlowSuperInventory extends GlowInventory {
     //
     // Using "this" after the super call inside the constructor is possible,
     // so I'm using these pseudo-constructors.
-    protected void initialize(List<GlowInventory> parents, InventoryHolder owner, InventoryType type) {
+    protected void initialize(List<GlowInventory> parents, InventoryHolder owner,
+        InventoryType type) {
         initialize(parents, owner, type, type.getDefaultTitle());
     }
 
-    protected void initialize(List<GlowInventory> parents, InventoryHolder owner, InventoryType type, String title) {
+    protected void initialize(List<GlowInventory> parents, InventoryHolder owner,
+        InventoryType type, String title) {
         SuperList<GlowInventorySlot> slots = new SuperList<>();
         SuperSet<HumanEntity> viewers = new SuperSet<>();
 
@@ -54,6 +58,7 @@ public class GlowSuperInventory extends GlowInventory {
     }
 
     public List<GlowInventory> getParents() {
+        // TODO: Replace with a facade
         return parents;
     }
 }

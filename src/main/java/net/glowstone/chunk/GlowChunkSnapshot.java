@@ -1,8 +1,9 @@
 package net.glowstone.chunk;
 
+import lombok.Getter;
 import net.glowstone.constants.GlowBiome;
-
 import org.bukkit.ChunkSnapshot;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
@@ -11,37 +12,67 @@ import org.bukkit.block.Biome;
  */
 public class GlowChunkSnapshot implements ChunkSnapshot {
 
-    private final int x, z;
-    private final String world;
-    private final long time;
+    @Getter
+    private final int x;
+    @Getter
+    private final int z;
+    @Getter
+    private final String worldName;
+    @Getter
+    private final long captureFullTime;
 
-    private final ChunkSection[] sections;
+    /**
+     * The ChunkSection array backing this snapshot. In general, it should not be modified
+     * externally.
+     *
+     * @return The array of ChunkSections.
+     */
+    @Getter
+    private final ChunkSection[] rawSections;
 
     private final byte[] height;
-    private final double[] temp, humid;
-    private final byte[] biomes;
+    private final double[] temp;
+    private final double[] humid;
+    @Getter
+    private final byte[] rawBiomes;
+    @Getter
+    private final boolean isSlimeChunk;
 
-    public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, byte[] height, byte[] biomes, boolean svTemp) {
+    /**
+     * Creates a snapshot of a chunk.
+     *
+     * @param x the chunk x coordinate
+     * @param z the chunk z coordinate
+     * @param world the world the chunk is in
+     * @param sections the chunk contents
+     * @param height the heightmap
+     * @param biomes the biome map
+     * @param svTemp if true, copy temperature and humidity from the world
+     */
+    public GlowChunkSnapshot(int x, int z, World world, ChunkSection[] sections, byte[] height,
+            byte[] biomes, boolean svTemp, boolean isSlimeChunk) {
         this.x = x;
         this.z = z;
-        this.world = world.getName();
-        time = world.getFullTime();
+        this.worldName = world.getName();
+        captureFullTime = world.getFullTime();
+        this.isSlimeChunk = isSlimeChunk;
 
         int numSections = sections != null ? sections.length : 0;
-        this.sections = new ChunkSection[numSections];
+        this.rawSections = new ChunkSection[numSections];
         for (int i = 0; i < numSections; ++i) {
             if (sections[i] != null) {
-                this.sections[i] = sections[i].snapshot();
+                this.rawSections[i] = sections[i].snapshot();
             }
         }
 
         this.height = height;
-        this.biomes = biomes;
+        this.rawBiomes = biomes;
 
         if (svTemp) {
-            int baseX = x << 4, baseZ = z << 4;
-            temp = new double[16 * 16];
-            humid = new double[16 * 16];
+            int baseX = x << 4;
+            int baseZ = z << 4;
+            temp = new double[(16 << 4)];
+            humid = new double[(16 << 4)];
             for (int xx = 0; xx < 16; ++xx) {
                 for (int zz = 0; zz < 16; ++zz) {
                     temp[coordToIndex(xx, zz)] = world.getTemperature(baseX + xx, baseZ + zz);
@@ -55,21 +86,17 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     private ChunkSection getSection(int y) {
         int idx = y >> 4;
-        if (idx < 0 || idx >= sections.length) {
+        if (idx < 0 || idx >= rawSections.length) {
             return null;
         }
-        return sections[idx];
+        return rawSections[idx];
     }
 
     /**
-     * Get the ChunkSection array backing this snapshot. In general, it should not be modified.
+     * Returns the heightmap, converted to an {@code int[]}.
      *
-     * @return The array of ChunkSections.
+     * @return the heightmap as an {@code int[]}
      */
-    public ChunkSection[] getRawSections() {
-        return sections;
-    }
-
     public int[] getRawHeightmap() {
         int[] result = new int[height.length];
         for (int i = 0; i < result.length; ++i) {
@@ -78,39 +105,20 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return result;
     }
 
-    public byte[] getRawBiomes() {
-        return biomes;
-    }
-
-    @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getZ() {
-        return z;
-    }
-
-    @Override
-    public String getWorldName() {
-        return world;
-    }
-
-    @Override
-    public long getCaptureFullTime() {
-        return time;
-    }
-
     @Override
     public boolean isSectionEmpty(int sy) {
-        return sy < 0 || sy >= sections.length || sections[sy] == null;
+        return sy < 0 || sy >= rawSections.length || rawSections[sy] == null;
     }
 
     @Override
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) >> 4;
+    }
+
+    @Override
+    public Material getBlockType(int x, int y, int z) {
+        return Material.getMaterial(getBlockTypeId(x, y, z));
     }
 
     @Override
@@ -138,7 +146,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     @Override
     public Biome getBiome(int x, int z) {
-        return GlowBiome.getBiome(biomes[coordToIndex(x, z)]);
+        return GlowBiome.getBiome(rawBiomes[coordToIndex(x, z)]);
     }
 
     @Override
@@ -152,8 +160,9 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     }
 
     private int coordToIndex(int x, int z) {
-        if (x < 0 || z < 0 || x >= GlowChunk.WIDTH || z >= GlowChunk.HEIGHT)
+        if (x < 0 || z < 0 || x >= GlowChunk.WIDTH || z >= GlowChunk.HEIGHT) {
             throw new IndexOutOfBoundsException();
+        }
 
         return z * GlowChunk.WIDTH + x;
     }
@@ -161,7 +170,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
     public static class EmptySnapshot extends GlowChunkSnapshot {
 
         public EmptySnapshot(int x, int z, World world, boolean svBiome, boolean svTemp) {
-            super(x, z, world, null, null, svBiome ? new byte[256] : null, svTemp);
+            super(x, z, world, null, null, svBiome ? new byte[256] : null, svTemp, false);
         }
 
         @Override

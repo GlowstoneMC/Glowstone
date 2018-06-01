@@ -5,16 +5,15 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 
 public class VindicatorStore extends MonsterStore<GlowVindicator> {
+
     public VindicatorStore() {
-        super(GlowVindicator.class, EntityType.VINDICATOR);
+        super(GlowVindicator.class, EntityType.VINDICATOR, GlowVindicator::new);
     }
 
     @Override
     public void load(GlowVindicator entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isByte("Johnny")) {
-            entity.setJohnny(tag.getBool("Johnny"));
-        }
+        tag.readBoolean("Johnny", entity::setJohnny);
     }
 
     @Override

@@ -1,22 +1,21 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
+import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
 import net.glowstone.net.message.play.player.PlayerUpdateMessage;
+import net.glowstone.util.Position;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
-
-import java.util.Objects;
 
 public final class PlayerUpdateHandler implements MessageHandler<GlowSession, PlayerUpdateMessage> {
 
@@ -30,7 +29,8 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         message.update(newLocation);
 
         // don't let players reach an illegal position
-        if (Math.abs(newLocation.getBlockX()) > 32000000 || Math.abs(newLocation.getBlockZ()) > 32000000) {
+        if (Math.abs(newLocation.getBlockX()) > 32000000
+            || Math.abs(newLocation.getBlockZ()) > 32000000) {
             session.getPlayer().kickPlayer("Illegal position");
             return;
         }
@@ -52,18 +52,19 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
             } else {
                 double distance = newLocation.distanceSquared(oldLocation);
                 if (distance > 100 * 100) {
-                    session.getPlayer().kickPlayer("You moved too quickly :( (Hacking?)");
+                    player.kickPlayer("You moved too quickly :( (Hacking?)");
                     return;
                 } else if (distance > 100) {
-                    GlowServer.logger.warning(session.getPlayer().getName() + " moved too quickly!");
+                    GlowServer.logger.warning(player.getName() + " moved too quickly!");
                 }
             }
         }
 
-
         // call move event if movement actually occurred and there are handlers registered
-        if (!oldLocation.equals(newLocation) && PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
-            PlayerMoveEvent event = EventFactory.callEvent(new PlayerMoveEvent(player, oldLocation, newLocation));
+        if (!oldLocation.equals(newLocation)
+            && PlayerMoveEvent.getHandlerList().getRegisteredListeners().length > 0) {
+            PlayerMoveEvent event = EventFactory.getInstance()
+                .callEvent(new PlayerMoveEvent(player, oldLocation, newLocation));
             if (event.isCancelled()) {
                 // tell client they're back where they started
                 session.send(new PositionRotationMessage(oldLocation));
@@ -77,7 +78,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
                 return;
             }
 
-            if (!Objects.equals(session.getPlayer().getLocation(), oldLocation)) {
+            if (!Objects.equals(player.getLocation(), oldLocation)) {
                 // plugin changed location on move event
                 return;
             }
@@ -85,6 +86,9 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // move event was not fired or did nothing, simply update location
         player.setRawLocation(newLocation);
+        if (Position.hasRotated(oldLocation, newLocation)) {
+            player.setHeadYaw(newLocation.getYaw());
+        }
 
         // do stuff with onGround if we need to
         if (player.isOnGround() != message.isOnGround()) {
@@ -101,7 +105,8 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
 
         // Checks if the player is still wearing the Elytra
         ItemStack chestplate = player.getInventory().getChestplate();
-        boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA && chestplate.getDurability() < chestplate.getType().getMaxDurability();
+        boolean hasElytra = chestplate != null && chestplate.getType() == Material.ELYTRA
+            && chestplate.getDurability() < chestplate.getType().getMaxDurability();
         if (player.isGliding() && (player.isOnGround() || !hasElytra)) {
             player.setGliding(false);
         }
@@ -113,7 +118,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         delta.setX(Math.abs(delta.getX()));
         delta.setY(Math.abs(delta.getY()));
         delta.setZ(Math.abs(delta.getZ()));
-        int flatDistance = (int) Math.round(Math.sqrt(NumberConversions.square(delta.getX()) + NumberConversions.square(delta.getZ())) * 100.0);
+        int flatDistance = (int) Math.round(Math.hypot(delta.getX(), delta.getZ()) * 100.0);
         if (message.isOnGround()) {
             if (flatDistance > 0) {
                 if (player.isSprinting()) {
@@ -133,7 +138,5 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
                 player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
             }
         }
-
-
     }
 }

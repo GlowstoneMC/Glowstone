@@ -1,12 +1,15 @@
 package net.glowstone.util.collection;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
+import com.google.common.collect.ImmutableList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link SuperSet}.
@@ -40,10 +43,12 @@ public class SuperSetTest {
         for (int i = 0; i < 2 * CASES; i++) {
             if (i < CASES) {
                 // Half true
-                Assert.assertTrue("SuperSet.contains returned false for " + prefix + " iteration " + i, set.contains(prefix + i));
+                assertThat("SuperSet.contains returned false for " + prefix + " iteration " + i,
+                    set, hasItem(prefix + i));
             } else {
                 // Half false
-                Assert.assertFalse("SuperSet.contains returned true for set " + prefix + " iteration " + i, set.contains(prefix + i));
+                assertThat("SuperSet.contains returned true for set " + prefix + " iteration " + i,
+                    set, not(hasItem(prefix + i)));
             }
         }
     }
@@ -59,9 +64,9 @@ public class SuperSetTest {
     @Test
     public void sizeTest() {
         Set<String> sets = generateTestSet();
-        Assert.assertEquals("Populated set size test failed", sets.size(), CASES * 2);
+        assertThat("Populated set size test failed", CASES << 1, is(sets.size()));
         sets.clear();
-        Assert.assertEquals("Cleared set size test failed", sets.size(), 0);
+        assertThat("Cleared set size test failed", 0, is(sets.size()));
     }
 
 }

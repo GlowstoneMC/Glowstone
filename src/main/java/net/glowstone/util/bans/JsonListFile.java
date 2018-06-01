@@ -1,17 +1,20 @@
 package net.glowstone.util.bans;
 
-import net.glowstone.GlowServer;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import net.glowstone.GlowServer;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * Tools for storing lists of entries in JSON files.
@@ -103,6 +106,7 @@ public abstract class JsonListFile {
      * Base interface for entries in JSON list files.
      */
     protected interface BaseEntry {
+
         /**
          * Serialize this entry to JSON format.
          *

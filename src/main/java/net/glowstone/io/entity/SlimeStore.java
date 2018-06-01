@@ -1,29 +1,22 @@
 package net.glowstone.io.entity;
 
+import java.util.function.Function;
 import net.glowstone.entity.monster.GlowSlime;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 class SlimeStore<T extends GlowSlime> extends MonsterStore<T> {
 
-    public SlimeStore(Class<T> clazz, EntityType type) {
-        super(clazz, type);
+    public SlimeStore(Class<T> clazz, EntityType type, Function<Location, ? extends T> creator) {
+        super(clazz, type, creator);
     }
 
     @Override
     public void load(T entity, CompoundTag tag) {
         super.load(entity, tag);
-        if (tag.isInt("Size")) {
-            entity.setSize(tag.getInt("Size"));
-        } else {
-            entity.setSize(1);
-        }
-
-        if (tag.isByte("wasOnGround")) {
-            entity.setOnGround(tag.getBool("wasOnGround"));
-        } else {
-            entity.setOnGround(false);
-        }
+        entity.setSize(tag.tryGetInt("Size").orElse(1));
+        entity.setOnGround(tag.getBoolean("wasOnGround", false));
     }
 
     @Override

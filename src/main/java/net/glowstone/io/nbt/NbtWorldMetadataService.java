@@ -1,35 +1,50 @@
 package net.glowstone.io.nbt;
 
-import net.glowstone.GlowServer;
-import net.glowstone.GlowWorld;
-import net.glowstone.GlowWorldBorder;
-import net.glowstone.io.WorldMetadataService;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
-import net.glowstone.util.nbt.NBTOutputStream;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.WorldType;
-
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.UUID;
-import java.util.logging.Level;
+import net.glowstone.GlowWorld;
+import net.glowstone.GlowWorldBorder;
+import net.glowstone.ServerProvider;
+import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.io.WorldMetadataService;
+import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.NbtInputStream;
+import net.glowstone.util.nbt.NbtOutputStream;
+import org.bukkit.Location;
+import org.bukkit.Server;
+import org.bukkit.WorldType;
 
+@SuppressWarnings("HardCodedStringLiteral")
 public class NbtWorldMetadataService implements WorldMetadataService {
+
+    private static final String UUID_FILE = "uid.dat"; // NON-NLS
+    private static final String LEVEL_FILE = "level.dat"; // NON-NLS
     private final GlowWorld world;
     private final File dir;
-    private final GlowServer server;
+    private final Server server;
 
     private CompoundTag unknownTags;
 
+    /**
+     * Creates the instance for the given world's metadata.
+     *
+     * @param world the world
+     * @param dir the world's metadata folder, containing uid.dat and level.dat if the world has
+     *         been previously saved; if this folder doesn't exist, it is created
+     */
     public NbtWorldMetadataService(GlowWorld world, File dir) {
         this.world = world;
         this.dir = dir;
-        server = (GlowServer) Bukkit.getServer();
+        server = ServerProvider.getServer();
 
         if (!dir.isDirectory() && !dir.mkdirs()) {
-            server.getLogger().warning("Failed to create directory: " + dir);
+            LocalizedStrings.Console.Error.Io.MKDIR.log(dir);
         }
     }
 
@@ -37,12 +52,12 @@ public class NbtWorldMetadataService implements WorldMetadataService {
     public WorldFinalValues readWorldData() {
         // determine UUID of world
         UUID uid = null;
-        File uuidFile = new File(dir, "uid.dat");
+        File uuidFile = new File(dir, UUID_FILE);
         if (uuidFile.exists()) {
             try (DataInputStream in = new DataInputStream(new FileInputStream(uuidFile))) {
                 uid = new UUID(in.readLong(), in.readLong());
             } catch (IOException e) {
-                handleWorldException("uid.dat", e);
+                handleWorldException(UUID_FILE, e);
             }
         }
         if (uid == null) {
@@ -51,112 +66,100 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // read in world information
         CompoundTag level = new CompoundTag();
-        File levelFile = new File(dir, "level.dat");
+        File levelFile = new File(dir, LEVEL_FILE);
         if (levelFile.exists()) {
-            try (NBTInputStream in = new NBTInputStream(new FileInputStream(levelFile))) {
-                level = in.readCompound();
-                if (level.isCompound("Data")) {
-                    level = level.getCompound("Data");
-                } else {
-                    server.getLogger().warning("Loading world \"" + world.getName() + "\": reading from root, not Data");
-                }
+            try (NbtInputStream in = new NbtInputStream(new FileInputStream(levelFile))) {
+                CompoundTag levelOuter = in.readCompound();
+                level = levelOuter.tryGetCompound("Data").orElseGet(() -> {
+                    LocalizedStrings.Console.Warn.Io.NO_WORLD_DATA_TAG.log(world.getName());
+                    return levelOuter;
+                });
             } catch (IOException e) {
-                handleWorldException("level.dat", e);
+                handleWorldException(LEVEL_FILE, e);
             }
         }
 
         // seed
-        long seed = 0L;
-        if (level.isLong("RandomSeed")) {
-            seed = level.getLong("RandomSeed");
-            level.remove("RandomSeed");
-        }
+        final long seed = level.tryGetLong("RandomSeed").orElse(0L);
 
         // time of day and weather status
-        if (level.isByte("thundering")) {
-            world.setThundering(level.getBool("thundering"));
+        if (level.readBoolean("thundering", world::setThundering)) {
             level.remove("thundering");
         }
-        if (level.isByte("raining")) {
-            world.setStorm(level.getBool("raining"));
+        if (level.readBoolean("raining", world::setStorm)) {
             level.remove("raining");
         }
-        if (level.isInt("thunderTime")) {
-            world.setThunderDuration(level.getInt("thunderTime"));
+        if (level.readInt("thunderTime", world::setThunderDuration)) {
             level.remove("thunderTime");
         }
-        if (level.isInt("rainTime")) {
-            world.setWeatherDuration(level.getInt("rainTime"));
+        if (level.readInt("rainTime", world::setWeatherDuration)) {
             level.remove("rainTime");
         }
-        if (level.isLong("Time")) {
-            world.setFullTime(level.getLong("Time"));
+        if (level.readLong("Time", world::setFullTime)) {
             level.remove("Time");
         }
-        if (level.isLong("DayTime")) {
-            world.setTime(level.getLong("DayTime"));
+        if (level.readLong("DayTime", world::setTime)) {
             level.remove("DayTime");
         }
-        if (level.isString("generatorName")) {
-            world.setWorldType(WorldType.getByName(level.getString("generatorName")));
+        if (level.readString("generatorName",
+            generatorName -> world.setWorldType(WorldType.getByName(generatorName)))) {
             level.remove("generatorName");
         }
 
         // spawn position
         if (level.isInt("SpawnX") && level.isInt("SpawnY") && level.isInt("SpawnZ")) {
-            world.setSpawnLocation(level.getInt("SpawnX"), level.getInt("SpawnY"), level.getInt("SpawnZ"));
+            world.setSpawnLocation(level.getInt("SpawnX"), level.getInt("SpawnY"),
+                level.getInt("SpawnZ"), false);
             level.remove("SpawnX");
             level.remove("SpawnY");
             level.remove("SpawnZ");
         }
 
         // game rules
-        if (level.isCompound("GameRules")) {
-            CompoundTag gameRules = level.getCompound("GameRules");
-            gameRules.getValue().keySet().stream().filter(gameRules::isString).forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)));
+        if (level.readCompound("GameRules", gameRules ->
+                gameRules.getValue().keySet().stream().filter(gameRules::isString)
+                    .forEach(key -> world.setGameRuleValue(key, gameRules.getString(key)))
+        )) {
             level.remove("GameRules");
         }
 
         // world border
         Location borderCenter = new Location(world, 0, 0, 0);
-        if (level.isDouble("BorderCenterX")) {
-            borderCenter.setX(level.getDouble("BorderCenterX"));
+        if (level.readDouble("BorderCenterX", borderCenter::setX)) {
             level.remove("BorderCenterX");
         }
-        if (level.isDouble("BorderCenterZ")) {
-            borderCenter.setZ(level.getDouble("BorderCenterZ"));
+        if (level.readDouble("BorderCenterZ", borderCenter::setZ)) {
             level.remove("BorderCenterZ");
         }
-        world.getWorldBorder().setCenter(borderCenter);
-        if (level.isDouble("BorderSize")) {
-            world.getWorldBorder().setSize(level.getDouble("BorderSize"));
+        GlowWorldBorder worldBorder = world.getWorldBorder();
+        worldBorder.setCenter(borderCenter);
+        if (level.readDouble("BorderSize", worldBorder::setSize)) {
             level.remove("BorderSize");
         }
         if (level.isDouble("BorderSizeLerpTarget") && level.isLong("BorderSizeLerpTime")) {
-            world.getWorldBorder().setSize(level.getDouble("BorderSizeLerpTarget"), level.getLong("BorderSizeLerpTime"));
+            worldBorder.setSize(level.getDouble("BorderSizeLerpTarget"),
+                level.getLong("BorderSizeLerpTime"));
             level.remove("BorderSizeLerpTarget");
             level.remove("BorderSizeLerpTime");
         }
-        if (level.isDouble("BorderSafeZone")) {
-            world.getWorldBorder().setDamageBuffer(level.getDouble("BorderSafeZone"));
+        if (level.readDouble("BorderSafeZone", worldBorder::setDamageBuffer)) {
             level.remove("BorderSafeZone");
         }
-        if (level.isDouble("BorderWarningTime")) {
-            world.getWorldBorder().setWarningTime((int) level.getDouble("BorderWarningTime"));
+        if (level.readDouble("BorderWarningTime", time -> worldBorder.setWarningTime((int) time)
+        )) {
             level.remove("BorderWarningTime");
         }
-        if (level.isDouble("BorderWarningBlocks")) {
-            world.getWorldBorder().setWarningDistance((int) level.getDouble("BorderWarningBlocks"));
+        if (level.readDouble("BorderWarningBlocks",
+            distance -> worldBorder.setWarningDistance((int) distance))) {
             level.remove("BorderWarningBlocks");
         }
-        if (level.isDouble("BorderDamagePerBlock")) {
-            world.getWorldBorder().setDamageAmount(level.getDouble("BorderDamagePerBlock"));
+        if (level.readDouble("BorderDamagePerBlock", worldBorder::setDamageAmount)) {
             level.remove("BorderDamagePerBlock");
         }
 
         // strip single-player Player tag if it exists
         if (level.isCompound("Player")) {
-            server.getLogger().warning("World \"" + world.getName() + "\": removing single-player Player tag");
+            LocalizedStrings.Console.Warn.Io.REMOVING_SINGLE_PLAYER.log(world.getName());
             level.remove("Player");
         }
 
@@ -168,12 +171,12 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
     private void handleWorldException(String file, IOException e) {
         server.unloadWorld(world, false);
-        server.getLogger().log(Level.SEVERE, "Unable to access " + file + " for world " + world.getName(), e);
+        LocalizedStrings.Console.Error.Io.WORLD_READ.log(e, file, world.getName());
     }
 
     @Override
     public void writeWorldData() throws IOException {
-        File uuidFile = new File(dir, "uid.dat");
+        File uuidFile = new File(dir, UUID_FILE);
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(uuidFile))) {
             UUID uuid = world.getUID();
             out.writeLong(uuid.getMostSignificantBits());
@@ -211,8 +214,8 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         out.putDouble("BorderCenterX", world.getWorldBorder().getCenter().getX());
         out.putDouble("BorderCenterZ", world.getWorldBorder().getCenter().getZ());
         out.putDouble("BorderSize", world.getWorldBorder().getSize());
-        out.putDouble("BorderSizeLerpTarget", ((GlowWorldBorder) world.getWorldBorder()).futureSize);
-        out.putLong("BorderSizeLerpTime", ((GlowWorldBorder) world.getWorldBorder()).time);
+        out.putDouble("BorderSizeLerpTarget", world.getWorldBorder().getSizeLerpTarget());
+        out.putLong("BorderSizeLerpTime", world.getWorldBorder().getSizeLerpTime());
         out.putDouble("BorderSafeZone", world.getWorldBorder().getDamageBuffer());
         out.putDouble("BorderWarningTime", world.getWorldBorder().getWarningTime());
         out.putDouble("BorderWarningBlocks", world.getWorldBorder().getWarningDistance());
@@ -231,10 +234,11 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         CompoundTag root = new CompoundTag();
         root.putCompound("Data", out);
-        try (NBTOutputStream nbtOut = new NBTOutputStream(new FileOutputStream(new File(dir, "level.dat")))) {
+        try (NbtOutputStream nbtOut = new NbtOutputStream(
+            new FileOutputStream(new File(dir, LEVEL_FILE)))) {
             nbtOut.writeTag(root);
         } catch (IOException e) {
-            handleWorldException("level.dat", e);
+            handleWorldException(LEVEL_FILE, e);
         }
     }
 }

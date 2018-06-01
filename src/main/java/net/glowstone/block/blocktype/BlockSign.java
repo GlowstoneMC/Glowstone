@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.SignEntity;
 import net.glowstone.chunk.GlowChunk;
@@ -12,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Sign;
 import org.bukkit.util.Vector;
 
-public class BlockSign extends BlockType {
+public class BlockSign extends BlockNeedsAttached {
 
     public BlockSign() {
         setDrops(new ItemStack(Material.SIGN));
@@ -24,7 +25,8 @@ public class BlockSign extends BlockType {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         state.setType(getMaterial());
         if (!(state.getData() instanceof Sign)) {
             warnMaterialData(Sign.class, state.getData());
@@ -35,7 +37,16 @@ public class BlockSign extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         player.openSignEditor(block.getLocation());
+    }
+
+    @Override
+    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+        Material targetMat = ItemTable.instance().getBlock(
+            block.getRelative(against.getOppositeFace()).getType()).getMaterial();
+        return canAttachTo(block, against) || targetMat == Material.SIGN_POST
+            || targetMat == Material.WALL_SIGN; 
     }
 }

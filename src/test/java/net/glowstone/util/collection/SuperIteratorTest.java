@@ -1,12 +1,13 @@
 package net.glowstone.util.collection;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link SuperIterator}.
@@ -21,8 +22,8 @@ public class SuperIteratorTest {
 
     private void checkIterator(Iterator<String> iterator, String prefix) {
         for (int i = 0; i < 10; i++) {
-            Assert.assertTrue("Iterator hasNext prematurely returned false", iterator.hasNext());
-            Assert.assertEquals("Iterator returned an invalid object", prefix + i, iterator.next());
+            assertThat("Iterator hasNext prematurely returned false", iterator.hasNext(), is(true));
+            assertThat("Iterator returned an invalid object", iterator.next(), is(prefix + i));
         }
     }
 
@@ -40,7 +41,7 @@ public class SuperIteratorTest {
         checkIterator(iterator, "A");
         checkIterator(iterator, "B");
 
-        Assert.assertFalse("Expected hasNext = false", iterator.hasNext());
+        assertThat("Expected hasNext = false", iterator.hasNext(), is(false));
     }
 
 }

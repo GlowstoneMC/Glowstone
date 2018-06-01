@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.entity.EntityRotationMessage;
 
-import java.io.IOException;
-
 public final class EntityRotationCodec implements Codec<EntityRotationMessage> {
+
     @Override
     public EntityRotationMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);

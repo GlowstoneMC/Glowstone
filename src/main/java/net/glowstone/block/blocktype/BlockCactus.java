@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -7,10 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockCactus extends BlockType {
-
-    private static final BlockFace[] NEAR_BLOCKS = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
@@ -19,7 +21,8 @@ public class BlockCactus extends BlockType {
     }
 
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
@@ -62,7 +65,7 @@ public class BlockCactus extends BlockType {
                     state.setType(Material.CACTUS);
                     state.setRawData((byte) 0);
                     BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
-                    EventFactory.callEvent(growEvent);
+                    EventFactory.getInstance().callEvent(growEvent);
                     if (!growEvent.isCancelled()) {
                         state.update(true);
                     }
@@ -73,7 +76,7 @@ public class BlockCactus extends BlockType {
     }
 
     private boolean hasNearBlocks(GlowBlock block) {
-        for (BlockFace face : NEAR_BLOCKS) {
+        for (BlockFace face : SIDES) {
             if (!canPlaceNear(block.getRelative(face).getType())) {
                 return true;
             }
@@ -123,5 +126,11 @@ public class BlockCactus extends BlockType {
             default:
                 return true;
         }
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
+        // Overridden for cactus to remove data from the dropped item
+        return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.CACTUS)));
     }
 }

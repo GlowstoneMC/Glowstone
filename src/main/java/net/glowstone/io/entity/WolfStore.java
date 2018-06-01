@@ -8,14 +8,15 @@ import org.bukkit.entity.EntityType;
 class WolfStore extends TameableStore<GlowWolf> {
 
     public WolfStore() {
-        super(GlowWolf.class, EntityType.WOLF);
+        super(GlowWolf.class, EntityType.WOLF, GlowWolf::new);
     }
 
     @Override
     public void load(GlowWolf entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setCollarColor(DyeColor.getByDyeData(compound.getByte("CollarColor")));
-        entity.setAngry(compound.getBool("Angry"));
+        compound.readByte("CollarColor",
+            color -> entity.setCollarColor(DyeColor.getByDyeData(color)));
+        compound.readBoolean("Angry", entity::setAngry);
     }
 
     @Override

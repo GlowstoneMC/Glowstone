@@ -36,4 +36,9 @@ public class GlowEndermite extends GlowMonster implements Endermite {
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ENDERMITE_AMBIENT;
     }
+
+    @Override
+    public boolean isArthropod() {
+        return true;
+    }
 }

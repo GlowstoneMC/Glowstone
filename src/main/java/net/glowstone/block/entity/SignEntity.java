@@ -1,25 +1,30 @@
 package net.glowstone.block.entity;
 
+import java.util.Arrays;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.state.GlowSign;
+import net.glowstone.block.entity.state.GlowSign;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.TextMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 
-import java.util.Arrays;
-
 public class SignEntity extends BlockEntity {
 
     private final TextMessage[] lines = new TextMessage[4];
 
+    /**
+     * Creates the entity for the given sign block.
+     *
+     * @param block a sign block (wall or post)
+     */
     public SignEntity(GlowBlock block) {
         super(block);
         setSaveId("minecraft:sign");
 
         if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
-            throw new IllegalArgumentException("Sign must be WALL_SIGN or SIGN_POST, got " + block.getType());
+            throw new IllegalArgumentException(
+                "Sign must be WALL_SIGN or SIGN_POST, got " + block.getType());
         }
 
         Arrays.fill(lines, new TextMessage(""));
@@ -34,10 +39,8 @@ public class SignEntity extends BlockEntity {
     public void loadNbt(CompoundTag tag) {
         super.loadNbt(tag);
         for (int i = 0; i < lines.length; ++i) {
-            String key = "Text" + (i + 1);
-            if (tag.isString(key)) {
-                lines[i] = TextMessage.decode(tag.getString(key));
-            }
+            final int finalI = i;
+            tag.readString("Text" + (i + 1), line -> lines[finalI] = TextMessage.decode(line));
         }
     }
 
@@ -56,6 +59,7 @@ public class SignEntity extends BlockEntity {
 
     /**
      * Get the lines of text on the sign.
+     *
      * @return The sign's lines.
      */
     public String[] getLines() {
@@ -74,7 +78,8 @@ public class SignEntity extends BlockEntity {
      */
     public void setLines(String... text) {
         if (text.length != lines.length) {
-            throw new IllegalArgumentException("Provided lines were length " + text.length + ", must be " + lines.length);
+            throw new IllegalArgumentException(
+                "Provided lines were length " + text.length + ", must be " + lines.length);
         }
 
         for (int i = 0; i < lines.length; ++i) {

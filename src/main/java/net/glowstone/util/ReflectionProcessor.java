@@ -11,14 +11,19 @@ public class ReflectionProcessor {
     private Object[] context;
 
     /**
-     * Creates a new reflection processor instance
+     * Creates a new reflection processor instance.
      *
-     * @param line    the reflection line. The format of this line is defined by the following;
-     *                Use $ to reference the first context (equivalent to $1)
-     *                Use $x to reference a specific context, where 'x' is the index of the context (starting from 1)
-     *                To reference a static method/field call, specifying the full package is required
-     *                More info here: https://github.com/momothereal/OneLineReflection/blob/master/README.md
+     * <p>The processor is able to parse referenced contexts with the following syntax: <ol> <li>$
+     * to reference the first context (equivalent to $1)</li> <li>$x to reference a specific
+     * context, where 'x' is the index of the context (starting from 1)</li> </ol>
+     *
+     * <p>To reference a static method/field call, specifying the full package is required.
+     *
+     * @param line the reflection line.
      * @param context the context(s) of the reflection line
+     * @see
+     * <a href="https://github.com/momothereal/OneLineReflection/blob/master/README.md">OneLineReflection
+     *         README</a>
      */
     public ReflectionProcessor(String line, Object... context) {
         this.line = line;
@@ -26,7 +31,7 @@ public class ReflectionProcessor {
     }
 
     /**
-     * Processes the given reflective line
+     * Processes the given reflective line.
      *
      * @return the resultant value of the reflective line
      */
@@ -36,51 +41,69 @@ public class ReflectionProcessor {
         String[] sections = splitUpper();
         for (int i = 0; i < sections.length; i++) {
             String section = sections[i];
-            if (section.equals("$") || section.equals("this")) {                     // Context #1
+            if (section.equals("$") || section.equals("this")) {
+                // Context #1
                 cxt = context[0];
-            } else if (section.startsWith("$") && section.substring(1, section.length()).matches("[0-9]+")) { // Context #X
+            } else if (section.length() > 0 && section.charAt(0) == '$' && section
+                    .substring(1, section.length()).matches("[0-9]+")) {
+                // Context #X
                 int index = Integer.valueOf(section.replace("$", "")) - 1;
                 cxt = context[index];
-            } else if (section.startsWith("\"") && section.endsWith("\"")) {         // String literal
+            } else if (section.length() > 0 && section.charAt(0) == '\"' && section.length() > 0
+                    && section.charAt(section.length() - 1) == '\"') {
+                // String literal
                 section = section.substring(1, section.length() - 1);
-                if (i == sections.length - 1)
+                if (i == sections.length - 1) {
                     return section;
+                }
                 cxt = section;
-            } else if (section.equals("true") || section.equals("false")) {          // Boolean literal
+            } else if (section.equals("true") || section.equals("false")) {
+                // Boolean literal
                 Boolean value = Boolean.valueOf(section);
-                if (i == sections.length - 1)
+                if (i == sections.length - 1) {
                     return value;
+                }
                 cxt = value;
-            } else if (section.replaceAll("[0-9]+", "").equals("")) {                // Integer literal
+            } else if (section.replaceAll("[0-9]+", "").equals("")) {
+                // Integer literal
                 Integer value = Integer.valueOf(section);
-                if (i == sections.length - 1)
+                if (i == sections.length - 1) {
                     return value;
+                }
                 cxt = value;
-            } else if (section.replaceAll("[0-9]+", "").toLowerCase().equals("l")) { // Long literal
+            } else if (section.replaceAll("[0-9]+", "").toLowerCase().equals("l")) {
+                // Long literal
                 Long value = Long.valueOf(section.substring(0, section.length() - 1));
-                if (i == sections.length - 1)
+                if (i == sections.length - 1) {
                     return value;
+                }
                 cxt = value;
-            } else if (section.contains("(") && section.contains(")")) {             // Method
+            } else if (section.contains("(") && section.contains(")")) {
+                // Method
                 String name = getMethodName(section);
                 String[] parameters = getMethodParams(section);
-                if (i == sections.length - 1)
+                if (i == sections.length - 1) {
                     return invokeMethod(cxt, name, parameters);
+                }
                 cxt = invokeMethod(cxt, name, parameters);
             } else {
                 Object field = invokeField(cxt, section);
-                if (field == null) {                                                 // Class
+                if (field == null) {
+                    // Class
                     tmpPackage += section + ".";
                     Object clazz = invokeClass(tmpPackage);
                     if (clazz != null) {
-                        if (i == sections.length - 1)
+                        if (i == sections.length - 1) {
                             return clazz;
+                        }
                         cxt = clazz;
                         tmpPackage = "";
                     }
-                } else {                                                             // Field
-                    if (i == sections.length - 1)
+                } else {
+                    // Field
+                    if (i == sections.length - 1) {
                         return field;
+                    }
                     cxt = field;
                 }
             }
@@ -89,13 +112,13 @@ public class ReflectionProcessor {
     }
 
     /**
-     * Returns the returned value of an invoked method in a contextual object
+     * Returns the returned value of an invoked method in a contextual object.
      *
      * @param context the object
-     * @param name    the name of the method
+     * @param name the name of the method
      * @return the invokation's return value
      */
-    private Object invokeMethod(Object context, String name, String[] parameters) {
+    private Object invokeMethod(Object context, String name, String... parameters) {
         try {
             ArrayList<Object> params = new ArrayList<>();
             for (String parameter : parameters) {
@@ -110,11 +133,13 @@ public class ReflectionProcessor {
                 classes[i] = param.getClass();
             }
             Class clazz = context.getClass();
-            if (context instanceof Class)
+            if (context instanceof Class) {
                 clazz = (Class) context;
+            }
             Method method = getMethod(name, clazz, classes);
-            if (!method.isAccessible())
+            if (!method.isAccessible()) {
                 method.setAccessible(true);
+            }
             return method.invoke(context, params.toArray(new Object[params.size()]));
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
@@ -122,7 +147,7 @@ public class ReflectionProcessor {
         return null;
     }
 
-    private Method getMethod(String name, Class clazz, Class[] parameters) {
+    private Method getMethod(String name, Class clazz, Class... parameters) {
         try {
             return clazz.getMethod(name, parameters);
         } catch (NoSuchMethodException e) {
@@ -165,32 +190,45 @@ public class ReflectionProcessor {
     }
 
     /**
-     * Returns the value of a field in a contextual object
+     * Returns the value of a field in a contextual object.
      *
      * @param context the object
-     * @param name    the name of the field
+     * @param name the name of the field
      * @return the field's value in context
      */
     private Object invokeField(Object context, String name) {
         try {
             Field field = context.getClass().getField(name);
-            if (!field.isAccessible())
+            if (!field.isAccessible()) {
                 field.setAccessible(true);
+            }
             return field.get(context);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            // is it an enum?
+            if (context != null && context instanceof Class) {
+                boolean isEnum = ((Class) context).isEnum();
+                if (isEnum) {
+                    try {
+                        return getMethod("valueOf", (Class) context, String.class)
+                                .invoke(null, name);
+                    } catch (Exception expected) {
+                    }
+                }
+            }
         }
         return null;
     }
 
     /**
-     * Invokes a class from its full-length name, including package
+     * Invokes a class from its full-length name, including package.
      *
      * @param name the name of the class, preceded with its package
      * @return the specified class, null if it is non-existent
      */
     private Class invokeClass(String name) {
-        if (name.endsWith("."))
+        if (name.length() > 0 && name.charAt(name.length() - 1) == '.') {
             name = name.substring(0, name.length() - 1);
+        }
         try {
             return (Class) ClassLoader.getSystemClassLoader().loadClass(name);
         } catch (ClassNotFoundException e) {
@@ -199,9 +237,10 @@ public class ReflectionProcessor {
     }
 
     /**
-     * Gets the parameters inside a method parentheses enclosure
+     * Gets the parameters inside a method parentheses enclosure.
      *
-     * @param section the method and its parameters, which are enclosed in parentheses and separated with commas (,)
+     * @param section the method and its parameters, which are enclosed in parentheses and
+     *         separated with commas (,)
      * @return the parameters
      */
     private String[] getMethodParams(String section) {
@@ -235,19 +274,21 @@ public class ReflectionProcessor {
                 current = "";
                 continue;
             }
-            if (!inString && c == ' ')
+            if (!inString && c == ' ') {
                 continue;
+            }
             if (c == '\"' && section.charAt(i - 1) != '\\') {
                 inString = !inString;
             }
-            if (level > 0)
+            if (level > 0) {
                 current += c;
+            }
         }
         return parameters.toArray(new String[parameters.size()]);
     }
 
     /**
-     * Gets the name of a method from a segment
+     * Gets the name of a method from a segment.
      *
      * @param section the segment containing the method (including parentheses)
      * @return the name of the method
@@ -255,8 +296,9 @@ public class ReflectionProcessor {
     private String getMethodName(String section) {
         StringBuilder builder = new StringBuilder();
         for (char c : section.toCharArray()) {
-            if (c == '(')
+            if (c == '(') {
                 return builder.toString();
+            }
             builder.append(c);
         }
         return builder.toString();
@@ -280,8 +322,9 @@ public class ReflectionProcessor {
             }
             current += c;
         }
-        if (!current.equals(""))
+        if (!current.equals("")) {
             sections.add(current);
+        }
         return sections.toArray(new String[sections.size()]);
     }
 }

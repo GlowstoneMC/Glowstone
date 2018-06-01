@@ -7,7 +7,8 @@ public enum MaterialToolType implements MaterialMatcher {
     STONE(Material.STONE_AXE, Material.STONE_PICKAXE, Material.STONE_SPADE, Material.STONE_HOE),
     IRON(Material.IRON_AXE, Material.IRON_PICKAXE, Material.IRON_SPADE, Material.IRON_HOE),
     GOLD(Material.GOLD_AXE, Material.GOLD_PICKAXE, Material.GOLD_SPADE, Material.GOLD_HOE),
-    DIAMOND(Material.DIAMOND_AXE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SPADE, Material.DIAMOND_HOE);
+    DIAMOND(Material.DIAMOND_AXE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SPADE,
+        Material.DIAMOND_HOE);
 
     Material[] covering;
 
@@ -17,8 +18,11 @@ public enum MaterialToolType implements MaterialMatcher {
 
     @Override
     public boolean matches(Material material) {
-        for (Material c : covering)
-            if (c == material) return true;
+        for (Material c : covering) {
+            if (c == material) {
+                return true;
+            }
+        }
         return false;
     }
 }

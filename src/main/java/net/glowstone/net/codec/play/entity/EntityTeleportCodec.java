@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.entity;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 
-import java.io.IOException;
-
 public final class EntityTeleportCodec implements Codec<EntityTeleportMessage> {
+
     @Override
     public EntityTeleportMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);

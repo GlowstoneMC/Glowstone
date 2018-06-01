@@ -8,6 +8,7 @@ import net.glowstone.net.message.play.inv.HeldItemMessage;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public final class HeldItemHandler implements MessageHandler<GlowSession, HeldItemMessage> {
+
     @Override
     public void handle(GlowSession session, HeldItemMessage message) {
         int slot = message.getSlot();
@@ -24,7 +25,7 @@ public final class HeldItemHandler implements MessageHandler<GlowSession, HeldIt
         }
 
         PlayerItemHeldEvent event = new PlayerItemHeldEvent(player, oldSlot, slot);
-        EventFactory.callEvent(event);
+        EventFactory.getInstance().callEvent(event);
 
         if (!event.isCancelled()) {
             player.getInventory().setRawHeldItemSlot(slot);

@@ -1,15 +1,38 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.inventory.GlowLlamaInventory;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Llama;
-import org.bukkit.inventory.LlamaInventory;
 
-import java.util.concurrent.ThreadLocalRandom;
+/**
+ * Represents a llama.
+ * The data comes from https://minecraft.gamepedia.com/Llama
+ */
+public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements Llama {
 
-public class GlowLlama extends GlowChestedHorse implements Llama {
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.HAY_BLOCK);
+
+    private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
+            .<Material, Integer>builder()
+            .put(Material.WHEAT, TickUtil.secondsToTicks(10))
+            .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(1.5))
+            .build();
+
+    /**
+     * Creates a llama entity.
+     *
+     * @param location the entity's location
+     */
     public GlowLlama(Location location) {
         super(location, EntityType.LLAMA, 22);
         this.setColor(Color.values()[ThreadLocalRandom.current().nextInt(Color.values().length)]);
@@ -34,11 +57,9 @@ public class GlowLlama extends GlowChestedHorse implements Llama {
     @Override
     public void setStrength(int strength) {
         metadata.set(MetadataIndex.LLAMA_STRENGTH, strength);
-    }
-
-    @Override
-    public LlamaInventory getInventory() {
-        return null; // todo
+        if (isCarryingChest()) {
+            inventory = createNewInventory();
+        }
     }
 
     @Override
@@ -55,4 +76,36 @@ public class GlowLlama extends GlowChestedHorse implements Llama {
     protected Sound getAmbientSound() {
         return Sound.ENTITY_LLAMA_AMBIENT;
     }
+
+    @Override
+    protected GlowLlamaInventory createNewInventory() {
+        GlowLlamaInventory oldInventory = inventory;
+        GlowLlamaInventory newInventory
+                = new GlowLlamaInventory(this, isCarryingChest() ? 3 * getStrength() : 0);
+        if (oldInventory != null) {
+            newInventory.setSaddle(oldInventory.getSaddle());
+            newInventory.setDecor(oldInventory.getDecor());
+            moveChestContents(oldInventory, newInventory);
+        }
+        return newInventory;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
+    }
+
+    @Override
+    protected int computeGrowthAmount(Material material) {
+        if (canGrow()) {
+            Integer mapResult = GROWING_FOODS.get(material);
+
+            if (mapResult != null) {
+                return Math.min(mapResult, Math.abs(getAge()));
+            }
+        }
+
+        return 0;
+    }
+
 }

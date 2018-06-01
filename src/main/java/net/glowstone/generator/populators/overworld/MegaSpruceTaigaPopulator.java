@@ -1,20 +1,21 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.MegaSpruceTree;
 import net.glowstone.generator.objects.trees.RedwoodTree;
 import net.glowstone.generator.objects.trees.TallRedwoodTree;
 import org.bukkit.block.Biome;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 public class MegaSpruceTaigaPopulator extends MegaTaigaPopulator {
 
-    private static final Biome[] BIOMES = {Biome.MUTATED_REDWOOD_TAIGA, Biome.MUTATED_REDWOOD_TAIGA_HILLS};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree.class, 44), new TreeDecoration(TallRedwoodTree.class, 22),
-            new TreeDecoration(MegaSpruceTree.class, 33)};
+    private static final Biome[] BIOMES = {Biome.MUTATED_REDWOOD_TAIGA,
+        Biome.MUTATED_REDWOOD_TAIGA_HILLS};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 44),
+        new TreeDecoration(TallRedwoodTree::new, 22),
+        new TreeDecoration(MegaSpruceTree::new, 33)};
 
     public MegaSpruceTaigaPopulator() {
         treeDecorator.setTrees(TREES);

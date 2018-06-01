@@ -15,8 +15,26 @@ public class BlockObserver extends BlockDirectional {
         setDrops(new ItemStack(Material.OBSERVER));
     }
 
+    public static boolean isPowered(GlowBlock block) {
+        return block.getType() == Material.OBSERVER && ((block.getData() >> POWERED_MASK) & 1) == 1;
+    }
+
+    /**
+     * Returns the direction the given block is facing, if it's an observer, or null otherwise.
+     * @param block a block
+     * @return the direction the block is facing, or null if the block isn't an observer
+     */
+    public static BlockFace getFace(GlowBlock block) {
+        if (block.getType() != Material.OBSERVER) {
+            return null;
+        }
+        byte data = (byte) (block.getData() & ~(1 << POWERED_MASK));
+        return getFace(data);
+    }
+
     @Override
-    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+        Material oldType, byte oldData, Material newType, byte newData) {
         byte data = (byte) (block.getData() & ~(1 << POWERED_MASK));
         if (data != block.getData()) {
             return;
@@ -34,20 +52,5 @@ public class BlockObserver extends BlockDirectional {
     public void receivePulse(GlowBlock block) {
         byte data = (byte) (block.getData() & ~(1 << POWERED_MASK));
         block.setData(data);
-    }
-
-    public static boolean isPowered(GlowBlock block) {
-        if (block.getType() != Material.OBSERVER) {
-            return false;
-        }
-        return ((block.getData() >> POWERED_MASK) & 1) == 1;
-    }
-
-    public static BlockFace getFace(GlowBlock block) {
-        if (block.getType() != Material.OBSERVER) {
-            return null;
-        }
-        byte data = (byte) (block.getData() & ~(1 << POWERED_MASK));
-        return getFace(data);
     }
 }

@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -16,14 +18,8 @@ import org.bukkit.material.Chest;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 public class BlockChest extends BlockContainer {
 
-    private static final BlockFace[] NEAR_CHESTS = new BlockFace[]{
-            BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST
-    };
     private final boolean isTrapped;
 
     public BlockChest() {
@@ -34,7 +30,8 @@ public class BlockChest extends BlockContainer {
         this.isTrapped = isTrapped;
     }
 
-    private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing, BlockFace connection, GlowPlayer player) {
+    private static BlockFace getFacingDirection(BlockFace myFacing, BlockFace otherFacing,
+        BlockFace connection, GlowPlayer player) {
         if (connection != myFacing && connection != myFacing.getOppositeFace()) {
             return myFacing;
         }
@@ -54,7 +51,8 @@ public class BlockChest extends BlockContainer {
             case WEST:
                 return yaw > 90 && yaw < 270 ? BlockFace.SOUTH : BlockFace.NORTH;
             default:
-                GlowServer.logger.warning("Can only handle N/O/S/W BlockFaces, getting face: " + connection);
+                GlowServer.logger
+                    .warning("Can only handle N/O/S/W BlockFaces, getting face: " + connection);
                 return BlockFace.NORTH;
         }
     }
@@ -65,7 +63,8 @@ public class BlockChest extends BlockContainer {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
@@ -99,7 +98,8 @@ public class BlockChest extends BlockContainer {
 
             if (otherPartData instanceof Chest) {
                 Chest otherChest = (Chest) otherPartData;
-                BlockFace facing = getFacingDirection(normalFacing, otherChest.getFacing(), otherPart, player);
+                BlockFace facing = getFacingDirection(normalFacing, otherChest.getFacing(),
+                    otherPart, player);
 
                 chest.setFacingDirection(facing);
                 state.setData(chest);
@@ -116,7 +116,8 @@ public class BlockChest extends BlockContainer {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         BlockState state = block.getState();
         if (state instanceof org.bukkit.block.Chest) {
             org.bukkit.block.Chest chest = (org.bukkit.block.Chest) state;
@@ -125,7 +126,8 @@ public class BlockChest extends BlockContainer {
             return true;
         }
 
-        GlowServer.logger.warning("Calling blockInteract on BlockChest, but BlockState is " + state);
+        GlowServer.logger
+            .warning("Calling blockInteract on BlockChest, but BlockState is " + state);
 
         return false;
     }
@@ -148,7 +150,7 @@ public class BlockChest extends BlockContainer {
     private Collection<BlockFace> searchChests(GlowBlock block) {
         Collection<BlockFace> chests = new ArrayList<>();
 
-        for (BlockFace face : NEAR_CHESTS) {
+        for (BlockFace face : SIDES) {
             GlowBlock possibleChest = block.getRelative(face);
             if (possibleChest.getType() == (isTrapped ? Material.TRAPPED_CHEST : Material.CHEST)) {
                 chests.add(face);
@@ -158,12 +160,20 @@ public class BlockChest extends BlockContainer {
         return chests;
     }
 
+    /**
+     * Get the other half of a chest, or null if the given chest isn't part of a double chest.
+     * @param me a chest block
+     * @return the other half of the double chest if {@code me} is part of one; null otherwise
+     */
     public BlockFace getAttachedChest(GlowBlock me) {
         Collection<BlockFace> attachedChests = searchChests(me);
-        if (attachedChests.isEmpty())
+        if (attachedChests.isEmpty()) {
             return null;
+        }
         if (attachedChests.size() > 1) {
-            GlowServer.logger.warning("Chest may only have one near other chest. Found '" + attachedChests + "' near " + me);
+            GlowServer.logger.warning(
+                "Chest may only have one near other chest. Found '" + attachedChests + "' near "
+                    + me);
             return null;
         }
 

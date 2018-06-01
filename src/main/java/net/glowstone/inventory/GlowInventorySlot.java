@@ -1,18 +1,21 @@
 package net.glowstone.inventory;
 
+import java.util.Arrays;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class GlowInventorySlot {
 
     private static final SlotType DEFAULT_TYPE = SlotType.CONTAINER;
 
     private ItemStack item;
+    @Getter
+    @Setter
     private SlotType type;
 
     public GlowInventorySlot() {
@@ -32,6 +35,13 @@ public class GlowInventorySlot {
         this.type = type;
     }
 
+    /**
+     * Returns an array of new container-type slots.
+     *
+     * @param len the length of the array
+     * @return an array, each of whose elements is a new {@link SlotType#CONTAINER}
+     *         {@link GlowInventorySlot}
+     */
     public static GlowInventorySlot[] createArray(int len) {
         GlowInventorySlot[] result = new GlowInventorySlot[len];
 
@@ -52,13 +62,5 @@ public class GlowInventorySlot {
 
     public void setItem(ItemStack item) {
         this.item = ItemIds.sanitize(item);
-    }
-
-    public SlotType getType() {
-        return type;
-    }
-
-    public void setType(SlotType type) {
-        this.type = type;
     }
 }

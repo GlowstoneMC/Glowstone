@@ -1,14 +1,19 @@
 package net.glowstone.inventory;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import net.glowstone.testutils.ServerShim;
+import net.glowstone.util.IsFloatCloseTo;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for GlowPlayerInventory.
@@ -21,47 +26,57 @@ public class PlayerInventoryTest {
     private static final ItemStack TEST_LEGGINGS = new ItemStack(Material.AIR, 0);
     private static final ItemStack TEST_CHESTPLATE = new ItemStack(Material.LEATHER_CHESTPLATE);
     private static final ItemStack TEST_HELMET = new ItemStack(Material.IRON_HELMET);
-    private static final ItemStack[] TEST_ARMOR = new ItemStack[] {
-            TEST_BOOTS, TEST_LEGGINGS, TEST_CHESTPLATE, TEST_HELMET
+    private static final ItemStack TEST_MAIN_HAND = new ItemStack(Material.SEEDS, 64);
+    private static final ItemStack[] TEST_ARMOR = new ItemStack[]{
+        TEST_BOOTS, TEST_LEGGINGS, TEST_CHESTPLATE, TEST_HELMET
     };
 
     private GlowPlayerInventory inventory;
 
-    @Before
+    @BeforeAll
+    public static void initShim() {
+        ServerShim.install();
+    }
+
+    @BeforeEach
     public void setup() {
         inventory = new GlowPlayerInventory(null);
     }
 
     @Test
     public void testBasics() {
-        assertEquals("Inventory was wrong size", SIZE, inventory.getSize());
-        assertEquals("Contents were wrong size", SIZE, inventory.getContents().length);
-        assertEquals("Type was wrong", InventoryType.PLAYER, inventory.getType());
+        assertThat("Inventory was wrong size", inventory.getSize(), is(SIZE));
+        assertThat("Contents were wrong size", inventory.getContents().length, is(SIZE));
+        assertThat("Type was wrong", inventory.getType(), is(InventoryType.PLAYER));
     }
 
     @Test
     public void testSlotTypes() {
         for (int i = 0; i < 9; ++i) {
-            assertEquals("Slot type for " + i + " was wrong", SlotType.QUICKBAR, inventory.getSlotType(i));
+            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i),
+                is(SlotType.QUICKBAR));
         }
         for (int i = 9; i < SIZE - 5; ++i) {
-            assertEquals("Slot type for " + i + " was wrong", SlotType.CONTAINER, inventory.getSlotType(i));
+            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i),
+                is(SlotType.CONTAINER));
         }
         for (int i = SIZE - 4; i < SIZE - 1; ++i) {
-            assertEquals("Slot type for " + i + " was wrong", SlotType.ARMOR, inventory.getSlotType(i));
+            assertThat("Slot type for " + i + " was wrong", inventory.getSlotType(i),
+                is(SlotType.ARMOR));
         }
-        assertEquals("Slot type for offhand (40) was wrong", SlotType.CONTAINER, inventory.getSlotType(40));
+        assertThat("Slot type for offhand (40) was wrong", inventory.getSlotType(40),
+            is(SlotType.CONTAINER));
     }
 
     /**
      * Check that the armor contents match the test armor contents.
      */
     private void checkArmorContents() {
-        assertArrayEquals("Mismatch in armor contents", TEST_ARMOR, inventory.getArmorContents());
-        assertEquals("Mismatch in boots slot", TEST_BOOTS, inventory.getBoots());
-        assertEquals("Mismatch in leggings slot", TEST_LEGGINGS, inventory.getLeggings());
-        assertEquals("Mismatch in chestplate slot", TEST_CHESTPLATE, inventory.getChestplate());
-        assertEquals("Mismatch in helmet slot", TEST_HELMET, inventory.getHelmet());
+        assertThat("Mismatch in armor contents", inventory.getArmorContents(), is(TEST_ARMOR));
+        assertThat("Mismatch in boots slot", inventory.getBoots(), is(TEST_BOOTS));
+        assertThat("Mismatch in leggings slot", inventory.getLeggings(), is(TEST_LEGGINGS));
+        assertThat("Mismatch in chestplate slot", inventory.getChestplate(), is(TEST_CHESTPLATE));
+        assertThat("Mismatch in helmet slot", inventory.getHelmet(), is(TEST_HELMET));
     }
 
     @Test
@@ -81,15 +96,33 @@ public class PlayerInventoryTest {
 
     @Test
     public void testDropChance() {
-        assertEquals("Wrong boots drop chance", 1, inventory.getBootsDropChance(), 0.001);
-        assertEquals("Wrong leggings drop chance", 1, inventory.getLeggingsDropChance(), 0.001);
-        assertEquals("Wrong chestplate drop chance", 1, inventory.getChestplateDropChance(), 0.001);
-        assertEquals("Wrong helmet drop chance", 1, inventory.getHelmetDropChance(), 0.001);
+        assertThat("Wrong boots drop chance", inventory.getBootsDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong leggings drop chance", inventory.getLeggingsDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong chestplate drop chance", inventory.getChestplateDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
+        assertThat("Wrong helmet drop chance", inventory.getHelmetDropChance(),
+            IsFloatCloseTo.closeTo(1f, 0.001f));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetDropChance() {
-        inventory.setChestplateDropChance(0.5f);
+        assertThrows(UnsupportedOperationException.class,
+                () -> inventory.setChestplateDropChance(0.5f));
     }
 
+    @Test
+    void testConsumeItemInMainHand() {
+        inventory.setItemInMainHand(TEST_MAIN_HAND);
+
+        assertEquals(1, inventory.consumeItemInMainHand());
+        assertEquals(63, inventory.getItemInMainHand().getAmount());
+
+        assertEquals(1, inventory.consumeItemInMainHand(false));
+        assertEquals(62, inventory.getItemInMainHand().getAmount());
+
+        assertEquals(62, inventory.consumeItemInMainHand(true));
+        assertEquals(0, inventory.getItemInMainHand().getAmount());
+    }
 }

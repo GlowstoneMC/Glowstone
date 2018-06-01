@@ -1,10 +1,15 @@
 package net.glowstone.block.blocktype;
 
+import static org.bukkit.Material.SKULL;
+import static org.bukkit.Material.SOUL_SAND;
+
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.entity.SkullEntity;
 import net.glowstone.block.entity.BlockEntity;
-import net.glowstone.block.state.GlowSkull;
+import net.glowstone.block.entity.SkullEntity;
+import net.glowstone.block.entity.state.GlowSkull;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.util.pattern.BlockPattern;
@@ -18,28 +23,27 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Skull;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.bukkit.Material.SKULL;
-import static org.bukkit.Material.SOUL_SAND;
-
 public class BlockSkull extends BlockType {
 
     private static final BlockPattern WITHER_PATTERN = new BlockPattern(
-            new BlockPattern.PatternItem(SKULL,     (byte) 1, 0, 0),
-            new BlockPattern.PatternItem(SKULL,     (byte) 1, 1, 0),
-            new BlockPattern.PatternItem(SKULL,     (byte) 1, 2, 0),
-            new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 0, 1),
-            new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 1),
-            new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 2, 1),
-            new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 2)
+        new BlockPattern.PatternItem(SKULL, (byte) 1, 0, 0),
+        new BlockPattern.PatternItem(SKULL, (byte) 1, 1, 0),
+        new BlockPattern.PatternItem(SKULL, (byte) 1, 2, 0),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 0, 1),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 1),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 2, 1),
+        new BlockPattern.PatternItem(SOUL_SAND, (byte) 0, 1, 2)
     );
 
     public BlockSkull() {
         setDrops(new ItemStack(Material.SKULL_ITEM));
     }
 
+    /**
+     * Returns the SkullType with the given ID.
+     * @param id the ID to look up
+     * @return the skull type
+     */
     public static SkullType getType(int id) {
         if (id < 0 || id >= SkullType.values().length) {
             throw new IllegalArgumentException("ID not a Skull type: " + id);
@@ -61,7 +65,8 @@ public class BlockSkull extends BlockType {
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         MaterialData data = state.getData();
         if (!(data instanceof Skull)) {
@@ -78,7 +83,8 @@ public class BlockSkull extends BlockType {
     }
 
     @Override
-    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding, GlowBlockState oldState) {
+    public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
+        GlowBlockState oldState) {
         GlowSkull skull = (GlowSkull) block.getState();
         skull.setSkullType(getType(holding.getDurability()));
         if (skull.getSkullType() == SkullType.PLAYER) {
@@ -102,7 +108,8 @@ public class BlockSkull extends BlockType {
         // Wither
         for (int i = 0; i < 3; i++) {
             if (WITHER_PATTERN.matches(block.getLocation().clone(), true, i, 0)) {
-                block.getWorld().spawnEntity(block.getLocation().clone().subtract(0, 2, 0), EntityType.WITHER);
+                block.getWorld()
+                    .spawnEntity(block.getLocation().clone().subtract(0, 2, 0), EntityType.WITHER);
                 break;
             }
         }

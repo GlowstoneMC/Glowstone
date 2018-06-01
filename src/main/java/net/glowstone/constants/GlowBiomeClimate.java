@@ -1,29 +1,96 @@
 package net.glowstone.constants;
 
-import net.glowstone.util.noise.SimplexOctaveGenerator;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
+import static org.bukkit.block.Biome.BEACHES;
+import static org.bukkit.block.Biome.BIRCH_FOREST;
+import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
+import static org.bukkit.block.Biome.COLD_BEACH;
+import static org.bukkit.block.Biome.DESERT;
+import static org.bukkit.block.Biome.DESERT_HILLS;
+import static org.bukkit.block.Biome.EXTREME_HILLS;
+import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
+import static org.bukkit.block.Biome.FOREST;
+import static org.bukkit.block.Biome.FOREST_HILLS;
+import static org.bukkit.block.Biome.FROZEN_OCEAN;
+import static org.bukkit.block.Biome.FROZEN_RIVER;
+import static org.bukkit.block.Biome.HELL;
+import static org.bukkit.block.Biome.ICE_FLATS;
+import static org.bukkit.block.Biome.ICE_MOUNTAINS;
+import static org.bukkit.block.Biome.JUNGLE;
+import static org.bukkit.block.Biome.JUNGLE_EDGE;
+import static org.bukkit.block.Biome.JUNGLE_HILLS;
+import static org.bukkit.block.Biome.MESA;
+import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MESA_ROCK;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
+import static org.bukkit.block.Biome.MUTATED_BIRCH_FOREST;
+import static org.bukkit.block.Biome.MUTATED_BIRCH_FOREST_HILLS;
+import static org.bukkit.block.Biome.MUTATED_DESERT;
+import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS;
+import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS_WITH_TREES;
+import static org.bukkit.block.Biome.MUTATED_FOREST;
+import static org.bukkit.block.Biome.MUTATED_ICE_FLATS;
+import static org.bukkit.block.Biome.MUTATED_JUNGLE;
+import static org.bukkit.block.Biome.MUTATED_JUNGLE_EDGE;
+import static org.bukkit.block.Biome.MUTATED_MESA;
+import static org.bukkit.block.Biome.MUTATED_MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MUTATED_MESA_ROCK;
+import static org.bukkit.block.Biome.MUTATED_PLAINS;
+import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA;
+import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA_HILLS;
+import static org.bukkit.block.Biome.MUTATED_ROOFED_FOREST;
+import static org.bukkit.block.Biome.MUTATED_SAVANNA;
+import static org.bukkit.block.Biome.MUTATED_SAVANNA_ROCK;
+import static org.bukkit.block.Biome.MUTATED_SWAMPLAND;
+import static org.bukkit.block.Biome.MUTATED_TAIGA;
+import static org.bukkit.block.Biome.MUTATED_TAIGA_COLD;
+import static org.bukkit.block.Biome.PLAINS;
+import static org.bukkit.block.Biome.REDWOOD_TAIGA;
+import static org.bukkit.block.Biome.REDWOOD_TAIGA_HILLS;
+import static org.bukkit.block.Biome.ROOFED_FOREST;
+import static org.bukkit.block.Biome.SAVANNA;
+import static org.bukkit.block.Biome.SAVANNA_ROCK;
+import static org.bukkit.block.Biome.SKY;
+import static org.bukkit.block.Biome.SMALLER_EXTREME_HILLS;
+import static org.bukkit.block.Biome.STONE_BEACH;
+import static org.bukkit.block.Biome.SWAMPLAND;
+import static org.bukkit.block.Biome.TAIGA;
+import static org.bukkit.block.Biome.TAIGA_COLD;
+import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
+import static org.bukkit.block.Biome.TAIGA_HILLS;
+import static org.bukkit.block.Biome.values;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
-import static org.bukkit.block.Biome.*;
+import lombok.Data;
+import net.glowstone.util.noise.SimplexOctaveGenerator;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 
 public class GlowBiomeClimate {
+
     private static final Map<Biome, BiomeClimate> CLIMATE_MAP = new HashMap<>();
     private static final SimplexOctaveGenerator noiseGen;
 
     static {
         setBiomeClimate(BiomeClimate.DEFAULT, values());
         setBiomeClimate(BiomeClimate.PLAINS, PLAINS, MUTATED_PLAINS, BEACHES);
-        setBiomeClimate(BiomeClimate.DESERT, DESERT, DESERT_HILLS, MUTATED_DESERT, MESA, MUTATED_MESA, MESA_CLEAR_ROCK, MESA_ROCK, MUTATED_MESA_CLEAR_ROCK, MUTATED_MESA_ROCK, HELL);
-        setBiomeClimate(BiomeClimate.EXTREME_HILLS, EXTREME_HILLS, EXTREME_HILLS_WITH_TREES, MUTATED_EXTREME_HILLS, MUTATED_EXTREME_HILLS_WITH_TREES, STONE_BEACH, SMALLER_EXTREME_HILLS);
-        setBiomeClimate(BiomeClimate.FOREST, FOREST, FOREST_HILLS, MUTATED_FOREST, ROOFED_FOREST, MUTATED_ROOFED_FOREST);
-        setBiomeClimate(BiomeClimate.BIRCH_FOREST, BIRCH_FOREST, BIRCH_FOREST_HILLS, MUTATED_BIRCH_FOREST, MUTATED_BIRCH_FOREST_HILLS);
-        setBiomeClimate(BiomeClimate.TAIGA, TAIGA, TAIGA_HILLS, MUTATED_TAIGA, MUTATED_REDWOOD_TAIGA, MUTATED_REDWOOD_TAIGA_HILLS);
+        setBiomeClimate(BiomeClimate.DESERT, DESERT, DESERT_HILLS, MUTATED_DESERT, MESA,
+            MUTATED_MESA, MESA_CLEAR_ROCK, MESA_ROCK, MUTATED_MESA_CLEAR_ROCK, MUTATED_MESA_ROCK,
+            HELL);
+        setBiomeClimate(BiomeClimate.EXTREME_HILLS, EXTREME_HILLS, EXTREME_HILLS_WITH_TREES,
+            MUTATED_EXTREME_HILLS, MUTATED_EXTREME_HILLS_WITH_TREES, STONE_BEACH,
+            SMALLER_EXTREME_HILLS);
+        setBiomeClimate(BiomeClimate.FOREST, FOREST, FOREST_HILLS, MUTATED_FOREST, ROOFED_FOREST,
+            MUTATED_ROOFED_FOREST);
+        setBiomeClimate(BiomeClimate.BIRCH_FOREST, BIRCH_FOREST, BIRCH_FOREST_HILLS,
+            MUTATED_BIRCH_FOREST, MUTATED_BIRCH_FOREST_HILLS);
+        setBiomeClimate(BiomeClimate.TAIGA, TAIGA, TAIGA_HILLS, MUTATED_TAIGA,
+            MUTATED_REDWOOD_TAIGA, MUTATED_REDWOOD_TAIGA_HILLS);
         setBiomeClimate(BiomeClimate.SWAMPLAND, SWAMPLAND, MUTATED_SWAMPLAND);
-        setBiomeClimate(BiomeClimate.ICE_PLAINS, ICE_FLATS, ICE_MOUNTAINS, MUTATED_ICE_FLATS, FROZEN_RIVER, FROZEN_OCEAN);
+        setBiomeClimate(BiomeClimate.ICE_PLAINS, ICE_FLATS, ICE_MOUNTAINS, MUTATED_ICE_FLATS,
+            FROZEN_RIVER, FROZEN_OCEAN);
         setBiomeClimate(BiomeClimate.MUSHROOM, MUSHROOM_ISLAND, MUSHROOM_ISLAND_SHORE);
         setBiomeClimate(BiomeClimate.COLD_BEACH, COLD_BEACH);
         setBiomeClimate(BiomeClimate.JUNGLE, JUNGLE, JUNGLE_HILLS, MUTATED_JUNGLE);
@@ -102,7 +169,9 @@ public class GlowBiomeClimate {
         }
     }
 
+    @Data
     private static class BiomeClimate {
+
         public static final BiomeClimate DEFAULT = new BiomeClimate(0.5D, 0.5D, true);
         public static final BiomeClimate PLAINS = new BiomeClimate(0.8D, 0.4D, true);
         public static final BiomeClimate DESERT = new BiomeClimate(2.0D, 0.0D, false);
@@ -121,29 +190,12 @@ public class GlowBiomeClimate {
         public static final BiomeClimate SAVANNA = new BiomeClimate(1.2D, 0.0D, false);
         public static final BiomeClimate SAVANNA_MOUNTAINS = new BiomeClimate(1.1D, 0.0D, false);
         public static final BiomeClimate SAVANNA_PLATEAU = new BiomeClimate(1.0D, 0.0D, false);
-        public static final BiomeClimate SAVANNA_PLATEAU_MOUNTAINS = new BiomeClimate(0.5D, 0.0D, false);
+        public static final BiomeClimate SAVANNA_PLATEAU_MOUNTAINS = new BiomeClimate(0.5D, 0.0D,
+            false);
         public static final BiomeClimate SKY = new BiomeClimate(0.5D, 0.5D, false);
 
         private final double temperature;
         private final double humidity;
         private final boolean rainy;
-
-        public BiomeClimate(double temperature, double humidity, boolean rainy) {
-            this.temperature = temperature;
-            this.humidity = humidity;
-            this.rainy = rainy;
-        }
-
-        public double getTemperature() {
-            return temperature;
-        }
-
-        public double getHumidity() {
-            return humidity;
-        }
-
-        public boolean isRainy() {
-            return rainy;
-        }
     }
 }

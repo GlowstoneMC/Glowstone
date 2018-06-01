@@ -1,5 +1,9 @@
 package net.glowstone.generator.populators.overworld;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 import net.glowstone.generator.decorators.EntityDecorator;
 import net.glowstone.generator.decorators.overworld.MushroomDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
@@ -11,19 +15,20 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
 public class MushroomIslandPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_ISLAND_SHORE};
-    private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree.class, 1), new TreeDecoration(BrownMushroomTree.class, 1)};
+    private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree::new, 1),
+        new TreeDecoration(BrownMushroomTree::new, 1)};
 
-    protected final MushroomDecorator islandBrownMushroomDecorator = new MushroomDecorator(Material.BROWN_MUSHROOM);
-    protected final MushroomDecorator islandRedMushroomDecorator = new MushroomDecorator(Material.RED_MUSHROOM);
+    protected final MushroomDecorator islandBrownMushroomDecorator = new MushroomDecorator(
+        Material.BROWN_MUSHROOM);
+    protected final MushroomDecorator islandRedMushroomDecorator = new MushroomDecorator(
+        Material.RED_MUSHROOM);
 
+    /**
+     * Creates a populator for the mushroom island biome.
+     */
     public MushroomIslandPopulator() {
         treeDecorator.setAmount(1);
         treeDecorator.setTrees(TREES);

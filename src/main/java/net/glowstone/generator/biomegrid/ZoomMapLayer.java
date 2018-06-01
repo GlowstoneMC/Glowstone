@@ -9,6 +9,13 @@ public class ZoomMapLayer extends MapLayer {
         this(seed, belowLayer, ZoomType.NORMAL);
     }
 
+    /**
+     * Creates a map layer. TODO: improve documentation
+     *
+     * @param seed the layer random seed
+     * @param belowLayer the layer generated before this one
+     * @param zoomType the zoom-type parameter
+     */
     public ZoomMapLayer(long seed, MapLayer belowLayer, ZoomType zoomType) {
         super(seed);
         this.belowLayer = belowLayer;
@@ -31,14 +38,14 @@ public class ZoomMapLayer extends MapLayer {
             int upperLeftVal = values[i * gridSizeX];
             int lowerLeftVal = values[(i + 1) * gridSizeX];
             for (int j = 0; j < gridSizeX - 1; j++) {
-                int upperRightVal = values[j + 1 + i * gridSizeX];
-                int lowerRightVal = values[j + 1 + (i + 1) * gridSizeX];
-
                 setCoordsSeed(gridX + j << 1, gridZ + i << 1);
                 tmpValues[n] = upperLeftVal;
                 tmpValues[n + zoomSizeX] = nextInt(2) > 0 ? upperLeftVal : lowerLeftVal;
+                int upperRightVal = values[j + 1 + i * gridSizeX];
+                int lowerRightVal = values[j + 1 + (i + 1) * gridSizeX];
                 tmpValues[n + 1] = nextInt(2) > 0 ? upperLeftVal : upperRightVal;
-                tmpValues[n + 1 + zoomSizeX] = getNearest(upperLeftVal, upperRightVal, lowerLeftVal, lowerRightVal);
+                tmpValues[n + 1 + zoomSizeX] = getNearest(upperLeftVal, upperRightVal, lowerLeftVal,
+                    lowerRightVal);
                 upperLeftVal = upperRightVal;
                 lowerLeftVal = lowerRightVal;
                 n += 2;
@@ -54,7 +61,8 @@ public class ZoomMapLayer extends MapLayer {
         return finalValues;
     }
 
-    private int getNearest(int upperLeftVal, int upperRightVal, int lowerLeftVal, int lowerRightVal) {
+    private int getNearest(int upperLeftVal, int upperRightVal, int lowerLeftVal,
+        int lowerRightVal) {
         if (zoomType == ZoomType.NORMAL) {
             if (upperRightVal == lowerLeftVal && lowerLeftVal == lowerRightVal) {
                 return upperRightVal;

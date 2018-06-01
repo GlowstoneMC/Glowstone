@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -12,13 +14,11 @@ import org.bukkit.material.Step;
 import org.bukkit.material.WoodenStep;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public class BlockSlab extends BlockType {
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         Material blockType = state.getBlock().getType();
         if (blockType == Material.STEP) {
@@ -45,7 +45,8 @@ public class BlockSlab extends BlockType {
                 ((Step) data).setInverted(true);
             } else if (data instanceof WoodenStep) {
                 ((WoodenStep) data).setInverted(true);
-            } else if (data.getItemType() == Material.STONE_SLAB2 || data.getItemType() == Material.PURPUR_SLAB) {
+            } else if (data.getItemType() == Material.STONE_SLAB2
+                || data.getItemType() == Material.PURPUR_SLAB) {
                 Step slab = new Step(data.getItemType());
                 slab.setInverted(true);
                 data = slab;
@@ -54,16 +55,20 @@ public class BlockSlab extends BlockType {
         }
     }
 
-    private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding, boolean ignoreFace) {
-        if (holding == null) return false;
+    private boolean matchingType(GlowBlock block, BlockFace face, ItemStack holding,
+        boolean ignoreFace) {
+        if (holding == null) {
+            return false;
+        }
         Material blockType = block.getType();
         byte blockData = block.getData();
         byte holdingData = holding.getData().getData();
-        return (blockType == Material.STEP || blockType == Material.WOOD_STEP || blockType == Material.STONE_SLAB2 || blockType == Material.PURPUR_SLAB) &&
-                blockType == holding.getType() &&
-                (face == BlockFace.UP && blockData == holdingData ||
-                        face == BlockFace.DOWN && blockData - 8 == holdingData ||
-                        ignoreFace && blockData % 8 == holdingData);
+        return (blockType == Material.STEP || blockType == Material.WOOD_STEP
+                        || blockType == Material.STONE_SLAB2 || blockType == Material.PURPUR_SLAB)
+                && blockType == holding.getType()
+                && (face == BlockFace.UP && blockData == holdingData
+                        || face == BlockFace.DOWN && blockData - 8 == holdingData
+                        || ignoreFace && blockData % 8 == holdingData);
     }
 
     @Override
@@ -78,8 +83,8 @@ public class BlockSlab extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        if (block.getType() == Material.WOOD_STEP ||
-                tool != null && ToolType.PICKAXE.matches(tool.getType())) {
+        if (block.getType() == Material.WOOD_STEP
+                || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
         return BlockDropless.EMPTY_STACK;

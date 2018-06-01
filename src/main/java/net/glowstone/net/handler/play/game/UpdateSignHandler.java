@@ -12,10 +12,12 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
 public final class UpdateSignHandler implements MessageHandler<GlowSession, UpdateSignMessage> {
+
     @Override
     public void handle(GlowSession session, UpdateSignMessage message) {
         GlowPlayer player = session.getPlayer();
-        Location location = new Location(player.getWorld(), message.getX(), message.getY(), message.getZ());
+        Location location = new Location(player.getWorld(), message.getX(), message.getY(),
+            message.getZ());
 
         if (!player.checkSignLocation(location)) {
             GlowServer.logger.warning(session + " tried to edit sign at " + location);
@@ -27,7 +29,7 @@ public final class UpdateSignHandler implements MessageHandler<GlowSession, Upda
             lines[i] = message.getMessage()[i].asPlaintext();
         }
         SignChangeEvent event = new SignChangeEvent(location.getBlock(), player, lines);
-        EventFactory.callEvent(event);
+        EventFactory.getInstance().callEvent(event);
         if (event.isCancelled()) {
             GlowServer.logger.warning("Sign was cancelled");
             return;

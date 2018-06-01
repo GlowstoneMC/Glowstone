@@ -1,7 +1,9 @@
 package net.glowstone.block.itemtype;
 
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.util.TickUtil;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ItemFishRaw extends ItemFood {
@@ -16,8 +18,9 @@ public class ItemFishRaw extends ItemFood {
             case 2:
             case 3:
                 return 0.2f;
+            default:
+                throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
         }
-        throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
     }
 
     @Override
@@ -30,18 +33,24 @@ public class ItemFishRaw extends ItemFood {
             case 2:
             case 3:
                 return 1;
+            default:
+                throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
         }
-        throw new IllegalArgumentException("Cannot find fish(349) for data: " + data);
     }
 
     @Override
     public boolean eat(GlowPlayer player, ItemStack item) {
-        if (!super.eat(player, item)) return false;
+        if (!super.eat(player, item)) {
+            return false;
+        }
 
         if (item.getData().getData() == 3) {
-            player.addPotionEffect(PotionEffectType.POISON.createEffect(60 * 20, 4), true);
-            player.addPotionEffect(PotionEffectType.HUNGER.createEffect(15 * 20, 3), true);
-            player.addPotionEffect(PotionEffectType.CONFUSION.createEffect(15 * 20, 2), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.POISON,
+                    TickUtil.minutesToTicks(1), 3), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER,
+                    TickUtil.secondsToTicks(15), 2), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION,
+                    TickUtil.secondsToTicks(15), 1), true);
         }
         return true;
     }

@@ -1,9 +1,59 @@
 package net.glowstone.constants;
 
-import org.bukkit.Statistic;
-
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.bukkit.Statistic.*;
+import static org.bukkit.Statistic.ANIMALS_BRED;
+import static org.bukkit.Statistic.ARMOR_CLEANED;
+import static org.bukkit.Statistic.AVIATE_ONE_CM;
+import static org.bukkit.Statistic.BANNER_CLEANED;
+import static org.bukkit.Statistic.BEACON_INTERACTION;
+import static org.bukkit.Statistic.BOAT_ONE_CM;
+import static org.bukkit.Statistic.BREWINGSTAND_INTERACTION;
+import static org.bukkit.Statistic.CAKE_SLICES_EATEN;
+import static org.bukkit.Statistic.CAULDRON_FILLED;
+import static org.bukkit.Statistic.CAULDRON_USED;
+import static org.bukkit.Statistic.CHEST_OPENED;
+import static org.bukkit.Statistic.CLIMB_ONE_CM;
+import static org.bukkit.Statistic.CRAFTING_TABLE_INTERACTION;
+import static org.bukkit.Statistic.CROUCH_ONE_CM;
+import static org.bukkit.Statistic.DAMAGE_DEALT;
+import static org.bukkit.Statistic.DAMAGE_TAKEN;
+import static org.bukkit.Statistic.DEATHS;
+import static org.bukkit.Statistic.DISPENSER_INSPECTED;
+import static org.bukkit.Statistic.DIVE_ONE_CM;
+import static org.bukkit.Statistic.DROP;
+import static org.bukkit.Statistic.DROPPER_INSPECTED;
+import static org.bukkit.Statistic.ENDERCHEST_OPENED;
+import static org.bukkit.Statistic.FALL_ONE_CM;
+import static org.bukkit.Statistic.FISH_CAUGHT;
+import static org.bukkit.Statistic.FLOWER_POTTED;
+import static org.bukkit.Statistic.FLY_ONE_CM;
+import static org.bukkit.Statistic.FURNACE_INTERACTION;
+import static org.bukkit.Statistic.HOPPER_INSPECTED;
+import static org.bukkit.Statistic.HORSE_ONE_CM;
+import static org.bukkit.Statistic.ITEM_ENCHANTED;
+import static org.bukkit.Statistic.JUMP;
+import static org.bukkit.Statistic.LEAVE_GAME;
+import static org.bukkit.Statistic.MINECART_ONE_CM;
+import static org.bukkit.Statistic.MOB_KILLS;
+import static org.bukkit.Statistic.NOTEBLOCK_PLAYED;
+import static org.bukkit.Statistic.NOTEBLOCK_TUNED;
+import static org.bukkit.Statistic.PIG_ONE_CM;
+import static org.bukkit.Statistic.PLAYER_KILLS;
+import static org.bukkit.Statistic.PLAY_ONE_TICK;
+import static org.bukkit.Statistic.RECORD_PLAYED;
+import static org.bukkit.Statistic.SHULKER_BOX_OPENED;
+import static org.bukkit.Statistic.SLEEP_IN_BED;
+import static org.bukkit.Statistic.SNEAK_TIME;
+import static org.bukkit.Statistic.SPRINT_ONE_CM;
+import static org.bukkit.Statistic.SWIM_ONE_CM;
+import static org.bukkit.Statistic.TALKED_TO_VILLAGER;
+import static org.bukkit.Statistic.TIME_SINCE_DEATH;
+import static org.bukkit.Statistic.TRADED_WITH_VILLAGER;
+import static org.bukkit.Statistic.TRAPPED_CHEST_TRIGGERED;
+import static org.bukkit.Statistic.WALK_ONE_CM;
+import static org.bukkit.Statistic.values;
+
+import org.bukkit.Statistic;
 
 /**
  * Name mappings for statistics.

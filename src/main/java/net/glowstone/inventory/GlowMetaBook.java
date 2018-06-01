@@ -1,43 +1,62 @@
 package net.glowstone.inventory;
 
 import com.google.common.collect.ImmutableList;
-import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.BookMeta;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * The ItemMeta for book and quill and written book items.
  */
 class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
+    @Getter
     private String title;
+    @Getter
+    @Setter
     private String author;
     private List<String> pages;
-    private Integer generation = 0;
+    private Integer generation;
 
-    public GlowMetaBook(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link BookMeta}, its title, author, pages and generation are copied; otherwise, the new book
+     * is blank.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaBook(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaBook)) {
+        if (!(meta instanceof BookMeta)) {
             return;
         }
-        GlowMetaBook book = (GlowMetaBook) meta;
-        title = book.title;
-        author = book.author;
+        BookMeta book = (BookMeta) meta;
+        title = book.getTitle();
+        author = book.getAuthor();
         if (book.hasPages()) {
-            pages = new ArrayList<>(book.pages);
+            pages = new ArrayList<>(book instanceof GlowMetaBook
+                    ? ((GlowMetaBook) book).pages : book.getPages());
             filterPages();
         }
-        this.generation = book.getGeneration().ordinal();
+        if (hasGeneration()) {
+            this.generation = book.getGeneration().ordinal();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Internal stuff
+
+    @Override
+    public BookMeta.Spigot spigot() {
+        return new BookMeta.Spigot() {
+        };
+    }
 
     @Override
     public BookMeta clone() {
@@ -75,7 +94,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
             tag.putString("title", title);
         }
         if (hasPages()) {
-            tag.putList("pages", TagType.STRING, pages);
+            tag.putStringList("pages", pages);
         }
         if (hasGeneration()) {
             tag.putInt("generation", generation);
@@ -85,19 +104,13 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isString("author")) {
-            author = tag.getString("author");
-        }
-        if (tag.isString("title")) {
-            title = tag.getString("title");
-        }
-        if (tag.isList("pages", TagType.STRING)) {
-            pages = tag.getList("pages", TagType.STRING);
+        tag.readString("author", this::setAuthor);
+        tag.readString("title", this::setTitle);
+        tag.readStringList("pages", pages -> {
+            this.pages = pages;
             filterPages();
-        }
-        if (tag.isInt("generation")) {
-            generation = tag.getInt("generation");
-        }
+        });
+        tag.readInt("generation", x -> generation = x);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -106,11 +119,6 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     @Override
     public boolean hasTitle() {
         return title != null && !title.isEmpty();
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
     }
 
     @Override
@@ -128,27 +136,24 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
     }
 
     @Override
-    public String getAuthor() {
-        return author;
-    }
-
-    @Override
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    @Override
     public boolean hasGeneration() {
         return generation != null;
     }
 
     @Override
     public Generation getGeneration() {
+        if (generation == null) {
+            return null;
+        }
         return Generation.values()[generation];
     }
 
     @Override
     public void setGeneration(Generation generation) {
+        if (generation == null) {
+            this.generation = null;
+            return;
+        }
         this.generation = generation.ordinal();
     }
 

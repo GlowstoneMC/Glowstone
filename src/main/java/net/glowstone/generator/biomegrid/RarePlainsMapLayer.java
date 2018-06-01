@@ -1,12 +1,11 @@
 package net.glowstone.generator.biomegrid;
 
-import net.glowstone.constants.GlowBiome;
+import static org.bukkit.block.Biome.MUTATED_PLAINS;
+import static org.bukkit.block.Biome.PLAINS;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.bukkit.block.Biome.MUTATED_PLAINS;
-import static org.bukkit.block.Biome.PLAINS;
+import net.glowstone.constants.GlowBiome;
 
 public class RarePlainsMapLayer extends MapLayer {
 

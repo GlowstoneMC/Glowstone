@@ -1,55 +1,53 @@
 package net.glowstone.inventory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.blocktype.BlockBanner;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.TagType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
 
-    private List<Pattern> patterns = new ArrayList<>();
-    private DyeColor baseColor = null;
+    protected List<Pattern> patterns = new ArrayList<>();
+    @Getter
+    @Setter
+    protected DyeColor baseColor = null;
 
-    public GlowMetaBanner(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link BannerMeta}, its patterns are copied; otherwise, the new banner is blank.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaBanner(ItemMeta meta) {
         super(meta);
-        if (!(meta instanceof GlowMetaBanner)) {
+        if (!(meta instanceof BannerMeta)) {
             return;
         }
-        GlowMetaBanner banner = (GlowMetaBanner) meta;
-        patterns = banner.patterns;
-        baseColor = banner.baseColor;
+        BannerMeta banner = (BannerMeta) meta;
+        patterns = banner.getPatterns();
+        baseColor = banner.getBaseColor();
     }
 
     @Override
     public List<Pattern> getPatterns() {
-        return patterns;
+        return new ArrayList<>(patterns);
     }
 
     @Override
     public void setPatterns(List<Pattern> patterns) {
         checkNotNull(patterns, "Pattern cannot be null!");
-        this.patterns = patterns;
-    }
-
-    @Override
-    public DyeColor getBaseColor() {
-        return baseColor;
-    }
-
-    @Override
-    public void setBaseColor(DyeColor dyeColor) {
-        this.baseColor = dyeColor;
+        this.patterns.clear();
+        this.patterns.addAll(patterns);
     }
 
     @Override
@@ -82,7 +80,7 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
         super.writeNbt(tag);
         CompoundTag blockEntityTag = new CompoundTag();
 
-        blockEntityTag.putCompoundList("Patterns", BlockBanner.toNBT(patterns));
+        blockEntityTag.putCompoundList("Patterns", BlockBanner.toNbt(patterns));
         if (baseColor != null) {
             blockEntityTag.putInt("Base", baseColor.getWoolData());
         }
@@ -92,16 +90,12 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-        if (tag.isCompound("BlockEntityTag")) {
-            CompoundTag blockEntityTag = tag.getCompound("BlockEntityTag");
-            if (blockEntityTag.isList("Patterns", TagType.COMPOUND)) {
-                List<CompoundTag> patterns = blockEntityTag.getCompoundList("Patterns");
-                this.patterns = BlockBanner.fromNBT(patterns);
-            }
-            if (blockEntityTag.isInt("Base")) {
-                this.baseColor = DyeColor.getByWoolData((byte) blockEntityTag.getInt("Base"));
-            }
-        }
+        tag.readCompound("BlockEntityTag", blockEntityTag -> {
+            blockEntityTag.readCompoundList(
+                    "Patterns", patterns -> this.patterns = BlockBanner.fromNbt(patterns));
+            blockEntityTag.readInt(
+                    "Base", colorInt -> this.baseColor = DyeColor.getByWoolData((byte) colorInt));
+        });
     }
 
     @Override
@@ -120,7 +114,8 @@ public class GlowMetaBanner extends GlowMetaItem implements BannerMeta {
         result.put("meta-type", "BANNER");
         List<Map<String, String>> patternsList = new ArrayList<>();
         for (Pattern pattern : patterns) {
-            patternsList.add(ImmutableMap.of(pattern.getPattern().toString(), pattern.getColor().toString()));
+            patternsList.add(
+                ImmutableMap.of(pattern.getPattern().toString(), pattern.getColor().toString()));
         }
         result.put("pattern", patternsList);
         if (baseColor != null) {

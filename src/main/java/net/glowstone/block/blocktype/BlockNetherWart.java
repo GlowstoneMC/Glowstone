@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -17,7 +18,8 @@ public class BlockNetherWart extends BlockNeedsAttached {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ()) == Material.SOUL_SAND.getId();
+        return block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ())
+            == Material.SOUL_SAND.getId();
     }
 
     @Override
@@ -28,12 +30,13 @@ public class BlockNetherWart extends BlockNeedsAttached {
     @Override
     public void updateBlock(GlowBlock block) {
         int cropState = block.getData();
-        if (cropState < NetherWartsState.RIPE.ordinal() && random.nextInt(10) == 0) {
+        if (cropState < NetherWartsState.RIPE.ordinal()
+            && ThreadLocalRandom.current().nextInt(10) == 0) {
             cropState++;
             GlowBlockState state = block.getState();
             state.setRawData((byte) cropState);
             BlockGrowEvent growEvent = new BlockGrowEvent(block, state);
-            EventFactory.callEvent(growEvent);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 state.update(true);
             }

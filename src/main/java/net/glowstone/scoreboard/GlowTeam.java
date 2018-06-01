@@ -1,24 +1,21 @@
 package net.glowstone.scoreboard;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableSet;
-import net.glowstone.GlowOfflinePlayer;
-import net.glowstone.GlowServer;
-import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.NameTagVisibility;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Getter;
+import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Team;
 
 /**
  * Implementation for scoreboard teams.
@@ -27,6 +24,7 @@ public final class GlowTeam implements Team {
 
     private final String name;
     private final HashSet<String> players = new HashSet<>();
+    @Getter
     private GlowScoreboard scoreboard;
     // properties
     private String displayName;
@@ -35,20 +33,24 @@ public final class GlowTeam implements Team {
     private Team.OptionStatus nameTagVisibility = Team.OptionStatus.ALWAYS;
     private Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
     private Team.OptionStatus collisionRule = Team.OptionStatus.ALWAYS;
+    @Getter
     private ChatColor color = ChatColor.RESET;
     private boolean friendlyFire;
     private boolean seeInvisible = true;
 
+    /**
+     * Creates a team.
+     *
+     * @param scoreboard the scoreboard for this team's scores
+     * @param name the team name
+     */
     public GlowTeam(GlowScoreboard scoreboard, String name) {
         this.scoreboard = scoreboard;
         this.name = name;
         displayName = name;
     }
 
-    public Scoreboard getScoreboard() {
-        return scoreboard;
-    }
-
+    @Override
     public void unregister() throws IllegalStateException {
         checkValid();
         scoreboard.removeTeam(this);
@@ -64,38 +66,48 @@ public final class GlowTeam implements Team {
     Message getCreateMessage() {
         List<String> playerNames = new ArrayList<>(players.size());
         playerNames.addAll(players);
-        return ScoreboardTeamMessage.create(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
+        return ScoreboardTeamMessage
+            .create(name, displayName, prefix, suffix, friendlyFire, seeInvisible,
+                nameTagVisibility, collisionRule, color, playerNames);
     }
 
     private void update() {
-        scoreboard.broadcast(ScoreboardTeamMessage.update(name, displayName, prefix, suffix, friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color));
+        scoreboard.broadcast(ScoreboardTeamMessage
+            .update(name, displayName, prefix, suffix, friendlyFire, seeInvisible,
+                nameTagVisibility, collisionRule, color));
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Properties
 
+    @Override
     public String getName() throws IllegalStateException {
         checkValid();
         return name;
     }
 
+    @Override
     public String getDisplayName() throws IllegalStateException {
         checkValid();
         return displayName;
     }
 
-    public void setDisplayName(String displayName) throws IllegalStateException, IllegalArgumentException {
+    @Override
+    public void setDisplayName(String displayName)
+        throws IllegalStateException, IllegalArgumentException {
         checkNotNull(displayName, "Display name cannot be null");
         checkValid();
         this.displayName = displayName;
         update();
     }
 
+    @Override
     public String getPrefix() throws IllegalStateException {
         checkValid();
         return prefix;
     }
 
+    @Override
     public void setPrefix(String prefix) throws IllegalStateException, IllegalArgumentException {
         checkNotNull(prefix, "Prefix cannot be null");
         checkValid();
@@ -103,11 +115,13 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    @Override
     public String getSuffix() throws IllegalStateException {
         checkValid();
         return suffix;
     }
 
+    @Override
     public void setSuffix(String suffix) throws IllegalStateException, IllegalArgumentException {
         checkNotNull(suffix, "Suffix cannot be null");
         checkValid();
@@ -115,35 +129,39 @@ public final class GlowTeam implements Team {
         update();
     }
 
+    @Override
     public boolean allowFriendlyFire() throws IllegalStateException {
         checkValid();
         return friendlyFire;
     }
 
+    @Override
     public void setAllowFriendlyFire(boolean enabled) throws IllegalStateException {
         checkValid();
         friendlyFire = enabled;
         update();
     }
 
+    @Override
     public boolean canSeeFriendlyInvisibles() throws IllegalStateException {
         checkValid();
         return seeInvisible;
     }
 
+    @Override
     public void setCanSeeFriendlyInvisibles(boolean enabled) throws IllegalStateException {
         checkValid();
         seeInvisible = enabled;
         update();
     }
 
-    @Deprecated
+    @Override
     public NameTagVisibility getNameTagVisibility() throws IllegalStateException {
         checkValid();
         return NameTagVisibility.valueOf(nameTagVisibility.name());
     }
 
-    @Deprecated
+    @Override
     public void setNameTagVisibility(NameTagVisibility visibility) throws IllegalStateException {
         checkValid();
         nameTagVisibility = OptionStatus.valueOf(visibility.name());
@@ -156,8 +174,16 @@ public final class GlowTeam implements Team {
         return NameTagVisibility.valueOf(deathMessageVisibility.name());
     }
 
+    /**
+     * Sets to whom death messages are visible.
+     *
+     * @param deathMessageVisibility the new death message visibility
+     * @throws IllegalStateException if this team is not registered with a scoreboard
+     * @throws IllegalArgumentException if {@code deathMessageVisibility} is null
+     */
     @Deprecated
-    public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility) throws IllegalStateException, IllegalArgumentException {
+    public void setDeathMessageVisibility(NameTagVisibility deathMessageVisibility)
+        throws IllegalStateException, IllegalArgumentException {
         checkNotNull(deathMessageVisibility, "NameTagVisibility cannot be null!");
         checkValid();
         this.deathMessageVisibility = OptionStatus.valueOf(deathMessageVisibility.name());
@@ -202,7 +228,8 @@ public final class GlowTeam implements Team {
     @Deprecated
     public Set<OfflinePlayer> getPlayers() throws IllegalStateException {
         Set<OfflinePlayer> playerObjectSet = new HashSet<>(players.size());
-        playerObjectSet.addAll(players.stream().map(s -> new GlowOfflinePlayer((GlowServer) Bukkit.getServer(), s)).collect(Collectors.toList()));
+        playerObjectSet.addAll(
+            players.stream().map(Bukkit::getOfflinePlayer).collect(Collectors.toList()));
         return playerObjectSet;
     }
 
@@ -215,7 +242,8 @@ public final class GlowTeam implements Team {
 
     @Override
     @Deprecated
-    public boolean hasPlayer(OfflinePlayer player) throws IllegalArgumentException, IllegalStateException {
+    public boolean hasPlayer(OfflinePlayer player)
+        throws IllegalArgumentException, IllegalStateException {
         return players.contains(player.getName());
     }
 
@@ -233,14 +261,12 @@ public final class GlowTeam implements Team {
 
     @Override
     @Deprecated
-    public void addPlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
+    public void addPlayer(OfflinePlayer player)
+        throws IllegalStateException, IllegalArgumentException {
         players.add(player.getName());
     }
 
-    public ChatColor getColor() {
-        return color;
-    }
-
+    @Override
     public void setColor(ChatColor color) throws IllegalArgumentException {
         if (color.isFormat()) {
             throw new IllegalArgumentException("Formatting codes cannot be used as a team color!");
@@ -256,7 +282,8 @@ public final class GlowTeam implements Team {
 
     @Override
     @Deprecated
-    public boolean removePlayer(OfflinePlayer player) throws IllegalStateException, IllegalArgumentException {
+    public boolean removePlayer(OfflinePlayer player)
+        throws IllegalStateException, IllegalArgumentException {
         return players.remove(player.getName());
     }
 

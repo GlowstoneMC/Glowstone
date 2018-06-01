@@ -15,6 +15,13 @@ public class WhittakerMapLayer extends MapLayer {
     private final MapLayer belowLayer;
     private final ClimateType type;
 
+    /**
+     * Creates a map layer. TODO: improve documentation
+     *
+     * @param seed the layer random seed
+     * @param belowLayer the layer generated before this one
+     * @param type the climate-type parameter
+     */
     public WhittakerMapLayer(long seed, MapLayer belowLayer, ClimateType type) {
         super(seed);
         this.belowLayer = belowLayer;
@@ -48,7 +55,8 @@ public class WhittakerMapLayer extends MapLayer {
                     int leftVal = values[j + (i + 1) * gridSizeX];
                     int rightVal = values[j + 2 + (i + 1) * gridSizeX];
                     for (int type : climate.crossTypes) {
-                        if (upperVal == type || lowerVal == type || leftVal == type || rightVal == type) {
+                        if (upperVal == type || lowerVal == type || leftVal == type
+                            || rightVal == type) {
                             centerVal = climate.finalValue;
                             break;
                         }

@@ -1,0 +1,103 @@
+rewards:
+  FISH: 
+    - 
+      chance: 60
+      item: 
+        type: RAW_FISH
+    - 
+      chance: 25
+      item: 
+        data: 1
+        type: RAW_FISH
+    - 
+      chance: 2
+      item: 
+        data: 2
+        type: RAW_FISH
+    - 
+      chance: 13
+      item: 
+        data: 3
+        type: RAW_FISH
+  JUNK:
+    - 
+      chance: 12
+      item: 
+        type: BOWL
+    - 
+      chance: 2.4
+      item: 
+        type: FISHING_ROD
+        damage: 32  # TODO: Randomize
+    - 
+      chance: 12
+      item: 
+        type: LEATHER
+    - 
+      chance: 12
+      item: 
+        type: LEATHER_BOOTS
+        durability: 33  # TODO: Randomize
+    - 
+      chance: 12
+      item: 
+        type: ROTTEN_FLESH
+    - 
+      chance: 6
+      item: 
+        type: STICK
+    - 
+      chance: 6
+      item: 
+        type: STRING
+    - 
+      chance: 12
+      item: 
+        data: 1
+        type: POTION
+    - 
+      chance: 12
+      item: 
+        type: BONE
+    - 
+      chance: 1.2
+      item: 
+        amount: 10
+        type: INK_SACK
+    - 
+      chance: 12
+      item: 
+        type: TRIPWIRE_HOOK
+  TREASURE: 
+    - 
+      chance: 16.67
+      item: 
+        type: BOW
+        damage: 192  # TODO: Randomize
+      enchantment_level_min: 22
+      enchantment_level_max: 30
+    - 
+      chance: 16.67
+      item:
+        type: ENCHANTED_BOOK
+      enchantment_level_min: 30
+      enchantment_level_max: 30
+    - 
+      chance: 16.67
+      item: 
+        type: FISHING_ROD
+        damage: 32  # TODO: Randomize
+      enchantment_level_min: 22
+      enchantment_level_max: 30
+    - 
+      chance: 16.67
+      item: 
+        type: NAME_TAG
+    - 
+      chance: 16.67
+      item: 
+        type: SADDLE
+    - 
+      chance: 16.67
+      item: 
+        type: WATER_LILY

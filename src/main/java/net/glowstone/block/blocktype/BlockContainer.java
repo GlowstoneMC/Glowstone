@@ -1,18 +1,18 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ContainerEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.MaterialMatcher;
+import net.glowstone.util.InventoryUtil;
 import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * Base BlockType for containers.
@@ -20,7 +20,8 @@ import java.util.LinkedList;
 public class BlockContainer extends BlockType {
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         BlockEntity te = block.getBlockEntity();
         if (te instanceof ContainerEntity) {
             switch (((ContainerEntity) te).getInventory().getType()) {
@@ -45,6 +46,8 @@ public class BlockContainer extends BlockType {
                 case ENDER_CHEST:
                     player.incrementStatistic(Statistic.ENDERCHEST_OPENED);
                     break;
+                default:
+                    // No statistic to update
             }
             // todo: animation?
             player.openInventory(((ContainerEntity) te).getInventory());
@@ -58,8 +61,9 @@ public class BlockContainer extends BlockType {
         Collection<ItemStack> drops = getContentDrops(block);
 
         MaterialMatcher neededTool = getNeededMiningTool(block);
-        if (neededTool == null ||
-                tool != null && neededTool.matches(tool.getType())) {
+        if (neededTool == null
+                || !InventoryUtil.isEmpty(tool) && neededTool
+                .matches(InventoryUtil.itemOrEmpty(tool).getType())) {
             drops.addAll(getBlockDrops(block));
         }
 
@@ -73,10 +77,16 @@ public class BlockContainer extends BlockType {
         return drops;
     }
 
+    /**
+     * Returns the contents of a container.
+     * @param block a container block
+     * @return the container's contents as ItemStack instances
+     */
     public Collection<ItemStack> getContentDrops(GlowBlock block) {
         LinkedList<ItemStack> drops = new LinkedList<>();
-        for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory().getContents()) {
-            if (i != null) {
+        for (ItemStack i : ((ContainerEntity) block.getBlockEntity()).getInventory()
+            .getContents()) {
+            if (!InventoryUtil.isEmpty(i)) {
                 drops.add(i);
             }
         }

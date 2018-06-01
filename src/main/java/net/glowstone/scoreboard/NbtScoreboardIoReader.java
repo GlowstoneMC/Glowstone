@@ -1,22 +1,32 @@
 package net.glowstone.scoreboard;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 import net.glowstone.util.nbt.CompoundTag;
-import net.glowstone.util.nbt.NBTInputStream;
+import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.TagType;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Team;
 
-import java.io.*;
-import java.util.List;
-
 public class NbtScoreboardIoReader {
 
+    /**
+     * Loads the scoreboard status from an NBT file.
+     *
+     * @param path the file path
+     * @return the loaded scoreboard
+     * @throws IOException if the file cannot be read
+     */
     public static GlowScoreboard readMainScoreboard(File path) throws IOException {
         CompoundTag root;
 
-        try (NBTInputStream nbt = new NBTInputStream(getDataInputStream(path), true)) {
+        try (NbtInputStream nbt = new NbtInputStream(getDataInputStream(path), true)) {
             root = nbt.readCompound().getCompound("data");
         }
 
@@ -35,59 +45,38 @@ public class NbtScoreboardIoReader {
     }
 
     private static void registerObjectives(CompoundTag root, GlowScoreboard scoreboard) {
-        if (root.containsKey("Objectives")) {
-            List<CompoundTag> objectives = root.getCompoundList("Objectives");
-            for (CompoundTag objective : objectives) {
-                registerObjective(objective, scoreboard);
-            }
-        }
+        root.iterateCompoundList("Objectives", objective -> registerObjective(objective, scoreboard)
+        );
     }
 
     private static void registerObjective(CompoundTag data, GlowScoreboard scoreboard) {
         String criteria = data.getString("CriteriaName");
-        String displayName = data.getString("DisplayName");
         String name = data.getString("Name");
-        String renderType = data.getString("RenderType");
-
         GlowObjective objective = (GlowObjective) scoreboard.registerNewObjective(name, criteria);
-        objective.setDisplayName(displayName);
-        objective.setRenderType(renderType);
+        data.readString("DisplayName", objective::setDisplayName);
+        data.readString("RenderType", objective::setRenderType);
     }
 
 
     private static void registerScores(CompoundTag root, GlowScoreboard scoreboard) {
-        if (root.containsKey("PlayerScores")) {
-            List<CompoundTag> scores = root.getCompoundList("PlayerScores");
-            for (CompoundTag score : scores) {
-                registerScore(score, scoreboard);
-            }
-        }
+        root.iterateCompoundList("PlayerScores", score -> registerScore(score, scoreboard));
     }
 
     private static void registerScore(CompoundTag data, GlowScoreboard scoreboard) {
         int scoreNum = data.getInt("Score");
         String name = data.getString("Name");
         String objective = data.getString("Objective");
-        boolean locked = data.getByte("Locked") == 1;
 
         Score score = scoreboard.getObjective(objective).getScore(name);
         score.setScore(scoreNum);
-        score.setLocked(locked);
+        data.readBoolean("Locked", ((GlowScore) score)::setLocked);
     }
 
     private static void registerTeams(CompoundTag root, GlowScoreboard scoreboard) {
-        if (root.containsKey("Teams")) {
-            List<CompoundTag> teams = root.getCompoundList("Teams");
-            for (CompoundTag team : teams) {
-                registerTeam(team, scoreboard);
-            }
-        }
+        root.iterateCompoundList("Teams", team -> registerTeam(team, scoreboard));
     }
 
     private static void registerTeam(CompoundTag data, GlowScoreboard scoreboard) {
-        boolean allowFriendlyFire = data.getByte("AllowFriendlyFire") == 1;
-        boolean seeFriendlyInvisibles = data.getByte("SeeFriendlyInvisibles") == 1;
-        Team.OptionStatus nameTagVisibility = Team.OptionStatus.valueOf(data.getString("NameTagVisibility").toUpperCase());
         Team.OptionStatus deathMessageVisibility = Team.OptionStatus.ALWAYS;
         switch (data.getString("DeathMessageVisibility")) {
             case "never":
@@ -99,6 +88,9 @@ public class NbtScoreboardIoReader {
             case "hideForOwnTeam":
                 deathMessageVisibility = Team.OptionStatus.FOR_OWN_TEAM;
                 break;
+            default:
+                // TODO: should this raise a warning?
+                // leave deathMessageVisibility at default
         }
         Team.OptionStatus collisionRule = Team.OptionStatus.ALWAYS;
         switch (data.getString("CollisionRule")) {
@@ -111,60 +103,44 @@ public class NbtScoreboardIoReader {
             case "pushOwnTeam":
                 collisionRule = Team.OptionStatus.FOR_OWN_TEAM;
                 break;
+            default:
+                // TODO: Should this raise a warning?
+                // leave collisionRule at default
         }
-        String displayName = data.getString("DisplayName");
-        String name = data.getString("Name");
-        String prefix = data.getString("Prefix");
-        String suffix = data.getString("Suffix");
         ChatColor teamColor = null;
         if (data.containsKey("TeamColor")) {
             teamColor = ChatColor.valueOf(data.getString("TeamColor").toUpperCase());
         }
 
-        List<String> players = data.getList("Players", TagType.STRING);
-
-        GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(name);
-        team.setDisplayName(displayName);
-        team.setPrefix(prefix);
-        team.setSuffix(suffix);
-        team.setAllowFriendlyFire(allowFriendlyFire);
-        team.setCanSeeFriendlyInvisibles(seeFriendlyInvisibles);
-        team.setOption(Team.Option.NAME_TAG_VISIBILITY, nameTagVisibility);
+        GlowTeam team = (GlowTeam) scoreboard.registerNewTeam(data.getString("Name"));
+        data.readString("DisplayName", team::setDisplayName);
+        data.readString("Prefix", team::setPrefix);
+        data.readString("Suffix", team::setSuffix);
+        data.readBoolean("AllowFriendlyFire", team::setAllowFriendlyFire);
+        data.readBoolean("SeeFriendlyInvisibles", team::setCanSeeFriendlyInvisibles);
+        data.readString("NameTagVisibility", nameTagVisibility -> team.setOption(
+                Team.Option.NAME_TAG_VISIBILITY,
+                Team.OptionStatus.valueOf(nameTagVisibility.toUpperCase())));
         team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, deathMessageVisibility);
         team.setOption(Team.Option.COLLISION_RULE, collisionRule);
         if (teamColor != null) {
             team.setColor(teamColor);
         }
+        List<String> players = data.getList("Players", TagType.STRING);
 
         players.forEach(team::addEntry);
-    }
-
-    private static String getOrNull(String key, CompoundTag tag) {
-        if (tag.isString(key)) {
-            return tag.getString(key);
-        }
-        return null;
     }
 
     private static void registerDisplaySlots(CompoundTag root, GlowScoreboard scoreboard) {
         if (root.containsKey("DisplaySlots")) {
             CompoundTag data = root.getCompound("DisplaySlots");
 
-            String list = getOrNull("slot_0", data);
-            String sidebar = getOrNull("slot_1", data);
-            String belowName = getOrNull("slot_2", data);
-
-            if (list != null) {
-                scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST);
-            }
-
-            if (sidebar != null) {
-                scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR);
-            }
-
-            if (belowName != null) {
-                scoreboard.getObjective(belowName).setDisplaySlot(DisplaySlot.BELOW_NAME);
-            }
+            data.readString("slot_0",
+                list -> scoreboard.getObjective(list).setDisplaySlot(DisplaySlot.PLAYER_LIST));
+            data.readString("slot_1",
+                sidebar -> scoreboard.getObjective(sidebar).setDisplaySlot(DisplaySlot.SIDEBAR));
+            data.readString("slot_2",
+                below -> scoreboard.getObjective(below).setDisplaySlot(DisplaySlot.BELOW_NAME));
 
             /* TODO: anything need to be done with team slots?
             String teamBlack = getOrNull("slot_3", data);

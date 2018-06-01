@@ -2,11 +2,11 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.player.SteerVehicleMessage;
 
-import java.io.IOException;
-
 public final class SteerVehicleCodec implements Codec<SteerVehicleMessage> {
+
     @Override
     public SteerVehicleMessage decode(ByteBuf buf) throws IOException {
         float sideways = buf.readFloat();

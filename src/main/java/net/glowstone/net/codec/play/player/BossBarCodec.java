@@ -3,15 +3,14 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.util.UUID;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.BossBarMessage;
 import net.glowstone.net.message.play.player.BossBarMessage.Action;
 import net.glowstone.net.message.play.player.BossBarMessage.Color;
 import net.glowstone.net.message.play.player.BossBarMessage.Division;
 import net.glowstone.util.TextMessage;
-
-import java.io.IOException;
-import java.util.UUID;
 
 public class BossBarCodec implements Codec<BossBarMessage> {
 
@@ -43,10 +42,10 @@ public class BossBarCodec implements Codec<BossBarMessage> {
             case UPDATE_FLAGS:
                 flags = buffer.readByte();
                 return new BossBarMessage(uuid, action, flags);
+            default:
+                //INFO: This return is dead code. We would NPE before on the action line.
+                return null;
         }
-
-        //INFO: This return is dead code. We would NPE before on the action line.
-        return null;
     }
 
     @Override
@@ -75,6 +74,9 @@ public class BossBarCodec implements Codec<BossBarMessage> {
             case UPDATE_FLAGS:
                 buf.writeByte(message.getFlags());
                 break;
+            default:
+                // do nothing
+                // TODO: should this raise a warning?
         }
         return buf;
     }

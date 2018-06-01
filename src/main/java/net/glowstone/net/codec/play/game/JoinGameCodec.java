@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.JoinGameMessage;
 
-import java.io.IOException;
-
 public final class JoinGameCodec implements Codec<JoinGameMessage> {
+
     @Override
     public JoinGameMessage decode(ByteBuf buffer) throws IOException {
         int id = buffer.readInt();
@@ -17,7 +17,8 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
         byte maxPlayers = buffer.readByte();
         String levelType = ByteBufUtils.readUTF8(buffer);
         boolean reducedDebug = buffer.readBoolean();
-        return new JoinGameMessage(id, gameMode, dimension, difficulty, maxPlayers, levelType, reducedDebug);
+        return new JoinGameMessage(id, gameMode, dimension, difficulty, maxPlayers, levelType,
+            reducedDebug);
     }
 
     @Override

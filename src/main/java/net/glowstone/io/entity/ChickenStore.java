@@ -7,23 +7,14 @@ import org.bukkit.entity.EntityType;
 class ChickenStore extends AgeableStore<GlowChicken> {
 
     public ChickenStore() {
-        super(GlowChicken.class, EntityType.CHICKEN);
+        super(GlowChicken.class, EntityType.CHICKEN, GlowChicken::new);
     }
 
     @Override
     public void load(GlowChicken entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.isByte("isChickenJockey")) {
-            entity.setChickenJockey(compound.getBool("isChickenJockey"));
-        } else {
-            entity.setChickenJockey(false);
-        }
-
-        if (compound.isInt("EggLayTime")) {
-            entity.setEggLayTime(compound.getInt("EggLayTime"));
-        } else {
-            entity.setEggLayTime(6000);
-        }
+        entity.setChickenJockey(compound.getBoolean("isChickenJockey", false));
+        entity.setEggLayTime(compound.tryGetInt("EggLayTime").orElse(6000));
 
     }
 

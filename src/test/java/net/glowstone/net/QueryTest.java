@@ -1,5 +1,12 @@
 package net.glowstone.net;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
@@ -7,6 +14,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.util.CharsetUtil;
+import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.query.QueryHandler;
@@ -15,47 +27,42 @@ import net.glowstone.util.Convert;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mock;
-
 /**
  * Tests for the minecraft query server.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ GlowServer.class, GlowPlayer.class, QueryServer.class })
+@PrepareForTest(QueryServer.class)
 public class QueryTest {
+
     /**
      * Test values taken from <a href="http://wiki.vg/Query">wiki.vg/Query</a>
      */
     private static final byte[] HANDSHAKE_RECV = Convert.fromHex("FEFD0900000001");
     private static final byte[] HANDSHAKE_SEND = Convert.fromHex("09000000013935313333303700");
     private static final byte[] BASIC_STATS_RECV = Convert.fromHex("FEFD00000000010091295B");
-    private static final byte[] BASIC_STATS_SEND = Convert.fromHex("000000000141204D696E6563726166742053657276657200534D5000776F726C64003200323000DD633132372E302E302E3100");
+    private static final byte[] BASIC_STATS_SEND = Convert.fromHex(
+        "000000000141204D696E6563726166742053657276657200534D5000776F726C64003200323000DD633132372E302E302E3100");
     private static final byte[] FULL_STATS_RECV = Convert.fromHex("FEFD00000000010091295B00000000");
-    private static final byte[] FULL_STATS_SEND = Convert.fromHex("000000000173706C69746E756D008000686F73746E616D65004120"
+    private static final byte[] FULL_STATS_SEND = Convert
+        .fromHex("000000000173706C69746E756D008000686F73746E616D65004120"
             + "4D696E656372616674205365727665720067616D657479706500534D500067616D655F6964004D494E4543524146540076657273696F6E00"
-            + ByteBufUtil.hexDump(Unpooled.wrappedBuffer(GlowServer.GAME_VERSION.getBytes(CharsetUtil.UTF_8))) // Always use the recent game version
+            + ByteBufUtil
+            .hexDump(Unpooled.wrappedBuffer(GlowServer.GAME_VERSION.getBytes(CharsetUtil.UTF_8)))
+            // Always use the recent game version
             + "00706C7567696E7300"
-            + ByteBufUtil.hexDump(Unpooled.wrappedBuffer("Glowstone 123 on Bukkit xyz".getBytes(CharsetUtil.UTF_8))) // Added, the original example did not use the 'plugin' key
+            + ByteBufUtil.hexDump(
+            Unpooled.wrappedBuffer("Glowstone 123 on Bukkit xyz".getBytes(CharsetUtil.UTF_8)))
+            // Added, the original example did not use the 'plugin' key
             + "006D617000776F726C64006E756D706C61796572730032006D6178706C617965727300323000686F7374706F727400323535363500686F73"
             + "746970003132372E302E302E31000001706C617965725F00006261726E657967616C6500566976616C6168656C7669670000");
 
@@ -84,19 +91,24 @@ public class QueryTest {
 
     @Test
     public void testChallengeTokens() throws Exception {
-        assertFalse("Accepted random challenge token.", server.verifyChallengeToken(address, 54321));
+        assertThat("Accepted random challenge token.", server.verifyChallengeToken(address, 54321),
+            is(false));
 
         when(random.nextInt()).thenReturn(12345);
         int token1 = server.generateChallengeToken(address);
-        assertTrue("Did not add challenge token.", server.verifyChallengeToken(address, token1));
+        assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token1),
+            is(true));
 
         when(random.nextInt()).thenReturn(6789);
         int token2 = server.generateChallengeToken(address);
-        assertFalse("Expired token accepted.", server.verifyChallengeToken(address, token1));
-        assertTrue("Did not add challenge token.", server.verifyChallengeToken(address, token2));
+        assertThat("Expired token accepted.", server.verifyChallengeToken(address, token1),
+            is(false));
+        assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token2),
+            is(true));
 
         server.flushChallengeTokens();
-        assertFalse("Flush did not remove token.", server.verifyChallengeToken(address, token2));
+        assertThat("Flush did not remove token.", server.verifyChallengeToken(address, token2),
+            is(false));
     }
 
     @Test
@@ -107,12 +119,13 @@ public class QueryTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void testBasicStats() throws Exception {
         World world = mock(World.class);
         when(world.getName()).thenReturn("world");
         when(glowServer.getMotd()).thenReturn("A Minecraft Server");
-        when(glowServer.getOnlinePlayers()).thenReturn((List) Arrays.asList(new Object(), new Object()));
+        when(glowServer.getOnlinePlayers())
+            .thenReturn((List) Arrays.asList(new Object(), new Object()));
         when(glowServer.getMaxPlayers()).thenReturn(20);
         when(glowServer.getPort()).thenReturn(25565);
         when(glowServer.getWorlds()).thenReturn(Arrays.asList(world));
@@ -168,7 +181,8 @@ public class QueryTest {
     /**
      * Matches the content (nothing else) of two {@link DatagramPacket}s.
      */
-    private class DatagramPacketMatcher extends BaseMatcher<DatagramPacket> {
+    private static class DatagramPacketMatcher implements ArgumentMatcher<DatagramPacket> {
+
         private final byte[] content;
 
         public DatagramPacketMatcher(byte[] content) {
@@ -176,17 +190,12 @@ public class QueryTest {
         }
 
         @Override
-        public boolean matches(Object obj) {
-            ByteBuf buf = ((DatagramPacket) obj).content();
+        public boolean matches(DatagramPacket obj) {
+            ByteBuf buf = obj.content();
             byte[] array = new byte[buf.readableBytes()];
             buf.readBytes(array);
             buf.readerIndex(buf.readerIndex() - array.length);
             return Arrays.equals(array, content);
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("DatagramPacket(" + ByteBufUtil.hexDump(Unpooled.wrappedBuffer(content)) + ")");
         }
     }
 }

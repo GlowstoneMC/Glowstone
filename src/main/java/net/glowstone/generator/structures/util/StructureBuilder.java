@@ -1,5 +1,11 @@
 package net.glowstone.generator.structures.util;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.structures.GlowStructurePiece;
 import net.glowstone.util.BlockStateDelegate;
@@ -13,29 +19,41 @@ import org.bukkit.material.DirectionalContainer;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
+@RequiredArgsConstructor
 public class StructureBuilder {
 
+    /**
+     * The world this structure is built in.
+     */
     private final World world;
-    private final BlockStateDelegate delegate;
-    private final StructureBoundingBox boundingBox;
+    /**
+     * The structure piece whose coordinate origin and orientation we're using.
+     */
     private final GlowStructurePiece structure;
+    /**
+     * The bounding box in which to operate; not necessarily the same as the structure piece's
+     * bounding box.
+     */
+    private final StructureBoundingBox boundingBox;
+    /**
+     * The BlockStateDelegate used to read and write blocks.
+     */
+    private final BlockStateDelegate delegate;
 
-    public StructureBuilder(World world, GlowStructurePiece structure, StructureBoundingBox boundingBox, BlockStateDelegate delegate) {
-        this.world = world;
-        this.delegate = delegate;
-        this.boundingBox = boundingBox;
-        this.structure = structure;
-    }
-
-    public void addRandomMaterial(Map<StructureMaterial, Integer> materials, int weight, Material type, int data) {
+    public void addRandomMaterial(Map<StructureMaterial, Integer> materials, int weight,
+            Material type, int data) {
         materials.put(new StructureMaterial(type, data), weight);
     }
 
-    public StructureMaterial getRandomMaterial(Random random, Map<StructureMaterial, Integer> materials) {
+    /**
+     * Chooses a random {@link StructureMaterial} from a weighted list.
+     *
+     * @param random the PRNG to use
+     * @param materials a map of materials to integer weights
+     * @return a random material
+     */
+    public StructureMaterial getRandomMaterial(Random random,
+            Map<StructureMaterial, Integer> materials) {
         int totalWeight = 0;
         for (int weight : materials.values()) {
             totalWeight += weight;
@@ -55,104 +73,267 @@ public class StructureBuilder {
         return delegate.getBlockState(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ());
     }
 
+    /**
+     * Sets the block at a given point, if it is inside this structure's bounding box.
+     *
+     * @param pos a point relative to this structure's root point
+     * @param type the new block type
+     */
     public void setBlock(Vector pos, Material type) {
         setBlock(pos, type, 0);
     }
 
+    /**
+     * Sets the block at a given point, if it is inside this builder's bounding box.
+     *
+     * @param pos a point relative to this structure's root point
+     * @param type the new block type
+     * @param data the new block data
+     */
     public void setBlock(Vector pos, Material type, int data) {
         Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
-            delegate.setTypeAndRawData(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ(), type, data);
+            delegate
+                    .setTypeAndRawData(world, vec.getBlockX(), vec.getBlockY(), vec
+                                    .getBlockZ(), type,
+                            data);
         }
     }
 
+    /**
+     * Sets the block at a given point, if it is inside this structure's bounding box.
+     *
+     * @param pos a point relative to this structure's root point
+     * @param type the new block type
+     * @param data the new block data
+     */
     public void setBlock(Vector pos, Material type, MaterialData data) {
         Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
-            delegate.setTypeAndData(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ(), type, data);
+            delegate.setTypeAndData(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ(), type,
+                    data);
         }
     }
 
+    /**
+     * Builds a 1x1 column out of the given block, replacing non-solid blocks starting at a given
+     * location and proceeding downward until a solid block is reached.
+     *
+     * @param pos the highest point to possibly replace, relative to this structure's root
+     *         point
+     * @param type the block type to fill
+     */
     public void setBlockDownward(Vector pos, Material type) {
         setBlockDownward(pos, type, 0);
     }
 
+    /**
+     * Builds a 1x1 column out of the given block, replacing non-solid blocks starting at a given
+     * location and proceeding downward until a solid block is reached.
+     *
+     * @param pos the highest point to possibly replace, relative to this structure's root
+     *         point
+     * @param type the block type to fill
+     * @param data the block data
+     */
     public void setBlockDownward(Vector pos, Material type, int data) {
         Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
             int y = vec.getBlockY();
-            while (!world.getBlockAt(vec.getBlockX(), y, vec.getBlockZ()).getType().isSolid() && y > 1) {
+            while (!world.getBlockAt(vec.getBlockX(), y, vec.getBlockZ()).getType().isSolid()
+                    && y > 1) {
                 delegate.setTypeAndRawData(world, vec.getBlockX(), y, vec.getBlockZ(), type, data);
                 y--;
             }
         }
     }
 
+    /**
+     * Builds a 1x1 column out of the given block, replacing non-solid blocks starting at a given
+     * location and proceeding downward until a solid block is reached.
+     *
+     * @param pos the highest point to possibly replace, relative to this structure's root
+     *         point
+     * @param type the block type to fill
+     * @param data the block data
+     */
     public void setBlockDownward(Vector pos, Material type, MaterialData data) {
         Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
+            int x = vec.getBlockX();
             int y = vec.getBlockY();
-            while (!world.getBlockAt(vec.getBlockX(), y, vec.getBlockZ()).getType().isSolid() && y > 1) {
-                delegate.setTypeAndData(world, vec.getBlockX(), y, vec.getBlockZ(), type, data);
+            int z = vec.getBlockZ();
+            while (!world.getBlockAt(x, y, z).getType().isSolid() && y > 1) {
+                delegate.setTypeAndData(world, x, y, z, type, data);
                 y--;
             }
         }
     }
 
-    public void setBlockWithRandomMaterial(Vector pos, Random random, Map<StructureMaterial, Integer> materials) {
+    public void setBlockWithRandomMaterial(Vector pos, Random random,
+            Map<StructureMaterial, Integer> materials) {
         StructureMaterial material = getRandomMaterial(random, materials);
         setBlock(pos, material.getType(), material.getData());
     }
 
+    /**
+     * Fills a box with the given block.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param type the block type
+     */
     public void fill(Vector min, Vector max, Material type) {
         fill(min, max, type, 0);
     }
 
+    /**
+     * Fills a box with the given block.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param type the block type
+     * @param data the block data
+     */
     public void fill(Vector min, Vector max, Material type, int data) {
         fill(min, max, type, data, type, data);
     }
 
+    /**
+     * Fills a box with the given block.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param type the block type
+     * @param data the block data
+     */
     public void fill(Vector min, Vector max, Material type, MaterialData data) {
         fill(min, max, type, data, type, data);
     }
 
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param innerType the block type for the interior
+     */
     public void fill(Vector min, Vector max, Material outerType, Material innerType) {
         fill(min, max, outerType, 0, innerType, 0);
     }
 
-    public void fill(Vector min, Vector max, Material outerType, Material innerType, int innerData) {
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param innerType the block type for the interior
+     * @param innerData the block data for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, Material innerType,
+            int innerData) {
         fill(min, max, outerType, 0, innerType, innerData);
     }
 
-    public void fill(Vector min, Vector max, Material outerType, Material innerType, MaterialData innerData) {
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param innerType the block type for the interior
+     * @param innerData the block data for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, Material innerType,
+            MaterialData innerData) {
         fill(min, max, outerType, 0, innerType, innerData);
     }
 
-    public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType, MaterialData innerData) {
-        fill(min, max, outerType, outerData, innerType, innerData);
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param outerData the block data for the faces
+     * @param innerType the block type for the interior
+     * @param innerData the block data for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType,
+            MaterialData innerData) {
+        fill(min, max, outerType, outerData, innerType, innerData.getData());
     }
 
-    public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType) {
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param outerData the block data for the faces
+     * @param innerType the block type for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, int outerData,
+            Material innerType) {
         fill(min, max, outerType, outerData, innerType, 0);
     }
 
-    public void fill(Vector min, Vector max, Material outerType, MaterialData outerData, Material innerType) {
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param outerData the block data for the faces
+     * @param innerType the block type for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, MaterialData outerData,
+            Material innerType) {
         fill(min, max, outerType, outerData, innerType, 0);
     }
 
-    public void fill(Vector min, Vector max, Material outerType, MaterialData outerData, Material innerType, int innerData) {
-        fill(min, max, outerType, outerData, innerType, innerData);
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param outerData the block data for the faces
+     * @param innerType the block type for the interior
+     * @param innerData the block data for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, MaterialData outerData,
+            Material innerType, int innerData) {
+        fill(min, max, outerType, outerData.getData(), innerType, innerData);
     }
 
-    public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType, int innerData) {
-        for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
-            for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
-                for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param outerData the block data for the faces
+     * @param innerType the block type for the interior
+     * @param innerData the block data for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, int outerData, Material innerType,
+            int innerData) {
+        int minX = min.getBlockX();
+        int minY = min.getBlockY();
+        int minZ = min.getBlockZ();
+        int maxX = max.getBlockX();
+        int maxY = max.getBlockY();
+        int maxZ = max.getBlockZ();
+        for (int y = minY; y <= maxY; y++) {
+            for (int x = minX; x <= maxX; x++) {
+                for (int z = minZ; z <= maxZ; z++) {
                     Material type;
                     int data;
-                    if (x != min.getBlockX() && x != max.getBlockX() &&
-                            z != min.getBlockZ() && z != max.getBlockZ() &&
-                            y != min.getBlockY() && y != max.getBlockY()) {
+                    if (x != minX && x != maxX && z != minZ && z != maxZ
+                            && y != minY && y != maxY) {
                         type = innerType;
                         data = innerData;
                     } else {
@@ -165,15 +346,31 @@ public class StructureBuilder {
         }
     }
 
-    public void fill(Vector min, Vector max, Material outerType, MaterialData outerData, Material innerType, MaterialData innerData) {
-        for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
-            for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
-                for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+    /**
+     * Builds a box from one block, and fills it with another.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param outerType the block type for the faces
+     * @param outerData the block data for the faces
+     * @param innerType the block type for the interior
+     * @param innerData the block data for the interior
+     */
+    public void fill(Vector min, Vector max, Material outerType, MaterialData outerData,
+            Material innerType, MaterialData innerData) {
+        int minX = min.getBlockX();
+        int minY = min.getBlockY();
+        int minZ = min.getBlockZ();
+        int maxX = max.getBlockX();
+        int maxY = max.getBlockY();
+        int maxZ = max.getBlockZ();
+        for (int y = minY; y <= maxY; y++) {
+            for (int x = minX; x <= maxX; x++) {
+                for (int z = minZ; z <= maxZ; z++) {
                     Material type;
                     MaterialData data;
-                    if (x != min.getBlockX() && x != max.getBlockX() &&
-                            z != min.getBlockZ() && z != max.getBlockZ() &&
-                            y != min.getBlockY() && y != max.getBlockY()) {
+                    if (x != minX && x != maxX && z != minZ && z != maxZ
+                            && y != minY && y != maxY) {
                         type = innerType;
                         data = innerData;
                     } else {
@@ -186,7 +383,16 @@ public class StructureBuilder {
         }
     }
 
-    public void fillWithRandomMaterial(Vector min, Vector max, Random random, Map<StructureMaterial, Integer> materials) {
+    /**
+     * Sets a box of blocks to have random types, chosen independently.
+     *
+     * @param min the minimum coordinates, relative to this structure's root point
+     * @param max the maximum coordinates, relative to this structure's root point
+     * @param random the PRNG to use
+     * @param materials a map of possible blocks to integer weights
+     */
+    public void fillWithRandomMaterial(Vector min, Vector max, Random random,
+            Map<StructureMaterial, Integer> materials) {
         for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
             for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
@@ -197,25 +403,46 @@ public class StructureBuilder {
         }
     }
 
-    public boolean createRandomItemsContainer(Vector pos, Random random, RandomItemsContent content, DirectionalContainer container, int maxStacks) {
+    /**
+     * Sets the given block to a container and fills it with random items.
+     *
+     * @param pos a point relative to this structure's root point
+     * @param random the PRNG to use
+     * @param content the distribution to draw items from
+     * @param container the container to place
+     * @param maxStacks the maximum number of slots to fill
+     * @return true if the container was placed and filled; false if {@code pos} is outside the
+     *         builder's bounding box or {@link RandomItemsContent#fillContainer(Random, BlockState,
+     *         int)} fails
+     */
+    public boolean createRandomItemsContainer(Vector pos, Random random, RandomItemsContent content,
+            DirectionalContainer container, int maxStacks) {
         Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
-            BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getState();
+            BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ())
+                    .getState();
             delegate.backupBlockState(state.getBlock());
 
             state.setType(container.getItemType());
             state.setData(container);
             state.update(true);
 
-            return content.fillContainer(random, container, state, maxStacks);
+            return content.fillContainer(random, state, maxStacks);
         }
         return false;
     }
 
+    /**
+     * Sets the given block to a spawner for the given entity type.
+     *
+     * @param pos a point relative to this structure's root point
+     * @param entityType the type of entity the spawner will spawn
+     */
     public void createMobSpawner(Vector pos, EntityType entityType) {
         Vector vec = translate(pos);
         if (boundingBox.isVectorInside(vec)) {
-            BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getState();
+            BlockState state = world.getBlockAt(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ())
+                    .getState();
             delegate.backupBlockState(state.getBlock());
 
             state.setType(Material.MOB_SPAWNER);
@@ -228,9 +455,19 @@ public class StructureBuilder {
         }
     }
 
+    /**
+     * Spawns an entity if the given position is within this structure's bounding box.
+     *
+     * @param pos a point relative to this structure's root point
+     * @param entityType the type of entity to spawn
+     * @return true if the entity was spawned; false if {@code pos} is outside the builder's
+     *         bounding box or {@link World#spawnEntity(Location, EntityType)} fails
+     */
     public boolean spawnMob(Vector pos, EntityType entityType) {
         Vector vec = translate(pos);
-        return boundingBox.isVectorInside(vec) && world.spawnEntity(new Location(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()), entityType) != null;
+        return boundingBox.isVectorInside(vec) && world
+                .spawnEntity(new Location(world, vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()),
+                        entityType) != null;
     }
 
     private Vector translate(Vector pos) {
@@ -255,25 +492,14 @@ public class StructureBuilder {
         }
     }
 
-    public class StructureMaterial {
-        private Material type;
-        private int data;
-
+    @AllArgsConstructor
+    @Data
+    public static final class StructureMaterial {
         public StructureMaterial(Material type) {
             this(type, 0);
         }
 
-        public StructureMaterial(Material type, int data) {
-            this.type = type;
-            this.data = data;
-        }
-
-        public Material getType() {
-            return type;
-        }
-
-        public int getData() {
-            return data;
-        }
+        private Material type;
+        private int data;
     }
 }

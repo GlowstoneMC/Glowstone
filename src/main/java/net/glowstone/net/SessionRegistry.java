@@ -4,8 +4,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * A list of all the sessions which provides a convenient {@link #pulse()}
- * method to pulse every session in one operation.
+ * A list of all the sessions which provides a convenient {@link #pulse()} method to pulse every
+ * session in one operation.
  *
  * @author Graham Edgecombe
  */

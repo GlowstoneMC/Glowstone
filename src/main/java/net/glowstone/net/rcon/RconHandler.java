@@ -3,14 +3,13 @@ package net.glowstone.net.rcon;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
 import org.bukkit.event.server.RemoteServerCommandEvent;
-
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Handler for Rcon messages.
@@ -22,6 +21,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static final byte TYPE_COMMAND = 2;
     private static final byte TYPE_LOGIN = 3;
 
+    // FIXME: This is a password stored in plain text!
     private final String password;
 
     private boolean loggedIn;
@@ -36,6 +36,12 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
      */
     private RconCommandSender commandSender;
 
+    /**
+     * Creates a remote console handler.
+     *
+     * @param rconServer the associated server
+     * @param password the remote operator's password
+     */
     public RconHandler(RconServer rconServer, String password) {
         this.rconServer = rconServer;
         this.password = password;
@@ -73,6 +79,7 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
             sendResponse(ctx, requestId, TYPE_COMMAND, "");
             GlowServer.logger.info("Rcon connection from [" + ctx.channel().remoteAddress() + "]");
         } else {
+            // FIXME: Throttle online brute-force attacks!
             loggedIn = false;
             sendResponse(ctx, FAILURE, TYPE_COMMAND, "");
         }
@@ -85,8 +92,11 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }
 
         try {
-            RemoteServerCommandEvent event = new RemoteServerCommandEvent(commandSender, payload);
-            EventFactory.callEvent(event);
+            RemoteServerCommandEvent event = EventFactory.getInstance()
+                .callEvent(new RemoteServerCommandEvent(commandSender, payload));
+            if (event.isCancelled()) {
+                return;
+            }
             rconServer.getServer().dispatchCommand(commandSender, event.getCommand());
 
             String message = commandSender.flush();
@@ -96,7 +106,8 @@ public class RconHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
             sendLargeResponse(ctx, requestId, message);
         } catch (CommandException e) {
-            sendLargeResponse(ctx, requestId, String.format("Error executing: %s (%s)", payload, e.getMessage()));
+            sendLargeResponse(ctx, requestId,
+                String.format("Error executing: %s (%s)", payload, e.getMessage()));
         }
     }
 

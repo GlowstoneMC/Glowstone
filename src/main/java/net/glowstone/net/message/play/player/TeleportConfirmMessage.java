@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class TeleportConfirmMessage implements Message {
 
-    private final int teleportID;
+    private final int teleportId;
 }

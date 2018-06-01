@@ -1,13 +1,73 @@
 package net.glowstone.constants;
 
-import net.glowstone.GlowServer;
-import org.bukkit.block.Biome;
-
-import java.text.MessageFormat;
-import java.util.Arrays;
-
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.bukkit.block.Biome.*;
+import static org.bukkit.block.Biome.BEACHES;
+import static org.bukkit.block.Biome.BIRCH_FOREST;
+import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
+import static org.bukkit.block.Biome.COLD_BEACH;
+import static org.bukkit.block.Biome.DEEP_OCEAN;
+import static org.bukkit.block.Biome.DESERT;
+import static org.bukkit.block.Biome.DESERT_HILLS;
+import static org.bukkit.block.Biome.EXTREME_HILLS;
+import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
+import static org.bukkit.block.Biome.FOREST;
+import static org.bukkit.block.Biome.FOREST_HILLS;
+import static org.bukkit.block.Biome.FROZEN_OCEAN;
+import static org.bukkit.block.Biome.FROZEN_RIVER;
+import static org.bukkit.block.Biome.HELL;
+import static org.bukkit.block.Biome.ICE_FLATS;
+import static org.bukkit.block.Biome.ICE_MOUNTAINS;
+import static org.bukkit.block.Biome.JUNGLE;
+import static org.bukkit.block.Biome.JUNGLE_EDGE;
+import static org.bukkit.block.Biome.JUNGLE_HILLS;
+import static org.bukkit.block.Biome.MESA;
+import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MESA_ROCK;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
+import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
+import static org.bukkit.block.Biome.MUTATED_BIRCH_FOREST;
+import static org.bukkit.block.Biome.MUTATED_BIRCH_FOREST_HILLS;
+import static org.bukkit.block.Biome.MUTATED_DESERT;
+import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS;
+import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS_WITH_TREES;
+import static org.bukkit.block.Biome.MUTATED_FOREST;
+import static org.bukkit.block.Biome.MUTATED_ICE_FLATS;
+import static org.bukkit.block.Biome.MUTATED_JUNGLE;
+import static org.bukkit.block.Biome.MUTATED_JUNGLE_EDGE;
+import static org.bukkit.block.Biome.MUTATED_MESA;
+import static org.bukkit.block.Biome.MUTATED_MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MUTATED_MESA_ROCK;
+import static org.bukkit.block.Biome.MUTATED_PLAINS;
+import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA;
+import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA_HILLS;
+import static org.bukkit.block.Biome.MUTATED_ROOFED_FOREST;
+import static org.bukkit.block.Biome.MUTATED_SAVANNA;
+import static org.bukkit.block.Biome.MUTATED_SAVANNA_ROCK;
+import static org.bukkit.block.Biome.MUTATED_SWAMPLAND;
+import static org.bukkit.block.Biome.MUTATED_TAIGA;
+import static org.bukkit.block.Biome.MUTATED_TAIGA_COLD;
+import static org.bukkit.block.Biome.OCEAN;
+import static org.bukkit.block.Biome.PLAINS;
+import static org.bukkit.block.Biome.REDWOOD_TAIGA;
+import static org.bukkit.block.Biome.REDWOOD_TAIGA_HILLS;
+import static org.bukkit.block.Biome.RIVER;
+import static org.bukkit.block.Biome.ROOFED_FOREST;
+import static org.bukkit.block.Biome.SAVANNA;
+import static org.bukkit.block.Biome.SAVANNA_ROCK;
+import static org.bukkit.block.Biome.SKY;
+import static org.bukkit.block.Biome.SMALLER_EXTREME_HILLS;
+import static org.bukkit.block.Biome.STONE_BEACH;
+import static org.bukkit.block.Biome.SWAMPLAND;
+import static org.bukkit.block.Biome.TAIGA;
+import static org.bukkit.block.Biome.TAIGA_COLD;
+import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
+import static org.bukkit.block.Biome.TAIGA_HILLS;
+import static org.bukkit.block.Biome.VOID;
+import static org.bukkit.block.Biome.values;
+
+import java.util.Arrays;
+import net.glowstone.i18n.LocalizedStrings;
+import org.bukkit.block.Biome;
 
 /**
  * Mappings for Biome id values.
@@ -108,7 +168,7 @@ public final class GlowBiome {
         if (id < biomes.length) {
             return biomes[id];
         } else {
-            GlowServer.logger.severe(MessageFormat.format("Unknown biome id: {0}!", id));
+            LocalizedStrings.Console.Error.Biome.UNKNOWN.log(id);
             return null;
         }
     }

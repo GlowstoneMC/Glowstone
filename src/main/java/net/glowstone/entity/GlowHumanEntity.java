@@ -1,18 +1,40 @@
 package net.glowstone.entity;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.network.Message;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
-import net.glowstone.entity.meta.profile.PlayerProfile;
+import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.objects.GlowItem;
-import net.glowstone.inventory.*;
+import net.glowstone.inventory.ArmorConstants;
+import net.glowstone.inventory.EquipmentMonitor;
+import net.glowstone.inventory.GlowCraftingInventory;
+import net.glowstone.inventory.GlowEnchantingInventory;
+import net.glowstone.inventory.GlowInventory;
+import net.glowstone.inventory.GlowInventoryView;
+import net.glowstone.inventory.GlowPlayerInventory;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityEquipmentMessage;
 import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
+import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -30,11 +52,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.*;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Represents a human entity, such as an NPC or a player.
  */
@@ -43,20 +60,24 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * The player profile with name and UUID information.
      */
-    private final PlayerProfile profile;
+    @Getter
+    private final GlowPlayerProfile profile;
 
     /**
      * The inventory of this human.
      */
+    @Getter
     private final GlowPlayerInventory inventory = new GlowPlayerInventory(this);
 
     /**
      * The ender chest inventory of this human.
      */
+    @Getter
     private final GlowInventory enderChest = new GlowInventory(this, InventoryType.ENDER_CHEST);
     /**
      * Whether this human is sleeping or not.
      */
+    @Getter
     protected boolean sleeping;
     /**
      * This human's PermissibleBase for permissions.
@@ -65,29 +86,38 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     /**
      * The item the player has on their cursor.
      */
+    @Getter
+    @Setter
     private ItemStack itemOnCursor;
     /**
      * How long this human has been sleeping.
      */
-    private int sleepingTicks;
+    @Getter
+    private int sleepTicks;
     /**
      * Whether this human is considered an op.
      */
-    private boolean isOp;
+    @Getter
+    private boolean op;
 
     /**
-     * The player's active game mode
+     * The player's active game mode.
      */
+    @Getter
+    @Setter
     private GameMode gameMode;
 
     /**
-     * The player's currently open inventory
+     * The player's currently open inventory.
      */
-    private InventoryView inventoryView;
+    @Getter
+    private InventoryView openInventory;
 
     /**
      * The player's xpSeed. Used for calculation of enchantments.
      */
+    @Getter
+    @Setter
     private int xpSeed;
 
     /**
@@ -99,18 +129,18 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
      * Creates a human within the specified world and with the specified name.
      *
      * @param location The location.
-     * @param profile  The human's profile with name and UUID information.
+     * @param profile The human's profile with name and UUID information.
      */
-    public GlowHumanEntity(Location location, PlayerProfile profile) {
+    public GlowHumanEntity(Location location, GlowPlayerProfile profile) {
         super(location);
         this.profile = profile;
         xpSeed = new Random().nextInt(); //TODO: use entity's random instance
         permissions = new PermissibleBase(this);
         gameMode = server.getDefaultGameMode();
 
-        inventoryView = new GlowInventoryView(this);
-        addViewer(inventoryView.getTopInventory());
-        addViewer(inventoryView.getBottomInventory());
+        openInventory = new GlowInventoryView(this);
+        addViewer(openInventory.getTopInventory());
+        addViewer(openInventory.getBottomInventory());
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -126,16 +156,21 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         double z = location.getZ();
         int yaw = Position.getIntYaw(location);
         int pitch = Position.getIntPitch(location);
-        result.add(new SpawnPlayerMessage(id, profile.getUniqueId(), x, y, z, yaw, pitch, metadata.getEntryList()));
+        result.add(new SpawnPlayerMessage(entityId, profile.getId(), x, y, z, yaw, pitch,
+                metadata.getEntryList()));
 
         // head facing
-        result.add(new EntityHeadRotationMessage(id, yaw));
+        result.add(new EntityHeadRotationMessage(entityId, yaw));
 
         // equipment
         EntityEquipment equipment = getEquipment();
-        result.add(new EntityEquipmentMessage(id, 0, equipment.getItemInHand()));
+        result.add(new EntityEquipmentMessage(entityId, EntityEquipmentMessage.HELD_ITEM, equipment
+                .getItemInMainHand()));
+        result.add(new EntityEquipmentMessage(entityId, EntityEquipmentMessage.OFF_HAND, equipment
+                .getItemInOffHand()));
         for (int i = 0; i < 4; i++) {
-            result.add(new EntityEquipmentMessage(id, i + 1, equipment.getArmorContents()[i]));
+            result.add(new EntityEquipmentMessage(entityId,
+                    EntityEquipmentMessage.BOOTS_SLOT + i, equipment.getArmorContents()[i]));
         }
         return result;
     }
@@ -144,15 +179,16 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     public void pulse() {
         super.pulse();
         if (sleeping) {
-            ++sleepingTicks;
+            ++sleepTicks;
         } else {
-            sleepingTicks = 0;
+            sleepTicks = 0;
         }
         processArmorChanges();
     }
 
     /**
-     * Process changes to the human enitity's armor, and update the entity's armor attributes accordingly.
+     * Process changes to the human enitity's armor, and update the entity's armor attributes
+     * accordingly.
      */
     private void processArmorChanges() {
         GlowPlayer player = null;
@@ -170,27 +206,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             }
         }
         if (armorUpdate) {
-            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR, ArmorConstants.getDefense(getEquipment().getArmorContents()));
-            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS, ArmorConstants.getToughness(getEquipment().getArmorContents()));
+            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR,
+                    ArmorConstants.getDefense(getEquipment().getArmorContents()));
+            getAttributeManager().setProperty(AttributeManager.Key.KEY_ARMOR_TOUGHNESS,
+                    ArmorConstants.getToughness(getEquipment().getArmorContents()));
         }
         needsArmorUpdate = true;
-    }
-
-    /**
-     * Get this human entity's PlayerProfile with associated data.
-     *
-     * @return The PlayerProfile.
-     */
-    public final PlayerProfile getProfile() {
-        return profile;
-    }
-
-    public int getXpSeed() {
-        return xpSeed;
-    }
-
-    public void setXpSeed(int xpSeed) {
-        this.xpSeed = xpSeed;
     }
 
     @Override
@@ -203,35 +224,16 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public UUID getUniqueId() {
-        return profile.getUniqueId();
+        return profile.getId();
     }
 
     @Override
     public void setUniqueId(UUID uuid) {
         // silently allow setting the same UUID again
-        if (!profile.getUniqueId().equals(uuid)) {
-            throw new IllegalStateException("UUID of " + this + " is already " + profile.getUniqueId());
+        if (!profile.getId().equals(uuid)) {
+            throw new IllegalStateException(
+                    "UUID of " + this + " is already " + profile.getId());
         }
-    }
-
-    @Override
-    public boolean isSleeping() {
-        return sleeping;
-    }
-
-    @Override
-    public int getSleepTicks() {
-        return sleepingTicks;
-    }
-
-    @Override
-    public GameMode getGameMode() {
-        return gameMode;
-    }
-
-    @Override
-    public void setGameMode(GameMode mode) {
-        gameMode = mode;
     }
 
     @Override
@@ -246,7 +248,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public EntityEquipment getEquipment() {
-        return inventory;
+        return getInventory();
     }
 
     @Override
@@ -295,7 +297,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
+            int ticks) {
         return permissions.addAttachment(plugin, name, value, ticks);
     }
 
@@ -315,13 +318,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public boolean isOp() {
-        return isOp;
-    }
-
-    @Override
     public void setOp(boolean value) {
-        isOp = value;
+        op = value;
         recalculatePermissions();
     }
 
@@ -330,51 +328,28 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
     @Override
     public boolean canTakeDamage(DamageCause damageCause) {
-        return (damageCause == DamageCause.VOID || gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) && super.canTakeDamage(damageCause);
+        return (damageCause == DamageCause.VOID || damageCause == DamageCause.SUICIDE
+                || gameMode == GameMode.SURVIVAL || gameMode == GameMode.ADVENTURE) && super
+                .canTakeDamage(damageCause);
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // Inventory
 
     @Override
-    public GlowPlayerInventory getInventory() {
-        return inventory;
-    }
-
-    @Override
     public ItemStack getItemInHand() {
-        return getInventory().getItemInHand();
+        return getInventory().getItemInMainHand();
     }
 
     @Override
     public void setItemInHand(ItemStack item) {
-        getInventory().setItemInHand(item);
-    }
-
-    @Override
-    public ItemStack getItemOnCursor() {
-        return itemOnCursor;
-    }
-
-    @Override
-    public void setItemOnCursor(ItemStack item) {
-        itemOnCursor = item;
-    }
-
-    @Override
-    public Inventory getEnderChest() {
-        return enderChest;
+        getInventory().setItemInMainHand(item);
     }
 
     @Override
     public boolean setWindowProperty(Property prop, int value) {
         // nb: does not actually send anything
-        return prop.getType() == inventoryView.getType();
-    }
-
-    @Override
-    public InventoryView getOpenInventory() {
-        return inventoryView;
+        return prop.getType() == openInventory.getType();
     }
 
     @Override
@@ -382,6 +357,19 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         InventoryView view = new GlowInventoryView(this, inventory);
         openInventory(view);
         return view;
+    }
+
+    @Override
+    public void openInventory(InventoryView inventory) {
+        checkNotNull(inventory);
+        this.inventory.getDragTracker().reset();
+
+        // stop viewing the old inventory and start viewing the new one
+        removeViewer(openInventory.getTopInventory());
+        removeViewer(openInventory.getBottomInventory());
+        openInventory = inventory;
+        addViewer(openInventory.getTopInventory());
+        addViewer(openInventory.getBottomInventory());
     }
 
     @Override
@@ -407,33 +395,20 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     @Override
-    public void openInventory(InventoryView inventory) {
-        checkNotNull(inventory);
-        this.inventory.getDragTracker().reset();
-
-        // stop viewing the old inventory and start viewing the new one
-        removeViewer(inventoryView.getTopInventory());
-        removeViewer(inventoryView.getBottomInventory());
-        inventoryView = inventory;
-        addViewer(inventoryView.getTopInventory());
-        addViewer(inventoryView.getBottomInventory());
-    }
-
-    @Override
     public void closeInventory() {
-        EventFactory.callEvent(new InventoryCloseEvent(inventoryView));
+        EventFactory.getInstance().callEvent(new InventoryCloseEvent(openInventory));
         if (getGameMode() != GameMode.CREATIVE) {
             if (!InventoryUtil.isEmpty(getItemOnCursor())) {
                 drop(getItemOnCursor());
             }
-            dropUnusedInputs();
+            handleUnusedInputs();
         }
         setItemOnCursor(InventoryUtil.createEmptyStack());
         resetInventoryView();
     }
 
     // Drop items left in crafting area.
-    private void dropUnusedInputs() {
+    private void handleUnusedInputs() {
         for (int i = 0; i < getTopInventory().getSlots().size(); i++) {
             ItemStack itemStack = getOpenInventory().getItem(i);
             if (InventoryUtil.isEmpty(itemStack)) {
@@ -441,8 +416,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
             }
 
             if (isDroppableCraftingSlot(i)) {
-                drop(itemStack);
-                getOpenInventory().setItem(i, InventoryUtil.createEmptyStack());
+                getOpenInventory().getBottomInventory().addItem(itemStack);
+                getOpenInventory().getTopInventory().setItem(i, InventoryUtil.createEmptyStack());
             }
         }
     }
@@ -482,8 +457,8 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     /**
-     * Drops the item this entity currently has in its hands and remove the
-     * item from the HumanEntity's inventory.
+     * Drops the item this entity currently has in its hands and remove the item from the
+     * HumanEntity's inventory.
      *
      * @param wholeStack True if the whole stack should be dropped
      */
@@ -513,8 +488,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
     }
 
     /**
-     * Spawns a new {@link GlowItem} in the world, as if this HumanEntity had
-     * dropped it. Note that this does NOT remove the item from the inventory.
+     * Spawns a new {@link GlowItem} in the world, as if this HumanEntity had dropped it.
+     *
+     * <p>Note that this does NOT remove the item from the inventory.
      *
      * @param stack The item to drop
      * @return the GlowItem that was generated, or null if the spawning was cancelled
@@ -525,9 +501,109 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
 
         Location dropLocation = location.clone().add(0, getEyeHeight(true) - 0.3, 0);
         GlowItem dropItem = world.dropItem(dropLocation, stack);
-        Vector vel = location.getDirection().multiply(0.3f);
-        vel.setY(vel.getY() + 0.1F);
+
+        /**
+         * These calculations are strictly based off of trial-and-error to find the 
+         * closest similar behavior to the official server. May be changed in the future.
+         */
+        Vector vel = location.getDirection().multiply(0.3);
+        ThreadLocalRandom tlr = ThreadLocalRandom.current();
+        double randOffset = 0.02;
+        vel.add(new Vector(
+            tlr.nextDouble(randOffset) - randOffset / 2,
+            tlr.nextDouble(0.12),
+            tlr.nextDouble(randOffset) - randOffset / 2));
+            
         dropItem.setVelocity(vel);
         return dropItem;
+    }
+
+    @Override
+    public Entity getShoulderEntityLeft() {
+        CompoundTag tag = getLeftShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
+    }
+
+    @Override
+    public void setShoulderEntityLeft(Entity entity) {
+        if (entity == null) {
+            releaseLeftShoulderEntity();
+        } else {
+            CompoundTag tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
+            setLeftShoulderTag(tag);
+        }
+    }
+
+    @Override
+    public Entity getShoulderEntityRight() {
+        CompoundTag tag = getRightShoulderTag();
+        if (tag.isEmpty()) {
+            return null;
+        }
+        UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+        return server.getEntity(uuid);
+    }
+
+    @Override
+    public void setShoulderEntityRight(Entity entity) {
+        if (entity == null) {
+            releaseRightShoulderEntity();
+        } else {
+            CompoundTag tag = new CompoundTag();
+            EntityStorage.save((GlowEntity) entity, tag);
+            setRightShoulderTag(tag);
+        }
+    }
+
+    @Override
+    public Entity releaseLeftShoulderEntity() {
+        CompoundTag tag = getLeftShoulderTag();
+        GlowEntity shoulderEntity = null;
+        if (!tag.isEmpty()) {
+            shoulderEntity = EntityStorage.loadEntity(world, tag);
+            shoulderEntity.setRawLocation(getLocation());
+        }
+        setLeftShoulderTag(null);
+        return shoulderEntity;
+    }
+
+    @Override
+    public Entity releaseRightShoulderEntity() {
+        CompoundTag tag = getRightShoulderTag();
+        GlowEntity shoulderEntity = null;
+        if (!tag.isEmpty()) {
+            shoulderEntity = EntityStorage.loadEntity(world, tag);
+            shoulderEntity.setRawLocation(getLocation());
+        }
+        setRightShoulderTag(null);
+        return shoulderEntity;
+    }
+
+    public CompoundTag getLeftShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_LEFT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public void setLeftShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_LEFT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    public CompoundTag getRightShoulderTag() {
+        Object tag = metadata.get(MetadataIndex.PLAYER_RIGHT_SHOULDER);
+        return tag == null ? new CompoundTag() : (CompoundTag) tag;
+    }
+
+    public void setRightShoulderTag(CompoundTag tag) {
+        metadata.set(MetadataIndex.PLAYER_RIGHT_SHOULDER, tag == null ? new CompoundTag() : tag);
+    }
+
+    @Override
+    public void openSign(Sign sign) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

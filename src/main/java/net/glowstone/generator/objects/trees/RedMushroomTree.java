@@ -1,15 +1,19 @@
 package net.glowstone.generator.objects.trees;
 
-import net.glowstone.util.BlockStateDelegate;
-import org.bukkit.Location;
-import org.bukkit.Material;
-
 import java.util.Random;
+import net.glowstone.util.BlockStateDelegate;
+import org.bukkit.Material;
 
 public class RedMushroomTree extends BrownMushroomTree {
 
-    public RedMushroomTree(Random random, Location location, BlockStateDelegate delegate) {
-        super(random, location, delegate);
+    /**
+     * Initializes this mushroom, preparing it to attempt to generate.
+     *
+     * @param random the PRNG
+     * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
+     */
+    public RedMushroomTree(Random random, BlockStateDelegate delegate) {
+        super(random, delegate);
         type = Material.HUGE_MUSHROOM_2;
     }
 }

@@ -1,11 +1,11 @@
 package net.glowstone.constants;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.potion.Potion;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Conversion of data classes to raw values for Effects.
@@ -19,8 +19,8 @@ public final class GlowEffect {
      * Get the raw data value for an Effect and its data object.
      *
      * @param effect the Effect whose data to calculate
-     * @param data   the original data
-     * @param <T>    the type of data
+     * @param data the original data
+     * @param <T> the type of data
      * @return the raw data value
      */
     public static <T> int getDataValue(Effect effect, T data) {

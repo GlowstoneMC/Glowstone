@@ -7,36 +7,16 @@ import org.bukkit.entity.EntityType;
 class CreeperStore extends MonsterStore<GlowCreeper> {
 
     public CreeperStore() {
-        super(GlowCreeper.class, EntityType.CREEPER);
+        super(GlowCreeper.class, EntityType.CREEPER, GlowCreeper::new);
     }
 
     @Override
     public void load(GlowCreeper entity, CompoundTag compound) {
         super.load(entity, compound);
-        if (compound.containsKey("powered")) {
-            entity.setPowered(compound.getBool("powered"));
-        } else {
-            entity.setPowered(false);
-        }
-
-        if (compound.isInt("ExplosionRadius")) {
-            entity.setExplosionRadius(compound.getInt("ExplosionRadius"));
-        } else {
-            entity.setExplosionRadius(3);
-        }
-
-        if (compound.isInt("Fuse")) {
-            entity.setFuse(compound.getInt("Fuse"));
-        } else {
-            entity.setFuse(30);
-        }
-
-        if (compound.containsKey("ignited")) {
-            entity.setIgnited(compound.getBool("ignited"));
-        } else {
-            entity.setIgnited(false);
-        }
-
+        compound.readBoolean("powered", entity::setPowered);
+        entity.setExplosionRadius(compound.tryGetInt("ExplosionRadius").orElse(3));
+        entity.setMaxFuseTicks(compound.tryGetInt("Fuse").orElse(30));
+        entity.setIgnited(compound.getBoolean("ignited", false));
     }
 
     @Override
@@ -44,7 +24,7 @@ class CreeperStore extends MonsterStore<GlowCreeper> {
         super.save(entity, tag);
         tag.putBool("powered", entity.isPowered());
         tag.putInt("ExplosionRadius", entity.getExplosionRadius());
-        tag.putInt("Fuse", entity.getFuse());
+        tag.putInt("Fuse", entity.getMaxFuseTicks());
         tag.putBool("ignited", entity.isIgnited());
     }
 

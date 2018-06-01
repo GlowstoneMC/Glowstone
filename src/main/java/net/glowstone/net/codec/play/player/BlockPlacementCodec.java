@@ -3,13 +3,13 @@ package net.glowstone.net.codec.play.player;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import org.bukkit.util.BlockVector;
 
-import java.io.IOException;
-
 public final class BlockPlacementCodec implements Codec<BlockPlacementMessage> {
+
     @Override
     public BlockPlacementMessage decode(ByteBuf buf) throws IOException {
         BlockVector pos = GlowBufUtils.readBlockPosition(buf);
@@ -18,7 +18,8 @@ public final class BlockPlacementCodec implements Codec<BlockPlacementMessage> {
         float cursorX = buf.readFloat();
         float cursorY = buf.readFloat();
         float cursorZ = buf.readFloat();
-        return new BlockPlacementMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), direction, hand, cursorX, cursorY, cursorZ);
+        return new BlockPlacementMessage(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(),
+            direction, hand, cursorX, cursorY, cursorZ);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package net.glowstone.inventory;
 
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ListIterator;
 
 /**
  * ListIterator for the contents of an inventory.
@@ -32,7 +32,11 @@ public final class InventoryIterator implements ListIterator<ItemStack> {
     @Override
     public ItemStack next() {
         direction = 1;
-        return inventory.getItem(nextIndex++);
+        try {
+            return inventory.getItem(nextIndex++);
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException(e.getLocalizedMessage());
+        }
     }
 
     @Override

@@ -1,17 +1,19 @@
 package net.glowstone.generator.populators.overworld;
 
-import net.glowstone.generator.decorators.EntityDecorator;
-import org.bukkit.block.Biome;
-import org.bukkit.entity.EntityType;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import net.glowstone.generator.decorators.EntityDecorator;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.EntityType;
 
 public class DesertPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.DESERT, Biome.DESERT_HILLS};
 
+    /**
+     * Creates a {@link BiomePopulator} adjusted for the desert.
+     */
     public DesertPopulator() {
         waterLakeDecorator.setAmount(0);
         deadBushDecorator.setAmount(2);

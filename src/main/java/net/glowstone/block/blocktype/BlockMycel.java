@@ -1,5 +1,6 @@
 package net.glowstone.block.blocktype;
 
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -24,12 +25,13 @@ public class BlockMycel extends BlockType {
     @Override
     public void updateBlock(GlowBlock block) {
         GlowBlock blockAbove = block.getRelative(BlockFace.UP);
-        if (blockAbove.getLightLevel() < 4 && blockAbove.getMaterialValues().getLightOpacity() > 2) {
+        if (blockAbove.getLightLevel() < 4
+            && blockAbove.getMaterialValues().getLightOpacity() > 2) {
             // mycel block turns into dirt block
             GlowBlockState state = block.getState();
             state.setType(Material.DIRT);
             BlockFadeEvent fadeEvent = new BlockFadeEvent(block, state);
-            EventFactory.callEvent(fadeEvent);
+            EventFactory.getInstance().callEvent(fadeEvent);
             if (!fadeEvent.isCancelled()) {
                 state.update(true);
             }
@@ -41,21 +43,21 @@ public class BlockMycel extends BlockType {
 
             // mycel spread randomly around
             for (int i = 0; i < 4; i++) {
-                int x = sourceX + random.nextInt(3) - 1;
-                int z = sourceZ + random.nextInt(3) - 1;
-                int y = sourceY + random.nextInt(5) - 3;
+                int x = sourceX + ThreadLocalRandom.current().nextInt(3) - 1;
+                int z = sourceZ + ThreadLocalRandom.current().nextInt(3) - 1;
+                int y = sourceY + ThreadLocalRandom.current().nextInt(5) - 3;
 
                 GlowBlock targetBlock = world.getBlockAt(x, y, z);
                 GlowBlock targetAbove = targetBlock.getRelative(BlockFace.UP);
-                if (targetBlock.getType() == Material.DIRT &&
-                        targetBlock.getData() == 0 && // only spread on normal dirt
-                        targetAbove.getMaterialValues().getLightOpacity() <= 2 &&
-                        targetAbove.getLightLevel() >= 4) {
+                if (targetBlock.getType() == Material.DIRT
+                    && targetBlock.getData() == 0 // only spread on normal dirt
+                    && targetAbove.getMaterialValues().getLightOpacity() <= 2
+                    && targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
                     state.setType(Material.MYCEL);
                     state.setRawData((byte) 0);
                     BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
-                    EventFactory.callEvent(spreadEvent);
+                    EventFactory.getInstance().callEvent(spreadEvent);
                     if (!spreadEvent.isCancelled()) {
                         state.update(true);
                     }

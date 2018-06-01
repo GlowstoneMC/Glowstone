@@ -17,19 +17,10 @@ public class DesertTempleStore extends TemplePieceStore<GlowDesertTemple> {
     @Override
     public void load(GlowDesertTemple structurePiece, CompoundTag compound) {
         super.load(structurePiece, compound);
-
-        if (compound.isByte("hasPlacedChest0")) {
-            structurePiece.setHasPlacedChest0(compound.getByte("hasPlacedChest0") != 0);
-        }
-        if (compound.isByte("hasPlacedChest1")) {
-            structurePiece.setHasPlacedChest1(compound.getByte("hasPlacedChest1") != 0);
-        }
-        if (compound.isByte("hasPlacedChest2")) {
-            structurePiece.setHasPlacedChest2(compound.getByte("hasPlacedChest2") != 0);
-        }
-        if (compound.isByte("hasPlacedChest3")) {
-            structurePiece.setHasPlacedChest3(compound.getByte("hasPlacedChest3") != 0);
-        }
+        compound.readBoolean("hasPlacedChest0", structurePiece::setHasPlacedChest0);
+        compound.readBoolean("hasPlacedChest1", structurePiece::setHasPlacedChest1);
+        compound.readBoolean("hasPlacedChest2", structurePiece::setHasPlacedChest2);
+        compound.readBoolean("hasPlacedChest3", structurePiece::setHasPlacedChest3);
     }
 
     @Override

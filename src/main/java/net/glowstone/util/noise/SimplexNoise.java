@@ -2,18 +2,17 @@ package net.glowstone.util.noise;
 
 import java.util.Random;
 
-/*
- * A speed-improved simplex noise algorithm
+/**
+ * A speed-improved simplex noise algorithm.
  *
- * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
+ * <p>Based on example code by Stefan Gustavson (stegu@itn.liu.se).
  * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
  * Better rank ordering method by Stefan Gustavson in 2012.
  *
- * This could be sped up even further, but it's useful as is.
- *
- * Version 2012-03-09
+ * <p>This could be sped up even further, but it's useful as is.
  */
 public class SimplexNoise extends PerlinNoise {
+
     protected static final double SQRT_3 = 1.7320508075688772; // Math.sqrt(3)
     protected static final double F2 = 0.5 * (SQRT_3 - 1);
     protected static final double G2 = (3 - SQRT_3) / 6;
@@ -22,11 +21,17 @@ public class SimplexNoise extends PerlinNoise {
     protected static final double G3 = 1.0 / 6.0;
     protected static final double G32 = G3 * 2.0;
     protected static final double G33 = G3 * 3.0 - 1.0;
-    private static Grad[] grad3 = {new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0), new Grad(-1, -1, 0),
-            new Grad(1, 0, 1), new Grad(-1, 0, 1), new Grad(1, 0, -1), new Grad(-1, 0, -1),
-            new Grad(0, 1, 1), new Grad(0, -1, 1), new Grad(0, 1, -1), new Grad(0, -1, -1)};
+    private static Grad[] grad3 = {new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0),
+        new Grad(-1, -1, 0),
+        new Grad(1, 0, 1), new Grad(-1, 0, 1), new Grad(1, 0, -1), new Grad(-1, 0, -1),
+        new Grad(0, 1, 1), new Grad(0, -1, 1), new Grad(0, 1, -1), new Grad(0, -1, -1)};
     protected final int[] permMod12 = new int[512];
 
+    /**
+     * Creates a simplex noise generator.
+     *
+     * @param rand the PRNG to use
+     */
     public SimplexNoise(Random rand) {
         super(rand);
         for (int i = 0; i < 512; i++) {
@@ -47,7 +52,8 @@ public class SimplexNoise extends PerlinNoise {
     }
 
     @Override
-    protected double[] get2dNoise(double[] noise, double x, double z, int sizeX, int sizeY, double scaleX, double scaleY, double amplitude) {
+    protected double[] get2dNoise(double[] noise, double x, double z, int sizeX, int sizeY,
+        double scaleX, double scaleY, double amplitude) {
         int index = 0;
         for (int i = 0; i < sizeY; i++) {
             double zin = offsetY + (z + i) * scaleY;
@@ -60,7 +66,8 @@ public class SimplexNoise extends PerlinNoise {
     }
 
     @Override
-    protected double[] get3dNoise(double[] noise, double x, double y, double z, int sizeX, int sizeY, int sizeZ, double scaleX, double scaleY, double scaleZ, double amplitude) {
+    protected double[] get3dNoise(double[] noise, double x, double y, double z, int sizeX,
+        int sizeY, int sizeZ, double scaleX, double scaleY, double scaleZ, double amplitude) {
         int index = 0;
         for (int i = 0; i < sizeZ; i++) {
             double zin = offsetZ + (z + i) * scaleZ;
@@ -91,22 +98,21 @@ public class SimplexNoise extends PerlinNoise {
     }
 
     private double simplex2D(double xin, double yin) {
-        double n0, n1, n2; // Noise contributions from the three corners
-
         // Skew the input space to determine which simplex cell we're in
         double s = (xin + yin) * F2; // Hairy factor for 2D
         int i = floor(xin + s);
         int j = floor(yin + s);
         double t = (i + j) * G2;
-        double dX0 = i - t; // Unskew the cell origin back to (x,y) space
-        double dY0 = j - t;
-        double x0 = xin - dX0; // The x,y distances from the cell origin
-        double y0 = yin - dY0;
+        double dx0 = i - t; // Unskew the cell origin back to (x,y) space
+        double dy0 = j - t;
+        double x0 = xin - dx0; // The x,y distances from the cell origin
+        double y0 = yin - dy0;
 
         // For the 2D case, the simplex shape is an equilateral triangle.
 
         // Determine which simplex we are in.
-        int i1, j1; // Offsets for second (middle) corner of simplex in (i,j) coords
+        int i1; // Offsets for second (middle) corner of simplex in (i,j) coords
+        int j1;
         if (x0 > y0) {
             i1 = 1; // lower triangle, XY order: (0,0)->(1,0)->(1,1)
             j1 = 0;
@@ -133,6 +139,7 @@ public class SimplexNoise extends PerlinNoise {
 
         // Calculate the contribution from the three corners
         double t0 = 0.5 - x0 * x0 - y0 * y0;
+        double n0;
         if (t0 < 0) {
             n0 = 0.0;
         } else {
@@ -141,6 +148,7 @@ public class SimplexNoise extends PerlinNoise {
         }
 
         double t1 = 0.5 - x1 * x1 - y1 * y1;
+        double n1;
         if (t1 < 0) {
             n1 = 0.0;
         } else {
@@ -149,6 +157,7 @@ public class SimplexNoise extends PerlinNoise {
         }
 
         double t2 = 0.5 - x2 * x2 - y2 * y2;
+        double n2;
         if (t2 < 0) {
             n2 = 0.0;
         } else {
@@ -162,26 +171,29 @@ public class SimplexNoise extends PerlinNoise {
     }
 
     private double simplex3D(double xin, double yin, double zin) {
-        double n0, n1, n2, n3; // Noise contributions from the four corners
-
         // Skew the input space to determine which simplex cell we're in
         double s = (xin + yin + zin) * F3; // Very nice and simple skew factor for 3D
         int i = floor(xin + s);
         int j = floor(yin + s);
         int k = floor(zin + s);
         double t = (i + j + k) * G3;
-        double dX0 = i - t; // Unskew the cell origin back to (x,y,z) space
-        double dY0 = j - t;
-        double dZ0 = k - t;
-        double x0 = xin - dX0; // The x,y,z distances from the cell origin
-        double y0 = yin - dY0;
-        double z0 = zin - dZ0;
+        double dx0 = i - t; // Unskew the cell origin back to (x,y,z) space
+        double dy0 = j - t;
+        double dz0 = k - t;
 
         // For the 3D case, the simplex shape is a slightly irregular tetrahedron.
 
-        // Determine which simplex we are in.
-        int i1, j1, k1; // Offsets for second corner of simplex in (i,j,k) coords
-        int i2, j2, k2; // Offsets for third corner of simplex in (i,j,k) coords
+        int i1; // Offsets for second corner of simplex in (i,j,k) coords
+        int j1;
+        int k1;
+        int i2; // Offsets for third corner of simplex in (i,j,k) coords
+        int j2;
+        int k2;
+
+        double x0 = xin - dx0; // The x,y,z distances from the cell origin
+        double y0 = yin - dy0;
+        double z0 = zin - dz0;
+        // Determine which simplex we are in
         if (x0 >= y0) {
             if (y0 >= z0) {
                 i1 = 1; // X Y Z order
@@ -240,9 +252,6 @@ public class SimplexNoise extends PerlinNoise {
         double x2 = x0 - i2 + G32; // Offsets for third corner in (x,y,z) coords
         double y2 = y0 - j2 + G32;
         double z2 = z0 - k2 + G32;
-        double x3 = x0 + G33; // Offsets for last corner in (x,y,z) coords
-        double y3 = y0 + G33;
-        double z3 = z0 + G33;
 
         // Work out the hashed gradient indices of the four simplex corners
         int ii = i & 255;
@@ -255,6 +264,7 @@ public class SimplexNoise extends PerlinNoise {
 
         // Calculate the contribution from the four corners
         double t0 = 0.5 - x0 * x0 - y0 * y0 - z0 * z0;
+        double n0; // Noise contributions from the four corners
         if (t0 < 0) {
             n0 = 0.0;
         } else {
@@ -263,6 +273,7 @@ public class SimplexNoise extends PerlinNoise {
         }
 
         double t1 = 0.5 - x1 * x1 - y1 * y1 - z1 * z1;
+        double n1;
         if (t1 < 0) {
             n1 = 0.0;
         } else {
@@ -271,6 +282,7 @@ public class SimplexNoise extends PerlinNoise {
         }
 
         double t2 = 0.5 - x2 * x2 - y2 * y2 - z2 * z2;
+        double n2;
         if (t2 < 0) {
             n2 = 0.0;
         } else {
@@ -278,7 +290,11 @@ public class SimplexNoise extends PerlinNoise {
             n2 = t2 * t2 * dot(grad3[gi2], x2, y2, z2);
         }
 
+        double x3 = x0 + G33; // Offsets for last corner in (x,y,z) coords
+        double y3 = y0 + G33;
+        double z3 = z0 + G33;
         double t3 = 0.5 - x3 * x3 - y3 * y3 - z3 * z3;
+        double n3;
         if (t3 < 0) {
             n3 = 0.0;
         } else {
@@ -294,7 +310,10 @@ public class SimplexNoise extends PerlinNoise {
     // Inner class to speed up gradient computations
     // (array access is a lot slower than member access)
     private static class Grad {
-        public double x, y, z;
+
+        public double x;
+        public double y;
+        public double z;
 
         Grad(double x, double y, double z) {
             this.x = x;

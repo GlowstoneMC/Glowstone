@@ -14,14 +14,13 @@ import org.bukkit.util.Vector;
 
 public class BlockLever extends BlockAttachable {
 
-    private static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
-
     public BlockLever() {
         setDrops(new ItemStack(Material.LEVER));
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         GlowBlockState state = block.getState();
         MaterialData data = state.getData();
 
@@ -32,14 +31,16 @@ public class BlockLever extends BlockAttachable {
 
         Lever lever = (Lever) data;
         lever.setPowered(!lever.isPowered());
-        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.3F, lever.isPowered() ? 0.6F : 0.5F);
+        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.3F,
+            lever.isPowered() ? 0.6F : 0.5F);
         state.update();
         extraUpdate(block);
         return true;
     }
 
     @Override
-    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face, ItemStack holding, Vector clickedLoc) {
+    public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
+        ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
 
         MaterialData data = state.getData();
@@ -51,7 +52,8 @@ public class BlockLever extends BlockAttachable {
 
         Lever lever = (Lever) data;
         setAttachedFace(state, face.getOppositeFace());
-        lever.setFacingDirection(face == BlockFace.UP || face == BlockFace.DOWN ? player.getDirection() : face);
+        lever.setFacingDirection(
+            face == BlockFace.UP || face == BlockFace.DOWN ? player.getCardinalFacing() : face);
 
     }
 
@@ -62,10 +64,12 @@ public class BlockLever extends BlockAttachable {
         if (target.getType().isSolid()) {
             for (BlockFace face2 : ADJACENT) {
                 GlowBlock target2 = target.getRelative(face2);
-                BlockType notifyType = itemTable.getBlock(target2.getTypeId());
+                BlockType notifyType = itemTable.getBlock(target2.getType());
                 if (notifyType != null) {
                     if (target2.getFace(block) == null) {
-                        notifyType.onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(), block.getData(), block.getType(), block.getData());
+                        notifyType
+                            .onNearBlockChanged(target2, BlockFace.SELF, block, block.getType(),
+                                block.getData(), block.getType(), block.getData());
                     }
                     notifyType.onRedstoneUpdate(target2);
                 }

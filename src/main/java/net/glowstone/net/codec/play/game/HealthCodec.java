@@ -3,11 +3,11 @@ package net.glowstone.net.codec.play.game;
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.game.HealthMessage;
 
-import java.io.IOException;
-
 public final class HealthCodec implements Codec<HealthMessage> {
+
     @Override
     public HealthMessage decode(ByteBuf buffer) throws IOException {
         float health = buffer.readFloat();

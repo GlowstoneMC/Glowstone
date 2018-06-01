@@ -1,12 +1,13 @@
 package net.glowstone.util.collection;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link SuperList}, {@link SuperIterator} and {@link SuperListIterator}.
@@ -38,20 +39,22 @@ public class SuperListAndIteratorTest {
     @Test
     public void sizeTest() {
         SuperList<Integer> list = generateTestList();
-        Assert.assertEquals("Parent count test failed", list.getParents().size(), PARENT_COUNT);
-        Assert.assertEquals("Populated size test failed", PARENT_COUNT * ELEMENTS_PER_PARENT, list.size());
+        assertThat("Parent count test failed", PARENT_COUNT, is(list.getParents().size()));
+        assertThat("Populated size test failed", list.size(),
+            is(PARENT_COUNT * ELEMENTS_PER_PARENT));
         list.clear();
-        Assert.assertEquals("List couldn't be cleared", 0, list.size());
+        assertThat("List couldn't be cleared", list.size(), is(0));
     }
 
     @Test
     public void iterationTest() {
         Iterator<Integer> it = generateTestList().iterator();
         for (int i = 0; i < PARENT_COUNT * ELEMENTS_PER_PARENT; i++) {
-            Assert.assertEquals("Iterator hasNext returns false before reaching the end", true, it.hasNext());
-            Assert.assertEquals("Mismatch on position " + i, i, it.next().intValue());
+            assertThat("Iterator hasNext returns false before reaching the end", it.hasNext(),
+                is(true));
+            assertThat("Mismatch on position " + i, it.next(), is(i));
         }
-        Assert.assertEquals("Iterator hasNext returns true after reaching the end", false, it.hasNext());
+        assertThat("Iterator hasNext returns true after reaching the end", it.hasNext(), is(false));
     }
 
     @Test
@@ -61,7 +64,8 @@ public class SuperListAndIteratorTest {
         for (int i = 0; i < PARENT_COUNT * ELEMENTS_PER_PARENT; i++) {
             it.next();
             it.remove();
-            Assert.assertEquals("Item at index " + i + " wasn't properly removed", PARENT_COUNT * ELEMENTS_PER_PARENT - i - 1, list.size());
+            assertThat("Item at index " + i + " wasn't properly removed", list.size(),
+                is(PARENT_COUNT * ELEMENTS_PER_PARENT - i - 1));
         }
     }
 
@@ -75,7 +79,7 @@ public class SuperListAndIteratorTest {
         }
 
         for (int i = 0; i < ELEMENTS_PER_PARENT; i++) {
-            Assert.assertEquals("Could not add element " + i, superList.get(i).intValue(), i);
+            assertThat("Could not add element " + i, i, is(superList.get(i)));
         }
     }
 }

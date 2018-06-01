@@ -19,15 +19,14 @@ public class EntityIdManager {
     private int lastId;
 
     /**
-     * Allocates the id for an entity.
-     * This method performs synchronization as it might be
-     * accessed by multiple world threads simultaneously.
+     * Allocates the id for an entity. This method performs synchronization as it might be accessed
+     * by multiple world threads simultaneously.
      *
      * @param entity The entity.
      * @return The id.
      */
     synchronized int allocate(GlowEntity entity) {
-        if (entity.id != 0) {
+        if (entity.entityId != 0) {
             throw new IllegalStateException("Entity already has an id assigned.");
         }
 
@@ -35,10 +34,12 @@ public class EntityIdManager {
         // intentionally wraps around integer boundaries
         for (int id = lastId + 1; id != startedAt; ++id) {
             // skip special values
-            if (id == -1 || id == 0) continue;
+            if (id == -1 || id == 0) {
+                continue;
+            }
 
             if (usedIds.add(id)) {
-                entity.id = id;
+                entity.entityId = id;
                 lastId = id;
                 return id;
             }
@@ -53,10 +54,10 @@ public class EntityIdManager {
      * @param entity The entity.
      */
     synchronized void deallocate(GlowEntity entity) {
-        if (entity.id == 0) {
+        if (entity.entityId == 0) {
             throw new IllegalStateException("Entity does not have an id assigned.");
         }
-        usedIds.remove(entity.id);
+        usedIds.remove(entity.entityId);
     }
 
 }

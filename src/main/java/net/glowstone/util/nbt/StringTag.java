@@ -1,5 +1,7 @@
 package net.glowstone.util.nbt;
 
+import lombok.Getter;
+
 /**
  * The {@code TAG_String} tag.
  */
@@ -8,6 +10,7 @@ public final class StringTag extends Tag<String> {
     /**
      * The value.
      */
+    @Getter
     private final String value;
 
     /**
@@ -18,11 +21,6 @@ public final class StringTag extends Tag<String> {
     public StringTag(String value) {
         super(TagType.STRING);
         this.value = value;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
     }
 }
 

@@ -1,33 +1,54 @@
 package net.glowstone.testutils;
 
-import com.avaje.ebean.config.ServerConfig;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
+import javax.annotation.Nullable;
+import lombok.Getter;
+import net.glowstone.ServerProvider;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.net.SessionRegistry;
+import net.glowstone.scheduler.GlowScheduler;
+import net.glowstone.scheduler.WorldScheduler;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.command.*;
+import org.bukkit.command.CommandException;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFactory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.*;
-import java.util.logging.Logger;
+import org.mockito.Mockito;
 
 /**
  * Simple mocked Server implementation.
@@ -35,12 +56,26 @@ import java.util.logging.Logger;
 public class ServerShim implements Server {
 
     public static void install() {
+        if (!(ServerProvider.getServer() instanceof ServerShim)) {
+            ServerProvider.setMockServer(new ServerShim());
+        }
         if (Bukkit.getServer() == null) {
-            Bukkit.setServer(new ServerShim());
+            Bukkit.setServer(ServerProvider.getMockServer());
         }
     }
 
     // actual implementations
+
+    private final WorldScheduler worldScheduler = new WorldScheduler();
+    private final SessionRegistry sessionRegistry = new SessionRegistry();
+
+    @Getter
+    private final PluginManager pluginManager
+            = Mockito.mock(PluginManager.class, Mockito.RETURNS_SMART_NULLS);
+
+    @Getter
+    private final GlowScheduler scheduler
+            = new GlowScheduler(this, worldScheduler, sessionRegistry);
 
     @Override
     public String getName() {
@@ -68,11 +103,6 @@ public class ServerShim implements Server {
     }
 
     // do nothing stubs
-
-    @Override
-    public Player[] _INVALID_getOnlinePlayers() {
-        return new Player[0];
-    }
 
     @Override
     public Collection<? extends Player> getOnlinePlayers() {
@@ -209,13 +239,9 @@ public class ServerShim implements Server {
         return null;
     }
 
+    @Nullable
     @Override
-    public PluginManager getPluginManager() {
-        return null;
-    }
-
-    @Override
-    public BukkitScheduler getScheduler() {
+    public UUID getPlayerUniqueId(String playerName) {
         return null;
     }
 
@@ -270,6 +296,11 @@ public class ServerShim implements Server {
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public PluginCommand getPluginCommand(String name) {
         return null;
     }
@@ -280,13 +311,9 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public boolean dispatchCommand(CommandSender sender, String commandLine) throws CommandException {
+    public boolean dispatchCommand(CommandSender sender, String commandLine)
+        throws CommandException {
         return false;
-    }
-
-    @Override
-    public void configureDbConfig(ServerConfig config) {
-
     }
 
     @Override
@@ -440,12 +467,14 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public Inventory createInventory(InventoryHolder owner, int size) throws IllegalArgumentException {
+    public Inventory createInventory(InventoryHolder owner, int size)
+        throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public Inventory createInventory(InventoryHolder owner, int size, String title) throws IllegalArgumentException {
+    public Inventory createInventory(InventoryHolder owner, int size, String title)
+        throws IllegalArgumentException {
         return null;
     }
 
@@ -515,13 +544,13 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public void setIdleTimeout(int threshold) {
-
+    public int getIdleTimeout() {
+        return 0;
     }
 
     @Override
-    public int getIdleTimeout() {
-        return 0;
+    public void setIdleTimeout(int threshold) {
+
     }
 
     @Override
@@ -530,7 +559,8 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle, BarFlag... barFlags) {
+    public BossBar createBossBar(String s, BarColor barColor, BarStyle barStyle,
+        BarFlag... barFlags) {
         return null;
     }
 
@@ -546,6 +576,16 @@ public class ServerShim implements Server {
 
     @Override
     public CommandMap getCommandMap() {
+        return null;
+    }
+
+    @Override
+    public Advancement getAdvancement(NamespacedKey key) {
+        return null;
+    }
+
+    @Override
+    public Iterator<Advancement> advancementIterator() {
         return null;
     }
 
@@ -567,6 +607,26 @@ public class ServerShim implements Server {
     @Override
     public boolean reloadCommandAliases() {
         return false;
+    }
+
+    @Override
+    public boolean suggestPlayerNamesWhenNullTabCompletions() {
+        return false;
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id) {
+        return null;
+    }
+
+    @Override
+    public PlayerProfile createProfile(String name) {
+        return null;
+    }
+
+    @Override
+    public PlayerProfile createProfile(UUID id, String name) {
+        return null;
     }
 
     @Override

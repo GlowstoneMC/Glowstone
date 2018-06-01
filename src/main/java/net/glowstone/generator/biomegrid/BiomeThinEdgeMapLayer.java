@@ -1,11 +1,30 @@
 package net.glowstone.generator.biomegrid;
 
-import net.glowstone.constants.GlowBiome;
+import static org.bukkit.block.Biome.DEEP_OCEAN;
+import static org.bukkit.block.Biome.DESERT;
+import static org.bukkit.block.Biome.FOREST;
+import static org.bukkit.block.Biome.JUNGLE;
+import static org.bukkit.block.Biome.JUNGLE_EDGE;
+import static org.bukkit.block.Biome.JUNGLE_HILLS;
+import static org.bukkit.block.Biome.MESA;
+import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MESA_ROCK;
+import static org.bukkit.block.Biome.MUTATED_JUNGLE;
+import static org.bukkit.block.Biome.MUTATED_JUNGLE_EDGE;
+import static org.bukkit.block.Biome.MUTATED_MESA;
+import static org.bukkit.block.Biome.MUTATED_MESA_CLEAR_ROCK;
+import static org.bukkit.block.Biome.MUTATED_MESA_ROCK;
+import static org.bukkit.block.Biome.OCEAN;
+import static org.bukkit.block.Biome.TAIGA;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-
-import static org.bukkit.block.Biome.*;
+import java.util.Set;
+import net.glowstone.constants.GlowBiome;
 
 public class BiomeThinEdgeMapLayer extends MapLayer {
 
@@ -31,7 +50,8 @@ public class BiomeThinEdgeMapLayer extends MapLayer {
         JUNGLE_EDGES.put(GlowBiome.getId(MUTATED_JUNGLE_EDGE), GlowBiome.getId(JUNGLE_EDGE));
 
         EDGES.put(MESA_EDGES, null);
-        EDGES.put(JUNGLE_EDGES, Arrays.asList(GlowBiome.getId(JUNGLE), GlowBiome.getId(JUNGLE_HILLS),
+        EDGES
+            .put(JUNGLE_EDGES, Arrays.asList(GlowBiome.getId(JUNGLE), GlowBiome.getId(JUNGLE_HILLS),
                 GlowBiome.getId(MUTATED_JUNGLE), GlowBiome.getId(MUTATED_JUNGLE_EDGE),
                 GlowBiome.getId(FOREST), GlowBiome.getId(TAIGA)));
     }
@@ -64,16 +84,19 @@ public class BiomeThinEdgeMapLayer extends MapLayer {
                         int lowerVal = values[j + 1 + (i + 2) * gridSizeX];
                         int leftVal = values[j + (i + 1) * gridSizeX];
                         int rightVal = values[j + 2 + (i + 1) * gridSizeX];
-                        if (entry.getValue() == null && (!OCEANS.contains(upperVal) && !map.containsKey(upperVal) ||
-                                !OCEANS.contains(lowerVal) && !map.containsKey(lowerVal) ||
-                                !OCEANS.contains(leftVal) && !map.containsKey(leftVal) ||
-                                !OCEANS.contains(rightVal) && !map.containsKey(rightVal))) {
+                        List<Integer> entryValue = entry.getValue();
+                        if (entryValue == null && (
+                                !OCEANS.contains(upperVal) && !map.containsKey(upperVal)
+                                || !OCEANS.contains(lowerVal) && !map.containsKey(lowerVal)
+                                || !OCEANS.contains(leftVal) && !map.containsKey(leftVal)
+                                || !OCEANS.contains(rightVal) && !map.containsKey(rightVal))) {
                             val = map.get(centerVal);
                             break;
-                        } else if (entry.getValue() != null && (!OCEANS.contains(upperVal) && !entry.getValue().contains(upperVal) ||
-                                !OCEANS.contains(lowerVal) && !entry.getValue().contains(lowerVal) ||
-                                !OCEANS.contains(leftVal) && !entry.getValue().contains(leftVal) ||
-                                !OCEANS.contains(rightVal) && !entry.getValue().contains(rightVal))) {
+                        } else if (entryValue != null && (
+                                !OCEANS.contains(upperVal) && !entryValue.contains(upperVal)
+                                || !OCEANS.contains(lowerVal) && !entryValue.contains(lowerVal)
+                                || !OCEANS.contains(leftVal) && !entryValue.contains(leftVal)
+                                || !OCEANS.contains(rightVal) && !entryValue.contains(rightVal))) {
                             val = map.get(centerVal);
                             break;
                         }

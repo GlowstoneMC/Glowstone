@@ -2,10 +2,9 @@ package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
 import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import org.bukkit.Difficulty;
-
-import java.io.IOException;
 
 public final class ServerDifficultyCodec implements Codec<ServerDifficultyMessage> {
 

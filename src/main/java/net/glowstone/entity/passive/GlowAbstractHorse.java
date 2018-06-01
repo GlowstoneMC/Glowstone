@@ -1,27 +1,56 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.util.InventoryUtil;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
-import org.bukkit.inventory.HorseInventory;
-
-import java.util.List;
 
 public abstract class GlowAbstractHorse extends GlowTameable implements AbstractHorse {
 
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.GOLDEN_APPLE,
+            Material.GOLDEN_CARROT);
+
+    private static final Map<Material, Integer> GROWING_FOODS = ImmutableMap
+            .<Material, Integer>builder()
+            .put(Material.SUGAR, TickUtil.secondsToTicks(30))
+            .put(Material.WHEAT, TickUtil.secondsToTicks(20))
+            .put(Material.APPLE, TickUtil.minutesToTicks(1))
+            .put(Material.GOLDEN_CARROT, TickUtil.minutesToTicks(1))
+            .put(Material.GOLDEN_APPLE, TickUtil.minutesToTicks(4))
+            .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(3))
+            .build();
+
+    @Getter
+    @Setter
     private int domestication;
+    @Getter
+    @Setter
     private int maxDomestication;
+    @Getter
+    @Setter
     private double jumpStrength;
+    @Getter
+    @Setter
     private boolean tamed;
 
     public GlowAbstractHorse(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
+        setSize(1.3964f, 1.6f);
     }
 
     @Override
@@ -29,7 +58,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
         map.set(MetadataIndex.ABSTRACT_HORSE_FLAGS, getHorseFlags());
-        messages.add(new EntityMetadataMessage(id, map.getEntryList()));
+        messages.add(new EntityMetadataMessage(entityId, map.getEntryList()));
         return messages;
     }
 
@@ -44,46 +73,6 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         // Field has been removed in 1.11
     }
 
-    @Override
-    public int getDomestication() {
-        return domestication;
-    }
-
-    @Override
-    public void setDomestication(int domestication) {
-        this.domestication = domestication;
-    }
-
-    @Override
-    public int getMaxDomestication() {
-        return maxDomestication;
-    }
-
-    @Override
-    public void setMaxDomestication(int maxDomestication) {
-        this.maxDomestication = maxDomestication;
-    }
-
-    @Override
-    public double getJumpStrength() {
-        return jumpStrength;
-    }
-
-    @Override
-    public void setJumpStrength(double jumpStrength) {
-        this.jumpStrength = jumpStrength;
-    }
-
-    @Override
-    public boolean isTamed() {
-        return tamed;
-    }
-
-    @Override
-    public void setTamed(boolean tamed) {
-        this.tamed = tamed;
-    }
-
     private int getHorseFlags() {
         int value = 0;
         if (isTamed()) {
@@ -91,7 +80,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         }
         if (this instanceof GlowHorse) {
             GlowHorse horse = (GlowHorse) this;
-            if (getInventory() != null && ((HorseInventory) getInventory()).getSaddle() != null) {
+            if (getInventory() != null && !InventoryUtil.isEmpty(getInventory().getSaddle())) {
                 value |= 0x04;
             }
             if (horse.hasReproduced()) {
@@ -108,5 +97,24 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
             }
         }
         return value;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
+    }
+
+    @Override
+    protected int computeGrowthAmount(Material material) {
+        // We need to be a baby and only tamed horses can be fed with hay block
+        if (canGrow() && !(Material.HAY_BLOCK == material && !isTamed())) {
+            Integer mapResult = GROWING_FOODS.get(material);
+
+            if (mapResult != null) {
+                return Math.min(mapResult, Math.abs(getAge()));
+            }
+        }
+
+        return 0;
     }
 }

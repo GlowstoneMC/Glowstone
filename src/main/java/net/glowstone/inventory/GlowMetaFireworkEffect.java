@@ -1,34 +1,41 @@
 package net.glowstone.inventory;
 
 import com.google.common.primitives.Ints;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffectMeta {
 
+    @Getter
+    @Setter
     private FireworkEffect effect;
 
-    public GlowMetaFireworkEffect(GlowMetaItem meta) {
+    /**
+     * Creates an instance by copying from the given {@link ItemMeta}. If that item is another
+     * {@link FireworkEffectMeta}, it is copied fully; otherwise, the {@link FireworkEffect} is
+     * null.
+     * @param meta the {@link ItemMeta} to copy
+     */
+    public GlowMetaFireworkEffect(ItemMeta meta) {
         super(meta);
 
-        if (!(meta instanceof GlowMetaFireworkEffect)) return;
-
-        GlowMetaFireworkEffect effect = (GlowMetaFireworkEffect) meta;
-        this.effect = effect.effect;
+        if (meta instanceof FireworkEffectMeta) {
+            effect = ((FireworkEffectMeta) meta).getEffect();
+        }
     }
 
     static FireworkEffect toEffect(CompoundTag explosion) {
-        boolean flicker = false;
-        boolean trail = false;
         Type type;
         List<Color> colors = new ArrayList<>();
         List<Color> fadeColors = new ArrayList<>();
@@ -40,30 +47,33 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
 
         type = Type.values()[explosion.getByte("Type")];
 
-        if (explosion.isByte("Flicker")) flicker = explosion.getBool("Flicker");
-        if (explosion.isByte("Trail")) trail = explosion.getBool("Trail");
+        boolean flicker = explosion.getBoolean("Flicker", false);
+        boolean trail = explosion.getBoolean("Trail", false);
 
-        if (explosion.isIntArray("FadeColors")) {
-            int[] fadeInts = explosion.getIntArray("FadeColors");
+        explosion.readIntArray("FadeColors", fadeInts -> {
             for (int fade : fadeInts) {
                 fadeColors.add(Color.fromRGB(fade));
             }
-        }
+        });
 
         return FireworkEffect.builder()
-                .flicker(flicker)
-                .trail(trail)
-                .with(type)
-                .withColor(colors)
-                .withFade(fadeColors)
-                .build();
+            .flicker(flicker)
+            .trail(trail)
+            .with(type)
+            .withColor(colors)
+            .withFade(fadeColors)
+            .build();
     }
 
     static CompoundTag toExplosion(FireworkEffect effect) {
         CompoundTag explosion = new CompoundTag();
 
-        if (effect.hasFlicker()) explosion.putBool("Flicker", true);
-        if (effect.hasTrail()) explosion.putBool("Trail", true);
+        if (effect.hasFlicker()) {
+            explosion.putBool("Flicker", true);
+        }
+        if (effect.hasTrail()) {
+            explosion.putBool("Trail", true);
+        }
 
         explosion.putByte("Type", effect.getType().ordinal());
 
@@ -102,10 +112,7 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     @Override
     void readNbt(CompoundTag tag) {
         super.readNbt(tag);
-
-        if (tag.isCompound("Explosion")) {
-            effect = toEffect(tag.getCompound("Explosion"));
-        }
+        tag.readCompound("Explosion", explosion -> effect = toEffect(explosion));
     }
 
     @Override
@@ -123,15 +130,5 @@ public class GlowMetaFireworkEffect extends GlowMetaItem implements FireworkEffe
     @Override
     public boolean hasEffect() {
         return effect != null;
-    }
-
-    @Override
-    public FireworkEffect getEffect() {
-        return effect;
-    }
-
-    @Override
-    public void setEffect(FireworkEffect effect) {
-        this.effect = effect;
     }
 }

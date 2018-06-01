@@ -2,20 +2,32 @@ package net.glowstone.scheduler;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.net.SessionRegistry;
+import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
-
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 /**
  * A scheduler for managing server ticks, Bukkit tasks, and other synchronization.
@@ -29,54 +41,77 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * The server this scheduler is managing for.
      */
-    private final GlowServer server;
+    private final Server server;
     /**
      * The scheduled executor service which backs this worlds.
      */
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(GlowThreadFactory.INSTANCE);
+    private final ScheduledExecutorService executor = Executors
+        .newSingleThreadScheduledExecutor(GlowThreadFactory.INSTANCE);
     /**
-     * Executor to handle execution of async tasks
+     * Executor to handle execution of async tasks.
      */
-    private final ExecutorService asyncTaskExecutor = Executors.newCachedThreadPool(GlowThreadFactory.INSTANCE);
+    private final ExecutorService asyncTaskExecutor = Executors
+        .newCachedThreadPool(GlowThreadFactory.INSTANCE);
     /**
      * A list of active tasks.
      */
     private final ConcurrentMap<Integer, GlowTask> tasks = new ConcurrentHashMap<>();
     /**
-     * World tick scheduler
+     * World tick scheduler.
      */
     private final WorldScheduler worlds;
     /**
-     * Tasks to be executed during the tick
+     * Tasks to be executed during the tick.
      */
     private final Deque<Runnable> inTickTasks = new ConcurrentLinkedDeque<>();
     /**
-     * Condition to wait on when processing in tick tasks
+     * Condition to wait on when processing in-tick tasks.
      */
     private final Object inTickTaskCondition;
     /**
-     * Runnable to run at end of tick
+     * Runnable to run at end of tick.
      */
     private final Runnable tickEndRun;
     /**
      * The primary worlds thread in which pulse() is called.
      */
     private Thread primaryThread;
+    /**
+     * The session registry used to pulse all players.
+     */
+    private final SessionRegistry sessionRegistry;
 
     /**
      * Creates a new task scheduler.
      *
      * @param server The server that will use this scheduler.
-     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's worlds.
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's
+     *         worlds.
      */
     public GlowScheduler(GlowServer server, WorldScheduler worlds) {
+        this(server, worlds, server.getSessionRegistry());
+    }
+
+    /**
+     * Creates a new task scheduler.
+     * @param server The server that will use this scheduler.
+     * @param worlds The {@link WorldScheduler} this scheduler will use for ticking the server's
+     *         worlds.
+     * @param sessionRegistry The {@link SessionRegistry} this scheduler will use to tick players
+     */
+    public GlowScheduler(Server server, WorldScheduler worlds,
+            SessionRegistry sessionRegistry) {
         this.server = server;
         this.worlds = worlds;
+        this.sessionRegistry = sessionRegistry;
         inTickTaskCondition = worlds.getAdvanceCondition();
         tickEndRun = this.worlds::doTickEnd;
         primaryThread = Thread.currentThread();
     }
 
+    /**
+     * Starts running ticks.
+     */
     public void start() {
         executor.scheduleAtFixedRate(() -> {
             try {
@@ -97,7 +132,8 @@ public final class GlowScheduler implements BukkitScheduler {
         asyncTaskExecutor.shutdown();
 
         synchronized (inTickTaskCondition) {
-            inTickTasks.stream().filter(task -> task instanceof Future).forEach(task -> ((Future) task).cancel(false));
+            inTickTasks.stream().filter(task -> task instanceof Future)
+                .forEach(task -> ((Future) task).cancel(false));
             inTickTasks.clear();
         }
     }
@@ -121,6 +157,11 @@ public final class GlowScheduler implements BukkitScheduler {
         return Thread.currentThread() == primaryThread;
     }
 
+    /**
+     * Schedules the given task for the start of the next tick.
+     *
+     * @param run the task to run
+     */
     public void scheduleInTickExecution(Runnable run) {
         if (isPrimaryThread() || executor.isShutdown()) {
             run.run();
@@ -133,15 +174,14 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
-     * Adds new tasks and updates existing tasks, removing them if necessary.
-     * <br>
+     * Adds new tasks and updates existing tasks, removing them if necessary. <br/>
      * todo: Add watchdog system to make sure ticks advance
      */
     private void pulse() {
         primaryThread = Thread.currentThread();
 
         // Process player packets
-        server.getSessionRegistry().pulse();
+        sessionRegistry.pulse();
 
         // Run the relevant tasks.
         for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
@@ -156,6 +196,9 @@ public final class GlowScheduler implements BukkitScheduler {
                     break;
                 case STOP:
                     it.remove();
+                    break;
+                default:
+                    // do nothing
             }
         }
         try {
@@ -184,18 +227,37 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Override
-    public int scheduleSyncDelayedTask(Plugin plugin, Runnable task, long delay) {
-        return scheduleSyncRepeatingTask(plugin, task, delay, -1);
-    }
-
-    @Override
     public int scheduleSyncDelayedTask(Plugin plugin, Runnable task) {
         return scheduleSyncDelayedTask(plugin, task, 0);
     }
 
     @Override
+    public int scheduleSyncDelayedTask(Plugin plugin, Runnable task, long delay) {
+        return scheduleSyncRepeatingTask(plugin, task, delay, -1);
+    }
+
+    @Override
+    @Deprecated
+    public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task) {
+        return task.runTask(plugin).getTaskId();
+    }
+
+    @Override
+    @Deprecated
+    public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task, long delay) {
+        return task.runTaskLater(plugin, delay).getTaskId();
+    }
+
+    @Override
     public int scheduleSyncRepeatingTask(Plugin plugin, Runnable task, long delay, long period) {
         return schedule(new GlowTask(plugin, task, true, delay, period)).getTaskId();
+    }
+
+    @Override
+    @Deprecated
+    public int scheduleSyncRepeatingTask(Plugin plugin, BukkitRunnable task, long delay,
+        long period) {
+        return task.runTaskTimer(plugin, delay, period).getTaskId();
     }
 
     @Override
@@ -219,21 +281,8 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Override
-    @Deprecated
-    public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task, long delay) {
-        return task.runTaskLater(plugin, delay).getTaskId();
-    }
-
-    @Override
-    @Deprecated
-    public int scheduleSyncDelayedTask(Plugin plugin, BukkitRunnable task) {
-        return task.runTask(plugin).getTaskId();
-    }
-
-    @Override
-    @Deprecated
-    public int scheduleSyncRepeatingTask(Plugin plugin, BukkitRunnable task, long delay, long period) {
-        return task.runTaskTimer(plugin, delay, period).getTaskId();
+    public BukkitTask runTask(Plugin plugin, Runnable task) throws IllegalArgumentException {
+        return runTaskLater(plugin, task, 0);
     }
 
     @Override
@@ -243,32 +292,67 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Override
+    public BukkitTask runTaskAsynchronously(Plugin plugin, Runnable task)
+        throws IllegalArgumentException {
+        return runTaskLaterAsynchronously(plugin, task, 0);
+    }
+
+    @Override
     @Deprecated
-    public BukkitTask runTaskAsynchronously(Plugin plugin, BukkitRunnable task) throws IllegalArgumentException {
+    public BukkitTask runTaskAsynchronously(Plugin plugin, BukkitRunnable task)
+        throws IllegalArgumentException {
         return task.runTaskAsynchronously(plugin);
     }
 
     @Override
+    public BukkitTask runTaskLater(Plugin plugin, Runnable task, long delay)
+        throws IllegalArgumentException {
+        return runTaskTimer(plugin, task, delay, -1);
+    }
+
+    @Override
     @Deprecated
-    public BukkitTask runTaskLater(Plugin plugin, BukkitRunnable task, long delay) throws IllegalArgumentException {
+    public BukkitTask runTaskLater(Plugin plugin, BukkitRunnable task, long delay)
+        throws IllegalArgumentException {
         return task.runTaskLater(plugin, delay);
     }
 
     @Override
+    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, Runnable task, long delay)
+        throws IllegalArgumentException {
+        return runTaskTimerAsynchronously(plugin, task, delay, -1);
+    }
+
+    @Override
     @Deprecated
-    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, BukkitRunnable task, long delay) throws IllegalArgumentException {
+    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, BukkitRunnable task, long delay)
+        throws IllegalArgumentException {
         return task.runTaskLaterAsynchronously(plugin, delay);
     }
 
     @Override
-    @Deprecated
-    public BukkitTask runTaskTimer(Plugin plugin, BukkitRunnable task, long delay, long period) throws IllegalArgumentException {
-        return task.runTaskTimer(plugin, delay, period);
+    public BukkitTask runTaskTimer(Plugin plugin, Runnable task, long delay, long period)
+        throws IllegalArgumentException {
+        return schedule(new GlowTask(plugin, task, true, delay, period));
     }
 
     @Override
     @Deprecated
-    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, BukkitRunnable task, long delay, long period) throws IllegalArgumentException {
+    public BukkitTask runTaskTimer(Plugin plugin, BukkitRunnable task, long delay, long period)
+        throws IllegalArgumentException {
+        return task.runTaskTimer(plugin, delay, period);
+    }
+
+    @Override
+    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, Runnable task, long delay,
+        long period) throws IllegalArgumentException {
+        return schedule(new GlowTask(plugin, task, false, delay, period));
+    }
+
+    @Override
+    @Deprecated
+    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, BukkitRunnable task, long delay,
+        long period) throws IllegalArgumentException {
         return task.runTaskTimerAsynchronously(plugin, delay, period);
     }
 
@@ -279,6 +363,14 @@ public final class GlowScheduler implements BukkitScheduler {
         return future;
     }
 
+    /**
+     * Runs a task on the primary thread, and blocks waiting for it to finish.
+     *
+     * @param task the task to run
+     * @param <T> the task's return type
+     * @return the task result
+     * @throws Exception if thrown by the task
+     */
     public <T> T syncIfNeeded(Callable<T> task) throws Exception {
         if (isPrimaryThread()) {
             return task.call();
@@ -288,47 +380,13 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Override
-    public BukkitTask runTask(Plugin plugin, Runnable task) throws IllegalArgumentException {
-        return runTaskLater(plugin, task, 0);
-    }
-
-    @Override
-    public BukkitTask runTaskAsynchronously(Plugin plugin, Runnable task) throws IllegalArgumentException {
-        return runTaskLaterAsynchronously(plugin, task, 0);
-    }
-
-    @Override
-    public BukkitTask runTaskLater(Plugin plugin, Runnable task, long delay) throws IllegalArgumentException {
-        return runTaskTimer(plugin, task, delay, -1);
-    }
-
-    @Override
-    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, Runnable task, long delay) throws IllegalArgumentException {
-        return runTaskTimerAsynchronously(plugin, task, delay, -1);
-    }
-
-    @Override
-    public BukkitTask runTaskTimer(Plugin plugin, Runnable task, long delay, long period) throws IllegalArgumentException {
-        return schedule(new GlowTask(plugin, task, true, delay, period));
-    }
-
-    @Override
-    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, Runnable task, long delay, long period) throws IllegalArgumentException {
-        return schedule(new GlowTask(plugin, task, false, delay, period));
-    }
-
-    @Override
     public void cancelTask(int taskId) {
         tasks.remove(taskId);
     }
 
     @Override
     public void cancelTasks(Plugin plugin) {
-        for (Iterator<GlowTask> it = tasks.values().iterator(); it.hasNext(); ) {
-            if (it.next().getOwner() == plugin) {
-                it.remove();
-            }
-        }
+        tasks.values().removeIf(glowTask -> glowTask.getOwner() == plugin);
     }
 
     @Override
@@ -348,17 +406,19 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
-     * Returns active async tasks
+     * Returns active async tasks.
      *
      * @return active async tasks
      */
     @Override
     public List<BukkitWorker> getActiveWorkers() {
-        return ImmutableList.copyOf(Collections2.filter(tasks.values(), glowTask -> glowTask != null && !glowTask.isSync() && glowTask.getLastExecutionState() == TaskExecutionState.RUN));
+        return ImmutableList.copyOf(Collections2.filter(tasks.values(),
+            glowTask -> glowTask != null && !glowTask.isSync()
+                && glowTask.getLastExecutionState() == TaskExecutionState.RUN));
     }
 
     /**
-     * Returns tasks that still have at least one run remaining
+     * Returns tasks that still have at least one run remaining.
      *
      * @return the tasks to be run
      */
@@ -368,6 +428,7 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     private static class GlowThreadFactory implements ThreadFactory {
+
         public static final GlowThreadFactory INSTANCE = new GlowThreadFactory();
         private final AtomicInteger threadCounter = new AtomicInteger();
 

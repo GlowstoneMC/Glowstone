@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowAnvilInventory;
@@ -9,9 +11,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public class BlockAnvil extends BlockFalling {
 
     public BlockAnvil() {
@@ -19,16 +18,19 @@ public class BlockAnvil extends BlockFalling {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face, Vector clickedLoc) {
+    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
+        Vector clickedLoc) {
         return player.openInventory(new GlowAnvilInventory(player)) != null;
     }
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        // This is replicated from BlockNeedsTool and has been copy/pasted because classes cannot extend 2 parents
+        // This is replicated from BlockNeedsTool and has been copy/pasted because classes cannot
+        // extend 2 parents
         ToolType neededTool = ToolType.PICKAXE;
-        if (tool == null || !neededTool.matches(tool.getType()))
+        if (tool == null || !neededTool.matches(tool.getType())) {
             return BlockDropless.EMPTY_STACK;
+        }
 
         return getMinedDrops(block);
     }

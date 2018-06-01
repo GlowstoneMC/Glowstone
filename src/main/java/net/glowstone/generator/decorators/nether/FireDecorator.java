@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators.nether;
 
+import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -7,8 +8,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
-
-import java.util.Random;
 
 public class FireDecorator extends BlockDecorator {
 
@@ -28,7 +27,8 @@ public class FireDecorator extends BlockDecorator {
 
                 Block block = world.getBlockAt(x, y, z);
                 Block blockBelow = world.getBlockAt(x, y - 1, z);
-                if (y < 128 && block.getType() == Material.AIR && blockBelow.getType() == Material.NETHERRACK) {
+                if (y < 128 && block.getType() == Material.AIR
+                    && blockBelow.getType() == Material.NETHERRACK) {
                     BlockState state = block.getState();
                     state.setType(Material.FIRE);
                     state.setData(new MaterialData(Material.FIRE));

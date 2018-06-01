@@ -9,11 +9,12 @@ public class ItemFishCooked extends ItemFood {
         byte data = stack.getData().getData();
         switch (data) {
             case 0:
-                return 0.4f;
+                return 6f;
             case 1:
                 return 9.6f;
+            default:
+                throw new IllegalArgumentException("Cannot find fish(350) for data: " + data);
         }
-        throw new IllegalArgumentException("Cannot find fish(350) for data: " + data);
     }
 
     @Override
@@ -21,10 +22,11 @@ public class ItemFishCooked extends ItemFood {
         byte data = stack.getData().getData();
         switch (data) {
             case 0:
-                return 2;
+                return 5;
             case 1:
                 return 6;
+            default:
+                throw new IllegalArgumentException("Cannot find fish(350) for data: " + data);
         }
-        throw new IllegalArgumentException("Cannot find fish(350) for data: " + data);
     }
 }

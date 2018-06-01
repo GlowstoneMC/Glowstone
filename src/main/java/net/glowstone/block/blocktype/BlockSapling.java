@@ -1,5 +1,10 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -17,18 +22,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sapling;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        int typeIdBelow = block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
+        int typeIdBelow = block.getWorld()
+            .getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
         Material typeBelow = Material.getMaterial(typeIdBelow);
-        return typeBelow == Material.GRASS || typeBelow == Material.DIRT || typeBelow == Material.SOIL;
+        return typeBelow == Material.GRASS || typeBelow == Material.DIRT
+            || typeBelow == Material.SOIL;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean canGrowWithChance(GlowBlock block) {
-        return random.nextFloat() < 0.45D;
+        return ThreadLocalRandom.current().nextFloat() < 0.45D;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
         if (data == TreeSpecies.GENERIC.ordinal()) {
             // 1 chance on 10 to grow a big oak tree
-            if (random.nextInt(10) > 0) {
+            if (ThreadLocalRandom.current().nextInt(10) > 0) {
                 generateTree(TreeType.TREE, block, player);
             } else {
                 generateTree(TreeType.BIG_TREE, block, player);
@@ -109,11 +111,12 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         Location loc = block.getLocation();
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         boolean canGrow = false;
-        if (GlowTree.newInstance(type, random, loc, blockStateDelegate).generate()) {
+        if (GlowTree.newInstance(type, ThreadLocalRandom.current(), blockStateDelegate)
+            .generate(loc)) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent =
-                    new StructureGrowEvent(loc, type, player != null, player, blockStates);
-            EventFactory.callEvent(growEvent);
+                new StructureGrowEvent(loc, type, player != null, player, blockStates);
+            EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 canGrow = true;
                 for (BlockState state : blockStates) {
@@ -128,7 +131,8 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             // vanilla behavior
             block.setType(Material.SAPLING);
             block.setData((byte) data);
-            if (type == TreeType.JUNGLE || type == TreeType.MEGA_REDWOOD || type == TreeType.DARK_OAK) {
+            if (type == TreeType.JUNGLE || type == TreeType.MEGA_REDWOOD
+                || type == TreeType.DARK_OAK) {
                 block.getRelative(BlockFace.SOUTH).setType(Material.SAPLING);
                 block.getRelative(BlockFace.SOUTH).setData((byte) data);
                 block.getRelative(BlockFace.EAST).setType(Material.SAPLING);
@@ -137,6 +141,10 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
                 block.getRelative(BlockFace.SOUTH_EAST).setData((byte) data);
             }
         }
+    }
+
+    private static boolean isMatchingSapling(GlowBlock block, int data) {
+        return block.getType() == Material.SAPLING && block.getData() == data;
     }
 
     private GlowBlock searchSourceBlockForHugeTree(GlowBlock block) {
@@ -149,14 +157,10 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
         for (int x = -1; x <= 0; x++) {
             for (int z = -1; z <= 0; z++) {
                 GlowBlock b = world.getBlockAt(sourceX + x, sourceY, sourceZ + z);
-                if (b.getType() == Material.SAPLING && b.getData() == data &&
-                        b.getRelative(BlockFace.SOUTH).getType() == Material.SAPLING &&
-                        b.getRelative(BlockFace.SOUTH).getData() == data &&
-                        b.getRelative(BlockFace.EAST).getType() == Material.SAPLING &&
-                        b.getRelative(BlockFace.EAST).getData() == data &&
-                        b.getRelative(BlockFace.SOUTH_EAST).getType() == Material.SAPLING &&
-                        b.getRelative(BlockFace.SOUTH_EAST).getData() == data) {
-
+                if (isMatchingSapling(b, data)
+                        && isMatchingSapling(b.getRelative(BlockFace.SOUTH), data)
+                        && isMatchingSapling(b.getRelative(BlockFace.EAST), data)
+                        && isMatchingSapling(b.getRelative(BlockFace.SOUTH_EAST), data)) {
                     return b;
                 }
             }
@@ -172,7 +176,8 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9 && random.nextInt(7) == 0) {
+        if (block.getRelative(BlockFace.UP).getLightLevel() >= 9
+            && ThreadLocalRandom.current().nextInt(7) == 0) {
             int dataValue = block.getData();
             if ((dataValue & 8) == 0) {
                 block.setData((byte) (dataValue | 8));
@@ -197,6 +202,7 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
     private TreeType getTreeType(TreeSpecies species) {
         switch (species) {
             case GENERIC:
+            default:
                 return TreeType.TREE;
             case REDWOOD:
                 return TreeType.REDWOOD;
@@ -209,6 +215,5 @@ public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
             case DARK_OAK:
                 return TreeType.DARK_OAK;
         }
-        return TreeType.TREE;
     }
 }

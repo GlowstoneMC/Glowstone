@@ -1,30 +1,46 @@
 package net.glowstone.util;
 
+import static org.bukkit.block.BlockFace.EAST;
+import static org.bukkit.block.BlockFace.EAST_NORTH_EAST;
+import static org.bukkit.block.BlockFace.EAST_SOUTH_EAST;
+import static org.bukkit.block.BlockFace.NORTH;
+import static org.bukkit.block.BlockFace.NORTH_EAST;
+import static org.bukkit.block.BlockFace.NORTH_NORTH_EAST;
+import static org.bukkit.block.BlockFace.NORTH_NORTH_WEST;
+import static org.bukkit.block.BlockFace.NORTH_WEST;
+import static org.bukkit.block.BlockFace.SOUTH;
+import static org.bukkit.block.BlockFace.SOUTH_EAST;
+import static org.bukkit.block.BlockFace.SOUTH_SOUTH_EAST;
+import static org.bukkit.block.BlockFace.SOUTH_SOUTH_WEST;
+import static org.bukkit.block.BlockFace.SOUTH_WEST;
+import static org.bukkit.block.BlockFace.WEST;
+import static org.bukkit.block.BlockFace.WEST_NORTH_WEST;
+import static org.bukkit.block.BlockFace.WEST_SOUTH_WEST;
+
 import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.BlockVector;
 
-import java.util.List;
-
-import static org.bukkit.block.BlockFace.*;
-
 /**
  * A static class housing position-related utilities and constants.
+ *
  * @author Graham Edgecombe
  */
 public final class Position {
 
+    /**
+     * Common Rotation values used blocks such as Signs, Skulls, and Banners. The order relates to
+     * the data/tag that is applied to the block on placing.
+     */
+    public static final List<BlockFace> ROTATIONS = ImmutableList
+            .of(NORTH, NORTH_NORTH_EAST, NORTH_EAST, EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST,
+                    SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST, SOUTH_WEST,
+                    WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
+
     private Position() {
     }
-
-    /**
-     * Common Rotation values used blocks such as Signs, Skulls, and Banners.
-     * The order relates to the data/tag that is applied to the block on placing.
-     */
-    public static final List<BlockFace> ROTATIONS = ImmutableList.of(NORTH, NORTH_NORTH_EAST, NORTH_EAST,
-            EAST_NORTH_EAST, EAST, EAST_SOUTH_EAST, SOUTH_EAST, SOUTH_SOUTH_EAST, SOUTH, SOUTH_SOUTH_WEST,
-            SOUTH_WEST, WEST_SOUTH_WEST, WEST, WEST_NORTH_WEST, NORTH_WEST, NORTH_NORTH_WEST);
 
     /**
      * Gets an integer approximation of the yaw between 0 and 255.
@@ -64,7 +80,8 @@ public final class Position {
      * @return A boolean.
      */
     public static boolean hasMoved(Location first, Location second) {
-        return first.getX() != second.getX() || first.getY() != second.getY() || first.getZ() != second.getZ();
+        return first.getX() != second.getX() || first.getY() != second.getY()
+                || first.getZ() != second.getZ();
     }
 
     /**
@@ -80,6 +97,7 @@ public final class Position {
 
     /**
      * Copy the contents of one Location to another.
+     *
      * @param source The Location to read from.
      * @param dest The Location to modify. May be null.
      * @return The dest parameter, modified if not null.
@@ -99,6 +117,7 @@ public final class Position {
 
     /**
      * Copy the position contents (x,y,z) of one Location to another.
+     *
      * @param source The Location to read the x, y and z values from.
      * @param dest The Location to modify the x, y and z values. May be null.
      * @return The dest parameter, modified if not null.
@@ -115,6 +134,7 @@ public final class Position {
 
     /**
      * Get an intercardinal BlockFace from a rotation value, where NORTH is 0.
+     *
      * @param rotation byte value rotation to get
      * @return intercardinal BlockFace
      * @throws IndexOutOfBoundsException If the value is less than 0 or greater than 15
@@ -125,6 +145,7 @@ public final class Position {
 
     /**
      * Gets the byte rotation for an intercardinal BlockFace, where NORTH is 0.
+     *
      * @param rotation Rotation to get
      * @return byte data value for the given rotation, or -1 if rotation is SELF or null
      */
@@ -134,15 +155,19 @@ public final class Position {
 
     /**
      * Gets the serialized position value for a block vector.
+     *
      * @param vector the block vector to serialize
      * @return the serialized position value
      */
     public static long getPosition(BlockVector vector) {
-        return ((vector.getBlockX() & 0x3FFFFFF) << 38) | ((vector.getBlockY() & 0xFFF) << 26) | (vector.getBlockZ() & 0x3FFFFFF);
+        return (((long) vector.getBlockX() & 0x3FFFFFF) << 38) | (
+                ((long) vector.getBlockY() & 0xFFF) << 26) | ((long) vector.getBlockZ()
+                & 0x3FFFFFF);
     }
 
     /**
      * Decodes the block vector from a serialized position value.
+     *
      * @param position the position to decode
      * @return the decoded block vector
      */

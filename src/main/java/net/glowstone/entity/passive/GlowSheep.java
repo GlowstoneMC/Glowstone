@@ -1,37 +1,54 @@
 package net.glowstone.entity.passive;
 
+import com.google.common.collect.Sets;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import lombok.Getter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
-import org.bukkit.*;
+import net.glowstone.util.InventoryUtil;
+import org.bukkit.DyeColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
 
-import java.util.Random;
-
 public class GlowSheep extends GlowAnimal implements Sheep {
 
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.WHEAT);
+
+    @Getter
     private boolean sheared;
+    @Getter
     private DyeColor color;
 
+    /**
+     * Creates a sheep with a random color.
+     *
+     * @param location the location
+     */
     public GlowSheep(Location location) {
         super(location, EntityType.SHEEP, 8);
         setSize(0.9F, 1.3F);
-        Random r = new Random();
-        int colorpc = r.nextInt(10000);
-        if (colorpc < 8184) {
+        int colorpc = ThreadLocalRandom.current().nextInt(10000);
+        if (8184 > colorpc) {
             setColor(DyeColor.WHITE);
-        } else if (colorpc >= 8184 && 8684 > colorpc) {
+        } else if (8684 > colorpc) {
             setColor(DyeColor.BLACK);
-        } else if (colorpc >= 8684 && 9184 > colorpc) {
+        } else if (9184 > colorpc) {
             setColor(DyeColor.SILVER);
-        } else if (colorpc >= 9184 && 9684 > colorpc) {
+        } else if (9684 > colorpc) {
             setColor(DyeColor.GRAY);
-        } else if (colorpc >= 9684 && 9984 > colorpc) {
+        } else if (9984 > colorpc) {
             setColor(DyeColor.BROWN);
         } else {
             setColor(DyeColor.PINK);
@@ -41,19 +58,9 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     }
 
     @Override
-    public boolean isSheared() {
-        return sheared;
-    }
-
-    @Override
     public void setSheared(boolean sheared) {
         this.sheared = sheared;
         metadata.set(MetadataIndex.SHEEP_DATA, getColorByte());
-    }
-
-    @Override
-    public DyeColor getColor() {
-        return color;
     }
 
     @Override
@@ -69,60 +76,79 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         super.entityInteract(player, message);
+        if (message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
 
-        if (!isAdult()) return false;
-
-        if (player.getGameMode().equals(GameMode.SPECTATOR)) return false;
-        if (player.getItemInHand() == null) return false;
-        switch (player.getItemInHand().getType()) {
-            case SHEARS:
-                if (isSheared()) return false;
-
-                if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-                    ItemStack shears = player.getItemInHand();
-
-                    if (shears.getDurability() < 238) {
-                        shears.setDurability((short) (shears.getDurability() + 1));
-                    } else {
-                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
-                    }
-                }
-
-                getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
-
-                Random r = new Random();
-
-                getWorld().dropItemNaturally(getLocation(), new ItemStack(Material.WOOL, r.nextInt(3) + 1, getColor().getWoolData()));
-
-                setSheared(true);
-                return true;
-            case INK_SACK: {
-                Dye dye = (Dye) player.getItemInHand().getData();
-                DyeColor color = dye.getColor();
-
-                SheepDyeWoolEvent event = new SheepDyeWoolEvent(this, color);
-                if (event.isCancelled()) return false;
-
-                color = event.getColor();
-
-                if (color.equals(getColor())) {
-                    return false;
-                }
-
-                if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-                    if (player.getItemInHand().getAmount() > 1) {
-                        player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
-                    } else {
-                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
-                    }
-                }
-
-                setColor(color);
-                return true;
-            }
-            default:
+            if (!isAdult()) {
                 return false;
+            }
+            ItemStack hand = InventoryUtil
+                .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+
+            if (player.getGameMode().equals(GameMode.SPECTATOR)) {
+                return false;
+            }
+            if (InventoryUtil.isEmpty(hand)) {
+                return false;
+            }
+            switch (hand.getType()) {
+                case SHEARS:
+                    if (isSheared()) {
+                        return false;
+                    }
+                    PlayerShearEntityEvent shearEvent = EventFactory.getInstance().callEvent(
+                            new PlayerShearEntityEvent(player, this)
+                    );
+                    if (shearEvent.isCancelled()) {
+                        return false;
+                    }
+                    if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                        if (hand.getDurability() < 238) {
+                            hand.setDurability((short) (hand.getDurability() + 1));
+                            player.getInventory().setItem(message.getHandSlot(), hand);
+                        } else {
+                            player.getInventory()
+                                .setItem(message.getHandSlot(), InventoryUtil.createEmptyStack());
+                        }
+                    }
+
+                    getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
+
+                    getWorld().dropItemNaturally(getLocation(),
+                        new ItemStack(Material.WOOL, ThreadLocalRandom.current().nextInt(3) + 1,
+                            getColor().getWoolData()));
+
+                    setSheared(true);
+                    return true;
+                case INK_SACK: {
+                    Dye dye = (Dye) hand.getData();
+                    DyeColor color = dye.getColor();
+
+                    SheepDyeWoolEvent dyeEvent = EventFactory.getInstance().callEvent(
+                            new SheepDyeWoolEvent(this, color));
+                    if (dyeEvent.isCancelled()) {
+                        metadata.set(MetadataIndex.SHEEP_DATA, getColorByte(), true);
+                        player.updateInventory();
+                        return false;
+                    }
+
+                    color = dyeEvent.getColor();
+
+                    if (color.equals(getColor())) {
+                        return false;
+                    }
+
+                    if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                        player.getInventory().consumeItemInHand(message.getHandSlot());
+                    }
+
+                    setColor(color);
+                    return true;
+                }
+                default:
+                    return false;
+            }
         }
+        return false;
     }
 
     @Override
@@ -138,5 +164,10 @@ public class GlowSheep extends GlowAnimal implements Sheep {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SHEEP_AMBIENT;
+    }
+
+    @Override
+    public Set<Material> getBreedingFoods() {
+        return BREEDING_FOODS;
     }
 }
