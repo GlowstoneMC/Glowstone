@@ -1,6 +1,5 @@
 package net.glowstone;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -206,7 +205,7 @@ public final class ConsoleManager {
         if (string.indexOf(ChatColor.COLOR_CHAR) < 0) {
             return string; // no colors in the message
         }
-        for (ChatColor color : ChatColor.values()) {
+        for (ChatColor color : colors) {
             if (this.color && replacements.containsKey(color)) {
                 string = string.replaceAll("(?i)" + color, replacements.get(color));
             } else {
@@ -214,28 +213,6 @@ public final class ConsoleManager {
             }
         }
         return string;
-    }
-
-    private static class LoggerOutputStream extends ByteArrayOutputStream {
-
-        private final String separator = System.getProperty("line.separator");
-        private final Level level;
-
-        public LoggerOutputStream(Level level) {
-            this.level = level;
-        }
-
-        @Override
-        public synchronized void flush() throws IOException {
-            super.flush();
-            String record = toString();
-            reset();
-
-            if (!record.isEmpty() && !record.equals(separator)) {
-                logger.logp(level, "LoggerOutputStream", "log" + level,
-                    record); // NON-NLS
-            }
-        }
     }
 
     private static class RotatingFileHandler extends StreamHandler {
@@ -324,7 +301,7 @@ public final class ConsoleManager {
             String command = null;
             while (running) {
                 try {
-                    command = reader.readLine();
+                    command = reader.readLine(CONSOLE_PROMPT);
                 } catch (CommandException ex) {
                     logger.log(Level.WARNING, "Exception while executing command: " + command,
                         ex);

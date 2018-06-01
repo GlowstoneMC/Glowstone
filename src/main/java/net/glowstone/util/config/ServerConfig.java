@@ -404,7 +404,6 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         ALLOW_CLIENT_MODS("server.allow-client-mods", true, Boolean.class::isInstance),
 
         // console
-        USE_JLINE("console.use-jline", true, Boolean.class::isInstance),
         CONSOLE_PROMPT("console.prompt", "> ", String.class::isInstance),
         CONSOLE_DATE("console.date-format", "HH:mm:ss", String.class::isInstance),
         CONSOLE_LOG_DATE("console.log-date-format", "yyyy/MM/dd HH:mm:ss",

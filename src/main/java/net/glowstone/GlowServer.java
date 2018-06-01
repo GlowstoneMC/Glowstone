@@ -582,9 +582,6 @@ public class GlowServer implements Server {
                 case "-o":
                     parameters.put(Key.ONLINE_MODE, Boolean.valueOf(args[++i]));
                     break;
-                case "--jline":
-                    parameters.put(Key.USE_JLINE, Boolean.valueOf(args[++i]));
-                    break;
                 case "--plugins-dir":
                 case "-P":
                     parameters.put(Key.PLUGIN_FOLDER, args[++i]);
@@ -639,7 +636,7 @@ public class GlowServer implements Server {
     public void start() {
         // Determine console mode and start reading input
         consoleManager.start();
-        //consoleManager.startFile(config.getString(Key.LOG_FILE));
+        consoleManager.startFile(config.getString(Key.LOG_FILE));
 
         if (getProxySupport()) {
             if (getOnlineMode()) {
