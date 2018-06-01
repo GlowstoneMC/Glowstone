@@ -109,7 +109,6 @@ import net.glowstone.net.message.play.inv.OpenWindowMessage;
 import net.glowstone.net.message.play.inv.SetWindowContentsMessage;
 import net.glowstone.net.message.play.inv.SetWindowSlotMessage;
 import net.glowstone.net.message.play.inv.WindowPropertyMessage;
-import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.play.player.ResourcePackSendMessage;
 import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
@@ -678,7 +677,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendWeather();
         sendRainDensity();
         sendSkyDarkness();
-        sendAbilities();
+        getServer().sendPlayerAbilities(this);
 
         // send initial location
         session.send(new PositionRotationMessage(location));
@@ -1635,7 +1634,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (!canFly) {
             flying = false;
         }
-        sendAbilities();
+        getServer().sendPlayerAbilities(this);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1644,26 +1643,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void setFlying(boolean value) {
         flying = value && canFly;
-        sendAbilities();
+        getServer().sendPlayerAbilities(this);
     }
 
     @Override
     public void setFlySpeed(float value) throws IllegalArgumentException {
         flySpeed = value;
-        sendAbilities();
+        getServer().sendPlayerAbilities(this);
     }
 
     @Override
     public void setWalkSpeed(float value) throws IllegalArgumentException {
         walkSpeed = value;
-        sendAbilities();
-    }
-
-    private void sendAbilities() {
-        boolean creative = getGameMode() == GameMode.CREATIVE;
-        int flags = (creative ? 8 : 0) | (canFly ? 4 : 0) | (flying ? 2 : 0) | (creative ? 1 : 0);
-        // division is conversion from Bukkit to MC units
-        session.send(new PlayerAbilitiesMessage(flags, flySpeed / 2f, walkSpeed / 2f));
+        getServer().sendPlayerAbilities(this);
     }
 
     @Override

@@ -133,6 +133,7 @@ import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.net.message.play.player.AdvancementsMessage;
+import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
@@ -2120,7 +2121,6 @@ public class GlowServer implements Server {
                 .nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes()), false));
     }
 
-
     @Override
     public void savePlayers() {
         getOnlinePlayers().forEach(Player::saveData);
@@ -2194,6 +2194,21 @@ public class GlowServer implements Server {
     public Set<OfflinePlayer> getBannedPlayers() {
         return nameBans.getBanEntries().stream().map(entry -> getOfflinePlayer(entry.getTarget()))
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Sends a {@link GlowPlayer} their abilities regarding
+     * flying and walking.
+     *
+     * @param player The player who is being sent their abilities.
+     */
+    public void sendPlayerAbilities(GlowPlayer player) {
+        boolean creative = player.getGameMode() == GameMode.CREATIVE;
+        int flags = (creative ? 8 : 0) | (player.getAllowFlight() ? 4 : 0)
+                | (player.isFlying() ? 2 : 0) | (creative ? 1 : 0);
+        // division is conversion from Bukkit to MC units
+        player.getSession().send(new PlayerAbilitiesMessage(flags,
+                player.getFlySpeed() / 2F, player.getWalkSpeed() / 2F));
     }
 
     @Override
