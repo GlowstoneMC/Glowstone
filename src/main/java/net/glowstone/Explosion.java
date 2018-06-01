@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.GlowEntity;
@@ -69,6 +70,7 @@ public final class Explosion {
         }
     }
 
+    @Nullable
     private final Entity source;
     private final Location location;
     private final boolean incendiary;
@@ -103,8 +105,8 @@ public final class Explosion {
      * @param incendiary Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
-    public Explosion(Entity source, Location location, float power, boolean incendiary,
-            boolean breakBlocks) {
+    public Explosion(@Nullable Entity source, Location location, float power,
+                     boolean incendiary, boolean breakBlocks) {
         if (!(location.getWorld() instanceof GlowWorld)) {
             throw new IllegalArgumentException("Supplied location does not have a valid GlowWorld");
         }
