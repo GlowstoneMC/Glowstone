@@ -17,7 +17,6 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import lombok.Getter;
 import net.glowstone.util.compiler.EvalTask;
@@ -47,7 +46,6 @@ import org.jline.terminal.TerminalBuilder;
  */
 public final class ConsoleManager {
 
-    private static final Logger logger = Logger.getLogger("");
     @NonNls private static String CONSOLE_DATE = "HH:mm:ss";
     @NonNls private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
     @NonNls private static String CONSOLE_PROMPT = ">";
@@ -105,8 +103,6 @@ public final class ConsoleManager {
     public ConsoleManager(GlowServer server) {
         this.server = server;
         GlowServer.logger.setUseParentHandlers(false);
-        handler = new ConsoleHandler();
-        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, false));
 
         try (Terminal terminal = TerminalBuilder.builder()
                     .system(true)
@@ -122,8 +118,6 @@ public final class ConsoleManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, color));
     }
 
     /**
@@ -132,8 +126,10 @@ public final class ConsoleManager {
     public void start() {
         sender = new ColoredCommandSender();
         CONSOLE_DATE = server.getConsoleDateFormat();
+        handler = new ConsoleHandler();
         handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, color));
         GlowServer.logger.addHandler(handler);
+        CONSOLE_PROMPT = server.getConsolePrompt();
         if (!running) {
             running = true;
             new ConsoleCommandThread().start();
@@ -155,12 +151,12 @@ public final class ConsoleManager {
     public void startFile(String logfile) {
         File parent = new File(logfile).getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
-            logger.warning("Could not create log folder: " + parent);
+            GlowServer.logger.warning("Could not create log folder: " + parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
         fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
-        logger.addHandler(fileHandler);
+        GlowServer.logger.addHandler(fileHandler);
     }
 
     private class DateOutputFormatter extends Formatter {
@@ -234,7 +230,8 @@ public final class ConsoleManager {
             try {
                 setOutputStream(new FileOutputStream(filename, true));
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
+                GlowServer.logger.log(Level.SEVERE, "Unable to open " + filename
+                    + " for writing", ex);
             }
         }
 
@@ -301,12 +298,12 @@ public final class ConsoleManager {
             String command = null;
             while (running) {
                 try {
-                    command = reader.readLine(CONSOLE_PROMPT);
+                    command = reader.readLine();
                 } catch (CommandException ex) {
-                    logger.log(Level.WARNING, "Exception while executing command: " + command,
-                        ex);
+                    GlowServer.logger.log(Level.WARNING, "Exception while executing command: "
+                            + command, ex);
                 } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "Error while reading commands", ex);
+                    GlowServer.logger.log(Level.SEVERE, "Error while reading commands", ex);
                 }
 
                 if (command != null && !(command = command.trim()).isEmpty()) {
