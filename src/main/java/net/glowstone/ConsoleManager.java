@@ -15,10 +15,10 @@ import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 import lombok.Getter;
+import net.glowstone.i18n.LocalizedStrings;
 import net.glowstone.util.compiler.EvalTask;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
@@ -48,7 +48,7 @@ public final class ConsoleManager {
 
     @NonNls private static String CONSOLE_DATE = "HH:mm:ss";
     @NonNls private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    @NonNls private static String CONSOLE_PROMPT = ">";
+    @NonNls private static String CONSOLE_PROMPT = "> "; // TODO: fix prompt
     private final GlowServer server;
     private static final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
@@ -67,28 +67,28 @@ public final class ConsoleManager {
     private ConsoleHandler handler;
 
     static {
-        addReplacement(ChatColor.BLACK, "\u001B[0;30;22m");
-        addReplacement(ChatColor.DARK_BLUE, "\u001B[0;34;22m");
-        addReplacement(ChatColor.DARK_GREEN, "\u001B[0;32;22m");
-        addReplacement(ChatColor.DARK_AQUA, "\u001B[0;36;22m");
-        addReplacement(ChatColor.DARK_RED, "\u001B[0;31;22m");
-        addReplacement(ChatColor.DARK_PURPLE, "\u001B[0;35;22m");
-        addReplacement(ChatColor.GOLD, "\u001B[0;33;22m");
-        addReplacement(ChatColor.GRAY, "\u001B[0;37;22m");
-        addReplacement(ChatColor.DARK_GRAY, "\u001B[0;30;1m");
-        addReplacement(ChatColor.BLUE, "\u001B[0;34;1m");
-        addReplacement(ChatColor.GREEN, "\u001B[0;32;1m");
-        addReplacement(ChatColor.AQUA, "\u001B[0;36;1m");
-        addReplacement(ChatColor.RED, "\u001B[0;31;1m");
-        addReplacement(ChatColor.LIGHT_PURPLE, "\u001B[0;35;1m");
-        addReplacement(ChatColor.YELLOW, "\u001B[0;33;1m");
-        addReplacement(ChatColor.WHITE, "\u001B[0;37;1m");
-        addReplacement(ChatColor.MAGIC, "\u001B[5m");
-        addReplacement(ChatColor.BOLD, "\u001B[21m");
-        addReplacement(ChatColor.STRIKETHROUGH, "\u001B[9m");
-        addReplacement(ChatColor.UNDERLINE, "\u001B[4m");
-        addReplacement(ChatColor.ITALIC, "\u001B[3m");
-        addReplacement(ChatColor.RESET, "\u001B[39;0m");
+        addReplacement(ChatColor.BLACK, "\u001B[0;30;22m"); // NON-NLS
+        addReplacement(ChatColor.DARK_BLUE, "\u001B[0;34;22m"); // NON-NLS
+        addReplacement(ChatColor.DARK_GREEN, "\u001B[0;32;22m"); // NON-NLS
+        addReplacement(ChatColor.DARK_AQUA, "\u001B[0;36;22m"); // NON-NLS
+        addReplacement(ChatColor.DARK_RED, "\u001B[0;31;22m"); // NON-NLS
+        addReplacement(ChatColor.DARK_PURPLE, "\u001B[0;35;22m"); // NON-NLS
+        addReplacement(ChatColor.GOLD, "\u001B[0;33;22m"); // NON-NLS
+        addReplacement(ChatColor.GRAY, "\u001B[0;37;22m"); // NON-NLS
+        addReplacement(ChatColor.DARK_GRAY, "\u001B[0;30;1m"); // NON-NLS
+        addReplacement(ChatColor.BLUE, "\u001B[0;34;1m"); // NON-NLS
+        addReplacement(ChatColor.GREEN, "\u001B[0;32;1m"); // NON-NLS
+        addReplacement(ChatColor.AQUA, "\u001B[0;36;1m"); // NON-NLS
+        addReplacement(ChatColor.RED, "\u001B[0;31;1m"); // NON-NLS
+        addReplacement(ChatColor.LIGHT_PURPLE, "\u001B[0;35;1m"); // NON-NLS
+        addReplacement(ChatColor.YELLOW, "\u001B[0;33;1m"); // NON-NLS
+        addReplacement(ChatColor.WHITE, "\u001B[0;37;1m"); // NON-NLS
+        addReplacement(ChatColor.MAGIC, "\u001B[5m"); // NON-NLS
+        addReplacement(ChatColor.BOLD, "\u001B[21m"); // NON-NLS
+        addReplacement(ChatColor.STRIKETHROUGH, "\u001B[9m"); // NON-NLS
+        addReplacement(ChatColor.UNDERLINE, "\u001B[4m"); // NON-NLS
+        addReplacement(ChatColor.ITALIC, "\u001B[3m"); // NON-NLS
+        addReplacement(ChatColor.RESET, "\u001B[39;0m"); // NON-NLS
     }
 
     private static void addReplacement(ChatColor formatting, String ansi) {
@@ -106,10 +106,10 @@ public final class ConsoleManager {
 
         try (Terminal terminal = TerminalBuilder.builder()
                     .system(true)
-                    .name("Glowstone")
+                    .name("Glowstone") // NON-NLS
                     .build()) {
             reader = LineReaderBuilder.builder()
-                    .appName("Glowstone")
+                    .appName("Glowstone") // NON-NLS
                     .terminal(terminal)
                     .completer(new CommandCompleter())
                     .build();
@@ -151,7 +151,7 @@ public final class ConsoleManager {
     public void startFile(String logfile) {
         File parent = new File(logfile).getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
-            GlowServer.logger.warning("Could not create log folder: " + parent);
+            LocalizedStrings.Console.Error.Manager.LOG_FOLDER.log(parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
@@ -175,9 +175,9 @@ public final class ConsoleManager {
             StringBuilder builder = new StringBuilder();
 
             builder.append(date.format(record.getMillis()));
-            builder.append(" [");
+            builder.append(" ["); // NON-NLS
             builder.append(record.getLevel().getLocalizedName().toUpperCase());
-            builder.append("] ");
+            builder.append("] "); // NON-NLS
             if (color) {
                 builder.append(colorize(formatMessage(record)));
             } else {
@@ -221,7 +221,7 @@ public final class ConsoleManager {
         public RotatingFileHandler(String template) {
             this.template = template;
             rotate = template.contains("%D"); // NON-NLS
-            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // NON-NLS
             filename = calculateFilename();
             updateOutput();
         }
@@ -230,8 +230,7 @@ public final class ConsoleManager {
             try {
                 setOutputStream(new FileOutputStream(filename, true));
             } catch (IOException ex) {
-                GlowServer.logger.log(Level.SEVERE, "Unable to open " + filename
-                    + " for writing", ex);
+                LocalizedStrings.Console.Error.Manager.LOG_FILE.log(ex, filename);
             }
         }
 
@@ -241,7 +240,7 @@ public final class ConsoleManager {
                 if (!filename.equals(newFilename)) {
                     filename = newFilename;
                     // note that the console handler doesn't see this message
-                    super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
+                    super.publish(LocalizedStrings.Console.Info.Manager.ROTATE.record(filename));
                     updateOutput();
                 }
             }
@@ -277,7 +276,7 @@ public final class ConsoleManager {
                 completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap()
                     .tabComplete(sender, line.line()));
             } catch (Exception e) {
-                GlowServer.logger.log(Level.WARNING, "Error while tab completing", e);
+                LocalizedStrings.Console.Error.Manager.TAB_COMPLETE.log(e);
             }
 
             if (completions != null) {
@@ -289,7 +288,7 @@ public final class ConsoleManager {
     private class ConsoleCommandThread extends Thread {
 
         ConsoleCommandThread() {
-            setName("ConsoleCommandThread");
+            setName("ConsoleCommandThread"); // NON-NLS
             setDaemon(true);
         }
 
@@ -298,27 +297,25 @@ public final class ConsoleManager {
             String command = null;
             while (running) {
                 try {
-                    command = reader.readLine();
-                } catch (CommandException ex) {
-                    GlowServer.logger.log(Level.WARNING, "Exception while executing command: "
-                            + command, ex);
-                } catch (Exception ex) {
-                    GlowServer.logger.log(Level.SEVERE, "Error while reading commands", ex);
-                }
-
-                if (command != null && !(command = command.trim()).isEmpty()) {
-                    reader.getTerminal().writer().println(colorize(
-                        "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
-                            + '"'));
-                    if (command.startsWith("$")) {
-                        server.getScheduler().runTask(null,
-                            new EvalTask(command.substring(1), command.startsWith("$$")));
-                    } else if (command.startsWith("!")) {
-                        server.getScheduler()
-                            .runTask(null, new ConsoleTask(command.substring(1)));
-                    } else {
-                        server.getScheduler().runTask(null, new CommandTask(command));
+                    command = reader.readLine(CONSOLE_PROMPT);
+                    if (command != null && !(command = command.trim()).isEmpty()) {
+                        reader.getTerminal().writer().println(colorize(
+                            "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
+                                + '"')); // NON-NLS
+                        if (command.startsWith("$")) {  // NON-NLS
+                            server.getScheduler().runTask(null,
+                                new EvalTask(command.substring(1), command.startsWith("$$")));
+                        } else if (command.startsWith("!")) {  // NON-NLS
+                            server.getScheduler()
+                                .runTask(null, new ConsoleTask(command.substring(1)));
+                        } else {
+                            server.getScheduler().runTask(null, new CommandTask(command));
+                        }
                     }
+                } catch (CommandException ex) {
+                    LocalizedStrings.Console.Error.Manager.COMMAND.log(ex, command);
+                } catch (Exception ex) {
+                    LocalizedStrings.Console.Error.Manager.COMMAND_READ.log(ex);
                 }
             }
         }
@@ -352,10 +349,10 @@ public final class ConsoleManager {
         @Override
         public void run() {
             switch (command) {
-                case "bind":
-                    // run keybind code
+                case "bind": // NON-NLS
+                    reader.getKeyMap()
                     break;
-                case "config":
+                case "config": // NON-NLS
                     // run config code
                     break;
                 default:
@@ -384,7 +381,7 @@ public final class ConsoleManager {
 
         @Override
         public String getName() {
-            return "CONSOLE";
+            return "CONSOLE";  // NON-NLS
         }
 
         @Override
@@ -394,7 +391,7 @@ public final class ConsoleManager {
 
         @Override
         public void sendMessage(String text) {
-            server.getLogger().info(text);
+            GlowServer.logger.info(text);
         }
 
         @Override
