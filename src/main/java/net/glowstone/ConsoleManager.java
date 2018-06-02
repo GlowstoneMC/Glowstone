@@ -297,10 +297,15 @@ public final class ConsoleManager {
             String command = null;
             while (running) {
                 try {
-                    command = reader.readLine(CONSOLE_PROMPT);
+                    if (color) {
+                        command = reader.readLine(colorize(ChatColor.RESET.toString())
+                            + CONSOLE_PROMPT);
+                    } else {
+                        command = reader.readLine(CONSOLE_PROMPT);
+                    }
                     if (command != null && !(command = command.trim()).isEmpty()) {
-                        reader.getTerminal().writer().println(colorize(
-                            "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
+                        reader.getTerminal().writer().println(colorize(ChatColor.RESET
+                            + "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
                                 + '"')); // NON-NLS
                         if (command.startsWith("$")) {  // NON-NLS
                             server.getScheduler().runTask(null,
@@ -348,16 +353,70 @@ public final class ConsoleManager {
 
         @Override
         public void run() {
-            switch (command) {
-                case "bind": // NON-NLS
-                    reader.getKeyMap()
-                    break;
-                case "config": // NON-NLS
-                    // run config code
-                    break;
-                default:
-                    // nothing
+            if (command.startsWith("bind")) {
+                GlowServer.logger.info("Key binding is not supported yet.");
+            } else if (command.startsWith("config")) {
+                String[] params = command.split(" ");
+                if (params.length > 1) {
+                    LineReader.Option option = getOption(params[1]);
+                    Object value;
+                    if (params.length == 2) {
+                        if (option == null) {
+                            value = reader.getVariable(params[1]);
+                        } else {
+                            value = reader.isSet(option);
+                        }
+                        GlowServer.logger.info("var " + params[1] + " = " + value);
+                    } else {
+                        if (option == null) {
+                            if (params[1].endsWith("L")) {
+                                value = Long.parseLong(params[2]
+                                    .substring(0, params[2].length() - 1));
+                            } else {
+                                try {
+                                    value = Integer.parseInt(params[2]);
+                                } catch (NumberFormatException e) {
+                                    if (params[2].equalsIgnoreCase("true")
+                                        || params[2].equalsIgnoreCase("false")) {
+                                        value = Boolean.parseBoolean(params[2]);
+                                    } else {
+                                        value = params[1];
+                                    }
+                                }
+                            }
+                            reader.setVariable(params[1], value);
+
+                        } else {
+                            value = Objects.equals(params[2], "true");
+                            reader.option(option, Boolean.parseBoolean(params[2]));
+                        }
+                        GlowServer.logger.info("-> var " + params[1] + " = " + value);
+                    }
+                }
+            } else if (command.startsWith("keymap")) {
+                String[] params = command.split(" ");
+                if (params.length > 1) {
+                    if (reader.setKeyMap(params[1])) {
+                        GlowServer.logger.info("-> keymap = " + reader.getKeyMap());
+                    }
+                } else if (params.length == 1) {
+                    GlowServer.logger.info("keymap = " + reader.getKeyMap());
+                }
+            } else if (command.startsWith("widget")) {
+                String[] params = command.split(" ");
+                if (params.length > 1) {
+                    reader.callWidget(params[1]);
+                }
             }
+        }
+
+        public LineReader.Option getOption(String text) {
+            for (LineReader.Option option : LineReader.Option.values()) {
+                if (option.name().equalsIgnoreCase(text)) {
+                    return option;
+                }
+            }
+            return null;
         }
     }
 
