@@ -440,7 +440,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         return (GlowInventory) getOpenInventory().getTopInventory();
     }
 
-    private void resetInventoryView() {
+    void resetInventoryView() {
         openInventory(new GlowInventoryView(this));
     }
 

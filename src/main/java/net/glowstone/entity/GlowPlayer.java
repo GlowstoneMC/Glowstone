@@ -3047,7 +3047,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 new InventoryOpenEvent(view));
             if (event.isCancelled()) {
                 // close the inventory but don't fire the InventoryCloseEvent
-                openInventory(new GlowInventoryView(this));
+                resetInventoryView();
                 return;
             }
             String title = view.getTitle();
