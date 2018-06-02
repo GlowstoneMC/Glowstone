@@ -77,6 +77,7 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -801,6 +802,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         location.setYaw(0);
 
         T projectile = ((GlowWorld) location.getWorld()).spawn(location, type);
+
+        ProjectileLaunchEvent launchEvent = EventFactory.getInstance()
+                .callEvent(new ProjectileLaunchEvent(projectile));
+        if (launchEvent.isCancelled()) {
+            projectile.remove();
+        }
         projectile.setVelocity(new Vector(x, y, z));
         ((GlowProjectile) projectile).setRawLocation(location);
         return projectile;

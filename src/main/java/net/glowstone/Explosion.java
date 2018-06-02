@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.GlowEntity;
@@ -24,6 +25,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -68,6 +70,7 @@ public final class Explosion {
         }
     }
 
+    @Nullable
     private final Entity source;
     private final Location location;
     private final boolean incendiary;
@@ -102,8 +105,8 @@ public final class Explosion {
      * @param incendiary Whether or not blocks should be set on fire
      * @param breakBlocks Whether blocks should break through this explosion
      */
-    public Explosion(Entity source, Location location, float power, boolean incendiary,
-            boolean breakBlocks) {
+    public Explosion(@Nullable Entity source, Location location, float power,
+                     boolean incendiary, boolean breakBlocks) {
         if (!(location.getWorld() instanceof GlowWorld)) {
             throw new IllegalArgumentException("Supplied location does not have a valid GlowWorld");
         }
@@ -127,14 +130,26 @@ public final class Explosion {
 
         Set<BlockVector> droppedBlocks = calculateBlocks();
 
+        // The 'blocks' list should mutable for event calls.
         List<Block> blocks = toBlockList(droppedBlocks);
-        EntityExplodeEvent event = EventFactory.getInstance().callEvent(
-                new EntityExplodeEvent(source, location, blocks, yield));
-        if (event.isCancelled()) {
-            return false;
-        }
 
-        yield = event.getYield();
+        if (source != null) {
+            EntityExplodeEvent event = EventFactory.getInstance().callEvent(
+                    new EntityExplodeEvent(source, location, blocks, yield));
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            yield = event.getYield();
+        } else {
+            BlockExplodeEvent event = EventFactory.getInstance().callEvent(
+                    new BlockExplodeEvent(location.getBlock(), blocks, yield));
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            yield = event.getYield();
+        }
 
         playOutSoundAndParticles();
 

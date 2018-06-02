@@ -1,7 +1,10 @@
 package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
-import net.glowstone.entity.passive.GlowChicken;
+import net.glowstone.EventFactory;
+import net.glowstone.entity.GlowAgeable;
+import net.glowstone.entity.GlowEntity;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
@@ -40,7 +44,7 @@ public class GlowEgg extends GlowProjectile implements Egg {
      */
     @Override
     public void collide(Block block) {
-        randomSpawnChicken(getLocation().clone());
+        randomHatchSpawning(getLocation().clone());
         getWorld().spawnParticle(
             Particle.ITEM_CRACK, location, 5,
             0, 0, 0, 0.05, new ItemStack(Material.EGG));
@@ -66,28 +70,47 @@ public class GlowEgg extends GlowProjectile implements Egg {
     }
 
     /**
-     * Handle spawning chicks when the egg breaks.
-     * There is a 1/8 chance to spawn 1 chick,
-     * and if that happends, there is a 1/32 chance to spawn 3 more chicks.
+     * Handle spawning entities when the egg breaks.
      *
      * @param location The location the egg breaks
      */
-    private void randomSpawnChicken(Location location) {
+    private void randomHatchSpawning(Location location) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int amount = 0;
 
-        if (random.nextInt(8) == 0) {
-            amount = 1;
-            if (random.nextInt(32) == 0) {
-                amount = 4;
-            }
+        // There is a 1/8 chance for egg to hatch and spawn at least 1 entity
+        boolean hatching = random.nextInt(8) == 0;
+
+        // ...and if the egg is hatching, there is now
+        // 1/32 chance to spawn 3 more entities.
+        byte amount;
+        if (hatching) {
+            amount = (byte) ((random.nextInt(32) == 0) ? 4 : 1);
+        } else {
+            amount = 0;
         }
 
-        for (int i = 0; i < amount; i++) {
-            GlowChicken chicken =
-                (GlowChicken) location.getWorld().spawnEntity(
-                    location.clone().add(0, 0.3, 0), EntityType.CHICKEN);
-            chicken.setBaby();
+        EntityType hatchingType = EntityType.CHICKEN;
+
+        final ProjectileSource shooter = getShooter();
+        if (shooter instanceof GlowPlayer) {
+            PlayerEggThrowEvent event = EventFactory.getInstance().callEvent(
+                    new PlayerEggThrowEvent((GlowPlayer) shooter, this,
+                            hatching, amount, hatchingType));
+
+            amount = event.getNumHatches();
+            hatching = event.isHatching();
+            hatchingType = event.getHatchingType();
+        }
+
+        if (hatching) {
+            for (int i = 0; i < amount; i++) {
+                GlowEntity entity =
+                        (GlowEntity) location.getWorld().spawnEntity(
+                                location.clone().add(0, 0.3, 0), hatchingType);
+                if (entity instanceof GlowAgeable) {
+                    ((GlowAgeable) entity).setBaby();
+                }
+            }
         }
     }
 
