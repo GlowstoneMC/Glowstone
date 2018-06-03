@@ -47,13 +47,6 @@ public class SpawnPointCommandTest extends CommandTestWithFakePlayers<SpawnPoint
     }
 
     @Test
-    public void testExecuteWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
-    }
-
-    @Test
     public void testExecuteFailsWithTwoParameters() {
         assertThat(command.execute(opSender, "label", new String[2]), is(false));
         Mockito.verify(opSender).sendMessage(eq(ChatColor.RED

@@ -49,7 +49,7 @@ public class SetWorldSpawnCommandTest extends CommandTest<SetWorldSpawnCommand> 
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(null);
 
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
+        assertThat(command.execute(opSender, "label", new String[0]), is(false));
     }
 
     @Test
