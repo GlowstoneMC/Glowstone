@@ -1,5 +1,6 @@
 package net.glowstone;
 
+import com.destroystokyo.paper.event.profile.ProfileWhitelistVerifyEvent;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
@@ -144,9 +145,8 @@ public class EventFactory {
         } else if (ipBans.isBanned(addressString)) {
             event.disallow(Result.KICK_BANNED,
                     Kick.BANNED.get(ipBans.getBanEntry(addressString).getReason()));
-        } else if (server.hasWhitelist() && !player.isWhitelisted()) {
-            event.disallow(Result.KICK_WHITELIST, Kick.WHITELIST.get());
-        } else if (server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
+        } else if (checkWhitelisted(player, event)
+                && server.getOnlinePlayers().size() >= server.getMaxPlayers()) {
             event.disallow(Result.KICK_FULL, Kick.FULL.get(server.getMaxPlayers()));
         }
 
@@ -246,5 +246,37 @@ public class EventFactory {
             }
         }
         return result;
+    }
+
+    /**
+     * Checks whether a player is whitelisted when joining the server,
+     * and fires the {@link ProfileWhitelistVerifyEvent} in the process.
+     *
+     * <p>The supplied {@link PlayerLoginEvent} will be disallowed by this method
+     * if the player is not whitelisted.
+     *
+     * @param player the player joining the server
+     * @param loginEvent the {@link PlayerLoginEvent} that will follow this check
+     * @return true if the player is whitelisted, false otherwise
+     */
+    private boolean checkWhitelisted(GlowPlayer player, PlayerLoginEvent loginEvent) {
+        // check whether the player is whitelisted (explicitly or implicitly)
+        boolean whitelisted = player.isOp()
+                || !player.getServer().hasWhitelist()
+                || player.isWhitelisted();
+        // fire the event to allow plugins to change this behavior
+        ProfileWhitelistVerifyEvent event = callEvent(new ProfileWhitelistVerifyEvent(
+                player.getProfile(),
+                player.getServer().hasWhitelist(),
+                whitelisted,
+                player.isOp(),
+                Kick.WHITELIST.get()
+        ));
+        if (event.isWhitelisted()) {
+            return true;
+        }
+        // note: the kick message is mutable by plugins
+        loginEvent.disallow(Result.KICK_WHITELIST, event.getKickMessage());
+        return false;
     }
 }
