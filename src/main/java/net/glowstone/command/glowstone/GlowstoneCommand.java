@@ -42,7 +42,7 @@ public class GlowstoneCommand extends BukkitCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("about")) {
             // some info about this Glowstone server
