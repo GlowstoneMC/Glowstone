@@ -35,7 +35,7 @@ public class SetBlockCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
         if (args.length < 4) {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);

@@ -24,7 +24,7 @@ public class BanIpCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
         if (args.length > 0) {
             String target = null;

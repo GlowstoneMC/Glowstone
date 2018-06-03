@@ -26,7 +26,7 @@ public class SaveToggleCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
         for (World world : sender.getServer().getWorlds()) {
             world.setAutoSave(on);

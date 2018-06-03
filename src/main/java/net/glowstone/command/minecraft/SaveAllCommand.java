@@ -16,7 +16,7 @@ public class SaveAllCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
         sender.sendMessage("Saving...");
         for (World world : sender.getServer().getWorlds()) {

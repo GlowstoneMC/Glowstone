@@ -16,7 +16,7 @@ public class SeedCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
 
         final World world = CommandUtils.getWorld(sender);

@@ -31,7 +31,7 @@ public class SpawnPointCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
 
         if (args.length != 0 && args.length != 1 && args.length < 4) {

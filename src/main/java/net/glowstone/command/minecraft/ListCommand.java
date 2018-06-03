@@ -23,7 +23,7 @@ public class ListCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         Collection<String> messages = new ArrayList<>();
