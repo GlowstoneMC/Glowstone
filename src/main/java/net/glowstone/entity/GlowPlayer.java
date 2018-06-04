@@ -3536,7 +3536,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // Force-update item
         setItemInHand(tool);
         // Break the block
-        broadcastBlockBreakAnimation(digging, 9);
         digging.breakNaturally(tool);
         // Send block status to clients
         world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
