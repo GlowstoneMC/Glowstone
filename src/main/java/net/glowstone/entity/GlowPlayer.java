@@ -66,7 +66,6 @@ import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
-import net.glowstone.inventory.MaterialToolType;
 import net.glowstone.inventory.ToolType;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -3425,8 +3424,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                             miningMultiplier += efficiencyLevel * efficiencyLevel + 1;
                         }
                         breakingTimeMultiplier = 1.5 / miningMultiplier;
-                    } else if (effectiveTool == null ||
-                            !effectiveTool.matches(Material.DIAMOND_PICKAXE)) {
+                    } else if (effectiveTool == null
+                            || !effectiveTool.matches(Material.DIAMOND_PICKAXE)) {
                         // If the current tool isn't optimal but can still mine the block, the
                         // multiplier is 1.5. Here, we assume for simplicity that this is true of
                         // all non-pickaxe blocks.
