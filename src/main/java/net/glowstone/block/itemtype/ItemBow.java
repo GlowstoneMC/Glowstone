@@ -82,8 +82,9 @@ public class ItemBow extends ItemTimedUsage {
                     1.0f - (TICKS_TO_FULLY_CHARGE - player.getUsageTime())
                             / TICKS_TO_FULLY_CHARGE);
             EntityShootBowEvent event = EventFactory.getInstance().callEvent(
-                    new EntityShootBowEvent(player, bow, launchedProjectile, chargeFraction));
-            //TODO: isConsumeArrow would be a nice API addition to EntityShootBowEvent
+                    new EntityShootBowEvent(player, bow, launchedProjectile, chargeFraction,
+                            consumeArrow));
+            consumeArrow = event.isConsumeArrow();
             //TODO: Call for Skeleton firing too when implemented
 
             if (event.isCancelled()) {
