@@ -3413,9 +3413,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                     ToolType effectiveTool = block.getMaterialValues().getTool();
                     if (effectiveTool != null && effectiveTool.matches(toolType)) {
                         breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
+                        // TODO: Efficiency enchantment
                     }
                 }
             }
+            // TODO: Mining Fatigue; Slowness; effect of underwater digging
             totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
