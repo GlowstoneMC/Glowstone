@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -1093,6 +1094,7 @@ public abstract class GlowEntity implements Entity {
      */
     @Override
     public void remove() {
+        EventFactory.getInstance().callEvent(new EntityRemoveFromWorldEvent(this));
         removed = true;
         active = false;
         boundingBox = null;
