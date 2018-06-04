@@ -3401,7 +3401,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             // remove the animation
             broadcastBlockBreakAnimation(digging, 10);
         } else {
-            double hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
+            double hardness = block.getMaterialValues().getHardness();
+            if (hardness < 0) {
+                // This block can't be broken by digging.
+                setDigging(null);
+                return;
+            }
             double breakingTimeMultiplier = 5; // default of 5 when using bare hands
             ItemStack tool = getItemInHand();
             if (tool != null) {
@@ -3419,11 +3424,19 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                             miningMultiplier += efficiencyLevel * efficiencyLevel + 1;
                         }
                         breakingTimeMultiplier = 1.5 / miningMultiplier;
+                    } else if (effectiveTool == null ||
+                            !effectiveTool.matches(Material.DIAMOND_PICKAXE)) {
+                        // If the current tool isn't optimal but can still mine the block, the
+                        // multiplier is 1.5. Here, we assume for simplicity that this is true of
+                        // all non-pickaxe blocks.
+                        // FIXME: Does this always match vanilla?
+                        breakingTimeMultiplier = 1.5;
                     }
                 }
             }
             // TODO: Mining Fatigue; Slowness; effect of underwater digging
-            totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
+            totalDiggingTicks = (long)
+                (breakingTimeMultiplier * hardness * 20.0); // seconds to ticks
             logger.info(String.format(
                 "Breaking %s with %s takes %d ticks (hardness %.2f, time mult %.2f)",
                 block.getType(), getItemInHand().getType(), totalDiggingTicks,
