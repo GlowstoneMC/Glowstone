@@ -838,6 +838,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             world.playSound(location, deathSound, getSoundVolume(), getSoundPitch());
         }
         playEffect(EntityEffect.DEATH);
+        leaveVehicle();
         if (this instanceof GlowPlayer) {
             GlowPlayer player = (GlowPlayer) this;
             ItemStack mainHand = player.getInventory().getItemInMainHand();
