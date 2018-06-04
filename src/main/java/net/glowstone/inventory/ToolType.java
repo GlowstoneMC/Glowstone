@@ -31,7 +31,11 @@ public enum ToolType implements MaterialMatcher {
     GOLD_SPADE(Material.GOLD_SPADE, STONE_SPADE, ToolMaterial.GOLD),
     SPADE(Material.WOOD_SPADE, GOLD_SPADE, ToolMaterial.WOOD),
 
-    // Swords
+    // Swords all have the same breaking speed
+    DIAMOND_SWORD(Material.DIAMOND_SWORD, null, ToolMaterial.SWORD),
+    IRON_SWORD(Material.IRON_SWORD, DIAMOND_SWORD, ToolMaterial.SWORD),
+    STONE_SWORD(Material.STONE_SWORD, IRON_SWORD, ToolMaterial.SWORD),
+    GOLD_SWORD(Material.GOLD_SWORD, STONE_SWORD, ToolMaterial.SWORD),
     SWORD(Material.WOOD_SWORD, GOLD_SWORD, ToolMaterial.SWORD),
 
     // Shears
