@@ -151,6 +151,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -3412,8 +3413,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 } else {
                     ToolType effectiveTool = block.getMaterialValues().getTool();
                     if (effectiveTool != null && effectiveTool.matches(toolType)) {
-                        breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
-                        // TODO: Efficiency enchantment
+                        double miningMultiplier = effectiveTool.getMiningMultiplier();
+                        int efficiencyLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
+                        if (efficiencyLevel > 0) {
+                            miningMultiplier += efficiencyLevel * efficiencyLevel + 1;
+                        }
+                        breakingTimeMultiplier = 1.5 / miningMultiplier;
                     }
                 }
             }
