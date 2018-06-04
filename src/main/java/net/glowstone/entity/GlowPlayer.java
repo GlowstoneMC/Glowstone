@@ -3424,6 +3424,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             // TODO: Mining Fatigue; Slowness; effect of underwater digging
             totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
+            logger.info(String.format(
+                "Breaking %s with %s takes %d ticks (hardness %.2f, time mult %.2f)",
+                block.getType(), getItemInHand().getType(), totalDiggingTicks,
+                hardness, breakingTimeMultiplier));
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
         }
@@ -3450,10 +3454,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         ++diggingTicks;
 
         if (diggingTicks < totalDiggingTicks) {
+            logger.info(String.format("Digging, tick %d of %d", diggingTicks, totalDiggingTicks));
             int stage = (int) (10 * (double) diggingTicks / totalDiggingTicks);
             broadcastBlockBreakAnimation(digging, stage);
             return;
         }
+        logger.info("Breaking " + digging);
         ItemStack tool = getItemInHand();
         short durability = tool.getDurability();
         short maxDurability = tool.getType().getMaxDurability();
