@@ -66,6 +66,7 @@ import net.glowstone.entity.passive.GlowFishingHook;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
+import net.glowstone.inventory.MaterialToolType;
 import net.glowstone.inventory.ToolType;
 import net.glowstone.inventory.crafting.PlayerRecipeMonitor;
 import net.glowstone.io.PlayerDataService.PlayerReader;
@@ -3418,7 +3419,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 } else {
                     ToolType effectiveTool = block.getMaterialValues().getTool();
                     if (effectiveTool != null && effectiveTool.matches(toolType)) {
-                        double miningMultiplier = effectiveTool.getMiningMultiplier();
+                        double miningMultiplier = ToolType.getMiningMultiplier(toolType);
                         int efficiencyLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
                         if (efficiencyLevel > 0) {
                             miningMultiplier += efficiencyLevel * efficiencyLevel + 1;
