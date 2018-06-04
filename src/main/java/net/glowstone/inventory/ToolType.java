@@ -43,12 +43,10 @@ public enum ToolType implements MaterialMatcher {
 
     private final Material bukkitMaterial;
     private final ToolType better;
-    private final ToolMaterial toolMaterial;
 
     ToolType(Material bukkitMaterial, ToolType better, ToolMaterial toolMaterial) {
         this.bukkitMaterial = bukkitMaterial;
         this.better = better;
-        this.toolMaterial = toolMaterial;
         ToolMaterial.MINING_MULTIPLIERS.put(bukkitMaterial, toolMaterial.getMultiplier());
     }
 
