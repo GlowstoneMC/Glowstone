@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import static com.google.common.collect.Multimaps.newSetMultimap;
 
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import java.util.Collection;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import net.glowstone.EventFactory;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.physics.BoundingBox;
 import org.bukkit.Chunk;
@@ -93,6 +96,7 @@ public class EntityManager implements Iterable<GlowEntity> {
      * @param entity The entity.
      */
     void unregister(GlowEntity entity) {
+        EventFactory.getInstance().callEvent(new EntityRemoveFromWorldEvent(entity));
         entities.remove(entity.entityId);
         groupedEntities.remove(entity.getClass(), entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().remove(entity);
