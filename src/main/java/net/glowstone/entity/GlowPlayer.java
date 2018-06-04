@@ -3437,7 +3437,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             // TODO: Mining Fatigue; Slowness; effect of underwater digging
             totalDiggingTicks = (long)
-                (breakingTimeMultiplier * hardness * 20.0); // seconds to ticks
+                (breakingTimeMultiplier * hardness * 20.0 + 0.5); // seconds to ticks, round half-up
             logger.info(String.format(
                 "Breaking %s with %s takes %d ticks (hardness %.2f, time mult %.2f)",
                 block.getType(), getItemInHand().getType(), totalDiggingTicks,
