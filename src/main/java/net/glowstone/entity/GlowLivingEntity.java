@@ -918,15 +918,18 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
                 SlimeSplitEvent event = EventFactory.getInstance().callEvent(
                         new SlimeSplitEvent(slime, count));
-                if (!event.isCancelled() && event.getCount() > 0) {
-                    count = event.getCount();
-                } else {
+                if (event.isCancelled() || event.getCount() <= 0) {
                     return;
                 }
 
+                count = event.getCount();
                 for (int i = 0; i < count; ++i) {
                     Location spawnLoc = getLocation().clone();
-                    spawnLoc.add(Math.random(), 0, Math.random()); //TODO: Not sure it's vanilla
+                    spawnLoc.add(
+                            ThreadLocalRandom.current().nextDouble(0.5, 3),
+                            0,
+                            ThreadLocalRandom.current().nextDouble(0.5, 3)
+                    );
 
                     GlowSlime splitSlime = (GlowSlime) world.spawnEntity(
                             spawnLoc, EntityType.SLIME);
@@ -935,8 +938,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                     if (!getCustomName().isEmpty()) {
                         splitSlime.setCustomName(getCustomName());
                     }
-
-                    // TODO: Make the split slime the same persistance flag as the killed slime.
 
                     splitSlime.setSize(size / 2);
                 }
