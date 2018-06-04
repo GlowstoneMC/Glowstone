@@ -100,12 +100,10 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (message.getState() == DiggingMessage.CANCEL_DIGGING) {
             player.setDigging(null);
         } else if (message.getState() == DiggingMessage.FINISH_DIGGING) {
-            // Update client with block if digging isn't actually finished
+            // Update client with block
             // (FINISH_DIGGING is client's guess based on wall-clock time, not ticks, and is
             // untrusted)
-            if (!block.isEmpty()) {
-                player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
-            }
+            player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
         } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
             player.dropItemInHand(false);
             return;

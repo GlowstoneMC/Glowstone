@@ -3511,15 +3511,15 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             for (int i = 0; i < baseDamage; i++) {
                 tool = InventoryUtil.damageItem(this, tool);
             }
-            // Force-update item
-            setItemInHand(tool);
-            // Break the block
-            digging.breakNaturally(tool);
-            // Send block status to clients
-            world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
-                    digging.getLocation(), Material.AIR, (byte) 0));
-            setDigging(null);
         }
+        // Force-update item
+        setItemInHand(tool);
+        // Break the block
+        digging.breakNaturally(tool);
+        // Send block status to clients
+        world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
+                digging.getLocation(), Material.AIR, (byte) 0));
+        setDigging(null);
     }
 
     /**
