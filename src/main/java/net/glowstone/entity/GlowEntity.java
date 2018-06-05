@@ -454,8 +454,6 @@ public abstract class GlowEntity implements Entity {
     // Internals
     @Override
     public boolean teleport(Location location) {
-        checkNotNull(location, "location cannot be null");
-        checkNotNull(location.getWorld(), "location's world cannot be null");
         if (!(this instanceof GlowPlayer)) {
             // TODO: Properly test when Enderman teleportation is implemented.
             EntityTeleportEvent event = EventFactory.getInstance().callEvent(
@@ -465,6 +463,8 @@ public abstract class GlowEntity implements Entity {
             }
             location = event.getTo();
         }
+        checkNotNull(location, "location cannot be null");
+        checkNotNull(location.getWorld(), "location's world cannot be null");
         worldLock.writeLock().lock();
         try {
             if (location.getWorld() != world) {
