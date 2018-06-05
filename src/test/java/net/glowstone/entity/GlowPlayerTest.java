@@ -137,6 +137,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         fishingRodItem = new ItemStack(Material.FISHING_ROD);
         entity = entityCreator.apply(location);
         entity.setItemInHand(fishingRodItem);
+        entity.setDigging(null);
         when(session.getPlayer()).thenReturn(entity);
         when(world.getRawPlayers()).thenReturn(Collections.singletonList(entity));
     }
