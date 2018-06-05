@@ -4,18 +4,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Answers.RETURNS_SMART_NULLS;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.MaterialValueManager;
 import net.glowstone.chunk.ChunkManager;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
@@ -85,12 +90,13 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     // Real objects
 
     private static final GlowPlayerProfile profile
-            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), true);
+            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), false);
     private GlowScheduler scheduler;
     private final SessionRegistry sessionRegistry = new SessionRegistry();
     private File opsListFile;
     private UuidListFile opsList;
     private ItemStack fishingRodItem;
+    private MaterialValueManager materialValueManager = new BuiltinMaterialValueManager();
 
     public GlowPlayerTest() {
         super(ignoredLocation -> new GlowPlayer(session, profile, reader));
@@ -112,6 +118,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         opsList = new UuidListFile(opsListFile);
         when(server.getSessionRegistry()).thenReturn(sessionRegistry);
         when(server.getPluginManager()).thenReturn(pluginManager);
+        when(server.getMaterialValueManager()).thenReturn(materialValueManager);
         scheduler = new GlowScheduler(server, worldScheduler);
         when(session.getServer()).thenReturn(server);
         when(server.getScheduler()).thenReturn(scheduler);
@@ -122,20 +129,16 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         when(world.getBlockAt(any(Location.class))).thenReturn(block);
         when(world.getChunkManager()).thenReturn(chunkManager);
         when(world.newChunkLock(anyString())).thenReturn(chunkLock);
+        when(block.getLocation()).thenReturn(location);
         when(block.getType()).thenReturn(Material.AIR);
         when(block.getRelative(any(BlockFace.class))).thenReturn(block);
         when(block.getMaterialValues()).thenCallRealMethod();
+        when(block.getWorld()).thenReturn(world);
         fishingRodItem = new ItemStack(Material.FISHING_ROD);
         entity = entityCreator.apply(location);
         entity.setItemInHand(fishingRodItem);
         when(session.getPlayer()).thenReturn(entity);
-    }
-
-    private void assertCannotDig() {
-        for (ItemStack tool : BREAKING_TOOLS) {
-            assertCannotDigWith(tool.clone());
-        }
-        assertCannotDigWith(null);
+        when(world.getRawPlayers()).thenReturn(Collections.singletonList(entity));
     }
 
     private void assertCannotDigWith(@Nullable ItemStack tool) {
@@ -145,30 +148,28 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     }
 
     private void assertDiggingTimeEquals(long ticks) {
-        entity.setDigging(block);
-        for (long i = 0; i < ticks; i++) {
-            assertEquals(block, entity.getDigging());
-            entity.pulse();
+        Material toolType = entity.getItemInHand().getType();
+        try {
+            entity.setDigging(block);
+            for (long i = 0; i < ticks; i++) {
+                assertEquals(block, entity.getDigging());
+                verify(block, never()).breakNaturally(any(ItemStack.class));
+                entity.pulse();
+            }
+            assertNull(entity.getDigging());
+            verify(block).breakNaturally(argThat(item -> item.getType() == toolType));
+        } finally {
+            Mockito.clearInvocations(block);
         }
-        assertNull(entity.getDigging());
-        verify(block).breakNaturally(entity.getItemInHand());
     }
 
     @Test
     public void testDigBedrock() {
         when(block.getType()).thenReturn(Material.BEDROCK);
-        assertCannotDig();
-    }
-
-    @Test
-    public void testDigAir() {
-        assertCannotDig();
-    }
-
-    @Test
-    public void testDigLiquid() {
-        when(block.getType()).thenReturn(Material.WATER);
-        assertCannotDig();
+        for (ItemStack tool : BREAKING_TOOLS) {
+            assertCannotDigWith(tool.clone());
+        }
+        assertCannotDigWith(null);
     }
 
     @Test

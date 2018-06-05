@@ -3454,7 +3454,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
         GlowChunk.Key key = GlowChunk.Key.of(block.getX() >> 4, block.getZ() >> 4);
         block.getWorld().getRawPlayers().stream()
-                .filter(player -> player.canSeeChunk(key) && player != this)
+                .filter(player -> player != this && player.canSeeChunk(key))
                 .forEach(player -> player
                         .sendBlockBreakAnimation(block.getLocation(), destroyStage));
     }
@@ -3537,8 +3537,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // Break the block
         digging.breakNaturally(tool);
         // Send block status to clients
-        world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
-                digging.getLocation(), Material.AIR, (byte) 0));
+        Location dugLocation = digging.getLocation();
+        world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(dugLocation,
+                Material.AIR, (byte) 0));
         setDigging(null);
     }
 
