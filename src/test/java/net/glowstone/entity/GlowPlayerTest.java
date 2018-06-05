@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.ChunkManager;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
@@ -125,23 +126,25 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     private void assertCannotDig() {
         for (ItemStack tool : BREAKING_TOOLS) {
-            player.setItemInHand(tool.clone());
-            player.setDigging(block);
-            assertNull(player.getDigging());
+            assertCannotDigWith(tool.clone());
         }
-        player.setItemInHand(null);
-        player.setDigging(block);
-        assertNull(player.getDigging());
+        assertCannotDigWith(null);
+    }
+
+    private void assertCannotDigWith(@Nullable ItemStack tool) {
+        entity.setItemInHand(tool);
+        entity.setDigging(block);
+        assertNull(entity.getDigging());
     }
 
     private void assertDiggingTimeEquals(long ticks) {
-        player.setDigging(block);
+        entity.setDigging(block);
         for (long i = 0; i < ticks; i++) {
-            assertEquals(block, player.getDigging());
-            player.pulse();
+            assertEquals(block, entity.getDigging());
+            entity.pulse();
         }
-        assertNull(player.getDigging());
-        verify(block).breakNaturally(player.getItemInHand());
+        assertNull(entity.getDigging());
+        verify(block).breakNaturally(entity.getItemInHand());
     }
 
     @Test
