@@ -1,14 +1,18 @@
 package net.glowstone.entity;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Answers.RETURNS_SMART_NULLS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.ChunkManager;
@@ -41,6 +45,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest({Bukkit.class, ChunkManager.class})
 @RunWith(PowerMockRunner.class)
 public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
+
+    /**
+     * Each breakable block can be broken with one of these.
+     */
+    private static final List<ItemStack> BREAKING_TOOLS = ImmutableList.of(
+        new ItemStack(Material.DIAMOND_AXE),
+        new ItemStack(Material.DIAMOND_PICKAXE),
+        new ItemStack(Material.DIAMOND_SPADE),
+        new ItemStack(Material.DIAMOND_SWORD),
+        new ItemStack(Material.SHEARS));
 
     private final ChunkManager chunkManager
             = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
@@ -107,6 +121,84 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         entity = entityCreator.apply(location);
         entity.setItemInHand(fishingRodItem);
         when(session.getPlayer()).thenReturn(entity);
+    }
+
+    private void assertCannotDig() {
+        for (ItemStack tool : BREAKING_TOOLS) {
+            player.setItemInHand(tool.clone());
+            player.setDigging(block);
+            assertNull(player.getDigging());
+        }
+        player.setItemInHand(null);
+        player.setDigging(block);
+        assertNull(player.getDigging());
+    }
+
+    private void assertDiggingTimeEquals(long ticks) {
+        player.setDigging(block);
+        for (long i = 0; i < ticks; i++) {
+            assertEquals(block, player.getDigging());
+            player.pulse();
+        }
+        assertNull(player.getDigging());
+        verify(block).breakNaturally(player.getItemInHand());
+    }
+
+    @Test
+    public void testDigBedrock() {
+        when(block.getType()).thenReturn(Material.BEDROCK);
+        assertCannotDig();
+    }
+
+    @Test
+    public void testDigAir() {
+        assertCannotDig();
+    }
+
+    @Test
+    public void testDigLiquid() {
+        when(block.getType()).thenReturn(Material.WATER);
+        assertCannotDig();
+    }
+
+    @Test
+    public void testDigDirtNoTool() {
+        when(block.getType()).thenReturn(Material.DIRT);
+        assertDiggingTimeEquals(15);
+    }
+
+    @Test
+    public void testDigDirtWoodenShovel() {
+        player.setItemInHand(new ItemStack(Material.WOOD_SPADE));
+        when(block.getType()).thenReturn(Material.DIRT);
+        assertDiggingTimeEquals(8);
+    }
+
+    @Test
+    public void testDigDirtDiamondShovel() {
+        player.setItemInHand(new ItemStack(Material.WOOD_SPADE));
+        when(block.getType()).thenReturn(Material.DIRT);
+        assertDiggingTimeEquals(2);
+    }
+
+    @Test
+    public void testDigStoneNoTool() {
+        when(block.getType()).thenReturn(Material.STONE);
+        assertDiggingTimeEquals(150);
+    }
+
+    @Test
+    public void testDigStoneWoodenPickaxe() {
+        player.setItemInHand(new ItemStack(Material.WOOD_PICKAXE));
+        when(block.getType()).thenReturn(Material.STONE);
+        assertDiggingTimeEquals(23);
+    }
+
+    @Test
+    public void testDigStoneDiamondPickaxe() {
+        player.setItemInHand(new ItemStack(Material.DIAMOND_PICKAXE));
+        when(block.getType()).thenReturn(Material.STONE);
+        assertDiggingTimeEquals(6);
     }
 
     @Test
