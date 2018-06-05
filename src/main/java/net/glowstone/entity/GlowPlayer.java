@@ -3402,7 +3402,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             broadcastBlockBreakAnimation(digging, 10);
         } else {
             double hardness = block.getMaterialValues().getHardness();
-            System.out.println(block.getType().toString() + " has hardness " + hardness);
             if (hardness >= Float.MAX_VALUE) {
                 // This block can't be broken by digging.
                 setDigging(null);
