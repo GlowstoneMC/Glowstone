@@ -124,6 +124,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         when(world.newChunkLock(anyString())).thenReturn(chunkLock);
         when(block.getType()).thenReturn(Material.AIR);
         when(block.getRelative(any(BlockFace.class))).thenReturn(block);
+        when(block.getMaterialValues()).thenCallRealMethod();
         fishingRodItem = new ItemStack(Material.FISHING_ROD);
         entity = entityCreator.apply(location);
         entity.setItemInHand(fishingRodItem);
