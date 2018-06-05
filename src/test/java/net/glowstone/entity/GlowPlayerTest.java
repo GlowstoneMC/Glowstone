@@ -48,6 +48,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     /**
+     * Hide inherited field with this name, as a check: any reference to it in GlowPlayerTest should
+     * be to {@link #entity} instead.
+     */
+    protected final boolean player = false;
+
+    /**
      * Each breakable block can be broken with one of these.
      */
     private static final List<ItemStack> BREAKING_TOOLS = ImmutableList.of(
@@ -172,16 +178,18 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testDigDirtWoodenShovel() {
-        player.setItemInHand(new ItemStack(Material.WOOD_SPADE));
+        entity.setItemInHand(new ItemStack(Material.WOOD_SPADE));
         when(block.getType()).thenReturn(Material.DIRT);
         assertDiggingTimeEquals(8);
     }
 
     @Test
-    public void testDigDirtDiamondShovel() {
-        player.setItemInHand(new ItemStack(Material.WOOD_SPADE));
-        when(block.getType()).thenReturn(Material.DIRT);
-        assertDiggingTimeEquals(2);
+    public void testDigDirtDiamondTools() {
+        for (ItemStack tool : BREAKING_TOOLS) {
+            entity.setItemInHand(tool.clone());
+            when(block.getType()).thenReturn(Material.DIRT);
+            assertDiggingTimeEquals(tool.getType() == Material.DIAMOND_SPADE ? 2 : 15);
+        }
     }
 
     @Test
@@ -192,16 +200,18 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testDigStoneWoodenPickaxe() {
-        player.setItemInHand(new ItemStack(Material.WOOD_PICKAXE));
+        entity.setItemInHand(new ItemStack(Material.WOOD_PICKAXE));
         when(block.getType()).thenReturn(Material.STONE);
         assertDiggingTimeEquals(23);
     }
 
     @Test
-    public void testDigStoneDiamondPickaxe() {
-        player.setItemInHand(new ItemStack(Material.DIAMOND_PICKAXE));
-        when(block.getType()).thenReturn(Material.STONE);
-        assertDiggingTimeEquals(6);
+    public void testDigStoneDiamondTools() {
+        for (ItemStack tool : BREAKING_TOOLS) {
+            entity.setItemInHand(tool.clone());
+            when(block.getType()).thenReturn(Material.STONE);
+            assertDiggingTimeEquals(tool.getType() == Material.DIAMOND_PICKAXE ? 6 : 150);
+        }
     }
 
     @Test
