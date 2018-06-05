@@ -60,6 +60,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityPortalExitEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.entity.EntityUnleashEvent.UnleashReason;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -455,6 +456,13 @@ public abstract class GlowEntity implements Entity {
     public boolean teleport(Location location) {
         checkNotNull(location, "location cannot be null");
         checkNotNull(location.getWorld(), "location's world cannot be null");
+        if (!(this instanceof GlowPlayer)) {
+            // TODO: Properly test when Enderman teleportation is implemented.
+            if (EventFactory.getInstance().callEvent(
+                    new EntityTeleportEvent(this, getLocation(), location)).isCancelled()) {
+                return false;
+            }
+        }
         worldLock.writeLock().lock();
         try {
             if (location.getWorld() != world) {
