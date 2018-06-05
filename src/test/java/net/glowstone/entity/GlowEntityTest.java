@@ -129,10 +129,10 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
                 .thenAnswer(RETURN_FIRST_ARG);
         oldEventFactory = EventFactory.getInstance();
         EventFactory.setInstance(eventFactory);
+        when(eventFactory.callEvent(any(Event.class))).thenAnswer(RETURN_FIRST_ARG);
         if (createEntityInSuperSetUp()) {
             entity = entityCreator.apply(location);
         }
-        when(eventFactory.callEvent(any(Event.class))).thenAnswer(RETURN_FIRST_ARG);
         when(eventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
                 RETURN_FIRST_ARG);
         inventory = new GlowPlayerInventory(player);
