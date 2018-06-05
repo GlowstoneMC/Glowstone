@@ -1099,7 +1099,7 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().unregister(this);
         server.getEntityIdManager().deallocate(this);
         this.setPassenger(null);
-
+        leaveVehicle();
         ImmutableList.copyOf(this.leashedEntities)
                 .forEach(e -> unleash(e, UnleashReason.HOLDER_GONE));
 
