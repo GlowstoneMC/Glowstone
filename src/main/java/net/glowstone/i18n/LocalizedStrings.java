@@ -6,138 +6,138 @@ public interface LocalizedStrings {
     interface Console {
         interface Error {
             interface Biome {
-                LoggedLocalizedString UNKNOWN = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNKNOWN = new LoggableLocalizedStringImpl(
                         "console.biome.unknown", Level.SEVERE
                 );
             }
 
             interface BlockEntity {
-                LoggedLocalizedString READ_ERROR = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl READ_ERROR = new LoggableLocalizedStringImpl(
                         "console.block-entity.read-error", Level.SEVERE
                 );
             }
 
-            LoggedLocalizedString CLASSPATH = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl CLASSPATH = new LoggableLocalizedStringImpl(
                     "console.classpath.load-failed", Level.WARNING
             );
 
             interface Function {
-                LoggedLocalizedString FILE_READ = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl FILE_READ = new LoggableLocalizedStringImpl(
                         "console.function.load-failed", Level.SEVERE
                 );
             }
 
             interface Import {
-                LoggedLocalizedString NO_MESSAGE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl NO_MESSAGE = new LoggableLocalizedStringImpl(
                         "console.import.failed.no-message", Level.WARNING
                 );
 
-                LoggedLocalizedString WITH_MESSAGE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl WITH_MESSAGE = new LoggableLocalizedStringImpl(
                         "console.import.failed.with-message", Level.WARNING
                 );
             }
 
             interface Io {
-                LoggedLocalizedString MKDIR = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl MKDIR = new LoggableLocalizedStringImpl(
                         "console.io.mkdir-failed", Level.SEVERE
                 );
 
-                LoggedLocalizedString PLAYER_READ = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl PLAYER_READ = new LoggableLocalizedStringImpl(
                         "console.io.player-read-failed", Level.SEVERE);
 
-                LoggedLocalizedString PLAYER_READ_UNKNOWN = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl PLAYER_READ_UNKNOWN = new LoggableLocalizedStringImpl(
                         "console.io.player-read-failed-unknown", Level.SEVERE);
 
-                LoggedLocalizedString PLAYER_WRITE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl PLAYER_WRITE = new LoggableLocalizedStringImpl(
                         "console.io.player-write-failed", Level.SEVERE);
 
-                LoggedLocalizedString WORLD_READ = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl WORLD_READ = new LoggableLocalizedStringImpl(
                         "console.io.world-read-failed", Level.SEVERE
                 );
             }
 
-            LoggedLocalizedString LOOTING_MANAGER = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl LOOTING_MANAGER = new LoggableLocalizedStringImpl(
                     "console.looting-manager.load-failed", Level.SEVERE
             );
 
             interface Manager {
-                LoggedLocalizedString COMMAND = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl COMMAND = new LoggableLocalizedStringImpl(
                     "console.manager.command-failed", Level.WARNING
                 );
 
-                LoggedLocalizedString COMMAND_READ = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl COMMAND_READ = new LoggableLocalizedStringImpl(
                     "console.manager.command-read-failed", Level.SEVERE
                 );
 
-                LoggedLocalizedString LOG_FOLDER = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl LOG_FOLDER = new LoggableLocalizedStringImpl(
                     "console.manager.log-folder-failed", Level.WARNING
                 );
 
-                LoggedLocalizedString LOG_FILE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl LOG_FILE = new LoggableLocalizedStringImpl(
                     "console.manager.log-file-failed", Level.SEVERE
                 );
 
-                LoggedLocalizedString TAB_COMPLETE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl TAB_COMPLETE = new LoggableLocalizedStringImpl(
                     "console.manager.tab-complete-failed", Level.WARNING
                 );
             }
 
             interface Permission {
-                LoggedLocalizedString INVALID = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl INVALID = new LoggableLocalizedStringImpl(
                         "console.permission.invalid", Level.SEVERE
                 );
             }
 
             interface Plugin {
-                LoggedLocalizedString LOADING = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl LOADING = new LoggableLocalizedStringImpl(
                         "console.plugin.load-failed", Level.SEVERE
                 );
 
-                LoggedLocalizedString MKDIR = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl MKDIR = new LoggableLocalizedStringImpl(
                         "console.plugin.mkdir-failed", Level.SEVERE
                 );
             }
 
             interface Profile {
-                LoggedLocalizedString INTERRUPTED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl INTERRUPTED = new LoggableLocalizedStringImpl(
                         "console.profile.interrupted", Level.SEVERE
                 );
             }
 
             interface Rcon {
-                LoggedLocalizedString BIND_INTERRUPTED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl BIND_INTERRUPTED = new LoggableLocalizedStringImpl(
                         "console.rcon.bind-interrupted", Level.SEVERE
                 );
             }
 
-            LoggedLocalizedString RELOAD = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl RELOAD = new LoggableLocalizedStringImpl(
                     "console.reload-failed", Level.SEVERE
             );
 
-            LoggedLocalizedString STARTUP = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl STARTUP = new LoggableLocalizedStringImpl(
                     "console.startup-failed", Level.SEVERE
             );
 
             interface Structure {
-                LoggedLocalizedString IO_READ = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl IO_READ = new LoggableLocalizedStringImpl(
                         "console.structure.io-read", Level.SEVERE
                 );
 
-                LoggedLocalizedString IO_WRITE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl IO_WRITE = new LoggableLocalizedStringImpl(
                         "console.structure.io-write", Level.SEVERE
                 );
 
-                LoggedLocalizedString NO_DATA = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl NO_DATA = new LoggableLocalizedStringImpl(
                         "console.structure.no-data", Level.SEVERE
                 );
 
-                LoggedLocalizedString UNKNOWN_PIECE_TYPE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNKNOWN_PIECE_TYPE = new LoggableLocalizedStringImpl(
                         "console.structure.unknown-piece-type", Level.SEVERE
                 );
             }
 
             interface Uuid {
-                LoggedLocalizedString INTERRUPTED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl INTERRUPTED = new LoggableLocalizedStringImpl(
                         "console.uuid.interrupted", Level.SEVERE
                 );
             }
@@ -145,121 +145,122 @@ public interface LocalizedStrings {
         }
 
         interface Info {
-            LoggedLocalizedString CONFIG_ONLY_DONE = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl CONFIG_ONLY_DONE = new LoggableLocalizedStringImpl(
                     "console.config-only-done", Level.INFO
             );
 
             interface Icon {
-                LoggedLocalizedString IMPORT = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl IMPORT = new LoggableLocalizedStringImpl(
                         "console.icon.import", Level.INFO
                 );
             }
 
-            LoggedLocalizedString IMPORT = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl IMPORT = new LoggableLocalizedStringImpl(
                     "console.import", Level.INFO
             );
 
             interface Manager {
-                LoggedLocalizedString ROTATE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl ROTATE = new LoggableLocalizedStringImpl(
                     "console.manager.log-rotate", Level.INFO
                 );
             }
 
             interface NativeTransport {
-                LoggedLocalizedString EPOLL = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl EPOLL = new LoggableLocalizedStringImpl(
                         "console.native-transport.epoll", Level.INFO
                 );
 
-                LoggedLocalizedString KQUEUE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl KQUEUE = new LoggableLocalizedStringImpl(
                         "console.native-transport.kqueue", Level.INFO
                 );
             }
 
             interface Opencl {
-                LoggedLocalizedString BEST = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl BEST = new LoggableLocalizedStringImpl(
                         "console.opencl.best", Level.INFO
                 );
-                LoggedLocalizedString BEST_VERSION_TIEBREAKER = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl
+                    BEST_VERSION_TIEBREAKER = new LoggableLocalizedStringImpl(
                         "console.opencl.best.version-tiebreaker", Level.INFO
                 );
 
-                LoggedLocalizedString CPU = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl CPU = new LoggableLocalizedStringImpl(
                         "console.opencl.cpu", Level.INFO
                 );
 
-                LoggedLocalizedString FOUND_DEVICE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl FOUND_DEVICE = new LoggableLocalizedStringImpl(
                         "console.opencl.found-device", Level.INFO
                 );
 
-                LoggedLocalizedString INTEL_GPU = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl INTEL_GPU = new LoggableLocalizedStringImpl(
                         "console.opencl.intel-gpu", Level.INFO
                 );
 
-                LoggedLocalizedString NO_DEVICE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl NO_DEVICE = new LoggableLocalizedStringImpl(
                         "console.opencl.no-device", Level.INFO
                 );
 
-                LoggedLocalizedString REQUIRED_EXTENSIONS = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl REQUIRED_EXTENSIONS = new LoggableLocalizedStringImpl(
                         "console.opencl.required-extensions", Level.INFO
                 );
 
-                LoggedLocalizedString REQUIRED_VERSION = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl REQUIRED_VERSION = new LoggableLocalizedStringImpl(
                         "console.opencl.required-version", Level.INFO
                 );
             }
 
             interface Option {
-                LoggedLocalizedString HELP = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl HELP = new LoggableLocalizedStringImpl(
                         "console.option.help", Level.INFO
                 );
             }
 
             interface Plugin {
-                LoggedLocalizedString COUNTS = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl COUNTS = new LoggableLocalizedStringImpl(
                         "console.plugin.counts", Level.INFO
                 );
 
-                LoggedLocalizedString SCANNING = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl SCANNING = new LoggableLocalizedStringImpl(
                         "console.plugin.scanning", Level.INFO
                 );
             }
 
-            LoggedLocalizedString PROXY = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl PROXY = new LoggableLocalizedStringImpl(
                     "console.proxy", Level.INFO
             );
 
             interface Proxy {
-                LoggedLocalizedString ONLINE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl ONLINE = new LoggableLocalizedStringImpl(
                         "console.proxy.online", Level.INFO
                 );
             }
 
-            LoggedLocalizedString READY = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl READY = new LoggableLocalizedStringImpl(
                     "console.ready", Level.INFO
             );
 
-            LoggedLocalizedString RECIPE_COUNTS = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl RECIPE_COUNTS = new LoggableLocalizedStringImpl(
                     "console.recipe.counts", Level.INFO
             );
 
-            LoggedLocalizedString SAVE = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl SAVE = new LoggableLocalizedStringImpl(
                     "console.save", Level.INFO
             );
 
-            LoggedLocalizedString SHUTDOWN = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl SHUTDOWN = new LoggableLocalizedStringImpl(
                     "console.shutdown", Level.INFO
             );
 
             interface Version {
-                LoggedLocalizedString BUKKIT = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl BUKKIT = new LoggableLocalizedStringImpl(
                         "console.version.bukkit", Level.INFO
                 );
 
-                LoggedLocalizedString GLOWSTONE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl GLOWSTONE = new LoggableLocalizedStringImpl(
                         "console.version.glowstone", Level.INFO
                 );
 
-                LoggedLocalizedString MINECRAFT_CLIENT = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl MINECRAFT_CLIENT = new LoggableLocalizedStringImpl(
                         "console.version.minecraft-client", Level.INFO
                 );
             }
@@ -268,159 +269,160 @@ public interface LocalizedStrings {
         interface Warn {
 
             interface BlockEntity {
-                LoggedLocalizedString UNKNOWN = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNKNOWN = new LoggableLocalizedStringImpl(
                         "console.block-entity.unknown", Level.WARNING
                 );
             }
 
             interface Chunk {
-                LoggedLocalizedString SECTION_DUP = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl SECTION_DUP = new LoggableLocalizedStringImpl(
                         "console.chunk.section-dup", Level.WARNING
                 );
 
-                LoggedLocalizedString SECTION_OOB = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl SECTION_OOB = new LoggableLocalizedStringImpl(
                         "console.chunk.section-oob", Level.WARNING
                 );
 
-                LoggedLocalizedString UNKNOWN_BLOCK_TO_TICK = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNKNOWN_BLOCK_TO_TICK = new LoggableLocalizedStringImpl(
                         "console.chunk.unknown-block-to-tick", Level.WARNING
                 );
             }
 
             interface Entity {
-                LoggedLocalizedString LOADING_ERROR = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl LOADING_ERROR = new LoggableLocalizedStringImpl(
                         "console.entity.loading-error", Level.WARNING
                 );
 
-                LoggedLocalizedString UNKNOWN = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNKNOWN = new LoggableLocalizedStringImpl(
                         "console.entity.unknown", Level.WARNING
                 );
             }
 
             interface Event {
-                LoggedLocalizedString INTERRUPTED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl INTERRUPTED = new LoggableLocalizedStringImpl(
                         "console.event.interrupted", Level.WARNING
                 );
 
-                LoggedLocalizedString SHUTDOWN = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl SHUTDOWN = new LoggableLocalizedStringImpl(
                         "console.event.shutdown", Level.WARNING
                 );
             }
 
             interface Icon {
-                LoggedLocalizedString LOAD_FAILED_IMPORT = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl LOAD_FAILED_IMPORT = new LoggableLocalizedStringImpl(
                         "console.icon.load-failed.import", Level.WARNING
                 );
 
-                LoggedLocalizedString LOAD_FAILED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl LOAD_FAILED = new LoggableLocalizedStringImpl(
                         "console.icon.load-failed", Level.WARNING
                 );
             }
 
             interface Io {
-                LoggedLocalizedString JSON_STAT_UNKNOWN = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl JSON_STAT_UNKNOWN = new LoggableLocalizedStringImpl(
                         "console.io.json.stat-unknown", Level.WARNING
                 );
 
-                LoggedLocalizedString MKDIR_FAILED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl MKDIR_FAILED = new LoggableLocalizedStringImpl(
                         "console.io.mkdir-failed", Level.WARNING
                 );
 
-                LoggedLocalizedString NO_WORLD_DATA_TAG = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl NO_WORLD_DATA_TAG = new LoggableLocalizedStringImpl(
                         "console.io.no-world-data-tag", Level.WARNING
                 );
 
-                LoggedLocalizedString REMOVING_SINGLE_PLAYER = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl
+                    REMOVING_SINGLE_PLAYER = new LoggableLocalizedStringImpl(
                         "console.io.removing-single-player", Level.WARNING
                 );
             }
 
-            LoggedLocalizedString OFFLINE = new LoggedLocalizedString(
+            LoggableLocalizedStringImpl OFFLINE = new LoggableLocalizedStringImpl(
                     "console.offline", Level.WARNING
             );
 
             interface Option {
-                LoggedLocalizedString INVALID = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl INVALID = new LoggableLocalizedStringImpl(
                         "console.option.invalid", Level.WARNING
                 );
 
-                LoggedLocalizedString NO_VALUE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl NO_VALUE = new LoggableLocalizedStringImpl(
                         "console.option.no-value", Level.WARNING
                 );
             }
 
             interface Permission {
-                LoggedLocalizedString DUPLICATE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl DUPLICATE = new LoggableLocalizedStringImpl(
                         "console.permission.duplicate", Level.WARNING
                 );
             }
 
             interface Plugin {
-                LoggedLocalizedString NO_SPONGE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl NO_SPONGE = new LoggableLocalizedStringImpl(
                         "console.plugin.no-sponge", Level.WARNING
                 );
 
-                LoggedLocalizedString UNRECOGNIZED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNRECOGNIZED = new LoggableLocalizedStringImpl(
                         "console.plugin.unrecognized", Level.WARNING
                 );
 
-                LoggedLocalizedString MALFORMED_URL = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl MALFORMED_URL = new LoggableLocalizedStringImpl(
                         "console.plugin.malformed-url", Level.WARNING
                 );
 
-                LoggedLocalizedString IO = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl IO = new LoggableLocalizedStringImpl(
                         "console.plugin.ioexception", Level.WARNING
                 );
 
-                LoggedLocalizedString BUKKIT2SPONGE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl BUKKIT2SPONGE = new LoggableLocalizedStringImpl(
                         "console.plugin.no-sponge.bukkit2sponge", Level.WARNING
                 );
 
-                LoggedLocalizedString PERMISSION_DUPLICATE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl PERMISSION_DUPLICATE = new LoggableLocalizedStringImpl(
                         "console.plugin.permission.duplicate", Level.WARNING
                 );
 
-                LoggedLocalizedString UNSUPPORTED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNSUPPORTED = new LoggableLocalizedStringImpl(
                         "console.plugin.unsupported", Level.WARNING
                 );
 
-                LoggedLocalizedString UNSUPPORTED_CANARY = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNSUPPORTED_CANARY = new LoggableLocalizedStringImpl(
                         "console.plugin.unsupported.canary", Level.WARNING
                 );
 
-                LoggedLocalizedString UNSUPPORTED_FORGE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNSUPPORTED_FORGE = new LoggableLocalizedStringImpl(
                         "console.plugin.unsupported.forge", Level.WARNING
                 );
 
-                LoggedLocalizedString UNSUPPORTED_OTHER = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNSUPPORTED_OTHER = new LoggableLocalizedStringImpl(
                         "console.plugin.unsupported.other", Level.WARNING
                 );
 
-                LoggedLocalizedString UNSUPPORTED_SPONGE = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl UNSUPPORTED_SPONGE = new LoggableLocalizedStringImpl(
                         "console.plugin.unsupported.sponge", Level.WARNING
                 );
             }
 
             interface Profile {
-                LoggedLocalizedString TIMEOUT = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl TIMEOUT = new LoggableLocalizedStringImpl(
                         "console.profile.timeout", Level.WARNING
                 );
             }
 
             interface Recipe {
-                LoggedLocalizedString NO_DEFAULTS = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl NO_DEFAULTS = new LoggableLocalizedStringImpl(
                         "console.recipe.no-defaults", Level.WARNING
                 );
             }
 
             interface Uuid {
-                LoggedLocalizedString TIMEOUT = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl TIMEOUT = new LoggableLocalizedStringImpl(
                         "console.uuid.timeout", Level.WARNING
                 );
             }
 
             interface WorldGen {
-                LoggedLocalizedString DISABLED = new LoggedLocalizedString(
+                LoggableLocalizedStringImpl DISABLED = new LoggableLocalizedStringImpl(
                         "console.worldgen.disabled", Level.WARNING
                 );
             }

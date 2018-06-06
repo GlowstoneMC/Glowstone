@@ -19,7 +19,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 import lombok.Getter;
 import net.glowstone.i18n.LocalizedStrings;
-import net.glowstone.util.compiler.EvalTask;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -67,31 +66,31 @@ public final class ConsoleManager {
     private ConsoleHandler handler;
 
     static {
-        addReplacement(ChatColor.BLACK, "\u001B[0;30;22m"); // NON-NLS
-        addReplacement(ChatColor.DARK_BLUE, "\u001B[0;34;22m"); // NON-NLS
-        addReplacement(ChatColor.DARK_GREEN, "\u001B[0;32;22m"); // NON-NLS
-        addReplacement(ChatColor.DARK_AQUA, "\u001B[0;36;22m"); // NON-NLS
-        addReplacement(ChatColor.DARK_RED, "\u001B[0;31;22m"); // NON-NLS
-        addReplacement(ChatColor.DARK_PURPLE, "\u001B[0;35;22m"); // NON-NLS
-        addReplacement(ChatColor.GOLD, "\u001B[0;33;22m"); // NON-NLS
-        addReplacement(ChatColor.GRAY, "\u001B[0;37;22m"); // NON-NLS
-        addReplacement(ChatColor.DARK_GRAY, "\u001B[0;30;1m"); // NON-NLS
-        addReplacement(ChatColor.BLUE, "\u001B[0;34;1m"); // NON-NLS
-        addReplacement(ChatColor.GREEN, "\u001B[0;32;1m"); // NON-NLS
-        addReplacement(ChatColor.AQUA, "\u001B[0;36;1m"); // NON-NLS
-        addReplacement(ChatColor.RED, "\u001B[0;31;1m"); // NON-NLS
-        addReplacement(ChatColor.LIGHT_PURPLE, "\u001B[0;35;1m"); // NON-NLS
-        addReplacement(ChatColor.YELLOW, "\u001B[0;33;1m"); // NON-NLS
-        addReplacement(ChatColor.WHITE, "\u001B[0;37;1m"); // NON-NLS
-        addReplacement(ChatColor.MAGIC, "\u001B[5m"); // NON-NLS
-        addReplacement(ChatColor.BOLD, "\u001B[21m"); // NON-NLS
-        addReplacement(ChatColor.STRIKETHROUGH, "\u001B[9m"); // NON-NLS
-        addReplacement(ChatColor.UNDERLINE, "\u001B[4m"); // NON-NLS
-        addReplacement(ChatColor.ITALIC, "\u001B[3m"); // NON-NLS
-        addReplacement(ChatColor.RESET, "\u001B[39;0m"); // NON-NLS
+        addReplacement(ChatColor.BLACK, "\u001B[0;30;22m"); 
+        addReplacement(ChatColor.DARK_BLUE, "\u001B[0;34;22m"); 
+        addReplacement(ChatColor.DARK_GREEN, "\u001B[0;32;22m"); 
+        addReplacement(ChatColor.DARK_AQUA, "\u001B[0;36;22m"); 
+        addReplacement(ChatColor.DARK_RED, "\u001B[0;31;22m"); 
+        addReplacement(ChatColor.DARK_PURPLE, "\u001B[0;35;22m"); 
+        addReplacement(ChatColor.GOLD, "\u001B[0;33;22m"); 
+        addReplacement(ChatColor.GRAY, "\u001B[0;37;22m"); 
+        addReplacement(ChatColor.DARK_GRAY, "\u001B[0;30;1m"); 
+        addReplacement(ChatColor.BLUE, "\u001B[0;34;1m"); 
+        addReplacement(ChatColor.GREEN, "\u001B[0;32;1m"); 
+        addReplacement(ChatColor.AQUA, "\u001B[0;36;1m"); 
+        addReplacement(ChatColor.RED, "\u001B[0;31;1m"); 
+        addReplacement(ChatColor.LIGHT_PURPLE, "\u001B[0;35;1m"); 
+        addReplacement(ChatColor.YELLOW, "\u001B[0;33;1m"); 
+        addReplacement(ChatColor.WHITE, "\u001B[0;37;1m"); 
+        addReplacement(ChatColor.MAGIC, "\u001B[5m"); 
+        addReplacement(ChatColor.BOLD, "\u001B[21m"); 
+        addReplacement(ChatColor.STRIKETHROUGH, "\u001B[9m"); 
+        addReplacement(ChatColor.UNDERLINE, "\u001B[4m"); 
+        addReplacement(ChatColor.ITALIC, "\u001B[3m"); 
+        addReplacement(ChatColor.RESET, "\u001B[39;0m"); 
     }
 
-    private static void addReplacement(ChatColor formatting, String ansi) {
+    private static void addReplacement(ChatColor formatting, @NonNls String ansi) {
         replacements.put(formatting, ansi);
     }
 
@@ -186,11 +185,10 @@ public final class ConsoleManager {
             builder.append('\n');
 
             if (record.getThrown() != null) {
-                // StringWriter's close() is trivial
-                @SuppressWarnings("resource")
-                StringWriter writer = new StringWriter();
-                record.getThrown().printStackTrace(new PrintWriter(writer));
-                builder.append(writer);
+                try (PrintWriter writer = new PrintWriter(new StringWriter())) {
+                    record.getThrown().printStackTrace(writer);
+                    builder.append(writer);
+                }
             }
 
             return builder.toString();
@@ -202,11 +200,8 @@ public final class ConsoleManager {
             return string; // no colors in the message
         }
         for (ChatColor color : colors) {
-            if (this.color && replacements.containsKey(color)) {
-                string = string.replaceAll("(?i)" + color, replacements.get(color));
-            } else {
-                string = string.replaceAll("(?i)" + color, "");
-            }
+            string = string.replaceAll("(?i)" + color, // NON-NLS
+                    this.color ? replacements.getOrDefault(color, "") : "");
         }
         return string;
     }
@@ -273,8 +268,8 @@ public final class ConsoleManager {
         public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
             List<String> completions = null;
             try {
-                completions = server.getScheduler().syncIfNeeded(() -> server.getCommandMap()
-                    .tabComplete(sender, line.line()));
+                completions = server.getScheduler().syncIfNeeded(
+                    () -> server.getCommandMap().tabComplete(sender, line.line()));
             } catch (Exception e) {
                 LocalizedStrings.Console.Error.Manager.TAB_COMPLETE.log(e);
             }
@@ -304,18 +299,10 @@ public final class ConsoleManager {
                         command = reader.readLine(CONSOLE_PROMPT);
                     }
                     if (command != null && !(command = command.trim()).isEmpty()) {
-                        reader.getTerminal().writer().println(colorize(ChatColor.RESET
-                            + "====" + ChatColor.GOLD + "g>" + ChatColor.RESET + '"' + command
-                                + '"')); // NON-NLS
-                        if (command.startsWith("$")) {  // NON-NLS
-                            server.getScheduler().runTask(null,
-                                new EvalTask(command.substring(1), command.startsWith("$$")));
-                        } else if (command.startsWith("!")) {  // NON-NLS
-                            server.getScheduler()
-                                .runTask(null, new ConsoleTask(command.substring(1)));
-                        } else {
-                            server.getScheduler().runTask(null, new CommandTask(command));
-                        }
+                        reader.getTerminal().writer().println(colorize(String.format(
+                                "%s====%sg>%s\"%s\"", // NON-NLS
+                                ChatColor.RESET, ChatColor.GOLD, ChatColor.RESET, command)));
+                        server.getScheduler().runTask(null, new CommandTask(command));
                     }
                 } catch (CommandException ex) {
                     LocalizedStrings.Console.Error.Manager.COMMAND.log(ex, command);
@@ -353,6 +340,8 @@ public final class ConsoleManager {
 
         @Override
         public void run() {
+            // TODO: Extract console-exclusive commands (bind, config, keymap, widget) into a new
+            // subclass of Command.
             if (command.startsWith("bind")) {
                 GlowServer.logger.info("Key binding is not supported yet.");
             } else if (command.startsWith("config")) {

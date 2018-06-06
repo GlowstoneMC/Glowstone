@@ -61,7 +61,7 @@ public class LocalizedStringsTest {
 
         Logger mockLogger = mock(Logger.class);
 
-        LoggableLocalizedString localizedString = new LoggedLocalizedString(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
+        LoggableLocalizedString localizedString = new LoggableLocalizedStringImpl(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
         localizedString.log();
 
         verify(mockLogger).log(MOCK_LOG_LEVEL, MOCK_VALUE_NO_FORMAT);
@@ -74,7 +74,7 @@ public class LocalizedStringsTest {
 
         Logger mockLogger = mock(Logger.class);
 
-        LoggableLocalizedString localizedString = new LoggedLocalizedString(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
+        LoggableLocalizedString localizedString = new LoggableLocalizedStringImpl(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
         localizedString.log(MOCK_FORMAT_PARAMETER);
 
         verify(mockLogger).log(MOCK_LOG_LEVEL, MOCK_VALUE_WITH_FORMAT_EXPECTED);
@@ -89,7 +89,7 @@ public class LocalizedStringsTest {
 
         Exception exception = new Exception();
 
-        LoggableLocalizedString localizedString = new LoggedLocalizedString(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
+        LoggableLocalizedString localizedString = new LoggableLocalizedStringImpl(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
         localizedString.log(exception);
 
         verify(mockLogger).log(MOCK_LOG_LEVEL, MOCK_VALUE_NO_FORMAT, exception);
@@ -104,7 +104,7 @@ public class LocalizedStringsTest {
 
         Exception exception = new Exception();
 
-        LoggableLocalizedString localizedString = new LoggedLocalizedString(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
+        LoggableLocalizedString localizedString = new LoggableLocalizedStringImpl(MOCK_KEY, MOCK_LOG_LEVEL, mockBundle, mockLogger);
         localizedString.log(exception, MOCK_FORMAT_PARAMETER);
 
         verify(mockLogger).log(MOCK_LOG_LEVEL, MOCK_VALUE_WITH_FORMAT_EXPECTED, exception);
