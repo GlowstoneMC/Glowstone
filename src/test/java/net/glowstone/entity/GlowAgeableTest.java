@@ -1,13 +1,13 @@
 package net.glowstone.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.function.Function;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
@@ -16,9 +16,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Ageable;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingEntityTest<T> {
 
@@ -27,7 +27,7 @@ public abstract class GlowAgeableTest<T extends GlowAgeable> extends GlowLivingE
         super(entityCreator);
     }
 
-    @Before
+    @BeforeMethod
     @Override
     public void setUp() throws Exception {
         super.setUp();

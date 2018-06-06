@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 /**
  * Tests for {@link NbtOutputStream} and constructing {@link CompoundTag}s.

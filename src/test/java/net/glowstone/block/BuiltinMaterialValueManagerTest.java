@@ -1,10 +1,10 @@
 package net.glowstone.block;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
 import org.bukkit.Material;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 public class BuiltinMaterialValueManagerTest {
 

@@ -1,14 +1,15 @@
 package net.glowstone.constants;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
+import java.util.Iterator;
 import java.util.stream.Stream;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 /**
  * Tests for {@link GlowParticle}.
@@ -17,13 +18,15 @@ public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);
 
-    public static Stream<Effect> getCases() {
+    @DataProvider(name = "effects")
+    public static Iterator<Object[]> getCases() {
         return Stream.of(Effect.values())
-                .filter(effect -> effect.getType() == Effect.Type.PARTICLE);
+                .filter(effect -> effect.getType() == Effect.Type.PARTICLE)
+                .map(x -> new Object[]{x})
+                .iterator();
     }
 
-    @MethodSource("getCases")
-    @ParameterizedTest
+    @Test(dataProvider = "effects")
     public void testGetData(Effect particle) {
         switch (particle) {
             case ITEM_BREAK:

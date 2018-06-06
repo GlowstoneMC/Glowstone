@@ -1,7 +1,5 @@
 package net.glowstone.entity.passive;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.argThat;
@@ -10,6 +8,7 @@ import static org.mockito.Matchers.intThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.testng.AssertJUnit.assertEquals;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -26,18 +25,17 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.GreaterThan;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 @PrepareForTest(Bukkit.class)
-@RunWith(PowerMockRunner.class)
+
 public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
 
     /** This needs to be static because it's used in the constructor's super call. */
@@ -54,7 +52,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         super(location -> new GlowFishingHook(location, null, player));
     }
 
-    @Before
+    @BeforeMethod
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -76,7 +74,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
                 RETURN_FIRST_ARG);
     }
 
-    @After
+    @AfterMethod
     @Override
     public void tearDown() {
         super.tearDown();
@@ -89,9 +87,9 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         GlowFishingHook hook = new GlowFishingHook(location, null, player);
         hook.setShooter(new GlowCreeper(location));
         hook.reelIn();
-        assertTrue(hook.isRemoved());
+        Assert.assertTrue(hook.isRemoved());
         verify(world, never()).dropItemNaturally(any(Location.class), any(ItemStack.class));
-        assertTrue(eventsFired.get(PlayerFishEvent.class).isEmpty());
+        Assert.assertTrue(eventsFired.get(PlayerFishEvent.class).isEmpty());
     }
 
     @Test
@@ -99,7 +97,7 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         GlowFishingHook hook = new GlowFishingHook(location, null, player);
         hook.setShooter(player);
         hook.reelIn();
-        assertTrue(hook.isRemoved());
+        Assert.assertTrue(hook.isRemoved());
         verify(player).giveExp(intThat(new GreaterThan<>(0)));
         verify(world).dropItemNaturally(eq(location),
                 argThat(itemStack -> !InventoryUtil.isEmpty(itemStack)));
@@ -112,9 +110,9 @@ public class GlowFishingHookTest extends GlowEntityTest<GlowFishingHook> {
         GlowFishingHook hook = new GlowFishingHook(location, null, player);
         hook.setShooter(player);
         hook.reelIn();
-        assertTrue(hook.isRemoved());
+        Assert.assertTrue(hook.isRemoved());
         verify(world, never()).dropItemNaturally(any(Location.class), any(ItemStack.class));
         verify(player, never()).giveExp(anyInt());
-        assertTrue(eventsFired.get(PlayerFishEvent.class).isEmpty());
+        Assert.assertTrue(eventsFired.get(PlayerFishEvent.class).isEmpty());
     }
 }

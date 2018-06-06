@@ -1,9 +1,8 @@
 package net.glowstone.inventory;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.testng.AssertJUnit.assertEquals;
 
 import net.glowstone.testutils.ServerShim;
 import net.glowstone.util.IsFloatCloseTo;
@@ -11,9 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Tests for GlowPlayerInventory.
@@ -33,12 +32,12 @@ public class PlayerInventoryTest {
 
     private GlowPlayerInventory inventory;
 
-    @BeforeAll
+    @BeforeClass
     public static void initShim() {
         ServerShim.install();
     }
 
-    @BeforeEach
+    @BeforeMethod
     public void setup() {
         inventory = new GlowPlayerInventory(null);
     }
@@ -106,10 +105,9 @@ public class PlayerInventoryTest {
             IsFloatCloseTo.closeTo(1f, 0.001f));
     }
 
-    @Test
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testSetDropChance() {
-        assertThrows(UnsupportedOperationException.class,
-                () -> inventory.setChestplateDropChance(0.5f));
+        inventory.setChestplateDropChance(0.5f);
     }
 
     @Test

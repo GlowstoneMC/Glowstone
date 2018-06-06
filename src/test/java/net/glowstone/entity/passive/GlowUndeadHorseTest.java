@@ -1,14 +1,14 @@
 package net.glowstone.entity.passive;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 
 import java.util.EnumSet;
 import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public abstract class GlowUndeadHorseTest<T extends GlowUndeadHorse> extends GlowAbstractHorseTest<T> {
     protected GlowUndeadHorseTest(
@@ -47,6 +47,6 @@ public abstract class GlowUndeadHorseTest<T extends GlowUndeadHorse> extends Glo
     @Test
     @Override
     public void testGetBreedingFoods() {
-        Assert.assertEquals(EnumSet.noneOf(Material.class), entity.getBreedingFoods());
+        Assert.assertEquals(entity.getBreedingFoods(), EnumSet.noneOf(Material.class));
     }
 }

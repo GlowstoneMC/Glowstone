@@ -1,8 +1,6 @@
 package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -19,15 +17,14 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hamcrest.MatcherAssert;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-@RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, CommandUtils.class})
 public abstract class CommandTest<T extends Command> {
     protected CommandSender sender;
@@ -41,12 +38,12 @@ public abstract class CommandTest<T extends Command> {
 
     @Test
     public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
+        MatcherAssert.assertThat(command.execute(sender, "label", new String[0]), is(false));
         Mockito.verify(sender).sendMessage(eq(ChatColor.RED
             + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
-    @Before
+    @BeforeMethod
     public void before() {
         command = commandSupplier.get();
         sender = PowerMockito.mock(CommandSender.class);
@@ -56,7 +53,7 @@ public abstract class CommandTest<T extends Command> {
 
     protected GlowPlayer[] prepareMockPlayers(Location location, @Nullable GlowServer server,
             @Nullable GlowWorld world, String... names) {
-        assertFalse("prepareMockPlayers called with no names!", names.length == 0);
+        Assert.assertFalse(names.length == 0, "prepareMockPlayers called with no names!");
         PowerMockito.mockStatic(Bukkit.class);
         GlowPlayer[] players = new GlowPlayer[names.length];
         for (int i = 0; i < names.length; i++) {

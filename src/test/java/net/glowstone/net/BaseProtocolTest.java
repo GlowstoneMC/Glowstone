@@ -1,7 +1,7 @@
 package net.glowstone.net;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.flowpowered.network.Codec;
 import com.flowpowered.network.Message;
@@ -17,7 +17,7 @@ import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.testutils.ServerShim;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 /**
  * Base tests for each {@link GlowProtocol}.

@@ -1,7 +1,6 @@
 package net.glowstone.net;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,20 +26,19 @@ import net.glowstone.util.Convert;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hamcrest.MatcherAssert;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Tests for the minecraft query server.
  */
-@RunWith(PowerMockRunner.class)
+
 @PrepareForTest(QueryServer.class)
 public class QueryTest {
 
@@ -72,8 +70,8 @@ public class QueryTest {
     private InetSocketAddress address;
     private boolean queryPlugins;
 
-    @Before
-    public void setup() throws Exception {
+    @BeforeMethod
+    public void setUp() throws Exception {
         glowServer = mock(GlowServer.class);
         CountDownLatch latch = new CountDownLatch(1);
         this.queryPlugins = true;
@@ -84,31 +82,26 @@ public class QueryTest {
         address = InetSocketAddress.createUnresolved("somehost", 12345);
     }
 
-    @After
+    @AfterMethod
     public void tearDown() throws Exception {
         server.shutdown();
     }
 
     @Test
     public void testChallengeTokens() throws Exception {
-        assertThat("Accepted random challenge token.", server.verifyChallengeToken(address, 54321),
-            is(false));
+        MatcherAssert.assertThat("Accepted random challenge token.", server.verifyChallengeToken(address, 54321), is(false));
 
         when(random.nextInt()).thenReturn(12345);
         int token1 = server.generateChallengeToken(address);
-        assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token1),
-            is(true));
+        MatcherAssert.assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token1), is(true));
 
         when(random.nextInt()).thenReturn(6789);
         int token2 = server.generateChallengeToken(address);
-        assertThat("Expired token accepted.", server.verifyChallengeToken(address, token1),
-            is(false));
-        assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token2),
-            is(true));
+        MatcherAssert.assertThat("Expired token accepted.", server.verifyChallengeToken(address, token1), is(false));
+        MatcherAssert.assertThat("Did not add challenge token.", server.verifyChallengeToken(address, token2), is(true));
 
         server.flushChallengeTokens();
-        assertThat("Flush did not remove token.", server.verifyChallengeToken(address, token2),
-            is(false));
+        MatcherAssert.assertThat("Flush did not remove token.", server.verifyChallengeToken(address, token2), is(false));
     }
 
     @Test
@@ -167,6 +160,7 @@ public class QueryTest {
         testChannelRead(handler, FULL_STATS_RECV, FULL_STATS_SEND);
     }
 
+    @Test
     private void testChannelRead(QueryHandler handler, byte[] recv, byte[] send) throws Exception {
         ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
         ByteBufAllocator alloc = mock(ByteBufAllocator.class);

@@ -1,10 +1,9 @@
 package net.glowstone.entity.passive;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.EnumSet;
 import org.bukkit.Material;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class GlowOcelotTest extends GlowTameableTest<GlowOcelot> {
     public GlowOcelotTest() {
@@ -14,6 +13,6 @@ public class GlowOcelotTest extends GlowTameableTest<GlowOcelot> {
     @Test
     @Override
     public void testGetBreedingFoods() {
-        assertEquals(EnumSet.of(Material.RAW_FISH), entity.getBreedingFoods());
+        Assert.assertEquals(entity.getBreedingFoods(), EnumSet.of(Material.RAW_FISH));
     }
 }

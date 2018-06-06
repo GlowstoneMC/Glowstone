@@ -2,7 +2,6 @@ package net.glowstone.command.minecraft;
 
 import static net.glowstone.TestUtils.checkInventory;
 import static net.glowstone.TestUtils.itemTypeMatcher;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -11,9 +10,10 @@ import net.glowstone.inventory.GlowPlayerInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
     private GlowPlayerInventory inventory;
@@ -23,7 +23,7 @@ public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
     }
 
     @Override
-    @Before
+    @BeforeMethod
     public void before() {
         super.before();
         when(Bukkit.getItemFactory()).thenReturn(GlowItemFactory.instance());
@@ -38,13 +38,13 @@ public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
 
     @Test
     public void testClearAll() {
-        assertTrue(command.execute(opSender, "label", new String[]{"ChuckNorris"}));
+        Assert.assertTrue(command.execute(opSender, "label", new String[]{"ChuckNorris"}));
         checkInventory(inventory, 0, item -> true); // should be empty
     }
 
     @Test
     public void testCountOnly() {
-        assertTrue(command.execute(opSender, "label",
+        Assert.assertTrue(command.execute(opSender, "label",
                 new String[]{"ChuckNorris", "minecraft:diamond_axe", "-1", "0"}));
         Mockito.verify(opSender)
                 .sendMessage(eq("ChuckNorris has 2 items that match the criteria"));
@@ -55,7 +55,7 @@ public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
 
     @Test
     public void testClearSpecificItemAll() {
-        assertTrue(command.execute(opSender, "label",
+        Assert.assertTrue(command.execute(opSender, "label",
                 new String[]{"ChuckNorris", "minecraft:diamond_axe", "-1", "-1"}));
         checkInventory(inventory, 96, itemTypeMatcher(Material.DIRT));
         checkInventory(inventory, 0, itemTypeMatcher(Material.DIAMOND_AXE));
@@ -64,7 +64,7 @@ public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
 
     @Test
     public void testClearSpecificItemLimited() {
-        assertTrue(command.execute(opSender, "label",
+        Assert.assertTrue(command.execute(opSender, "label",
                 new String[]{"ChuckNorris", "minecraft:dirt", "-1", "50"}));
         checkInventory(inventory, 46, itemTypeMatcher(Material.DIRT));
         checkInventory(inventory, 2, itemTypeMatcher(Material.DIAMOND_AXE));
@@ -73,7 +73,7 @@ public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
 
     @Test
     public void testClearSpecificItemSpecificData() {
-        assertTrue(command.execute(opSender, "label",
+        Assert.assertTrue(command.execute(opSender, "label",
                 new String[]{"ChuckNorris", "minecraft:diamond_axe", "30", "-1"}));
         checkInventory(inventory, 96, itemTypeMatcher(Material.DIRT));
         checkInventory(inventory, 0,

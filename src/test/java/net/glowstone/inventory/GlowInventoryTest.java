@@ -1,18 +1,18 @@
 package net.glowstone.inventory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class GlowInventoryTest {
 
     private GlowInventory inventory;
 
-    @BeforeEach
+    @BeforeMethod
     public void setup() {
         inventory = new GlowInventory(null, InventoryType.CHEST);
     }

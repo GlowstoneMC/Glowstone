@@ -1,10 +1,8 @@
 package net.glowstone.entity.passive;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import net.glowstone.entity.GlowEntityTest;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class GlowBatTest extends GlowEntityTest<GlowBat> {
     public GlowBatTest() {
@@ -14,12 +12,12 @@ public class GlowBatTest extends GlowEntityTest<GlowBat> {
     @Test
     public void testSleep() {
         entity.setAwake(false);
-        assertFalse(entity.isAwake());
+        Assert.assertFalse(entity.isAwake());
     }
 
     @Test
     public void testWakeUp() {
         entity.setAwake(true);
-        assertTrue(entity.isAwake());
+        Assert.assertTrue(entity.isAwake());
     }
 }

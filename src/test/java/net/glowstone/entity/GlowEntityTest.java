@@ -1,7 +1,5 @@
 package net.glowstone.entity;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -31,14 +29,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Superclass for tests of entity classes. Configures necessary mocks for subclasses.
@@ -99,7 +98,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     }
 
 
-    @Before
+    @BeforeMethod
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(server.getItemFactory()).thenReturn(itemFactory);
@@ -140,7 +139,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         Mockito.when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
     }
 
-    @After
+    @AfterMethod
     public void tearDown() {
         EventFactory.setInstance(oldEventFactory);
         ServerProvider.setMockServer(null);
@@ -159,8 +158,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
     @Test
     public void testCreateSpawnMessage() {
         List<Message> messages = entity.createSpawnMessage();
-        assertFalse(messages.isEmpty());
+        Assert.assertFalse(messages.isEmpty());
         // Should start with an instance of one of the Spawn*Message classes
-        assertTrue(messages.get(0).getClass().getSimpleName().startsWith("Spawn"));
+        Assert.assertTrue(messages.get(0).getClass().getSimpleName().startsWith("Spawn"));
     }
 }

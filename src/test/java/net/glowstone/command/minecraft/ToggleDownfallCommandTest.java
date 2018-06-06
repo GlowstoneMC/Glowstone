@@ -1,7 +1,6 @@
 package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 
 import java.util.Collections;
@@ -9,15 +8,14 @@ import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.hamcrest.MatcherAssert;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-@RunWith(PowerMockRunner.class)
+
 @PrepareForTest({CommandUtils.class})
 public class ToggleDownfallCommandTest extends CommandTest<ToggleDownfallCommand> {
 
@@ -28,7 +26,7 @@ public class ToggleDownfallCommandTest extends CommandTest<ToggleDownfallCommand
     }
 
     @Override
-    @Before
+    @BeforeMethod
     public void before() {
         super.before();
         world = PowerMockito.mock(GlowWorld.class);
@@ -40,7 +38,7 @@ public class ToggleDownfallCommandTest extends CommandTest<ToggleDownfallCommand
     public void testExecuteSetRain() {
         PowerMockito.when(world.hasStorm()).thenReturn(true);
 
-        assertThat(command.execute(opSender, "label", new String[0]), is(true));
+        MatcherAssert.assertThat(command.execute(opSender, "label", new String[0]), is(true));
         Mockito.verify(world).setStorm(eq(false));
         Mockito.verify(world).setThundering(eq(false));
     }
@@ -49,20 +47,16 @@ public class ToggleDownfallCommandTest extends CommandTest<ToggleDownfallCommand
     public void testExecuteClearWeather() {
         PowerMockito.when(world.hasStorm()).thenReturn(false);
 
-        assertThat(command.execute(opSender, "label", new String[0]), is(true));
+        MatcherAssert.assertThat(command.execute(opSender, "label", new String[0]), is(true));
         Mockito.verify(world).setStorm(eq(true));
         Mockito.verify(world).setThundering(eq(true));
     }
 
     @Test
     public void testTabComplete() {
-        assertThat(command.tabComplete(opSender, "alias", new String[0]),
-            is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{""}),
-            is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{"test"}),
-            is(Collections.emptyList()));
-        assertThat(command.tabComplete(opSender, "alias", new String[]{"test", "test"}),
-            is(Collections.emptyList()));
+        MatcherAssert.assertThat(command.tabComplete(opSender, "alias", new String[0]), is(Collections.emptyList()));
+        MatcherAssert.assertThat(command.tabComplete(opSender, "alias", new String[]{""}), is(Collections.emptyList()));
+        MatcherAssert.assertThat(command.tabComplete(opSender, "alias", new String[]{"test"}), is(Collections.emptyList()));
+        MatcherAssert.assertThat(command.tabComplete(opSender, "alias", new String[]{"test", "test"}), is(Collections.emptyList()));
     }
 }

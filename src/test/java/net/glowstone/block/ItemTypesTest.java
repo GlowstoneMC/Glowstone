@@ -3,14 +3,16 @@ package net.glowstone.block;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
+import java.util.Iterator;
+import net.glowstone.TestUtils;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemType;
 import org.bukkit.Material;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 /**
  * Tests for the contents of {@link ItemTable}.
@@ -19,13 +21,17 @@ public class ItemTypesTest {
 
     private static ItemTable table;
 
-    @BeforeAll
+    @DataProvider(name = "Material")
+    public static Iterator<Object[]> materials() {
+        return TestUtils.enumAsDataProvider(Material.class);
+    }
+
+    @BeforeClass
     public static void staticSetup() {
         table = ItemTable.instance();
     }
 
-    @EnumSource(Material.class)
-    @ParameterizedTest
+    @Test(dataProvider = "Material")
     public void hasAllMaterials(Material material) {
         ItemType type = table.getItem(material);
 

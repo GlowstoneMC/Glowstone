@@ -5,11 +5,11 @@ import static org.bukkit.Material.GRASS;
 import static org.bukkit.Material.GRAVEL;
 import static org.bukkit.Material.STONE;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
 import net.glowstone.block.ItemTable;
 import org.bukkit.Material;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 public class VariableValueArrayTest {
 

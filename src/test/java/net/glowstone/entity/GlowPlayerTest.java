@@ -1,7 +1,5 @@
 package net.glowstone.entity;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Answers.RETURNS_SMART_NULLS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -29,17 +27,16 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 @PrepareForTest({Bukkit.class, ChunkManager.class})
-@RunWith(PowerMockRunner.class)
+
 public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     private final ChunkManager chunkManager
@@ -80,7 +77,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         return false;
     }
 
-    @Before
+    @BeforeMethod
     @Override
     public void setUp() throws Exception {
         PowerMockito.mockStatic(Bukkit.class);
@@ -114,7 +111,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         final GlowFishingHook fishingHook = new GlowFishingHook(location, fishingRodItem, entity);
         entity.setCurrentFishingHook(fishingHook);
         entity.pulse();
-        assertSame(fishingHook, entity.getCurrentFishingHook());
+        Assert.assertSame(entity.getCurrentFishingHook(), fishingHook);
     }
 
     @Test
@@ -123,7 +120,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         entity.teleport(new Location(world, 33, 0, 0));
         entity.endTeleport();
         entity.pulse();
-        assertNull(entity.getCurrentFishingHook());
+        Assert.assertNull(entity.getCurrentFishingHook());
     }
 
     @Test
@@ -131,6 +128,6 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         entity.setCurrentFishingHook(new GlowFishingHook(location, fishingRodItem, entity));
         entity.setItemInHand(InventoryUtil.createEmptyStack());
         entity.pulse();
-        assertNull(entity.getCurrentFishingHook());
+        Assert.assertNull(entity.getCurrentFishingHook());
     }
 }

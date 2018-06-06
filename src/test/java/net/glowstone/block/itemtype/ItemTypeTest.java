@@ -10,8 +10,8 @@ import net.glowstone.testutils.ServerShim;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
+import org.testng.annotations.BeforeMethod;
 
 /**
  * Superclass for tests of {@link ItemType} subclasses. Provides a mock player with a real inventory
@@ -32,7 +32,7 @@ public abstract class ItemTypeTest {
         return Mockito.mock(GlowPlayer.class, RETURNS_SMART_NULLS);
     }
 
-    @BeforeEach
+    @BeforeMethod
     public void setUp() {
         ServerShim.install();
         player = mockPlayer();

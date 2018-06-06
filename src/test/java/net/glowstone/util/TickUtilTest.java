@@ -1,8 +1,8 @@
 package net.glowstone.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TickUtilTest {
 

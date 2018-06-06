@@ -2,10 +2,10 @@ package net.glowstone.command;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
 import org.bukkit.GameMode;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 public class GameModeUtilsTest {
 

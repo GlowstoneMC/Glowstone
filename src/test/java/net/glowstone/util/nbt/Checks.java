@@ -1,7 +1,7 @@
 package net.glowstone.util.nbt;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
 import java.util.List;
 import net.glowstone.util.IsFloatCloseTo;

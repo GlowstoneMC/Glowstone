@@ -9,8 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.testng.annotations.Test;
 
 /**
  * Superclass of tests of {@link ItemProjectile} subclasses.

@@ -1,10 +1,10 @@
 package net.glowstone.entity;
 
-import static org.junit.Assert.fail;
+import static org.testng.AssertJUnit.fail;
 
 import java.util.HashMap;
 import net.glowstone.entity.meta.MetadataIndex;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 /**
  * Tests for {@link MetadataIndex}.

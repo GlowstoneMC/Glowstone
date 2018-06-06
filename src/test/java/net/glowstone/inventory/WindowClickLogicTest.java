@@ -1,15 +1,15 @@
 package net.glowstone.inventory;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
 import net.glowstone.testutils.ServerShim;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * An attempt at test casing the ridiculously complicated window click logic.
@@ -251,7 +251,7 @@ public class WindowClickLogicTest {
         {"WINDOW_BORDER_RIGHT", "-1", "RAILS x 63", "null", "NOTHING"},
     };
 
-    @BeforeAll
+    @BeforeClass
     public static void initShim() {
         ServerShim.install();
     }

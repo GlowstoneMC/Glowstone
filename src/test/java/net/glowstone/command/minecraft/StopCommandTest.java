@@ -1,15 +1,14 @@
 package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.testng.AssertJUnit.assertThat;
 import static org.mockito.Mockito.when;
 
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class StopCommandTest extends CommandTest<StopCommand> {
     private GlowServer server;
@@ -18,7 +17,7 @@ public class StopCommandTest extends CommandTest<StopCommand> {
         super(StopCommand::new);
     }
 
-    @BeforeEach
+    @BeforeMethod
     @Override
     public void before() {
         super.before();

@@ -5,9 +5,7 @@ import static org.bukkit.Material.ARROW;
 import static org.bukkit.Material.BOW;
 import static org.bukkit.Material.SPECTRAL_ARROW;
 import static org.bukkit.Material.TIPPED_ARROW;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
@@ -44,9 +42,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class ItemBowTest extends ItemTypeTest {
     public static final Vector POSITIVE_X_DIRECTION = new Vector(1, 0, 0);
@@ -65,7 +63,7 @@ public class ItemBowTest extends ItemTypeTest {
     private GlowTippedArrow launchedTippedArrow;
 
     @Override
-    @BeforeEach
+    @BeforeMethod
     public void setUp() {
         super.setUp();
         bowItemStack = new ItemStack(BOW);

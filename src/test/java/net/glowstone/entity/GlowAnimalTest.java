@@ -1,13 +1,13 @@
 package net.glowstone.entity;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 import java.util.EnumSet;
 import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTest<T> {
     protected GlowAnimalTest(
@@ -17,10 +17,10 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
 
     @Test
     public void testGetBreedingFoods() {
-        assertEquals(EnumSet.noneOf(Material.class), entity.getBreedingFoods());
+        Assert.assertEquals(entity.getBreedingFoods(), EnumSet.noneOf(Material.class));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetBreedingFoodsReturnsImmutableSet() {
         entity.getBreedingFoods().add(Material.SANDSTONE);
     }
@@ -29,22 +29,22 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
     @Override
     public void testComputeGrowthAmount() {
         entity.setAge(-21000);
-        Assertions.assertEquals(0, entity.computeGrowthAmount(null));
-        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.SAND));
+        assertEquals(0, entity.computeGrowthAmount(null));
+        assertEquals(0, entity.computeGrowthAmount(Material.SAND));
 
         for (Material food : entity.getBreedingFoods()) {
-            Assertions.assertEquals(2100, entity.computeGrowthAmount(food), food.name());
+            assertEquals(food.name(), 2100, entity.computeGrowthAmount(food));
         }
     }
 
     @Test
     public void testComputeGrowthAmountAdult() {
         entity.setAge(0);
-        Assertions.assertEquals(0, entity.computeGrowthAmount(null));
-        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.SAND));
+        assertEquals(0, entity.computeGrowthAmount(null));
+        assertEquals(0, entity.computeGrowthAmount(Material.SAND));
 
         for (Material food : entity.getBreedingFoods()) {
-            Assertions.assertEquals(0, entity.computeGrowthAmount(food), food.name());
+            assertEquals( food.name(), 0, entity.computeGrowthAmount(food));
         }
     }
 }

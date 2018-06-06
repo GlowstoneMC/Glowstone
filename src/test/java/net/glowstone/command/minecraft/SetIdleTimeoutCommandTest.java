@@ -8,10 +8,10 @@ import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import org.bukkit.ChatColor;
 import org.hamcrest.MatcherAssert;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand> {
 
@@ -19,7 +19,7 @@ public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand
         super(SetIdleTimeoutCommand::new);
     }
 
-    @Before
+    @BeforeMethod
     @Override
     public void before() {
         super.before();

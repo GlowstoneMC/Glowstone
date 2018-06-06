@@ -1,8 +1,7 @@
 package net.glowstone.util;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class CompatibilityBundleTest {
     @Test
@@ -26,6 +25,6 @@ public class CompatibilityBundleTest {
 
     private void assertConfigValueMatchesBundle(String configValue, CompatibilityBundle expected) {
         CompatibilityBundle actual = CompatibilityBundle.fromConfig(configValue);
-        assertEquals(expected, actual);
+        Assert.assertEquals(actual, expected);
     }
 }

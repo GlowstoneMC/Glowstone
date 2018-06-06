@@ -2,18 +2,17 @@ package net.glowstone.constants;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
+import net.glowstone.TestUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 /**
  * Tests for {@link GlowEnchantment}.
@@ -22,25 +21,17 @@ public class EnchantmentTest {
 
     private static final int STATIC_FINAL = Modifier.STATIC | Modifier.FINAL;
 
-    @BeforeAll
+    @BeforeClass
     public static void staticSetup() {
         GlowEnchantment.register();
     }
 
-    public static Collection<Field> data() {
-        Field[] fields = Enchantment.class.getFields();
-        List<Field> result = new ArrayList<>(fields.length);
-        for (Field field : Enchantment.class.getFields()) {
-            if (field.getType() == Enchantment.class
-                    && (field.getModifiers() & STATIC_FINAL) == STATIC_FINAL) {
-                result.add(field);
-            }
-        }
-        return result;
+    @DataProvider(name = "fields")
+    public static Iterator<Object[]> data() {
+        return TestUtils.staticFinalFieldsDataProvider(Enchantment.class, Enchantment.class);
     }
 
-    @MethodSource("data")
-    @ParameterizedTest
+    @Test(dataProvider = "fields")
     public void effect(Field field) throws ReflectiveOperationException {
         EnchantmentWrapper wrapper = (EnchantmentWrapper) field.get(null);
         GlowEnchantment enchant = (GlowEnchantment) wrapper.getEnchantment();

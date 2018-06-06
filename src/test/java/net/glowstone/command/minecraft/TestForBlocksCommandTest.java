@@ -12,9 +12,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.junit.Before;
-import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> {
     private InMemoryBlockStorage blockStorage;
@@ -26,7 +26,7 @@ public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> 
     }
 
     @Override
-    @Before
+    @BeforeMethod
     public void before() {
         super.before();
         blockStorage = new InMemoryBlockStorage();

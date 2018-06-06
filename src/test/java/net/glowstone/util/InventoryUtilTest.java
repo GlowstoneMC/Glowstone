@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.testng.AssertJUnit.assertThat;
 
 import java.util.Random;
 import net.glowstone.inventory.GlowInventory;
@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.hamcrest.number.OrderingComparison;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 public class InventoryUtilTest {
 

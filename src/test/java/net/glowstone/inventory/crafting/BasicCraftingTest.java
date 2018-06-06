@@ -1,21 +1,21 @@
 package net.glowstone.inventory.crafting;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import net.glowstone.testutils.ServerShim;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.hamcrest.core.IsNull;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 public class BasicCraftingTest {
 
     static CraftingManager cm;
 
-    @BeforeAll
+    @BeforeClass
     public static void setupClass() {
         // do this @BeforeClass and not @Before since it's 10x as slow as some other test cases due to loading and parsing all the recipes
         ServerShim.install();
