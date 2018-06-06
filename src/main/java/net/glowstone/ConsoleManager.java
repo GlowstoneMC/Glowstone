@@ -40,6 +40,8 @@ import org.jline.reader.ParsedLine;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
+import javax.annotation.Nullable;
+
 /**
  * Handles all logging and input-related console improvements.
  */
@@ -331,85 +333,7 @@ public final class ConsoleManager {
         }
     }
 
-    private class ConsoleTask implements Runnable {
-        private String command;
-
-        ConsoleTask(String command) {
-            this.command = command;
-        }
-
-        @Override
-        public void run() {
-            // TODO: Extract console-exclusive commands (bind, config, keymap, widget) into a new
-            // subclass of Command.
-            if (command.startsWith("bind")) {
-                GlowServer.logger.info("Key binding is not supported yet.");
-            } else if (command.startsWith("config")) {
-                String[] params = command.split(" ");
-                if (params.length > 1) {
-                    LineReader.Option option = getOption(params[1]);
-                    Object value;
-                    if (params.length == 2) {
-                        if (option == null) {
-                            value = reader.getVariable(params[1]);
-                        } else {
-                            value = reader.isSet(option);
-                        }
-                        GlowServer.logger.info("var " + params[1] + " = " + value);
-                    } else {
-                        if (option == null) {
-                            if (params[1].endsWith("L")) {
-                                value = Long.parseLong(params[2]
-                                    .substring(0, params[2].length() - 1));
-                            } else {
-                                try {
-                                    value = Integer.parseInt(params[2]);
-                                } catch (NumberFormatException e) {
-                                    if (params[2].equalsIgnoreCase("true")
-                                        || params[2].equalsIgnoreCase("false")) {
-                                        value = Boolean.parseBoolean(params[2]);
-                                    } else {
-                                        value = params[1];
-                                    }
-                                }
-                            }
-                            reader.setVariable(params[1], value);
-
-                        } else {
-                            value = Objects.equals(params[2], "true");
-                            reader.option(option, Boolean.parseBoolean(params[2]));
-                        }
-                        GlowServer.logger.info("-> var " + params[1] + " = " + value);
-                    }
-                }
-            } else if (command.startsWith("keymap")) {
-                String[] params = command.split(" ");
-                if (params.length > 1) {
-                    if (reader.setKeyMap(params[1])) {
-                        GlowServer.logger.info("-> keymap = " + reader.getKeyMap());
-                    }
-                } else if (params.length == 1) {
-                    GlowServer.logger.info("keymap = " + reader.getKeyMap());
-                }
-            } else if (command.startsWith("widget")) {
-                String[] params = command.split(" ");
-                if (params.length > 1) {
-                    reader.callWidget(params[1]);
-                }
-            }
-        }
-
-        public LineReader.Option getOption(String text) {
-            for (LineReader.Option option : LineReader.Option.values()) {
-                if (option.name().equalsIgnoreCase(text)) {
-                    return option;
-                }
-            }
-            return null;
-        }
-    }
-
-    private class ColoredCommandSender implements ConsoleCommandSender {
+    public class ColoredCommandSender implements ConsoleCommandSender {
 
         private final PermissibleBase perm = new PermissibleBase(this);
 
@@ -558,6 +482,71 @@ public final class ConsoleManager {
         public void sendRawMessage(String message) {
 
         }
+
+        // Additional methods
+
+        /**
+         * Returns the line reader for this console. Used to implement some commands.
+         * @return the line reader
+         */
+        public LineReader getLineReader() {
+            return reader;
+        }
+
+        private LineReader.Option getOption(String name) {
+            for (LineReader.Option option : LineReader.Option.values()) {
+                if (option.name().equalsIgnoreCase(name)) {
+                    return option;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Gets the value of an option or variable from the line reader.
+         *
+         * @see #getLineReaderOption(String)
+         * @see LineReader#isSet(LineReader.Option)
+         * @see LineReader#getVariable(String)
+         *
+         * @param name the name
+         * @return the value
+         */
+        @Nullable
+        public Object getLineReaderOption(String name) {
+            LineReader.Option option = getOption(name);
+            Object value;
+            if (option == null) {
+                value = reader.getVariable(name);
+            } else {
+                value = reader.isSet(option);
+            }
+            return value;
+        }
+
+        /**
+         * Sets the value of an option or variable on the line reader.
+         *
+         * @see #getLineReaderOption(String)
+         * @see LineReader#option(LineReader.Option, boolean)
+         * @see LineReader#setVariable(String, Object)
+         *
+         * @param name the name
+         * @param value the new value
+         */
+        public void setLineReaderOption(String name, @Nullable Object value) {
+            LineReader.Option option = getOption(name);
+            if (option != null) {
+                if (value instanceof Boolean) {
+                    reader.option(option, (Boolean) value);
+                } else {
+                    throw new IllegalArgumentException("Option " + option + " must be true or false");
+                }
+            } else {
+                reader.setVariable(name, value);
+            }
+        }
+
     }
 
 }

@@ -1,7 +1,8 @@
 package net.glowstone.command.minecraft.console;
 
+import net.glowstone.ConsoleManager.ColoredCommandSender;
+import net.glowstone.i18n.LocalizedStrings;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
 import java.util.List;
@@ -14,8 +15,11 @@ public abstract class ConsoleCommand extends VanillaCommand {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
-            return innerExecute((ConsoleCommandSender) sender, commandLabel, args);
+        if (sender instanceof ColoredCommandSender) {
+            return innerExecute((ColoredCommandSender) sender, commandLabel, args);
+        } else {
+            LocalizedStrings.Glowstone.Command.Error.CONSOLE_ONLY.send(sender);
+            return true;
         }
     }
 
@@ -28,5 +32,5 @@ public abstract class ConsoleCommand extends VanillaCommand {
      * @return false if the command failed and a usage message should be printed, otherwise true
      */
     protected abstract boolean innerExecute(
-            ConsoleCommandSender sender, String commandLabel, String[] args);
+            ColoredCommandSender sender, String commandLabel, String[] args);
 }

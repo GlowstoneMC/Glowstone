@@ -436,6 +436,12 @@ public interface LocalizedStrings {
 
         interface Command {
             interface Error {
+                LocalizedString CONSOLE_ONLY =
+                    new LocalizedStringImpl("glowstone.command.error.console-only");
+
+                LocalizedString NOT_YET_IMPLEMENTED =
+                        new LocalizedStringImpl("glowstone.command.error.not-yet-implemented");
+
                 LocalizedString UNKNOWN_COMMAND =
                     new LocalizedStringImpl("glowstone.command.error.unknown-command");
             }
