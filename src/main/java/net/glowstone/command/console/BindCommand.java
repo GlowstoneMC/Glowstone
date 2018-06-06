@@ -17,7 +17,7 @@ public class BindCommand extends ConsoleCommand {
     }
 
     @Override
-    protected boolean innerExecute(
+    protected boolean executeOnConsole(
             ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
         LocalizedStrings.Glowstone.Command.Error.NOT_YET_IMPLEMENTED.send(sender);
         return true;

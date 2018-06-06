@@ -16,7 +16,7 @@ public abstract class ConsoleCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (sender instanceof ColoredCommandSender) {
-            return innerExecute((ColoredCommandSender) sender, commandLabel, args);
+            return executeOnConsole((ColoredCommandSender) sender, commandLabel, args);
         } else {
             LocalizedStrings.Glowstone.Command.Error.CONSOLE_ONLY.send(sender);
             return true;
@@ -31,6 +31,6 @@ public abstract class ConsoleCommand extends VanillaCommand {
      * @param args         All arguments passed to the command, split via ' '
      * @return false if the command failed and a usage message should be printed, otherwise true
      */
-    protected abstract boolean innerExecute(
+    protected abstract boolean executeOnConsole(
             ColoredCommandSender sender, String commandLabel, String[] args);
 }

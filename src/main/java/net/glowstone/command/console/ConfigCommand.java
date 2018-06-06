@@ -16,7 +16,7 @@ public class ConfigCommand extends ConsoleCommand {
     }
 
     @Override
-    protected boolean innerExecute(
+    protected boolean executeOnConsole(
             ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
         switch (args.length) {
             case 0:
