@@ -9,9 +9,9 @@ public class WidgetCommand extends ConsoleCommand {
      * Creates the instance for this command.
      */
     public WidgetCommand() {
-        super("widget",
+        super("!widget",
                 "Calls a widget on this console's line reader",
-                "widget <widget>",
+                "!widget <widget>",
                 Collections.emptyList());
     }
 

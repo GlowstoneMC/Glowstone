@@ -10,7 +10,7 @@ public class BindCommand extends ConsoleCommand {
      * Creates the instance for this command.
      */
     public BindCommand() {
-        super("bind",
+        super("!bind",
                 LocalizedStrings.Glowstone.Command.Error.NOT_YET_IMPLEMENTED.get(),
                 LocalizedStrings.Glowstone.Command.Error.NOT_YET_IMPLEMENTED.get(),
                 Collections.emptyList());
