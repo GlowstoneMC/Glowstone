@@ -1,9 +1,8 @@
 package net.glowstone.command.console;
 
+import java.util.Collections;
 import net.glowstone.ConsoleManager;
 import net.glowstone.i18n.LocalizedStrings;
-
-import java.util.Collections;
 
 public class BindCommand extends ConsoleCommand {
 

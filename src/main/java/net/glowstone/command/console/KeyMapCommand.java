@@ -1,8 +1,7 @@
 package net.glowstone.command.console;
 
-import net.glowstone.ConsoleManager;
-
 import java.util.Collections;
+import net.glowstone.ConsoleManager;
 
 public class KeyMapCommand extends ConsoleCommand {
 

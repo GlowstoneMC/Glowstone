@@ -1,5 +1,23 @@
 package net.glowstone;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.i18n.LocalizedStrings;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -22,25 +40,6 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.ParsedLine;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-
-import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.StreamHandler;
 
 /**
  * Handles all logging and input-related console improvements.
@@ -274,7 +273,7 @@ public final class ConsoleManager {
             List<String> completions = null;
             try {
                 completions = server.getScheduler().syncIfNeeded(
-                        () -> server.getCommandMap().tabComplete(sender, line.line()));
+                    () -> server.getCommandMap().tabComplete(sender, line.line()));
             } catch (Exception e) {
                 LocalizedStrings.Console.Error.Manager.TAB_COMPLETE.log(e);
             }
@@ -542,7 +541,8 @@ public final class ConsoleManager {
                 if (value instanceof Boolean) {
                     reader.option(option, (Boolean) value);
                 } else {
-                    throw new IllegalArgumentException("Option " + option + " must be true or false");
+                    throw new IllegalArgumentException(
+                            "Option " + option + " must be true or false");
                 }
             } else {
                 reader.setVariable(name, value);

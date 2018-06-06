@@ -1,11 +1,10 @@
 package net.glowstone.command.console;
 
+import java.util.List;
 import net.glowstone.ConsoleManager.ColoredCommandSender;
 import net.glowstone.i18n.LocalizedStrings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
-
-import java.util.List;
 
 public abstract class ConsoleCommand extends VanillaCommand {
 
