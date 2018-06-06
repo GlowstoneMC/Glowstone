@@ -9,9 +9,9 @@ public class ConfigCommand extends ConsoleCommand {
      * Creates the instance for this command.
      */
     public ConfigCommand() {
-        super("config",
+        super("!config",
                 "Gets or sets an option or variable for the console's line reader",
-                "config <name> <value> OR config <name>",
+                "!config <name> <value> OR !config <name>",
                 Collections.emptyList());
     }
 

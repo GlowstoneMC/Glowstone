@@ -9,9 +9,9 @@ public class KeyMapCommand extends ConsoleCommand {
      * Creates the instance for this command.
      */
     public KeyMapCommand() {
-        super("keymap",
+        super("!keymap",
                 "Gets or sets the keymap for this console's line reader",
-                "keymap OR keymap <map>",
+                "!keymap OR !keymap <map>",
                 Collections.emptyList());
     }
 
