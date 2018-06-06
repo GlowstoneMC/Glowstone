@@ -8,7 +8,8 @@ import org.bukkit.command.defaults.VanillaCommand;
 
 public abstract class ConsoleCommand extends VanillaCommand {
 
-    protected ConsoleCommand(String name, String description, String usageMessage, List<String> aliases) {
+    protected ConsoleCommand(
+            String name, String description, String usageMessage, List<String> aliases) {
         super(name, description, usageMessage, aliases);
     }
 
