@@ -16,7 +16,7 @@ public class KeyMapCommand extends ConsoleCommand {
     }
 
     @Override
-    protected boolean innerExecute(
+    protected boolean executeOnConsole(
             ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
         if (args.length > 0 && !sender.getLineReader().setKeyMap(args[0])) {
             return false;

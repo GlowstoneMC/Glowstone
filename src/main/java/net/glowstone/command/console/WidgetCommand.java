@@ -16,7 +16,7 @@ public class WidgetCommand extends ConsoleCommand {
     }
 
     @Override
-    protected boolean innerExecute(
+    protected boolean executeOnConsole(
             ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
         if (args.length < 1) {
             return false;
