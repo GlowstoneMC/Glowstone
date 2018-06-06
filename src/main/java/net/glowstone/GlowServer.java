@@ -60,6 +60,10 @@ import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.GlowBossBar;
+import net.glowstone.command.console.BindCommand;
+import net.glowstone.command.console.ConfigCommand;
+import net.glowstone.command.console.KeyMapCommand;
+import net.glowstone.command.console.WidgetCommand;
 import net.glowstone.command.glowstone.ColorCommand;
 import net.glowstone.command.glowstone.GlowstoneCommand;
 import net.glowstone.command.minecraft.BanCommand;
@@ -1182,6 +1186,11 @@ public class GlowServer implements Server {
         // glowstone commands
         commandMap.register("glowstone", new ColorCommand());
         commandMap.register("glowstone", new GlowstoneCommand());
+        // glowstone console commands
+        commandMap.register("glowstone", new BindCommand());
+        commandMap.register("glowstone", new ConfigCommand());
+        commandMap.register("glowstone", new KeyMapCommand());
+        commandMap.register("glowstone", new WidgetCommand());
         // vanilla commands
         commandMap.register("minecraft", new TellrawCommand());
         commandMap.register("minecraft", new TitleCommand());
