@@ -1,6 +1,6 @@
 package net.glowstone.constants;
 
-import static org.testng.AssertJUnit.assertThat;
+import static org.testng.Assert.assertNotNull;
 
 import java.util.Iterator;
 import net.glowstone.TestUtils;
@@ -20,8 +20,8 @@ public class AchievementTest {
 
     @Test(dataProvider = "Achievement")
     public void testAchievement(Achievement achievement) {
-        assertThat("Name missing for achievement " + achievement,
-            GlowAchievement.getName(achievement), IsNull.notNullValue());
+        assertNotNull(GlowAchievement.getName(achievement),
+                "Name missing for achievement " + achievement);
     }
 
 }

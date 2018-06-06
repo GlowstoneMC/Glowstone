@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.bukkit.NamespacedKey;
 import org.testng.annotations.Test;

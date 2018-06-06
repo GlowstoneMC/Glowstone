@@ -11,18 +11,20 @@ import org.testng.annotations.Test;
 
 public class MojangsonParseTest {
 
+    public static final Object[][] TAG_TYPES_AND_JSON = {
+            {TagType.BYTE, "{value:1b}"},
+            {TagType.DOUBLE, "{value:1.0}"},
+            {TagType.FLOAT, "{value:1.0f}"},
+            {TagType.INT, "{value:1}"},
+            {TagType.LIST, "{value:[\"1\",\"2\"]}"},
+            {TagType.LONG, "{value:1l}"},
+            {TagType.SHORT, "{value:1s}"},
+            {TagType.STRING, "{value:\"1\"}"}
+    };
+
     @DataProvider(name = "TagTypes")
     public static Object[][] getCases() {
-        return new Object[][]{
-                {TagType.BYTE, "{value:1b}"},
-                {TagType.DOUBLE, "{value:1.0}"},
-                {TagType.FLOAT, "{value:1.0f}"},
-                {TagType.INT, "{value:1}"},
-                {TagType.LIST, "{value:[\"1\",\"2\"]}"},
-                {TagType.LONG, "{value:1l}"},
-                {TagType.SHORT, "{value:1s}"},
-                {TagType.STRING, "{value:\"1\"}"}
-        };
+        return TAG_TYPES_AND_JSON;
     }
 
     @Test(dataProvider = "TagTypes")

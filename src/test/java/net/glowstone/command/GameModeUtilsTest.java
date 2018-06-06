@@ -2,7 +2,7 @@ package net.glowstone.command;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.bukkit.GameMode;
 import org.testng.annotations.Test;

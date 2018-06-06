@@ -5,7 +5,7 @@ import static org.bukkit.Material.GRASS;
 import static org.bukkit.Material.GRAVEL;
 import static org.bukkit.Material.STONE;
 import static org.hamcrest.CoreMatchers.is;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import net.glowstone.block.ItemTable;
 import org.bukkit.Material;

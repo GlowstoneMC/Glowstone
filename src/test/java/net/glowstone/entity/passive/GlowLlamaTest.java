@@ -2,8 +2,8 @@ package net.glowstone.entity.passive;
 
 import java.util.EnumSet;
 import org.bukkit.Material;
-import org.testng.AssertJUnit;
 import org.testng.Assert;
+import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 
 public class GlowLlamaTest extends GlowChestedHorseTest<GlowLlama> {

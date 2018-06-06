@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.bukkit.util.BlockVector;
 import org.testng.annotations.Test;

@@ -1,15 +1,17 @@
 package net.glowstone.entity.objects;
 
+import java.util.function.Function;
+import java.util.stream.Stream;
 import net.glowstone.entity.GlowEntityTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.testng.annotations.Factory;
 
-@RunWith(Parameterized.class)
 public class GlowMinecartTest extends GlowEntityTest<GlowMinecart> {
 
-    @Parameterized.Parameters(name = "{0}")
-    public static GlowMinecart.MinecartType[] data() {
-        return GlowMinecart.MinecartType.values();
+    @Factory
+    public static Object[] instances() {
+        return Stream.of(GlowMinecart.MinecartType.values())
+                .map((Function<GlowMinecart.MinecartType, Object>) GlowMinecartTest::new)
+                .toArray();
     }
 
     public GlowMinecartTest(GlowMinecart.MinecartType type) {

@@ -1,7 +1,7 @@
 package net.glowstone.util.collection;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;

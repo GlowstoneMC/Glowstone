@@ -1,7 +1,7 @@
 package net.glowstone.inventory;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import net.glowstone.testutils.ServerShim;
 import org.bukkit.Material;

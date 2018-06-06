@@ -1,7 +1,7 @@
 package net.glowstone.constants;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Iterator;
 import java.util.stream.Stream;

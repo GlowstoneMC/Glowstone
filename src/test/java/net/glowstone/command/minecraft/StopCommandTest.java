@@ -1,8 +1,8 @@
 package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.testng.AssertJUnit.assertThat;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;

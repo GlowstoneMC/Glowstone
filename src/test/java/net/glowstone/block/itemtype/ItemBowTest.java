@@ -5,7 +5,6 @@ import static org.bukkit.Material.ARROW;
 import static org.bukkit.Material.BOW;
 import static org.bukkit.Material.SPECTRAL_ARROW;
 import static org.bukkit.Material.TIPPED_ARROW;
-import static org.testng.AssertJUnit.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
@@ -17,6 +16,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.testng.AssertJUnit.assertTrue;
 
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.Set;

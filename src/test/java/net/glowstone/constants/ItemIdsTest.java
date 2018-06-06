@@ -2,7 +2,7 @@ package net.glowstone.constants;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.AssertJUnit.fail;
 
 import java.util.Iterator;

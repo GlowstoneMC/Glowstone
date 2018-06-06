@@ -1,7 +1,7 @@
 package net.glowstone.util.nbt;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.testng.AssertJUnit.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
