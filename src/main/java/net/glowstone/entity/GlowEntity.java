@@ -54,6 +54,7 @@ import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
@@ -62,6 +63,7 @@ import org.bukkit.event.entity.EntityPortalExitEvent;
 import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.entity.EntityUnleashEvent.UnleashReason;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
@@ -1097,7 +1099,7 @@ public abstract class GlowEntity implements Entity {
         world.getEntityManager().unregister(this);
         server.getEntityIdManager().deallocate(this);
         this.setPassenger(null);
-
+        leaveVehicle();
         ImmutableList.copyOf(this.leashedEntities)
                 .forEach(e -> unleash(e, UnleashReason.HOLDER_GONE));
 
@@ -1262,8 +1264,15 @@ public abstract class GlowEntity implements Entity {
             glowPassenger.vehicle.removePassenger(passenger);
         }
 
-        EntityMountEvent event = new EntityMountEvent(passenger, this);
-        EventFactory.getInstance().callEvent(event);
+        if (this instanceof Vehicle) {
+            VehicleEnterEvent event = EventFactory.getInstance().callEvent(
+                    new VehicleEnterEvent((Vehicle) this, passenger));
+            if (event.isCancelled()) {
+                return false;
+            }
+        }
+        EntityMountEvent event = EventFactory.getInstance().callEvent(
+                new EntityMountEvent(passenger, this));
         if (event.isCancelled()) {
             return false;
         }

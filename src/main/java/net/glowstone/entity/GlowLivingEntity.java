@@ -29,6 +29,7 @@ import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.entity.ai.TaskManager;
 import net.glowstone.entity.meta.MetadataIndex;
+import net.glowstone.entity.monster.GlowSlime;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.entity.objects.GlowLeashHitch;
 import net.glowstone.entity.passive.GlowWolf;
@@ -75,6 +76,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -799,6 +802,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         location.setYaw(0);
 
         T projectile = ((GlowWorld) location.getWorld()).spawn(location, type);
+
+        ProjectileLaunchEvent launchEvent = EventFactory.getInstance()
+                .callEvent(new ProjectileLaunchEvent(projectile));
+        if (launchEvent.isCancelled()) {
+            projectile.remove();
+        }
         projectile.setVelocity(new Vector(x, y, z));
         ((GlowProjectile) projectile).setRawLocation(location);
         return projectile;
@@ -894,6 +903,44 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             deathEvent = EventFactory.getInstance().callEvent(deathEvent);
             for (ItemStack item : deathEvent.getDrops()) {
                 world.dropItemNaturally(getLocation(), item);
+            }
+        }
+
+        // TODO: Add a die method to GlowEntity class and override in
+        // various subclasses depending on the actions needed to be run
+        // to help keep code maintainable
+        if (this instanceof GlowSlime) {
+            GlowSlime slime = (GlowSlime) this;
+
+            int size = slime.getSize();
+            if (size > 1) {
+                int count = 2 + ThreadLocalRandom.current().nextInt(3);
+
+                SlimeSplitEvent event = EventFactory.getInstance().callEvent(
+                        new SlimeSplitEvent(slime, count));
+                if (event.isCancelled() || event.getCount() <= 0) {
+                    return;
+                }
+
+                count = event.getCount();
+                for (int i = 0; i < count; ++i) {
+                    Location spawnLoc = getLocation().clone();
+                    spawnLoc.add(
+                            ThreadLocalRandom.current().nextDouble(0.5, 3),
+                            0,
+                            ThreadLocalRandom.current().nextDouble(0.5, 3)
+                    );
+
+                    GlowSlime splitSlime = (GlowSlime) world.spawnEntity(
+                            spawnLoc, EntityType.SLIME);
+
+                    // Make the split slime the same name as the killed slime.
+                    if (!getCustomName().isEmpty()) {
+                        splitSlime.setCustomName(getCustomName());
+                    }
+
+                    splitSlime.setSize(size / 2);
+                }
             }
         }
     }

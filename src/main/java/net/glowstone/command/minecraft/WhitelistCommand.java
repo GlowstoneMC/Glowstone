@@ -95,6 +95,7 @@ public class WhitelistCommand extends VanillaCommand {
                 player.setWhitelisted(false);
                 sender.sendMessage("Removed " + player.getName() + " from the whitelist");
             });
+            return true;
         }
         if (subcommand.equals("reload")) {
             sender.getServer().reloadWhitelist();

@@ -160,6 +160,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
@@ -3042,6 +3043,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         invMonitor = new InventoryMonitor(getOpenInventory());
         int viewId = invMonitor.getId();
         if (viewId != 0) {
+            InventoryOpenEvent event = EventFactory.getInstance().callEvent(
+                new InventoryOpenEvent(view));
+            if (event.isCancelled()) {
+                // close the inventory but don't fire the InventoryCloseEvent
+                resetInventoryView();
+                return;
+            }
             String title = view.getTitle();
             boolean defaultTitle = Objects.equals(view.getType().getDefaultTitle(), title);
             if (view.getTopInventory() instanceof PlayerInventory && defaultTitle) {
