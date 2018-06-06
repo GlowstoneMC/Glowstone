@@ -26,9 +26,9 @@ public abstract class ConsoleCommand extends VanillaCommand {
     /**
      * Executes the command.
      *
-     * @param sender Console object which is executing this command
+     * @param sender       Console object which is executing this command
      * @param commandLabel The alias of the command used
-     * @param args All arguments passed to the command, split via ' '
+     * @param args         All arguments passed to the command, split via ' '
      * @return false if the command failed and a usage message should be printed, otherwise true
      */
     protected abstract boolean innerExecute(

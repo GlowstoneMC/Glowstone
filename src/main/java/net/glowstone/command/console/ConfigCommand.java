@@ -5,6 +5,10 @@ import net.glowstone.ConsoleManager;
 import java.util.Collections;
 
 public class ConfigCommand extends ConsoleCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public ConfigCommand() {
         super("config",
                 "Gets or sets an option or variable for the console's line reader",
@@ -13,7 +17,8 @@ public class ConfigCommand extends ConsoleCommand {
     }
 
     @Override
-    protected boolean innerExecute(ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
+    protected boolean innerExecute(
+            ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
         switch (args.length) {
             case 0:
                 return false;

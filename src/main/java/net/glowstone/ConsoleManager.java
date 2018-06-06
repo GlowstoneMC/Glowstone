@@ -1,22 +1,5 @@
 package net.glowstone;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.StreamHandler;
 import lombok.Getter;
 import net.glowstone.i18n.LocalizedStrings;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -41,15 +24,35 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
 
 /**
  * Handles all logging and input-related console improvements.
  */
 public final class ConsoleManager {
 
-    @NonNls private static String CONSOLE_DATE = "HH:mm:ss";
-    @NonNls private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
-    @NonNls private static String CONSOLE_PROMPT = "> "; // TODO: fix prompt
+    @NonNls
+    private static String CONSOLE_DATE = "HH:mm:ss";
+    @NonNls
+    private static String FILE_DATE = "yyyy/MM/dd HH:mm:ss";
+    @NonNls
+    private static String CONSOLE_PROMPT = "> "; // TODO: fix prompt
     private final GlowServer server;
     private static final Map<ChatColor, String> replacements = new EnumMap<>(ChatColor.class);
     private final ChatColor[] colors = ChatColor.values();
@@ -68,28 +71,28 @@ public final class ConsoleManager {
     private ConsoleHandler handler;
 
     static {
-        addReplacement(ChatColor.BLACK, "\u001B[0;30;22m"); 
-        addReplacement(ChatColor.DARK_BLUE, "\u001B[0;34;22m"); 
-        addReplacement(ChatColor.DARK_GREEN, "\u001B[0;32;22m"); 
-        addReplacement(ChatColor.DARK_AQUA, "\u001B[0;36;22m"); 
-        addReplacement(ChatColor.DARK_RED, "\u001B[0;31;22m"); 
-        addReplacement(ChatColor.DARK_PURPLE, "\u001B[0;35;22m"); 
-        addReplacement(ChatColor.GOLD, "\u001B[0;33;22m"); 
-        addReplacement(ChatColor.GRAY, "\u001B[0;37;22m"); 
-        addReplacement(ChatColor.DARK_GRAY, "\u001B[0;30;1m"); 
-        addReplacement(ChatColor.BLUE, "\u001B[0;34;1m"); 
-        addReplacement(ChatColor.GREEN, "\u001B[0;32;1m"); 
-        addReplacement(ChatColor.AQUA, "\u001B[0;36;1m"); 
-        addReplacement(ChatColor.RED, "\u001B[0;31;1m"); 
-        addReplacement(ChatColor.LIGHT_PURPLE, "\u001B[0;35;1m"); 
-        addReplacement(ChatColor.YELLOW, "\u001B[0;33;1m"); 
-        addReplacement(ChatColor.WHITE, "\u001B[0;37;1m"); 
-        addReplacement(ChatColor.MAGIC, "\u001B[5m"); 
-        addReplacement(ChatColor.BOLD, "\u001B[21m"); 
-        addReplacement(ChatColor.STRIKETHROUGH, "\u001B[9m"); 
-        addReplacement(ChatColor.UNDERLINE, "\u001B[4m"); 
-        addReplacement(ChatColor.ITALIC, "\u001B[3m"); 
-        addReplacement(ChatColor.RESET, "\u001B[39;0m"); 
+        addReplacement(ChatColor.BLACK, "\u001B[0;30;22m");
+        addReplacement(ChatColor.DARK_BLUE, "\u001B[0;34;22m");
+        addReplacement(ChatColor.DARK_GREEN, "\u001B[0;32;22m");
+        addReplacement(ChatColor.DARK_AQUA, "\u001B[0;36;22m");
+        addReplacement(ChatColor.DARK_RED, "\u001B[0;31;22m");
+        addReplacement(ChatColor.DARK_PURPLE, "\u001B[0;35;22m");
+        addReplacement(ChatColor.GOLD, "\u001B[0;33;22m");
+        addReplacement(ChatColor.GRAY, "\u001B[0;37;22m");
+        addReplacement(ChatColor.DARK_GRAY, "\u001B[0;30;1m");
+        addReplacement(ChatColor.BLUE, "\u001B[0;34;1m");
+        addReplacement(ChatColor.GREEN, "\u001B[0;32;1m");
+        addReplacement(ChatColor.AQUA, "\u001B[0;36;1m");
+        addReplacement(ChatColor.RED, "\u001B[0;31;1m");
+        addReplacement(ChatColor.LIGHT_PURPLE, "\u001B[0;35;1m");
+        addReplacement(ChatColor.YELLOW, "\u001B[0;33;1m");
+        addReplacement(ChatColor.WHITE, "\u001B[0;37;1m");
+        addReplacement(ChatColor.MAGIC, "\u001B[5m");
+        addReplacement(ChatColor.BOLD, "\u001B[21m");
+        addReplacement(ChatColor.STRIKETHROUGH, "\u001B[9m");
+        addReplacement(ChatColor.UNDERLINE, "\u001B[4m");
+        addReplacement(ChatColor.ITALIC, "\u001B[3m");
+        addReplacement(ChatColor.RESET, "\u001B[39;0m");
     }
 
     private static void addReplacement(ChatColor formatting, @NonNls String ansi) {
@@ -106,9 +109,9 @@ public final class ConsoleManager {
         GlowServer.logger.setUseParentHandlers(false);
 
         try (Terminal terminal = TerminalBuilder.builder()
-                    .system(true)
-                    .name("Glowstone") // NON-NLS
-                    .build()) {
+                .system(true)
+                .name("Glowstone") // NON-NLS
+                .build()) {
             reader = LineReaderBuilder.builder()
                     .appName("Glowstone") // NON-NLS
                     .terminal(terminal)
@@ -271,7 +274,7 @@ public final class ConsoleManager {
             List<String> completions = null;
             try {
                 completions = server.getScheduler().syncIfNeeded(
-                    () -> server.getCommandMap().tabComplete(sender, line.line()));
+                        () -> server.getCommandMap().tabComplete(sender, line.line()));
             } catch (Exception e) {
                 LocalizedStrings.Console.Error.Manager.TAB_COMPLETE.log(e);
             }
@@ -296,7 +299,7 @@ public final class ConsoleManager {
                 try {
                     if (color) {
                         command = reader.readLine(colorize(ChatColor.RESET.toString())
-                            + CONSOLE_PROMPT);
+                                + CONSOLE_PROMPT);
                     } else {
                         command = reader.readLine(CONSOLE_PROMPT);
                     }
@@ -414,7 +417,7 @@ public final class ConsoleManager {
 
         @Override
         public PermissionAttachment addAttachment(Plugin plugin,
-                @NonNls String name, boolean value) {
+                                                  @NonNls String name, boolean value) {
             return perm.addAttachment(plugin, name, value);
         }
 
@@ -425,7 +428,7 @@ public final class ConsoleManager {
 
         @Override
         public PermissionAttachment addAttachment(Plugin plugin, @NonNls String name, boolean value,
-                int ticks) {
+                                                  int ticks) {
             return perm.addAttachment(plugin, name, value, ticks);
         }
 
@@ -474,7 +477,7 @@ public final class ConsoleManager {
 
         @Override
         public void abandonConversation(Conversation conversation,
-                ConversationAbandonedEvent details) {
+                                        ConversationAbandonedEvent details) {
 
         }
 
@@ -487,6 +490,7 @@ public final class ConsoleManager {
 
         /**
          * Returns the line reader for this console. Used to implement some commands.
+         *
          * @return the line reader
          */
         public LineReader getLineReader() {
@@ -505,12 +509,11 @@ public final class ConsoleManager {
         /**
          * Gets the value of an option or variable from the line reader.
          *
+         * @param name the name
+         * @return the value
          * @see #getLineReaderOption(String)
          * @see LineReader#isSet(LineReader.Option)
          * @see LineReader#getVariable(String)
-         *
-         * @param name the name
-         * @return the value
          */
         @Nullable
         public Object getLineReaderOption(String name) {
@@ -527,12 +530,11 @@ public final class ConsoleManager {
         /**
          * Sets the value of an option or variable on the line reader.
          *
+         * @param name  the name
+         * @param value the new value
          * @see #getLineReaderOption(String)
          * @see LineReader#option(LineReader.Option, boolean)
          * @see LineReader#setVariable(String, Object)
-         *
-         * @param name the name
-         * @param value the new value
          */
         public void setLineReaderOption(String name, @Nullable Object value) {
             LineReader.Option option = getOption(name);

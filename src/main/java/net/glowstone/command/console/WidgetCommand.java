@@ -5,6 +5,10 @@ import net.glowstone.ConsoleManager;
 import java.util.Collections;
 
 public class WidgetCommand extends ConsoleCommand {
+
+    /**
+     * Creates the instance for this command.
+     */
     public WidgetCommand() {
         super("widget",
                 "Calls a widget on this console's line reader",
@@ -13,7 +17,8 @@ public class WidgetCommand extends ConsoleCommand {
     }
 
     @Override
-    protected boolean innerExecute(ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
+    protected boolean innerExecute(
+            ConsoleManager.ColoredCommandSender sender, String commandLabel, String[] args) {
         if (args.length < 1) {
             return false;
         }

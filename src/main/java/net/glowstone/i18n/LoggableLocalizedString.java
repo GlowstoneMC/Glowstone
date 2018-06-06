@@ -11,11 +11,11 @@ public interface LoggableLocalizedString extends LocalizedString {
 
     void log(Throwable ex, Object... args);
 
-  LogRecord record();
+    LogRecord record();
 
-  LogRecord record(Object... args);
+    LogRecord record(Object... args);
 
-  LogRecord record(Throwable ex);
+    LogRecord record(Throwable ex);
 
-  LogRecord record(Throwable ex, Object... args);
+    LogRecord record(Throwable ex, Object... args);
 }
