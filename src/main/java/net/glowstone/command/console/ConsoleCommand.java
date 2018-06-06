@@ -1,4 +1,4 @@
-package net.glowstone.command.minecraft.console;
+package net.glowstone.command.console;
 
 import net.glowstone.ConsoleManager.ColoredCommandSender;
 import net.glowstone.i18n.LocalizedStrings;

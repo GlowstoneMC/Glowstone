@@ -1,8 +1,7 @@
-package net.glowstone.command.minecraft.console;
+package net.glowstone.command.console;
 
 import net.glowstone.ConsoleManager;
 import net.glowstone.i18n.LocalizedStrings;
-import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.Collections;
 
