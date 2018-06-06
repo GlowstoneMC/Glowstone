@@ -20,6 +20,7 @@ import java.util.logging.StreamHandler;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.util.compiler.EvalTask;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -306,7 +307,15 @@ public final class ConsoleManager {
                         reader.getTerminal().writer().println(colorize(String.format(
                                 "%s====%sg>%s\"%s\"", // NON-NLS
                                 ChatColor.RESET, ChatColor.GOLD, ChatColor.RESET, command)));
-                        server.getScheduler().runTask(null, new CommandTask(command));
+                        if (command.startsWith("$")) {  // NON-NLS
+                            server.getScheduler().runTask(null,
+                                new EvalTask(command.substring(1), command.startsWith("$$")));
+                        } else if (command.startsWith("!")) {  // NON-NLS
+                            server.getScheduler()
+                                .runTask(null, new ConsoleTask(command.substring(1)));
+                        } else {
+                            server.getScheduler().runTask(null, new CommandTask(command));
+                        }
                     }
                 } catch (CommandException ex) {
                     LocalizedStrings.Console.Error.Manager.COMMAND.log(ex, command);
@@ -335,7 +344,83 @@ public final class ConsoleManager {
         }
     }
 
-    public class ColoredCommandSender implements ConsoleCommandSender {
+    private class ConsoleTask implements Runnable {
+        private String command;
+
+        ConsoleTask(String command) {
+            this.command = command;
+        }
+
+        @Override
+        public void run() {
+            if (command.startsWith("bind")) {
+                GlowServer.logger.info("Key binding is not supported yet.");
+            } else if (command.startsWith("config")) {
+                String[] params = command.split(" ");
+                if (params.length > 1) {
+                    LineReader.Option option = getOption(params[1]);
+                    Object value;
+                    if (params.length == 2) {
+                        if (option == null) {
+                            value = reader.getVariable(params[1]);
+                        } else {
+                            value = reader.isSet(option);
+                        }
+                        GlowServer.logger.info("var " + params[1] + " = " + value);
+                    } else {
+                        if (option == null) {
+                            if (params[1].endsWith("L")) {
+                                value = Long.parseLong(params[2]
+                                    .substring(0, params[2].length() - 1));
+                            } else {
+                                try {
+                                    value = Integer.parseInt(params[2]);
+                                } catch (NumberFormatException e) {
+                                    if (params[2].equalsIgnoreCase("true")
+                                        || params[2].equalsIgnoreCase("false")) {
+                                        value = Boolean.parseBoolean(params[2]);
+                                    } else {
+                                        value = params[1];
+                                    }
+                                }
+                            }
+                            reader.setVariable(params[1], value);
+
+                        } else {
+                            value = Objects.equals(params[2], "true");
+                            reader.option(option, Boolean.parseBoolean(params[2]));
+                        }
+                        GlowServer.logger.info("-> var " + params[1] + " = " + value);
+                    }
+                }
+            } else if (command.startsWith("keymap")) {
+                String[] params = command.split(" ");
+                if (params.length > 1) {
+                    if (reader.setKeyMap(params[1])) {
+                        GlowServer.logger.info("-> keymap = " + reader.getKeyMap());
+                    }
+                } else if (params.length == 1) {
+                    GlowServer.logger.info("keymap = " + reader.getKeyMap());
+                }
+            } else if (command.startsWith("widget")) {
+                String[] params = command.split(" ");
+                if (params.length > 1) {
+                    reader.callWidget(params[1]);
+                }
+            }
+        }
+
+        public LineReader.Option getOption(String text) {
+            for (LineReader.Option option : LineReader.Option.values()) {
+                if (option.name().equalsIgnoreCase(text)) {
+                    return option;
+                }
+            }
+            return null;
+        }
+    }
+
+    private class ColoredCommandSender implements ConsoleCommandSender {
 
         private final PermissibleBase perm = new PermissibleBase(this);
 
