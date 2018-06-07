@@ -18,8 +18,10 @@ public class EntityUtils {
      */
     public static void heal(LivingEntity target, double amount,
             EntityRegainHealthEvent.RegainReason reason) {
-        EntityRegainHealthEvent event
-                = new EntityRegainHealthEvent(target, amount, reason);
+        if (target.isDead()) {
+            return; // too late!
+        }
+        EntityRegainHealthEvent event = new EntityRegainHealthEvent(target, amount, reason);
         EventFactory.getInstance().callEvent(event);
         if (!event.isCancelled()) {
             target.setHealth(Math.min(
