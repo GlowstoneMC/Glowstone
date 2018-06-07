@@ -52,13 +52,15 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
                 .stream()
                 .filter(LivingEntity.class::isInstance)
                 .forEach(entity -> {
-            Location entityLoc = entity.getLocation();
-            double distFractionSquared = entityLoc.distanceSquared(location) / MAX_DISTANCE_SQUARED;
-            if (distFractionSquared < 1) {
-                // intensity is 1 - (distance / max distance)
-                affectedIntensities.put((LivingEntity) entity, 1 - Math.sqrt(distFractionSquared));
-            }
-        });
+                    Location entityLoc = entity.getLocation();
+                    double distFractionSquared = entityLoc.distanceSquared(location)
+                            / MAX_DISTANCE_SQUARED;
+                    if (distFractionSquared < 1) {
+                        // intensity is 1 - (distance / max distance)
+                        affectedIntensities.put((LivingEntity) entity,
+                                1 - Math.sqrt(distFractionSquared));
+                    }
+                });
         PotionSplashEvent event = EventFactory.getInstance().callEvent(
                 new PotionSplashEvent(this, affectedIntensities));
         if (!event.isCancelled()) {
