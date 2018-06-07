@@ -3461,9 +3461,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     private void pulseDigging() {
         ++diggingTicks;
-
-        if (diggingTicks < totalDiggingTicks) {
-            int stage = (int) (10 * (double) diggingTicks / totalDiggingTicks);
+        if (diggingTicks <= totalDiggingTicks) {
+            // diggingTicks starts at 1 and progresses to totalDiggingTicks, but animation stages
+            // are 0 through 9, so subtract 1 from the current tick
+            int stage = (int) (10.0 * ((double) (diggingTicks - 1)) / totalDiggingTicks);
             broadcastBlockBreakAnimation(digging, stage);
             return;
         }
