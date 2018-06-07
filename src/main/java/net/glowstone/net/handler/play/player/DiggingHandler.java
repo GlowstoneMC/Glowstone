@@ -117,11 +117,12 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 player.dropItemInHand(true);
                 return;
             case DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING:
-                if (player.getUsageItem() != null) {
-                    if (Objects.equals(player.getUsageItem(), holding)) {
-                        ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
+                final ItemStack usageItem = player.getUsageItem();
+                if (usageItem != null) {
+                    if (Objects.equals(usageItem, holding)) {
+                        ItemType type = ItemTable.instance().getItem(usageItem.getType());
                         if (type != null && type instanceof ItemTimedUsage) {
-                            ((ItemTimedUsage) type).endUse(player, player.getUsageItem());
+                            ((ItemTimedUsage) type).endUse(player, usageItem);
                         } else {
                             // todo: inform the player that this item cannot be consumed/used
                         }
