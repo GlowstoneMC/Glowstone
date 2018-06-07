@@ -152,7 +152,9 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         Material toolType = entity.getItemInHand().getType();
         try {
             entity.setDigging(block);
-            for (long i = 0; i < ticks; i++) {
+            // To spend N full ticks digging, player must be pulsed N+1 times, because setDigging is
+            // called in between ticks and a tick is the interval *between* two pulse() calls.
+            for (long i = 0; i < ticks + 1; i++) {
                 assertEquals(block, entity.getDigging());
                 verify(block, never()).breakNaturally(any(ItemStack.class));
                 entity.pulse();
