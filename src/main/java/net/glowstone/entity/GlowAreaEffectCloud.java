@@ -13,6 +13,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.util.EntityUtils;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -48,7 +49,9 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
                 if (entity instanceof LivingEntity
                         && temporaryImmunities.getOrDefault(entity, Long.MIN_VALUE) <= currentTick
                         && location.distanceSquared(entity.getLocation()) < radius * radius) {
-                    ((LivingEntity) entity).addPotionEffects(customEffects.values());
+                    customEffects.values().forEach(
+                            effect -> EntityUtils.applyPotionEffectWithIntensity(
+                                    effect, (LivingEntity) entity, 0.5, 0.25));
                     temporaryImmunities.put((LivingEntity) entity,
                             currentTick + reapplicationDelay);
                 }

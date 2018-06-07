@@ -114,6 +114,7 @@ import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Convert;
+import net.glowstone.util.EntityUtils;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
@@ -158,7 +159,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -840,13 +840,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (getHealth() < getMaxHealth() && !isDead()) {
             if (foodLevel >= 18 && ticksLived % 80 == 0
                     || world.getDifficulty() == Difficulty.PEACEFUL) {
-
-                EntityRegainHealthEvent event1
-                        = new EntityRegainHealthEvent(this, 1f, RegainReason.SATIATED);
-                EventFactory.getInstance().callEvent(event1);
-                if (!event1.isCancelled()) {
-                    setHealth(getHealth() + 1);
-                }
+                EntityUtils.heal(this, 1, EntityRegainHealthEvent.RegainReason.SATIATED);
                 exhaustion = Math.min(exhaustion + 3.0f, 40.0f);
 
                 saturation -= 3;

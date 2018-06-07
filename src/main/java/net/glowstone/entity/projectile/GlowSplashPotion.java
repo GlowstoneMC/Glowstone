@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.util.EntityUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -62,18 +63,10 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
         PotionSplashEvent event = EventFactory.getInstance().callEvent(
                 new PotionSplashEvent(this, affectedIntensities));
         if (!event.isCancelled()) {
-            for (LivingEntity entity : event.getAffectedEntities()) {
-                double intensity = event.getIntensity(entity);
-                for (PotionEffect effect : getEffects()) {
-                    // TODO: Apply intensity to Healing and Harming
-                    entity.addPotionEffect(intensity >= 1.0 ? effect : new PotionEffect(
-                            // FIXME: PotionEffect needs a builder class for situations like this
-                            effect.getType(),
-                            (int) (effect.getDuration() * intensity),
-                            effect.getAmplifier(),
-                            effect.isAmbient(),
-                            effect.hasParticles(),
-                            effect.getColor()));
+            for (LivingEntity splashed : event.getAffectedEntities()) {
+                for (PotionEffect effect : effects) {
+                    double intensity = event.getIntensity(splashed);
+                    EntityUtils.applyPotionEffectWithIntensity(effect, splashed, intensity, intensity);
                 }
             }
         }
