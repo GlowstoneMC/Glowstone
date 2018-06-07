@@ -6,6 +6,7 @@ import static org.mockito.Matchers.eq;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
+import net.glowstone.command.CommandTestWithFakePlayers;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,13 +44,6 @@ public class SpawnPointCommandTest extends CommandTestWithFakePlayers<SpawnPoint
         Mockito.when(world.getMaxHeight()).thenReturn(50);
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(world);
-    }
-
-    @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
-        Mockito.verify(sender).sendMessage(eq(ChatColor.RED
-            + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
 
     @Test

@@ -26,7 +26,7 @@ public class GameRuleCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
         if (args.length == 0) {

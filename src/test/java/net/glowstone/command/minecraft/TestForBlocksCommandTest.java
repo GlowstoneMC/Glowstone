@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandTest;
 import net.glowstone.testutils.InMemoryBlockStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

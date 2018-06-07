@@ -1,4 +1,4 @@
-package net.glowstone.command.minecraft;
+package net.glowstone.command;
 
 import java.util.function.Supplier;
 import net.glowstone.GlowServer;

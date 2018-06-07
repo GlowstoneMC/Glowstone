@@ -25,7 +25,7 @@ public class SetWorldSpawnCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
 
         Location spawnLocation;

@@ -37,7 +37,7 @@ public class EffectCommand extends VanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         if (!testPermission(sender)) {
-            return false;
+            return true;
         }
 
         if (args.length < 2) {

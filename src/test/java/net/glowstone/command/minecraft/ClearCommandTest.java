@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import net.glowstone.command.CommandTestWithFakePlayers;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.inventory.GlowPlayerInventory;
 import org.bukkit.Bukkit;

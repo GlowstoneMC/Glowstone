@@ -1,4 +1,4 @@
-package net.glowstone.command.minecraft;
+package net.glowstone.command;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -39,9 +39,13 @@ public abstract class CommandTest<T extends Command> {
         this.commandSupplier = commandSupplier;
     }
 
+    /**
+     * Expects execution without permission to fail. For commands that don't require any
+     * permission, this should be overridden to expect success instead.
+     */
     @Test
-    public void testExecuteFailsWithoutPermission() {
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
+    public void testExecuteWithoutPermission() {
+        assertThat(command.execute(sender, "label", new String[0]), is(true));
         Mockito.verify(sender).sendMessage(eq(ChatColor.RED
             + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
     }
