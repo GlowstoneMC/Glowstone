@@ -3539,8 +3539,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         digging.breakNaturally(tool);
         // Send block status to clients
         Location dugLocation = digging.getLocation();
-        world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(dugLocation,
-                Material.AIR, (byte) 0));
+        // OK to use sequential stream here, because sendBlockChange is async
+        world.getRawPlayers().stream()
+                .filter(player -> player.canSeeChunk(GlowChunk.Key.to(dugLocation.getChunk())))
+                .forEach(player -> player.sendBlockChange(dugLocation, Material.AIR, (byte) 0));
         setDigging(null);
     }
 
