@@ -3,7 +3,6 @@ package net.glowstone.entity.projectile;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,19 +46,19 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
         }
         double y = location.getY();
         Map<LivingEntity, Double> affectedIntensities = new HashMap<>();
-        for (LivingEntity entity : world.getLivingEntities()) {
-            Location entityLocation = entity.getLocation();
-            double verticalOffset = entityLocation.getY() - y;
-            if (verticalOffset <= MAX_VERTICAL_DISTANCE
-                    && verticalOffset >= -MAX_VERTICAL_DISTANCE) {
-                double distanceFractionSquared
-                        = entityLocation.distanceSquared(location) / MAX_DISTANCE_SQUARED;
-                if (distanceFractionSquared < 1) {
-                    // intensity is 1 - (distance / max distance)
-                    affectedIntensities.put(entity, 1 - Math.sqrt(distanceFractionSquared));
-                }
+        world.getLivingEntities().stream().forEach(entity -> {
+            Location entityLoc = entity.getLocation();
+            double verticalOffset = entityLoc.getY() - y;
+            if (verticalOffset > MAX_VERTICAL_DISTANCE
+                    || verticalOffset < -MAX_VERTICAL_DISTANCE) {
+                return;
             }
-        }
+            double distFractionSquared = entityLoc.distanceSquared(location) / MAX_DISTANCE_SQUARED;
+            if (distFractionSquared < 1) {
+                // intensity is 1 - (distance / max distance)
+                affectedIntensities.put(entity, 1 - Math.sqrt(distFractionSquared));
+            }
+        });
         PotionSplashEvent event = EventFactory.getInstance().callEvent(
                 new PotionSplashEvent(this, affectedIntensities));
         if (!event.isCancelled()) {
