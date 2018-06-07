@@ -50,8 +50,8 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
                         && temporaryImmunities.getOrDefault(entity, Long.MIN_VALUE) <= currentTick
                         && location.distanceSquared(entity.getLocation()) < radius * radius) {
                     customEffects.values().forEach(
-                            effect -> EntityUtils.applyPotionEffectWithIntensity(
-                                    effect, (LivingEntity) entity, 0.5, 0.25));
+                        effect -> EntityUtils.applyPotionEffectWithIntensity(
+                                effect, (LivingEntity) entity, 0.5, 0.25));
                     temporaryImmunities.put((LivingEntity) entity,
                             currentTick + reapplicationDelay);
                 }

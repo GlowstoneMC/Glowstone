@@ -9,7 +9,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class GlowLingeringPotion extends GlowSplashPotion implements LingeringPotion {
     public GlowLingeringPotion(Location location) {
