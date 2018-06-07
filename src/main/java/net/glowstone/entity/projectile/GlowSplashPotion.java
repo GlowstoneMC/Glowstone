@@ -2,13 +2,18 @@ package net.glowstone.entity.projectile;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.EventFactory;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.SplashPotion;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -41,13 +46,36 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
             return;
         }
         double y = location.getY();
+        Map<LivingEntity, Double> affectedIntensities = new HashMap<>();
         for (LivingEntity entity : world.getLivingEntities()) {
             Location entityLocation = entity.getLocation();
             double verticalOffset = entityLocation.getY() - y;
             if (verticalOffset <= MAX_VERTICAL_DISTANCE
-                    && verticalOffset >= -MAX_VERTICAL_DISTANCE
-                    && entityLocation.distanceSquared(location) < MAX_DISTANCE_SQUARED) {
-                entity.addPotionEffects(effects);
+                    && verticalOffset >= -MAX_VERTICAL_DISTANCE) {
+                double distanceFractionSquared
+                        = entityLocation.distanceSquared(location) / MAX_DISTANCE_SQUARED;
+                if (distanceFractionSquared < 1) {
+                    // intensity is 1 - (distance / max distance)
+                    affectedIntensities.put(entity, 1 - Math.sqrt(distanceFractionSquared));
+                }
+            }
+        }
+        PotionSplashEvent event = EventFactory.getInstance().callEvent(
+                new PotionSplashEvent(this, affectedIntensities));
+        if (!event.isCancelled()) {
+            for (LivingEntity entity : event.getAffectedEntities()) {
+                double intensity = event.getIntensity(entity);
+                for (PotionEffect effect : getEffects()) {
+                    // TODO: Apply intensity to Healing and Harming
+                    entity.addPotionEffect(intensity >= 1.0 ? effect : new PotionEffect(
+                            // FIXME: PotionEffect needs a builder class for situations like this
+                            effect.getType(),
+                            (int) (effect.getDuration() * intensity),
+                            effect.getAmplifier(),
+                            effect.isAmbient(),
+                            effect.hasParticles(),
+                            effect.getColor()));
+                }
             }
         }
         remove();
