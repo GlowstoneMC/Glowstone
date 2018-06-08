@@ -29,7 +29,7 @@ public class EntityUtils {
         if (!event.isCancelled()) {
             target.setHealth(Math.min(
                     target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(),
-                    target.getHealth() + amount));
+                    target.getHealth() + event.getAmount()));
         }
     }
 
