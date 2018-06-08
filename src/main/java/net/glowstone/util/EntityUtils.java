@@ -51,7 +51,8 @@ public class EntityUtils {
             heal(target, (2 << baseAmplifier) * instantIntensity,
                     EntityRegainHealthEvent.RegainReason.MAGIC);
         } else if (type.equals(PotionEffectType.HARM)) {
-            target.damage(3 << baseAmplifier, EntityDamageEvent.DamageCause.MAGIC);
+            target.damage((3 << baseAmplifier) * instantIntensity,
+                    EntityDamageEvent.DamageCause.MAGIC);
         } else if (type.isInstant()) {
             // Custom instant potion effect: can't partially apply, so scale amplifier down instead
             // (but never reduce it to zero)
