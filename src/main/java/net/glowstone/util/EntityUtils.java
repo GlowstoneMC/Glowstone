@@ -24,12 +24,15 @@ public class EntityUtils {
         if (target.isDead()) {
             return; // too late!
         }
+        final double maxHealth = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        final double currentHealth = target.getHealth();
+        if (currentHealth >= maxHealth) {
+            return;
+        }
         EntityRegainHealthEvent event = new EntityRegainHealthEvent(target, amount, reason);
         EventFactory.getInstance().callEvent(event);
         if (!event.isCancelled()) {
-            target.setHealth(Math.min(
-                    target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(),
-                    target.getHealth() + event.getAmount()));
+            target.setHealth(Math.min(maxHealth, currentHealth + event.getAmount()));
         }
     }
 
