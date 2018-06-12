@@ -151,6 +151,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -3400,7 +3401,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             // remove the animation
             broadcastBlockBreakAnimation(digging, 10);
         } else {
-            double hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
+            double hardness = block.getMaterialValues().getHardness();
+            if (hardness >= Float.MAX_VALUE) {
+                // This block can't be broken by digging.
+                setDigging(null);
+                return;
+            }
             double breakingTimeMultiplier = 5; // default of 5 when using bare hands
             ItemStack tool = getItemInHand();
             if (tool != null) {
@@ -3412,11 +3418,25 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 } else {
                     ToolType effectiveTool = block.getMaterialValues().getTool();
                     if (effectiveTool != null && effectiveTool.matches(toolType)) {
-                        breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
+                        double miningMultiplier = ToolType.getMiningMultiplier(toolType);
+                        int efficiencyLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
+                        if (efficiencyLevel > 0) {
+                            miningMultiplier += efficiencyLevel * efficiencyLevel + 1;
+                        }
+                        breakingTimeMultiplier = 1.5 / miningMultiplier;
+                    } else if (effectiveTool == null
+                            || !effectiveTool.matches(Material.DIAMOND_PICKAXE)) {
+                        // If the current tool isn't optimal but can still mine the block, the
+                        // multiplier is 1.5. Here, we assume for simplicity that this is true of
+                        // all non-pickaxe blocks.
+                        // FIXME: Does this always match vanilla?
+                        breakingTimeMultiplier = 1.5;
                     }
                 }
             }
-            totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
+            // TODO: status effects (e.g. Mining Fatigue, Slowness); effect of underwater digging
+            totalDiggingTicks = (long)
+                (breakingTimeMultiplier * hardness * 20.0 + 0.5); // seconds to ticks, round half-up
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
         }
@@ -3434,16 +3454,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
         GlowChunk.Key key = GlowChunk.Key.of(block.getX() >> 4, block.getZ() >> 4);
         block.getWorld().getRawPlayers().stream()
-                .filter(player -> player.canSeeChunk(key) && player != this)
+                .filter(player -> player != this && player.canSeeChunk(key))
                 .forEach(player -> player
                         .sendBlockBreakAnimation(block.getLocation(), destroyStage));
     }
 
     private void pulseDigging() {
         ++diggingTicks;
-
-        if (diggingTicks < totalDiggingTicks) {
-            int stage = (int) (10 * (double) diggingTicks / totalDiggingTicks);
+        if (diggingTicks <= totalDiggingTicks) {
+            // diggingTicks starts at 1 and progresses to totalDiggingTicks, but animation stages
+            // are 0 through 9, so subtract 1 from the current tick
+            int stage = (int) (10.0 * ((double) (diggingTicks - 1)) / totalDiggingTicks);
             broadcastBlockBreakAnimation(digging, stage);
             return;
         }
@@ -3511,15 +3532,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             for (int i = 0; i < baseDamage; i++) {
                 tool = InventoryUtil.damageItem(this, tool);
             }
-            // Force-update item
-            setItemInHand(tool);
-            // Break the block
-            digging.breakNaturally(tool);
-            // Send block status to clients
-            world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
-                    digging.getLocation(), Material.AIR, (byte) 0));
-            setDigging(null);
         }
+        // Force-update item
+        setItemInHand(tool);
+        // Break the block
+        digging.breakNaturally(tool);
+        // Send block status to clients
+        Location dugLocation = digging.getLocation();
+        // OK to use sequential stream here, because sendBlockChange is async
+        world.getRawPlayers().stream()
+                .filter(player -> player.canSeeChunk(GlowChunk.Key.to(dugLocation.getChunk())))
+                .forEach(player -> player.sendBlockChange(dugLocation, Material.AIR, (byte) 0));
+        setDigging(null);
     }
 
     /**

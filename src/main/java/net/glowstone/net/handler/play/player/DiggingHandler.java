@@ -1,5 +1,7 @@
 package net.glowstone.net.handler.play.player;
 
+import static net.glowstone.net.message.play.player.DiggingMessage.START_DIGGING;
+
 import com.flowpowered.network.MessageHandler;
 import java.util.Collection;
 import java.util.Objects;
@@ -51,94 +53,98 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         boolean blockBroken = false;
         boolean revert = false;
-        if (message.getState() == DiggingMessage.START_DIGGING) {
-            if (block.equals(player.getDigging()) || block.isLiquid()) {
-                return;
-            }
-            // call interact event
-            Action action = Action.LEFT_CLICK_BLOCK;
-            Block eventBlock = block;
-            if (player.getLocation().distanceSquared(block.getLocation()) > 36
-                || block.getTypeId() == 0) {
-                action = Action.LEFT_CLICK_AIR;
-                eventBlock = null;
-            }
-            PlayerInteractEvent interactEvent = eventFactory
-                .onPlayerInteract(player, action, EquipmentSlot.HAND, eventBlock, face);
-
-            // blocks don't get interacted with on left click, so ignore that
-            // attempt to use item in hand, that is, dig up the block
-            if (!BlockPlacementHandler.selectResult(interactEvent.useItemInHand(), true)) {
-                // the event was cancelled, get out of here
-                revert = true;
-            } else if (player.getGameMode() != GameMode.SPECTATOR) {
-                player.setDigging(null);
-                // emit damage event - cancel by default if holding a sword
-                boolean instaBreak = player.getGameMode() == GameMode.CREATIVE
-                    || block.getMaterialValues().getHardness() == 0;
-                BlockDamageEvent damageEvent = new BlockDamageEvent(player, block,
-                    player.getItemInHand(), instaBreak);
-                if (player.getGameMode() == GameMode.CREATIVE && holding != null
-                    && EnchantmentTarget.WEAPON.includes(holding.getType())) {
-                    damageEvent.setCancelled(true);
+        switch (message.getState()) {
+            case START_DIGGING:
+                if (block.equals(player.getDigging()) || block.isLiquid()) {
+                    return;
                 }
-                eventFactory.callEvent(damageEvent);
+                // call interact event
+                Action action = Action.LEFT_CLICK_BLOCK;
+                Block eventBlock = block;
+                if (player.getLocation().distanceSquared(block.getLocation()) > 36
+                        || block.getTypeId() == 0) {
+                    action = Action.LEFT_CLICK_AIR;
+                    eventBlock = null;
+                }
+                PlayerInteractEvent interactEvent = eventFactory
+                        .onPlayerInteract(player, action, EquipmentSlot.HAND, eventBlock, face);
 
-                // follow orders
-                if (damageEvent.isCancelled()) {
+                // blocks don't get interacted with on left click, so ignore that
+                // attempt to use item in hand, that is, dig up the block
+                if (!BlockPlacementHandler.selectResult(interactEvent.useItemInHand(), true)) {
+                    // the event was cancelled, get out of here
                     revert = true;
-                } else {
-                    // in creative, break even if denied in the event, or the block
-                    // can never be broken (client does not send DONE_DIGGING).
-                    blockBroken = damageEvent.getInstaBreak();
-                    if (!blockBroken) {
-                        /// TODO: add a delay here based on hardness
-                        player.setDigging(block);
+                } else if (player.getGameMode() != GameMode.SPECTATOR) {
+                    player.setDigging(null);
+                    // emit damage event - cancel by default if holding a sword
+                    boolean instaBreak = player.getGameMode() == GameMode.CREATIVE
+                            || block.getMaterialValues().getHardness() == 0;
+                    BlockDamageEvent damageEvent = new BlockDamageEvent(player, block,
+                            player.getItemInHand(), instaBreak);
+                    if (player.getGameMode() == GameMode.CREATIVE && holding != null
+                            && EnchantmentTarget.WEAPON.includes(holding.getType())) {
+                        damageEvent.setCancelled(true);
+                    }
+                    eventFactory.callEvent(damageEvent);
+
+                    // follow orders
+                    if (damageEvent.isCancelled()) {
+                        revert = true;
+                    } else {
+                        // in creative, break even if denied in the event, or the block
+                        // can never be broken (client does not send DONE_DIGGING).
+                        blockBroken = damageEvent.getInstaBreak();
+                        if (!blockBroken) {
+                            /// TODO: add a delay here based on hardness
+                            player.setDigging(block);
+                        }
                     }
                 }
-            }
-        } else if (message.getState() == DiggingMessage.CANCEL_DIGGING) {
-            player.setDigging(null);
-        } else if (message.getState() == DiggingMessage.FINISH_DIGGING) {
-            // Update client with block if digging isn't actually finished
-            // (FINISH_DIGGING is client's guess based on wall-clock time, not ticks, and is
-            // untrusted)
-            if (!block.isEmpty()) {
+                break;
+            case DiggingMessage.CANCEL_DIGGING:
+                player.setDigging(null);
+                break;
+            case DiggingMessage.FINISH_DIGGING:
+                // Update client with block
+                // (FINISH_DIGGING is client's guess based on wall-clock time, not ticks, and is
+                // untrusted)
                 player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
-            }
-        } else if (message.getState() == DiggingMessage.STATE_DROP_ITEM) {
-            player.dropItemInHand(false);
-            return;
-        } else if (message.getState() == DiggingMessage.STATE_DROP_ITEMSTACK) {
-            player.dropItemInHand(true);
-            return;
-        } else if (message.getState() == DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING
-            && player.getUsageItem() != null) {
-            if (Objects.equals(player.getUsageItem(), holding)) {
-                ItemType type = ItemTable.instance().getItem(player.getUsageItem().getType());
-                if (type != null && type instanceof ItemTimedUsage) {
-                    ((ItemTimedUsage) type).endUse(player, player.getUsageItem());
-                } else {
-                    // todo: inform the player that this item cannot be consumed/used
+                break;
+            case DiggingMessage.STATE_DROP_ITEM:
+                player.dropItemInHand(false);
+                return;
+            case DiggingMessage.STATE_DROP_ITEMSTACK:
+                player.dropItemInHand(true);
+                return;
+            case DiggingMessage.STATE_SHOT_ARROW_FINISH_EATING:
+                final ItemStack usageItem = player.getUsageItem();
+                if (usageItem != null) {
+                    if (Objects.equals(usageItem, holding)) {
+                        ItemType type = ItemTable.instance().getItem(usageItem.getType());
+                        if (type != null && type instanceof ItemTimedUsage) {
+                            ((ItemTimedUsage) type).endUse(player, usageItem);
+                        } else {
+                            // todo: inform the player that this item cannot be consumed/used
+                        }
+                    } else {
+                        // todo: verification against malicious clients
+                        // todo: inform player their item is wrong
+                    }
                 }
-            } else {
-                // todo: verification against malicious clients
-                // todo: inform player their item is wrong
-            }
-            return;
-        } else if (message.getState() == DiggingMessage.SWAP_ITEM_IN_HAND) {
-            ItemStack main = player.getInventory().getItemInMainHand();
-            ItemStack off = player.getInventory().getItemInOffHand();
-            PlayerSwapHandItemsEvent event = EventFactory.getInstance().callEvent(
-                    new PlayerSwapHandItemsEvent(player, off, main));
-            if (!event.isCancelled()) {
-                player.getInventory().setItemInOffHand(main);
-                player.getInventory().setItemInMainHand(off);
-                player.updateInventory();
-            }
-            return;
-        } else {
-            return;
+                return;
+            case DiggingMessage.SWAP_ITEM_IN_HAND:
+                ItemStack main = player.getInventory().getItemInMainHand();
+                ItemStack off = player.getInventory().getItemInOffHand();
+                PlayerSwapHandItemsEvent event = EventFactory.getInstance().callEvent(
+                        new PlayerSwapHandItemsEvent(player, off, main));
+                if (!event.isCancelled()) {
+                    player.getInventory().setItemInOffHand(main);
+                    player.getInventory().setItemInMainHand(off);
+                    player.updateInventory();
+                }
+                return;
+            default:
+                return;
         }
 
         if (blockBroken && !revert) {
@@ -152,7 +158,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             MaterialData data = block.getState().getData();
             if (data instanceof DoublePlant) {
                 if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX && block
-                    .getRelative(BlockFace.DOWN).getState().getData() instanceof DoublePlant) {
+                        .getRelative(BlockFace.DOWN).getState().getData() instanceof DoublePlant) {
                     block = block.getRelative(BlockFace.DOWN);
                 }
             }
@@ -164,11 +170,11 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
             // destroy the block
             if (!block.isEmpty() && !block.isLiquid() && (player.getGameMode() != GameMode.CREATIVE
-                || blockType instanceof BlockContainer) && world.getGameRuleMap()
-                .getBoolean("doTileDrops")) {
+                    || blockType instanceof BlockContainer) && world.getGameRuleMap()
+                    .getBoolean("doTileDrops")) {
                 Collection<ItemStack> drops = blockType.getDrops(block, holding);
                 if (blockType instanceof BlockContainer
-                    && player.getGameMode() == GameMode.CREATIVE) {
+                        && player.getGameMode() == GameMode.CREATIVE) {
                     drops = ((BlockContainer) blockType).getContentDrops(block);
                 }
                 for (ItemStack drop : drops) {
@@ -182,7 +188,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
             // STEP_SOUND actually is the block break particles
             world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64,
-                player);
+                    player);
             GlowBlockState state = block.getState();
             block.setType(Material.AIR);
             if (blockType != null) {

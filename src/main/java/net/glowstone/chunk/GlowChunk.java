@@ -825,6 +825,10 @@ public class GlowChunk implements Chunk {
             return keys.computeIfAbsent(id, l -> new Key(x, z));
         }
 
+        public static Key to(Chunk chunk) {
+            return of(chunk.getX(), chunk.getZ());
+        }
+
         @Override
         public int hashCode() {
             return hashCode;
