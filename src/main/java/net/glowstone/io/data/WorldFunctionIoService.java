@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.data.CommandFunction;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.FunctionIoService;
 
 public class WorldFunctionIoService implements FunctionIoService {
@@ -36,7 +36,7 @@ public class WorldFunctionIoService implements FunctionIoService {
                 functions.addAll(namespaceFunctions);
             }
         } catch (IOException ex) {
-            LocalizedStrings.Console.Error.Function.FILE_READ.log(ex, world.getName());
+            ConsoleMessages.Error.Function.FILE_READ.log(ex, world.getName());
         }
         return functions;
     }

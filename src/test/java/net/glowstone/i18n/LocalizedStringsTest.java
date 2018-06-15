@@ -112,11 +112,11 @@ public class LocalizedStringsTest {
     }
 
     /**
-     * This test verifies that each {@link LocalizedString} instance in {@link LocalizedStrings}
-     * corresponds to an entry in {@code strings.properties}, and that each entry in
-     * {@code strings.properties} corresponds to <em>at least</em> one {@link LocalizedString}. More
-     * than one are allowed for the same entry, since a string may be used for logging at multiple
-     * levels.
+     * This test verifies that each {@link LocalizedString} instance in {@link ConsoleMessages} and
+     * {@link GlowstoneMessages} corresponds to an entry in {@code strings.properties}, and that
+     * each entry in {@code strings.properties} corresponds to <em>at least</em> one
+     * {@link LocalizedString}. More than one are allowed for the same entry, since a string may be
+     * used for logging at multiple levels.
      *
      * @throws Exception if refactoring causes reflection issues
      */
@@ -126,13 +126,15 @@ public class LocalizedStringsTest {
         final Set<String> unusedKeys = new HashSet<>(bundleKeys);
         final Set<String> missingRegisteredKeys = new HashSet<>();
 
-        Deque<Class<?>> classesToScan = new ArrayDeque<>(Arrays.asList(LocalizedStrings.class.getDeclaredClasses()));
+        Deque<Class<?>> classesToScan = new ArrayDeque<>(Arrays.asList(
+                ConsoleMessages.class.getDeclaredClasses()));
+        classesToScan.addAll(Arrays.asList(GlowstoneMessages.class.getDeclaredClasses()));
         while (!classesToScan.isEmpty()) {
             Class<?> innerClass = classesToScan.removeFirst();
             classesToScan.addAll(Arrays.asList(innerClass.getDeclaredClasses()));
             for (Field field : innerClass.getDeclaredFields()) {
                 if (Modifier.isStatic(field.getModifiers())
-                    && Modifier.isFinal(field.getModifiers())) {
+                        && Modifier.isFinal(field.getModifiers())) {
                     Object value = field.get(null);
                     if (value instanceof LocalizedStringImpl) {
                         validateLocalizedString(bundleKeys, missingRegisteredKeys, unusedKeys,
@@ -147,12 +149,12 @@ public class LocalizedStringsTest {
         }
 
         assertTrue("Resource file contains unused keys: " + unusedKeys, unusedKeys.isEmpty());
-        assertTrue("LocalizedStrings refers to nonexistent keys: " + missingRegisteredKeys,
+        assertTrue("Nonexistent keys are being referenced: " + missingRegisteredKeys,
                 missingRegisteredKeys.isEmpty());
     }
 
     private void validateLocalizedString(Set<String> bundleKeys, Set<String> missingRegisteredKeys,
-            Set<String> unusedKeys, LocalizedStringImpl localized) {
+                                         Set<String> unusedKeys, LocalizedStringImpl localized) {
         String key = localized.getKey();
         if (bundleKeys.contains(key)) {
             unusedKeys.remove(key);

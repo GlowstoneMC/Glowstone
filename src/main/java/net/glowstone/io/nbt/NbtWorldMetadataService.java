@@ -11,7 +11,7 @@ import java.util.UUID;
 import net.glowstone.GlowWorld;
 import net.glowstone.GlowWorldBorder;
 import net.glowstone.ServerProvider;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.WorldMetadataService;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
@@ -44,7 +44,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
         server = ServerProvider.getServer();
 
         if (!dir.isDirectory() && !dir.mkdirs()) {
-            LocalizedStrings.Console.Error.Io.MKDIR.log(dir);
+            ConsoleMessages.Error.Io.MKDIR.log(dir);
         }
     }
 
@@ -71,7 +71,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
             try (NbtInputStream in = new NbtInputStream(new FileInputStream(levelFile))) {
                 CompoundTag levelOuter = in.readCompound();
                 level = levelOuter.tryGetCompound("Data").orElseGet(() -> {
-                    LocalizedStrings.Console.Warn.Io.NO_WORLD_DATA_TAG.log(world.getName());
+                    ConsoleMessages.Warn.Io.NO_WORLD_DATA_TAG.log(world.getName());
                     return levelOuter;
                 });
             } catch (IOException e) {
@@ -159,7 +159,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
         // strip single-player Player tag if it exists
         if (level.isCompound("Player")) {
-            LocalizedStrings.Console.Warn.Io.REMOVING_SINGLE_PLAYER.log(world.getName());
+            ConsoleMessages.Warn.Io.REMOVING_SINGLE_PLAYER.log(world.getName());
             level.remove("Player");
         }
 
@@ -171,7 +171,7 @@ public class NbtWorldMetadataService implements WorldMetadataService {
 
     private void handleWorldException(String file, IOException e) {
         server.unloadWorld(world, false);
-        LocalizedStrings.Console.Error.Io.WORLD_READ.log(e, file, world.getName());
+        ConsoleMessages.Error.Io.WORLD_READ.log(e, file, world.getName());
     }
 
     @Override

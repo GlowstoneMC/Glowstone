@@ -3,7 +3,7 @@ package net.glowstone.io.structure;
 import java.util.HashMap;
 import java.util.Map;
 import net.glowstone.generator.structures.GlowStructurePiece;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.util.nbt.CompoundTag;
 
 /**
@@ -63,7 +63,7 @@ public final class StructurePieceStorage {
         }
         StructurePieceStore<?> store = idTable.get(compound.getString("id"));
         if (store == null) {
-            LocalizedStrings.Console.Error.Structure.UNKNOWN_PIECE_TYPE.log(
+            ConsoleMessages.Error.Structure.UNKNOWN_PIECE_TYPE.log(
                 compound.getString("id"));
             return null;
         }

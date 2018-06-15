@@ -12,8 +12,9 @@ import java.util.concurrent.FutureTask;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.i18n.LocalizedStrings;
-import net.glowstone.i18n.LocalizedStrings.Glowstone.Kick;
+import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.GlowstoneMessages;
+import net.glowstone.i18n.GlowstoneMessages.Kick;
 import net.glowstone.scheduler.GlowScheduler;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
@@ -74,11 +75,11 @@ public class EventFactory {
             try {
                 return task.get();
             } catch (InterruptedException e) {
-                LocalizedStrings.Console.Warn.Event.INTERRUPTED.log(e,
+                ConsoleMessages.Warn.Event.INTERRUPTED.log(e,
                         event.getClass().getSimpleName());
                 return event;
             } catch (CancellationException e) {
-                LocalizedStrings.Console.Warn.Event.SHUTDOWN.log(event.getClass().getSimpleName());
+                ConsoleMessages.Warn.Event.SHUTDOWN.log(event.getClass().getSimpleName());
                 return event;
             } catch (ExecutionException e) {
                 throw new RuntimeException(e); // No checked exceptions declared for callEvent
@@ -187,7 +188,7 @@ public class EventFactory {
 
     public PlayerJoinEvent onPlayerJoin(Player player) {
         return callEvent(new PlayerJoinEvent(player,
-                LocalizedStrings.Glowstone.Player.JOINED.get(ChatColor.YELLOW, player.getName())));
+                GlowstoneMessages.Player.JOINED.get(ChatColor.YELLOW, player.getName())));
     }
 
     public PlayerKickEvent onPlayerKick(Player player, String reason) {
@@ -196,7 +197,7 @@ public class EventFactory {
 
     public PlayerQuitEvent onPlayerQuit(Player player) {
         return callEvent(new PlayerQuitEvent(player,
-                LocalizedStrings.Glowstone.Player.LEFT.get(ChatColor.YELLOW, player.getName())));
+                GlowstoneMessages.Player.LEFT.get(ChatColor.YELLOW, player.getName())));
     }
 
     /**

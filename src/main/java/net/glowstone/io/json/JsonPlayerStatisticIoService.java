@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.util.StatisticMap;
 import org.json.simple.JSONObject;
@@ -33,7 +33,7 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
      */
     private File getPlayerFile(UUID uuid) {
         if (!statsDir.isDirectory() && !statsDir.mkdirs()) {
-            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(statsDir);
+            ConsoleMessages.Warn.Io.MKDIR_FAILED.log(statsDir);
         }
         return new File(statsDir, uuid + ".json");
     }
@@ -63,7 +63,7 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
                             longValue = (Long) object.get("value"); // NON-NLS
                         }
                     } else {
-                        LocalizedStrings.Console.Warn.Io.JSON_STAT_UNKNOWN.log(
+                        ConsoleMessages.Warn.Io.JSON_STAT_UNKNOWN.log(
                                 entry.getKey(), entry.getValue(),
                                 entry.getValue().getClass().getSimpleName());
                     }
