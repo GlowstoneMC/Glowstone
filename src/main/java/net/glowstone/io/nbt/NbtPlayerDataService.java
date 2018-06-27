@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 import net.glowstone.GlowOfflinePlayer;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
@@ -39,7 +40,7 @@ public class NbtPlayerDataService implements PlayerDataService {
 
     private File getPlayerFile(UUID uuid) {
         if (!playerDir.isDirectory() && !playerDir.mkdirs()) {
-            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(playerDir);
+            ConsoleMessages.Warn.Io.MKDIR_FAILED.log(playerDir);
         }
         return new File(playerDir, uuid + ".dat");
     }
@@ -96,8 +97,8 @@ public class NbtPlayerDataService implements PlayerDataService {
             try (NbtInputStream in = new NbtInputStream(new FileInputStream(playerFile))) {
                 playerTag = in.readCompound();
             } catch (IOException e) {
-                player.kickPlayer(LocalizedStrings.Glowstone.Kick.FILE_READ.get());
-                LocalizedStrings.Console.Error.Io.PLAYER_READ.log(e, player.getName(), playerFile);
+                player.kickPlayer(GlowstoneMessages.Kick.FILE_READ.get());
+                ConsoleMessages.Error.Io.PLAYER_READ.log(e, player.getName(), playerFile);
             }
         }
         readDataImpl(player, playerTag);
@@ -111,8 +112,8 @@ public class NbtPlayerDataService implements PlayerDataService {
         try (NbtOutputStream out = new NbtOutputStream(new FileOutputStream(playerFile))) {
             out.writeTag(tag);
         } catch (IOException e) {
-            player.kickPlayer(LocalizedStrings.Glowstone.Kick.FILE_WRITE.get());
-            LocalizedStrings.Console.Error.Io.PLAYER_WRITE.log(e, player.getName(), playerFile);
+            player.kickPlayer(GlowstoneMessages.Kick.FILE_WRITE.get());
+            ConsoleMessages.Error.Io.PLAYER_WRITE.log(e, player.getName(), playerFile);
         }
     }
 
@@ -128,7 +129,7 @@ public class NbtPlayerDataService implements PlayerDataService {
                     tag = in.readCompound();
                     hasPlayed = true;
                 } catch (IOException e) {
-                    LocalizedStrings.Console.Error.Io.PLAYER_READ_UNKNOWN.log(e, playerFile);
+                    ConsoleMessages.Error.Io.PLAYER_READ_UNKNOWN.log(e, playerFile);
                 }
             }
         }

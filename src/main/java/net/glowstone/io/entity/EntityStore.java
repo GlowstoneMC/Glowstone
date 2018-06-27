@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -116,9 +116,9 @@ public abstract class EntityStore<T extends GlowEntity> {
             // note that creating the entity is sufficient to add it to the world
             return EntityStorage.loadEntity(vehicle.getWorld(), compoundTag);
         } catch (UnknownEntityTypeException e) {
-            LocalizedStrings.Console.Warn.Entity.UNKNOWN.log(vehicle, e.getIdOrTag());
+            ConsoleMessages.Warn.Entity.UNKNOWN.log(vehicle, e.getIdOrTag());
         } catch (Exception e) {
-            LocalizedStrings.Console.Warn.Entity.LOADING_ERROR.log(e, vehicle);
+            ConsoleMessages.Warn.Entity.LOADING_ERROR.log(e, vehicle);
         }
         return null;
     }

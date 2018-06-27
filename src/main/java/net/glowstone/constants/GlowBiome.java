@@ -66,7 +66,7 @@ import static org.bukkit.block.Biome.VOID;
 import static org.bukkit.block.Biome.values;
 
 import java.util.Arrays;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import org.bukkit.block.Biome;
 
 /**
@@ -168,7 +168,7 @@ public final class GlowBiome {
         if (id < biomes.length) {
             return biomes[id];
         } else {
-            LocalizedStrings.Console.Error.Biome.UNKNOWN.log(id);
+            ConsoleMessages.Error.Biome.UNKNOWN.log(id);
             return null;
         }
     }

@@ -16,7 +16,7 @@ import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunkSnapshot;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.ChunkIoService;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.io.entity.UnknownEntityTypeException;
@@ -74,11 +74,11 @@ public final class AnvilChunkIoService implements ChunkIoService {
         for (CompoundTag sectionTag : sectionList) {
             int y = sectionTag.getByte("Y"); // NON-NLS
             if (y < 0 || y > GlowChunk.SEC_COUNT) {
-                LocalizedStrings.Console.Warn.Chunk.SECTION_OOB.log(y, chunk);
+                ConsoleMessages.Warn.Chunk.SECTION_OOB.log(y, chunk);
                 continue;
             }
             if (sections[y] != null) {
-                LocalizedStrings.Console.Warn.Chunk.SECTION_DUP.log(y, chunk);
+                ConsoleMessages.Warn.Chunk.SECTION_DUP.log(y, chunk);
                 continue;
             }
             sections[y] = ChunkSection.fromNbt(sectionTag);
@@ -104,9 +104,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 // note that creating the entity is sufficient to add it to the world
                 EntityStorage.loadEntity(chunk.getWorld(), entityTag);
             } catch (UnknownEntityTypeException e) {
-                LocalizedStrings.Console.Warn.Entity.UNKNOWN.log(chunk, e.getIdOrTag());
+                ConsoleMessages.Warn.Entity.UNKNOWN.log(chunk, e.getIdOrTag());
             } catch (Exception e) {
-                LocalizedStrings.Console.Warn.Entity.LOADING_ERROR.log(e, chunk);
+                ConsoleMessages.Warn.Entity.LOADING_ERROR.log(e, chunk);
             }
         });
 
@@ -124,13 +124,13 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     blockEntity.loadNbt(blockEntityTag);
                 } catch (Exception ex) {
                     String id = blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
-                    LocalizedStrings.Console.Error.BlockEntity.READ_ERROR.log(
+                    ConsoleMessages.Error.BlockEntity.READ_ERROR.log(
                             ex, blockEntity.getBlock(), id);
                 }
             } else {
                 String id =
                         blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
-                LocalizedStrings.Console.Warn.BlockEntity.UNKNOWN.log(
+                ConsoleMessages.Warn.BlockEntity.UNKNOWN.log(
                         chunk.getWorld().getName(), tx, ty, tz, id);
             }
         }
@@ -142,7 +142,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             String id = tileTick.getString("i"); // NON-NLS
             Material material = ItemIds.getBlock(id);
             if (material == null) {
-                LocalizedStrings.Console.Warn.Chunk.UNKNOWN_BLOCK_TO_TICK.log(id);
+                ConsoleMessages.Warn.Chunk.UNKNOWN_BLOCK_TO_TICK.log(id);
                 return;
             }
             GlowBlock block = chunk.getBlock(tileX, tileY, tileZ);
