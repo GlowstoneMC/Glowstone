@@ -92,6 +92,16 @@ public class BlockBed extends BlockType {
         }
     }
 
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+                                   Material oldType, byte oldData, Material newType, byte newData) {
+        if (changedBlock.equals(getHead(block)) || changedBlock.equals(getFoot(block))) {
+            if (newType == Material.AIR) {
+                block.setType(Material.AIR);
+            }
+        }
+    }
+
     /**
      * Returns whether a player can spawn within a block of specified material.
      *
