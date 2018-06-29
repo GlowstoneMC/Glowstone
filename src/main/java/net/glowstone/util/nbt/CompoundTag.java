@@ -741,7 +741,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @param key the key to look up
      * @return true if the subtag exists and is a {@code short}; false otherwise
      */
-    public boolean isShort(String key) {
+    public boolean isShort(@NonNls String key) {
         return is(key, ShortTag.class);
     }
 

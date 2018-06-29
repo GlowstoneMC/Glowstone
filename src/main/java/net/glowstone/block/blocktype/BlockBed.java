@@ -92,9 +92,19 @@ public class BlockBed extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        GlowBed bed = (GlowBed)block.getState();
+        GlowBed bed = (GlowBed) block.getState();
         byte data = bed.getColor().getWoolData();
         return Collections.singletonList(new ItemStack(Material.BED, 1, data));
+    }
+
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+                                   Material oldType, byte oldData, Material newType, byte newData) {
+        if (changedBlock.equals(getHead(block)) || changedBlock.equals(getFoot(block))) {
+            if (newType == Material.AIR) {
+                block.setType(Material.AIR);
+            }
+        }
     }
 
     /**
