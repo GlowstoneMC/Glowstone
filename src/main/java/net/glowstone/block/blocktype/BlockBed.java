@@ -92,9 +92,8 @@ public class BlockBed extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        GlowBed bed = (GlowBed) block.getState();
-        byte data = bed.getColor().getWoolData();
-        return Collections.singletonList(new ItemStack(Material.BED, 1, data));
+        return Collections.singletonList(new ItemStack(Material.BED, 1,
+                (((GlowBed) block.getState()).getColor().getWoolData()));
     }
 
     @Override
