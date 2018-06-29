@@ -38,7 +38,9 @@ public class EntityUtils {
 
     /**
      * Applies a potion effect with an intensity ranging from 0.0 for no effect to 1.0 for full
-     * effect.
+     * effect. Intensity above 1.0 have no additional effect, with the exceptions of
+     * {@link PotionEffectType#HEAL} and {@link PotionEffectType#HARM}; the same applies to
+     * negative intensities.
      *
      * @param effect the effect
      * @param target the target to apply the effect to
@@ -57,6 +59,9 @@ public class EntityUtils {
             target.damage((3 << baseAmplifier) * instantIntensity,
                     EntityDamageEvent.DamageCause.MAGIC);
         } else if (type.isInstant()) {
+            if (instantIntensity <= 0.0) {
+                return;
+            }
             // Custom instant potion effect: can't partially apply, so scale amplifier down instead
             // (but never reduce it to zero)
             target.addPotionEffect((instantIntensity >= 1.0 || baseAmplifier <= 1)
@@ -69,6 +74,9 @@ public class EntityUtils {
                             effect.hasParticles(),
                             effect.getColor()));
         } else {
+            if (durationIntensity <= 0.0) {
+                return;
+            }
             target.addPotionEffect(durationIntensity >= 1.0 ? effect : new PotionEffect(
                     type,
                     (int) (effect.getDuration() * durationIntensity),
