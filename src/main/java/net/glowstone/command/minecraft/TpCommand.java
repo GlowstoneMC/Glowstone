@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class TpCommand extends VanillaCommand {
 
@@ -85,7 +86,7 @@ public class TpCommand extends VanillaCommand {
         } else {
             Entity destination = matched[0];
 
-            from.teleport(destination);
+            from.teleport(destination, PlayerTeleportEvent.TeleportCause.COMMAND);
             sender.sendMessage(
                     "Teleported " + CommandUtils.getName(from) + " to " + CommandUtils
                             .getName(destination));
@@ -103,7 +104,7 @@ public class TpCommand extends VanillaCommand {
             Entity destination = matchedDest[0];
 
             for (Entity entity : matchedFrom) {
-                entity.teleport(destination);
+                entity.teleport(destination, PlayerTeleportEvent.TeleportCause.COMMAND);
                 sender.sendMessage(
                         "Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils
                                 .getName(destination));
