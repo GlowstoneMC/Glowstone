@@ -22,7 +22,7 @@ public class TeleportCommand extends VanillaCommand {
     public TeleportCommand() {
         super("teleport",
             "Teleports entities to coordinates relative to the sender",
-            "/teleport <target> <x> <y> <z> [<y-rot> <x-rot>]",
+            "/teleport <target> <x> <y> <z> [<yaw> <pitch>]",
             Collections.emptyList());
         setPermission("minecraft.command.teleport");
     }
