@@ -31,19 +31,30 @@ public class TpCommand extends VanillaCommand {
             return true;
         }
         switch (args.length) {
-            case 0:
-                sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
-                return false;
-
             case 1:
                 return teleportSenderToEntity(sender, args[0]);
 
             case 2:
                 return teleportEntityToEntity(sender, args[0], args[1]);
 
+            case 3:
+                return teleportToLocation(sender, null, args[0], args[1], args[2],
+                        null,null);
+
+            case 4:
+                return teleportToLocation(sender, args[0], args[1], args[2], args[3],
+                        null, null);
+
+            case 5:
+                return teleportToLocation(sender, null, args[0], args[1], args[2],
+                        args[3], args[4]);
+
+            case 6:
+                return teleportToLocation(sender, args[0], args[1], args[2], args[3],
+                        args[4], args[5]);
+
             default:
-                sender.sendMessage(
-                        ChatColor.RED + "Coordinate-based teleporting is not supported yet!");
+                sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
                 return false;
         }
     }
@@ -111,5 +122,38 @@ public class TpCommand extends VanillaCommand {
             }
             return true;
         }
+    }
+
+    private boolean teleportToLocation(CommandSender sender, String name,
+                                       String x, String y, String z,
+                                       String yaw, String pitch) {
+        Entity[] entities;
+        if (name == null) {
+            if (sender instanceof Player) {
+                entities = new Entity[] { (Entity) sender };
+            } else {
+                sender.sendMessage(ChatColor.RED + "Only entities can be teleported");
+                return false;
+            }
+        } else {
+            entities = matchEntities(sender, name);
+            if (entities.length == 0) {
+                return false;
+            }
+        }
+
+        Location location = CommandUtils.getLocation(sender);
+        location = CommandUtils.getLocation(location, x, y, z);
+        if (yaw != null && pitch != null) {
+            location = CommandUtils.getRotation(location, yaw, pitch);
+        }
+
+        for (Entity entity : entities) {
+            entity.teleport(location, PlayerTeleportEvent.TeleportCause.COMMAND);
+            sender.sendMessage(
+                    "Teleported " + CommandUtils.getName(entity) + " to " + location.getX()
+                            + ", " + location.getY() + ", " + location.getZ());
+        }
+        return true;
     }
 }
