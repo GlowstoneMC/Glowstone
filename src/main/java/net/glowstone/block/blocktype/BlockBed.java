@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -25,10 +27,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public class BlockBed extends BlockType {
-
-    public BlockBed() {
-        setDrops(new ItemStack(Material.BED));
-    }
 
     /**
      * Helper method for set whether the specified bed blocks are occupied.
@@ -90,6 +88,12 @@ public class BlockBed extends BlockType {
         } else {
             return block;
         }
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        return Collections.singletonList(new ItemStack(Material.BED, 1,
+                (((GlowBed) block.getState()).getColor().getWoolData())));
     }
 
     @Override
