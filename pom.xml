@@ -14,6 +14,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <api.version>1.12.2-R4.2-SNAPSHOT</api.version>
+    <linkstone.version>1.0.0</linkstone.version>
     <minecraft.version>1.12.2</minecraft.version>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -52,6 +53,16 @@
       <artifactId>slf4j-jdk14</artifactId>
       <version>1.7.25</version>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.glowstone</groupId>
+      <artifactId>linkstone-annotations</artifactId>
+      <version>${linkstone.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.glowstone</groupId>
+      <artifactId>linkstone-runtime</artifactId>
+      <version>${linkstone.version}</version>
     </dependency>
     <dependency>
       <groupId>net.glowstone</groupId>

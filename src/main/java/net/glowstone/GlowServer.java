@@ -54,6 +54,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.Getter;
+import me.aki.linkstone.runtime.FieldAccessBus;
+import me.aki.linkstone.runtime.FieldSet;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
@@ -158,6 +160,8 @@ import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.library.Library;
 import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
+import net.glowstone.util.linkstone.LinkstonePluginLoader;
+import net.glowstone.util.linkstone.LinkstonePluginScanner;
 import net.glowstone.util.loot.LootingManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.BanEntry;
@@ -212,7 +216,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.SimpleServicesManager;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
@@ -221,6 +224,7 @@ import org.jetbrains.annotations.NonNls;
 
 /**
  * The core class of the Glowstone server.
+ *
  *
  * @author Graham Edgecombe
  */
@@ -1244,9 +1248,14 @@ public class GlowServer implements Server {
         pluginTypeDetector = new GlowPluginTypeDetector(folder);
         pluginTypeDetector.scan();
 
+        // scan plugins for @Field annotated fields
+        FieldSet annotatedFields = new FieldSet();
+        FieldAccessBus.setFields(annotatedFields);
+        new LinkstonePluginScanner(annotatedFields).scanPlugins(pluginTypeDetector.bukkitPlugins);
+
         // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();
-        pluginManager.registerInterface(JavaPluginLoader.class);
+        pluginManager.registerInterface(LinkstonePluginLoader.class);
         Plugin[] plugins = pluginManager
                 .loadPlugins(folder.getPath(), pluginTypeDetector.bukkitPlugins
                         .toArray(new File[pluginTypeDetector.bukkitPlugins.size()]));
