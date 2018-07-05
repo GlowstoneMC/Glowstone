@@ -56,6 +56,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import me.aki.linkstone.runtime.FieldAccessBus;
 import me.aki.linkstone.runtime.FieldSet;
+import me.aki.linkstone.runtime.inithook.ClassInitHook;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
 import net.glowstone.block.BuiltinMaterialValueManager;
@@ -160,6 +161,7 @@ import net.glowstone.util.config.WorldConfig;
 import net.glowstone.util.library.Library;
 import net.glowstone.util.library.LibraryKey;
 import net.glowstone.util.library.LibraryManager;
+import net.glowstone.util.linkstone.LinkstoneClassInitObserver;
 import net.glowstone.util.linkstone.LinkstonePluginLoader;
 import net.glowstone.util.linkstone.LinkstonePluginScanner;
 import net.glowstone.util.loot.LootingManager;
@@ -475,6 +477,8 @@ public class GlowServer implements Server {
         whitelist = new UuidListFile(config.getFile("whitelist.json"));
         nameBans = new GlowBanList(this, Type.NAME);
         ipBans = new GlowBanList(this, Type.IP);
+
+        ClassInitHook.register(new LinkstoneClassInitObserver());
 
         loadConfig();
     }
