@@ -27,6 +27,12 @@ public class LinkstonePluginLoader extends JavaPluginLoader {
      */
     public LinkstonePluginLoader(Server instance) {
         super(instance);
+        LinkstoneRuntimeData.setPluginClassLoader(new ClassLoader() {
+            @Override
+            protected Class<?> findClass(String name) throws ClassNotFoundException {
+                return getClassByName(name);
+            }
+        });
     }
 
     @Override
@@ -36,7 +42,7 @@ public class LinkstonePluginLoader extends JavaPluginLoader {
         return new PluginClassLoader(loader, parent, description, dataFolder, file) {
             @Override
             protected byte[] transformBytecode(byte[] bytecode) {
-                ClassWriter cw = new ClassWriter(0);
+                ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
                 ClassVisitor cv = cw;
                 cv = new DirectFieldAccessReplaceVisitor(LinkstoneRuntimeData.getFields(), cv);
