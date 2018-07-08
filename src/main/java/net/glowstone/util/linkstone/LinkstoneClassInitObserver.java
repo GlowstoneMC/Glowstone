@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import me.aki.linkstone.annotations.LField;
 import me.aki.linkstone.runtime.inithook.ClassInitHook;
 import me.aki.linkstone.runtime.inithook.ClassInitInvokeVisitor;
 import me.aki.linkstone.runtime.reflectionredirect.FieldRedirectUtil;
@@ -40,8 +41,8 @@ public class LinkstoneClassInitObserver implements ClassInitHook.Observer {
 
         try {
             for (Field field : getAllFields(clazz)) {
-                me.aki.linkstone.annotations.Field[] annotations =
-                        field.getAnnotationsByType(me.aki.linkstone.annotations.Field.class);
+                LField[] annotations =
+                        field.getAnnotationsByType(LField.class);
 
                 if (annotations.length > 0) {
                     try {

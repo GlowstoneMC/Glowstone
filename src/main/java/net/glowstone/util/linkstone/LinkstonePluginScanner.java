@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import me.aki.linkstone.annotations.Field;
+import me.aki.linkstone.annotations.LField;
 import me.aki.linkstone.runtime.Boxes;
 import me.aki.linkstone.runtime.FieldSet;
 import me.aki.linkstone.runtime.collect.AnnotatedFieldCollectVisitor;
@@ -26,7 +26,7 @@ public class LinkstonePluginScanner {
 
     /**
      * Look through a list of plugins jar files and store all
-     * fields annotated with a {@link Field} annotation.
+     * fields annotated with a {@link LField} annotation.
      *
      * @param pluginJars list of plugins jars to be scanned
      */
