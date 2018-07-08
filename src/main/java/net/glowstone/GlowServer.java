@@ -54,8 +54,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.Getter;
-import me.aki.linkstone.runtime.FieldAccessBus;
+import me.aki.linkstone.runtime.Boxes;
 import me.aki.linkstone.runtime.FieldSet;
+import me.aki.linkstone.runtime.LinkstoneRuntimeData;
 import me.aki.linkstone.runtime.inithook.ClassInitHook;
 import net.glowstone.advancement.GlowAdvancement;
 import net.glowstone.advancement.GlowAdvancementDisplay;
@@ -1252,10 +1253,13 @@ public class GlowServer implements Server {
         pluginTypeDetector = new GlowPluginTypeDetector(folder);
         pluginTypeDetector.scan();
 
-        // scan plugins for @Field annotated fields
+        // scan plugins for @Field and @Box annotated fields
         FieldSet annotatedFields = new FieldSet();
-        FieldAccessBus.setFields(annotatedFields);
-        new LinkstonePluginScanner(annotatedFields).scanPlugins(pluginTypeDetector.bukkitPlugins);
+        Boxes boxes = new Boxes();
+        LinkstoneRuntimeData.setFields(annotatedFields);
+        LinkstoneRuntimeData.setBoxes(boxes);
+        new LinkstonePluginScanner(annotatedFields, boxes)
+                .scanPlugins(pluginTypeDetector.bukkitPlugins);
 
         // clear plugins and prepare to load (Bukkit)
         pluginManager.clearPlugins();

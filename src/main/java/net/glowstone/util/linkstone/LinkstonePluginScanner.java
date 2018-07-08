@@ -8,16 +8,20 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import me.aki.linkstone.annotations.Field;
+import me.aki.linkstone.runtime.Boxes;
 import me.aki.linkstone.runtime.FieldSet;
 import me.aki.linkstone.runtime.collect.AnnotatedFieldCollectVisitor;
+import me.aki.linkstone.runtime.collect.BoxCollectVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 
 public class LinkstonePluginScanner {
     private final FieldSet fields;
+    private final Boxes boxes;
 
-    public LinkstonePluginScanner(final FieldSet fields) {
+    public LinkstonePluginScanner(final FieldSet fields, final Boxes boxes) {
         this.fields = fields;
+        this.boxes = boxes;
     }
 
     /**
@@ -45,6 +49,8 @@ public class LinkstonePluginScanner {
             }
 
             ClassVisitor cv = new AnnotatedFieldCollectVisitor(this.fields);
+            cv = new BoxCollectVisitor(this.boxes, cv);
+
             new ClassReader(zin).accept(cv, ClassReader.SKIP_CODE);
             zin.closeEntry();
         }

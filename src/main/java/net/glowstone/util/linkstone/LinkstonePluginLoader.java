@@ -1,7 +1,11 @@
 package net.glowstone.util.linkstone;
 
 import java.io.File;
-import me.aki.linkstone.runtime.FieldAccessBus;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import me.aki.linkstone.runtime.LinkstoneRuntimeData;
+import me.aki.linkstone.runtime.boxing.BoxPatchVisitor;
 import me.aki.linkstone.runtime.direct.DirectFieldAccessReplaceVisitor;
 import me.aki.linkstone.runtime.inithook.ClassInitInvokeVisitor;
 import me.aki.linkstone.runtime.reflectionredirect.FieldRedirectUtil;
@@ -35,11 +39,12 @@ public class LinkstonePluginLoader extends JavaPluginLoader {
                 ClassWriter cw = new ClassWriter(0);
 
                 ClassVisitor cv = cw;
-                cv = new DirectFieldAccessReplaceVisitor(FieldAccessBus.getFields(), cv);
+                cv = new DirectFieldAccessReplaceVisitor(LinkstoneRuntimeData.getFields(), cv);
                 if (!FieldRedirectUtil.isSupported()) {
                     cv = new ReflectFieldAccessReplaceVisitor(cv);
                 }
                 cv = new ClassInitInvokeVisitor(cv);
+                cv = new BoxPatchVisitor(LinkstoneRuntimeData.getBoxes(), cv);
 
                 new ClassReader(bytecode).accept(cv, 0);
                 return cw.toByteArray();
