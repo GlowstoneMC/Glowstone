@@ -1,9 +1,6 @@
 package net.glowstone.util.linkstone;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import net.glowstone.linkstone.runtime.LinkstoneRuntimeData;
 import net.glowstone.linkstone.runtime.boxing.BoxPatchVisitor;
 import net.glowstone.linkstone.runtime.direct.DirectFieldAccessReplaceVisitor;
