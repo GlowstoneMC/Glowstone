@@ -6,10 +6,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import me.aki.linkstone.annotations.LField;
-import me.aki.linkstone.runtime.inithook.ClassInitHook;
-import me.aki.linkstone.runtime.inithook.ClassInitInvokeVisitor;
-import me.aki.linkstone.runtime.reflectionredirect.FieldRedirectUtil;
+import net.glowstone.linkstone.annotations.LField;
+import net.glowstone.linkstone.runtime.inithook.ClassInitHook;
+import net.glowstone.linkstone.runtime.inithook.ClassInitInvokeVisitor;
+import net.glowstone.linkstone.runtime.reflectionredirect.FieldRedirectUtil;
 
 /**
  * Utility that redirects reflective uses of annotated fields to their getters and setters.

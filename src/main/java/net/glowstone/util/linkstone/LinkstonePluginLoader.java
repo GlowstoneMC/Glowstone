@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import me.aki.linkstone.runtime.LinkstoneRuntimeData;
-import me.aki.linkstone.runtime.boxing.BoxPatchVisitor;
-import me.aki.linkstone.runtime.direct.DirectFieldAccessReplaceVisitor;
-import me.aki.linkstone.runtime.inithook.ClassInitInvokeVisitor;
-import me.aki.linkstone.runtime.reflectionredirect.FieldRedirectUtil;
-import me.aki.linkstone.runtime.reflectionreplace.ReflectFieldAccessReplaceVisitor;
+import net.glowstone.linkstone.runtime.LinkstoneRuntimeData;
+import net.glowstone.linkstone.runtime.boxing.BoxPatchVisitor;
+import net.glowstone.linkstone.runtime.direct.DirectFieldAccessReplaceVisitor;
+import net.glowstone.linkstone.runtime.inithook.ClassInitInvokeVisitor;
+import net.glowstone.linkstone.runtime.reflectionredirect.FieldRedirectUtil;
+import net.glowstone.linkstone.runtime.reflectionreplace.ReflectFieldAccessReplaceVisitor;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;

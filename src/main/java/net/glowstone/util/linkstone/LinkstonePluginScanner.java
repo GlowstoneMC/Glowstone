@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import me.aki.linkstone.annotations.LField;
-import me.aki.linkstone.runtime.Boxes;
-import me.aki.linkstone.runtime.FieldSet;
-import me.aki.linkstone.runtime.collect.AnnotatedFieldCollectVisitor;
-import me.aki.linkstone.runtime.collect.BoxCollectVisitor;
+import net.glowstone.linkstone.annotations.LField;
+import net.glowstone.linkstone.runtime.Boxes;
+import net.glowstone.linkstone.runtime.FieldSet;
+import net.glowstone.linkstone.runtime.collect.AnnotatedFieldCollectVisitor;
+import net.glowstone.linkstone.runtime.collect.BoxCollectVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 
