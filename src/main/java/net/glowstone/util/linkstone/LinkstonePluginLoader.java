@@ -40,6 +40,12 @@ public class LinkstonePluginLoader extends JavaPluginLoader {
         return new PluginClassLoader(loader, parent, description, dataFolder, file) {
             @Override
             protected byte[] transformBytecode(byte[] bytecode) {
+                if (LinkstoneRuntimeData.getFields().isEmpty()
+                        && LinkstoneRuntimeData.getBoxes().isEmpty()) {
+                    // There are no plugins installed that use a @LField or @LBox annotation
+                    // so there's no need for runtime support
+                    return bytecode;
+                }
                 ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
                 ClassVisitor cv = cw;
