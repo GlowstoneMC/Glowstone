@@ -1,12 +1,14 @@
 package net.glowstone.util.linkstone;
 
 import java.io.File;
+
 import net.glowstone.linkstone.runtime.LinkstoneRuntimeData;
 import net.glowstone.linkstone.runtime.boxing.BoxPatchVisitor;
 import net.glowstone.linkstone.runtime.direct.DirectFieldAccessReplaceVisitor;
 import net.glowstone.linkstone.runtime.inithook.ClassInitInvokeVisitor;
-import net.glowstone.linkstone.runtime.reflectionredirect.FieldRedirectUtil;
-import net.glowstone.linkstone.runtime.reflectionreplace.ReflectFieldAccessReplaceVisitor;
+import net.glowstone.linkstone.runtime.reflectionredirect.field.FieldAccessorUtility;
+import net.glowstone.linkstone.runtime.reflectionredirect.method.MethodAccessorUtility;
+import net.glowstone.linkstone.runtime.reflectionreplace.ReflectionReplaceVisitor;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -35,7 +37,6 @@ public class LinkstonePluginLoader extends JavaPluginLoader {
     @Override
     protected PluginClassLoader newPluginLoader(JavaPluginLoader loader, ClassLoader parent,
             PluginDescriptionFile description, File dataFolder, File file) throws Exception {
-
         return new PluginClassLoader(loader, parent, description, dataFolder, file) {
             @Override
             protected byte[] transformBytecode(byte[] bytecode) {
@@ -43,8 +44,8 @@ public class LinkstonePluginLoader extends JavaPluginLoader {
 
                 ClassVisitor cv = cw;
                 cv = new DirectFieldAccessReplaceVisitor(LinkstoneRuntimeData.getFields(), cv);
-                if (!FieldRedirectUtil.isSupported()) {
-                    cv = new ReflectFieldAccessReplaceVisitor(cv);
+                if (!FieldAccessorUtility.isSupported() || !MethodAccessorUtility.isSupported()) {
+                    cv = new ReflectionReplaceVisitor(cv);
                 }
                 cv = new ClassInitInvokeVisitor(cv);
                 cv = new BoxPatchVisitor(LinkstoneRuntimeData.getBoxes(), cv);
