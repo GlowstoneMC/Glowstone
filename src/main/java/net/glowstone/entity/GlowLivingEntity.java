@@ -1251,8 +1251,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public AttributeInstance getAttribute(Attribute attribute) {
-        // todo: 1.11
-        return null;
+        return getAttributeManager().getProperty(Key.fromAttribute(attribute));
     }
 
     @Override

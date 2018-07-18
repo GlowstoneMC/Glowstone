@@ -73,6 +73,16 @@ public class AttributeManager {
     }
 
     /**
+     * Get the property for a certain {@link Key}.
+     *
+     * @param key the kind of property to get
+     * @return the property or {@code null}
+     */
+    public Property getProperty(Key key) {
+        return properties.get(key.toString());
+    }
+
+    /**
      * Updates a property and removes all modifiers.
      *
      * @param key the property to update
@@ -144,6 +154,22 @@ public class AttributeManager {
         public static Key fromName(String name) {
             for (Key key : values()) {
                 if (key.name.equals(name)) {
+                    return key;
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Get the {@link Key} for the corresponding {@link Attribute}.
+         *
+         * @param attribute attribute from Bukkit api
+         * @return key corresponding to the attribute or {@code null}
+         */
+        public static Key fromAttribute(Attribute attribute) {
+            for (Key key : values()) {
+                if (key.getAttribute() == attribute) {
                     return key;
                 }
             }
