@@ -99,17 +99,14 @@ public class AttributeManager {
     }
 
     /**
-     * Returns the base value of the given property.
+     * Returns the base value of the given property with all modifiers applied.
      *
      * @param key the property to look up
      * @return the property's base value, or its default value if it's not set
      */
     public double getPropertyValue(Key key) {
-        if (properties.containsKey(key.toString())) {
-            return properties.get(key.toString()).value;
-        }
-
-        return key.def;
+        Property property = properties.get(key.toString());
+        return property == null ? key.getDef() : property.getValue();
     }
 
     /**
@@ -323,6 +320,8 @@ public class AttributeManager {
                 }
             }
 
+            result = Math.max(result, key.min);
+            result = Math.min(result, key.max);
             return result;
         }
 
