@@ -6,13 +6,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.EntityPropertyMessage;
+import org.bukkit.attribute.AttributeModifier;
 
 /**
  * Manages the attributes described at https://minecraft.gamepedia.com/Attribute
@@ -86,7 +85,7 @@ public class AttributeManager {
      * @param value the new base value
      * @param modifiers the new and retained modifiers, or {@code null} to remove all modifiers
      */
-    public void setProperty(String key, double value, List<Modifier> modifiers) {
+    public void setProperty(String key, double value, List<AttributeModifier> modifiers) {
         if (properties.containsKey(key)) {
             properties.get(key).value = value;
             properties.get(key).modifiers = modifiers;
@@ -180,15 +179,7 @@ public class AttributeManager {
         @Getter
         private double value;
         @Getter
-        private List<Modifier> modifiers;
+        private List<AttributeModifier> modifiers;
     }
 
-    @Data
-    public static class Modifier {
-
-        private final String name;
-        private final UUID uuid;
-        private final double amount;
-        private final byte operation;
-    }
 }
