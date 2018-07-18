@@ -2,6 +2,7 @@ package net.glowstone.io.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,8 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                             AttributeModifier.Operation.values()[modifierTag.getInt("Operation")]));
                 }
             });
-            am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+            AttributeManager.Key key = AttributeManager.Key.fromName(tag.getString("Name"));
+            am.setProperty(key, tag.getDouble("Base"), modifiers);
         });
         Optional<CompoundTag> maybeLeash = compound.tryGetCompound("Leash");
         if (maybeLeash.isPresent()) {
@@ -223,7 +225,7 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
                 attribute.putString("Name", key);
                 attribute.putDouble("Base", property.getValue());
 
-                List<AttributeModifier> modifiers = property.getModifiers();
+                Collection<AttributeModifier> modifiers = property.getModifiers();
                 if (modifiers != null && !modifiers.isEmpty()) {
                     List<CompoundTag> modifierTags = modifiers.stream().map(modifier -> {
                         CompoundTag modifierTag = new CompoundTag();
