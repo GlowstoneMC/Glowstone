@@ -519,7 +519,8 @@ public final class ItemIds {
      * @return the identifier.
      */
     public static String getKeyName(Material mat) {
-        return getName(mat).split(":")[1];
+        String[] segments = getName(mat).split(":");
+        return segments[segments.length - 1];
     }
 
     /**
