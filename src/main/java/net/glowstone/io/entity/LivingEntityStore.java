@@ -2,14 +2,15 @@ package net.glowstone.io.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import net.glowstone.entity.AttributeManager;
-import net.glowstone.entity.AttributeManager.Modifier;
 import net.glowstone.entity.AttributeManager.Property;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.objects.GlowLeashHitch;
@@ -17,6 +18,7 @@ import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LeashHitch;
@@ -89,22 +91,23 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
             if (!tag.isString("Name") || !tag.isDouble("Base")) {
                 return;
             }
-            List<Modifier> modifiers = new ArrayList<>();
+            List<AttributeModifier> modifiers = new ArrayList<>();
             tag.iterateCompoundList("Modifiers", modifierTag -> {
                 if (modifierTag.isDouble("Amount")
                         && modifierTag.isString("Name")
                         && modifierTag.isInt("Operation")
                         && modifierTag.isLong("UUIDLeast")
                         && modifierTag.isLong("UUIDMost")) {
-                    modifiers.add(new Modifier(
-                            modifierTag.getString("Name"),
+                    modifiers.add(new AttributeModifier(
                             new UUID(modifierTag.getLong("UUIDLeast"),
                                     modifierTag.getLong("UUIDMost")),
+                            modifierTag.getString("Name"),
                             modifierTag.getDouble("Amount"),
-                            (byte) modifierTag.getInt("Operation")));
+                            AttributeModifier.Operation.values()[modifierTag.getInt("Operation")]));
                 }
             });
-            am.setProperty(tag.getString("Name"), tag.getDouble("Base"), modifiers);
+            AttributeManager.Key key = AttributeManager.Key.fromName(tag.getString("Name"));
+            am.setProperty(key, tag.getDouble("Base"), modifiers);
         });
         Optional<CompoundTag> maybeLeash = compound.tryGetCompound("Leash");
         if (maybeLeash.isPresent()) {
@@ -213,35 +216,32 @@ public abstract class LivingEntityStore<T extends GlowLivingEntity> extends Enti
         tag.putShort("AttackTime", entity.getNoDamageTicks());
         tag.putBool("FallFlying", entity.isFallFlying());
 
-        AttributeManager am = entity.getAttributeManager();
-        Map<String, Property> properties = am.getAllProperties();
+        Map<String, Property> properties = entity.getAttributeManager().getAllProperties();
         if (!properties.isEmpty()) {
-            List<CompoundTag> attributes = new ArrayList<>();
+            List<CompoundTag> attributes = new ArrayList<>(properties.size());
 
-            for (Entry<String, Property> property : properties.entrySet()) {
+            properties.forEach((key, property) -> {
                 CompoundTag attribute = new CompoundTag();
-                attribute.putString("Name", property.getKey());
+                attribute.putString("Name", key);
+                attribute.putDouble("Base", property.getValue());
 
-                Property p = property.getValue();
-                attribute.putDouble("Base", p.getValue());
-                if (p.getModifiers() != null && !p.getModifiers().isEmpty()) {
-                    List<CompoundTag> modifiers = new ArrayList<>();
-                    for (Modifier modifier : p.getModifiers()) {
+                Collection<AttributeModifier> modifiers = property.getModifiers();
+                if (modifiers != null && !modifiers.isEmpty()) {
+                    List<CompoundTag> modifierTags = modifiers.stream().map(modifier -> {
                         CompoundTag modifierTag = new CompoundTag();
                         modifierTag.putDouble("Amount", modifier.getAmount());
                         modifierTag.putString("Name", modifier.getName());
-                        modifierTag.putInt("Operation", modifier.getOperation());
-                        modifierTag
-                                .putLong("UUIDLeast", modifier.getUuid().getLeastSignificantBits());
-                        modifierTag
-                                .putLong("UUIDMost", modifier.getUuid().getMostSignificantBits());
-                        modifiers.add(modifierTag);
-                    }
-                    attribute.putCompoundList("Modifiers", modifiers);
+                        modifierTag.putInt("Operation", modifier.getOperation().ordinal());
+                        UUID uuid = modifier.getUniqueId();
+                        modifierTag.putLong("UUIDLeast", uuid.getLeastSignificantBits());
+                        modifierTag.putLong("UUIDMost", uuid.getMostSignificantBits());
+                        return modifierTag;
+                    }).collect(Collectors.toList());
+                    attribute.putCompoundList("Modifiers", modifierTags);
                 }
 
                 attributes.add(attribute);
-            }
+            });
 
             tag.putCompoundList("Attributes", attributes);
         }
