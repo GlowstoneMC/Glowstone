@@ -513,7 +513,7 @@ public final class ItemIds {
     }
 
     /**
-     * Get the key sgement of the string identifier for a specified Material.
+     * Get the key segment of the string identifier for a specified Material.
      *
      * @param mat the Material.
      * @return the identifier.
