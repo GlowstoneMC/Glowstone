@@ -144,6 +144,16 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
 
     /**
+     * Returns the value of a numeric subtag.
+     *
+     * @param key the key to look up
+     * @return the numeric tag value
+     */
+    public Number getNumber(String key) {
+        return get(key, NumericTag.class);
+    }
+
+    /**
      * Returns the value of a {@code byte} subtag.
      *
      * @param key the key to look up
@@ -188,7 +198,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
     @Override
     public boolean getBoolean(@NonNls String key) {
-        return getByte(key) != 0;
+        return getNumber(key).byteValue() != 0;
     }
 
 
@@ -200,7 +210,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return the tag value as a boolean, or defaultValue if it's not a byte
      */
     public boolean getBoolean(@NonNls String key, boolean defaultValue) {
-        return isByte(key) ? getBoolean(key) : defaultValue;
+        return isNumeric(key) ? getBoolean(key) : defaultValue;
     }
 
     /**
@@ -726,6 +736,16 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     // Simple is
 
     /**
+     * Test whether the subtag with the given key is of a numeric type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is numeric; false otherwise
+     */
+    public boolean isNumeric(@NonNls String key) {
+        return is(key, NumericTag.class);
+    }
+
+    /**
      * Test whether the subtag with the given key is of {@code byte} type.
      *
      * @param key the key to look up
@@ -981,7 +1001,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
             return false;
         }
         Tag tag = value.get(key);
-        return tag != null && clazz == tag.getClass();
+        return tag != null && clazz.isAssignableFrom(tag.getClass());
     }
 
     void put(String key, Tag tag) {

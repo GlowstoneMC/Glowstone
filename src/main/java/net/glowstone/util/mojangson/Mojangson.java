@@ -89,9 +89,17 @@ public class Mojangson {
                     return parseDouble(
                             mojangson);
                 } catch (MojangsonParseException e2) {
-                    // Couldn't find anything matching it, assuming it is a String.
-                    return parseString(
-                            mojangson);
+                    switch (mojangson) {
+                        case "true":
+                            return new ByteTag((byte)1);
+
+                        case "false":
+                            return new ByteTag((byte)0);
+
+                        default:
+                            // Couldn't find anything matching it, assuming it is a String.
+                            return parseString(mojangson);
+                    }
                 }
             }
         }

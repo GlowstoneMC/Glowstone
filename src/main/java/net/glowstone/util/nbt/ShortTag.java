@@ -3,7 +3,7 @@ package net.glowstone.util.nbt;
 /**
  * The {@code TAG_Short} tag.
  */
-public final class ShortTag extends Tag<Short> {
+public final class ShortTag extends NumericTag<Short> {
 
     /**
      * The value.
