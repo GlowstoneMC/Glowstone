@@ -63,7 +63,14 @@ public interface ConsoleMessages {
         interface Permission {
             LoggableLocalizedString INVALID = new LoggableLocalizedStringImpl(
                     "console.permission.invalid", Level.SEVERE
-            );
+            ) {
+                @Override
+                public String get(Object... args) {
+                    // This uses String.format instead of MessageFormat.format
+                    // for Bukkit compatibility.
+                    return String.format(get(), args);
+                }
+            };
         }
 
         interface Plugin {
