@@ -1,5 +1,6 @@
 package net.glowstone.util.mojangson;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -44,5 +45,31 @@ public class MojangsonParseTest {
             fail("Could not parse case for " + key.getName() + "( " + json + "): "
                     + e.getMessage());
         }
+    }
+
+    public static Collection<Arguments> getBooleanCases() {
+        return Arrays.asList(
+                Arguments.of("{value:true}", true),
+                Arguments.of("{value:false}", false),
+                Arguments.of("{value:1b}", true),
+                Arguments.of("{value:0b}", false),
+                Arguments.of("{value:1s}", true),
+                Arguments.of("{value:0s}", false),
+                Arguments.of("{value:1l}", true),
+                Arguments.of("{value:0l}", false),
+                Arguments.of("{value:1.0f}", true),
+                Arguments.of("{value:0.0f}", false),
+                Arguments.of("{value:1.0d}", true),
+                Arguments.of("{value:0.0d}", false)
+        );
+    }
+
+    @MethodSource("getBooleanCases")
+    @ParameterizedTest
+    public void canParseBoolean(String json, boolean expected) throws MojangsonParseException {
+        CompoundTag compound = Mojangson.parseCompound(json);
+        boolean bool = compound.getBoolean("value");
+
+        assertEquals(expected, bool);
     }
 }
