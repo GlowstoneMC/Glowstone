@@ -521,7 +521,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         } else {
             // todo: remove ambiguity of items with 'data/damage' values inside recipes.yml (will
             // take a long time...)
-            key = NamespacedKey.minecraft(ItemIds.getName(result.getType()));
+            key = NamespacedKey.minecraft(ItemIds.getKeyName(result.getType()));
         }
         return key;
     }

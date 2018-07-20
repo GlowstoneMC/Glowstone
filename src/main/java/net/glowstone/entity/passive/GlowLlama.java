@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
 
 /**
@@ -108,4 +109,13 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
         return 0;
     }
 
+    @Override
+    public void rangedAttack(LivingEntity target, float charge) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setChargingAttack(boolean raiseHands) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
 }

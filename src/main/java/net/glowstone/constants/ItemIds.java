@@ -502,7 +502,7 @@ public final class ItemIds {
     }
 
     /**
-     * Get the string identifier for a specified Material.
+     * Get the full string identifier for a specified Material.
      *
      * @param mat the Material.
      * @return the identifier.
@@ -510,6 +510,16 @@ public final class ItemIds {
     public static String getName(Material mat) {
         checkNotNull(mat, "Material cannot be null");
         return names.get(mat.getId());
+    }
+
+    /**
+     * Get the key sgement of the string identifier for a specified Material.
+     *
+     * @param mat the Material.
+     * @return the identifier.
+     */
+    public static String getKeyName(Material mat) {
+        return getName(mat).split(":")[1];
     }
 
     /**
