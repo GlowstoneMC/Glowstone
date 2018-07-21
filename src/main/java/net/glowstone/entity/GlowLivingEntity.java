@@ -1213,6 +1213,36 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING, gliding);
     }
 
+    @Override
+    public int getShieldBlockingDelay() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setShieldBlockingDelay(int delay) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public ItemStack getActiveItem() {
+        return null;
+    }
+
+    @Override
+    public int getItemUseRemainingTime() {
+        return 0;
+    }
+
+    @Override
+    public int getHandRaisedTime() {
+        return 0;
+    }
+
+    @Override
+    public boolean isHandRaised() {
+        return false;
+    }
+
     /**
      * Sets the AI state.
      *
@@ -1251,8 +1281,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public AttributeInstance getAttribute(Attribute attribute) {
-        // todo: 1.11
-        return null;
+        return getAttributeManager().getProperty(Key.fromAttribute(attribute));
     }
 
     @Override

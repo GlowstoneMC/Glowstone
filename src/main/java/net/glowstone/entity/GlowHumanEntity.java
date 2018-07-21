@@ -407,6 +407,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         resetInventoryView();
     }
 
+    @Override
+    public void closeInventory(InventoryCloseEvent.Reason reason) {
+        // TODO: use reason?
+        closeInventory();
+    }
+
     // Drop items left in crafting area.
     private void handleUnusedInputs() {
         for (int i = 0; i < getTopInventory().getSlots().size(); i++) {

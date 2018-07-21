@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import com.destroystokyo.paper.entity.SentientNPC;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,5 +51,10 @@ public class GlowVex extends GlowMonster implements Vex {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_VEX_AMBIENT;
+    }
+
+    @Override
+    public SentientNPC getOwner() {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

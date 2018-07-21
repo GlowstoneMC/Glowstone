@@ -17,13 +17,13 @@ import net.glowstone.util.library.LibraryManager;
 public enum CompatibilityBundle {
     CRAFTBUKKIT(
         Stream.of(
-            new Library("org.xerial", "sqlite-jdbc", "3.21.0",
+            new Library("org.xerial", "sqlite-jdbc", "3.21.0.1",
                 LibraryManager.HashAlgorithm.SHA1, "347e4d1d3e1dff66d389354af8f0021e62344584"),
-            new Library("mysql", "mysql-connector-java", "5.1.44",
+            new Library("mysql", "mysql-connector-java", "5.1.46",
                 LibraryManager.HashAlgorithm.SHA1, "61b6b998192c85bb581c6be90e03dcd4b9079db4"),
-            new Library("org.apache.logging.log4j", "log4j-api", "2.8.1",
+            new Library("org.apache.logging.log4j", "log4j-api", "2.8.2",
                 LibraryManager.HashAlgorithm.SHA1, "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72"),
-            new Library("org.apache.logging.log4j", "log4j-core", "2.8.1",
+            new Library("org.apache.logging.log4j", "log4j-core", "2.8.2",
                 LibraryManager.HashAlgorithm.SHA1, "4ac28ff2f1ddf05dae3043a190451e8c46b73c31"),
             new Library("org.apache.commons", "commons-lang3", "3.5",
                 LibraryManager.HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6")

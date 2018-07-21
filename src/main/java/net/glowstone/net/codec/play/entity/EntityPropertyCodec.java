@@ -5,13 +5,13 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.glowstone.entity.AttributeManager.Modifier;
 import net.glowstone.entity.AttributeManager.Property;
 import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.entity.EntityPropertyMessage;
+import org.bukkit.attribute.AttributeModifier;
 
 public class EntityPropertyCodec implements Codec<EntityPropertyMessage> {
 
@@ -29,15 +29,15 @@ public class EntityPropertyCodec implements Codec<EntityPropertyMessage> {
             ByteBufUtils.writeUTF8(buf, property.getKey());
             buf.writeDouble(property.getValue().getValue());
 
-            List<Modifier> modifiers = property.getValue().getModifiers();
+            Collection<AttributeModifier> modifiers = property.getValue().getModifiers();
             if (modifiers == null) {
                 ByteBufUtils.writeVarInt(buf, 0);
             } else {
                 ByteBufUtils.writeVarInt(buf, modifiers.size());
-                for (Modifier modifier : modifiers) {
-                    GlowBufUtils.writeUuid(buf, modifier.getUuid());
+                for (AttributeModifier modifier : modifiers) {
+                    GlowBufUtils.writeUuid(buf, modifier.getUniqueId());
                     buf.writeDouble(modifier.getAmount());
-                    buf.writeByte(modifier.getOperation());
+                    buf.writeByte(modifier.getOperation().ordinal());
                 }
             }
         }

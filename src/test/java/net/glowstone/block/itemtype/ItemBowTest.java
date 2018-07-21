@@ -5,12 +5,10 @@ import static org.bukkit.Material.ARROW;
 import static org.bukkit.Material.BOW;
 import static org.bukkit.Material.SPECTRAL_ARROW;
 import static org.bukkit.Material.TIPPED_ARROW;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -103,9 +101,9 @@ public class ItemBowTest extends ItemTypeTest {
         // Should now be able to start shooting
         bow.startUse(player, bowItemStack);
         verify(player, times(1)).setUsageItem(bowItemStack);
-        verify(player, times(1)).setUsageTime(anyLong());
+        verify(player, times(1)).setUsageTime(anyInt());
 
-        when(player.getUsageTime()).thenReturn(10L);
+        when(player.getUsageTime()).thenReturn(10);
         // Finish shooting
         bow.endUse(player, bowItemStack);
         verify(player, times(1)).launchProjectile(Arrow.class);
@@ -135,9 +133,9 @@ public class ItemBowTest extends ItemTypeTest {
         // Should now be able to start shooting
         bow.startUse(player, bowItemStack);
         verify(player, times(1)).setUsageItem(bowItemStack);
-        verify(player, times(1)).setUsageTime(anyLong());
+        verify(player, times(1)).setUsageTime(anyInt());
 
-        when(player.getUsageTime()).thenReturn(10L);
+        when(player.getUsageTime()).thenReturn(10);
         // Finish shooting
         bow.endUse(player, bowItemStack);
         verify(player, times(1)).launchProjectile(SpectralArrow.class);
@@ -166,9 +164,9 @@ public class ItemBowTest extends ItemTypeTest {
         // Should now be able to start shooting
         bow.startUse(player, bowItemStack);
         verify(player, times(1)).setUsageItem(bowItemStack);
-        verify(player, times(1)).setUsageTime(anyLong());
+        verify(player, times(1)).setUsageTime(anyInt());
 
-        when(player.getUsageTime()).thenReturn(10L);
+        when(player.getUsageTime()).thenReturn(10);
         // Finish shooting
         bow.endUse(player, bowItemStack);
         verify(player, times(1)).launchProjectile(TippedArrow.class);
@@ -190,7 +188,7 @@ public class ItemBowTest extends ItemTypeTest {
         // Shouldn't be able to use bow without arrows
         bow.startUse(player, bowItemStack);
         verify(player, never()).setUsageItem(any());
-        verify(player, never()).setUsageTime(anyLong());
+        verify(player, never()).setUsageTime(anyInt());
     }
 
     @Test
@@ -200,9 +198,9 @@ public class ItemBowTest extends ItemTypeTest {
         // Start shooting
         bow.startUse(player, bowItemStack);
         verify(player, times(1)).setUsageItem(bowItemStack);
-        verify(player, times(1)).setUsageTime(anyLong());
+        verify(player, times(1)).setUsageTime(anyInt());
 
-        when(player.getUsageTime()).thenReturn(10L);
+        when(player.getUsageTime()).thenReturn(10);
         // Finish shooting
         bow.endUse(player, bowItemStack);
         verify(player, times(1)).launchProjectile(Arrow.class);

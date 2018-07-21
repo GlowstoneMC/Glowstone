@@ -43,6 +43,7 @@ import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessa
 import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -389,6 +390,11 @@ public abstract class GlowEntity implements Entity {
     @Override
     public Location getLocation(Location loc) {
         return Position.copyLocation(location, loc);
+    }
+
+    @Override
+    public Chunk getChunk() {
+        return location.getChunk();
     }
 
     /**

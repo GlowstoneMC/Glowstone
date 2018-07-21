@@ -773,6 +773,16 @@ public class GlowWorld implements World {
     }
 
     @Override
+    public Entity getEntity(UUID uuid) {
+        for (Entity entity : getEntities()) {
+            if (entity.getUniqueId().equals(uuid)) {
+                return entity;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public List<Entity> getEntities() {
         return new ArrayList<>(entityManager.getAll());
     }
@@ -1701,6 +1711,13 @@ public class GlowWorld implements World {
     public boolean createExplosion(Location loc, float power, boolean setFire) {
         checkNotNull(loc);
         return createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, true);
+    }
+
+    @Override
+    public boolean createExplosion(Entity source, Location loc, float power, boolean setFire,
+                                   boolean breakBlocks) {
+        return createExplosion(source, loc.getX(), loc.getY(), loc.getZ(), power, setFire,
+                breakBlocks);
     }
 
     @Override

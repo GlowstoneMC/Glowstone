@@ -506,8 +506,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Setter
     private ItemStack usageItem;
     @Getter
-    @Setter
-    private long usageTime;
+    private int usageTime;
+    @Getter
+    private int startingUsageTime;
     private Entity spectating;
     private HashMap<Advancement, AdvancementProgress> advancements;
     private String resourcePackHash;
@@ -1561,8 +1562,28 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public ItemStack getActiveItem() {
+        return usageItem;
+    }
+
+    public void setUsageTime(int usageTime) {
+        startingUsageTime = usageTime;
+        this.usageTime = usageTime;
+    }
+
+    @Override
+    public int getItemUseRemainingTime() {
+        return usageTime;
+    }
+
+    @Override
+    public int getHandRaisedTime() {
+        return startingUsageTime - usageTime;
+    }
+
+    @Override
     public boolean isHandRaised() {
-        return false;
+        return usageTime != 0;
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
 public class ItemBow extends ItemTimedUsage {
-    private static final long TICKS_TO_FULLY_CHARGE = 20;
+    private static final int TICKS_TO_FULLY_CHARGE = 20;
     private static final double MAX_BASE_DAMAGE = 9;
     private static final double MAX_SPEED = 40;
 
@@ -83,9 +83,9 @@ public class ItemBow extends ItemTimedUsage {
                 - Floats.constrainToRange(player.getUsageTime(), 0.0f, TICKS_TO_FULLY_CHARGE))
                 / TICKS_TO_FULLY_CHARGE;
             EntityShootBowEvent event = EventFactory.getInstance().callEvent(
-                    new EntityShootBowEvent(player, bow, launchedProjectile, chargeFraction,
+                    new EntityShootBowEvent(player, bow, arrow, launchedProjectile, chargeFraction,
                             consumeArrow));
-            consumeArrow = event.isConsumeArrow();
+            consumeArrow = event.getConsumeArrow();
             //TODO: Call for Skeleton firing too when implemented
 
             if (event.isCancelled()) {
