@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import com.google.common.primitives.Floats;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
@@ -23,7 +24,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 public class ItemBow extends ItemTimedUsage {
     private static final int TICKS_TO_FULLY_CHARGE = 20;
     private static final double MAX_BASE_DAMAGE = 9;
-    private static final double MAX_SPEED = 53;
+    private static final double MAX_SPEED = 40;
 
     @Override
     public void startUse(GlowPlayer player, ItemStack item) {
@@ -78,9 +79,9 @@ public class ItemBow extends ItemTimedUsage {
 
         }
         if (launchedProjectile != null) {
-            float chargeFraction = Math.max(0.0f,
-                    1.0f - (TICKS_TO_FULLY_CHARGE - player.getUsageTime())
-                            / TICKS_TO_FULLY_CHARGE);
+            float chargeFraction = (TICKS_TO_FULLY_CHARGE
+                - Floats.constrainToRange(player.getUsageTime(), 0.0f, TICKS_TO_FULLY_CHARGE))
+                / TICKS_TO_FULLY_CHARGE;
             EntityShootBowEvent event = EventFactory.getInstance().callEvent(
                     new EntityShootBowEvent(player, bow, arrow, launchedProjectile, chargeFraction,
                             consumeArrow));
@@ -102,10 +103,13 @@ public class ItemBow extends ItemTimedUsage {
                     slot.setItem(arrow);
                 }
 
-                double damage = MAX_BASE_DAMAGE * chargeFraction
-                        * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
+                double damage = Math.max(1.0, MAX_BASE_DAMAGE
+                    + (chargeFraction == 1.0
+                    && ThreadLocalRandom.current().nextFloat() >= 0.8 ? 1 : 0)
+                    * chargeFraction
+                        * (1 + 0.25 * bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
                 launchedProjectile.setVelocity(player.getEyeLocation().getDirection().multiply(
-                        chargeFraction * MAX_SPEED));
+                        Math.max(5, chargeFraction * MAX_SPEED)));
 
                 if (bow.containsEnchantment(Enchantment.ARROW_FIRE)) {
                     // Arrow will burn as long as it's in flight, unless extinguished by water
