@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class TeleportCommand extends VanillaCommand {
 
@@ -21,7 +22,7 @@ public class TeleportCommand extends VanillaCommand {
     public TeleportCommand() {
         super("teleport",
             "Teleports entities to coordinates relative to the sender",
-            "/teleport <target> <x> <y> <z> [<y-rot> <x-rot>]",
+            "/teleport <target> <x> <y> <z> [<yaw> <pitch>]",
             Collections.emptyList());
         setPermission("minecraft.command.teleport");
     }
@@ -69,7 +70,7 @@ public class TeleportCommand extends VanillaCommand {
                     targetLocation.setYaw(target.getLocation().getYaw());
                     targetLocation.setPitch(target.getLocation().getPitch());
                 }
-                target.teleport(targetLocation);
+                target.teleport(targetLocation, PlayerTeleportEvent.TeleportCause.COMMAND);
                 sender.sendMessage(
                     "Teleported " + target.getName() + " to " + targetLocation.getX() + " "
                         + targetLocation.getY() + " " + targetLocation.getZ());
