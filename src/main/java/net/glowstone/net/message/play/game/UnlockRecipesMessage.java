@@ -15,10 +15,14 @@ public final class UnlockRecipesMessage implements Message {
     private final int action;
     private final boolean bookOpen;
     private final boolean filterOpen;
+    private final boolean smeltingBookOpen;
+    private final boolean smeltingFilterOpen;
     private final int[] recipes;
     private final int[] allRecipes; // allRecipes is only set when action = ACTION_INIT (0)
 
-    public UnlockRecipesMessage(int action, boolean bookOpen, boolean filterOpen, int[] recipes) {
-        this(action, bookOpen, filterOpen, recipes, null);
+    public UnlockRecipesMessage(int action, boolean bookOpen,
+                                boolean filterOpen, boolean smeltingBookOpen,
+                                boolean smeltingFilterOpen, int[] recipes) {
+        this(action, bookOpen, filterOpen, smeltingBookOpen, smeltingFilterOpen, recipes, null);
     }
 }
