@@ -41,15 +41,6 @@ public enum MetadataType {
         return values()[id];
     }
 
-    public static MetadataType byDataType(Class<?> dataType) {
-        for (MetadataType type : values()) {
-            if (dataType.isAssignableFrom(type.getClass())) {
-                return type;
-            }
-        }
-        return null;
-    }
-
     public int getId() {
         return ordinal();
     }
