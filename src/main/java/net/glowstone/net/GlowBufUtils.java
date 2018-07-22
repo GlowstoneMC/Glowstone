@@ -393,7 +393,7 @@ public final class GlowBufUtils {
 
         ByteBufUtils.writeVarInt(buf, particleId);
         Class<?> dataType = particle.particle().getDataType();
-        if (data != null && particle.particle().getDataType() != Void.class
+        if (data != null && !particle.particle().getDataType().equals(Void.class)
                 && particle.particle().getDataType().isInstance(data)) {
             if (dataType.equals(Particle.DustOptions.class)) {
                 Particle.DustOptions options = (Particle.DustOptions) data;
