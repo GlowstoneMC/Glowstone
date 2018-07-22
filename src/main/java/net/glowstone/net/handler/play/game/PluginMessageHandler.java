@@ -8,15 +8,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
-import net.glowstone.inventory.GlowAnvilInventory;
-import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PluginMessage;
-import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public final class PluginMessageHandler implements MessageHandler<GlowSession, PluginMessage> {
 
