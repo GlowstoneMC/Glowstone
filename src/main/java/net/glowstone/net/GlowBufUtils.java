@@ -17,6 +17,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.GlowUnsafeValues;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
@@ -24,6 +25,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.NbtReadLimiter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.BlockState;
@@ -265,8 +267,9 @@ public final class GlowBufUtils {
 
         int amount = buf.readUnsignedByte();
         short durability = buf.readShort();
+        GlowUnsafeValues unsafeValues = (GlowUnsafeValues) Bukkit.getServer().getUnsafe();
 
-        Material material = Material.getMaterial(type);
+        Material material = unsafeValues.fromId(type);
         if (material == null) {
             return InventoryUtil.createEmptyStack();
         }
@@ -287,7 +290,7 @@ public final class GlowBufUtils {
         if (InventoryUtil.isEmpty(stack)) {
             buf.writeShort(-1);
         } else {
-            buf.writeShort(stack.getTypeId());
+            buf.writeShort(stack.getType().getId());
             buf.writeByte(stack.getAmount());
             buf.writeShort(stack.getDurability());
             if (stack.hasItemMeta()) {
