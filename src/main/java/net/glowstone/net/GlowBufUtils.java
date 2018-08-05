@@ -152,10 +152,9 @@ public final class GlowBufUtils {
                 ByteBufUtils.writeUTF8(buf, (String) value);
                 break;
             case CHAT:
-                writeChat(buf, (TextMessage) value);
-                break;
             case OPTCHAT:
                 writeChat(buf, (TextMessage) value);
+                break;
             case ITEM:
                 writeSlot(buf, (ItemStack) value);
                 break;
