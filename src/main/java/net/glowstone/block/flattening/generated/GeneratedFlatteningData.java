@@ -25,7 +25,7 @@ public class GeneratedFlatteningData {
         PropertyDefs(PropMap properties) {
             this.properties = properties;
         }
-        private int serialize(Map<String, Object> values) {
+        public int serialize(Map<String, Object> values) {
             if (values == null) {
                 return 0;
             }
@@ -37,7 +37,7 @@ public class GeneratedFlatteningData {
             }
             return mask;
         }
-        private Map<String, Object> deserialize(int serial) {
+        public Map<String, Object> deserialize(int serial) {
             int sizeAcc = 0;
             ImmutableMap.Builder<String, Object> result = ImmutableMap.builder();
             for (int i = this.properties.keys.length - 1; i >= 0; i--) {
