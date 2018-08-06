@@ -7,6 +7,6 @@ import org.bukkit.block.BlockFace;
 
 public class FlatteningUtil {
     public static List<BlockFace> getPossibleBlockFaces(Material material) {
-        return new ArrayList<>(GeneratedFlatteningData.DIRECTIONAL_POSSIBLE_FACES.get(material));
+        return new ArrayList<>(GeneratedFlatteningData_2.DIRECTIONAL_POSSIBLE_FACES.get(material));
     }
 }
