@@ -1,5 +1,7 @@
 package net.glowstone.block.flattening;
 
+import com.google.common.collect.Sets;
+import java.util.List;
 import java.util.Set;
 import net.glowstone.block.flattening.generated.FlatteningUtil;
 import org.bukkit.Material;
@@ -16,12 +18,15 @@ public class GlowBlockDirectional extends GlowBlockData implements Directional {
 
     @Override
     public BlockData clone() {
-        return null;
+        GlowBlockDirectional clone = new GlowBlockDirectional(getMaterial());
+        clone.setFacing(getFacing());
+        return clone;
     }
 
     @Override
     public int serialize() {
-        return 0;
+        List<BlockFace> possibleBlockFaces = FlatteningUtil.getPossibleBlockFaces(getMaterial());
+        return possibleBlockFaces.indexOf(getFacing());
     }
 
     @Override
@@ -36,6 +41,6 @@ public class GlowBlockDirectional extends GlowBlockData implements Directional {
 
     @Override
     public Set<BlockFace> getFaces() {
-        return FlatteningUtil.getPossibleBlockFaces(getMaterial());
+        return Sets.newHashSet(FlatteningUtil.getPossibleBlockFaces(getMaterial()));
     }
 }
