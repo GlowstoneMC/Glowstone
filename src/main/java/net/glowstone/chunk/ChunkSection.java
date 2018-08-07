@@ -40,7 +40,7 @@ public final class ChunkSection {
     /**
      * The number of bits per block used in the global palette.
      */
-    public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 13;
+    public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 14;
 
     /**
      * The palette.
@@ -480,9 +480,7 @@ public final class ChunkSection {
         }
 
         buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
-        if (palette == null) {
-            ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
-        } else {
+        if (palette != null) {
             ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
             // Foreach loops can't be used due to autoboxing
             IntListIterator itr = palette.iterator();
