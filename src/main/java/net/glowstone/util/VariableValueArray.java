@@ -38,6 +38,16 @@ public final class VariableValueArray implements Cloneable {
     }
 
     /**
+     * Fills the backing array with pre-determined values.
+     *
+     * @param data the new backing array
+     */
+    public void fill(long[] data) {
+        // TODO: Preconditions
+        System.arraycopy(data, 0, backing, 0, backing.length);
+    }
+
+    /**
      * Calculates the number of bits that would be needed to store the given value.
      *
      * @param number the value

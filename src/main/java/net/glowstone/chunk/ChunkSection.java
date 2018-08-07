@@ -1,15 +1,21 @@
 package net.glowstone.chunk;
 
 import com.flowpowered.network.util.ByteBufUtils;
+import com.google.common.collect.ImmutableMap;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
+import lombok.Data;
 import lombok.Getter;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
+import net.glowstone.util.nbt.Tag;
+import net.glowstone.util.nbt.TagType;
 
 /**
  * A single cubic section of a chunk, with all data.
@@ -52,7 +58,7 @@ public final class ChunkSection {
      * The sky light array. This array is always set, even in dimensions without skylight.
      *
      * @return The sky light array. If the dimension of this chunk section's chunk's world is not
-     *         the overworld, this array contains only maximum light levels.
+     * the overworld, this array contains only maximum light levels.
      */
     @Getter
     private NibbleArray skyLight;
@@ -80,7 +86,7 @@ public final class ChunkSection {
      * further modified.</p>
      *
      * @param types An array of block state IDs for this chunk section (containing type and
-     *         metadata)
+     *              metadata)
      */
     public ChunkSection(char[] types) {
         this(types, new NibbleArray(ARRAY_SIZE, DEFAULT_SKYLIGHT),
@@ -93,10 +99,11 @@ public final class ChunkSection {
      * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be
      * further modified.</p>
      *
-     * @param types An array of block types for this chunk section.
-     * @param skyLight An array for skylight data for this chunk section.
+     * @param types      An array of block types for this chunk section.
+     * @param skyLight   An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
+    @Deprecated
     public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
         if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE
                 || blockLight.size() != ARRAY_SIZE) {
@@ -116,14 +123,15 @@ public final class ChunkSection {
      * <p>This ChunkSection assumes
      * ownership of the arrays passed in, and they should not be further modified.</p>
      *
-     * @param data An array of blocks in this section.
-     * @param palette The palette that is associated with that data. If null, the global
-     *         palette is used.
-     * @param skyLight An array for skylight data for this chunk section.
+     * @param data       An array of blocks in this section.
+     * @param palette    The palette that is associated with that data. If null, the global
+     *                   palette is used.
+     * @param skyLight   An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
+    @Deprecated
     public ChunkSection(VariableValueArray data, @Nullable IntList palette, NibbleArray skyLight,
-            NibbleArray blockLight) {
+                        NibbleArray blockLight) {
         if (data.getCapacity() != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight
                 .size() != ARRAY_SIZE) {
             throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + data
@@ -148,12 +156,18 @@ public final class ChunkSection {
         this.blockLight = blockLight;
     }
 
+    public ChunkSection(VariableValueArray blockStates, BlockStatePalette palette,
+                        NibbleArray skyLight, NibbleArray blockLight) {
+        // todo: initialization
+    }
+
     /**
      * Creates a new unlit chunk section containing the given types.
      *
      * @param types An array of block IDs, with metadata
      * @return A matching chunk section.
      */
+    @Deprecated
     public static ChunkSection fromStateArray(short[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
@@ -172,6 +186,7 @@ public final class ChunkSection {
      * @param types An array of block IDs, without metadata.
      * @return A matching chunk section.
      */
+    @Deprecated
     public static ChunkSection fromIdArray(short[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
@@ -190,6 +205,7 @@ public final class ChunkSection {
      * @param types An array of block IDs, without metadata.
      * @return A matching chunk section.
      */
+    @Deprecated
     public static ChunkSection fromIdArray(byte[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
@@ -209,20 +225,21 @@ public final class ChunkSection {
      * @return The section
      */
     public static ChunkSection fromNbt(CompoundTag sectionTag) {
-        byte[] rawTypes = sectionTag.getByteArray("Blocks");
-        NibbleArray extTypes = sectionTag.containsKey("Add") ? new NibbleArray(sectionTag
-                .getByteArray("Add")) : null;
-        NibbleArray data = new NibbleArray(sectionTag.getByteArray("Data"));
+        List<CompoundTag> paletteTag = sectionTag.getCompoundList("Palette");
+        BlockStatePalette palette = BlockStatePalette.fromNbt(paletteTag);
+        int paletteSize = paletteTag.size();
+        int bitsPerBlockState = VariableValueArray.calculateNeededBits(paletteSize - 1);
+        if (bitsPerBlockState < 4) {
+            bitsPerBlockState = 4;
+        }
+        VariableValueArray blockStates = new VariableValueArray(bitsPerBlockState, ARRAY_SIZE);
+        long[] rawStates = sectionTag.getLongArray("BlockStates");
+        blockStates.fill(rawStates);
+
         NibbleArray blockLight = new NibbleArray(sectionTag.getByteArray("BlockLight"));
         NibbleArray skyLight = new NibbleArray(sectionTag.getByteArray("SkyLight"));
 
-        char[] types = new char[rawTypes.length];
-        for (int i = 0; i < rawTypes.length; i++) {
-            types[i] = (char) ((extTypes == null ? 0 : extTypes
-                    .get(i)) << 12 | (rawTypes[i] & 0xff) << 4 | data.get(i));
-        }
-
-        return new ChunkSection(types, skyLight, blockLight);
+        return new ChunkSection(blockStates, palette, skyLight, blockLight);
     }
 
     /**
@@ -239,59 +256,6 @@ public final class ChunkSection {
                     "Coords (x=" + x + ",z=" + z + ") out of section bounds");
         }
         return (y & 0xf) << 8 | z << 4 | x;
-    }
-
-    /**
-     * Loads the contents of this chunk section from the given type array, initializing the
-     * palette.
-     *
-     * @param types The type array.
-     */
-    public void loadTypeArray(char[] types) {
-        if (types.length != ARRAY_SIZE) {
-            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
-                    + types.length);
-        }
-
-        // Build the palette, and the count
-        this.count = 0;
-        this.palette = new IntArrayList();
-        for (char type : types) {
-            if (type != 0) {
-                count++;
-            }
-
-            if (!palette.contains(type)) {
-                palette.add(type);
-            }
-        }
-        // Now that we've built a palette, build the list
-        int bitsPerBlock = VariableValueArray.calculateNeededBits(palette.size());
-        if (bitsPerBlock < 4) {
-            bitsPerBlock = 4;
-        } else if (bitsPerBlock > 8) {
-            palette = null;
-            bitsPerBlock = GLOBAL_PALETTE_BITS_PER_BLOCK;
-        }
-        this.data = new VariableValueArray(bitsPerBlock, ARRAY_SIZE);
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            if (palette != null) {
-                data.set(i, palette.indexOf(types[i]));
-            } else {
-                data.set(i, types[i]);
-            }
-        }
-    }
-
-    /**
-     * <p>Optimizes this chunk section, removing unneeded palette entries and recounting non-air
-     * blocks.</p>
-     *
-     * <p>This is an expensive operation, but occasionally performing it will improve
-     * sending the section.
-     */
-    public void optimize() {
-        loadTypeArray(getTypes());
     }
 
     /**
@@ -329,6 +293,7 @@ public final class ChunkSection {
      * @param z The z coordinate, for north and south.
      * @return A type ID
      */
+    @Deprecated
     public char getType(int x, int y, int z) {
         int value = data.get(index(x, y, z));
         if (palette != null) {
@@ -340,11 +305,12 @@ public final class ChunkSection {
     /**
      * Sets the type at the given coordinates.
      *
-     * @param x The x coordinate, for east and west.
-     * @param y The y coordinate, for up and down.
-     * @param z The z coordinate, for north and south.
+     * @param x     The x coordinate, for east and west.
+     * @param y     The y coordinate, for up and down.
+     * @param z     The z coordinate, for north and south.
      * @param value The new type ID for that coordinate.
      */
+    @Deprecated
     public void setType(int x, int y, int z, char value) {
         int oldType = getType(x, y, z);
         if (oldType != 0) {
@@ -391,6 +357,7 @@ public final class ChunkSection {
      *
      * @return The block type array.
      */
+    @Deprecated
     public char[] getTypes() {
         char[] types = new char[ARRAY_SIZE];
         for (int i = 0; i < ARRAY_SIZE; i++) {
@@ -418,9 +385,9 @@ public final class ChunkSection {
     /**
      * Sets the block light at the given block.
      *
-     * @param x The x coordinate, for east and west.
-     * @param y The y coordinate, for up and down.
-     * @param z The z coordinate, for north and south.
+     * @param x     The x coordinate, for east and west.
+     * @param y     The y coordinate, for up and down.
+     * @param z     The z coordinate, for north and south.
      * @param light The new light level.
      */
     public void setBlockLight(int x, int y, int z, byte light) {
@@ -442,9 +409,9 @@ public final class ChunkSection {
     /**
      * Sets the sky light at the given block.
      *
-     * @param x The x coordinate, for east and west.
-     * @param y The y coordinate, for up and down.
-     * @param z The z coordinate, for north and south.
+     * @param x     The x coordinate, for east and west.
+     * @param y     The y coordinate, for up and down.
+     * @param z     The z coordinate, for north and south.
      * @param light The new light level.
      */
     public void setSkyLight(int x, int y, int z, byte light) {
@@ -470,7 +437,7 @@ public final class ChunkSection {
     /**
      * Writes this chunk section to the given ByteBuf.
      *
-     * @param buf The buffer to write to.
+     * @param buf      The buffer to write to.
      * @param skylight True if skylight should be included.
      * @throws IllegalStateException If this chunk section {@linkplain #isEmpty() is empty}
      */
@@ -508,6 +475,8 @@ public final class ChunkSection {
      * @param sectionTag The tag to write to
      */
     public void writeToNbt(CompoundTag sectionTag) {
+        // TODO: 1.13 Palette creation and serialization
+
         char[] types = this.getTypes();
         byte[] rawTypes = new byte[ChunkSection.ARRAY_SIZE];
         NibbleArray extTypes = null;
@@ -531,5 +500,64 @@ public final class ChunkSection {
         sectionTag.putByteArray("Data", data.getRawData());
         sectionTag.putByteArray("BlockLight", blockLight.getRawData());
         sectionTag.putByteArray("SkyLight", skyLight.getRawData());
+    }
+
+    /**
+     * Represents a palette containing one or many block states.
+     */
+    @Data
+    static class BlockStatePalette {
+        private final BlockStatePalette.Entry[] entries;
+
+        /**
+         * Initializes a block state palette from a list of NBT compounds.
+         * <p>
+         * Each compound tag represents a palette {@link Entry}.
+         *
+         * @param paletteTags the list of NBT compounds
+         * @return a block state palette
+         */
+        public static BlockStatePalette fromNbt(List<CompoundTag> paletteTags) {
+            BlockStatePalette.Entry[] entries = new BlockStatePalette.Entry[paletteTags.size()];
+            for (int i = 0; i < paletteTags.size(); i++) {
+                entries[i] = Entry.fromNbt(paletteTags.get(i));
+            }
+            return new BlockStatePalette(entries);
+        }
+
+        /**
+         * Represents a single block state, in it's palette form.
+         */
+        @Data
+        static class Entry {
+            private final String id;
+            private final ImmutableMap<String, String> properties;
+
+            /**
+             * Initializes a palette block state from an NBT compound.
+             *
+             * <p>The compound must contain the ID of the material ("Name", StringTag). In addition,
+             * the compound may contain another compound ("Properties", CompoundTag), which maps
+             * this state's property values.
+             *
+             * <p>Note that all the values in the Properties compound must be strings.
+             *
+             * @param entryTag
+             * @return
+             */
+            static Entry fromNbt(CompoundTag entryTag) {
+                String id = entryTag.getString("Name");
+                ImmutableMap.Builder<String, String> propertyBuilder = ImmutableMap.builder();
+                if (entryTag.isCompound("Properties")) {
+                    CompoundTag propertyCompound = entryTag.getCompound("Properties");
+                    for (Map.Entry<String, Tag> propEntry : propertyCompound.getValue().entrySet()) {
+                        if (propEntry.getValue().getType() == TagType.STRING) {
+                            propertyBuilder.put(propEntry.getKey(), (String) propEntry.getValue().getValue());
+                        }
+                    }
+                }
+                return new Entry(id, propertyBuilder.build());
+            }
+        }
     }
 }
