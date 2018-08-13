@@ -48,10 +48,13 @@ import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_SWAMPLAND;
 import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_SWAMPLAND_HILLS;
 import static org.bukkit.block.Biome.ICE_SPIKES;
 import static org.bukkit.block.Biome.SNOWY_TAIGA;
+import static org.bukkit.block.Biome.SNOWY_TAIGA_MOUNTAINS;
 import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 import static org.bukkit.block.Biome.values;
 
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import com.google.common.collect.MutableClassToInstanceMap;
 import java.lang.reflect.Constructor;
 import lombok.Builder;
 import lombok.Data;
@@ -75,9 +78,8 @@ public final class GlowBiome {
 
     private static final int[] ids = new int[values().length];
     private static final GlowBiome[] biomes = new GlowBiome[256];
-    private static final ImmutableClassToInstanceMap<BiomePopulator> populators;
-    private static ImmutableClassToInstanceMap.Builder<BiomePopulator> populatorBuilder
-            = ImmutableClassToInstanceMap.builder();
+    private static ClassToInstanceMap<BiomePopulator> populators = MutableClassToInstanceMap.create();
+    private static ClassToInstanceMap<GroundGenerator> groundGenerators = MutableClassToInstanceMap.create();
 
     static {
         register(
@@ -86,6 +88,7 @@ public final class GlowBiome {
                         .id(12)
                         .temperature(0.0)
                         .populator(IcePlainsPopulator.class)
+                        .ground(GroundGenerator.class)
                         .scale(BiomeScale.FLATLANDS)
                         .build(),
                 builder()
@@ -93,19 +96,29 @@ public final class GlowBiome {
                         .id(140)
                         .temperature(0.0)
                         .populator(IcePlainsSpikesPopulator.class)
-                        .ground(new SnowyGroundGenerator())
-                        .scale(BiomeScale.BIG_HILLS)
+                        .ground(SnowyGroundGenerator.class)
+                        .scale(BiomeScale.MID_HILLS)
                         .build(),
                 builder()
                         .type(SNOWY_TAIGA)
                         .id(30)
                         .temperature(-0.5)
                         .populator(TaigaPopulator.class)
+                        .ground(GroundGenerator.class)
                         .scale(BiomeScale.MID_PLAINS)
+                        .build(),
+                builder()
+                        .type(SNOWY_TAIGA_MOUNTAINS)
+                        .id(158)
+                        .temperature(-0.5)
+                        .populator(TaigaPopulator.class)
+                        .ground(GroundGenerator.class)
+                        .scale(BiomeScale.MID_HILLS)
                         .build()
         );
-        populators = populatorBuilder.build();
-        populatorBuilder = null;
+        // Make caches immutable
+        populators = ImmutableClassToInstanceMap.copyOf(populators);
+        groundGenerators = ImmutableClassToInstanceMap.copyOf(groundGenerators);
     }
 
     private final int id;
@@ -160,35 +173,54 @@ public final class GlowBiome {
 
     public static class GlowBiomeBuilder {
         public GlowBiomeBuilder populator(Class<? extends BiomePopulator> populatorClass, Object... args) {
-            if (args.length == 0) {
-                // Cache
-                if (populators.containsKey(populatorClass)) {
-                    this.populator = populators.getInstance(populatorClass);
-                } else {
-                    try {
-                        this.populator = populators.put(populatorClass, populatorClass.newInstance());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                // Don't cache if args are required
-                BiomePopulator pop = null;
-                for (Constructor<?> constructor : populatorClass.getConstructors()) {
-                    // Try to call constructor, silently ignore exceptions
-                    try {
-                        pop = (BiomePopulator) constructor.newInstance(args);
-                    } catch (Exception ignored) {
-                        // Ignored exception, go to next constructor
-                    }
-                }
-                if (pop == null) {
-                    throw new IllegalArgumentException("Could not find a constructor for given parameters.");
-                }
-                this.populator = pop;
-            }
+            this.populator = cachedInstanceClass(
+                    populators,
+                    populatorClass,
+                    args
+            );
             return this;
         }
+
+        public GlowBiomeBuilder ground(Class<? extends GroundGenerator> groundClass, Object... args) {
+            this.ground = cachedInstanceClass(
+                    groundGenerators,
+                    groundClass,
+                    args
+            );
+            return this;
+        }
+    }
+
+    private static <T> T cachedInstanceClass(ClassToInstanceMap<T> cacheMap,
+                                             Class<? extends T> clazz, Object... args) {
+        if (args.length == 0) {
+            // Cache
+            if (cacheMap.containsKey(clazz)) {
+                return cacheMap.getInstance(clazz);
+            } else {
+                try {
+                    return cacheMap.put(clazz, clazz.newInstance());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            // Don't cache if args are required
+            T pop = null;
+            for (Constructor<?> constructor : clazz.getConstructors()) {
+                // Try to call constructor, silently ignore exceptions
+                try {
+                    pop = (T) constructor.newInstance(args);
+                } catch (Exception ignored) {
+                    // Ignored exception, go to next constructor
+                }
+            }
+            if (pop == null) {
+                throw new IllegalArgumentException("Could not find a constructor for given parameters.");
+            }
+            return pop;
+        }
+        return null;
     }
 
     @RequiredArgsConstructor
