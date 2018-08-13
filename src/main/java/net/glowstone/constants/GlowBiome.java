@@ -211,6 +211,7 @@ public final class GlowBiome {
                 // Try to call constructor, silently ignore exceptions
                 try {
                     pop = (T) constructor.newInstance(args);
+                    break;
                 } catch (Exception ignored) {
                     // Ignored exception, go to next constructor
                 }
