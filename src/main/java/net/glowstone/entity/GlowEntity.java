@@ -574,7 +574,7 @@ public abstract class GlowEntity implements Entity {
 
         if (hasMoved()) {
             Block currentBlock = location.getBlock();
-            if (currentBlock.getType() == Material.ENDER_PORTAL) {
+            if (currentBlock.getType() == Material.END_PORTAL) {
                 EventFactory.getInstance()
                         .callEvent(new EntityPortalEnterEvent(this, currentBlock.getLocation()));
                 if (server.getAllowEnd()) {
@@ -602,7 +602,7 @@ public abstract class GlowEntity implements Entity {
             Optional<GlowEntity> any = world.getEntityManager().getAll().stream()
                     .filter(e -> leashHolderUniqueId.equals(e.getUniqueId())).findAny();
             if (!any.isPresent()) {
-                world.dropItemNaturally(location, new ItemStack(Material.LEASH));
+                world.dropItemNaturally(location, new ItemStack(Material.LEAD));
             }
             setLeashHolder(any.orElse(null));
             leashHolderUniqueId = null;
@@ -697,9 +697,16 @@ public abstract class GlowEntity implements Entity {
         if (hasMoved()) {
             if (!fall || type == Material.LADDER // todo: horses are not affected
                     || type == Material.VINE // todo: horses are not affected
-                    || type == Material.WATER || type == Material.STATIONARY_WATER
-                    || type == Material.WEB || type == Material.TRAP_DOOR
-                    || type == Material.IRON_TRAPDOOR || onGround) {
+                    || type == Material.WATER // todo: flowing_water?
+                    || type == Material.COBWEB
+                    || type == Material.ACACIA_TRAPDOOR // todo: replace with tag for all trapdoors
+                    || type == Material.BIRCH_TRAPDOOR
+                    || type == Material.DARK_OAK_TRAPDOOR
+                    || type == Material.IRON_TRAPDOOR
+                    || type == Material.JUNGLE_TRAPDOOR
+                    || type == Material.OAK_TRAPDOOR
+                    || type == Material.SPRUCE_TRAPDOOR
+                    || onGround) {
                 setFallDistance(0);
             } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
                 setFallDistance((float) (fallDistance + previousLocation.getY() - location.getY()));
@@ -973,7 +980,7 @@ public abstract class GlowEntity implements Entity {
             for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
                 for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
                     for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                        if (world.getBlockTypeIdAt(x, y, z) == material.getId()) {
+                        if (world.getBlockTypeAt(x, y, z) == material) {
                             return true;
                         }
                     }
@@ -1129,7 +1136,7 @@ public abstract class GlowEntity implements Entity {
 
     private void unleash(GlowEntity entity, UnleashReason reason) {
         EventFactory.getInstance().callEvent(new EntityUnleashEvent(entity, reason));
-        world.dropItemNaturally(entity.location, new ItemStack(Material.LEASH));
+        world.dropItemNaturally(entity.location, new ItemStack(Material.LEAD));
         entity.setLeashHolder(null);
     }
 
@@ -1485,6 +1492,18 @@ public abstract class GlowEntity implements Entity {
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         // Override in subclasses to implement behavior
         return false;
+    }
+
+    @Override
+    public boolean isPersistent() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setPersistent(boolean persistent) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Spigot spigot() {

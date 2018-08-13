@@ -66,6 +66,7 @@ import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Difficulty;
 import org.bukkit.Effect;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -78,6 +79,7 @@ import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -201,18 +203,6 @@ public class GlowWorld implements World {
      */
     private final ConcurrentSet<Location> tickMap = new ConcurrentSet<>();
     private final Spigot spigot = new Spigot() {
-        @Override
-        public void playEffect(Location location, Effect effect) {
-            GlowWorld.this.playEffect(location, effect, 0);
-        }
-
-        @Override
-        public void playEffect(Location location, Effect effect, int id, int data, float offsetX,
-                float offsetY, float offsetZ, float speed, int particleCount, int radius) {
-            showParticle(location, effect, id, data, offsetX, offsetY, offsetZ, speed,
-                    particleCount, radius);
-        }
-
         @Override
         public LightningStrike strikeLightning(Location loc, boolean isSilent) {
             return strikeLightningFireEvent(loc, false, isSilent);
@@ -1084,8 +1074,8 @@ public class GlowWorld implements World {
                 for (BlockState state : blockStates) {
                     state.update(true);
                     if (delegate != null) {
-                        delegate.setTypeIdAndData(state.getX(), state.getY(), state.getZ(), state
-                                .getTypeId(), state.getRawData());
+                        delegate.setBlockData(state.getX(), state.getY(), state.getZ(),
+                                state.getBlockData());
                     }
                 }
                 return true;
@@ -1169,14 +1159,14 @@ public class GlowWorld implements World {
         return new GlowBlock(getChunkAt(x >> 4, z >> 4), x, y, z);
     }
 
-    @Override
-    public int getBlockTypeIdAt(Location location) {
-        return getBlockTypeIdAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    public Material getBlockTypeAt(int x, int y, int z) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
-    @Override
-    public int getBlockTypeIdAt(int x, int y, int z) {
-        return getChunkAt(x >> 4, z >> 4).getType(x & 0xF, z & 0xF, y);
+    public BlockData getBlockDataAt(int x, int y, int z) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -1365,9 +1355,9 @@ public class GlowWorld implements World {
     @Override
     public Biome getBiome(int x, int z) {
         if (environment == Environment.THE_END) {
-            return Biome.SKY;
+            return Biome.THE_END;
         } else if (environment == Environment.NETHER) {
-            return Biome.HELL;
+            return Biome.NETHER;
         }
 
         return GlowBiome.getBiome(getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF));
@@ -1571,20 +1561,17 @@ public class GlowWorld implements World {
     }
 
     @Override
+    @Deprecated
     public FallingBlock spawnFallingBlock(Location location, Material material,
             byte data) throws IllegalArgumentException {
-        checkNotNull(location);
-        checkNotNull(material, "Unknown material type.");
-        checkArgument(data >= 0, "Block data may not be negative.");
-        checkArgument(data < 16, "Block data may not be higher than 15.");
-        return new GlowFallingBlock(location, material, data);
+        throw new UnsupportedOperationException("Deprecated API.");
     }
 
     @Override
-    public FallingBlock spawnFallingBlock(Location location, int blockId,
-            byte blockData) throws IllegalArgumentException {
-        Material material = Material.getMaterial(blockId);
-        return spawnFallingBlock(location, material, blockData);
+    public FallingBlock spawnFallingBlock(Location location, BlockData blockData) throws IllegalArgumentException {
+        checkNotNull(location);
+        checkNotNull(blockData, "BlockData cannot be null.");
+        return new GlowFallingBlock(location, blockData);
     }
 
     @Override
@@ -1890,9 +1877,8 @@ public class GlowWorld implements World {
 
         getRawPlayers().stream()
                 .filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared)
-                .forEach(player -> player.spigot()
-                        .playEffect(loc, particle, id, data, offsetX, offsetY, offsetZ, speed,
-                                amount, radius));
+                .forEach(player -> player.playEffect(
+                        loc.clone().add(offsetX, offsetY, offsetZ), particle, data));
     }
 
     /**
@@ -1999,6 +1985,21 @@ public class GlowWorld implements World {
     @Override
     public boolean isGameRule(String rule) {
         return gameRuleMap.isGameRule(rule);
+    }
+
+    @Override
+    public <T> T getGameRuleValue(GameRule<T> gameRule) {
+        return null;
+    }
+
+    @Override
+    public <T> T getGameRuleDefault(GameRule<T> gameRule) {
+        return null;
+    }
+
+    @Override
+    public <T> boolean setGameRule(GameRule<T> gameRule, T t) {
+        return false;
     }
 
     public Map<String, CommandFunction> getFunctions() {

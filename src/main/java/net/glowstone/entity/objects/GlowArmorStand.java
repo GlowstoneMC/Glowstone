@@ -4,6 +4,7 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
@@ -26,6 +27,7 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.ArmorStand;
@@ -166,9 +168,10 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     private void kill(boolean dropArmorStand) {
         active = false;
-        ((GlowWorld) location.getWorld())
-                .showParticle(location.clone().add(0, 1.317, 0), Effect.TILE_DUST,
-                        Material.WOOD.getId(), 0, 0.125f, 0.494f, 0.125f, 0.1f, 10, 10);
+        // TODO: set block to oak wood, requires flattening (numerical ID)
+        location.getWorld().spawnParticle(
+                Particle.BLOCK_DUST,
+                location.clone().add(0, 1.317, 0), 1, 0.125f, 0.494f, 0.125f);
         for (ItemStack stack : equipment.getArmorContents()) {
             if (InventoryUtil.isEmpty(stack)) {
                 continue;
@@ -277,26 +280,31 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             case IRON_HELMET:
             case LEATHER_HELMET:
             case CHAINMAIL_HELMET:
-            case GOLD_HELMET:
+            case GOLDEN_HELMET:
             case DIAMOND_HELMET:
             case PUMPKIN:
-            case SKULL_ITEM:
+            case SKELETON_SKULL: // TODO: 1.13, Skull Tag
+            case WITHER_SKELETON_SKULL:
+            case ZOMBIE_HEAD:
+            case PLAYER_HEAD:
+            case CREEPER_HEAD:
+            case DRAGON_HEAD:
                 return EquipmentSlot.HEAD;
             case IRON_CHESTPLATE:
-            case GOLD_CHESTPLATE:
+            case GOLDEN_CHESTPLATE:
             case LEATHER_CHESTPLATE:
             case CHAINMAIL_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
             case ELYTRA:
                 return EquipmentSlot.CHEST;
             case IRON_LEGGINGS:
-            case GOLD_LEGGINGS:
+            case GOLDEN_LEGGINGS:
             case LEATHER_LEGGINGS:
             case CHAINMAIL_LEGGINGS:
             case DIAMOND_LEGGINGS:
                 return EquipmentSlot.LEGS;
             case IRON_BOOTS:
-            case GOLD_BOOTS:
+            case GOLDEN_BOOTS:
             case LEATHER_BOOTS:
             case CHAINMAIL_BOOTS:
             case DIAMOND_BOOTS:
@@ -583,6 +591,46 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     @Override
     public void setCanMove(boolean move) {
 
+    }
+
+    @Override
+    public ItemStack getItem(EquipmentSlot equipmentSlot) {
+        return equipment.getItem(equipmentSlot);
+    }
+
+    @Override
+    public void setItem(EquipmentSlot equipmentSlot, ItemStack itemStack) {
+        equipment.setItem(equipmentSlot, itemStack);
+    }
+
+    @Override
+    public Set<EquipmentSlot> getDisabledSlots() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setDisabledSlots(EquipmentSlot... equipmentSlots) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void addDisabledSlots(EquipmentSlot... equipmentSlots) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void removeDisabledSlots(EquipmentSlot... equipmentSlots) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isSlotDisabled(EquipmentSlot equipmentSlot) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override

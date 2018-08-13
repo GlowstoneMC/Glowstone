@@ -377,7 +377,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         if (location == null) {
             location = getLocation();
         }
-        if (!force && location.getBlock().getType() != Material.WORKBENCH) {
+        if (!force && location.getBlock().getType() != Material.CRAFTING_TABLE) {
             return null;
         }
         return openInventory(new GlowCraftingInventory(this, InventoryType.WORKBENCH));
@@ -388,7 +388,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         if (location == null) {
             location = getLocation();
         }
-        if (!force && location.getBlock().getType() != Material.ENCHANTMENT_TABLE) {
+        if (!force && location.getBlock().getType() != Material.ENCHANTING_TABLE) {
             return null;
         }
         return openInventory(new GlowEnchantingInventory(location, (GlowPlayer) this));

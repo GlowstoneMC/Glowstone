@@ -298,7 +298,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         Material mat = getEyeLocation().getBlock().getType();
         // breathing
-        if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
+        if (mat == Material.WATER) { // todo: flowing_water?
             if (canTakeDamage(DamageCause.DROWNING)) {
                 --remainingAir;
                 if (remainingAir <= -20) {
@@ -326,8 +326,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(1, DamageCause.FIRE);
             // not applying additional fire ticks after dying in fire
             stoodInFire = !isDead();
-        } else if (getLocation().getBlock().getType() == Material.LAVA
-                || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
+        } else if (getLocation().getBlock().getType() == Material.LAVA) {
             damage(4, DamageCause.LAVA);
             if (swamInLava) {
                 setFireTicks(getFireTicks() + 2);
@@ -336,8 +335,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 swamInLava = true;
             }
         } else if (isTouchingMaterial(Material.FIRE)
-                || isTouchingMaterial(Material.LAVA)
-                || isTouchingMaterial(Material.STATIONARY_LAVA)) {
+                || isTouchingMaterial(Material.LAVA)) {
             damage(1, DamageCause.FIRE);
             // increment the ticks stood adjacent to fire or lava
             adjacentBurnTicks++;
@@ -350,8 +348,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             adjacentBurnTicks = 0;
         } else {
             swamInLava = false;
-            if (getLocation().getBlock().getType() == Material.WATER
-                    || getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
+            if (getLocation().getBlock().getType() == Material.WATER) {
                 setFireTicks(0);
             }
         }
@@ -666,30 +663,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return blocks;
     }
 
-    private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
-        Set<Material> materials = transparent.stream().map(Material::getMaterial)
-                .collect(Collectors.toSet());
-        return getLineOfSight(materials, maxDistance, maxLength);
-    }
-
     @Override
     public List<Block> getLineOfSight(Set<Material> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 0);
     }
 
-    @Deprecated
-    public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 1).get(0);
-    }
-
     @Override
     public Block getTargetBlock(Set<Material> materials, int maxDistance) {
         return getLineOfSight(materials, maxDistance, 1).get(0);
-    }
-
-    @Deprecated
-    public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 2);
     }
 
     @Override
@@ -842,13 +823,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             GlowPlayer player = (GlowPlayer) this;
             ItemStack mainHand = player.getInventory().getItemInMainHand();
             ItemStack offHand = player.getInventory().getItemInOffHand();
-            if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
+            if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM_OF_UNDYING) {
                 player.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
                 player.setHealth(1.0);
                 active = true;
                 return;
             }
-            if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
+            if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM_OF_UNDYING) {
                 player.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
                 player.setHealth(1.0);
                 active = true;
@@ -1243,6 +1224,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return false;
     }
 
+    @Override
+    public boolean isSwimming() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setSwimming(boolean swimming) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isRiptiding() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     /**
      * Sets the AI state.
      *
@@ -1303,10 +1302,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
             setLeashHolder(null);
             if (player.getGameMode() != GameMode.CREATIVE) {
-                world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
+                world.dropItemNaturally(this.location, new ItemStack(Material.LEAD));
             }
             return true;
-        } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEASH) {
+        } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEAD) {
             if (!GlowLeashHitch.isAllowedLeashHolder(this.getType()) || this.isLeashed()
                     || EventFactory.getInstance().callEvent(
                             new PlayerLeashEntityEvent(this, player, player))

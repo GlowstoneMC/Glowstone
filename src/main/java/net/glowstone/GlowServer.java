@@ -47,6 +47,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -167,10 +168,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.Tag;
 import org.bukkit.UnsafeValues;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World;
@@ -178,6 +181,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -203,6 +207,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.loot.LootTable;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -1458,6 +1463,42 @@ public class GlowServer implements Server {
     @Override
     public Iterator<Advancement> advancementIterator() {
         return Iterators.cycle(advancements.values());
+    }
+
+    @Override
+    public BlockData createBlockData(Material material) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BlockData createBlockData(Material material, Consumer<BlockData> consumer) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BlockData createBlockData(String s) throws IllegalArgumentException {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BlockData createBlockData(Material material, String s) throws IllegalArgumentException {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T extends Keyed> Tag<T> getTag(String s, NamespacedKey namespacedKey, Class<T> aClass) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public LootTable getLootTable(NamespacedKey namespacedKey) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
