@@ -1160,13 +1160,12 @@ public class GlowWorld implements World {
     }
 
     public Material getBlockTypeAt(int x, int y, int z) {
-        // TODO: 1.13
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return getBlockDataAt(x, y, z).getMaterial();
     }
 
     public BlockData getBlockDataAt(int x, int y, int z) {
-        // TODO: 1.13
-        throw new UnsupportedOperationException("Not implemented yet.");
+        GlowChunk chunk = getChunkAt(x >> 4, z >> 4);
+        return chunk.getBlockData(x & 0xf, z & 0xf, y);
     }
 
     @Override

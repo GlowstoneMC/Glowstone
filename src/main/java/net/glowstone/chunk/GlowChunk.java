@@ -23,6 +23,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
@@ -30,6 +31,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
@@ -198,7 +200,7 @@ public class GlowChunk implements Chunk {
 
     @Override
     public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome,
-            boolean includeBiomeTempRain) {
+                                              boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot(x, z, world, sections,
                 includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null,
                 includeBiomeTempRain, isSlimeChunk());
@@ -267,7 +269,7 @@ public class GlowChunk implements Chunk {
      * Initialize this chunk from the given sections.
      *
      * @param initSections The {@link ChunkSection}s to use. Should have a length of {@value
-     *         #SEC_COUNT}.
+     *                     #SEC_COUNT}.
      */
     public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
@@ -302,9 +304,9 @@ public class GlowChunk implements Chunk {
     /**
      * If needed, create a new block entity at the given location.
      *
-     * @param cx the X coordinate of the BlockEntity
-     * @param cy the Y coordinate of the BlockEntity
-     * @param cz the Z coordinate of the BlockEntity
+     * @param cx   the X coordinate of the BlockEntity
+     * @param cy   the Y coordinate of the BlockEntity
+     * @param cz   the Z coordinate of the BlockEntity
      * @param type the type of BlockEntity
      * @return The BlockEntity that was created.
      */
@@ -415,6 +417,11 @@ public class GlowChunk implements Chunk {
         return blockEntities.get(coordinateToIndex(x, z, y));
     }
 
+    public BlockData getBlockData(int x, int z, int y) {
+        ChunkSection section = getSection(y);
+        return section == null ? SimpleBlockData.empty() : section.getBlockData(x, y, z);
+    }
+
     /**
      * Gets the type of a block within this chunk.
      *
@@ -422,7 +429,10 @@ public class GlowChunk implements Chunk {
      * @param z The Z coordinate.
      * @param y The Y coordinate.
      * @return The type.
+     * @see #getBlockData(int, int, int) Replacement method.
+     * @deprecated Removed in 1.13.
      */
+    @Deprecated
     public int getType(int x, int z, int y) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) >> 4;
@@ -431,11 +441,13 @@ public class GlowChunk implements Chunk {
     /**
      * Sets the type of a block within this chunk.
      *
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     * @param x    The X coordinate.
+     * @param z    The Z coordinate.
+     * @param y    The Y coordinate.
      * @param type The type.
+     * @deprecated Removed in 1.13.
      */
+    @Deprecated
     public void setType(int x, int z, int y, int type) {
         if (type < 0 || type > 0xfff) {
             throw new IllegalArgumentException("Block type out of range: " + type);
@@ -517,9 +529,9 @@ public class GlowChunk implements Chunk {
     /**
      * Sets the metadata of a block within this chunk.
      *
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     * @param x        The X coordinate.
+     * @param z        The Z coordinate.
+     * @param y        The Y coordinate.
      * @param metaData The metadata.
      */
     public void setMetaData(int x, int z, int y, int metaData) {
@@ -553,9 +565,9 @@ public class GlowChunk implements Chunk {
     /**
      * Sets the sky light level of a block within this chunk.
      *
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     * @param x        The X coordinate.
+     * @param z        The Z coordinate.
+     * @param y        The Y coordinate.
      * @param skyLight The sky light level.
      */
     public void setSkyLight(int x, int z, int y, int skyLight) {
@@ -582,9 +594,9 @@ public class GlowChunk implements Chunk {
     /**
      * Sets the block light level of a block within this chunk.
      *
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
-     * @param y The Y coordinate.
+     * @param x          The X coordinate.
+     * @param z          The Z coordinate.
+     * @param y          The Y coordinate.
      * @param blockLight The block light level.
      */
     public void setBlockLight(int x, int z, int y, int blockLight) {
@@ -612,8 +624,8 @@ public class GlowChunk implements Chunk {
     /**
      * Sets the biome of a column within this chunk.
      *
-     * @param x The X coordinate.
-     * @param z The Z coordinate.
+     * @param x     The X coordinate.
+     * @param z     The Z coordinate.
      * @param biome The biome.
      */
     public void setBiome(int x, int z, int biome) {
@@ -734,7 +746,7 @@ public class GlowChunk implements Chunk {
      * Creates a new {@link ChunkDataMessage} which can be sent to a client to stream parts of this
      * chunk to them.
      *
-     * @param skylight Whether to include skylight data.
+     * @param skylight    Whether to include skylight data.
      * @param entireChunk Whether to send all chunk sections.
      * @return The {@link ChunkDataMessage}.
      */

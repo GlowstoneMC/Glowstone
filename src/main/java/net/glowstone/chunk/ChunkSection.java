@@ -10,6 +10,7 @@ import lombok.Getter;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.block.data.BlockData;
 
 /**
  * A single cubic section of a chunk, with all data.
@@ -52,7 +53,7 @@ public final class ChunkSection {
      * The sky light array. This array is always set, even in dimensions without skylight.
      *
      * @return The sky light array. If the dimension of this chunk section's chunk's world is not
-     *         the overworld, this array contains only maximum light levels.
+     * the overworld, this array contains only maximum light levels.
      */
     @Getter
     private NibbleArray skyLight;
@@ -80,7 +81,7 @@ public final class ChunkSection {
      * further modified.</p>
      *
      * @param types An array of block state IDs for this chunk section (containing type and
-     *         metadata)
+     *              metadata)
      */
     public ChunkSection(char[] types) {
         this(types, new NibbleArray(ARRAY_SIZE, DEFAULT_SKYLIGHT),
@@ -93,8 +94,8 @@ public final class ChunkSection {
      * <p>This ChunkSection assumes ownership of the arrays passed in, and they should not be
      * further modified.</p>
      *
-     * @param types An array of block types for this chunk section.
-     * @param skyLight An array for skylight data for this chunk section.
+     * @param types      An array of block types for this chunk section.
+     * @param skyLight   An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
     public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
@@ -116,14 +117,14 @@ public final class ChunkSection {
      * <p>This ChunkSection assumes
      * ownership of the arrays passed in, and they should not be further modified.</p>
      *
-     * @param data An array of blocks in this section.
-     * @param palette The palette that is associated with that data. If null, the global
-     *         palette is used.
-     * @param skyLight An array for skylight data for this chunk section.
+     * @param data       An array of blocks in this section.
+     * @param palette    The palette that is associated with that data. If null, the global
+     *                   palette is used.
+     * @param skyLight   An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
     public ChunkSection(VariableValueArray data, @Nullable IntList palette, NibbleArray skyLight,
-            NibbleArray blockLight) {
+                        NibbleArray blockLight) {
         if (data.getCapacity() != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight
                 .size() != ARRAY_SIZE) {
             throw new IllegalArgumentException("An array length was not " + ARRAY_SIZE + ": " + data
@@ -321,6 +322,12 @@ public final class ChunkSection {
                 .snapshot(), blockLight.snapshot());
     }
 
+    public BlockData getBlockData(int x, int y, int z) {
+        // TODO: Find the palette index inside the block array,
+        // then map the palette item to a BlockData instance.
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     /**
      * Gets the type at the given coordinates.
      *
@@ -328,7 +335,9 @@ public final class ChunkSection {
      * @param y The y coordinate, for up and down.
      * @param z The z coordinate, for north and south.
      * @return A type ID
+     * @deprecated Removed in 1.13.
      */
+    @Deprecated
     public char getType(int x, int y, int z) {
         int value = data.get(index(x, y, z));
         if (palette != null) {
@@ -340,11 +349,13 @@ public final class ChunkSection {
     /**
      * Sets the type at the given coordinates.
      *
-     * @param x The x coordinate, for east and west.
-     * @param y The y coordinate, for up and down.
-     * @param z The z coordinate, for north and south.
+     * @param x     The x coordinate, for east and west.
+     * @param y     The y coordinate, for up and down.
+     * @param z     The z coordinate, for north and south.
      * @param value The new type ID for that coordinate.
+     * @deprecated Removed in 1.13.
      */
+    @Deprecated
     public void setType(int x, int y, int z, char value) {
         int oldType = getType(x, y, z);
         if (oldType != 0) {
@@ -418,9 +429,9 @@ public final class ChunkSection {
     /**
      * Sets the block light at the given block.
      *
-     * @param x The x coordinate, for east and west.
-     * @param y The y coordinate, for up and down.
-     * @param z The z coordinate, for north and south.
+     * @param x     The x coordinate, for east and west.
+     * @param y     The y coordinate, for up and down.
+     * @param z     The z coordinate, for north and south.
      * @param light The new light level.
      */
     public void setBlockLight(int x, int y, int z, byte light) {
@@ -442,9 +453,9 @@ public final class ChunkSection {
     /**
      * Sets the sky light at the given block.
      *
-     * @param x The x coordinate, for east and west.
-     * @param y The y coordinate, for up and down.
-     * @param z The z coordinate, for north and south.
+     * @param x     The x coordinate, for east and west.
+     * @param y     The y coordinate, for up and down.
+     * @param z     The z coordinate, for north and south.
      * @param light The new light level.
      */
     public void setSkyLight(int x, int y, int z, byte light) {
@@ -470,7 +481,7 @@ public final class ChunkSection {
     /**
      * Writes this chunk section to the given ByteBuf.
      *
-     * @param buf The buffer to write to.
+     * @param buf      The buffer to write to.
      * @param skylight True if skylight should be included.
      * @throws IllegalStateException If this chunk section {@linkplain #isEmpty() is empty}
      */

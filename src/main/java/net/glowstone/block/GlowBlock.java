@@ -177,17 +177,7 @@ public class GlowBlock implements Block {
     // Type and typeid getters/setters
     @Override
     public Material getType() {
-        return Material.getMaterial(getTypeIdNoCache());
-    }
-
-    @Override
-    public int getTypeId() {
-        return getTypeIdNoCache();
-    }
-
-    @Deprecated
-    private int getTypeIdNoCache() {
-        return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
+        return world.getBlockTypeAt(x, y, z);
     }
 
     @Override

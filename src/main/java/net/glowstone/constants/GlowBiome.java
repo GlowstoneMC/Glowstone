@@ -206,20 +206,20 @@ public final class GlowBiome {
             }
         } else {
             // Don't cache if args are required
-            T pop = null;
+            T instance = null;
             for (Constructor<?> constructor : clazz.getConstructors()) {
                 // Try to call constructor, silently ignore exceptions
                 try {
-                    pop = (T) constructor.newInstance(args);
+                    instance = (T) constructor.newInstance(args);
                     break;
                 } catch (Exception ignored) {
                     // Ignored exception, go to next constructor
                 }
             }
-            if (pop == null) {
+            if (instance == null) {
                 throw new IllegalArgumentException("Could not find a constructor for given parameters.");
             }
-            return pop;
+            return instance;
         }
         return null;
     }
