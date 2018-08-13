@@ -52,6 +52,7 @@ import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 import static org.bukkit.block.Biome.values;
 
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import java.lang.reflect.Constructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -158,11 +159,33 @@ public final class GlowBiome {
     }
 
     public static class GlowBiomeBuilder {
-        public GlowBiomeBuilder populator(Class<? extends BiomePopulator> populatorClass) {
-            try {
-                this.populator = populators.putIfAbsent(populatorClass, populatorClass.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+        public GlowBiomeBuilder populator(Class<? extends BiomePopulator> populatorClass, Object... args) {
+            if (args.length == 0) {
+                // Cache
+                if (populators.containsKey(populatorClass)) {
+                    this.populator = populators.getInstance(populatorClass);
+                } else {
+                    try {
+                        this.populator = populators.put(populatorClass, populatorClass.newInstance());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                // Don't cache if args are required
+                BiomePopulator pop = null;
+                for (Constructor<?> constructor : populatorClass.getConstructors()) {
+                    // Try to call constructor, silently ignore exceptions
+                    try {
+                        pop = (BiomePopulator) constructor.newInstance(args);
+                    } catch (Exception ignored) {
+                        // Ignored exception, go to next constructor
+                    }
+                }
+                if (pop == null) {
+                    throw new IllegalArgumentException("Could not find a constructor for given parameters.");
+                }
+                this.populator = pop;
             }
             return this;
         }
