@@ -283,6 +283,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
             case GOLDEN_HELMET:
             case DIAMOND_HELMET:
             case PUMPKIN:
+            case TURTLE_HELMET:
             case SKELETON_SKULL: // TODO: 1.13, Skull Tag
             case WITHER_SKELETON_SKULL:
             case ZOMBIE_HEAD:
@@ -585,12 +586,14 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     @Override
     public boolean canMove() {
-        return false;
+        // TODO
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
     public void setCanMove(boolean move) {
-
+        // TODO
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
@@ -631,46 +634,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public boolean isSlotDisabled(EquipmentSlot equipmentSlot) {
         // TODO: 1.13
         throw new UnsupportedOperationException("Not implemented yet.");
-    }
-
-    @Override
-    public boolean isGliding() {
-        return false;
-    }
-
-    @Override
-    public void setGliding(boolean b) {
-
-    }
-
-    @Override
-    public void setAI(boolean b) {
-
-    }
-
-    @Override
-    public boolean hasAI() {
-        return false;
-    }
-
-    @Override
-    public boolean isCollidable() {
-        return false;
-    }
-
-    @Override
-    public void setCollidable(boolean b) {
-
-    }
-
-    @Override
-    public int getArrowsStuck() {
-        return 0;
-    }
-
-    @Override
-    public void setArrowsStuck(int i) {
-
     }
 
     @Override
