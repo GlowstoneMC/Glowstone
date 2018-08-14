@@ -123,6 +123,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         int z = artCenter.getBlockZ();
         String title = getArtTitle();
 
+        // TODO: replace art title with ID
         return Collections.singletonList(
             new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z,
                 facing.ordinal())

@@ -25,6 +25,7 @@ import net.glowstone.util.nbt.FloatTag;
 import net.glowstone.util.nbt.IntArrayTag;
 import net.glowstone.util.nbt.IntTag;
 import net.glowstone.util.nbt.ListTag;
+import net.glowstone.util.nbt.LongArrayTag;
 import net.glowstone.util.nbt.LongTag;
 import net.glowstone.util.nbt.ShortTag;
 import net.glowstone.util.nbt.StringTag;
@@ -447,6 +448,8 @@ public class Mojangson {
                 return fromTag((ShortTag) tag);
             case STRING:
                 return fromTag((StringTag) tag);
+            case LONG_ARRAY:
+                return fromTag((LongArrayTag) tag);
             default:
                 return null;
         }
@@ -618,5 +621,29 @@ public class Mojangson {
     public static String fromTag(StringTag tag) {
         return String.valueOf(MojangsonToken.STRING_QUOTES) + tag.getValue()
                 + MojangsonToken.STRING_QUOTES;
+    }
+
+    /**
+     * Creates a Mojangson string from the given LongArray Tag.
+     *
+     * @param tag the LongArray Tag to convert
+     * @return the converted Mojangson string
+     */
+    public static String fromTag(LongArrayTag tag) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ARRAY_START);
+        boolean start = true;
+
+        for (long value : tag.getValue()) {
+            LongTag i = new LongTag(value);
+            if (start) {
+                start = false;
+            } else {
+                builder.append(ELEMENT_SEPERATOR);
+            }
+            builder.append(fromTag(i));
+        }
+        builder.append(ARRAY_END);
+        return builder.toString();
     }
 }

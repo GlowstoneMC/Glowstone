@@ -10,7 +10,6 @@ import lombok.Getter;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
-import org.bukkit.block.data.BlockData;
 
 /**
  * A single cubic section of a chunk, with all data.
@@ -41,7 +40,7 @@ public final class ChunkSection {
     /**
      * The number of bits per block used in the global palette.
      */
-    public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 13;
+    public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 14;
 
     /**
      * The palette.
@@ -53,7 +52,7 @@ public final class ChunkSection {
      * The sky light array. This array is always set, even in dimensions without skylight.
      *
      * @return The sky light array. If the dimension of this chunk section's chunk's world is not
-     * the overworld, this array contains only maximum light levels.
+     *         the overworld, this array contains only maximum light levels.
      */
     @Getter
     private NibbleArray skyLight;
@@ -98,6 +97,7 @@ public final class ChunkSection {
      * @param skyLight   An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
+    @Deprecated
     public ChunkSection(char[] types, NibbleArray skyLight, NibbleArray blockLight) {
         if (types.length != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE
                 || blockLight.size() != ARRAY_SIZE) {
@@ -108,7 +108,7 @@ public final class ChunkSection {
         this.skyLight = skyLight;
         this.blockLight = blockLight;
 
-        loadTypeArray(types);
+        // loadTypeArray(types);
     }
 
     /**
@@ -123,6 +123,7 @@ public final class ChunkSection {
      * @param skyLight   An array for skylight data for this chunk section.
      * @param blockLight An array for blocklight data for this chunk section.
      */
+    @Deprecated
     public ChunkSection(VariableValueArray data, @Nullable IntList palette, NibbleArray skyLight,
                         NibbleArray blockLight) {
         if (data.getCapacity() != ARRAY_SIZE || skyLight.size() != ARRAY_SIZE || blockLight
@@ -148,13 +149,19 @@ public final class ChunkSection {
         this.skyLight = skyLight;
         this.blockLight = blockLight;
     }
-
+/*
+    public ChunkSection(VariableValueArray blockStates, BlockStatePalette palette,
+                        NibbleArray skyLight, NibbleArray blockLight) {
+        // todo: initialization
+    }
+*/
     /**
      * Creates a new unlit chunk section containing the given types.
      *
      * @param types An array of block IDs, with metadata
      * @return A matching chunk section.
      */
+    @Deprecated
     public static ChunkSection fromStateArray(short[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
@@ -173,6 +180,7 @@ public final class ChunkSection {
      * @param types An array of block IDs, without metadata.
      * @return A matching chunk section.
      */
+    @Deprecated
     public static ChunkSection fromIdArray(short[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
@@ -191,6 +199,7 @@ public final class ChunkSection {
      * @param types An array of block IDs, without metadata.
      * @return A matching chunk section.
      */
+    @Deprecated
     public static ChunkSection fromIdArray(byte[] types) {
         if (types.length != ARRAY_SIZE) {
             throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
@@ -240,59 +249,6 @@ public final class ChunkSection {
                     "Coords (x=" + x + ",z=" + z + ") out of section bounds");
         }
         return (y & 0xf) << 8 | z << 4 | x;
-    }
-
-    /**
-     * Loads the contents of this chunk section from the given type array, initializing the
-     * palette.
-     *
-     * @param types The type array.
-     */
-    public void loadTypeArray(char[] types) {
-        if (types.length != ARRAY_SIZE) {
-            throw new IllegalArgumentException("Types array length was not " + ARRAY_SIZE + ": "
-                    + types.length);
-        }
-
-        // Build the palette, and the count
-        this.count = 0;
-        this.palette = new IntArrayList();
-        for (char type : types) {
-            if (type != 0) {
-                count++;
-            }
-
-            if (!palette.contains(type)) {
-                palette.add(type);
-            }
-        }
-        // Now that we've built a palette, build the list
-        int bitsPerBlock = VariableValueArray.calculateNeededBits(palette.size());
-        if (bitsPerBlock < 4) {
-            bitsPerBlock = 4;
-        } else if (bitsPerBlock > 8) {
-            palette = null;
-            bitsPerBlock = GLOBAL_PALETTE_BITS_PER_BLOCK;
-        }
-        this.data = new VariableValueArray(bitsPerBlock, ARRAY_SIZE);
-        for (int i = 0; i < ARRAY_SIZE; i++) {
-            if (palette != null) {
-                data.set(i, palette.indexOf(types[i]));
-            } else {
-                data.set(i, types[i]);
-            }
-        }
-    }
-
-    /**
-     * <p>Optimizes this chunk section, removing unneeded palette entries and recounting non-air
-     * blocks.</p>
-     *
-     * <p>This is an expensive operation, but occasionally performing it will improve
-     * sending the section.
-     */
-    public void optimize() {
-        loadTypeArray(getTypes());
     }
 
     /**
@@ -402,6 +358,7 @@ public final class ChunkSection {
      *
      * @return The block type array.
      */
+    @Deprecated
     public char[] getTypes() {
         char[] types = new char[ARRAY_SIZE];
         for (int i = 0; i < ARRAY_SIZE; i++) {
@@ -491,9 +448,7 @@ public final class ChunkSection {
         }
 
         buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
-        if (palette == null) {
-            ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
-        } else {
+        if (palette != null) {
             ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
             // Foreach loops can't be used due to autoboxing
             IntListIterator itr = palette.iterator();
@@ -521,6 +476,8 @@ public final class ChunkSection {
      * @param sectionTag The tag to write to
      */
     public void writeToNbt(CompoundTag sectionTag) {
+        // TODO: 1.13 Palette creation and serialization
+
         char[] types = this.getTypes();
         byte[] rawTypes = new byte[ChunkSection.ARRAY_SIZE];
         NibbleArray extTypes = null;

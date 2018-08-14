@@ -661,7 +661,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
-        Message pluginMessage = PluginMessage.fromString("MC|Brand", server.getName());
+        Message pluginMessage = PluginMessage.fromString("minecraft:brand", server.getName());
         if (pluginMessage != null) {
             session.send(pluginMessage);
         }

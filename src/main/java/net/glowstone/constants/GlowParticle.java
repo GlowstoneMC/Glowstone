@@ -21,6 +21,7 @@ public final class GlowParticle {
     private static final Map<Object, Integer> ids = new HashMap<>();
 
     static {
+        // TODO: update those IDs with http://wiki.vg/Pre-release_protocol#Particle (1.13)
         // http://wiki.vg/Protocol#Particle IDs, but keyed by API enum
         set(Particle.EXPLOSION_NORMAL, Effect.EXPLOSION, 0);       // explode
         set(Particle.EXPLOSION_LARGE, Effect.EXPLOSION_LARGE, 1); // largeexplode

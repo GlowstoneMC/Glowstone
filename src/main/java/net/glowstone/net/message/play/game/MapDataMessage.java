@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import net.glowstone.util.TextMessage;
 
 @Data
 public final class MapDataMessage implements Message {
@@ -25,7 +26,9 @@ public final class MapDataMessage implements Message {
         public final int type;
         public final int facing;
         public final int x;
-        public final int y;
+        public final int z;
+        public final byte direction;
+        public final TextMessage displayName;
     }
 
     @ToString
@@ -35,7 +38,7 @@ public final class MapDataMessage implements Message {
         public final int width;
         public final int height;
         public final int x;
-        public final int y;
+        public final int z;
         public final byte[] data;
 
         /**
@@ -43,15 +46,15 @@ public final class MapDataMessage implements Message {
          * @param width the section width
          * @param height the section height
          * @param x the x offset
-         * @param y the y offset
+         * @param z the z offset
          * @param data the data
          */
-        public Section(int width, int height, int x, int y, byte... data) {
+        public Section(int width, int height, int x, int z, byte... data) {
             checkArgument(width * height == data.length, "width * height == data.length");
             this.width = width;
             this.height = height;
             this.x = x;
-            this.y = y;
+            this.z = z;
             this.data = data;
         }
     }

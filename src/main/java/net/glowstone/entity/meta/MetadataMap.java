@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import net.glowstone.util.DynamicallyTypedMapWithFloats;
+import net.glowstone.util.TextMessage;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -179,6 +180,14 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
      */
     public BlockVector getOptPosition(MetadataIndex index) {
         return get(index, MetadataType.OPTPOSITION, null);
+    }
+
+    public TextMessage getChat(MetadataIndex index) {
+        return get(index, MetadataType.CHAT, null);
+    }
+
+    public TextMessage getOptChat(MetadataIndex index) {
+        return get(index, MetadataType.OPTCHAT, null);
     }
 
     /**

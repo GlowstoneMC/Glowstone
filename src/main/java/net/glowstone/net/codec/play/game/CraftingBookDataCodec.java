@@ -16,8 +16,10 @@ public final class CraftingBookDataCodec implements Codec<CraftingBookDataMessag
             return new CraftingBookDataMessage(type, recipeId);
         } else if (type == CraftingBookDataMessage.TYPE_STATUS) {
             boolean bookOpen = buf.readBoolean();
-            boolean filter = buf.readBoolean();
-            return new CraftingBookDataMessage(type, bookOpen, filter);
+            boolean filterOpen = buf.readBoolean();
+            boolean smeltingBookOpen = buf.readBoolean();
+            boolean smeltingFilterOpen = buf.readBoolean();
+            return new CraftingBookDataMessage(type, bookOpen, filterOpen, smeltingBookOpen, smeltingFilterOpen);
         }
         return null;
     }
@@ -29,7 +31,9 @@ public final class CraftingBookDataCodec implements Codec<CraftingBookDataMessag
             buf.writeInt(message.getRecipeId());
         } else if (message.getType() == CraftingBookDataMessage.TYPE_STATUS) {
             buf.writeBoolean(message.isBookOpen());
-            buf.writeBoolean(message.isFilter());
+            buf.writeBoolean(message.isFilterOpen());
+            buf.writeBoolean(message.isSmeltingBookOpen());
+            buf.writeBoolean(message.isSmeltingFilterOpen());
         }
         return buf;
     }
