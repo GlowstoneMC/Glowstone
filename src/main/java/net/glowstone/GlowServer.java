@@ -1467,37 +1467,37 @@ public class GlowServer implements Server {
 
     @Override
     public BlockData createBlockData(Material material) {
-        // TODO: 1.13
+        // TODO: 1.13, flattening
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public BlockData createBlockData(Material material, Consumer<BlockData> consumer) {
+        // TODO: 1.13, flattening
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BlockData createBlockData(String data) throws IllegalArgumentException {
+        // TODO: 1.13, flattening
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BlockData createBlockData(Material material, String data) throws IllegalArgumentException {
+        // TODO: 1.13, flattening
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T extends Keyed> Tag<T> getTag(String registry, NamespacedKey tagKey, Class<T> entriesClass) {
         // TODO: 1.13
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public BlockData createBlockData(String s) throws IllegalArgumentException {
-        // TODO: 1.13
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public BlockData createBlockData(Material material, String s) throws IllegalArgumentException {
-        // TODO: 1.13
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public <T extends Keyed> Tag<T> getTag(String s, NamespacedKey namespacedKey, Class<T> aClass) {
-        // TODO: 1.13
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public LootTable getLootTable(NamespacedKey namespacedKey) {
-        // TODO: 1.13
+    public LootTable getLootTable(NamespacedKey tableKey) {
+        // TODO: 1.13, possible re-use our existing loot tables and implement the new API
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
