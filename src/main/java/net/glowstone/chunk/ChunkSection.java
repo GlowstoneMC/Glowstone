@@ -10,6 +10,7 @@ import lombok.Getter;
 import net.glowstone.util.NibbleArray;
 import net.glowstone.util.VariableValueArray;
 import net.glowstone.util.nbt.CompoundTag;
+import org.bukkit.block.data.BlockData;
 
 /**
  * A single cubic section of a chunk, with all data.

@@ -210,7 +210,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                 equipment.setItem(slot, InventoryUtil.createEmptyStack());
                 return true;
             } else {
-                EquipmentSlot slot = getEquipType(player.getItemInHand().getType());
+                EquipmentSlot slot = player.getItemInHand().getType().getEquipmentSlot();
                 if ((slot == EquipmentSlot.HAND || slot == EquipmentSlot.OFF_HAND) && !hasArms) {
                     return false;
                 }
@@ -273,48 +273,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         }
 
         return Sound.ITEM_ARMOR_EQUIP_GENERIC;
-    }
-
-    private EquipmentSlot getEquipType(Material mat) {
-        switch (mat) {
-            case IRON_HELMET:
-            case LEATHER_HELMET:
-            case CHAINMAIL_HELMET:
-            case GOLDEN_HELMET:
-            case DIAMOND_HELMET:
-            case PUMPKIN:
-            case TURTLE_HELMET:
-            case SKELETON_SKULL: // TODO: 1.13, Skull Tag
-            case WITHER_SKELETON_SKULL:
-            case ZOMBIE_HEAD:
-            case PLAYER_HEAD:
-            case CREEPER_HEAD:
-            case DRAGON_HEAD:
-                return EquipmentSlot.HEAD;
-            case IRON_CHESTPLATE:
-            case GOLDEN_CHESTPLATE:
-            case LEATHER_CHESTPLATE:
-            case CHAINMAIL_CHESTPLATE:
-            case DIAMOND_CHESTPLATE:
-            case ELYTRA:
-                return EquipmentSlot.CHEST;
-            case IRON_LEGGINGS:
-            case GOLDEN_LEGGINGS:
-            case LEATHER_LEGGINGS:
-            case CHAINMAIL_LEGGINGS:
-            case DIAMOND_LEGGINGS:
-                return EquipmentSlot.LEGS;
-            case IRON_BOOTS:
-            case GOLDEN_BOOTS:
-            case LEATHER_BOOTS:
-            case CHAINMAIL_BOOTS:
-            case DIAMOND_BOOTS:
-                return EquipmentSlot.FEET;
-            case SHIELD:
-                return EquipmentSlot.OFF_HAND;
-            default:
-                return EquipmentSlot.HAND;
-        }
     }
 
     private EquipmentSlot getEditSlot(float height) {

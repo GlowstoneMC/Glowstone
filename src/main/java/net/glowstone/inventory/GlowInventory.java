@@ -84,14 +84,14 @@ public class GlowInventory implements Inventory {
      *
      * <p>This should be called in the constructor.
      *
-     * @param slots List of slots this inventory has.
+     * @param slots   List of slots this inventory has.
      * @param viewers Set for storage of current inventory viewers.
-     * @param owner InventoryHolder which owns this Inventory.
-     * @param type The inventory type.
-     * @param title Inventory title, displayed in the client.
+     * @param owner   InventoryHolder which owns this Inventory.
+     * @param type    The inventory type.
+     * @param title   Inventory title, displayed in the client.
      */
     protected void initialize(List<GlowInventorySlot> slots, Set<HumanEntity> viewers,
-            InventoryHolder owner, InventoryType type, String title) {
+                              InventoryHolder owner, InventoryType type, String title) {
         this.slots = slots;
         this.viewers = viewers;
         this.holder = owner;
@@ -166,7 +166,7 @@ public class GlowInventory implements Inventory {
      * <p>Should return false for crafting output slots or armor slots which cannot accept the given
      * item.
      *
-     * @param slot The slot number.
+     * @param slot  The slot number.
      * @param stack The stack to add.
      * @return Whether the stack can be added there.
      */
@@ -178,7 +178,7 @@ public class GlowInventory implements Inventory {
      * Check whether, in a shift-click operation, an item of the specified type may be placed in the
      * given slot.
      *
-     * @param slot The slot number.
+     * @param slot  The slot number.
      * @param stack The stack to add.
      * @return Whether the stack can be added there.
      */
@@ -192,13 +192,13 @@ public class GlowInventory implements Inventory {
      * <p>The default implementation distributes items from the right to the left and from the
      * bottom to the top.
      *
-     * @param player The player who clicked
-     * @param view The inventory view in which was clicked
+     * @param player      The player who clicked
+     * @param view        The inventory view in which was clicked
      * @param clickedSlot The slot in the view
      * @param clickedItem The item at which was clicked
      */
     public void handleShiftClick(GlowPlayer player, InventoryView view, int clickedSlot,
-            ItemStack clickedItem) {
+                                 ItemStack clickedItem) {
         clickedItem = player.getInventory().tryToFillSlots(clickedItem, 8, -1, 35, 8);
         view.setItem(clickedSlot, clickedItem);
     }
@@ -378,9 +378,9 @@ public class GlowInventory implements Inventory {
     /**
      * Adds the contents of the given ItemStack to the inventory.
      *
-     * @param item the ItemStack to add
+     * @param item       the ItemStack to add
      * @param ignoreMeta if true, can convert to items with different NBT data in order to stack
-     *         with existing copies of those items, provided the material and damage value match
+     *                   with existing copies of those items, provided the material and damage value match
      * @return the items that couldn't be added, or an empty stack if all were added
      */
     public ItemStack addItemStack(ItemStack item, boolean ignoreMeta) {
@@ -454,9 +454,9 @@ public class GlowInventory implements Inventory {
     /**
      * Removes the given ItemStack from the inventory.
      *
-     * @param item the ItemStack to remove
+     * @param item       the ItemStack to remove
      * @param ignoreMeta if true, can choose an item with different NBT data, provided the material
-     *         and damage value match
+     *                   and damage value match
      * @return the items that couldn't be removed, or an empty stack if all were removed
      */
     public ItemStack removeItemStack(ItemStack item, boolean ignoreMeta) {
@@ -488,7 +488,7 @@ public class GlowInventory implements Inventory {
 
     private boolean compareItems(ItemStack a, ItemStack b, boolean ignoreMeta) {
         if (ignoreMeta) {
-            return a.getTypeId() == b.getTypeId() && a.getDurability() == b.getDurability();
+            return a.getType() == b.getType() && a.getDurability() == b.getDurability();
         }
 
         return a.isSimilar(b);
@@ -547,11 +547,6 @@ public class GlowInventory implements Inventory {
     // Contains
 
     @Override
-    public boolean contains(int materialId) {
-        return first(materialId) >= 0;
-    }
-
-    @Override
     public boolean contains(Material material) {
         return first(material) >= 0;
     }
@@ -562,8 +557,8 @@ public class GlowInventory implements Inventory {
     }
 
     @Override
-    public boolean contains(int materialId, int amount) {
-        HashMap<Integer, ? extends ItemStack> found = all(materialId);
+    public boolean contains(Material material, int amount) {
+        HashMap<Integer, ? extends ItemStack> found = all(material);
         int total = 0;
         for (ItemStack stack : found.values()) {
             total += stack.getAmount();
@@ -572,13 +567,8 @@ public class GlowInventory implements Inventory {
     }
 
     @Override
-    public boolean contains(Material material, int amount) {
-        return contains(material.getId(), amount);
-    }
-
-    @Override
     public boolean contains(ItemStack item, int amount) {
-        return contains(item.getTypeId(), amount);
+        return contains(InventoryUtil.itemOrEmpty(item).getType(), amount);
     }
 
     @Override
@@ -590,39 +580,28 @@ public class GlowInventory implements Inventory {
     // Find all
 
     @Override
-    public HashMap<Integer, ItemStack> all(int materialId) {
+    public HashMap<Integer, ItemStack> all(Material material) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
-
         int i = 0;
         for (ItemStack slotItem : this) {
-            if (!InventoryUtil.isEmpty(slotItem) && slotItem.getTypeId() == materialId) {
+            if (!InventoryUtil.isEmpty(slotItem) && slotItem.getType() == material) {
                 result.put(i, InventoryUtil.itemOrEmpty(slotItem));
             }
-
             i++;
         }
-
         return result;
-    }
-
-    @Override
-    public HashMap<Integer, ItemStack> all(Material material) {
-        return all(material.getId());
     }
 
     @Override
     public HashMap<Integer, ItemStack> all(ItemStack item) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
-
         int i = 0;
         for (ItemStack slotItem : this) {
             if (Objects.equals(slotItem, item)) {
                 result.put(i, slotItem);
             }
-
             i++;
         }
-
         return result;
     }
 
@@ -630,26 +609,19 @@ public class GlowInventory implements Inventory {
     // Find first
 
     @Override
-    public int first(int materialId) {
+    public int first(Material material) {
         int i = 0;
         for (ItemStack slotItem : this) {
             if (slotItem == null) {
-                if (materialId == 0) {
+                if (material == Material.AIR) {
                     return i;
                 }
-            } else if (slotItem.getTypeId() == materialId) {
+            } else if (slotItem.getType() == material) {
                 return i;
             }
-
             i++;
         }
-
         return -1;
-    }
-
-    @Override
-    public int first(Material material) {
-        return first(material != null ? material.getId() : 0);
     }
 
     @Override
@@ -659,10 +631,8 @@ public class GlowInventory implements Inventory {
             if (Objects.equals(slotItem, item)) {
                 return i;
             }
-
             i++;
         }
-
         return -1;
     }
 
@@ -673,12 +643,6 @@ public class GlowInventory implements Inventory {
 
     ////////////////////////////////////////////////////////////////////////////
     // Remove
-
-    @Override
-    public void remove(int materialId) {
-        HashMap<Integer, ? extends ItemStack> stacks = all(materialId);
-        stacks.keySet().forEach(this::clear);
-    }
 
     @Override
     public void remove(Material material) {
@@ -709,7 +673,8 @@ public class GlowInventory implements Inventory {
 
     /**
      * Consumes an item or the full stack in the given slot.
-     * @param slot The slot to consume.
+     *
+     * @param slot       The slot to consume.
      * @param wholeStack True if we should remove the complete stack.
      * @return The number of item really consumed.
      */
@@ -732,6 +697,7 @@ public class GlowInventory implements Inventory {
 
     /**
      * Consumes an item in the given slot.
+     *
      * @param slot The slot to consume.
      * @return The number of item really consumed.
      */
