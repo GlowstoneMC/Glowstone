@@ -66,7 +66,7 @@ public class MegaPineTree extends MegaRedwoodTree {
                 for (int y = 2; y >= -3; y--) {
                     Block block = world
                             .getBlockAt(sourceX + x, sourceY + y, sourceZ + z);
-                    if (block.getType() == Material.GRASS || block.getType() == Material.DIRT) {
+                    if (block.getType() == Material.GRASS_BLOCK || block.getType() == Material.DIRT) {
                         BlockState state = block.getState();
                         if (world.getBlockAt(sourceX + x, sourceY + y + 1, sourceZ + z)
                                 .getType().isOccluding()) {

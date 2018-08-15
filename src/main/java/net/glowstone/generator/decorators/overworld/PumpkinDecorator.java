@@ -12,7 +12,7 @@ import org.bukkit.material.Pumpkin;
 public class PumpkinDecorator extends BlockPopulator {
 
     private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
-        BlockFace.WEST};
+            BlockFace.WEST};
 
     @Override
     public void populate(World world, Random random, Chunk source) {
@@ -27,7 +27,7 @@ public class PumpkinDecorator extends BlockPopulator {
                 int y = sourceY + random.nextInt(4) - random.nextInt(4);
 
                 if (world.getBlockAt(x, y, z).getType() == Material.AIR
-                        && world.getBlockAt(x, y - 1, z).getType() == Material.GRASS) {
+                        && world.getBlockAt(x, y - 1, z).getType() == Material.GRASS_BLOCK) {
                     BlockState state = world.getBlockAt(x, y, z).getState();
                     state.setType(Material.PUMPKIN);
                     // random facing

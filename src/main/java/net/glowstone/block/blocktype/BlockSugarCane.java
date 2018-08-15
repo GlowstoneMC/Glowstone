@@ -25,10 +25,10 @@ public class BlockSugarCane extends BlockNeedsAttached {
         Block below = block.getRelative(BlockFace.DOWN);
         Material type = below.getType();
         switch (type) {
-            case SUGAR_CANE_BLOCK:
+            case SUGAR_CANE:
                 return true;
             case DIRT:
-            case GRASS:
+            case GRASS_BLOCK:
             case SAND:
                 return isNearWater(below);
             default:
@@ -54,7 +54,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
             // check the current cane height
             Block blockBelow = block.getRelative(BlockFace.DOWN);
             int height = 1;
-            while (blockBelow.getType() == Material.SUGAR_CANE_BLOCK) {
+            while (blockBelow.getType() == Material.SUGAR_CANE) {
                 height++;
                 blockBelow = blockBelow.getRelative(BlockFace.DOWN);
             }
@@ -69,7 +69,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
                     state.setRawData((byte) 0);
                     state.update(true);
                     state = blockAbove.getState();
-                    state.setType(Material.SUGAR_CANE_BLOCK);
+                    state.setType(Material.SUGAR_CANE);
                     state.setRawData((byte) 0);
                     BlockGrowEvent growEvent = new BlockGrowEvent(blockAbove, state);
                     EventFactory.getInstance().callEvent(growEvent);
@@ -86,7 +86,6 @@ public class BlockSugarCane extends BlockNeedsAttached {
         for (BlockFace face : SIDES) {
             switch (block.getRelative(face).getType()) {
                 case WATER:
-                case STATIONARY_WATER:
                     return true;
                 default:
                     break;

@@ -32,7 +32,7 @@ public class SwampTree extends CocoaTree {
 
     @Override
     public boolean canPlaceOn(BlockState soil) {
-        return soil.getType() == Material.GRASS || soil.getType() == Material.DIRT;
+        return soil.getType() == Material.GRASS_BLOCK || soil.getType() == Material.DIRT;
     }
 
     @Override

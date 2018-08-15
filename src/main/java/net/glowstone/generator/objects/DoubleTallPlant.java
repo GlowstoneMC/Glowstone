@@ -33,7 +33,7 @@ public class DoubleTallPlant implements TerrainObject {
             Block block = world.getBlockAt(x, y, z);
             Block topBlock = block.getRelative(BlockFace.UP);
             if (y < 255 && block.isEmpty() && topBlock.isEmpty()
-                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
+                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS_BLOCK) {
                 BlockState state = block.getState();
                 state.setType(Material.DOUBLE_PLANT);
                 state.setData(new DoublePlant(species));

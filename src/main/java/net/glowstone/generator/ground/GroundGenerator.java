@@ -13,12 +13,12 @@ public class GroundGenerator {
     protected static final MaterialData AIR = new MaterialData(Material.AIR);
     protected static final MaterialData STONE = new MaterialData(Material.STONE);
     protected static final MaterialData SANDSTONE = new MaterialData(Material.SANDSTONE);
-    protected static final MaterialData GRASS = new MaterialData(Material.GRASS);
+    protected static final MaterialData GRASS = new MaterialData(Material.GRASS_BLOCK);
     protected static final MaterialData DIRT = new MaterialData(Material.DIRT);
     protected static final MaterialData COARSE_DIRT = new MaterialData(Material.DIRT, (byte) 1);
     protected static final MaterialData PODZOL = new MaterialData(Material.DIRT, (byte) 2);
     protected static final MaterialData GRAVEL = new MaterialData(Material.GRAVEL);
-    protected static final MaterialData MYCEL = new MaterialData(Material.MYCEL);
+    protected static final MaterialData MYCEL = new MaterialData(Material.MYCELIUM);
     protected static final MaterialData SAND = new MaterialData(Material.SAND);
     protected static final MaterialData SNOW = new MaterialData(Material.SNOW_BLOCK);
 
@@ -90,7 +90,7 @@ public class GroundGenerator {
                             groundMat = SANDSTONE;
                         }
                     }
-                } else if (mat == Material.STATIONARY_WATER && y == seaLevel - 2
+                } else if (mat == Material.WATER && y == seaLevel - 2
                         && GlowBiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
                     chunkData.setBlock(x, y, z, Material.ICE);
                 }

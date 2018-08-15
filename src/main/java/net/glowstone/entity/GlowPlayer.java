@@ -3489,56 +3489,23 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (!InventoryUtil.isEmpty(tool) && maxDurability != 0 && durability != maxDurability) {
             int baseDamage; // Before applying unbreaking enchantment
             switch (digging.getType()) {
-                case GRASS:
+                case GRASS_BLOCK:
                 case DIRT:
                 case SAND:
                 case GRAVEL:
-                case MYCEL:
+                case MYCELIUM:
                 case SOUL_SAND:
-                    switch (tool.getType()) {
-                        case WOOD_SPADE:
-                        case STONE_SPADE:
-                        case IRON_SPADE:
-                        case GOLD_SPADE:
-                        case DIAMOND_SPADE:
-                            baseDamage = 1;
-                            break;
-                        default:
-                            baseDamage = 2;
-                            break;
-                    }
+                    baseDamage = ToolType.SPADE.matches(tool.getType()) ? 1 : 2;
                     break;
                 case LOG:
                 case LOG_2:
                 case WOOD:
                 case CHEST:
-                    switch (tool.getType()) {
-                        case WOOD_AXE:
-                        case STONE_AXE:
-                        case IRON_AXE:
-                        case GOLD_AXE:
-                        case DIAMOND_AXE:
-                            baseDamage = 1;
-                            break;
-                        default:
-                            baseDamage = 2;
-                            break;
-                    }
+                    baseDamage = ToolType.AXE.matches(tool.getType()) ? 1 : 2;
                     break;
                 case STONE:
                 case COBBLESTONE:
-                    switch (tool.getType()) {
-                        case WOOD_PICKAXE:
-                        case STONE_PICKAXE:
-                        case IRON_PICKAXE:
-                        case GOLD_PICKAXE:
-                        case DIAMOND_PICKAXE:
-                            baseDamage = 1;
-                            break;
-                        default:
-                            baseDamage = 2;
-                            break;
-                    }
+                    baseDamage = ToolType.PICKAXE.matches(tool.getType()) ? 1 : 2;
                     break;
                 default:
                     baseDamage = 2;
@@ -3568,7 +3535,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public boolean isInWater() {
         Material mat = getLocation().getBlock().getType();
-        return mat == Material.WATER || mat == Material.STATIONARY_WATER;
+        return mat == Material.WATER;
     }
 
     @Override

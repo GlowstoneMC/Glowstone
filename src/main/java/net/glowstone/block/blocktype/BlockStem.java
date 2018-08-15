@@ -36,7 +36,7 @@ public class BlockStem extends BlockCrops {
 
     @Override
     public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return block.getRelative(BlockFace.DOWN).getType() == Material.SOIL;
+        return block.getRelative(BlockFace.DOWN).getType() == Material.FARMLAND;
     }
 
     @Override
@@ -119,9 +119,9 @@ public class BlockStem extends BlockCrops {
                 GlowBlockState targetBlockState = targetBlock.getState();
                 GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
                 if (targetBlock.getType() == Material.AIR
-                    && (belowTargetBlock.getType() == Material.SOIL
+                    && (belowTargetBlock.getType() == Material.FARMLAND
                     || belowTargetBlock.getType() == Material.DIRT
-                    || belowTargetBlock.getType() == Material.GRASS)) {
+                    || belowTargetBlock.getType() == Material.GRASS_BLOCK)) {
                     targetBlockState.setType(fruitType);
                     if (fruitType == Material.PUMPKIN) {
                         targetBlockState.setData(new Pumpkin(face.getOppositeFace()));

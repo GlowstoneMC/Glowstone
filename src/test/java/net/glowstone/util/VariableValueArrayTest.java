@@ -1,7 +1,7 @@
 package net.glowstone.util;
 
 import static org.bukkit.Material.DIRT;
-import static org.bukkit.Material.GRASS;
+import static org.bukkit.Material.GRASS_BLOCK;
 import static org.bukkit.Material.GRAVEL;
 import static org.bukkit.Material.STONE;
 import static org.hamcrest.CoreMatchers.is;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class VariableValueArrayTest {
 
     private static final int[] SAMPLE_BLOCKS = {
-        block(GRASS, 0),
+        block(GRASS_BLOCK, 0),
         block(DIRT, 0),
         block(DIRT, 0),
         block(DIRT, 1),

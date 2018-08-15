@@ -105,13 +105,13 @@ public class BiomePopulator extends BlockPopulator {
         surfaceCaveDecorator.setAmount(1);
         sandPatchDecorator.setAmount(3);
         sandPatchDecorator.setRadii(7, 2);
-        sandPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS);
+        sandPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS_BLOCK);
         clayPatchDecorator.setAmount(1);
         clayPatchDecorator.setRadii(4, 1);
         clayPatchDecorator.setOverridableBlocks(Material.DIRT);
         gravelPatchDecorator.setAmount(1);
         gravelPatchDecorator.setRadii(6, 2);
-        gravelPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS);
+        gravelPatchDecorator.setOverridableBlocks(Material.DIRT, Material.GRASS_BLOCK);
 
         doublePlantDecorator.setAmount(0);
         treeDecorator.setAmount(Integer.MIN_VALUE);

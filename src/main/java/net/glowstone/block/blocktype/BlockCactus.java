@@ -87,7 +87,7 @@ public class BlockCactus extends BlockType {
     private boolean canPlaceNear(Material type) {
         // TODO: return true for non-buildable blocks
         switch (type) {
-            case GRASS:
+            case GRASS_BLOCK:
             case DIRT:
             case SAND:
             case GLASS:

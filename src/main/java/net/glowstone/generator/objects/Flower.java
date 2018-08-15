@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 public class Flower implements TerrainObject {
+    // TODO: Update to 1.13
 
     private final Material type;
     private final int data;
@@ -29,7 +30,7 @@ public class Flower implements TerrainObject {
 
             Block block = world.getBlockAt(x, y, z);
             if (y < 255 && block.getType() == Material.AIR
-                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
+                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS_BLOCK) {
                 block.setType(type);
                 block.setData((byte) data);
                 succeeded = true;
