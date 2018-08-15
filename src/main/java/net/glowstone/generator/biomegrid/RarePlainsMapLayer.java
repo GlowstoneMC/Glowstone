@@ -1,7 +1,7 @@
 package net.glowstone.generator.biomegrid;
 
-import static org.bukkit.block.Biome.MUTATED_PLAINS;
 import static org.bukkit.block.Biome.PLAINS;
+import static org.bukkit.block.Biome.SUNFLOWER_PLAINS;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ public class RarePlainsMapLayer extends MapLayer {
     private static final Map<Integer, Integer> RARE_PLAINS = new HashMap<>();
 
     static {
-        RARE_PLAINS.put(GlowBiome.getId(PLAINS), GlowBiome.getId(MUTATED_PLAINS));
+        RARE_PLAINS.put(GlowBiome.getId(PLAINS), GlowBiome.getId(SUNFLOWER_PLAINS));
     }
 
     private final MapLayer belowLayer;
