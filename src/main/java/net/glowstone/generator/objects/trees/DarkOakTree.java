@@ -5,30 +5,19 @@ import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Dirt;
-import org.bukkit.material.types.DirtType;
 
 public class DarkOakTree extends GenericTree {
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
-     *  @param random the PRNG
+     *
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
      */
     public DarkOakTree(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
-        setOverridables(
-            Material.AIR,
-            Material.LEAVES,
-            Material.LEAVES_2,
-            Material.GRASS,
-            Material.DIRT,
-            Material.LOG,
-            Material.LOG_2,
-            Material.SAPLING,
-            Material.VINE
-        );
         setHeight(random.nextInt(2) + random.nextInt(3) + 6);
+        setTypes(Material.DARK_OAK_LOG, Material.DARK_OAK_LEAVES);
     }
 
     @Override
@@ -69,21 +58,15 @@ public class DarkOakTree extends GenericTree {
             }
 
             Material material = blockTypeAt(centerX, blockY + y, centerZ, world);
-            if (material != Material.AIR && material != Material.LEAVES) {
+            if (material != Material.AIR && !LEAF_TYPES.contains(material)) {
                 continue;
             }
             trunkTopY = blockY + y;
             // SELF, SOUTH, EAST, SOUTH EAST
-            delegate.setTypeAndRawData(world, centerX, blockY + y, centerZ,
-                Material.LOG_2, 1);
-            delegate
-                .setTypeAndRawData(world, centerX, blockY + y, centerZ + 1,
-                    Material.LOG_2, 1);
-            delegate
-                .setTypeAndRawData(world, centerX + 1, blockY + y, centerZ,
-                    Material.LOG_2, 1);
-            delegate.setTypeAndRawData(world, centerX + 1, blockY + y,
-                centerZ + 1, Material.LOG_2, 1);
+            delegate.setType(world, centerX, blockY + y, centerZ, logType);
+            delegate.setType(world, centerX, blockY + y, centerZ + 1, logType);
+            delegate.setType(world, centerX + 1, blockY + y, centerZ, logType);
+            delegate.setType(world, centerX + 1, blockY + y, centerZ + 1, logType);
         }
 
         // generates leaves
@@ -120,9 +103,9 @@ public class DarkOakTree extends GenericTree {
                 for (int y = 0; y < random.nextInt(3) + 2; y++) {
                     Material material = blockTypeAt(
                             blockX + x, trunkTopY - y - 1, blockZ + z, world);
-                    if (material == Material.AIR || material == Material.LEAVES) {
-                        delegate.setTypeAndRawData(world, blockX + x,
-                            trunkTopY - y - 1, blockZ + z, Material.LOG_2, 1);
+                    if (material == Material.AIR || LEAF_TYPES.contains(material)) {
+                        delegate.setType(world, blockX + x,
+                                trunkTopY - y - 1, blockZ + z, logType);
                     }
                 }
 
@@ -151,23 +134,17 @@ public class DarkOakTree extends GenericTree {
         }
 
         // block below trunk is always dirt (SELF, SOUTH, EAST, SOUTH EAST)
-        Dirt dirt = new Dirt(DirtType.NORMAL);
-        delegate
-            .setTypeAndData(world, blockX, blockY - 1, blockZ,
-                Material.DIRT, dirt);
-        delegate.setTypeAndData(world, blockX, blockY - 1,
-            blockZ + 1, Material.DIRT, dirt);
-        delegate.setTypeAndData(world, blockX + 1, blockY - 1,
-            blockZ, Material.DIRT, dirt);
-        delegate.setTypeAndData(world, blockX + 1, blockY - 1,
-            blockZ + 1, Material.DIRT, dirt);
+        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
+        delegate.setType(world, blockX, blockY - 1, blockZ + 1, Material.DIRT);
+        delegate.setType(world, blockX + 1, blockY - 1, blockZ, Material.DIRT);
+        delegate.setType(world, blockX + 1, blockY - 1, blockZ + 1, Material.DIRT);
 
         return true;
     }
 
     private void setLeaves(int x, int y, int z, World world) {
         if (blockTypeAt(x, y, z, world) == Material.AIR) {
-            delegate.setTypeAndRawData(world, x, y, z, Material.LEAVES_2, 1);
+            delegate.setType(world, x, y, z, leavesType);
         }
     }
 }

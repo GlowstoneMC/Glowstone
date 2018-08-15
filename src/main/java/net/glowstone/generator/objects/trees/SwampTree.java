@@ -1,33 +1,33 @@
 package net.glowstone.generator.objects.trees;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Random;
 import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Dirt;
-import org.bukkit.material.types.DirtType;
 
 public class SwampTree extends CocoaTree {
-
-    public static final ImmutableList<Material> WATER_BLOCK_TYPES
-            = ImmutableList.of(Material.WATER, Material.STATIONARY_WATER);
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
      *
-     * @param random the PRNG
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and
      */
     public SwampTree(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
         setOverridables(
-            Material.AIR,
-            Material.LEAVES
+                Material.AIR,
+                // Leaves
+                Material.OAK_LEAVES,
+                Material.SPRUCE_LEAVES,
+                Material.BIRCH_LEAVES,
+                Material.JUNGLE_LEAVES,
+                Material.ACACIA_LEAVES,
+                Material.DARK_OAK_LEAVES
         );
         setHeight(random.nextInt(4) + 5);
-        setTypes(0, 0);
+        setTypes(Material.OAK_LOG, Material.OAK_LEAVES);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SwampTree extends CocoaTree {
                         continue;
                     }
                     // the trunk can be immersed by 1 block of water
-                    if (type == Material.WATER || type == Material.STATIONARY_WATER) {
+                    if (type == Material.WATER) {
                         if (y > baseY) {
                             return false;
                         }
@@ -72,7 +72,7 @@ public class SwampTree extends CocoaTree {
 
     @Override
     public boolean generate(World world, Random random, int blockX, int blockY, int blockZ) {
-        while (WATER_BLOCK_TYPES.contains(world.getBlockAt(blockX, blockY, blockZ).getType())) {
+        while (world.getBlockAt(blockX, blockY, blockZ).getType() == Material.WATER) {
             blockY--;
         }
 
@@ -87,9 +87,9 @@ public class SwampTree extends CocoaTree {
             for (int x = blockX - radius; x <= blockX + radius; x++) {
                 for (int z = blockZ - radius; z <= blockZ + radius; z++) {
                     if (Math.abs(x - blockX) != radius
-                        || Math.abs(z - blockZ) != radius
-                        || random.nextBoolean() && n != 0) {
-                        replaceIfAirOrLeaves(x, y, z, Material.LEAVES, leavesType, world);
+                            || Math.abs(z - blockZ) != radius
+                            || random.nextBoolean() && n != 0) {
+                        replaceIfAirOrLeaves(x, y, z, leavesType, world);
                     }
                 }
             }
@@ -98,10 +98,9 @@ public class SwampTree extends CocoaTree {
         // generate the trunk
         for (int y = 0; y < height; y++) {
             Material material = blockTypeAt(blockX, blockY + y, blockZ, world);
-            if (material == Material.AIR || material == Material.LEAVES
-                    || material == Material.WATER || material == Material.STATIONARY_WATER) {
-                delegate.setTypeAndRawData(
-                        world, blockX, blockY + y, blockZ, Material.LOG, logType);
+            if (material == Material.AIR || LEAF_TYPES.contains(material)
+                    || material == Material.WATER) {
+                delegate.setType(world, blockX, blockY + y, blockZ, logType);
             }
         }
 
@@ -109,10 +108,7 @@ public class SwampTree extends CocoaTree {
         addVinesOnLeaves(blockX, blockY, blockZ, world, random);
 
         // block below trunk is always dirt
-        Dirt dirt = new Dirt(DirtType.NORMAL);
-        delegate
-            .setTypeAndData(world, blockX, blockY - 1, blockZ,
-                Material.DIRT, dirt);
+        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
 
         return true;
     }

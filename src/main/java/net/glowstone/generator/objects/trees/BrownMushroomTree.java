@@ -13,24 +13,28 @@ public class BrownMushroomTree extends GenericTree {
     /**
      * Initializes this mushroom with a random height, preparing it to attempt to generate.
      *
-     * @param random the PRNG
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
      */
     public BrownMushroomTree(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
-        type = Material.HUGE_MUSHROOM_1;
+        type = Material.BROWN_MUSHROOM_BLOCK;
         setOverridables(
-            Material.AIR,
-            Material.LEAVES,
-            Material.LEAVES_2
+                Material.AIR,
+                Material.OAK_LEAVES,
+                Material.SPRUCE_LEAVES,
+                Material.BIRCH_LEAVES,
+                Material.JUNGLE_LEAVES,
+                Material.ACACIA_LEAVES,
+                Material.DARK_OAK_LEAVES
         );
         setHeight(random.nextInt(3) + 4);
     }
 
     @Override
     public boolean canPlaceOn(BlockState soil) {
-        return soil.getType() == Material.GRASS || soil.getType() == Material.DIRT
-            || soil.getType() == Material.MYCEL;
+        return soil.getType() == Material.GRASS_BLOCK || soil.getType() == Material.DIRT
+                || soil.getType() == Material.MYCELIUM;
     }
 
     @Override
@@ -73,13 +77,14 @@ public class BrownMushroomTree extends GenericTree {
 
         // generate the stem
         for (int y = 0; y < height; y++) {
-            delegate.setTypeAndRawData(world, blockX, blockY + y,
-                blockZ, type, 10); // stem texture
+            delegate.setType(world, blockX, blockY + y,
+                    blockZ, Material.MUSHROOM_STEM); // stem texture
         }
 
+        // TODO: 1.13, replace with MultipleFacing BlockData
         // get the mushroom's cap Y start
         int capY = blockY + height; // for brown mushroom it starts on top directly
-        if (type == Material.HUGE_MUSHROOM_2) {
+        if (type == Material.RED_MUSHROOM_BLOCK) {
             capY = blockY + height - 3; // for red mushroom, cap's thickness is 4 blocks
         }
 
@@ -89,7 +94,7 @@ public class BrownMushroomTree extends GenericTree {
             if (y < blockY + height) {
                 radius = 2; // radius for red mushroom cap is 2
             }
-            if (type == Material.HUGE_MUSHROOM_1) {
+            if (type == Material.BROWN_MUSHROOM) {
                 radius = 3; // radius always 3 for a brown mushroom
             }
             // loop over horizontal slice
@@ -111,11 +116,11 @@ public class BrownMushroomTree extends GenericTree {
                     // corners shrink treatment
                     // if it's a brown mushroom we need it always
                     // it's a red mushroom, it's only applied below the top
-                    if (type == Material.HUGE_MUSHROOM_1 || y < blockY + height) {
+                    if (type == Material.BROWN_MUSHROOM || y < blockY + height) {
 
                         // excludes the real corners of the cap structure
                         if ((x == blockX - radius || x == blockX + radius)
-                            && (z == blockZ - radius || z == blockZ + radius)) {
+                                && (z == blockZ - radius || z == blockZ + radius)) {
                             continue;
                         }
 
@@ -123,32 +128,33 @@ public class BrownMushroomTree extends GenericTree {
                         if (x == blockX - (radius - 1) && z == blockZ - radius) {
                             data = 1; // cap texture on top, west and north
                         } else if (x == blockX - radius && z == blockZ - (radius
-                            - 1)) {
+                                - 1)) {
                             data = 1; // cap texture on top, west and north
                         } else if (x == blockX + radius - 1
-                            && z == blockZ - radius) {
+                                && z == blockZ - radius) {
                             data = 3; // cap texture on top, north and east
                         } else if (x == blockX + radius && z == blockZ - (radius
-                            - 1)) {
+                                - 1)) {
                             data = 3; // cap texture on top, north and east
                         } else if (x == blockX - (radius - 1)
-                            && z == blockZ + radius) {
+                                && z == blockZ + radius) {
                             data = 7; // cap texture on top, south and west
                         } else if (x == blockX - radius
-                            && z == blockZ + radius - 1) {
+                                && z == blockZ + radius - 1) {
                             data = 7; // cap texture on top, south and west
                         } else if (x == blockX + radius - 1
-                            && z == blockZ + radius) {
+                                && z == blockZ + radius) {
                             data = 9; // cap texture on top, east and south
                         } else if (x == blockX + radius
-                            && z == blockZ + radius - 1) {
+                                && z == blockZ + radius - 1) {
                             data = 9; // cap texture on top, east and south
                         }
                     }
 
                     // a data of 5 below the top layer means air
                     if (data != 5 || y >= blockY + height) {
-                        delegate.setTypeAndRawData(world, x, y, z, type, data);
+                        // TODO: 1.13, set BlockData
+                        delegate.setType(world, x, y, z, type);
                     }
                 }
             }
