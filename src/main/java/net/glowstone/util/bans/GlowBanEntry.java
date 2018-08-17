@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.bans.JsonListFile.BaseEntry;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList.Type;
@@ -52,7 +53,7 @@ final class GlowBanEntry implements BaseEntry, BanEntry, Cloneable {
         // target
         if (list.type == Type.NAME) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(target);
-            result.put("uuid", player.getUniqueId().toString());
+            result.put("uuid", UuidUtils.toString(player.getUniqueId()));
             result.put("name", player.getName());
         } else if (list.type == Type.IP) {
             result.put("ip", target);

@@ -10,6 +10,7 @@ import lombok.Getter;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
 import net.glowstone.io.PlayerDataService.PlayerReader;
+import net.glowstone.util.UuidUtils;
 import org.bukkit.BanList.Type;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -81,7 +82,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             return server.getOfflinePlayer(val.get("name").toString()); // NON-NLS
         } else {
             // use UUID
-            return server.getOfflinePlayer(UUID.fromString(val.get("UUID").toString())); // NON-NLS
+            return server.getOfflinePlayer(
+                    UuidUtils.fromString(val.get("UUID").toString())); // NON-NLS
         }
     }
 
@@ -185,7 +187,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> ret = new HashMap<>();
-        ret.put("UUID", getUniqueId().toString()); // NON-NLS
+        ret.put("UUID", UuidUtils.toString(getUniqueId())); // NON-NLS
         return ret;
     }
 
@@ -209,6 +211,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
 
     @Override
     public String toString() {
-        return "GlowOfflinePlayer{" + "name='" + getName() + '\'' + ", uuid=" + getUniqueId() + '}';
+        return "GlowOfflinePlayer{" + "name='" + getName() + '\'' + ", uuid="
+                + UuidUtils.toString(getUniqueId()) + '}';
     }
 }
