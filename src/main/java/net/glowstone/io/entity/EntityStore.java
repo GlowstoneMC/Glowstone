@@ -3,7 +3,6 @@ package net.glowstone.io.entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Level;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.nbt.NbtSerialization;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -90,7 +90,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         // TODO: Refactor using JDK9's Optional.or() once JDK8 support ends
         Optional.ofNullable(
                 tag.tryGetUuid("UUIDMost", "UUIDLeast")
-                .orElseGet(() -> tag.tryGetString("UUID").map(UUID::fromString).orElse(null)))
+                .orElseGet(() -> tag.tryGetString("UUID").map(UuidUtils::fromString).orElse(null)))
                 .ifPresent(entity::setUniqueId);
         tag.iterateCompoundList("Passengers", entityTag -> {
             Entity passenger = loadPassenger(entity, entityTag);

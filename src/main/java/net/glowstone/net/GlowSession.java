@@ -42,6 +42,7 @@ import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
 import net.glowstone.net.protocol.ProtocolType;
+import net.glowstone.util.UuidUtils;
 import org.bukkit.Statistic;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -279,8 +280,8 @@ public class GlowSession extends BasicSession {
 
         online = true;
 
-        GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: " + player
-                .getUniqueId());
+        GlowServer.logger.info(player.getName() + " [" + address + "] connected, UUID: "
+                + UuidUtils.toString(player.getUniqueId()));
 
         // message and user list
         String message = EventFactory.getInstance().onPlayerJoin(player).getJoinMessage();
@@ -473,7 +474,7 @@ public class GlowSession extends BasicSession {
         }
 
         // send login response
-        send(new LoginSuccessMessage(profile.getId().toString(), profile.getName()));
+        send(new LoginSuccessMessage(UuidUtils.toString(profile.getId()), profile.getName()));
         setProtocol(ProtocolType.PLAY);
     }
 

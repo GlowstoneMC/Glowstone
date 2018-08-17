@@ -11,6 +11,7 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.PlayerStatisticIoService;
 import net.glowstone.util.StatisticMap;
+import net.glowstone.util.UuidUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -35,7 +36,7 @@ public class JsonPlayerStatisticIoService implements PlayerStatisticIoService {
         if (!statsDir.isDirectory() && !statsDir.mkdirs()) {
             ConsoleMessages.Warn.Io.MKDIR_FAILED.log(statsDir);
         }
-        return new File(statsDir, uuid + ".json");
+        return new File(statsDir, UuidUtils.toString(uuid) + ".json");
     }
 
     /**

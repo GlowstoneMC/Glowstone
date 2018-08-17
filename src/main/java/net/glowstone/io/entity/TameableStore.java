@@ -1,8 +1,8 @@
 package net.glowstone.io.entity;
 
-import java.util.UUID;
 import java.util.function.Function;
 import net.glowstone.entity.passive.GlowTameable;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,7 +20,7 @@ abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
         // TODO make this better.
         super.load(entity, compound);
         if (compound.containsKey("OwnerUUID") && !compound.getString("OwnerUUID").isEmpty()) {
-            entity.setOwnerUniqueId(UUID.fromString(compound.getString("OwnerUUID")));
+            entity.setOwnerUniqueId(UuidUtils.fromString(compound.getString("OwnerUUID")));
             if (Bukkit.getPlayer(entity.getOwnerUniqueId()) != null) {
                 entity.setOwner(Bukkit.getPlayer(entity.getOwnerUniqueId()));
             }
@@ -42,7 +42,7 @@ abstract class TameableStore<T extends GlowTameable> extends AgeableStore<T> {
         if (entity.getOwner() == null) {
             tag.putString("OwnerUUID", "");
         } else {
-            tag.putString("OwnerUUID", entity.getOwner().getUniqueId().toString());
+            tag.putString("OwnerUUID", UuidUtils.toString(entity.getOwner().getUniqueId()));
         }
     }
 }
