@@ -1405,10 +1405,14 @@ public abstract class GlowEntity implements Entity {
         damage(amount, null, cause);
     }
 
+    public void damage(double amount, Entity source, DamageCause cause) {
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Metadata
 
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public MetadataMap getMetadata() {
+        return metadata;
     }
 
     @Override
