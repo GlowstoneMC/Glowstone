@@ -197,10 +197,11 @@ public class BlockBed extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+            ItemStack holding, Vector clickedLoc) {
         BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
-        if (state.getBlock().getRelative(direction).getType() == Material.AIR && state.getBlock()
-            .getRelative(direction).getRelative(BlockFace.DOWN).getType().isSolid()) {
+        final GlowBlock otherEnd = state.getBlock().getRelative(direction);
+        if (otherEnd.getType() == Material.AIR
+                && otherEnd.getRelative(BlockFace.DOWN).getType().isSolid()) {
             super.placeBlock(player, state, face, holding, clickedLoc);
             MaterialData data = state.getData();
             if (data instanceof Bed) {
