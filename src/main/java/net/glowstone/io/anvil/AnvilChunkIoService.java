@@ -3,6 +3,7 @@ package net.glowstone.io.anvil;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -106,7 +107,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             } catch (UnknownEntityTypeException e) {
                 ConsoleMessages.Warn.Entity.UNKNOWN.log(chunk, e.getIdOrTag());
             } catch (Exception e) {
-                ConsoleMessages.Warn.Entity.LOADING_ERROR.log(e, chunk);
+                ConsoleMessages.Warn.Entity.LOAD_FAILED.log(e, chunk);
             }
         });
 
@@ -124,7 +125,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     blockEntity.loadNbt(blockEntityTag);
                 } catch (Exception ex) {
                     String id = blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
-                    ConsoleMessages.Error.BlockEntity.READ_ERROR.log(
+                    ConsoleMessages.Error.BlockEntity.LOAD_FAILED.log(
                             ex, blockEntity.getBlock(), id);
                 }
             } else {
@@ -217,7 +218,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 EntityStorage.save(entity, tag);
                 entities.add(tag);
             } catch (Exception e) {
-                GlowServer.logger.log(Level.WARNING, "Error saving " + entity + " in " + chunk, e);
+                ConsoleMessages.Warn.Entity.SAVE_FAILED.log(e, entity, chunk);
             }
         }
         levelTags.putCompoundList("Entities", entities);
@@ -230,8 +231,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 entity.saveNbt(tag);
                 blockEntities.add(tag);
             } catch (Exception ex) {
-                GlowServer.logger
-                    .log(Level.SEVERE, "Error saving block entity at " + entity.getBlock(), ex);
+                ConsoleMessages.Error.BlockEntity.SAVE_FAILED.log(ex, entity.getBlock());
             }
         }
         levelTags.putCompoundList("TileEntities", blockEntities);
