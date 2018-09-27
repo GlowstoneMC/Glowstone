@@ -1,8 +1,10 @@
 package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
+import java.text.MessageFormat;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.ClientStatusMessage;
 
@@ -22,8 +24,9 @@ public final class ClientStatusHandler implements MessageHandler<GlowSession, Cl
                 break;
 
             default:
+                ConsoleMessages.Info.Net
                 GlowServer.logger
-                    .info(session + " sent unknown ClientStatus action: " + message.getAction());
+                    .info(MessageFormat.format(resourceBundle.getString(), session, message.getAction()));
         }
     }
 }

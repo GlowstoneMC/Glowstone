@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import lombok.Data;
+import org.jetbrains.annotations.NonNls;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -23,14 +24,14 @@ public class ProbableValue<T> {
      * @param type the JSON property of {@code json} to read, which is either an instance of
      *         {@code T} or an array of objects of the form {@code {'chance': 0.123, 'value': T}}
      */
-    public ProbableValue(JSONObject json, String type) {
+    public ProbableValue(JSONObject json, @NonNls String type) {
         Object o = json.get(type);
         if (o instanceof JSONArray) {
             JSONArray array = (JSONArray) o;
             for (Object obj : array) {
                 JSONObject object = (JSONObject) obj;
-                Double chance = (Double) object.get("chance");
-                T val = (T) object.get("value");
+                Double chance = (Double) object.get("chance"); // NON-NLS
+                T val = (T) object.get("value"); // NON-NLS
                 possibilities.put(val, chance);
             }
         } else {

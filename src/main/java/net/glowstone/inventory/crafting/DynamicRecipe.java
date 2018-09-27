@@ -37,7 +37,7 @@ public class DynamicRecipe implements Recipe {
      * @param matcher ItemMatcher to use. Must not be null.
      */
     public void setMatcher(ItemMatcher matcher) {
-        Preconditions.checkNotNull(matcher, "Matcher cannot be null.");
+        Preconditions.checkNotNull(matcher, "Matcher cannot be null."); // NON-NLS
         this.matcher = matcher;
     }
 

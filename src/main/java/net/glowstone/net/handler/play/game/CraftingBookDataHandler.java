@@ -1,7 +1,9 @@
 package net.glowstone.net.handler.play.game;
 
 import com.flowpowered.network.MessageHandler;
+import java.text.MessageFormat;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.CraftingBookDataMessage;
 
@@ -16,9 +18,7 @@ public final class CraftingBookDataHandler implements
             player.getRecipeMonitor().setFilterCraftable(message.isFilter());
             return;
         }
-        // TODO: Support crafting book data
-        session.getServer().getLogger().warning(
-            "Received crafting book data from " + session.getPlayer().getName()
-                + ", not currently supported: " + message.toString());
+        ConsoleMessages.Warn.Net.CRAFTING_BOOK_UNSUPPORTED.log(session.getPlayer().getName(),
+                message);
     }
 }

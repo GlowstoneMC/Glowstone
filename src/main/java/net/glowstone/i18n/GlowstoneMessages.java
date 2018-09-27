@@ -1,5 +1,7 @@
 package net.glowstone.i18n;
 
+import net.glowstone.block.state.BlockStateData;
+
 public interface GlowstoneMessages {
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
@@ -27,6 +29,8 @@ public interface GlowstoneMessages {
     interface Kick {
         LocalizedString BANNED = new LocalizedStringImpl("glowstone.kick.banned");
 
+        LocalizedString CREATIVE_ITEM = new LocalizedStringImpl("glowstone.kick.creative-item");
+
         LocalizedString FILE_READ = new LocalizedStringImpl("glowstone.kick.file-read");
 
         LocalizedString FILE_WRITE = new LocalizedStringImpl("glowstone.kick.file-write");
@@ -34,6 +38,10 @@ public interface GlowstoneMessages {
         LocalizedString FULL = new LocalizedStringImpl("glowstone.kick.full");
 
         LocalizedString WHITELIST = new LocalizedStringImpl("glowstone.kick.whitelist");
+
+        interface Crypt {
+            LocalizedString RSA_INIT_FAILED = new LocalizedStringImpl("glowstone.kick.crypt.rsa-init-failed");
+        }
     }
 
     interface Player {

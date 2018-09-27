@@ -9,7 +9,8 @@ import net.glowstone.net.message.play.game.ClientSettingsMessage;
 @Data
 public class ClientSettings {
 
-    public static final ClientSettings DEFAULT = new ClientSettings("en_US", 8, 0, true, 127, 0);
+    public static final ClientSettings DEFAULT
+            = new ClientSettings("en_US", 8, 0, true, 127, 0); // NON-NLS
 
     public static final int CHAT_ENABLED = 0;
     public static final int CHAT_COMMANDS_ONLY = 1;

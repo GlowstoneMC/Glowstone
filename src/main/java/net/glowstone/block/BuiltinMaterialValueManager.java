@@ -25,12 +25,14 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(new InputStreamReader(
                 getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
-        defaultValue = new BuiltinValueCollection(builtinValues.getConfigurationSection("default"));
+        defaultValue = new BuiltinValueCollection(
+                builtinValues.getConfigurationSection("default")); // NON-NLS
         registerBuiltins(builtinValues);
     }
 
     private void registerBuiltins(ConfigurationSection mainSection) {
-        ConfigurationSection valuesSection = mainSection.getConfigurationSection("values");
+        ConfigurationSection valuesSection
+                = mainSection.getConfigurationSection("values"); // NON-NLS
         Set<String> materials = valuesSection.getKeys(false);
         for (String strMaterial : materials) {
             Material material = Material.matchMaterial(strMaterial);
