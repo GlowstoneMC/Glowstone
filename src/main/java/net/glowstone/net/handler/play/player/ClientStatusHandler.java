@@ -24,9 +24,8 @@ public final class ClientStatusHandler implements MessageHandler<GlowSession, Cl
                 break;
 
             default:
-                ConsoleMessages.Info.Net
-                GlowServer.logger
-                    .info(MessageFormat.format(resourceBundle.getString(), session, message.getAction()));
+                ConsoleMessages.Info.Net.UNKNOWN_CLIENT_STATUS_ACTION.log(
+                        session, message.getAction());
         }
     }
 }
