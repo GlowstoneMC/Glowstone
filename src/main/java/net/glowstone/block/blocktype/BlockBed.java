@@ -280,7 +280,7 @@ public class BlockBed extends BlockType {
         for (Entity e : world.getEntityManager()) {
             if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e)
                 .isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
-                player.sendMessage("You may not rest now, there are monsters nearby");
+                GlowstoneMessages.Bed.MOB.send(player);
                 return true;
             }
         }
