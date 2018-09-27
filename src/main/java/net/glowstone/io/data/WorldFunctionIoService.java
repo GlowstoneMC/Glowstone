@@ -36,7 +36,7 @@ public class WorldFunctionIoService implements FunctionIoService {
                 functions.addAll(namespaceFunctions);
             }
         } catch (IOException ex) {
-            ConsoleMessages.Error.Function.FILE_READ.log(ex, world.getName());
+            ConsoleMessages.Error.Function.LOAD_FAILED.log(ex, world.getName());
         }
         return functions;
     }

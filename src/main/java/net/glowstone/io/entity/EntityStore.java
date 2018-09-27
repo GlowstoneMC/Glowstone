@@ -118,7 +118,7 @@ public abstract class EntityStore<T extends GlowEntity> {
         } catch (UnknownEntityTypeException e) {
             ConsoleMessages.Warn.Entity.UNKNOWN.log(vehicle, e.getIdOrTag());
         } catch (Exception e) {
-            ConsoleMessages.Warn.Entity.LOADING_ERROR.log(e, vehicle);
+            ConsoleMessages.Warn.Entity.LOAD_FAILED.log(e, vehicle);
         }
         return null;
     }

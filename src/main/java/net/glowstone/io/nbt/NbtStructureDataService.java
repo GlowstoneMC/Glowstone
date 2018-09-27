@@ -62,7 +62,7 @@ public class NbtStructureDataService implements StructureDataService {
                         ConsoleMessages.Error.Structure.NO_DATA.log(structureFile);
                     }
                 } catch (IOException e) {
-                    ConsoleMessages.Error.Structure.IO_READ.log(e, structureFile);
+                    ConsoleMessages.Error.Structure.LOAD_FAILED.log(e, structureFile);
                 }
             }
         }
@@ -87,7 +87,7 @@ public class NbtStructureDataService implements StructureDataService {
                         data = inputRoot.tryGetCompound("data") // NON-NLS
                                 .orElseGet(CompoundTag::new);
                     } catch (IOException e) {
-                        ConsoleMessages.Error.Structure.IO_READ.log(e, structureFile);
+                        ConsoleMessages.Error.Structure.LOAD_FAILED.log(e, structureFile);
                         data = new CompoundTag();
                     }
                     features = data.tryGetCompound("Features") // NON-NLS
@@ -105,7 +105,7 @@ public class NbtStructureDataService implements StructureDataService {
                     new FileOutputStream(structureFile))) {
                     nbtOut.writeTag(root);
                 } catch (IOException e) {
-                    ConsoleMessages.Error.Structure.IO_WRITE.log(e, structureFile);
+                    ConsoleMessages.Error.Structure.SAVE_FAILED.log(e, structureFile);
                 }
                 structure.setDirty(false);
             }

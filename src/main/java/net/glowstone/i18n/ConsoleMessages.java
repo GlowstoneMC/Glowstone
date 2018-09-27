@@ -11,8 +11,12 @@ public interface ConsoleMessages {
         }
 
         interface BlockEntity {
-            LoggableLocalizedString READ_ERROR = new LoggableLocalizedStringImpl(
-                    "console.block-entity.read-error", Level.SEVERE
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.block-entity.load-failed", Level.SEVERE
+            );
+
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.block-entity.save-failed", Level.SEVERE
             );
         }
 
@@ -21,7 +25,7 @@ public interface ConsoleMessages {
         );
 
         interface Function {
-            LoggableLocalizedString FILE_READ = new LoggableLocalizedStringImpl(
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.function.load-failed", Level.SEVERE
             );
         }
@@ -104,12 +108,12 @@ public interface ConsoleMessages {
         );
 
         interface Structure {
-            LoggableLocalizedString IO_READ = new LoggableLocalizedStringImpl(
-                    "console.structure.io-read", Level.SEVERE
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.structure.load-failed", Level.SEVERE
             );
 
-            LoggableLocalizedString IO_WRITE = new LoggableLocalizedStringImpl(
-                    "console.structure.io-write", Level.SEVERE
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.structure.save-failed", Level.SEVERE
             );
 
             LoggableLocalizedString NO_DATA = new LoggableLocalizedStringImpl(
@@ -267,8 +271,12 @@ public interface ConsoleMessages {
         }
 
         interface Entity {
-            LoggableLocalizedString LOADING_ERROR = new LoggableLocalizedStringImpl(
-                    "console.entity.loading-error", Level.WARNING
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.entity.load-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.entity.save-failed", Level.WARNING
             );
 
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -347,8 +355,8 @@ public interface ConsoleMessages {
                     "console.plugin.malformed-url", Level.WARNING
             );
 
-            LoggableLocalizedString IO = new LoggableLocalizedStringImpl(
-                    "console.plugin.ioexception", Level.WARNING
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.plugin.load-failed.type-detector", Level.WARNING
             );
 
             LoggableLocalizedString BUKKIT2SPONGE = new LoggableLocalizedStringImpl(
