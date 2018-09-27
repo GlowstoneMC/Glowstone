@@ -275,6 +275,10 @@ public interface ConsoleMessages {
                     "console.entity.load-failed", Level.WARNING
             );
 
+            LoggableLocalizedString PARTICLE_INVALID = new LoggableLocalizedStringImpl(
+                    "console.entity.particle-invalid", Level.WARNING
+            );
+
             LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
                     "console.entity.save-failed", Level.WARNING
             );
