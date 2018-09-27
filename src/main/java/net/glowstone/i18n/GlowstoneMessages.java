@@ -13,6 +13,10 @@ public interface GlowstoneMessages {
         LocalizedString OCCUPIED = new LocalizedStringImpl("glowstone.bed.occupied");
     }
 
+    interface Block {
+        LocalizedString MAX_HEIGHT = new LocalizedStringImpl("glowstone.block.max-height");
+    }
+
     interface Command {
         interface Error {
             LocalizedString UNKNOWN_COMMAND =

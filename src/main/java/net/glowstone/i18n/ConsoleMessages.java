@@ -134,6 +134,13 @@ public interface ConsoleMessages {
     }
 
     interface Info {
+
+        interface Block {
+
+            LoggableLocalizedString UNKNOWN_CLICKED = new LoggableLocalizedStringImpl(
+                    "console.block.unknown-clicked", Level.INFO);
+        }
+
         LoggableLocalizedString CONFIG_ONLY_DONE = new LoggableLocalizedStringImpl(
                 "console.config-only-done", Level.INFO
         );
@@ -249,6 +256,33 @@ public interface ConsoleMessages {
     }
 
     interface Warn {
+
+        interface Block {
+            interface Chest {
+                LoggableLocalizedString FACING = new LoggableLocalizedStringImpl(
+                        "console.block.chest.facing", Level.WARNING);
+
+                LoggableLocalizedString INTERACT_WRONG_CLASS = new LoggableLocalizedStringImpl(
+                        "console.block.chest.interact-wrong-class", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_ALREADY = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-already", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_END = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-end", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_MIDDLE = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-middle", Level.WARNING);
+            }
+
+            interface DoubleSlab {
+                LoggableLocalizedString WRONG_MATERIAL = new LoggableLocalizedStringImpl(
+                        "console.block.doubleslab.wrong-material", Level.WARNING);
+            }
+
+            LoggableLocalizedString WRONG_MATERIAL_DATA = new LoggableLocalizedStringImpl(
+                    "console.block.wrong-material-data", Level.WARNING);
+        }
 
         interface BlockEntity {
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(

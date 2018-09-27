@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -15,9 +14,10 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.physics.BlockBoundingBox;
+import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.util.SoundInfo;
 import net.glowstone.util.SoundUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -319,10 +319,9 @@ public class BlockType extends ItemType {
             target.getRelative(face.getOppositeFace()).getType()).getMaterial();
 
         // prevent building above the height limit
-        if (target.getLocation().getY() >= target.getWorld().getMaxHeight()) {
-            player.sendMessage(
-                ChatColor.RED + "The height limit for this world is " + target.getWorld()
-                    .getMaxHeight() + " blocks");
+        final int maxHeight = target.getWorld().getMaxHeight();
+        if (target.getLocation().getY() >= maxHeight) {
+            GlowstoneMessages.Block.MAX_HEIGHT.send(player, maxHeight);
             return;
         }
 
@@ -445,9 +444,8 @@ public class BlockType extends ItemType {
      * @param data The actual MaterialData found.
      */
     protected void warnMaterialData(Class<?> clazz, MaterialData data) {
-        GlowServer.logger.warning(
-            "Wrong MaterialData for " + getMaterial() + " (" + getClass().getSimpleName()
-                + "): expected " + clazz.getSimpleName() + ", got " + data);
+        ConsoleMessages.Warn.Block.WRONG_MATERIAL_DATA.log(
+                getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
     }
 
     public void onRedstoneUpdate(GlowBlock block) {

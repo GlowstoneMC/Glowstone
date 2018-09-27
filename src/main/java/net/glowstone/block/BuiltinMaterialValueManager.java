@@ -8,6 +8,7 @@ import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NonNls;
 
 public class BuiltinMaterialValueManager implements MaterialValueManager {
 
@@ -60,7 +61,7 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
             this.section = section;
         }
 
-        private Object get(String name) {
+        private Object get(@NonNls String name) {
             Object got = section.get(name);
             if (got == null && this != defaultValue) {
                 return defaultValue.get(name);
