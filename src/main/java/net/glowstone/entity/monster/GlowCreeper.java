@@ -4,7 +4,6 @@ import com.flowpowered.network.Message;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
 import net.glowstone.EventFactory;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;

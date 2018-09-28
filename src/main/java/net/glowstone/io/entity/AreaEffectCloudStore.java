@@ -2,7 +2,6 @@ package net.glowstone.io.entity;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
-import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowAreaEffectCloud;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowMetaPotion;

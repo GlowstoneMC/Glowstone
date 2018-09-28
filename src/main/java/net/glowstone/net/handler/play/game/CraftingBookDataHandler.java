@@ -1,7 +1,6 @@
 package net.glowstone.net.handler.play.game;
 
 import com.flowpowered.network.MessageHandler;
-import java.text.MessageFormat;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.GlowSession;
