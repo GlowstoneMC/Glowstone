@@ -254,7 +254,7 @@ public final class ChunkManager {
         try {
             populateChunk(x, z, true);
         } catch (Throwable ex) {
-            ConsoleMessages.Error.Chunk.POP_FAILED.log(ex, chunk.getX(), chunk.getZ());
+            ConsoleMessages.Error.Chunk.POP_FAILED.log(ex, x, z);
         }
     }
 
