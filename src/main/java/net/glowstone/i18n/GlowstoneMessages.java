@@ -5,6 +5,14 @@ public interface GlowstoneMessages {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
     }
 
+    interface Bed {
+        LocalizedString DAY = new LocalizedStringImpl("glowstone.bed.day");
+
+        LocalizedString MOB = new LocalizedStringImpl("glowstone.bed.mob");
+
+        LocalizedString OCCUPIED = new LocalizedStringImpl("glowstone.bed.occupied");
+    }
+
     interface Command {
         interface Error {
             LocalizedString UNKNOWN_COMMAND =
