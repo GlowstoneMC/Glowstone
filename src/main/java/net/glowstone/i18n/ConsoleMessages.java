@@ -20,6 +20,23 @@ public interface ConsoleMessages {
             );
         }
 
+        interface Chunk {
+            LoggableLocalizedString GEN_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.gen-failed", Level.SEVERE);
+
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.load-failed", Level.SEVERE);
+
+            LoggableLocalizedString POP_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.pop-failed", Level.SEVERE);
+
+            LoggableLocalizedString REGEN_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.regen-failed", Level.SEVERE);
+
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.save-failed", Level.SEVERE);
+        }
+
         LoggableLocalizedString CLASSPATH = new LoggableLocalizedStringImpl(
                 "console.classpath.load-failed", Level.WARNING
         );
@@ -131,12 +148,33 @@ public interface ConsoleMessages {
             );
         }
 
+        interface Net {
+            interface Crypt {
+                LoggableLocalizedString INIT_FAILED = new LoggableLocalizedStringImpl(
+                        "console.net.crypt.init-failed", Level.SEVERE);
+
+                LoggableLocalizedString RSA_INIT_FAILED = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.rsa-init-failed", Level.SEVERE);
+            }
+        }
     }
 
     interface Info {
+
+        interface Block {
+
+            LoggableLocalizedString UNKNOWN_CLICKED = new LoggableLocalizedStringImpl(
+                    "console.block.unknown-clicked", Level.INFO);
+        }
+
         LoggableLocalizedString CONFIG_ONLY_DONE = new LoggableLocalizedStringImpl(
                 "console.config-only-done", Level.INFO
         );
+
+        interface Enchant {
+            LoggableLocalizedString NOT_OPEN = new LoggableLocalizedStringImpl(
+                    "console.enchant.not-open", Level.INFO);
+        }
 
         interface Icon {
             LoggableLocalizedString IMPORT = new LoggableLocalizedStringImpl(
@@ -246,9 +284,41 @@ public interface ConsoleMessages {
                     "console.version.minecraft-client", Level.INFO
             );
         }
+
+        interface Net {
+            LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
+                    "console.net.unknown-client-status-action", Level.INFO);
+        }
     }
 
     interface Warn {
+
+        interface Block {
+            interface Chest {
+                LoggableLocalizedString FACING = new LoggableLocalizedStringImpl(
+                        "console.block.chest.facing", Level.WARNING);
+
+                LoggableLocalizedString INTERACT_WRONG_CLASS = new LoggableLocalizedStringImpl(
+                        "console.block.chest.interact-wrong-class", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_ALREADY = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-already", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_END = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-end", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_MIDDLE = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-middle", Level.WARNING);
+            }
+
+            interface DoubleSlab {
+                LoggableLocalizedString WRONG_MATERIAL = new LoggableLocalizedStringImpl(
+                        "console.block.doubleslab.wrong-material", Level.WARNING);
+            }
+
+            LoggableLocalizedString WRONG_MATERIAL_DATA = new LoggableLocalizedStringImpl(
+                    "console.block.wrong-material-data", Level.WARNING);
+        }
 
         interface BlockEntity {
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -268,11 +338,17 @@ public interface ConsoleMessages {
             LoggableLocalizedString UNKNOWN_BLOCK_TO_TICK = new LoggableLocalizedStringImpl(
                     "console.chunk.unknown-block-to-tick", Level.WARNING
             );
+            LoggableLocalizedString UNLOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.unload-failed", Level.WARNING);
         }
 
         interface Entity {
             LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.entity.load-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString PARTICLE_INVALID = new LoggableLocalizedStringImpl(
+                    "console.entity.particle-invalid", Level.WARNING
             );
 
             LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
@@ -320,6 +396,18 @@ public interface ConsoleMessages {
             LoggableLocalizedString REMOVING_SINGLE_PLAYER = new LoggableLocalizedStringImpl(
                     "console.io.removing-single-player", Level.WARNING
             );
+        }
+
+        interface Net {
+            LoggableLocalizedString MESSAGE_TOO_LONG = new LoggableLocalizedStringImpl(
+                    "console.net.message-too-long", Level.WARNING
+            );
+
+            LoggableLocalizedString CRAFTING_BOOK_UNSUPPORTED = new LoggableLocalizedStringImpl(
+                    "console.net.crafting-book-unsupported", Level.WARNING);
+
+            LoggableLocalizedString CRAFTING_RECIPE_UNSUPPORTED = new LoggableLocalizedStringImpl(
+                    "console.net.crafting-recipe-unsupported", Level.WARNING);
         }
 
         LoggableLocalizedString OFFLINE = new LoggableLocalizedStringImpl(

@@ -82,6 +82,7 @@ public class CommandUtils {
      * @param strings one or more strings
      * @return a list of the strings, formatted like "a, b and c"
      */
+    // FIXME: Replace with the function from the Unicode CLDR that handles almost any language
     public static String prettyPrint(String[] strings) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < strings.length; i++) {

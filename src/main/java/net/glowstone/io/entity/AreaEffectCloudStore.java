@@ -2,8 +2,8 @@ package net.glowstone.io.entity;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
-import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowAreaEffectCloud;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowMetaPotion;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Color;
@@ -50,8 +50,7 @@ class AreaEffectCloudStore extends EntityStore<GlowAreaEffectCloud> {
             try {
                 entity.setParticle(Particle.valueOf(particle));
             } catch (IllegalArgumentException e) {
-                GlowServer.logger.warning(() -> String.format(
-                        "Ignoring invalid particle type %s in tag %s", particle, tag));
+                ConsoleMessages.Warn.Entity.PARTICLE_INVALID.log(particle, tag);
             }
         });
         // TODO: Potion

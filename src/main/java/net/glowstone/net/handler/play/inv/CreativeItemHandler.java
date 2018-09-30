@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.net.GlowSession;
@@ -26,15 +27,10 @@ public final class CreativeItemHandler implements MessageHandler<GlowSession, Cr
         // client
         InventoryView view = player.getOpenInventory();
 
-        // only if creative mode
-        if (player.getGameMode() != GameMode.CREATIVE) {
-            player.kickPlayer("Illegal creative mode item selection");
-            return;
-        }
-
-        // only if default (player) inventory
-        if (!GlowInventoryView.isDefault(player.getOpenInventory())) {
-            player.kickPlayer("Illegal creative mode item selection");
+        // only if creative mode; only if default (player) inventory
+        if (player.getGameMode() != GameMode.CREATIVE
+                || !GlowInventoryView.isDefault(player.getOpenInventory())) {
+            player.kickPlayer(GlowstoneMessages.Kick.CREATIVE_ITEM.get());
             return;
         }
         ItemStack stack = ItemIds.sanitize(message.getItem());

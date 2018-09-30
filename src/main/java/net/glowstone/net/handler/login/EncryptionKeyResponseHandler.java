@@ -21,6 +21,8 @@ import lombok.AllArgsConstructor;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.http.HttpCallback;
 import net.glowstone.net.http.HttpClient;
@@ -47,10 +49,10 @@ public final class EncryptionKeyResponseHandler implements
         // create rsaCipher
         Cipher rsaCipher;
         try {
-            rsaCipher = Cipher.getInstance("RSA");
+            rsaCipher = Cipher.getInstance("RSA"); // NON-NLS
         } catch (GeneralSecurityException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Could not initialize RSA cipher", ex);
-            session.disconnect("Unable to initialize RSA cipher.");
+            ConsoleMessages.Error.Net.Crypt.RSA_INIT_FAILED.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.RSA_INIT_FAILED.get());
             return;
         }
 
@@ -58,7 +60,8 @@ public final class EncryptionKeyResponseHandler implements
         SecretKey sharedSecret;
         try {
             rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
-            sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()), "AES");
+            sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()),
+                    "AES"); // NON-NLS
         } catch (Exception ex) {
             GlowServer.logger.log(Level.WARNING, "Could not decrypt shared secret", ex);
             session.disconnect("Unable to decrypt shared secret.");

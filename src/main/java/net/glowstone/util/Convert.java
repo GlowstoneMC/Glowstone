@@ -27,7 +27,7 @@ public class Convert {
     public static String fromBytes(byte[] bytes) {
         StringBuilder sb = new StringBuilder(40);
         for (byte b : bytes) {
-            sb.append(String.format("%02X ", b));
+            sb.append(String.format("%02X ", b)); // NON-NLS
         }
         return sb.toString();
     }

@@ -1,7 +1,7 @@
 package net.glowstone.net.handler.play.inv;
 
 import com.flowpowered.network.MessageHandler;
-import net.glowstone.GlowServer;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowEnchantingInventory;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.inv.EnchantItemMessage;
@@ -15,8 +15,7 @@ public final class EnchantItemHandler implements MessageHandler<GlowSession, Enc
         if (view instanceof GlowEnchantingInventory) {
             ((GlowEnchantingInventory) view).onPlayerEnchant(message.getEnchantment());
         } else {
-            GlowServer.logger.info("Player " + session.getPlayer().getName()
-                + " tried to enchant item while no enchanting inventory was open!");
+            ConsoleMessages.Info.Enchant.NOT_OPEN.log(session.getPlayer().getName());
         }
     }
 }

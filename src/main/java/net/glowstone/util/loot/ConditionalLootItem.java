@@ -18,13 +18,13 @@ public class ConditionalLootItem {
      * @param object a JSON object describing the loot item
      */
     public ConditionalLootItem(JSONObject object) {
-        if (object.containsKey("item")) {
+        if (object.containsKey("item")) { // NON-NLS
             type = Optional.of(new ProbableValue<>(object, "item"));
         } else {
             type = Optional.empty();
         }
-        if (object.containsKey("data")) {
-            Object data = object.get("data");
+        if (object.containsKey("data")) { // NON-NLS
+            Object data = object.get("data"); // NON-NLS
             if (data instanceof String) {
                 this.reflectiveData = Optional.of(new ReflectiveValue<Integer>((String) data));
                 this.data = Optional.empty();
@@ -36,11 +36,11 @@ public class ConditionalLootItem {
             data = Optional.empty();
             reflectiveData = Optional.empty();
         }
-        if (object.containsKey("count")) {
+        if (object.containsKey("count")) { // NON-NLS
             count = Optional.of(new LootRandomValues(object));
         } else {
             count = Optional.empty();
         }
-        condition = (String) object.get("condition");
+        condition = (String) object.get("condition"); // NON-NLS
     }
 }
