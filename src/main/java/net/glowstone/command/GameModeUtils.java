@@ -1,13 +1,33 @@
 package net.glowstone.command;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+import java.text.Collator;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.function.Function;
+import net.glowstone.ServerProvider;
 import org.bukkit.GameMode;
 
 /**
  * Utility class to create GameMode.
  */
 public class GameModeUtils {
+    private static final ImmutableMap<String, GameMode> MODE_MAP;
+
+    static {
+        Collator caseInsensitive = Collator.getInstance(Locale.getDefault());
+        caseInsensitive.setStrength(Collator.PRIMARY);
+        ImmutableSortedMap.Builder<String, GameMode> out
+                = new ImmutableSortedMap.Builder<>(caseInsensitive);
+        ResourceBundle bundle = ResourceBundle.getBundle("maps/gamemode");
+        for (String key : bundle.keySet()) {
+            out.put(key, GameMode.values()[Integer.decode(bundle.getString(key))]);
+        }
+        MODE_MAP = out.build();
+    }
 
     public static final List<String> GAMEMODE_NAMES = ImmutableList
         .of("adventure", "creative", "survival", "spectator");
@@ -22,30 +42,7 @@ public class GameModeUtils {
      * @return The matching mode if any, null otherwise.
      */
     public static GameMode build(final String mode) {
-        if (mode == null) {
-            return null;
-        } else {
-            switch (mode.toLowerCase()) {
-                case "s":
-                case "0":
-                case "survival":
-                    return GameMode.SURVIVAL;
-                case "c":
-                case "1":
-                case "creative":
-                    return GameMode.CREATIVE;
-                case "a":
-                case "2":
-                case "adventure":
-                    return GameMode.ADVENTURE;
-                case "sp":
-                case "3":
-                case "spectator":
-                    return GameMode.SPECTATOR;
-                default:
-                    return null;
-            }
-        }
+        return MODE_MAP.getOrDefault(mode.toLowerCase(), null);
     }
 
     /**
