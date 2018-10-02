@@ -1,7 +1,5 @@
 package net.glowstone.i18n;
 
-import net.glowstone.block.state.BlockStateData;
-
 public interface GlowstoneMessages {
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");

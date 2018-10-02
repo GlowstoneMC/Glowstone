@@ -1,6 +1,5 @@
 package net.glowstone.inventory;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
