@@ -1,16 +1,16 @@
 package net.glowstone.entity;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 
 public class AttributeManagerTest {
     private static final double DELTA = 0.001;

@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

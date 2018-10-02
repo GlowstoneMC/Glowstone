@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.util.WeightedRandom;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -417,7 +417,7 @@ public class EnchantmentManager {
         //TODO: better handling of for malicious clients?
 
         if (clicked < 0 || clicked > enchLevelCosts.length) {
-            GlowServer.logger.info("Malicious client, cannot enchant slot " + clicked);
+            ConsoleMessages.Info.Enchant.BAD_SLOT.log(clicked);
             update();
             return true;
         }
@@ -426,8 +426,7 @@ public class EnchantmentManager {
         if (player.getGameMode() != GameMode.CREATIVE) {
             if (player.getLevel() < level || inventory.getSecondary() == null
                 || inventory.getSecondary().getAmount() < clicked) {
-                GlowServer.logger.info("Malicious client, player has not "
-                        + "enough levels / enough resources to enchant item!");
+                ConsoleMessages.Info.Enchant.MISSING_RESOURCES.log();
                 update();
                 return true;
             }
