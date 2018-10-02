@@ -6,6 +6,8 @@ import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import net.glowstone.i18n.GlowstoneMessages;
+import net.glowstone.i18n.InternationalizationUtil;
 import org.bukkit.GameMode;
 
 /**
@@ -15,19 +17,14 @@ public class GameModeUtils {
     private static final ImmutableSortedMap<String, GameMode> MODE_MAP;
 
     static {
-        Collator caseInsensitive = Collator.getInstance(Locale.getDefault());
-        caseInsensitive.setStrength(Collator.PRIMARY);
         ImmutableSortedMap.Builder<String, GameMode> out
-                = new ImmutableSortedMap.Builder<>(caseInsensitive);
+                = new ImmutableSortedMap.Builder<>(InternationalizationUtil.CASE_INSENSITIVE);
         ResourceBundle bundle = ResourceBundle.getBundle("maps/gamemode");
         for (String key : bundle.keySet()) {
             out.put(key, GameMode.values()[Integer.decode(bundle.getString(key))]);
         }
         MODE_MAP = out.build();
     }
-
-    public static final List<String> GAMEMODE_NAMES = ImmutableList
-        .of("adventure", "creative", "survival", "spectator");
 
     private GameModeUtils() {
     }
@@ -53,18 +50,11 @@ public class GameModeUtils {
         if (gameMode == null) {
             return null;
         } else {
-            switch (gameMode) {
-                case CREATIVE:
-                    return "Creative";
-                case SURVIVAL:
-                    return "Survival";
-                case ADVENTURE:
-                    return "Adventure";
-                case SPECTATOR:
-                    return "Spectator";
-                default:
-                    return "Unknown";
+            int ordinal = gameMode.ordinal();
+            if (GlowstoneMessages.GameMode.NAMES.size() > ordinal) {
+                return GlowstoneMessages.GameMode.NAMES.get(ordinal);
             }
         }
+        return GlowstoneMessages.GameMode.UNKNOWN.get();
     }
 }

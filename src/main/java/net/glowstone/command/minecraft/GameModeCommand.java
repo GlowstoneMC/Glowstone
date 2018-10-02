@@ -6,6 +6,7 @@ import java.util.List;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.command.GameModeUtils;
+import net.glowstone.i18n.GlowstoneMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -87,8 +88,8 @@ public class GameModeCommand extends VanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
         throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], GameModeUtils.GAMEMODE_NAMES,
-                new ArrayList(GameModeUtils.GAMEMODE_NAMES.size()));
+            return (List) StringUtil.copyPartialMatches(args[0], GlowstoneMessages.GameMode.NAMES_LOWERCASE,
+                new ArrayList(((List<String>) GlowstoneMessages.GameMode.NAMES_LOWERCASE).size()));
         }
         return super.tabComplete(sender, alias, args);
     }

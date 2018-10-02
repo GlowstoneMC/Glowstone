@@ -1,5 +1,10 @@
 package net.glowstone.i18n;
 
+import com.google.common.collect.ImmutableList;
+import java.util.Locale;
+import java.util.stream.Collectors;
+import net.glowstone.command.CommandTarget;
+
 public interface GlowstoneMessages {
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
@@ -22,6 +27,15 @@ public interface GlowstoneMessages {
             LocalizedString UNKNOWN_COMMAND =
                 new LocalizedStringImpl("glowstone.command.error.unknown-command");
         }
+    }
+
+    interface GameMode {
+        ImmutableList<String> NAMES = ImmutableList.copyOf(
+                new LocalizedStringImpl("glowstone.gamemode.names").get().split(","));
+        ImmutableList<String> NAMES_LOWERCASE = NAMES.stream()
+                .map(x -> x.toLowerCase(Locale.getDefault()))
+                .collect(ImmutableList.toImmutableList());
+        LocalizedString UNKNOWN = new LocalizedStringImpl("glowstone.gamemode.unknown");
     }
 
     interface Kick {
