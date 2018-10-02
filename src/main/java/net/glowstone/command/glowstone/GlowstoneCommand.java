@@ -28,9 +28,8 @@ import org.jetbrains.annotations.NonNls;
 
 public class GlowstoneCommand extends BukkitCommand {
 
-    private static final @NonNls
-    List<String> SUBCOMMANDS = Arrays
-            .asList("about", "chunk", "eval", "help", "property", "vm", "world");
+    private static final @NonNls List<String> SUBCOMMANDS
+            = Arrays.asList("about", "chunk", "eval", "help", "property", "vm", "world");
 
     /**
      * Creates the instance for this command.

@@ -1,7 +1,6 @@
 package net.glowstone.entity;
 
 import com.google.common.collect.ImmutableBiMap;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
