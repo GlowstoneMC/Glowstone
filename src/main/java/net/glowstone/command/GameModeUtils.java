@@ -1,21 +1,18 @@
 package net.glowstone.command;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.function.Function;
-import net.glowstone.ServerProvider;
 import org.bukkit.GameMode;
 
 /**
  * Utility class to create GameMode.
  */
 public class GameModeUtils {
-    private static final ImmutableMap<String, GameMode> MODE_MAP;
+    private static final ImmutableSortedMap<String, GameMode> MODE_MAP;
 
     static {
         Collator caseInsensitive = Collator.getInstance(Locale.getDefault());
