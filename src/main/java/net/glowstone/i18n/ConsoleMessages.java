@@ -149,6 +149,18 @@ public interface ConsoleMessages {
         }
 
         interface Net {
+            LoggableLocalizedString BIND_FAILED = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed", Level.SEVERE
+            );
+
+            LoggableLocalizedString BIND_FAILED_UNKNOWN = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.unknown", Level.SEVERE
+            );
+
+            LoggableLocalizedString CANNOT_ASSIGN = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.cannot-assign", Level.SEVERE
+            );
+
             interface Crypt {
                 LoggableLocalizedString AUTH_INTERNAL = new LoggableLocalizedStringImpl(
                         "glowstone.kick.crypt.auth-internal", Level.SEVERE);
@@ -165,6 +177,10 @@ public interface ConsoleMessages {
                 LoggableLocalizedString RSA_INIT_FAILED = new LoggableLocalizedStringImpl(
                         "glowstone.kick.crypt.rsa-init-failed", Level.SEVERE);
             }
+
+            LoggableLocalizedString IN_USE = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.in-use", Level.SEVERE
+            );
         }
     }
 
@@ -211,6 +227,17 @@ public interface ConsoleMessages {
             LoggableLocalizedString KQUEUE = new LoggableLocalizedStringImpl(
                     "console.native-transport.kqueue", Level.INFO
             );
+        }
+
+        interface Net {
+            LoggableLocalizedString BINDING = new LoggableLocalizedStringImpl(
+                    "console.net.binding", Level.INFO);
+
+            LoggableLocalizedString BOUND = new LoggableLocalizedStringImpl(
+                    "console.net.bound", Level.INFO);
+
+            LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
+                    "console.net.unknown-client-status-action", Level.INFO);
         }
 
         interface Opencl {
@@ -301,11 +328,6 @@ public interface ConsoleMessages {
                     "console.version.minecraft-client", Level.INFO
             );
         }
-
-        interface Net {
-            LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
-                    "console.net.unknown-client-status-action", Level.INFO);
-        }
     }
 
     interface Warn {
@@ -388,6 +410,10 @@ public interface ConsoleMessages {
 
             LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
                     "console.entity.save-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString SAVE_FAILED_PASSENGER = new LoggableLocalizedStringImpl(
+                    "console.entity.save-failed.passenger", Level.WARNING
             );
 
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -532,6 +558,13 @@ public interface ConsoleMessages {
         interface WorldGen {
             LoggableLocalizedString DISABLED = new LoggableLocalizedStringImpl(
                     "console.worldgen.disabled", Level.WARNING
+            );
+        }
+
+        interface Fishing {
+
+            LoggableLocalizedString REWARDS_INVALID = new LoggableLocalizedStringImpl(
+                    "console.fishing.rewards-invalid", Level.WARNING
             );
         }
     }

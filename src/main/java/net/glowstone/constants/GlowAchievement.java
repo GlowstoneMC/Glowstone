@@ -95,12 +95,12 @@ public final class GlowAchievement {
      * @return the achievement name.
      */
     public static String getName(Achievement achievement) {
-        checkNotNull(achievement, "Achievement cannot be null");
+        checkNotNull(achievement, "Achievement cannot be null"); // NON-NLS
         return names[achievement.ordinal()];
     }
 
     public static String getFancyName(Achievement achievement) {
-        checkNotNull(achievement, "Achievement cannot be null");
+        checkNotNull(achievement, "Achievement cannot be null"); // NON-NLS
         return fancyNames[achievement.ordinal()];
     }
 
