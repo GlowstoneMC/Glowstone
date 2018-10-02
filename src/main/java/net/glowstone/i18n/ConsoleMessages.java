@@ -172,6 +172,14 @@ public interface ConsoleMessages {
         );
 
         interface Enchant {
+            LoggableLocalizedString BAD_SLOT = new LoggableLocalizedStringImpl(
+                    "console.enchant.bad-slot", Level.INFO
+            );
+
+            LoggableLocalizedString MISSING_RESOURCES = new LoggableLocalizedStringImpl(
+                    "console.enchant.missing-resources", Level.INFO
+            );
+
             LoggableLocalizedString NOT_OPEN = new LoggableLocalizedStringImpl(
                     "console.enchant.not-open", Level.INFO);
         }
@@ -340,6 +348,11 @@ public interface ConsoleMessages {
             );
             LoggableLocalizedString UNLOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.chunk.unload-failed", Level.WARNING);
+        }
+
+        interface Crypt {
+            LoggableLocalizedString BAD_SHARED_SECRET = new LoggableLocalizedStringImpl(
+                    "glowstone.kick.crypt.shared-secret", Level.WARNING);
         }
 
         interface Entity {

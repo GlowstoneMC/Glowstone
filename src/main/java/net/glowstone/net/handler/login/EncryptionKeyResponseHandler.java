@@ -63,8 +63,8 @@ public final class EncryptionKeyResponseHandler implements
             sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()),
                     "AES"); // NON-NLS
         } catch (Exception ex) {
-            GlowServer.logger.log(Level.WARNING, "Could not decrypt shared secret", ex);
-            session.disconnect("Unable to decrypt shared secret.");
+            ConsoleMessages.Warn.Crypt.BAD_SHARED_SECRET.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.SHARED_SECRET.get());
             return;
         }
 

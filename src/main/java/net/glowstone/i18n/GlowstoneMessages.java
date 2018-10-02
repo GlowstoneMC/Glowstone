@@ -40,6 +40,8 @@ public interface GlowstoneMessages {
         interface Crypt {
             LocalizedString RSA_INIT_FAILED = new LocalizedStringImpl(
                     "glowstone.kick.crypt.rsa-init-failed");
+
+            LocalizedString SHARED_SECRET = new LocalizedStringImpl("glowstone.kick.crypt.shared-secret");
         }
     }
 
