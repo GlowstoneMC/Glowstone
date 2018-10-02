@@ -24,10 +24,12 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 
 public class GlowstoneCommand extends BukkitCommand {
 
-    private static final List<String> SUBCOMMANDS = Arrays
+    private static final @NonNls
+    List<String> SUBCOMMANDS = Arrays
             .asList("about", "chunk", "eval", "help", "property", "vm", "world");
 
     /**

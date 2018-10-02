@@ -356,6 +356,9 @@ public interface ConsoleMessages {
 
             LoggableLocalizedString BAD_VERIFY_TOKEN = new LoggableLocalizedStringImpl(
                     "glowstone.kick.crypt.verify-token", Level.WARNING);
+
+            LoggableLocalizedString URL_ENCODE_IP = new LoggableLocalizedStringImpl(
+                    "console.net.crypt.url-encode-ip", Level.WARNING);
         }
 
         interface Entity {

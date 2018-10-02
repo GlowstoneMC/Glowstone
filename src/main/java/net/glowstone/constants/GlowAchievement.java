@@ -38,6 +38,7 @@ import static org.bukkit.Achievement.THE_END;
 import static org.bukkit.Achievement.values;
 
 import org.bukkit.Achievement;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Name mappings for Bukkit Achievements.
@@ -103,7 +104,7 @@ public final class GlowAchievement {
         return fancyNames[achievement.ordinal()];
     }
 
-    private static void set(Achievement achievement, String key, String fancyName) {
+    private static void set(Achievement achievement, @NonNls String key, String fancyName) {
         names[achievement.ordinal()] = "achievement." + key;
         fancyNames[achievement.ordinal()] = fancyName;
     }

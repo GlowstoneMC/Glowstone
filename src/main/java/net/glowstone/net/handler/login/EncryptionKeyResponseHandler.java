@@ -116,8 +116,7 @@ public final class EncryptionKeyResponseHandler implements
                 // unlikely to happen, because UTF-8 is part of the StandardCharset in Java
                 // but if it happens, the client will still able to login, because we won't add the
                 // IP parameter
-                GlowServer.logger
-                    .log(Level.WARNING, "Cannot encode ip address for proxy check", encodingEx);
+                ConsoleMessages.Warn.Crypt.URL_ENCODE_IP.log(encodingEx);
             }
         }
 
