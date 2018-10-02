@@ -74,14 +74,14 @@ public final class EncryptionKeyResponseHandler implements
             rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
             verifyToken = rsaCipher.doFinal(message.getVerifyToken());
         } catch (Exception ex) {
-            GlowServer.logger.log(Level.WARNING, "Could not decrypt verify token", ex);
-            session.disconnect("Unable to decrypt verify token.");
+            ConsoleMessages.Warn.Crypt.BAD_VERIFY_TOKEN.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
             return;
         }
 
         // check verify token
         if (!Arrays.equals(verifyToken, session.getVerifyToken())) {
-            session.disconnect("Invalid verify token.");
+            session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
             return;
         }
 
@@ -104,12 +104,13 @@ public final class EncryptionKeyResponseHandler implements
             return;
         }
 
-        String url = BASE_URL + "?username=" + session.getVerifyUsername() + "&serverId=" + hash;
+        String url = BASE_URL + "?username=" + session.getVerifyUsername() // NON-NLS
+                + "&serverId=" + hash; // NON-NLS
         if (session.getServer().shouldPreventProxy()) {
             try {
                 // in case we are dealing with an IPv6 address rather than an IPv4 we have to encode
                 // it properly
-                url += "&ip=" + URLEncoder
+                url += "&ip=" + URLEncoder // NON-NLS
                     .encode(session.getAddress().getAddress().getHostAddress(), "UTF-8");
             } catch (UnsupportedEncodingException encodingEx) {
                 // unlikely to happen, because UTF-8 is part of the StandardCharset in Java
@@ -154,15 +155,15 @@ public final class EncryptionKeyResponseHandler implements
                 return;
             }
 
-            JSONArray propsArray = (JSONArray) json.get("properties");
+            JSONArray propsArray = (JSONArray) json.get("properties"); // NON-NLS
 
             // parse properties
             List<ProfileProperty> properties = new ArrayList<>(propsArray.size());
             for (Object obj : propsArray) {
                 JSONObject propJson = (JSONObject) obj;
-                String propName = (String) propJson.get("name");
-                String value = (String) propJson.get("value");
-                String signature = (String) propJson.get("signature");
+                String propName = (String) propJson.get("name"); // NON-NLS
+                String value = (String) propJson.get("value"); // NON-NLS
+                String signature = (String) propJson.get("signature"); // NON-NLS
                 properties.add(new ProfileProperty(propName, value, signature));
             }
 

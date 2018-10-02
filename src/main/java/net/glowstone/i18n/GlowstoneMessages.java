@@ -1,5 +1,7 @@
 package net.glowstone.i18n;
 
+import net.glowstone.block.state.BlockStateData;
+
 public interface GlowstoneMessages {
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
@@ -41,7 +43,11 @@ public interface GlowstoneMessages {
             LocalizedString RSA_INIT_FAILED = new LocalizedStringImpl(
                     "glowstone.kick.crypt.rsa-init-failed");
 
-            LocalizedString SHARED_SECRET = new LocalizedStringImpl("glowstone.kick.crypt.shared-secret");
+            LocalizedString SHARED_SECRET = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.shared-secret");
+
+            LocalizedString VERIFY_TOKEN = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.verify-token");
         }
     }
 

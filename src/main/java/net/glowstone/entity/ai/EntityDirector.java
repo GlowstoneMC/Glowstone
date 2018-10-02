@@ -26,7 +26,8 @@ public class EntityDirector {
      * @param state a mob state
      * @param task the name of a task
      */
-    public static void registerEntityMobState(EntityType entity, MobState state, String task) {
+    public static void registerEntityMobState(EntityType entity, MobState state,
+            @NonNls String task) {
         Map<MobState, List<String>> states =
                 mobStates.computeIfAbsent(entity, entity_ -> new HashMap<>());
         List<String> tasks = states.computeIfAbsent(state, state_ -> new ArrayList<>());

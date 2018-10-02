@@ -353,6 +353,9 @@ public interface ConsoleMessages {
         interface Crypt {
             LoggableLocalizedString BAD_SHARED_SECRET = new LoggableLocalizedStringImpl(
                     "glowstone.kick.crypt.shared-secret", Level.WARNING);
+
+            LoggableLocalizedString BAD_VERIFY_TOKEN = new LoggableLocalizedStringImpl(
+                    "glowstone.kick.crypt.verify-token", Level.WARNING);
         }
 
         interface Entity {
