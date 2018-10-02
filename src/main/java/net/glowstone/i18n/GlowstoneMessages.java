@@ -1,5 +1,7 @@
 package net.glowstone.i18n;
 
+import net.glowstone.block.state.BlockStateData;
+
 public interface GlowstoneMessages {
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
@@ -38,6 +40,9 @@ public interface GlowstoneMessages {
         LocalizedString WHITELIST = new LocalizedStringImpl("glowstone.kick.whitelist");
 
         interface Crypt {
+            LocalizedString HASH_FAILED = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.sha1-failed");
+
             LocalizedString RSA_INIT_FAILED = new LocalizedStringImpl(
                     "glowstone.kick.crypt.rsa-init-failed");
 
@@ -46,6 +51,14 @@ public interface GlowstoneMessages {
 
             LocalizedString VERIFY_TOKEN = new LocalizedStringImpl(
                     "glowstone.kick.crypt.verify-token");
+
+            LocalizedString AUTH_FAILED = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.user-auth");
+
+            LocalizedString AUTH_INTERNAL = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.auth-internal");
+
+            LocalizedString BAD_UUID = new LocalizedStringImpl("glowstone.kick.crypt.invalid-uuid");
         }
     }
 

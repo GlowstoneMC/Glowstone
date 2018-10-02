@@ -150,6 +150,15 @@ public interface ConsoleMessages {
 
         interface Net {
             interface Crypt {
+                LoggableLocalizedString AUTH_INTERNAL = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.auth-internal", Level.SEVERE);
+
+                LoggableLocalizedString BAD_UUID = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.invalid-uuid", Level.SEVERE);
+
+                LoggableLocalizedString HASH_FAILED = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.sha1-failed", Level.SEVERE);
+
                 LoggableLocalizedString INIT_FAILED = new LoggableLocalizedStringImpl(
                         "console.net.crypt.init-failed", Level.SEVERE);
 
@@ -351,6 +360,9 @@ public interface ConsoleMessages {
         }
 
         interface Crypt {
+            LoggableLocalizedString AUTH_FAILED = new LoggableLocalizedStringImpl(
+                    "console.net.crypt.user-auth", Level.WARNING);
+
             LoggableLocalizedString BAD_SHARED_SECRET = new LoggableLocalizedStringImpl(
                     "glowstone.kick.crypt.shared-secret", Level.WARNING);
 
@@ -364,6 +376,10 @@ public interface ConsoleMessages {
         interface Entity {
             LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.entity.load-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString LOAD_TOO_LATE = new LoggableLocalizedStringImpl(
+                    "console.entity.load-too-late", Level.WARNING
             );
 
             LoggableLocalizedString PARTICLE_INVALID = new LoggableLocalizedStringImpl(

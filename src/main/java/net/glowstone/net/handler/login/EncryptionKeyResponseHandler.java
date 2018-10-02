@@ -9,6 +9,7 @@ import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,8 +100,8 @@ public final class EncryptionKeyResponseHandler implements
             // BigInteger takes care of sign and leading zeroes
             hash = new BigInteger(digest.digest()).toString(16);
         } catch (NoSuchAlgorithmException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to generate SHA-1 digest", ex);
-            session.disconnect("Failed to hash login data.");
+            ConsoleMessages.Error.Net.Crypt.HASH_FAILED.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.HASH_FAILED.get());
             return;
         }
 
@@ -134,23 +135,21 @@ public final class EncryptionKeyResponseHandler implements
             try {
                 json = (JSONObject) PARSER.parse(response); // TODO gson here
             } catch (ParseException e) {
-                GlowServer.logger.warning(
-                    "Username \"" + session.getVerifyUsername() + "\" failed to authenticate!");
-                session.disconnect("Failed to verify username!");
+                ConsoleMessages.Warn.Crypt.AUTH_FAILED.log(session.getVerifyUsername());
+                session.disconnect(GlowstoneMessages.Kick.Crypt.AUTH_FAILED.get());
                 return;
             }
 
-            String name = (String) json.get("name");
-            String id = (String) json.get("id");
+            String name = (String) json.get("name"); // NON-NLS
+            String id = (String) json.get("id"); // NON-NLS
 
             // parse UUID
             UUID uuid;
             try {
                 uuid = UuidUtils.fromFlatString(id);
             } catch (IllegalArgumentException ex) {
-                GlowServer.logger
-                    .log(Level.SEVERE, "Returned authentication UUID invalid: " + id, ex);
-                session.disconnect("Invalid UUID.");
+                ConsoleMessages.Error.Net.Crypt.BAD_UUID.log(ex, id);
+                session.disconnect(GlowstoneMessages.Kick.Crypt.BAD_UUID.get(id));
                 return;
             }
 
@@ -180,8 +179,8 @@ public final class EncryptionKeyResponseHandler implements
 
         @Override
         public void error(Throwable t) {
-            GlowServer.logger.log(Level.SEVERE, "Error in authentication thread", t);
-            session.disconnect("Internal error during authentication.", true);
+            ConsoleMessages.Error.Net.Crypt.AUTH_INTERNAL.log(t);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.AUTH_INTERNAL.get(), true);
         }
     }
 }
