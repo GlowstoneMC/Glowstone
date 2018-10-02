@@ -2,8 +2,6 @@ package net.glowstone.i18n;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Locale;
-import java.util.stream.Collectors;
-import net.glowstone.command.CommandTarget;
 
 public interface GlowstoneMessages {
     interface Advancement {
