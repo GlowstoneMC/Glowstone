@@ -332,10 +332,6 @@ public class RegionFile {
             int runLength = 0;
             int currentSector = 2;
             while (runLength < sectorsNeeded) {
-                if (sectorsUsed.length() >= currentSector) {
-                    // We reached the end, and we will need to allocate a new sector.
-                    break;
-                }
                 int nextSector = sectorsUsed.nextClearBit(currentSector + 1);
                 if (currentSector + 1 == nextSector) {
                     runLength++;
