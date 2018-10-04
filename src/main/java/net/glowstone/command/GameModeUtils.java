@@ -1,10 +1,6 @@
 package net.glowstone.command;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedMap;
-import java.text.Collator;
-import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.i18n.InternationalizationUtil;
