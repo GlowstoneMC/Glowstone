@@ -50,6 +50,9 @@ public class GameModeUtils {
      * @return The matching mode if any, null otherwise.
      */
     public static GameMode build(final String mode) {
+        if (mode == null) {
+            return null;
+        }
         return NAME_TO_MODE.getOrDefault(mode.toLowerCase(), null);
     }
 
