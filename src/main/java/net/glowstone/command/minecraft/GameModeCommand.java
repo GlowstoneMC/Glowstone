@@ -1,8 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import static net.glowstone.command.GameModeUtils.NAMES_LOWERCASE;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.glowstone.command.CommandTarget;
@@ -16,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
 
 public class GameModeCommand extends VanillaCommand {
 
@@ -89,8 +85,7 @@ public class GameModeCommand extends VanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
         throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], NAMES_LOWERCASE,
-                    new ArrayList(((List<String>) NAMES_LOWERCASE).size()));
+            return GameModeUtils.partialMatchingGameModes(args[0]);
         }
         return super.tabComplete(sender, alias, args);
     }

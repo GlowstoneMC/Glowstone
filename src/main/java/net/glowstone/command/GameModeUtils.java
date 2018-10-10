@@ -3,11 +3,15 @@ package net.glowstone.command;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.i18n.InternationalizationUtil;
 import org.bukkit.GameMode;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Utility class to create GameMode.
@@ -61,5 +65,11 @@ public class GameModeUtils {
             return null;
         }
         return MODE_TO_NAME.getOrDefault(gameMode, GlowstoneMessages.GameMode.UNKNOWN.get());
+    }
+
+    @NotNull
+    public static List<String> partialMatchingGameModes(String arg) {
+        return StringUtil.copyPartialMatches(arg, MODE_AUTOCOMPLETE_LIST,
+            new ArrayList<>(MODE_AUTOCOMPLETE_LIST.size()));
     }
 }
