@@ -17,7 +17,7 @@ public class GameModeUtils {
                 = new ImmutableSortedMap.Builder<>(InternationalizationUtil.CASE_INSENSITIVE);
         ResourceBundle bundle = ResourceBundle.getBundle("maps/gamemode");
         for (String key : bundle.keySet()) {
-            out.put(key, GameMode.values()[Integer.decode(bundle.getString(key))]);
+            out.put(key, GameMode.getByValue(Integer.decode(bundle.getString(key))));
         }
         MODE_MAP = out.build();
     }
