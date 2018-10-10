@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.glowstone.ServerProvider;
-import net.glowstone.i18n.GlowstoneMessages;
+import net.glowstone.command.GameModeUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
