@@ -1,6 +1,6 @@
 package net.glowstone.command.minecraft;
 
-import static net.glowstone.i18n.GlowstoneMessages.GameMode.NAMES_LOWERCASE;
+import static net.glowstone.command.GameModeUtils.MODE_AUTOCOMPLETE_LIST;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,8 +57,8 @@ public class DefaultGameModeCommand extends VanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
         throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], NAMES_LOWERCASE,
-                new ArrayList(((List<String>) NAMES_LOWERCASE).size()));
+            return StringUtil.copyPartialMatches(args[0], MODE_AUTOCOMPLETE_LIST,
+                new ArrayList<>(MODE_AUTOCOMPLETE_LIST.size()));
         } else {
             return Collections.emptyList();
         }

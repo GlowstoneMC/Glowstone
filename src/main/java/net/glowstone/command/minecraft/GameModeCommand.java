@@ -1,6 +1,6 @@
 package net.glowstone.command.minecraft;
 
-import static net.glowstone.i18n.GlowstoneMessages.GameMode.NAMES_LOWERCASE;
+import static net.glowstone.command.GameModeUtils.NAMES_LOWERCASE;
 
 import java.util.ArrayList;
 import java.util.Collections;

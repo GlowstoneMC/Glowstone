@@ -28,11 +28,7 @@ public interface GlowstoneMessages {
     }
 
     interface GameMode {
-        ImmutableList<String> NAMES = ImmutableList.copyOf(
-                new LocalizedStringImpl("glowstone.gamemode.names").get().split(","));
-        ImmutableList<String> NAMES_LOWERCASE = NAMES.stream()
-                .map(x -> x.toLowerCase(Locale.getDefault()))
-                .collect(ImmutableList.toImmutableList());
+        LocalizedString NAMES = new LocalizedStringImpl("glowstone.gamemode.names");
         LocalizedString UNKNOWN = new LocalizedStringImpl("glowstone.gamemode.unknown");
     }
 

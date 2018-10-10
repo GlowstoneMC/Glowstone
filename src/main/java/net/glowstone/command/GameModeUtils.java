@@ -1,6 +1,9 @@
 package net.glowstone.command;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.i18n.InternationalizationUtil;
@@ -10,16 +13,27 @@ import org.bukkit.GameMode;
  * Utility class to create GameMode.
  */
 public class GameModeUtils {
-    private static final ImmutableSortedMap<String, GameMode> MODE_MAP;
+    private static final ImmutableSortedMap<String, GameMode> NAME_TO_MODE;
+    private static final ImmutableMap<GameMode, String> MODE_TO_NAME;
+    public static final ImmutableList<String> MODE_AUTOCOMPLETE_LIST;
 
     static {
-        ImmutableSortedMap.Builder<String, GameMode> out
+        ImmutableSortedMap.Builder<String, GameMode> nameToModeBuilder
                 = new ImmutableSortedMap.Builder<>(InternationalizationUtil.CASE_INSENSITIVE);
         ResourceBundle bundle = ResourceBundle.getBundle("maps/gamemode");
         for (String key : bundle.keySet()) {
-            out.put(key, GameMode.getByValue(Integer.decode(bundle.getString(key))));
+            nameToModeBuilder.put(key, GameMode.getByValue(Integer.decode(bundle.getString(key))));
         }
-        MODE_MAP = out.build();
+        NAME_TO_MODE = nameToModeBuilder.build();
+        ImmutableMap.Builder<GameMode, String> modeToNameBuilder = ImmutableMap.builder();
+        ImmutableList.Builder<String> modeAutocompleteListBuilder = ImmutableList.builder();
+        for (String name : GlowstoneMessages.GameMode.NAMES.get().split(",")) {
+            GameMode mode = NAME_TO_MODE.get(name);
+            modeToNameBuilder.put(mode, name);
+            modeAutocompleteListBuilder.add(name.toLowerCase(Locale.getDefault()));
+        }
+        MODE_TO_NAME = modeToNameBuilder.build();
+        MODE_AUTOCOMPLETE_LIST = modeAutocompleteListBuilder.build();
     }
 
     private GameModeUtils() {
@@ -32,7 +46,7 @@ public class GameModeUtils {
      * @return The matching mode if any, null otherwise.
      */
     public static GameMode build(final String mode) {
-        return MODE_MAP.getOrDefault(mode.toLowerCase(), null);
+        return NAME_TO_MODE.getOrDefault(mode.toLowerCase(), null);
     }
 
     /**
@@ -45,12 +59,7 @@ public class GameModeUtils {
     public static String prettyPrint(final GameMode gameMode) {
         if (gameMode == null) {
             return null;
-        } else {
-            int ordinal = gameMode.ordinal();
-            if (GlowstoneMessages.GameMode.NAMES.size() > ordinal) {
-                return GlowstoneMessages.GameMode.NAMES.get(ordinal);
-            }
         }
-        return GlowstoneMessages.GameMode.UNKNOWN.get();
+        return MODE_TO_NAME.getOrDefault(gameMode, GlowstoneMessages.GameMode.UNKNOWN.get());
     }
 }
