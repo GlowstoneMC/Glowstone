@@ -1,8 +1,5 @@
 package net.glowstone.i18n;
 
-import com.google.common.collect.ImmutableList;
-import java.util.Locale;
-
 public interface GlowstoneMessages {
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
