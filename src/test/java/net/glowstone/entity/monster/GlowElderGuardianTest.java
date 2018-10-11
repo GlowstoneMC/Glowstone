@@ -29,6 +29,7 @@ public class GlowElderGuardianTest extends GlowGuardianTest {
         assertTrue(younger instanceof GlowGuardian);
         assertFalse(younger instanceof GlowElderGuardian);
         assertFalse(((GlowGuardian) younger).isElder());
+        assertEquals(uuid, younger.getUniqueId());
         assertEquals(entity.getLocation(), younger.getLocation());
     }
 
