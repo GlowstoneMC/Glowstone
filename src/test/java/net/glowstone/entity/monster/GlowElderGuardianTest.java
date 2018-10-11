@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertSame;
@@ -28,6 +29,7 @@ public class GlowElderGuardianTest extends GlowGuardianTest {
         assertTrue(younger instanceof GlowGuardian);
         assertFalse(younger instanceof GlowElderGuardian);
         assertFalse(((GlowGuardian) younger).isElder());
+        assertEquals(entity.getLocation(), younger.getLocation());
     }
 
     public GlowElderGuardianTest() {
