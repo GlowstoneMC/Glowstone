@@ -16,6 +16,7 @@ import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 import net.glowstone.util.RayUtil;
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -44,7 +45,7 @@ public final class Explosion {
     public static final int POWER_WITHER_SKULL = 1;
     public static final int POWER_WITHER_CREATION = 7;
     public static final int POWER_ENDER_CRYSTAL = 6;
-    public static final int EXPLOSION_VISIBILITY_RADIUS = 64;
+    public static final int EXPLOSION_VISIBILITY_RADIUS = 2;
     private static final List<Vector> RAY_DIRECTIONS = new ArrayList<>();
 
     static {
@@ -165,9 +166,12 @@ public final class Explosion {
 
         damageEntities();
         Collection<GlowPlayer> affectedPlayers
-                = collectPlayersInRadius(EXPLOSION_VISIBILITY_RADIUS);
+                = collectPlayersInRadius(EXPLOSION_VISIBILITY_RADIUS * this.power);
         for (GlowPlayer player : affectedPlayers) {
-            playOutExplosion(player, blocks);
+            if (player.getGameMode() != GameMode.CREATIVE
+                    & player.getGameMode() != GameMode.SPECTATOR) {
+                playOutExplosion(player, blocks);
+            }
         }
 
         return true;
