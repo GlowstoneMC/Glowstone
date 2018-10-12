@@ -166,7 +166,7 @@ public final class Explosion {
 
         damageEntities();
         Collection<GlowPlayer> affectedPlayers
-                = collectPlayersInRadius(EXPLOSION_VISIBILITY_RADIUS * this.power);
+                = collectPlayersInRadius(EXPLOSION_VISIBILITY_RADIUS * (int)this.power);
         for (GlowPlayer player : affectedPlayers) {
             if (player.getGameMode() != GameMode.CREATIVE
                     & player.getGameMode() != GameMode.SPECTATOR) {
