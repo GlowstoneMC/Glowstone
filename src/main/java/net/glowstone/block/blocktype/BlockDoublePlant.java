@@ -9,10 +9,10 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.Bisected.Half;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -27,8 +27,10 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
         GlowBlockState oldState) {
         GlowBlockState headBlockState = block.getRelative(BlockFace.UP).getState();
-        headBlockState.setType(Material.DOUBLE_PLANT);
-        headBlockState.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
+        headBlockState.setType(block.getType());
+        Bisected upper = (Bisected) block.getType().createBlockData();
+        upper.setHalf(Half.TOP);
+        headBlockState.setBlockData(upper);
         headBlockState.update(true);
     }
 
