@@ -29,6 +29,7 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -232,7 +233,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         // silently allow setting the same UUID again
         if (!profile.getId().equals(uuid)) {
             throw new IllegalStateException(
-                    "UUID of " + this + " is already " + profile.getId());
+                    "UUID of " + this + " is already " + UuidUtils.toString(profile.getId()));
         }
     }
 

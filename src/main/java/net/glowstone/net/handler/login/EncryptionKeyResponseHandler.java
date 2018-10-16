@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.AllArgsConstructor;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
+import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.http.HttpCallback;
 import net.glowstone.net.http.HttpClient;
@@ -47,10 +47,10 @@ public final class EncryptionKeyResponseHandler implements
         // create rsaCipher
         Cipher rsaCipher;
         try {
-            rsaCipher = Cipher.getInstance("RSA");
+            rsaCipher = Cipher.getInstance("RSA"); // NON-NLS
         } catch (GeneralSecurityException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Could not initialize RSA cipher", ex);
-            session.disconnect("Unable to initialize RSA cipher.");
+            ConsoleMessages.Error.Net.Crypt.RSA_INIT_FAILED.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.RSA_INIT_FAILED.get());
             return;
         }
 
@@ -58,10 +58,11 @@ public final class EncryptionKeyResponseHandler implements
         SecretKey sharedSecret;
         try {
             rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
-            sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()), "AES");
+            sharedSecret = new SecretKeySpec(rsaCipher.doFinal(message.getSharedSecret()),
+                    "AES"); // NON-NLS
         } catch (Exception ex) {
-            GlowServer.logger.log(Level.WARNING, "Could not decrypt shared secret", ex);
-            session.disconnect("Unable to decrypt shared secret.");
+            ConsoleMessages.Warn.Crypt.BAD_SHARED_SECRET.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.SHARED_SECRET.get());
             return;
         }
 
@@ -71,14 +72,14 @@ public final class EncryptionKeyResponseHandler implements
             rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
             verifyToken = rsaCipher.doFinal(message.getVerifyToken());
         } catch (Exception ex) {
-            GlowServer.logger.log(Level.WARNING, "Could not decrypt verify token", ex);
-            session.disconnect("Unable to decrypt verify token.");
+            ConsoleMessages.Warn.Crypt.BAD_VERIFY_TOKEN.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
             return;
         }
 
         // check verify token
         if (!Arrays.equals(verifyToken, session.getVerifyToken())) {
-            session.disconnect("Invalid verify token.");
+            session.disconnect(GlowstoneMessages.Kick.Crypt.VERIFY_TOKEN.get());
             return;
         }
 
@@ -96,24 +97,24 @@ public final class EncryptionKeyResponseHandler implements
             // BigInteger takes care of sign and leading zeroes
             hash = new BigInteger(digest.digest()).toString(16);
         } catch (NoSuchAlgorithmException ex) {
-            GlowServer.logger.log(Level.SEVERE, "Unable to generate SHA-1 digest", ex);
-            session.disconnect("Failed to hash login data.");
+            ConsoleMessages.Error.Net.Crypt.HASH_FAILED.log(ex);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.HASH_FAILED.get());
             return;
         }
 
-        String url = BASE_URL + "?username=" + session.getVerifyUsername() + "&serverId=" + hash;
+        String url = BASE_URL + "?username=" + session.getVerifyUsername() // NON-NLS
+                + "&serverId=" + hash; // NON-NLS
         if (session.getServer().shouldPreventProxy()) {
             try {
                 // in case we are dealing with an IPv6 address rather than an IPv4 we have to encode
                 // it properly
-                url += "&ip=" + URLEncoder
+                url += "&ip=" + URLEncoder // NON-NLS
                     .encode(session.getAddress().getAddress().getHostAddress(), "UTF-8");
             } catch (UnsupportedEncodingException encodingEx) {
                 // unlikely to happen, because UTF-8 is part of the StandardCharset in Java
                 // but if it happens, the client will still able to login, because we won't add the
                 // IP parameter
-                GlowServer.logger
-                    .log(Level.WARNING, "Cannot encode ip address for proxy check", encodingEx);
+                ConsoleMessages.Warn.Crypt.URL_ENCODE_IP.log(encodingEx);
             }
         }
 
@@ -131,35 +132,33 @@ public final class EncryptionKeyResponseHandler implements
             try {
                 json = (JSONObject) PARSER.parse(response); // TODO gson here
             } catch (ParseException e) {
-                GlowServer.logger.warning(
-                    "Username \"" + session.getVerifyUsername() + "\" failed to authenticate!");
-                session.disconnect("Failed to verify username!");
+                ConsoleMessages.Warn.Crypt.AUTH_FAILED.log(session.getVerifyUsername());
+                session.disconnect(GlowstoneMessages.Kick.Crypt.AUTH_FAILED.get());
                 return;
             }
 
-            String name = (String) json.get("name");
-            String id = (String) json.get("id");
+            String name = (String) json.get("name"); // NON-NLS
+            String id = (String) json.get("id"); // NON-NLS
 
             // parse UUID
             UUID uuid;
             try {
                 uuid = UuidUtils.fromFlatString(id);
             } catch (IllegalArgumentException ex) {
-                GlowServer.logger
-                    .log(Level.SEVERE, "Returned authentication UUID invalid: " + id, ex);
-                session.disconnect("Invalid UUID.");
+                ConsoleMessages.Error.Net.Crypt.BAD_UUID.log(ex, id);
+                session.disconnect(GlowstoneMessages.Kick.Crypt.BAD_UUID.get(id));
                 return;
             }
 
-            JSONArray propsArray = (JSONArray) json.get("properties");
+            JSONArray propsArray = (JSONArray) json.get("properties"); // NON-NLS
 
             // parse properties
             List<ProfileProperty> properties = new ArrayList<>(propsArray.size());
             for (Object obj : propsArray) {
                 JSONObject propJson = (JSONObject) obj;
-                String propName = (String) propJson.get("name");
-                String value = (String) propJson.get("value");
-                String signature = (String) propJson.get("signature");
+                String propName = (String) propJson.get("name"); // NON-NLS
+                String value = (String) propJson.get("value"); // NON-NLS
+                String signature = (String) propJson.get("signature"); // NON-NLS
                 properties.add(new ProfileProperty(propName, value, signature));
             }
 
@@ -177,8 +176,8 @@ public final class EncryptionKeyResponseHandler implements
 
         @Override
         public void error(Throwable t) {
-            GlowServer.logger.log(Level.SEVERE, "Error in authentication thread", t);
-            session.disconnect("Internal error during authentication.", true);
+            ConsoleMessages.Error.Net.Crypt.AUTH_INTERNAL.log(t);
+            session.disconnect(GlowstoneMessages.Kick.Crypt.AUTH_INTERNAL.get(), true);
         }
     }
 }

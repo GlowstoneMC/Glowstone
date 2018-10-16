@@ -85,6 +85,11 @@
       <artifactId>flow-network</artifactId>
       <version>1.2.4-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>com.eatthepath</groupId>
+      <artifactId>fast-uuid</artifactId>
+      <version>0.1</version>
+    </dependency>
     <!-- NonNls annotation: https://mvnrepository.com/artifact/org.jetbrains/annotations -->
     <dependency>
       <groupId>org.jetbrains</groupId>

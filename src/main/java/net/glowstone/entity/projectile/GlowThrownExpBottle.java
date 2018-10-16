@@ -1,7 +1,6 @@
 package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
-
 import net.glowstone.EventFactory;
 import net.glowstone.entity.objects.GlowExperienceOrb;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;

@@ -44,6 +44,7 @@ import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
+import net.glowstone.util.UuidUtils;
 import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -369,7 +370,8 @@ public abstract class GlowEntity implements Entity {
         } else if (!this.uuid.equals(uuid)) {
             // silently allow setting the same UUID, since
             // it can't be checked with getUniqueId()
-            throw new IllegalStateException("UUID of " + this + " is already " + this.uuid);
+            throw new IllegalStateException("UUID of " + this + " is already "
+                    + UuidUtils.toString(this.uuid));
         }
     }
 
@@ -1412,10 +1414,14 @@ public abstract class GlowEntity implements Entity {
         damage(amount, null, cause);
     }
 
+    public void damage(double amount, Entity source, DamageCause cause) {
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Metadata
 
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public MetadataMap getMetadata() {
+        return metadata;
     }
 
     @Override
@@ -1613,7 +1619,7 @@ public abstract class GlowEntity implements Entity {
 
         @Override
         protected String disambiguate(Entity subject, String metadataKey) {
-            return subject.getUniqueId() + ":" + metadataKey;
+            return UuidUtils.toString(subject.getUniqueId()) + ":" + metadataKey;
         }
     }
 }

@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.meta.profile.ProfileCache;
+import net.glowstone.util.UuidUtils;
 import org.bukkit.OfflinePlayer;
 
 /**
@@ -111,7 +112,7 @@ public final class UuidListFile extends JsonListFile {
 
     @Override
     protected BaseEntry readEntry(Map<String, String> map) {
-        return new Entry(UUID.fromString(map.get("uuid")), map.get("name"));
+        return new Entry(UuidUtils.fromString(map.get("uuid")), map.get("name"));
     }
 
     private static class Entry implements BaseEntry {
@@ -129,7 +130,7 @@ public final class UuidListFile extends JsonListFile {
             GlowPlayerProfile profile = ProfileCache.getProfile(uuid).join();
             String name = profile.getName() != null ? profile.getName() : fallbackName;
             Map<String, String> result = new HashMap<>(2);
-            result.put("uuid", uuid.toString());
+            result.put("uuid", UuidUtils.toString(uuid));
             result.put("name", name);
             return result;
         }

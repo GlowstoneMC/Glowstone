@@ -10,16 +10,15 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.generator.GlowChunkData;
 import net.glowstone.generator.GlowChunkGenerator;
 import net.glowstone.generator.biomegrid.MapLayer;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.ChunkIoService;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -154,9 +153,7 @@ public final class ChunkManager {
                 return true;
             }
         } catch (IOException e) {
-            GlowServer.logger.log(Level.SEVERE,
-                    "Error while loading chunk (" + chunk.getX() + "," + chunk.getZ() + ")",
-                    e);
+            ConsoleMessages.Error.Chunk.LOAD_FAILED.log(e, chunk.getX(), chunk.getZ());
             // an error in chunk reading may have left the chunk in an invalid state
             // (i.e. double initialization errors), so it's forcibly unloaded here
             chunk.unload(false, false);
@@ -171,9 +168,7 @@ public final class ChunkManager {
         try {
             generateChunk(chunk, chunk.getX(), chunk.getZ());
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE,
-                    "Error while generating chunk (" + chunk.getX() + "," + chunk.getZ() + ")",
-                    ex);
+            ConsoleMessages.Error.Chunk.GEN_FAILED.log(ex, chunk.getX(), chunk.getZ());
             return false;
         }
 
@@ -197,8 +192,7 @@ public final class ChunkManager {
             Entry<Key, GlowChunk> entry = chunksEntryIter.next();
             if (!lockSet.contains(entry.getKey())) {
                 if (!entry.getValue().unload(true, true)) {
-                    GlowServer.logger.warning(
-                            "Failed to unload chunk " + world.getName() + ":" + entry.getKey());
+                    ConsoleMessages.Warn.Chunk.UNLOAD_FAILED.log(world.getName(), entry.getKey());
                 }
             }
             if (!entry.getValue().isLoaded()) {
@@ -257,8 +251,7 @@ public final class ChunkManager {
         try {
             populateChunk(x, z, true);
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE,
-                    "Error while populating chunk (" + x + "," + z + ")", ex);
+            ConsoleMessages.Error.Chunk.POP_FAILED.log(ex, x, z);
         }
     }
 
@@ -386,8 +379,7 @@ public final class ChunkManager {
             generateChunk(chunk, x, z);
             populateChunk(x, z, false);  // should this be forced?
         } catch (Throwable ex) {
-            GlowServer.logger.log(Level.SEVERE,
-                    "Error while regenerating chunk (" + x + "," + z + ")", ex);
+            ConsoleMessages.Error.Chunk.REGEN_FAILED.log(ex, chunk.getX(), chunk.getZ());
             return false;
         }
         return true;
@@ -414,7 +406,7 @@ public final class ChunkManager {
                 service.write(chunk);
                 return true;
             } catch (IOException ex) {
-                GlowServer.logger.log(Level.SEVERE, "Error while saving " + chunk, ex);
+                ConsoleMessages.Error.Chunk.SAVE_FAILED.log(ex, chunk);
                 return false;
             }
         }

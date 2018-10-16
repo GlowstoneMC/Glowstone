@@ -18,6 +18,7 @@ import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.io.PlayerDataService;
 import net.glowstone.io.entity.EntityStorage;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
@@ -42,7 +43,7 @@ public class NbtPlayerDataService implements PlayerDataService {
         if (!playerDir.isDirectory() && !playerDir.mkdirs()) {
             ConsoleMessages.Warn.Io.MKDIR_FAILED.log(playerDir);
         }
-        return new File(playerDir, uuid + ".dat");
+        return new File(playerDir, UuidUtils.toString(uuid) + ".dat");
     }
 
     private void readDataImpl(GlowPlayer player, CompoundTag playerTag) {
@@ -68,7 +69,7 @@ public class NbtPlayerDataService implements PlayerDataService {
             // get the UUID
             UUID uuid;
             try {
-                uuid = UUID.fromString(name.substring(0, 36));
+                uuid = UuidUtils.fromString(name.substring(0, 36));
             } catch (IllegalArgumentException e) {
                 continue;
             }

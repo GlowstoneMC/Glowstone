@@ -1,8 +1,8 @@
 package net.glowstone.io.entity;
 
-import java.util.UUID;
 import net.glowstone.entity.monster.GlowPigZombie;
 import net.glowstone.entity.monster.GlowZombie;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 
@@ -17,7 +17,7 @@ class PigZombieStore extends ZombieStore<GlowPigZombie> {
         super.load(entity, tag);
         final GlowPigZombie pigEntity = (GlowPigZombie) entity;
         pigEntity.setAnger(tag.tryGetInt("Anger").orElse(0));
-        if (!tag.readString("HurtBy", uuid -> pigEntity.setHurtBy(UUID.fromString(uuid)))) {
+        if (!tag.readString("HurtBy", uuid -> pigEntity.setHurtBy(UuidUtils.fromString(uuid)))) {
             pigEntity.setHurtBy(null);
         }
     }
@@ -27,7 +27,7 @@ class PigZombieStore extends ZombieStore<GlowPigZombie> {
         super.save(entity, tag);
         tag.putInt("Anger", ((GlowPigZombie) entity).getAnger());
         if (((GlowPigZombie) entity).getHurtBy() != null) {
-            tag.putString("HurtBy", ((GlowPigZombie) entity).getHurtBy().toString());
+            tag.putString("HurtBy", UuidUtils.toString(((GlowPigZombie) entity).getHurtBy()));
         } else {
             if (tag.containsKey("HurtBy")) {
                 tag.remove("HurtBy");

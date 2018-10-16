@@ -52,7 +52,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
     @Override
     protected void valueToString(StringBuilder builder) {
-        builder.append(value.size()).append(" entries\n{\n");
+        builder.append(value.size()).append(" entries\n{\n"); // NON-NLS
         for (Entry<String, Tag> entry : value.entrySet()) {
             builder.append("    ").append(entry.getKey()).append(": ")
                     .append(entry.getValue().toString().replaceAll("\n", "\n    ")).append("\n");
@@ -656,7 +656,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         }
         switch (value.get(key).getType()) {
             case STRING:
-                String id = getString(key);
+                @NonNls String id = getString(key);
                 if (id.isEmpty()) {
                     return Optional.empty();
                 }
@@ -1033,8 +1033,8 @@ public class CompoundTag extends Tag<Map<String, Tag>>
     }
 
     void put(String key, Tag tag) {
-        checkNotNull(key, "Key cannot be null");
-        checkNotNull(tag, "Tag cannot be null");
+        checkNotNull(key, "Key cannot be null"); // NON-NLS
+        checkNotNull(tag, "Tag cannot be null"); // NON-NLS
         value.put(key, tag);
     }
 

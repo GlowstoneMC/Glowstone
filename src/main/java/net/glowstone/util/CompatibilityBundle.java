@@ -18,13 +18,13 @@ public enum CompatibilityBundle {
     CRAFTBUKKIT(
         Stream.of(
             new Library("org.xerial", "sqlite-jdbc", "3.21.0.1",
-                LibraryManager.HashAlgorithm.SHA1, "347e4d1d3e1dff66d389354af8f0021e62344584"),
+                LibraryManager.HashAlgorithm.SHA1, "81a0bcda2f100dc91dc402554f60ed2f696cded5"),
             new Library("mysql", "mysql-connector-java", "5.1.46",
-                LibraryManager.HashAlgorithm.SHA1, "61b6b998192c85bb581c6be90e03dcd4b9079db4"),
+                LibraryManager.HashAlgorithm.SHA1, "9a3e63b387e376364211e96827bc27db8d7a92e9"),
             new Library("org.apache.logging.log4j", "log4j-api", "2.8.2",
-                LibraryManager.HashAlgorithm.SHA1, "e801d13612e22cad62a3f4f3fe7fdbe6334a8e72"),
+                LibraryManager.HashAlgorithm.SHA1, "e590eeb783348ce8ddef205b82127f9084d82bf3"),
             new Library("org.apache.logging.log4j", "log4j-core", "2.8.2",
-                LibraryManager.HashAlgorithm.SHA1, "4ac28ff2f1ddf05dae3043a190451e8c46b73c31"),
+                LibraryManager.HashAlgorithm.SHA1, "979fc0cf8460302e4ffbfe38c1b66a99450b0bb7"),
             new Library("org.apache.commons", "commons-lang3", "3.5",
                 LibraryManager.HashAlgorithm.SHA1, "6c6c702c89bfff3cd9e80b04d668c5e190d588c6")
         )

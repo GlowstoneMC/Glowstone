@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import net.glowstone.entity.AttributeManager;
 import net.glowstone.entity.AttributeManager.Property;
 import net.glowstone.entity.GlowLivingEntity;

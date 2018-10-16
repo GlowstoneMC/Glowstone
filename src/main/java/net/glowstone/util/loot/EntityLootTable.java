@@ -17,13 +17,14 @@ public class EntityLootTable {
      * @param object a loot table in JSON form
      */
     public EntityLootTable(JSONObject object) {
-        if (object.containsKey("experience")) {
-            this.experience = new LootRandomValues((JSONObject) object.get("experience"));
+        if (object.containsKey("experience")) { // NON-NLS
+            this.experience
+                    = new LootRandomValues((JSONObject) object.get("experience")); // NON-NLS
         } else {
             this.experience = null;
         }
-        if (object.containsKey("items")) {
-            JSONArray array = (JSONArray) object.get("items");
+        if (object.containsKey("items")) { // NON-NLS
+            JSONArray array = (JSONArray) object.get("items"); // NON-NLS
             this.items = new LootItem[array.size()];
             for (int i = 0; i < array.size(); i++) {
                 JSONObject json = (JSONObject) array.get(i);

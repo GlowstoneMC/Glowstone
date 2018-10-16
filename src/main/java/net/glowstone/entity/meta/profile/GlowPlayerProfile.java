@@ -129,7 +129,7 @@ public class GlowPlayerProfile implements PlayerProfile {
      */
     public static CompletableFuture<GlowPlayerProfile> fromNbt(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
-        UUID uuid = UUID.fromString(tag.getString("Id"));
+        UUID uuid = UuidUtils.fromString(tag.getString("Id"));
 
         Collection<ProfileProperty> properties = Sets.newHashSet();
         if (tag.containsKey("Properties")) {
