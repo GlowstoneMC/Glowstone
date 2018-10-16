@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.glowstone.ServerProvider;
@@ -9,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
-import org.bukkit.util.StringUtil;
 
 public class DefaultGameModeCommand extends VanillaCommand {
 
@@ -53,12 +51,12 @@ public class DefaultGameModeCommand extends VanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil.copyPartialMatches(args[0], GameModeUtils.GAMEMODE_NAMES,
-                new ArrayList(GameModeUtils.GAMEMODE_NAMES.size()));
+            return GameModeUtils.partialMatchingGameModes(args[0]);
         } else {
             return Collections.emptyList();
         }
     }
+
 }

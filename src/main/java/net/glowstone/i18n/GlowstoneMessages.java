@@ -24,6 +24,18 @@ public interface GlowstoneMessages {
         }
     }
 
+    interface GameMode {
+        LocalizedString NAMES = new LocalizedStringImpl("glowstone.gamemode.names");
+        LocalizedString UNKNOWN = new LocalizedStringImpl("glowstone.gamemode.unknown");
+    }
+
+    interface Entity {
+        LocalizedString UNKNOWN_TYPE_WITH_ID =
+                new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
+        LocalizedString UNKNOWN_TYPE_NO_ID =
+                new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
+    }
+
     interface Kick {
         LocalizedString BANNED = new LocalizedStringImpl("glowstone.kick.banned");
 
@@ -64,12 +76,5 @@ public interface GlowstoneMessages {
         LocalizedString JOINED = new LocalizedStringImpl("glowstone.player.joined");
 
         LocalizedString LEFT = new LocalizedStringImpl("glowstone.player.left");
-    }
-
-    interface Entity {
-        LocalizedString UNKNOWN_TYPE_WITH_ID =
-                new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
-        LocalizedString UNKNOWN_TYPE_NO_ID =
-                new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
     }
 }
