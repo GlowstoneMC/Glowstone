@@ -17,7 +17,7 @@ public class BlockStone extends BlockNeedsTool {
 
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
-        if (getMaterial() == Material.STONE) {
+        if (block.getType() == Material.STONE) {
             return Arrays.asList(new ItemStack(Material.COBBLESTONE));
         } else {
             return Arrays.asList(new ItemStack(Material.STONE, 1, block.getData()));
