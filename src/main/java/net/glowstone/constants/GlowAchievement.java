@@ -38,6 +38,7 @@ import static org.bukkit.Achievement.THE_END;
 import static org.bukkit.Achievement.values;
 
 import org.bukkit.Achievement;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Name mappings for Bukkit Achievements.
@@ -94,16 +95,16 @@ public final class GlowAchievement {
      * @return the achievement name.
      */
     public static String getName(Achievement achievement) {
-        checkNotNull(achievement, "Achievement cannot be null");
+        checkNotNull(achievement, "Achievement cannot be null"); // NON-NLS
         return names[achievement.ordinal()];
     }
 
     public static String getFancyName(Achievement achievement) {
-        checkNotNull(achievement, "Achievement cannot be null");
+        checkNotNull(achievement, "Achievement cannot be null"); // NON-NLS
         return fancyNames[achievement.ordinal()];
     }
 
-    private static void set(Achievement achievement, String key, String fancyName) {
+    private static void set(Achievement achievement, @NonNls String key, String fancyName) {
         names[achievement.ordinal()] = "achievement." + key;
         fancyNames[achievement.ordinal()] = fancyName;
     }

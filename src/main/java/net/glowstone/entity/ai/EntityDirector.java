@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NonNls;
 
 public class EntityDirector {
 
@@ -25,7 +26,8 @@ public class EntityDirector {
      * @param state a mob state
      * @param task the name of a task
      */
-    public static void registerEntityMobState(EntityType entity, MobState state, String task) {
+    public static void registerEntityMobState(EntityType entity, MobState state,
+            @NonNls String task) {
         Map<MobState, List<String>> states =
                 mobStates.computeIfAbsent(entity, entity_ -> new HashMap<>());
         List<String> tasks = states.computeIfAbsent(state, state_ -> new ArrayList<>());
@@ -54,7 +56,7 @@ public class EntityDirector {
      *         to invoke this task
      * @param task the class that implements the task
      */
-    public static void registerEntityTask(String name, Class<? extends EntityTask> task) {
+    public static void registerEntityTask(@NonNls String name, Class<? extends EntityTask> task) {
         tasks.put(name, task);
     }
 
