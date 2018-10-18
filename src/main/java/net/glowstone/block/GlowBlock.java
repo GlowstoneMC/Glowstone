@@ -23,6 +23,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.data.Lightable;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.material.Diode;
@@ -204,16 +206,19 @@ public class GlowBlock implements Block {
         setTypeIdAndData(type.getId(), data, applyPhysics);
     }
 
+    // TODO: id + materials
     @Override
     public boolean setTypeId(int type) {
         return setTypeId(type, true);
     }
 
+    // TODO: id + materials
     @Override
     public boolean setTypeId(int type, boolean applyPhysics) {
         return setTypeIdAndData(type, (byte) 0, applyPhysics);
     }
 
+    // TODO: id + materials
     @Override
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
         Material oldTypeId = getType();
@@ -223,13 +228,14 @@ public class GlowBlock implements Block {
         chunk.setType(x & 0xf, z & 0xf, y, type);
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
 
-        if (oldTypeId == Material.DOUBLE_PLANT
+        // TODO: fix so this hack isn't needed!
+        /*if (oldTypeId == Material.DOUBLE_PLANT
                 && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
             world.getChunkAtAsync(this, c -> ((GlowChunk) c).setType(x & 0xf, z & 0xf, y + 1, 0));
             GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
             BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
             world.broadcastBlockChangeInRange(key, bcmsg);
-        }
+        }*/
 
         if (applyPhysics) {
             applyPhysics(oldTypeId, type, oldData, data);
@@ -244,14 +250,13 @@ public class GlowBlock implements Block {
 
     @Override
     public boolean isEmpty() {
-        return getTypeId() == 0;
+        return getType() == Material.AIR;
     }
 
     @Override
     public boolean isLiquid() {
         Material mat = getType();
-        return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA
-                || mat == Material.STATIONARY_LAVA;
+        return mat == Material.WATER || mat == Material.LAVA;
     }
 
     /**
@@ -294,7 +299,7 @@ public class GlowBlock implements Block {
         byte oldData = getData();
         ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
         if (applyPhysics) {
-            applyPhysics(getType(), getTypeId(), oldData, data);
+            applyPhysics(getType(), getType(), oldData, data);
         }
 
         GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
@@ -357,7 +362,7 @@ public class GlowBlock implements Block {
                         return true;
                     }
                     break;
-                case DIODE_BLOCK_ON:
+                case DIODE_BLOCK:
                     if (((Diode) target.getState().getData()).getFacing() == target.getFace(this)) {
                         return true;
                     }
@@ -392,8 +397,9 @@ public class GlowBlock implements Block {
             }
 
             switch (block.getType()) {
-                case REDSTONE_TORCH_ON:
-                    if (face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
+                case REDSTONE_TORCH:
+                    if (((Lightable) block.getBlockData()).isLit()
+                        && face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
                         return true;
                     }
                     break;
@@ -528,14 +534,13 @@ public class GlowBlock implements Block {
      * Notify this block and its surrounding blocks that this block has changed type and data.
      *
      * @param oldType the old block type
-     * @param newTypeId the new block type
+     * @param newType the new block type
      * @param oldData the old data
      * @param newData the new data
      */
-    public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
+    public void applyPhysics(Material oldType, Material newType, byte oldData, byte newData) {
         // notify the surrounding blocks that this block has changed
         ItemTable itemTable = ItemTable.instance();
-        Material newType = Material.getMaterial(newTypeId);
 
         for (int y = -1; y <= 1; y++) {
             for (BlockFace face : LAYER) {

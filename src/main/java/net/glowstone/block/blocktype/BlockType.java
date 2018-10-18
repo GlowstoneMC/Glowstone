@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockCanBuildEvent;
@@ -188,7 +189,7 @@ public class BlockType extends ItemType {
      */
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
         GlowBlockState oldState) {
-        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(),
+        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(),
             block.getData());
     }
 
@@ -228,7 +229,7 @@ public class BlockType extends ItemType {
      */
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face,
         GlowBlockState oldState) {
-        block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(),
+        block.applyPhysics(oldState.getType(), block.getType(), oldState.getRawData(),
             block.getData());
     }
 
@@ -353,7 +354,7 @@ public class BlockType extends ItemType {
         // call canBuild event
         boolean canBuild = true;
         switch (targetMat) {
-            case SIGN_POST:
+            case SIGN:
             case WALL_SIGN:
                 if (player.isSneaking()) {
                     canBuild = canPlaceAt(target, face);
@@ -364,7 +365,8 @@ public class BlockType extends ItemType {
             default:
                 canBuild = canPlaceAt(target, face);
         }
-        BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, getId(), canBuild);
+        BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, against.getBlockData(),
+            canBuild);
         if (!EventFactory.getInstance().callEvent(canBuildEvent).isBuildable()) {
             //revert(player, target);
             return;
@@ -442,10 +444,27 @@ public class BlockType extends ItemType {
      *
      * @param clazz The expected subclass of MaterialData.
      * @param data The actual MaterialData found.
+     * @deprecated MaterialData is no longer used (1.13). Use getCastedBlockData.
      */
+    @Deprecated
     protected void warnMaterialData(Class<?> clazz, MaterialData data) {
         ConsoleMessages.Warn.Block.WRONG_MATERIAL_DATA.log(
                 getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
+    }
+
+    /**
+     * Assert that block data matches the expected BlockData class
+     *
+     * @param clazz The expected subclass of BlockData.
+     * @param data The actual MaterialData found.
+     * @return The casted block data.
+     */
+    protected <T extends BlockData> T getCastedBlockData(Class<T> clazz, BlockData data) {
+        if (clazz.isInstance(data)) {
+            return clazz.cast(data);
+        }
+        throw new UnsupportedOperationException(ConsoleMessages.Warn.Block.WRONG_BLOCK_DATA.get(
+            getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data));
     }
 
     public void onRedstoneUpdate(GlowBlock block) {

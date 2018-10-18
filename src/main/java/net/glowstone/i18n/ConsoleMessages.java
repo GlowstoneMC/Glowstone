@@ -357,6 +357,9 @@ public interface ConsoleMessages {
 
             LoggableLocalizedString WRONG_MATERIAL_DATA = new LoggableLocalizedStringImpl(
                     "console.block.wrong-material-data", Level.WARNING);
+
+            LoggableLocalizedString WRONG_BLOCK_DATA = new LoggableLocalizedStringImpl(
+                "console.block.wrong-block-data", Level.WARNING);
         }
 
         interface BlockEntity {
