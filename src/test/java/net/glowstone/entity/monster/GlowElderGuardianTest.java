@@ -39,8 +39,6 @@ public class GlowElderGuardianTest extends GlowGuardianTest {
 
         entity.setElder(false);
         Assert.assertEquals(23, other.getFireTicks());
-
-        Mockito.verify(world);
     }
 
     public GlowElderGuardianTest() {
