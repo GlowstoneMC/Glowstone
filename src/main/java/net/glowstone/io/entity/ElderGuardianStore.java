@@ -14,7 +14,6 @@ class ElderGuardianStore extends MonsterStore<GlowElderGuardian> {
     @Override
     public void load(GlowElderGuardian entity, CompoundTag compound) {
         super.load(entity, compound);
-        entity.setElder(true);
     }
 
     @Override
