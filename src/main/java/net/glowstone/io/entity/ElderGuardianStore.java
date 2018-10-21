@@ -1,7 +1,6 @@
 package net.glowstone.io.entity;
 
 import net.glowstone.entity.monster.GlowElderGuardian;
-import net.glowstone.entity.monster.GlowGuardian;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.entity.EntityType;
 

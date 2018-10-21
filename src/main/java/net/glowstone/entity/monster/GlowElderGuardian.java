@@ -1,7 +1,5 @@
 package net.glowstone.entity.monster;
 
-import net.glowstone.io.entity.EntityStorage;
-import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.ElderGuardian;
