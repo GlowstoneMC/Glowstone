@@ -15,19 +15,6 @@ public class GlowElderGuardian extends GlowGuardian implements ElderGuardian {
     }
 
     @Override
-    public void setElder(boolean elder) {
-        if (elder) {
-            return;
-        }
-        GlowGuardian youngerCopy = world.spawn(location, GlowGuardian.class);
-        CompoundTag tag = new CompoundTag();
-        // Copy attributes
-        EntityStorage.save(this, tag);
-        EntityStorage.load(youngerCopy, tag);
-        remove();
-    }
-
-    @Override
     protected Sound getDeathSound() {
         return Sound.ENTITY_ELDER_GUARDIAN_DEATH;
     }

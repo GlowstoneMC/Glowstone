@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
@@ -25,14 +26,15 @@ public class GlowGuardian extends GlowMonster implements Guardian {
 
     @Override
     public void setElder(boolean elder) {
-        if (!elder) {
+        if (elder == isElder()) {
             return;
         }
-        GlowElderGuardian elderCopy = world.spawn(location, GlowElderGuardian.class);
+        Class<? extends GlowEntity> clazz = elder ? GlowElderGuardian.class : GlowGuardian.class;
+        GlowEntity copy = world.spawn(location, clazz);
         CompoundTag tag = new CompoundTag();
         // Copy attributes
         EntityStorage.save(this, tag);
-        EntityStorage.load(elderCopy, tag);
+        EntityStorage.load(copy, tag);
         remove();
     }
 
