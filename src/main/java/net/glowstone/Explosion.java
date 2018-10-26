@@ -168,9 +168,12 @@ public final class Explosion {
         Collection<GlowPlayer> affectedPlayers
                 = collectPlayersInRadius(EXPLOSION_VISIBILITY_RADIUS * (int)this.power);
         for (GlowPlayer player : affectedPlayers) {
-            if (player.getGameMode() != GameMode.CREATIVE
-                    & player.getGameMode() != GameMode.SPECTATOR) {
-                playOutExplosion(player, blocks);
+            switch(player.getGameMode()){
+                case GameMode.CREATIVE:
+                case GameMode.SPECTATOR:
+                    break;
+                default:
+                    playOutExplosion(player, blocks);
             }
         }
 
