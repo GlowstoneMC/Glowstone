@@ -5,6 +5,7 @@ import java.util.Collections;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BedEntity;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.state.GlowBed;
@@ -94,6 +95,14 @@ public class BlockBed extends BlockType {
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Collections.singletonList(new ItemStack(Material.BED, 1,
                 (((GlowBed) block.getState()).getColor().getWoolData())));
+    }
+
+    @Override
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
+        BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
+        final GlowBlock otherEnd = block.getRelative(direction);
+        return otherEnd.getType() == Material.AIR
+            && otherEnd.getRelative(BlockFace.DOWN).getType().isSolid();
     }
 
     @Override
@@ -199,18 +208,15 @@ public class BlockBed extends BlockType {
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
             ItemStack holding, Vector clickedLoc) {
         BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
-        final GlowBlock otherEnd = state.getBlock().getRelative(direction);
-        if (otherEnd.getType() == Material.AIR
-                && otherEnd.getRelative(BlockFace.DOWN).getType().isSolid()) {
-            super.placeBlock(player, state, face, holding, clickedLoc);
-            MaterialData data = state.getData();
-            if (data instanceof Bed) {
-                ((Bed) data).setFacingDirection(direction);
-                ((Bed) data).setHeadOfBed(false);
-                state.setData(data);
-            } else {
-                warnMaterialData(Bed.class, data);
-            }
+        super.placeBlock(player, state, face, holding, clickedLoc);
+
+        MaterialData data = state.getData();
+        if (data instanceof Bed) {
+            ((Bed) data).setFacingDirection(direction);
+            ((Bed) data).setHeadOfBed(false);
+            state.setData(data);
+        } else {
+            warnMaterialData(Bed.class, data);
         }
     }
 
