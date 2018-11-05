@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.play.entity.EntityTeleportMessage;
 public final class EntityTeleportCodec implements Codec<EntityTeleportMessage> {
 
     @Override
-    public EntityTeleportMessage decode(ByteBuf buf) throws IOException {
+    public EntityTeleportMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         double x = buf.readDouble();
         double y = buf.readDouble();
@@ -21,7 +22,7 @@ public final class EntityTeleportCodec implements Codec<EntityTeleportMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, EntityTeleportMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, EntityTeleportMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeDouble(message.getX());
         buf.writeDouble(message.getY());

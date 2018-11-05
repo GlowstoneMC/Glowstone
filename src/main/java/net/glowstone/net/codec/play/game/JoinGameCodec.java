@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.play.game.JoinGameMessage;
 public final class JoinGameCodec implements Codec<JoinGameMessage> {
 
     @Override
-    public JoinGameMessage decode(ByteBuf buffer) throws IOException {
+    public JoinGameMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         int id = buffer.readInt();
         byte gameMode = buffer.readByte();
         int dimension = buffer.readInt();
@@ -22,7 +23,7 @@ public final class JoinGameCodec implements Codec<JoinGameMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, JoinGameMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, JoinGameMessage message) throws IOException {
         buf.writeInt(message.getId());
         buf.writeByte(message.getMode());
         buf.writeInt(message.getDimension());

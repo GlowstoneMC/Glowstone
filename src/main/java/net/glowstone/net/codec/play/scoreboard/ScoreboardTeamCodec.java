@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.scoreboard;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -12,12 +13,12 @@ import org.bukkit.ChatColor;
 public final class ScoreboardTeamCodec implements Codec<ScoreboardTeamMessage> {
 
     @Override
-    public ScoreboardTeamMessage decode(ByteBuf buf) throws IOException {
+    public ScoreboardTeamMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         throw new UnsupportedOperationException("Cannot decode ScoreboardTeamMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, ScoreboardTeamMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, ScoreboardTeamMessage message) throws IOException {
         Action action = message.getAction();
 
         ByteBufUtils.writeUTF8(buf, message.getTeamName());

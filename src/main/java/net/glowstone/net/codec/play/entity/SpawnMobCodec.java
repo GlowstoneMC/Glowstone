@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import net.glowstone.net.message.play.entity.SpawnMobMessage;
 public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
 
     @Override
-    public SpawnMobMessage decode(ByteBuf buf) throws IOException {
+    public SpawnMobMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
         int type = ByteBufUtils.readVarInt(buf);
@@ -33,7 +34,7 @@ public final class SpawnMobCodec implements Codec<SpawnMobMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, SpawnMobMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, SpawnMobMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         GlowBufUtils.writeUuid(buf, message.getUuid());
         ByteBufUtils.writeVarInt(buf, message.getType());

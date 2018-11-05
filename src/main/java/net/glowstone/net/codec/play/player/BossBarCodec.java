@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import net.glowstone.util.TextMessage;
 public class BossBarCodec implements Codec<BossBarMessage> {
 
     @Override
-    public BossBarMessage decode(ByteBuf buffer) throws IOException {
+    public BossBarMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         UUID uuid = GlowBufUtils.readUuid(buffer);
         Action action = Action.fromInt(ByteBufUtils.readVarInt(buffer));
 
@@ -49,7 +50,7 @@ public class BossBarCodec implements Codec<BossBarMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, BossBarMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, BossBarMessage message) throws IOException {
         GlowBufUtils.writeUuid(buf, message.getUuid());
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());
 

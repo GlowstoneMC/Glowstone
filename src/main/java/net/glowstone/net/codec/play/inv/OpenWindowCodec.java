@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.inv;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -11,12 +12,12 @@ import net.glowstone.net.message.play.inv.OpenWindowMessage;
 public final class OpenWindowCodec implements Codec<OpenWindowMessage> {
 
     @Override
-    public OpenWindowMessage decode(ByteBuf buf) throws IOException {
+    public OpenWindowMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode OpenWindowMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, OpenWindowMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, OpenWindowMessage message) throws IOException {
         buf.writeByte(message.getId());
         ByteBufUtils.writeUTF8(buf, message.getType());
         GlowBufUtils.writeChat(buf, message.getTitle());

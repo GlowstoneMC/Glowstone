@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -16,12 +17,12 @@ import org.bukkit.attribute.AttributeModifier;
 public class EntityPropertyCodec implements Codec<EntityPropertyMessage> {
 
     @Override
-    public EntityPropertyMessage decode(ByteBuf buffer) throws IOException {
+    public EntityPropertyMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         throw new DecoderException("Cannot decode EntityPropertyMessage!");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, EntityPropertyMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, EntityPropertyMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         Map<String, Property> props = message.getProperties();
         buf.writeInt(props.size());

@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import org.bukkit.util.BlockVector;
 public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
 
     @Override
-    public SpawnPaintingMessage decode(ByteBuf buf) throws IOException {
+    public SpawnPaintingMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
         String title = ByteBufUtils.readUTF8(buf);
@@ -23,7 +24,7 @@ public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, SpawnPaintingMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, SpawnPaintingMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         GlowBufUtils.writeUuid(buf, message.getUniqueId());
         ByteBufUtils.writeUTF8(buf, message.getTitle());

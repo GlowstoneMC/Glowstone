@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 public final class SpawnLightningStrikeCodec implements Codec<SpawnLightningStrikeMessage> {
 
     @Override
-    public SpawnLightningStrikeMessage decode(ByteBuf buf) throws IOException {
+    public SpawnLightningStrikeMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         int mode = buf.readByte();
         double x = buf.readDouble();
@@ -19,7 +20,7 @@ public final class SpawnLightningStrikeCodec implements Codec<SpawnLightningStri
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, SpawnLightningStrikeMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, SpawnLightningStrikeMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeByte(message.getMode());
         buf.writeDouble(message.getX());

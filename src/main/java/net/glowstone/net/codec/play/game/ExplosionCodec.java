@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import java.io.IOException;
@@ -11,12 +12,12 @@ import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 public class ExplosionCodec implements Codec<ExplosionMessage> {
 
     @Override
-    public ExplosionMessage decode(ByteBuf buffer) throws IOException {
+    public ExplosionMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         throw new DecoderException("Cannot decode ExplosionMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, ExplosionMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, ExplosionMessage message) throws IOException {
         buf.writeFloat(message.getX());
         buf.writeFloat(message.getY());
         buf.writeFloat(message.getZ());

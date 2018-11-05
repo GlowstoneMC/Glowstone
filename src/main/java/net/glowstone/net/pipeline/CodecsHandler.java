@@ -40,7 +40,7 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
 
         // write body
         ByteBuf messageBuf = ctx.alloc().buffer();
-        messageBuf = reg.getCodec().encode(messageBuf, msg);
+        messageBuf = reg.getCodec().encode(null, messageBuf, msg);
 
         out.add(Unpooled.wrappedBuffer(headerBuf, messageBuf));
     }
@@ -52,7 +52,7 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
         Codec<?> codec = protocol.newReadHeader(msg);
 
         // read body
-        Message decoded = codec.decode(msg);
+        Message decoded = codec.decode(null, msg);
         if (msg.readableBytes() > 0) {
             ConsoleMessages.Warn.Net.MESSAGE_TOO_LONG.log(msg.readableBytes(), decoded);
         }

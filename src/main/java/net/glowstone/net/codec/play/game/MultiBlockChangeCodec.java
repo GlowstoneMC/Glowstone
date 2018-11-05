@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -12,12 +13,12 @@ import net.glowstone.net.message.play.game.MultiBlockChangeMessage;
 public final class MultiBlockChangeCodec implements Codec<MultiBlockChangeMessage> {
 
     @Override
-    public MultiBlockChangeMessage decode(ByteBuf buf) throws IOException {
+    public MultiBlockChangeMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode MultiBlockChangeMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, MultiBlockChangeMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, MultiBlockChangeMessage message) throws IOException {
         List<BlockChangeMessage> records = message.getRecords();
 
         buf.writeInt(message.getChunkX());

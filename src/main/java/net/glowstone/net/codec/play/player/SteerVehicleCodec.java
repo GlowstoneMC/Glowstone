@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import net.glowstone.net.message.play.player.SteerVehicleMessage;
@@ -8,7 +9,7 @@ import net.glowstone.net.message.play.player.SteerVehicleMessage;
 public final class SteerVehicleCodec implements Codec<SteerVehicleMessage> {
 
     @Override
-    public SteerVehicleMessage decode(ByteBuf buf) throws IOException {
+    public SteerVehicleMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         float sideways = buf.readFloat();
         float forward = buf.readFloat();
         int flags = buf.readUnsignedByte();
@@ -19,7 +20,7 @@ public final class SteerVehicleCodec implements Codec<SteerVehicleMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, SteerVehicleMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, SteerVehicleMessage message) throws IOException {
         buf.writeFloat(message.getSideways());
         buf.writeFloat(message.getForward());
         buf.writeByte((message.isJump() ? 1 : 0) | (message.isUnmount() ? 2 : 0));

@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -11,7 +12,7 @@ import net.glowstone.net.message.play.game.WorldBorderMessage.Action;
 public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
 
     @Override
-    public WorldBorderMessage decode(ByteBuf buffer) throws IOException {
+    public WorldBorderMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         int actionId = ByteBufUtils.readVarInt(buffer);
         Action action = Action.getAction(actionId);
         switch (action) {
@@ -49,7 +50,7 @@ public final class WorldBorderCodec implements Codec<WorldBorderMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, WorldBorderMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, WorldBorderMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());
         switch (message.getAction()) {
             case SET_SIZE:

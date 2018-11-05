@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.play.entity.SetPassengerMessage;
 public class SetPassengerCodec implements Codec<SetPassengerMessage> {
 
     @Override
-    public SetPassengerMessage decode(ByteBuf buffer) throws IOException {
+    public SetPassengerMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         int entityId = ByteBufUtils.readVarInt(buffer);
         int length = ByteBufUtils.readVarInt(buffer);
         int[] passengers = new int[length];
@@ -20,7 +21,7 @@ public class SetPassengerCodec implements Codec<SetPassengerMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, SetPassengerMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, SetPassengerMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getEntityId());
         ByteBufUtils.writeVarInt(buf, message.getPassengers().length);
         for (int passenger : message.getPassengers()) {

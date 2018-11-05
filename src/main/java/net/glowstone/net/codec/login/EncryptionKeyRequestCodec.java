@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.login;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
 public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyRequestMessage> {
 
     @Override
-    public EncryptionKeyRequestMessage decode(ByteBuf buffer) throws IOException {
+    public EncryptionKeyRequestMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         String sessionId = ByteBufUtils.readUTF8(buffer);
 
         byte[] publicKey = new byte[ByteBufUtils.readVarInt(buffer)];
@@ -22,7 +23,7 @@ public final class EncryptionKeyRequestCodec implements Codec<EncryptionKeyReque
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, EncryptionKeyRequestMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, EncryptionKeyRequestMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getSessionId());
 
         ByteBufUtils.writeVarInt(buf, message.getPublicKey().length);

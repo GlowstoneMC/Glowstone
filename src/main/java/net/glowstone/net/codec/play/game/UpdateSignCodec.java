@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import net.glowstone.net.GlowBufUtils;
@@ -11,7 +12,7 @@ import org.bukkit.util.BlockVector;
 public final class UpdateSignCodec implements Codec<UpdateSignMessage> {
 
     @Override
-    public UpdateSignMessage decode(ByteBuf buf) throws IOException {
+    public UpdateSignMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         BlockVector pos = GlowBufUtils.readBlockPosition(buf);
         TextMessage[] message = new TextMessage[4];
         for (int i = 0; i < message.length; ++i) {
@@ -21,7 +22,7 @@ public final class UpdateSignCodec implements Codec<UpdateSignMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, UpdateSignMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, UpdateSignMessage message) throws IOException {
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
         for (TextMessage line : message.getMessage()) {
             GlowBufUtils.writeChat(buf, line);

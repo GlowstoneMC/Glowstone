@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -13,12 +14,12 @@ import net.glowstone.net.message.play.game.MapDataMessage.Section;
 public final class MapDataCodec implements Codec<MapDataMessage> {
 
     @Override
-    public MapDataMessage decode(ByteBuf buf) throws IOException {
+    public MapDataMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode MapDataMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, MapDataMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, MapDataMessage message) throws IOException {
         List<Icon> icons = message.getIcons();
 
         ByteBufUtils.writeVarInt(buf, message.getId());

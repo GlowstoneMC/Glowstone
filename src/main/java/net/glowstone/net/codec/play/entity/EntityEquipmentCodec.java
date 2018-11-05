@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 public final class EntityEquipmentCodec implements Codec<EntityEquipmentMessage> {
 
     @Override
-    public EntityEquipmentMessage decode(ByteBuf buf) throws IOException {
+    public EntityEquipmentMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         int slot = ByteBufUtils.readVarInt(buf);
         ItemStack stack = GlowBufUtils.readSlot(buf);
@@ -19,7 +20,7 @@ public final class EntityEquipmentCodec implements Codec<EntityEquipmentMessage>
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, EntityEquipmentMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, EntityEquipmentMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         ByteBufUtils.writeVarInt(buf, message.getSlot());
         GlowBufUtils.writeSlot(buf, message.getStack());

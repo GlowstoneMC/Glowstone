@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -10,12 +11,12 @@ import net.glowstone.net.message.play.game.NamedSoundEffectMessage;
 public final class NamedSoundEffectCodec implements Codec<NamedSoundEffectMessage> {
 
     @Override
-    public NamedSoundEffectMessage decode(ByteBuf buf) throws IOException {
+    public NamedSoundEffectMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode NamedSoundEffectMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, NamedSoundEffectMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, NamedSoundEffectMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getSound());
         ByteBufUtils.writeVarInt(buf, message.getSoundCategory().ordinal());
         buf.writeInt((int) (8 * message.getX()));

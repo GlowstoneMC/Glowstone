@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.play.game.ClientSettingsMessage;
 public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
 
     @Override
-    public ClientSettingsMessage decode(ByteBuf buf) throws IOException {
+    public ClientSettingsMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         String locale = ByteBufUtils.readUTF8(buf);
         int viewDistance = buf.readByte();
         int chatFlags = ByteBufUtils.readVarInt(buf);
@@ -20,7 +21,7 @@ public final class ClientSettingsCodec implements Codec<ClientSettingsMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, ClientSettingsMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, ClientSettingsMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getLocale());
         buf.writeByte(message.getViewDistance());
         ByteBufUtils.writeVarInt(buf, message.getChatFlags());

@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.play.game.UnlockRecipesMessage;
 public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
 
     @Override
-    public UnlockRecipesMessage decode(ByteBuf buf) throws IOException {
+    public UnlockRecipesMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         int action = ByteBufUtils.readVarInt(buf);
         boolean bookOpen = buf.readBoolean();
         boolean filterOpen = buf.readBoolean();
@@ -32,7 +33,7 @@ public final class UnlockRecipesCodec implements Codec<UnlockRecipesMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, UnlockRecipesMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, UnlockRecipesMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getAction());
         buf.writeBoolean(message.isBookOpen());
         buf.writeBoolean(message.isFilterOpen());

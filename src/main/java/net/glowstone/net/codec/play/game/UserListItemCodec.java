@@ -2,6 +2,7 @@ package net.glowstone.net.codec.play.game;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -15,12 +16,12 @@ import net.glowstone.net.message.play.game.UserListItemMessage.Entry;
 public final class UserListItemCodec implements Codec<UserListItemMessage> {
 
     @Override
-    public UserListItemMessage decode(ByteBuf buf) throws IOException {
+    public UserListItemMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         throw new DecoderException("Cannot decode UserListItemMessage");
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, UserListItemMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, UserListItemMessage message) throws IOException {
         Action action = message.getAction();
         List<Entry> entries = message.getEntries();
         ByteBufUtils.writeVarInt(buf, message.getAction().ordinal());

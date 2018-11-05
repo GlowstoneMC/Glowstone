@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.player;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import net.glowstone.util.TextMessage;
 public final class CombatEventCodec implements Codec<CombatEventMessage> {
 
     @Override
-    public CombatEventMessage decode(ByteBuf buffer) throws IOException {
+    public CombatEventMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         int eventId = ByteBufUtils.readVarInt(buffer);
         Event event = Event.getAction(eventId);
         switch (event) {
@@ -32,7 +33,7 @@ public final class CombatEventCodec implements Codec<CombatEventMessage> {
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, CombatEventMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, CombatEventMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getEvent().ordinal());
         if (message.getEvent() == Event.END_COMBAT) {
             ByteBufUtils.writeVarInt(buf, message.getDuration());

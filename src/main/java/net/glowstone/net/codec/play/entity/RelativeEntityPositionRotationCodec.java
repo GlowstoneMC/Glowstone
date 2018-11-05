@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.entity;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -10,7 +11,7 @@ public final class RelativeEntityPositionRotationCodec implements
     Codec<RelativeEntityPositionRotationMessage> {
 
     @Override
-    public RelativeEntityPositionRotationMessage decode(ByteBuf buf) throws IOException {
+    public RelativeEntityPositionRotationMessage decode(CodecContext codecContext, ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         short x = buf.readShort();
         short y = buf.readShort();
@@ -22,7 +23,7 @@ public final class RelativeEntityPositionRotationCodec implements
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, RelativeEntityPositionRotationMessage message)
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, RelativeEntityPositionRotationMessage message)
         throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         buf.writeShort(message.getDeltaX());

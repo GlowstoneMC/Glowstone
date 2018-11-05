@@ -1,6 +1,7 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
+import com.flowpowered.network.CodecContext;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import net.glowstone.net.message.play.game.PositionRotationMessage;
 public final class PositionRotationCodec implements Codec<PositionRotationMessage> {
 
     @Override
-    public PositionRotationMessage decode(ByteBuf buffer) throws IOException {
+    public PositionRotationMessage decode(CodecContext codecContext, ByteBuf buffer) throws IOException {
         double x = buffer.readDouble();
         double y = buffer.readDouble();
         double z = buffer.readDouble();
@@ -21,7 +22,7 @@ public final class PositionRotationCodec implements Codec<PositionRotationMessag
     }
 
     @Override
-    public ByteBuf encode(ByteBuf buf, PositionRotationMessage message) throws IOException {
+    public ByteBuf encode(CodecContext codecContext, ByteBuf buf, PositionRotationMessage message) throws IOException {
         buf.writeDouble(message.getX());
         buf.writeDouble(message.getY());
         buf.writeDouble(message.getZ());
