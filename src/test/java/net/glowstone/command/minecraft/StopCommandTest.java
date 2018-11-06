@@ -2,7 +2,6 @@ package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import net.glowstone.GlowServer;

@@ -24,6 +24,18 @@ public interface GlowstoneMessages {
         }
     }
 
+    interface GameMode {
+        LocalizedString NAMES = new LocalizedStringImpl("glowstone.gamemode.names");
+        LocalizedString UNKNOWN = new LocalizedStringImpl("glowstone.gamemode.unknown");
+    }
+
+    interface Entity {
+        LocalizedString UNKNOWN_TYPE_WITH_ID =
+                new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
+        LocalizedString UNKNOWN_TYPE_NO_ID =
+                new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
+    }
+
     interface Kick {
         LocalizedString BANNED = new LocalizedStringImpl("glowstone.kick.banned");
 
@@ -38,8 +50,25 @@ public interface GlowstoneMessages {
         LocalizedString WHITELIST = new LocalizedStringImpl("glowstone.kick.whitelist");
 
         interface Crypt {
+            LocalizedString HASH_FAILED = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.sha1-failed");
+
             LocalizedString RSA_INIT_FAILED = new LocalizedStringImpl(
                     "glowstone.kick.crypt.rsa-init-failed");
+
+            LocalizedString SHARED_SECRET = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.shared-secret");
+
+            LocalizedString VERIFY_TOKEN = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.verify-token");
+
+            LocalizedString AUTH_FAILED = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.user-auth");
+
+            LocalizedString AUTH_INTERNAL = new LocalizedStringImpl(
+                    "glowstone.kick.crypt.auth-internal");
+
+            LocalizedString BAD_UUID = new LocalizedStringImpl("glowstone.kick.crypt.invalid-uuid");
         }
     }
 
@@ -47,12 +76,5 @@ public interface GlowstoneMessages {
         LocalizedString JOINED = new LocalizedStringImpl("glowstone.player.joined");
 
         LocalizedString LEFT = new LocalizedStringImpl("glowstone.player.left");
-    }
-
-    interface Entity {
-        LocalizedString UNKNOWN_TYPE_WITH_ID =
-                new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
-        LocalizedString UNKNOWN_TYPE_NO_ID =
-                new LocalizedStringImpl("glowstone.entity.unknown-type-with-id");
     }
 }

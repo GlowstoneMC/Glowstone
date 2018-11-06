@@ -149,13 +149,38 @@ public interface ConsoleMessages {
         }
 
         interface Net {
+            LoggableLocalizedString BIND_FAILED = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed", Level.SEVERE
+            );
+
+            LoggableLocalizedString BIND_FAILED_UNKNOWN = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.unknown", Level.SEVERE
+            );
+
+            LoggableLocalizedString CANNOT_ASSIGN = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.cannot-assign", Level.SEVERE
+            );
+
             interface Crypt {
+                LoggableLocalizedString AUTH_INTERNAL = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.auth-internal", Level.SEVERE);
+
+                LoggableLocalizedString BAD_UUID = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.invalid-uuid", Level.SEVERE);
+
+                LoggableLocalizedString HASH_FAILED = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.sha1-failed", Level.SEVERE);
+
                 LoggableLocalizedString INIT_FAILED = new LoggableLocalizedStringImpl(
                         "console.net.crypt.init-failed", Level.SEVERE);
 
                 LoggableLocalizedString RSA_INIT_FAILED = new LoggableLocalizedStringImpl(
                         "glowstone.kick.crypt.rsa-init-failed", Level.SEVERE);
             }
+
+            LoggableLocalizedString IN_USE = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.in-use", Level.SEVERE
+            );
         }
     }
 
@@ -172,6 +197,14 @@ public interface ConsoleMessages {
         );
 
         interface Enchant {
+            LoggableLocalizedString BAD_SLOT = new LoggableLocalizedStringImpl(
+                    "console.enchant.bad-slot", Level.INFO
+            );
+
+            LoggableLocalizedString MISSING_RESOURCES = new LoggableLocalizedStringImpl(
+                    "console.enchant.missing-resources", Level.INFO
+            );
+
             LoggableLocalizedString NOT_OPEN = new LoggableLocalizedStringImpl(
                     "console.enchant.not-open", Level.INFO);
         }
@@ -194,6 +227,17 @@ public interface ConsoleMessages {
             LoggableLocalizedString KQUEUE = new LoggableLocalizedStringImpl(
                     "console.native-transport.kqueue", Level.INFO
             );
+        }
+
+        interface Net {
+            LoggableLocalizedString BINDING = new LoggableLocalizedStringImpl(
+                    "console.net.binding", Level.INFO);
+
+            LoggableLocalizedString BOUND = new LoggableLocalizedStringImpl(
+                    "console.net.bound", Level.INFO);
+
+            LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
+                    "console.net.unknown-client-status-action", Level.INFO);
         }
 
         interface Opencl {
@@ -284,11 +328,6 @@ public interface ConsoleMessages {
                     "console.version.minecraft-client", Level.INFO
             );
         }
-
-        interface Net {
-            LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
-                    "console.net.unknown-client-status-action", Level.INFO);
-        }
     }
 
     interface Warn {
@@ -342,9 +381,27 @@ public interface ConsoleMessages {
                     "console.chunk.unload-failed", Level.WARNING);
         }
 
+        interface Crypt {
+            LoggableLocalizedString AUTH_FAILED = new LoggableLocalizedStringImpl(
+                    "console.net.crypt.user-auth", Level.WARNING);
+
+            LoggableLocalizedString BAD_SHARED_SECRET = new LoggableLocalizedStringImpl(
+                    "glowstone.kick.crypt.shared-secret", Level.WARNING);
+
+            LoggableLocalizedString BAD_VERIFY_TOKEN = new LoggableLocalizedStringImpl(
+                    "glowstone.kick.crypt.verify-token", Level.WARNING);
+
+            LoggableLocalizedString URL_ENCODE_IP = new LoggableLocalizedStringImpl(
+                    "console.net.crypt.url-encode-ip", Level.WARNING);
+        }
+
         interface Entity {
             LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.entity.load-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString LOAD_TOO_LATE = new LoggableLocalizedStringImpl(
+                    "console.entity.load-too-late", Level.WARNING
             );
 
             LoggableLocalizedString PARTICLE_INVALID = new LoggableLocalizedStringImpl(
@@ -353,6 +410,10 @@ public interface ConsoleMessages {
 
             LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
                     "console.entity.save-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString SAVE_FAILED_PASSENGER = new LoggableLocalizedStringImpl(
+                    "console.entity.save-failed.passenger", Level.WARNING
             );
 
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -497,6 +558,13 @@ public interface ConsoleMessages {
         interface WorldGen {
             LoggableLocalizedString DISABLED = new LoggableLocalizedStringImpl(
                     "console.worldgen.disabled", Level.WARNING
+            );
+        }
+
+        interface Fishing {
+
+            LoggableLocalizedString REWARDS_INVALID = new LoggableLocalizedStringImpl(
+                    "console.fishing.rewards-invalid", Level.WARNING
             );
         }
     }

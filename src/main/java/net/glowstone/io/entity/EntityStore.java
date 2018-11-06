@@ -3,10 +3,8 @@ package net.glowstone.io.entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.nbt.NbtSerialization;
@@ -176,9 +174,7 @@ public abstract class EntityStore<T extends GlowEntity> {
                 passengers.add(compound);
                 savePassengers(glowEntity, compound);
             } catch (Exception e) {
-                GlowServer.logger
-                    .log(Level.WARNING, "Error saving " + passenger + " from vehicle " + vehicle,
-                        e);
+                ConsoleMessages.Warn.Entity.SAVE_FAILED_PASSENGER.log(passenger, e);
             }
         }
         if (!passengers.isEmpty()) {
