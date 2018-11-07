@@ -156,7 +156,7 @@ public class BlockType extends ItemType {
      * Check whether the block can be placed at the given location.
      *
      *
-     * @param player
+     * @param player The player who placed the block.
      * @param block The location the block is being placed at.
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.

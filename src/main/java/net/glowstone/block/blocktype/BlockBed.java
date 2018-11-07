@@ -2,10 +2,10 @@ package net.glowstone.block.blocktype;
 
 import java.util.Collection;
 import java.util.Collections;
+
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
-import net.glowstone.block.ItemTable;
 import net.glowstone.block.entity.BedEntity;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.state.GlowBed;
@@ -100,7 +100,8 @@ public class BlockBed extends BlockType {
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         if (player != null) {
-            BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
+            BlockFace direction = getOppositeBlockFace(player.getLocation(), false)
+                .getOppositeFace();
             final GlowBlock otherEnd = block.getRelative(direction);
             return otherEnd.getType() == Material.AIR
                 && otherEnd.getRelative(BlockFace.DOWN).getType().isSolid();
