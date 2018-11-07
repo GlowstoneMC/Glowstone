@@ -35,7 +35,7 @@ public class BlockStem extends BlockCrops {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return block.getRelative(BlockFace.DOWN).getType() == Material.SOIL;
     }
 

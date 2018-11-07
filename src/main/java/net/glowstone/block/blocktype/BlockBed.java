@@ -99,10 +99,14 @@ public class BlockBed extends BlockType {
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
-        final GlowBlock otherEnd = block.getRelative(direction);
-        return otherEnd.getType() == Material.AIR
-            && otherEnd.getRelative(BlockFace.DOWN).getType().isSolid();
+        if (player != null) {
+            BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
+            final GlowBlock otherEnd = block.getRelative(direction);
+            return otherEnd.getType() == Material.AIR
+                && otherEnd.getRelative(BlockFace.DOWN).getType().isSolid();
+        } else {
+            return false;
+        }
     }
 
     @Override

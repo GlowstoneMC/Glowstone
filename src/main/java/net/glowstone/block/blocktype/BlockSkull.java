@@ -60,7 +60,7 @@ public class BlockSkull extends BlockType {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return BlockFace.DOWN != against; // Skulls can't be placed on bottom of block
     }
 

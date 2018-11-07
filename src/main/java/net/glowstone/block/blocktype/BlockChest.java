@@ -133,7 +133,7 @@ public class BlockChest extends BlockContainer {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Collection<BlockFace> nearChests = searchChests(block);
 
         if (nearChests.size() == 1) {

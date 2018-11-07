@@ -30,7 +30,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         GlowBlock belowBlock = block.getRelative(BlockFace.DOWN);
         Material type = belowBlock.getType();
         MaterialData data = belowBlock.getState().getData();
@@ -121,7 +121,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             z = block.getZ();
             for (int i = 0; i < 4; i++) {
                 if (world.getBlockAt(nx, ny, nz).getType() == Material.AIR
-                    && canPlaceAt(world.getBlockAt(nx, ny, nz), BlockFace.DOWN)) {
+                    && canPlaceAt(null, world.getBlockAt(nx, ny, nz), BlockFace.DOWN)) {
                     x = nx;
                     y = ny;
                     z = nz;
@@ -133,7 +133,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
             }
 
             if (world.getBlockAt(nx, ny, nz).getType() == Material.AIR
-                && canPlaceAt(world.getBlockAt(nx, ny, nz), BlockFace.DOWN)) {
+                && canPlaceAt(null, world.getBlockAt(nx, ny, nz), BlockFace.DOWN)) {
                 GlowBlockState state = world.getBlockAt(nx, ny, nz).getState();
                 state.setType(mushroomType);
                 BlockSpreadEvent spreadEvent = new BlockSpreadEvent(state.getBlock(), block, state);
@@ -146,7 +146,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
 
         // mushroom does not uproot in vanilla due to a bug, but it should uproot as
         // it is stated in the wiki
-        if (!canPlaceAt(block, BlockFace.DOWN)) {
+        if (!canPlaceAt(null, block, BlockFace.DOWN)) {
             block.breakNaturally();
         }
     }

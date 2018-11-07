@@ -43,7 +43,7 @@ public class BlockSign extends BlockNeedsAttached {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Material targetMat = ItemTable.instance().getBlock(
             block.getRelative(against.getOppositeFace()).getType()).getMaterial();
         return canAttachTo(block, against) || targetMat == Material.SIGN_POST

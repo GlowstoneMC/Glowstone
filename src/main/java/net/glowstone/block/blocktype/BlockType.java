@@ -155,24 +155,14 @@ public class BlockType extends ItemType {
     /**
      * Check whether the block can be placed at the given location.
      *
-     * @param block The location the block is being placed at.
-     * @param against The face the block is being placed against.
-     * @return Whether the placement is valid.
-     */
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
-        return true;
-    }
-
-    /**
-     * Check whether the block can be placed by a given player at a given location.
      *
-     * @param player The player who placed the block.
+     * @param player
      * @param block The location the block is being placed at.
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.
      */
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        return canPlaceAt(block, against);
+        return true;
     }
 
     /**

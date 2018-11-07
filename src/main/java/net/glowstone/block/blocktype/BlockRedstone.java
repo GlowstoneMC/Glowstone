@@ -85,7 +85,7 @@ public class BlockRedstone extends BlockNeedsAttached {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         if (block.getRelative(BlockFace.DOWN).getType().isSolid()) {
             return true;
         }

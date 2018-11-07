@@ -17,7 +17,7 @@ import org.bukkit.material.types.DoublePlantSpecies;
 public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Material type = block.getRelative(BlockFace.DOWN).getType();
         return (type == Material.GRASS || type == Material.DIRT || type == Material.SOIL)
                 && block.getRelative(BlockFace.UP).getType() == Material.AIR;
@@ -132,7 +132,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
             DoublePlantSpecies species = ((DoublePlant) data).getSpecies();
             if (species == DoublePlantSpecies.DOUBLE_TALLGRASS
                 || species == DoublePlantSpecies.LARGE_FERN) {
-                if (holdingType != null && holdingType.canPlaceAt(block, face)) {
+                if (holdingType != null && holdingType.canPlaceAt(null, block, face)) {
                     block.getRelative(BlockFace.UP).setType(Material.AIR, (byte) 0, false);
                 }
                 return true;
@@ -144,7 +144,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
                     DoublePlantSpecies underSpecies = ((DoublePlant) underData).getSpecies();
                     if (underSpecies == DoublePlantSpecies.DOUBLE_TALLGRASS
                         || underSpecies == DoublePlantSpecies.LARGE_FERN) {
-                        if (holdingType != null && holdingType.canPlaceAt(block, face)) {
+                        if (holdingType != null && holdingType.canPlaceAt(null, block, face)) {
                             under.setType(Material.AIR, (byte) 0, false);
                         }
                         return true;

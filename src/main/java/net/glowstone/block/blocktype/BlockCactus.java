@@ -6,6 +6,7 @@ import java.util.Collections;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -15,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 public class BlockCactus extends BlockType {
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Material below = block.getRelative(BlockFace.DOWN).getType();
         return (below == Material.CACTUS || below == Material.SAND) && !hasNearBlocks(block);
     }
@@ -28,7 +29,7 @@ public class BlockCactus extends BlockType {
 
     @Override
     public void updatePhysics(GlowBlock me) {
-        if (!canPlaceAt(me, BlockFace.DOWN)) {
+        if (!canPlaceAt(null, me, BlockFace.DOWN)) {
             me.breakNaturally();
         }
     }
