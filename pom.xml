@@ -83,7 +83,7 @@
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.2.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.eatthepath</groupId>
