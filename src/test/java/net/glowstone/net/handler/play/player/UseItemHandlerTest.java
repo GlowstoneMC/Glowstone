@@ -4,7 +4,6 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
-import net.glowstone.block.itemtype.ItemTypeTest;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.EntityManager;
 import net.glowstone.entity.GlowPlayer;
@@ -29,7 +28,7 @@ import org.mockito.Mockito;
 
 import java.util.Set;
 
-public class UseItemHandlerTest extends ItemTypeTest {
+public class UseItemHandlerTest {
 
     private EventFactory actualEventFactory;
 
