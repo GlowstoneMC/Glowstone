@@ -33,6 +33,7 @@ public class GlowPlayerProfile implements PlayerProfile {
     @Getter
     @Nullable
     private final String name;
+    @Nullable
     private volatile CompletableFuture<UUID> uniqueId;
     private final Map<String, ProfileProperty> properties;
 
@@ -192,7 +193,7 @@ public class GlowPlayerProfile implements PlayerProfile {
      */
     public CompoundTag toNbt() {
         CompoundTag profileTag = new CompoundTag();
-        UUID uuid = uniqueId.getNow(null);
+        UUID uuid = getId();
         if (uuid != null) {
           profileTag.putString("Id", uniqueId.toString());
         }
