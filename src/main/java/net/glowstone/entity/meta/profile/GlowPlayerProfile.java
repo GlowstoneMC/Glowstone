@@ -195,10 +195,10 @@ public class GlowPlayerProfile implements PlayerProfile {
         CompoundTag profileTag = new CompoundTag();
         UUID uuid = getId();
         if (uuid != null) {
-          profileTag.putString("Id", uniqueId.toString());
+            profileTag.putString("Id", uniqueId.toString());
         }
         if (name != null) {
-          profileTag.putString("Name", name);
+            profileTag.putString("Name", name);
         }
 
         CompoundTag propertiesTag = new CompoundTag();
