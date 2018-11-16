@@ -198,7 +198,6 @@ public class GlowPlayerProfile implements PlayerProfile {
           profileTag.putString("Id", uniqueId.toString());
         }
         if (name != null) {
-
           profileTag.putString("Name", name);
         }
 
