@@ -144,9 +144,7 @@ public final class BlockPlacementHandler implements
         }
 
         if (holding.getAmount() <= 0) {
-            holding = InventoryUtil.createEmptyStack();
+            player.getInventory().setItem(slot, InventoryUtil.createEmptyStack());
         }
-
-        player.getInventory().setItem(slot, holding);
     }
 }

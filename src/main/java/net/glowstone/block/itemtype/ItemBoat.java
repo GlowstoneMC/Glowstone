@@ -3,6 +3,7 @@ package net.glowstone.block.itemtype;
 import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
@@ -24,7 +25,7 @@ public class ItemBoat extends ItemType {
     @Override
     public void rightClickAir(GlowPlayer player, ItemStack holding) {
         // Executed when the player clicks on water that doesn't have a block beneath
-        placeBoat(player);
+        placeBoat(player, holding);
     }
 
     @Override
@@ -33,10 +34,10 @@ public class ItemBoat extends ItemType {
             Vector clickedLoc, EquipmentSlot hand) {
         // Two cases are handled here: Either the player clicked on a block on the land or beneath
         // water
-        placeBoat(player);
+        placeBoat(player, holding);
     }
 
-    private void placeBoat(GlowPlayer player) {
+    private void placeBoat(GlowPlayer player, ItemStack holding) {
         Block targetBlock = player.getTargetBlock((Set<Material>) null, 5);
 
         if (targetBlock != null && !targetBlock.isEmpty()
@@ -47,6 +48,9 @@ public class ItemBoat extends ItemType {
             location.setYaw(player.getLocation().getYaw());
             Boat boat = targetBlock.getWorld().spawn(location, Boat.class);
             boat.setWoodType(woodType);
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                player.getInventory().removeItem(holding);
+            }
         }
     }
 
