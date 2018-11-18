@@ -31,7 +31,9 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     public static final int MAX_USERNAME_LENGTH = 16;
     @Getter
+    @Nullable
     private final String name;
+    @Nullable
     private volatile CompletableFuture<UUID> uniqueId;
     private final Map<String, ProfileProperty> properties;
 
@@ -191,8 +193,13 @@ public class GlowPlayerProfile implements PlayerProfile {
      */
     public CompoundTag toNbt() {
         CompoundTag profileTag = new CompoundTag();
-        profileTag.putString("Id", uniqueId.toString());
-        profileTag.putString("Name", name);
+        UUID uuid = getId();
+        if (uuid != null) {
+            profileTag.putString("Id", uniqueId.toString());
+        }
+        if (name != null) {
+            profileTag.putString("Name", name);
+        }
 
         CompoundTag propertiesTag = new CompoundTag();
         for (ProfileProperty property : properties.values()) {
