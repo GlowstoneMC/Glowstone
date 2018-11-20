@@ -240,10 +240,22 @@ public class GlowPlayerProfile implements PlayerProfile {
     @Override
     public UUID setId(@Nullable UUID uuid) {
         checkOwnerCriteria(name,uuid);
-        UUID olduuid = getId();
-        uniqueId = new CompletableFuture<UUID>();
-        uniqueId.complete(uuid);
-        return olduuid;
+        UUID oldUuid = null;
+        if (uniqueId == null) {
+            synchronized (this) {
+                if (uniqueId == null) {
+                    uniqueId = CompletableFuture.completedFuture(uuid);
+                    return;
+                }
+                oldUuid = uniqueId.getNow(null);
+            }
+        } else {
+            oldUuid = uniqueId.getNow(null);
+        }
+        if (!uniqueId.complete(uuid)) {
+            uniqueId.obtrudeValue(uuid);
+        }
+        return oldUuid;
     }
 
     /**
