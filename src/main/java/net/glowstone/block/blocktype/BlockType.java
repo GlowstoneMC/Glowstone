@@ -155,11 +155,13 @@ public class BlockType extends ItemType {
     /**
      * Check whether the block can be placed at the given location.
      *
+     *
+     * @param player The player who placed the block.
      * @param block The location the block is being placed at.
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.
      */
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return true;
     }
 
@@ -356,13 +358,13 @@ public class BlockType extends ItemType {
             case SIGN_POST:
             case WALL_SIGN:
                 if (player.isSneaking()) {
-                    canBuild = canPlaceAt(target, face);
+                    canBuild = canPlaceAt(player, target, face);
                 } else {
                     return;
                 }
                 break;
             default:
-                canBuild = canPlaceAt(target, face);
+                canBuild = canPlaceAt(player, target, face);
         }
         BlockCanBuildEvent canBuildEvent = new BlockCanBuildEvent(target, getId(), canBuild);
         if (!EventFactory.getInstance().callEvent(canBuildEvent).isBuildable()) {
