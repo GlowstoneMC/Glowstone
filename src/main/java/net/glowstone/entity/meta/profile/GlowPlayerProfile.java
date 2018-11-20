@@ -245,7 +245,7 @@ public class GlowPlayerProfile implements PlayerProfile {
             synchronized (this) {
                 if (uniqueId == null) {
                     uniqueId = CompletableFuture.completedFuture(uuid);
-                    return;
+                    return null;
                 }
                 oldUuid = uniqueId.getNow(null);
             }
