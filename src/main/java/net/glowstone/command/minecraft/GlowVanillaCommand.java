@@ -125,5 +125,6 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      * @param args All arguments passed to the command, split via ' '
      * @return true if the command was successful, otherwise false
      */
-    protected abstract boolean innerExecute(CommandSender sender, String commandLabel, String[] args);
+    protected abstract boolean innerExecute(CommandSender sender, String commandLabel,
+            String[] args);
 }
