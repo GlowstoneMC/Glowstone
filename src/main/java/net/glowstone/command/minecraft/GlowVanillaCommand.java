@@ -28,21 +28,17 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final ResourceBundle SERVER_LOCALE = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
 
     private final Lock localeChangeLock = new ReentrantLock();
-    private final String resourceKey;
     private volatile Locale lastLoadedLocale;
 
     /**
-     * {@inheritDoc}
-     * @param resourceKey the base name of this command's localizable strings in commands.properties
+     * Creates an instance, using the command's name to look up the description etc.
      */
-    public GlowVanillaCommand(@NonNls String name, @NonNls String resourceKey,
-            @NonNls List<String> aliases) {
+    public GlowVanillaCommand(@NonNls String name, @NonNls List<String> aliases) {
         super(name,
-                SERVER_LOCALE.getString(resourceKey + DESCRIPTION_SUFFIX),
-                SERVER_LOCALE.getString(resourceKey + USAGE_SUFFIX),
+                SERVER_LOCALE.getString(name + DESCRIPTION_SUFFIX),
+                SERVER_LOCALE.getString(name + USAGE_SUFFIX),
                 aliases);
-        setPermissionMessage(SERVER_LOCALE.getString(resourceKey + PERMISSION_SUFFIX));
-        this.resourceKey = resourceKey;
+        setPermissionMessage(SERVER_LOCALE.getString(name + PERMISSION_SUFFIX));
         lastLoadedLocale = SERVER_LOCALE.getLocale();
     }
 
@@ -102,9 +98,9 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             String oldUsage = getUsage();
             String oldPermissionMessage = getPermissionMessage();
             ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_BASE_NAME, locale);
-            description = bundle.getString(resourceKey + DESCRIPTION_SUFFIX);
-            usageMessage = bundle.getString(resourceKey + USAGE_SUFFIX);
-            super.setPermissionMessage(bundle.getString(resourceKey + PERMISSION_SUFFIX));
+            description = bundle.getString(getName() + DESCRIPTION_SUFFIX);
+            usageMessage = bundle.getString(getName() + USAGE_SUFFIX);
+            super.setPermissionMessage(bundle.getString(getName() + PERMISSION_SUFFIX));
             try {
                 return innerExecute(sender, commandLabel, args);
             } finally {
