@@ -170,6 +170,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
@@ -1677,8 +1678,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setLevel(int level) {
-        this.level = Math.max(level, 0);
-        sendExperience();
+        int newLevel = Math.max(level, 0);
+
+        if (newLevel != this.level) {
+            EventFactory.getInstance().callEvent(
+                    new PlayerLevelChangeEvent(this, this.level, newLevel));
+            this.level = newLevel;
+            sendExperience();
+        }
     }
 
     @Override
@@ -1697,7 +1704,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             exp += value;
             if (exp >= 1) {
                 exp -= 1;
-                value = 1.0f / getExpToLevel(++level);
+                setLevel(level + 1);
+                value = 1.0f / getExpToLevel(level);
             }
         }
         sendExperience();
@@ -3376,13 +3384,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param clicked the enchanting-table slot used: 0 for top, 1 for middle, 2 for bottom
      */
     public void enchanted(int clicked) {
-        level -= clicked + 1;
-        if (level < 0) {
-            level = 0;
-            exp = 0;
-            totalExperience = 0;
+        int newLevel = level - clicked - 1;
+        if (newLevel < 0) {
+            setExp(0);
+            setTotalExperience(0);
         }
-        setLevel(level);
+
+        setLevel(newLevel);
         setXpSeed(ThreadLocalRandom.current().nextInt()); //TODO use entity's random instance?
     }
 
