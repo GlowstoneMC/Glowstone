@@ -1,120 +1,49 @@
 package net.glowstone.constants;
 
+import static com.google.common.base.CaseFormat.LOWER_CAMEL;
+import static com.google.common.base.CaseFormat.UPPER_CAMEL;
+import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.bukkit.Statistic.ANIMALS_BRED;
-import static org.bukkit.Statistic.ARMOR_CLEANED;
-import static org.bukkit.Statistic.AVIATE_ONE_CM;
-import static org.bukkit.Statistic.BANNER_CLEANED;
-import static org.bukkit.Statistic.BEACON_INTERACTION;
-import static org.bukkit.Statistic.BOAT_ONE_CM;
-import static org.bukkit.Statistic.BREWINGSTAND_INTERACTION;
-import static org.bukkit.Statistic.CAKE_SLICES_EATEN;
-import static org.bukkit.Statistic.CAULDRON_FILLED;
-import static org.bukkit.Statistic.CAULDRON_USED;
-import static org.bukkit.Statistic.CHEST_OPENED;
-import static org.bukkit.Statistic.CLIMB_ONE_CM;
-import static org.bukkit.Statistic.CRAFTING_TABLE_INTERACTION;
-import static org.bukkit.Statistic.CROUCH_ONE_CM;
-import static org.bukkit.Statistic.DAMAGE_DEALT;
-import static org.bukkit.Statistic.DAMAGE_TAKEN;
-import static org.bukkit.Statistic.DEATHS;
-import static org.bukkit.Statistic.DISPENSER_INSPECTED;
-import static org.bukkit.Statistic.DIVE_ONE_CM;
+import static org.bukkit.Material.GOLD_BLOCK;
+import static org.bukkit.Material.GOLD_INGOT;
+import static org.bukkit.Material.GOLD_NUGGET;
+import static org.bukkit.Material.GOLD_ORE;
+import static org.bukkit.Statistic.BREAK_ITEM;
+import static org.bukkit.Statistic.CRAFT_ITEM;
 import static org.bukkit.Statistic.DROP;
-import static org.bukkit.Statistic.DROPPER_INSPECTED;
-import static org.bukkit.Statistic.ENDERCHEST_OPENED;
-import static org.bukkit.Statistic.FALL_ONE_CM;
-import static org.bukkit.Statistic.FISH_CAUGHT;
-import static org.bukkit.Statistic.FLOWER_POTTED;
-import static org.bukkit.Statistic.FLY_ONE_CM;
-import static org.bukkit.Statistic.FURNACE_INTERACTION;
-import static org.bukkit.Statistic.HOPPER_INSPECTED;
-import static org.bukkit.Statistic.HORSE_ONE_CM;
-import static org.bukkit.Statistic.ITEM_ENCHANTED;
-import static org.bukkit.Statistic.JUMP;
-import static org.bukkit.Statistic.LEAVE_GAME;
-import static org.bukkit.Statistic.MINECART_ONE_CM;
-import static org.bukkit.Statistic.MOB_KILLS;
-import static org.bukkit.Statistic.NOTEBLOCK_PLAYED;
-import static org.bukkit.Statistic.NOTEBLOCK_TUNED;
-import static org.bukkit.Statistic.PIG_ONE_CM;
-import static org.bukkit.Statistic.PLAYER_KILLS;
+import static org.bukkit.Statistic.ENTITY_KILLED_BY;
+import static org.bukkit.Statistic.KILL_ENTITY;
+import static org.bukkit.Statistic.MINE_BLOCK;
+import static org.bukkit.Statistic.PICKUP;
 import static org.bukkit.Statistic.PLAY_ONE_TICK;
-import static org.bukkit.Statistic.RECORD_PLAYED;
-import static org.bukkit.Statistic.SHULKER_BOX_OPENED;
-import static org.bukkit.Statistic.SLEEP_IN_BED;
-import static org.bukkit.Statistic.SNEAK_TIME;
-import static org.bukkit.Statistic.SPRINT_ONE_CM;
-import static org.bukkit.Statistic.SWIM_ONE_CM;
-import static org.bukkit.Statistic.TALKED_TO_VILLAGER;
-import static org.bukkit.Statistic.TIME_SINCE_DEATH;
-import static org.bukkit.Statistic.TRADED_WITH_VILLAGER;
-import static org.bukkit.Statistic.TRAPPED_CHEST_TRIGGERED;
-import static org.bukkit.Statistic.WALK_ONE_CM;
+import static org.bukkit.Statistic.USE_ITEM;
 import static org.bukkit.Statistic.values;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.Material;
 import org.bukkit.Statistic;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 
 /**
  * Name mappings for statistics.
  */
 public final class GlowStatistic {
 
-    private static final String[] names = new String[values().length];
+    private static final Map<Statistic, String> SIMPLE_STATISTIC = new HashMap<>(values().length);
+
+    private static final Map<Statistic, Map<Material, String>> MATERIAL_STATISTIC = new HashMap<>();
+
+    private static final Map<Statistic, Map<EntityType, String>> ENTITY_STATISTIC = new HashMap<>();
 
     static {
-        set(LEAVE_GAME, "leaveGame");
-        set(PLAY_ONE_TICK, "playOneMinute"); // this is correct
-        set(WALK_ONE_CM, "walkOneCm");
-        set(SWIM_ONE_CM, "swimOneCm");
-        set(FALL_ONE_CM, "fallOneCm");
-        set(SNEAK_TIME, "sneakTime");
-        set(CLIMB_ONE_CM, "climbOneCm");
-        set(FLY_ONE_CM, "flyOneCm");
-        set(DIVE_ONE_CM, "diveOneCm");
-        set(MINECART_ONE_CM, "minecartOneCm");
-        set(BOAT_ONE_CM, "boatOneCm");
-        set(PIG_ONE_CM, "pigOneCm");
-        set(HORSE_ONE_CM, "horseOneCm");
-        set(JUMP, "jump");
-        set(DROP, "drop");
-        set(DAMAGE_DEALT, "damageDealt");
-        set(DAMAGE_TAKEN, "damageTaken");
-        set(DEATHS, "deaths");
-        set(MOB_KILLS, "mobKills");
-        set(ANIMALS_BRED, "animalsBred");
-        set(PLAYER_KILLS, "playerKills");
-        set(FISH_CAUGHT, "fishCaught");
-        set(SPRINT_ONE_CM, "sprintOneCm");
-        set(CROUCH_ONE_CM, "crouchOneCm");
-        set(AVIATE_ONE_CM, "aviateOneCm");
-        set(TIME_SINCE_DEATH, "timeSinceDeath");
-        set(TALKED_TO_VILLAGER, "talkedToVillager");
-        set(TRADED_WITH_VILLAGER, "tradedWithVillager");
-        set(CAKE_SLICES_EATEN, "cakeSlices_eaten");
-        set(CAULDRON_FILLED, "cauldronFilled");
-        set(CAULDRON_USED, "cauldronUsed");
-        set(ARMOR_CLEANED, "armorCleaned");
-        set(BANNER_CLEANED, "bannerCleaned");
-        set(BREWINGSTAND_INTERACTION, "brewingstandInteraction");
-        set(BEACON_INTERACTION, "beaconInteraction");
-        set(DROPPER_INSPECTED, "dropperInspected");
-        set(HOPPER_INSPECTED, "hopperInspected");
-        set(DISPENSER_INSPECTED, "dispenserInspected");
-        set(NOTEBLOCK_PLAYED, "noteblockPlayed");
-        set(NOTEBLOCK_TUNED, "noteblockTuned");
-        set(FLOWER_POTTED, "flowerPotted");
-        set(TRAPPED_CHEST_TRIGGERED, "trappedChestTriggered");
-        set(ENDERCHEST_OPENED, "enderchestOpened");
-        set(ITEM_ENCHANTED, "itemEnchanted");
-        set(RECORD_PLAYED, "recordPlayed");
-        set(FURNACE_INTERACTION, "furnaceInteraction");
-        set(CRAFTING_TABLE_INTERACTION, "craftingTableInteraction");
-        set(CHEST_OPENED, "chestOpened");
-        set(SLEEP_IN_BED, "sleepInBed");
-        set(SHULKER_BOX_OPENED, "shulkerBoxOpened");
-
-        // todo: statistics with substatistics
+        generateSimpleStatistic();
+        generateMaterialStatistic();
+        generateEntityStatistic();
     }
 
     private GlowStatistic() {
@@ -127,12 +56,112 @@ public final class GlowStatistic {
      * @return the statistic name.
      */
     public static String getName(Statistic stat) {
-        checkNotNull(stat, "Achievement cannot be null");
-        return names[stat.ordinal()];
+        checkNotNull(stat, "Statistic cannot be null");
+        return SIMPLE_STATISTIC.get(stat);
     }
 
-    private static void set(Statistic stat, String key) {
-        names[stat.ordinal()] = "stat." + key;
+    /**
+     * Get the statistic name for a specified Statistic and Material.
+     *
+     * @param stat the Statistic
+     * @param material the Material
+     * @return the statistic name
+     */
+    public static String getName(Statistic stat, Material material) {
+        checkNotNull(stat, "Statistic cannot be null");
+        checkNotNull(material, "Material cannot be null");
+
+        if (MATERIAL_STATISTIC.containsKey(stat)) {
+            return MATERIAL_STATISTIC.get(stat).get(material);
+        }
+
+        return null;
     }
 
+    /**
+     * Get the statistic name for a specified Statistic and EntityType.
+     *
+     * @param stat the Statistic
+     * @param entityType the EntityType
+     * @return the statistic name
+     */
+    public static String getName(Statistic stat, EntityType entityType) {
+        checkNotNull(stat, "Statistic cannot be null");
+        checkNotNull(entityType, "EntityType cannot be null");
+
+        if (ENTITY_STATISTIC.containsKey(stat)) {
+            return ENTITY_STATISTIC.get(stat).get(entityType);
+        }
+
+        return null;
+    }
+
+    private static <T extends Enum> void set(Map<Statistic, Map<T, String>> map,
+                                             Statistic statistic, T data, String key) {
+        if (!map.containsKey(statistic)) {
+            map.put(statistic, new HashMap<>());
+        }
+        map.get(statistic).put(data, "stat." + key);
+    }
+
+
+    private static void generateSimpleStatistic() {
+        for (Statistic stat : values()) {
+            SIMPLE_STATISTIC.put(stat, "stat." + UPPER_UNDERSCORE.to(LOWER_CAMEL, stat.name()));
+        }
+
+        // Specific case
+        SIMPLE_STATISTIC.put(PLAY_ONE_TICK, "stat.playOneMinute");
+    }
+
+    private static void generateMaterialStatistic() {
+        for (Material material : Material.values()) {
+            String name = material.name().toLowerCase()
+                    .replace("spade", "shovel")
+                    .replace("wood", "wooden");
+
+            if (material != GOLD_INGOT
+                    && material != GOLD_NUGGET
+                    && material != GOLD_BLOCK
+                    && material != GOLD_ORE) {
+                name = name.replace("gold", "golden");
+            }
+
+            if (material.isBlock()) {
+                set(MATERIAL_STATISTIC, MINE_BLOCK, material, "mineBlock.minecraft." + name);
+            }
+
+            if (material.isItem()) {
+                set(MATERIAL_STATISTIC, USE_ITEM, material, "useItem.minecraft." + name);
+                set(MATERIAL_STATISTIC, CRAFT_ITEM, material, "craftItem.minecraft." + name);
+
+                if (material.getMaxDurability() != 0) {
+                    set(MATERIAL_STATISTIC, BREAK_ITEM, material, "breakItem.minecraft." + name);
+                }
+            }
+
+            set(MATERIAL_STATISTIC, DROP, material, "drop.minecraft." + name);
+            set(MATERIAL_STATISTIC, PICKUP, material, "pickup.minecraft." + name);
+        }
+    }
+
+    private static void generateEntityStatistic() {
+        for (EntityType entityType : EntityType.values()) {
+            Class<? extends Entity> entityClass = entityType.getEntityClass();
+
+            if (entityClass == null) {
+                continue;
+            }
+
+            if (Monster.class.isAssignableFrom(entityClass)) {
+                set(ENTITY_STATISTIC, ENTITY_KILLED_BY, entityType, "entityKilledBy."
+                        + UPPER_UNDERSCORE.to(UPPER_CAMEL, entityType.name()));
+            }
+
+            if (Creature.class.isAssignableFrom(entityClass)) {
+                set(ENTITY_STATISTIC, KILL_ENTITY, entityType, "killEntity."
+                        + UPPER_UNDERSCORE.to(UPPER_CAMEL, entityType.name()));
+            }
+        }
+    }
 }
