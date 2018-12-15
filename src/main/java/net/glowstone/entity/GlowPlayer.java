@@ -175,6 +175,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -2930,34 +2931,55 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void incrementStatistic(Statistic statistic) {
-        stats.add(statistic, 1);
+        incrementStatistic(statistic, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, int amount) {
-        stats.add(statistic, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, amount);
+        }
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, Material material) {
-        stats.add(statistic, material, 1);
+        incrementStatistic(statistic, material, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, Material material, int amount) {
-        stats.add(statistic, material, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount, material));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, material, amount);
+        }
     }
 
     @Override
     public void incrementStatistic(Statistic statistic,
             EntityType entityType) throws IllegalArgumentException {
-        stats.add(statistic, entityType, 1);
+        incrementStatistic(statistic, entityType, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, EntityType entityType,
             int amount) throws IllegalArgumentException {
-        stats.add(statistic, entityType, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount, entityType));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, entityType, amount);
+        }
     }
 
     @Override
