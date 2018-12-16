@@ -34,16 +34,14 @@ import org.bukkit.entity.Monster;
  */
 public final class GlowStatistic {
 
-    private static final Map<Statistic, String> SIMPLE_STATISTIC = new HashMap<>(values().length);
+    private static final Map<Statistic, String> STATISTICS = new HashMap<>(values().length);
 
-    private static final Map<Statistic, Map<Material, String>> MATERIAL_STATISTIC = new HashMap<>();
-
-    private static final Map<Statistic, Map<EntityType, String>> ENTITY_STATISTIC = new HashMap<>();
+    private static final Map<Statistic, Map<Enum, String>> SUB_STATISTICS = new HashMap<>();
 
     static {
-        generateSimpleStatistic();
-        generateMaterialStatistic();
-        generateEntityStatistic();
+        generateStatistics();
+        generateMaterialStatistics();
+        generateEntityStatistics();
     }
 
     private GlowStatistic() {
@@ -57,7 +55,7 @@ public final class GlowStatistic {
      */
     public static String getName(Statistic stat) {
         checkNotNull(stat, "Statistic cannot be null");
-        return SIMPLE_STATISTIC.get(stat);
+        return STATISTICS.get(stat);
     }
 
     /**
@@ -71,8 +69,8 @@ public final class GlowStatistic {
         checkNotNull(stat, "Statistic cannot be null");
         checkNotNull(material, "Material cannot be null");
 
-        if (MATERIAL_STATISTIC.containsKey(stat)) {
-            return MATERIAL_STATISTIC.get(stat).get(material);
+        if (SUB_STATISTICS.containsKey(stat)) {
+            return SUB_STATISTICS.get(stat).get(material);
         }
 
         return null;
@@ -89,32 +87,31 @@ public final class GlowStatistic {
         checkNotNull(stat, "Statistic cannot be null");
         checkNotNull(entityType, "EntityType cannot be null");
 
-        if (ENTITY_STATISTIC.containsKey(stat)) {
-            return ENTITY_STATISTIC.get(stat).get(entityType);
+        if (SUB_STATISTICS.containsKey(stat)) {
+            return SUB_STATISTICS.get(stat).get(entityType);
         }
 
         return null;
     }
 
-    private static <T extends Enum> void set(Map<Statistic, Map<T, String>> map,
-                                             Statistic statistic, T data, String key) {
-        if (!map.containsKey(statistic)) {
-            map.put(statistic, new HashMap<>());
+    private static void set(Statistic statistic, Enum data, String key) {
+        if (!SUB_STATISTICS.containsKey(statistic)) {
+            SUB_STATISTICS.put(statistic, new HashMap<>());
         }
-        map.get(statistic).put(data, "stat." + key);
+        SUB_STATISTICS.get(statistic).put(data, "stat." + key);
     }
 
 
-    private static void generateSimpleStatistic() {
+    private static void generateStatistics() {
         for (Statistic stat : values()) {
-            SIMPLE_STATISTIC.put(stat, "stat." + UPPER_UNDERSCORE.to(LOWER_CAMEL, stat.name()));
+            STATISTICS.put(stat, "stat." + UPPER_UNDERSCORE.to(LOWER_CAMEL, stat.name()));
         }
 
         // Specific case
-        SIMPLE_STATISTIC.put(PLAY_ONE_TICK, "stat.playOneMinute");
+        STATISTICS.put(PLAY_ONE_TICK, "stat.playOneMinute");
     }
 
-    private static void generateMaterialStatistic() {
+    private static void generateMaterialStatistics() {
         for (Material material : Material.values()) {
             String name = material.name().toLowerCase()
                     .replace("spade", "shovel")
@@ -128,24 +125,24 @@ public final class GlowStatistic {
             }
 
             if (material.isBlock()) {
-                set(MATERIAL_STATISTIC, MINE_BLOCK, material, "mineBlock.minecraft." + name);
+                set(MINE_BLOCK, material, "mineBlock.minecraft." + name);
             }
 
             if (material.isItem()) {
-                set(MATERIAL_STATISTIC, USE_ITEM, material, "useItem.minecraft." + name);
-                set(MATERIAL_STATISTIC, CRAFT_ITEM, material, "craftItem.minecraft." + name);
+                set(USE_ITEM, material, "useItem.minecraft." + name);
+                set(CRAFT_ITEM, material, "craftItem.minecraft." + name);
 
                 if (material.getMaxDurability() != 0) {
-                    set(MATERIAL_STATISTIC, BREAK_ITEM, material, "breakItem.minecraft." + name);
+                    set(BREAK_ITEM, material, "breakItem.minecraft." + name);
                 }
             }
 
-            set(MATERIAL_STATISTIC, DROP, material, "drop.minecraft." + name);
-            set(MATERIAL_STATISTIC, PICKUP, material, "pickup.minecraft." + name);
+            set(DROP, material, "drop.minecraft." + name);
+            set(PICKUP, material, "pickup.minecraft." + name);
         }
     }
 
-    private static void generateEntityStatistic() {
+    private static void generateEntityStatistics() {
         for (EntityType entityType : EntityType.values()) {
             Class<? extends Entity> entityClass = entityType.getEntityClass();
 
@@ -154,12 +151,12 @@ public final class GlowStatistic {
             }
 
             if (Monster.class.isAssignableFrom(entityClass)) {
-                set(ENTITY_STATISTIC, ENTITY_KILLED_BY, entityType, "entityKilledBy."
+                set(ENTITY_KILLED_BY, entityType, "entityKilledBy."
                         + UPPER_UNDERSCORE.to(UPPER_CAMEL, entityType.name()));
             }
 
             if (Creature.class.isAssignableFrom(entityClass)) {
-                set(ENTITY_STATISTIC, KILL_ENTITY, entityType, "killEntity."
+                set(KILL_ENTITY, entityType, "killEntity."
                         + UPPER_UNDERSCORE.to(UPPER_CAMEL, entityType.name()));
             }
         }
