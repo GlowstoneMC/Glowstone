@@ -227,49 +227,50 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     @Override
-    public void updatePhysics(GlowBlock block) {
-        if (isStationary(block.getType())) {
-            block.setType(getOpposite(block.getType()), block.getData(), false);
+    public void updatePhysics(GlowBlock me) {
+        super.updatePhysics(me);
+        if (isStationary(me.getType())) {
+            me.setType(getOpposite(me.getType()), me.getData(), false);
         }
-        if (Byte.compare(block.getState().getRawData(), STRENGTH_SOURCE) != 0) {
+        if (Byte.compare(me.getState().getRawData(), STRENGTH_SOURCE) != 0) {
             BlockFace[] faces = {UP, NORTH, EAST, SOUTH, WEST};
             boolean connected = false;
             int count = 0;
             for (BlockFace face : faces) {
-                if (block.getRelative(face).getType() == block.getType()) {
+                if (me.getRelative(face).getType() == me.getType()) {
                     if (count < 2 && face != UP
-                        && Byte.compare(block.getRelative(face).getState().getRawData(),
+                        && Byte.compare(me.getRelative(face).getState().getRawData(),
                             STRENGTH_SOURCE) == 0) {
                         count++;
                     }
                     if (!connected && face == UP
-                        || Byte.compare(block.getRelative(face).getState().getRawData(),
-                            block.getState().getRawData()) < 0) {
+                        || Byte.compare(me.getRelative(face).getState().getRawData(),
+                            me.getState().getRawData()) < 0) {
                         connected = true;
-                        if (block.getWorld().getServer().getClassicWater()) {
-                            block.getState().setRawData(STRENGTH_SOURCE);
+                        if (me.getWorld().getServer().getClassicWater()) {
+                            me.getState().setRawData(STRENGTH_SOURCE);
                         }
                     }
-                    if (block.getWorld().getServer().getClassicWater()
-                        && Byte.compare(block.getRelative(face).getState().getRawData(),
+                    if (me.getWorld().getServer().getClassicWater()
+                        && Byte.compare(me.getRelative(face).getState().getRawData(),
                             STRENGTH_SOURCE) == 0) {
-                        block.getRelative(face).setType(Material.AIR);
+                        me.getRelative(face).setType(Material.AIR);
                     }
                 }
             }
             if (!connected) {
-                block.setType(Material.AIR);
+                me.setType(Material.AIR);
                 return;
             }
             if (count == 2) {
-                block.getState().setRawData(STRENGTH_SOURCE);
+                me.getState().setRawData(STRENGTH_SOURCE);
                 return;
             }
         }
-        if (!(Byte.compare(block.getState().getRawData(),
-            isWater(block.getType()) || block.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
-                : STRENGTH_MIN_LAVA) == 0) || block.getRelative(DOWN).getType() == Material.AIR) {
-            calculateFlow(block);
+        if (!(Byte.compare(me.getState().getRawData(),
+            isWater(me.getType()) || me.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
+                : STRENGTH_MIN_LAVA) == 0) || me.getRelative(DOWN).getType() == Material.AIR) {
+            calculateFlow(me);
         }
     }
 

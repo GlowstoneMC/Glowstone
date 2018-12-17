@@ -84,12 +84,13 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public void updatePhysics(GlowBlock block) {
-        GlowBlock up = block.getRelative(BlockFace.UP);
-        boolean powered = block.isBlockPowered() || block.isBlockIndirectlyPowered()
+    public void updatePhysics(GlowBlock me) {
+        super.updatePhysics(me);
+        GlowBlock up = me.getRelative(BlockFace.UP);
+        boolean powered = me.isBlockPowered() || me.isBlockIndirectlyPowered()
                 || up.isBlockPowered() || up.isBlockIndirectlyPowered();
 
-        GlowBlockState state = block.getState();
+        GlowBlockState state = me.getState();
         MaterialData data = state.getData();
         if (!(data instanceof Dispenser)) {
             return;
@@ -100,7 +101,7 @@ public class BlockDispenser extends BlockContainer {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    trigger(block);
+                    trigger(me);
                 }
             }.runTaskLater(null, 4);
 

@@ -56,6 +56,7 @@ public class BlockTnt extends BlockType {
 
     @Override
     public void updatePhysics(GlowBlock me) {
+        super.updatePhysics(me);
         if (me.isBlockIndirectlyPowered()) {
             igniteBlock(me, false, null);
         }

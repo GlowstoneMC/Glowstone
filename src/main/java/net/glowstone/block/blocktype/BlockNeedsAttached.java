@@ -21,6 +21,7 @@ public class BlockNeedsAttached extends BlockType {
 
     @Override
     public void updatePhysics(GlowBlock me) {
+        super.updatePhysics(me);
         BlockFace attachedTo = getAttachedFace(me);
         if (attachedTo == null) {
             return;

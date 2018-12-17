@@ -29,6 +29,7 @@ public class BlockCactus extends BlockType {
 
     @Override
     public void updatePhysics(GlowBlock me) {
+        super.updatePhysics(me);
         if (!canPlaceAt(null, me, BlockFace.DOWN)) {
             me.breakNaturally();
         }
