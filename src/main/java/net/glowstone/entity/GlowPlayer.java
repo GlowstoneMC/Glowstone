@@ -169,6 +169,7 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -1697,6 +1698,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void giveExp(int xp) {
+        PlayerExpChangeEvent event = EventFactory.getInstance()
+            .callEvent(new PlayerExpChangeEvent(this, xp));
+        xp = event.getAmount();
         totalExperience += xp;
 
         // gradually award levels based on xp points
