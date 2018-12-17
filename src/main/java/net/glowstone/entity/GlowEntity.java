@@ -6,6 +6,7 @@ import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -53,17 +55,10 @@ import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.entity.*;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityPortalExitEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.entity.EntityUnleashEvent.UnleashReason;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
@@ -360,7 +355,7 @@ public abstract class GlowEntity implements Entity {
      *
      * @param uuid The new UUID. Must not be null.
      * @throws IllegalArgumentException if the passed UUID is null.
-     * @throws IllegalStateException if a UUID has already been set.
+     * @throws IllegalStateException    if a UUID has already been set.
      */
     public void setUniqueId(UUID uuid) {
         checkNotNull(uuid, "uuid must not be null");
@@ -591,7 +586,7 @@ public abstract class GlowEntity implements Entity {
                         EntityPortalExitEvent e = EventFactory.getInstance()
                                 .callEvent(new EntityPortalExitEvent(this, previousLocation,
                                         location
-                                        .clone(), velocity.clone(), new Vector()));
+                                                .clone(), velocity.clone(), new Vector()));
                         if (!e.getAfter().equals(velocity)) {
                             setVelocity(e.getAfter());
                         }
@@ -671,7 +666,7 @@ public abstract class GlowEntity implements Entity {
      * Sets this entity's location.
      *
      * @param location The new location.
-     * @param fall Whether to calculate fall damage or not.
+     * @param fall     Whether to calculate fall damage or not.
      */
     public void setRawLocation(Location location, boolean fall) {
         if (location.getWorld() != world) {
@@ -735,7 +730,7 @@ public abstract class GlowEntity implements Entity {
      * block.
      *
      * @return true to call {@link #setOnGround(boolean)} from {@link #setRawLocation(Location,
-     *     boolean)}; false otherwise
+     * boolean)}; false otherwise
      */
     protected boolean hasDefaultLandingBehavior() {
         return true;
@@ -962,8 +957,8 @@ public abstract class GlowEntity implements Entity {
         if (boundingBox == null) {
             // less accurate calculation if no bounding box is present
             for (BlockFace face : new BlockFace[]{BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH,
-                BlockFace.NORTH, BlockFace.DOWN, BlockFace.SELF, BlockFace.NORTH_EAST,
-                BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST}) {
+                    BlockFace.NORTH, BlockFace.DOWN, BlockFace.SELF, BlockFace.NORTH_EAST,
+                    BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST}) {
                 if (getLocation().getBlock().getRelative(face).getType() == material) {
                     return true;
                 }
@@ -1024,7 +1019,9 @@ public abstract class GlowEntity implements Entity {
             if (pendingLocationZ.getBlock().getType().isSolid()) {
                 velocity.setZ(0);
             }
-
+            if (this instanceof Projectile) {
+                EventFactory.getInstance().callEvent(new ProjectileHitEvent((Projectile) this, pendingBlock));
+            }
             collide(pendingBlock);
         } else {
             if (hasFriction()) {
