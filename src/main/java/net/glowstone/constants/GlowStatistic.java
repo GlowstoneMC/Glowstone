@@ -113,16 +113,7 @@ public final class GlowStatistic {
 
     private static void generateMaterialStatistics() {
         for (Material material : Material.values()) {
-            String name = material.name().toLowerCase()
-                    .replace("spade", "shovel")
-                    .replace("wood", "wooden");
-
-            if (material != GOLD_INGOT
-                    && material != GOLD_NUGGET
-                    && material != GOLD_BLOCK
-                    && material != GOLD_ORE) {
-                name = name.replace("gold", "golden");
-            }
+            String name = ItemIds.getKeyName(material);
 
             if (material.isBlock()) {
                 set(MINE_BLOCK, material, "mineBlock.minecraft." + name);
