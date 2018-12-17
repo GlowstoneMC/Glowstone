@@ -26,7 +26,6 @@ import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -40,10 +39,10 @@ import org.bukkit.util.Vector;
  */
 public class BlockType extends ItemType {
 
-    protected static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST,
-            BlockFace.SOUTH, BlockFace.WEST};
-    protected static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST,
-            BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+    protected static final BlockFace[] SIDES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST,
+        BlockFace.SOUTH, BlockFace.WEST};
+    protected static final BlockFace[] ADJACENT = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST,
+        BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     protected List<ItemStack> drops;
 
@@ -193,7 +192,7 @@ public class BlockType extends ItemType {
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
                            GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(),
-                block.getData());
+            block.getData());
     }
 
     /**
@@ -233,7 +232,7 @@ public class BlockType extends ItemType {
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face,
                              GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(),
-                block.getData());
+            block.getData());
     }
 
     /**
@@ -313,8 +312,10 @@ public class BlockType extends ItemType {
      */
     public void updatePhysics(GlowBlock block) {
         BlockPhysicsEvent event = EventFactory.getInstance()
-                .callEvent(new BlockPhysicsEvent(block, block.getTypeId()));
-        if (event.isCancelled()) return;
+            .callEvent(new BlockPhysicsEvent(block, block.getTypeId()));
+        if (event.isCancelled()) {
+            return;
+        }
     }
 
     @Override
@@ -322,7 +323,7 @@ public class BlockType extends ItemType {
                                       ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock target = against.getRelative(face);
         final Material targetMat = ItemTable.instance().getBlock(
-                target.getRelative(face.getOppositeFace()).getType()).getMaterial();
+            target.getRelative(face.getOppositeFace()).getType()).getMaterial();
 
         // prevent building above the height limit
         final int maxHeight = target.getWorld().getMaxHeight();
@@ -348,7 +349,7 @@ public class BlockType extends ItemType {
         if (getMaterial().isSolid()) {
             BlockBoundingBox box = new BlockBoundingBox(target);
             List<Entity> entities = target.getWorld().getEntityManager()
-                    .getEntitiesInside(box, null);
+                .getEntitiesInside(box, null);
             for (Entity e : entities) {
                 if (e instanceof LivingEntity) {
                     return;
@@ -384,14 +385,14 @@ public class BlockType extends ItemType {
             placeBlock(player, newState, face, holding, clickedLoc);
         } else {
             placeBlock(player, newState, face,
-                    new ItemStack(itemType.getPlaceAs().getMaterial(), holding.getAmount(),
-                            holding.getDurability()), clickedLoc);
+                new ItemStack(itemType.getPlaceAs().getMaterial(), holding.getAmount(),
+                    holding.getDurability()), clickedLoc);
         }
         newState.update(true);
 
         // call blockPlace event
         BlockPlaceEvent event = new BlockPlaceEvent(target, oldState, against, holding, player,
-                canBuild, hand);
+            canBuild, hand);
         EventFactory.getInstance().callEvent(event);
         if (event.isCancelled() || !event.canBuild()) {
             oldState.update(true);
@@ -400,7 +401,7 @@ public class BlockType extends ItemType {
 
         // play the placement sound, except for the current player (handled by the client)
         SoundUtil.playSoundAtLocationExcept(target.getLocation(), getPlaceSound().getSound(),
-                (getPlaceSound().getVolume() + 1F) / 2F, getPlaceSound().getPitch() * 0.8F, player);
+            (getPlaceSound().getVolume() + 1F) / 2F, getPlaceSound().getPitch() * 0.8F, player);
 
         // do any after-place actions
         afterPlace(player, target, holding, oldState);
@@ -451,7 +452,7 @@ public class BlockType extends ItemType {
      */
     protected void warnMaterialData(Class<?> clazz, MaterialData data) {
         ConsoleMessages.Warn.Block.WRONG_MATERIAL_DATA.log(
-                getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
+            getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
     }
 
     public void onRedstoneUpdate(GlowBlock block) {
