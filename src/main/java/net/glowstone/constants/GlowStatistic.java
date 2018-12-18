@@ -139,12 +139,12 @@ public final class GlowStatistic {
 
             if (Monster.class.isAssignableFrom(entityClass)) {
                 set(ENTITY_KILLED_BY, entityType, "entityKilledBy."
-                        + UPPER_UNDERSCORE.to(UPPER_CAMEL, entityType.name()));
+                        + entityClass.getSimpleName());
             }
 
             if (Creature.class.isAssignableFrom(entityClass)) {
                 set(KILL_ENTITY, entityType, "killEntity."
-                        + UPPER_UNDERSCORE.to(UPPER_CAMEL, entityType.name()));
+                        + entityClass.getSimpleName());
             }
         }
     }
