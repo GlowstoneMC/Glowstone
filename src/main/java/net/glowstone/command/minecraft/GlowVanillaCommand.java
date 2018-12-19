@@ -50,7 +50,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      */
     public GlowVanillaCommand(@NonNls String name, @NonNls List<String> aliases) {
         super(name, "", "", aliases);
-        bundleToMessageCache = CacheBuilder.newBuilder().build(
+        bundleToMessageCache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE).build(
                 CacheLoader.from(this::readResourceBundle));
         CommandMessages defaultMessages = readResourceBundle(DEFAULT_RESOURCE_BUNDLE);
         super.setDescription(defaultMessages.getDescription());
