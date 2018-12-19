@@ -381,6 +381,11 @@ public interface ConsoleMessages {
                     "console.chunk.unload-failed", Level.WARNING);
         }
 
+        interface Command {
+            LoggableLocalizedString L10N_FAILED = new LoggableLocalizedStringImpl(
+                    "console.command.l10n-failed", Level.WARNING);
+        }
+
         interface Crypt {
             LoggableLocalizedString AUTH_FAILED = new LoggableLocalizedStringImpl(
                     "console.net.crypt.user-auth", Level.WARNING);

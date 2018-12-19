@@ -1,13 +1,15 @@
 package net.glowstone.command.minecraft;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
+import java.util.concurrent.ExecutionException;
+import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.command.Command;
+import net.glowstone.i18n.ConsoleMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.jetbrains.annotations.NonNls;
@@ -25,92 +27,55 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String DESCRIPTION_SUFFIX = ".description";
     private static final String USAGE_SUFFIX = ".usage";
     private static final String PERMISSION_SUFFIX = ".no-permission";
-    private static final ResourceBundle SERVER_LOCALE = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
+    private static final LoadingCache<String, Locale>
+            STRING_TO_LOCALE_CACHE = CacheBuilder.newBuilder().build(CacheLoader.from(
+            Locale::forLanguageTag));
 
-    private final Lock localeChangeLock = new ReentrantLock();
-    private volatile Locale lastLoadedLocale;
+    /**
+     * Use the server locale when talking to non-player command senders, since if anyone reads the
+     * output it will be a server admin.
+     */
+    private final CommandMessages defaultMessages;
+    private final LoadingCache<Locale, CommandMessages> localeToMessageCache;
+
+    private CommandMessages readResourceBundle(ResourceBundle bundle) {
+        return new CommandMessages(
+                bundle.getString(getName() + DESCRIPTION_SUFFIX),
+                bundle.getString(getName() + USAGE_SUFFIX),
+                bundle.getString(getName() + PERMISSION_SUFFIX));
+    }
 
     /**
      * Creates an instance, using the command's name to look up the description etc.
      */
     public GlowVanillaCommand(@NonNls String name, @NonNls List<String> aliases) {
-        super(name,
-                SERVER_LOCALE.getString(name + DESCRIPTION_SUFFIX),
-                SERVER_LOCALE.getString(name + USAGE_SUFFIX),
-                aliases);
-        setPermissionMessage(SERVER_LOCALE.getString(name + PERMISSION_SUFFIX));
-        lastLoadedLocale = SERVER_LOCALE.getLocale();
-    }
-
-    @Override
-    public Command setDescription(String description) {
-        localeChangeLock.lock();
-        try {
-            lastLoadedLocale = null;
-            return super.setDescription(description);
-        } finally {
-            localeChangeLock.unlock();
-        }
-    }
-
-    @Override
-    public Command setUsage(String usage) {
-        localeChangeLock.lock();
-        try {
-            lastLoadedLocale = null;
-            return super.setUsage(usage);
-        } finally {
-            localeChangeLock.unlock();
-        }
-    }
-
-    @Override
-    public Command setPermissionMessage(String permissionMessage) {
-        localeChangeLock.lock();
-        try {
-            lastLoadedLocale = null;
-            return super.setPermissionMessage(permissionMessage);
-        } finally {
-            localeChangeLock.unlock();
-        }
+        super(name, "", "", aliases);
+        localeToMessageCache = CacheBuilder.newBuilder().build(CacheLoader.from(
+            locale -> readResourceBundle(ResourceBundle.getBundle(BUNDLE_BASE_NAME, locale))));
+        defaultMessages = readResourceBundle(ResourceBundle.getBundle(BUNDLE_BASE_NAME));
+        setDescription(defaultMessages.getDescription());
+        setUsage(defaultMessages.getUsageMessage());
+        setPermissionMessage(defaultMessages.getPermissionMessage());
     }
 
     /**
      * {@inheritDoc}
-     * <p>This delegates to {@link #innerExecute(CommandSender, String, String[])}, but first
-     * ensures that if the command sender is a player, then the description and usage message are
-     * for that player's locale. (If the command sender <em>isn't</em> a player, the server locale
-     * is used.)</p>
+     * <p>This delegates to {@link #execute(CommandSender, String, String[], CommandMessages)}. If
+     * the command sender is a player, then the description and usage message are for that player's
+     * locale; otherwise, the server locale is used.</p>
      */
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!(sender instanceof GlowPlayer)) {
-            return innerExecute(sender, commandLabel, args);
-        }
-        localeChangeLock.lock();
-        try {
-            Locale locale = Locale.forLanguageTag(((GlowPlayer) sender).getLocale());
-            if (locale.equals(lastLoadedLocale)) {
-                return innerExecute(sender, commandLabel, args);
-            }
-            lastLoadedLocale = locale;
-            String oldDescription = getDescription();
-            String oldUsage = getUsage();
-            String oldPermissionMessage = getPermissionMessage();
-            ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_BASE_NAME, locale);
-            description = bundle.getString(getName() + DESCRIPTION_SUFFIX);
-            usageMessage = bundle.getString(getName() + USAGE_SUFFIX);
-            super.setPermissionMessage(bundle.getString(getName() + PERMISSION_SUFFIX));
+        CommandMessages localizedMessages = defaultMessages;
+        if (sender instanceof GlowPlayer) {
             try {
-                return innerExecute(sender, commandLabel, args);
-            } finally {
-                description = oldDescription;
-                usageMessage = oldUsage;
-                super.setPermissionMessage(oldPermissionMessage);
+                localizedMessages = localeToMessageCache.get(
+                        STRING_TO_LOCALE_CACHE.get(((GlowPlayer) sender).getLocale()));
+            } catch (ExecutionException e) {
+                ConsoleMessages.Warn.Command.L10N_FAILED.log(e, getName(), sender);
             }
-        } finally {
-            localeChangeLock.unlock();
         }
+        return execute(sender, commandLabel, args, localizedMessages);
     }
 
     /**
@@ -119,8 +84,17 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      * @param sender       Source object which is executing this command
      * @param commandLabel The alias of the command used
      * @param args         All arguments passed to the command, split via ' '
+     * @param localizedMessages Object containing the title, description and permission message in
+     *                     the sender's locale.
      * @return true if the command was successful, otherwise false
      */
-    protected abstract boolean innerExecute(CommandSender sender, String commandLabel,
-            String[] args);
+    protected abstract boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages localizedMessages);
+
+    @Data
+    private static class CommandMessages {
+        private final String description;
+        private final String usageMessage;
+        private final String permissionMessage;
+    }
 }
