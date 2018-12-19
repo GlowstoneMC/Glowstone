@@ -16,14 +16,16 @@ import org.jetbrains.annotations.NonNls;
 
 /**
  * A subclass of {@link VanillaCommand} with the additional feature that when the command sender is
- * a {@link GlowPlayer}, description, usage and permission-error messages are looked up in the
- * client's locale, temporarily overriding whatever has been or is subsequently set in
+ * a {@link GlowPlayer}, the description, usage and permission-error messages are looked up in the
+ * client's locale, overriding whatever has been or is subsequently set in
  * {@link #setDescription(String)}, {@link #setUsage(String)} or
- * {@link #setPermissionMessage(String)}.
+ * {@link #setPermissionMessage(String)}. For non-player command senders, the server's locale is
+ * still used, as are messages set with these setters.
  */
 public abstract class GlowVanillaCommand extends VanillaCommand {
-
     private static final String BUNDLE_BASE_NAME = "commands";
+    private static final ResourceBundle DEFAULT_RESOURCE_BUNDLE
+            = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
     private static final String DESCRIPTION_SUFFIX = ".description";
     private static final String USAGE_SUFFIX = ".usage";
     private static final String PERMISSION_SUFFIX = ".no-permission";
@@ -34,11 +36,6 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             .build(CacheLoader.from(localeStr ->
                     ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.forLanguageTag(localeStr))));
 
-    /**
-     * Use the server locale when talking to non-player command senders, since if anyone reads the
-     * output it will be a server admin.
-     */
-    private final CommandMessages defaultMessages;
     private final LoadingCache<ResourceBundle, CommandMessages> bundleToMessageCache;
 
     private CommandMessages readResourceBundle(ResourceBundle bundle) {
@@ -55,10 +52,10 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         super(name, "", "", aliases);
         bundleToMessageCache = CacheBuilder.newBuilder().build(
                 CacheLoader.from(this::readResourceBundle));
-        defaultMessages = readResourceBundle(ResourceBundle.getBundle(BUNDLE_BASE_NAME));
-        setDescription(defaultMessages.getDescription());
-        setUsage(defaultMessages.getUsageMessage());
-        setPermissionMessage(defaultMessages.getPermissionMessage());
+        CommandMessages defaultMessages = readResourceBundle(DEFAULT_RESOURCE_BUNDLE);
+        super.setDescription(defaultMessages.getDescription());
+        super.setUsage(defaultMessages.getUsageMessage());
+        super.setPermissionMessage(defaultMessages.getPermissionMessage());
     }
 
     /**
@@ -69,7 +66,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      */
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        CommandMessages localizedMessages = defaultMessages;
+        CommandMessages localizedMessages = null;
         if (sender instanceof GlowPlayer) {
             try {
                 localizedMessages = bundleToMessageCache.get(
@@ -77,6 +74,10 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             } catch (ExecutionException e) {
                 ConsoleMessages.Warn.Command.L10N_FAILED.log(e, getName(), sender);
             }
+        }
+        if (localizedMessages == null) {
+            localizedMessages
+                    = new CommandMessages(getDescription(), getUsage(), getPermissionMessage());
         }
         return execute(sender, commandLabel, args, localizedMessages);
     }
