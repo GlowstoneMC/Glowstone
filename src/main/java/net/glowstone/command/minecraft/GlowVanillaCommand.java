@@ -27,16 +27,19 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String DESCRIPTION_SUFFIX = ".description";
     private static final String USAGE_SUFFIX = ".usage";
     private static final String PERMISSION_SUFFIX = ".no-permission";
-    private static final LoadingCache<String, Locale>
-            STRING_TO_LOCALE_CACHE = CacheBuilder.newBuilder().build(CacheLoader.from(
-            Locale::forLanguageTag));
+    private static final long CACHE_SIZE = 50;
+    private static final LoadingCache<String, ResourceBundle> STRING_TO_BUNDLE_CACHE
+        = CacheBuilder.newBuilder()
+            .maximumSize(CACHE_SIZE)
+            .build(CacheLoader.from(localeStr ->
+                    ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.forLanguageTag(localeStr))));
 
     /**
      * Use the server locale when talking to non-player command senders, since if anyone reads the
      * output it will be a server admin.
      */
     private final CommandMessages defaultMessages;
-    private final LoadingCache<Locale, CommandMessages> localeToMessageCache;
+    private final LoadingCache<ResourceBundle, CommandMessages> bundleToMessageCache;
 
     private CommandMessages readResourceBundle(ResourceBundle bundle) {
         return new CommandMessages(
@@ -50,8 +53,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      */
     public GlowVanillaCommand(@NonNls String name, @NonNls List<String> aliases) {
         super(name, "", "", aliases);
-        localeToMessageCache = CacheBuilder.newBuilder().build(CacheLoader.from(
-            locale -> readResourceBundle(ResourceBundle.getBundle(BUNDLE_BASE_NAME, locale))));
+        bundleToMessageCache = CacheBuilder.newBuilder().build(
+                CacheLoader.from(this::readResourceBundle));
         defaultMessages = readResourceBundle(ResourceBundle.getBundle(BUNDLE_BASE_NAME));
         setDescription(defaultMessages.getDescription());
         setUsage(defaultMessages.getUsageMessage());
@@ -69,8 +72,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         CommandMessages localizedMessages = defaultMessages;
         if (sender instanceof GlowPlayer) {
             try {
-                localizedMessages = localeToMessageCache.get(
-                        STRING_TO_LOCALE_CACHE.get(((GlowPlayer) sender).getLocale()));
+                localizedMessages = bundleToMessageCache.get(
+                        STRING_TO_BUNDLE_CACHE.get(((GlowPlayer) sender).getLocale()));
             } catch (ExecutionException e) {
                 ConsoleMessages.Warn.Command.L10N_FAILED.log(e, getName(), sender);
             }
