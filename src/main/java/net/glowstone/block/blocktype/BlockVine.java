@@ -52,7 +52,7 @@ public class BlockVine extends BlockClimbable {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         switch (against) {
             case NORTH:
             case SOUTH:

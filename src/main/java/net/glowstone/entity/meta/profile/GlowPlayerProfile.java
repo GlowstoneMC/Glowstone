@@ -32,7 +32,7 @@ public class GlowPlayerProfile implements PlayerProfile {
     public static final int MAX_USERNAME_LENGTH = 16;
     @Getter
     @Nullable
-    private final String name;
+    private String name;
     @Nullable
     private volatile CompletableFuture<UUID> uniqueId;
     private final Map<String, ProfileProperty> properties;
@@ -195,7 +195,7 @@ public class GlowPlayerProfile implements PlayerProfile {
         CompoundTag profileTag = new CompoundTag();
         UUID uuid = getId();
         if (uuid != null) {
-            profileTag.putString("Id", uniqueId.toString());
+            profileTag.putString("Id", uuid.toString());
         }
         if (name != null) {
             profileTag.putString("Name", name);
@@ -217,10 +217,19 @@ public class GlowPlayerProfile implements PlayerProfile {
         }
         return profileTag;
     }
+    
+    private void checkOwnerCriteria(String name, UUID id) {
+        if (id == null && (name == null || name.isEmpty())) {
+            throw new IllegalArgumentException("Either name or uuid must be present in profile");
+        }
+    }
 
     @Override
     public String setName(@Nullable String name) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        checkOwnerCriteria(name,getId());
+        String oldname = this.name;
+        this.name = name;
+        return oldname;
     }
 
     @Override
@@ -230,7 +239,23 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public UUID setId(@Nullable UUID uuid) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        checkOwnerCriteria(name,uuid);
+        UUID oldUuid = null;
+        if (uniqueId == null) {
+            synchronized (this) {
+                if (uniqueId == null) {
+                    uniqueId = CompletableFuture.completedFuture(uuid);
+                    return null;
+                }
+                oldUuid = uniqueId.getNow(null);
+            }
+        } else {
+            oldUuid = uniqueId.getNow(null);
+        }
+        if (!uniqueId.complete(uuid)) {
+            uniqueId.obtrudeValue(uuid);
+        }
+        return oldUuid;
     }
 
     /**
@@ -250,7 +275,7 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public boolean hasProperty(String property) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return properties.containsKey(property);
     }
 
     @Override

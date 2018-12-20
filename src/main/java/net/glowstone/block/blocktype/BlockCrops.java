@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return block.getRelative(BlockFace.DOWN).getType() == Material.SOIL;
     }
 

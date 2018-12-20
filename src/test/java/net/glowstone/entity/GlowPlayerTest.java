@@ -3,11 +3,12 @@ package net.glowstone.entity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Answers.RETURNS_SMART_NULLS;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
+
+import net.glowstone.EventFactory;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.MaterialValueManager;
@@ -36,7 +39,13 @@ import net.glowstone.util.bans.UuidListFile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.junit.Before;
@@ -86,6 +95,8 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     private PlayerStatisticIoService statisticIoService;
     @Mock(answer = RETURNS_SMART_NULLS)
     private ChunkLock chunkLock;
+    @Mock(answer = RETURNS_SMART_NULLS)
+    private EventFactory eventFactory;
 
     // Real objects
 
@@ -138,8 +149,11 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         entity = entityCreator.apply(location);
         entity.setItemInHand(fishingRodItem);
         entity.setDigging(null);
+        entity.setLevel(1);
         when(session.getPlayer()).thenReturn(entity);
         when(world.getRawPlayers()).thenReturn(Collections.singletonList(entity));
+        EventFactory.setInstance(eventFactory);
+        when(eventFactory.callEvent(any(Event.class))).thenAnswer(returnsFirstArg());
     }
 
     private void assertCannotDigWith(@Nullable ItemStack tool) {
@@ -242,5 +256,345 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         entity.setItemInHand(InventoryUtil.createEmptyStack());
         entity.pulse();
         assertNull(entity.getCurrentFishingHook());
+    }
+
+    @Test
+    public void testSetLevel() {
+        entity.setLevel(12);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(12, event.getNewLevel());
+            assertEquals(1, event.getOldLevel());
+            return true;
+        }));
+
+        assertEquals(12, entity.getLevel());
+    }
+
+    @Test
+    public void testSetLevelSameLevel() {
+        entity.setLevel(1);
+        verify(eventFactory, never()).callEvent(any());
+
+        assertEquals(1, entity.getLevel());
+    }
+
+    @Test
+    public void testSetLevelNegativeLevel() {
+        entity.setLevel(-5);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(0, event.getNewLevel());
+            assertEquals(1, event.getOldLevel());
+            return true;
+        }));
+
+        assertEquals(0, entity.getLevel());
+    }
+
+    @Test
+    public void testGiveExpLevels() {
+        entity.giveExpLevels(14);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(15, event.getNewLevel());
+            assertEquals(1, event.getOldLevel());
+            return true;
+        }));
+        assertEquals(15, entity.getLevel());
+    }
+
+    @Test
+    public void testGiveExp() {
+        entity.giveExp(20);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(2, event.getNewLevel());
+            assertEquals(1, event.getOldLevel());
+            return true;
+        }));
+        assertEquals(2, entity.getLevel());
+        assertEquals(0.17, entity.getExp(), 0.1);
+        assertEquals(20, entity.getTotalExperience());
+    }
+
+    @Test
+    public void testGiveExpWithoutNewLevel() {
+        entity.giveExp(12);
+        verify(eventFactory, never()).callEvent(any());
+
+        assertEquals(1, entity.getLevel());
+        assertEquals(0.70, entity.getExp(), 0.1);
+        assertEquals(12, entity.getTotalExperience());
+    }
+
+    @Test
+    public void testEnchanted() {
+        entity.setExp(0.15f);
+        entity.setTotalExperience(3);
+        entity.enchanted(0);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(0, event.getNewLevel());
+            assertEquals(1, event.getOldLevel());
+            return true;
+        }));
+        assertEquals(0, entity.getLevel());
+        assertEquals(0.15, entity.getExp(), 0.1);
+        assertEquals(3, entity.getTotalExperience());
+    }
+
+    @Test
+    public void testEnchantedConsumeAll() {
+        entity.setExp(0.15f);
+        entity.setTotalExperience(3);
+        entity.enchanted(2);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(0, event.getNewLevel());
+            assertEquals(1, event.getOldLevel());
+            return true;
+        }));
+        assertEquals(0, entity.getLevel());
+        assertEquals(0, entity.getExp(), 0.1);
+        assertEquals(0, entity.getTotalExperience());
+    }
+
+    @Test
+    public void testIncrementStatistic() {
+        entity.incrementStatistic(Statistic.ANIMALS_BRED);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.ANIMALS_BRED, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(1, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(1, entity.getStatistic(Statistic.ANIMALS_BRED));
+    }
+
+    @Test
+    public void testIncrementStatisticCancelled() {
+        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
+            Cancellable cancellable = invocation.getArgument(0);
+            cancellable.setCancelled(true);
+            return cancellable;
+        });
+
+        entity.incrementStatistic(Statistic.ANIMALS_BRED);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.ANIMALS_BRED, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(1, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(0, entity.getStatistic(Statistic.ANIMALS_BRED));
+    }
+
+    @Test
+    public void testIncrementStatisticWithValue() {
+        entity.incrementStatistic(Statistic.ANIMALS_BRED, 12);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.ANIMALS_BRED, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(12, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(12, entity.getStatistic(Statistic.ANIMALS_BRED));
+    }
+
+    @Test
+    public void testIncrementStatisticWithValueCancelled() {
+        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
+            Cancellable cancellable = invocation.getArgument(0);
+            cancellable.setCancelled(true);
+            return cancellable;
+        });
+
+        entity.incrementStatistic(Statistic.ANIMALS_BRED, 12);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.ANIMALS_BRED, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(12, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(0, entity.getStatistic(Statistic.ANIMALS_BRED));
+    }
+
+    // TODO Implement the name method in the StatisticMap and remove the expected
+    @Test(expected = UnsupportedOperationException.class)
+    public void testIncrementStatisticMaterial() {
+        entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.MINE_BLOCK, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(1, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertEquals(Material.DIRT, event.getMaterial());
+            return true;
+        }));
+        assertEquals(1, entity.getStatistic(Statistic.MINE_BLOCK));
+    }
+
+    @Test
+    public void testIncrementStatisticMaterialCancelled() {
+        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
+            Cancellable cancellable = invocation.getArgument(0);
+            cancellable.setCancelled(true);
+            return cancellable;
+        });
+
+        entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.MINE_BLOCK, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(1, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertEquals(Material.DIRT, event.getMaterial());
+            return true;
+        }));
+        assertEquals(0, entity.getStatistic(Statistic.MINE_BLOCK));
+    }
+
+    // TODO Implement the name method in the StatisticMap and remove the expected
+    @Test(expected = UnsupportedOperationException.class)
+    public void testIncrementStatisticMaterialWithValue() {
+        entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT, 13);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.MINE_BLOCK, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(13, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertEquals(Material.DIRT, event.getMaterial());
+            return true;
+        }));
+        assertEquals(13, entity.getStatistic(Statistic.MINE_BLOCK));
+    }
+
+    @Test
+    public void testIncrementStatisticMaterialWithValueCancelled() {
+        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
+            Cancellable cancellable = invocation.getArgument(0);
+            cancellable.setCancelled(true);
+            return cancellable;
+        });
+
+        entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT, 13);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.MINE_BLOCK, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(13, event.getNewValue());
+            assertNull(event.getEntityType());
+            assertEquals(Material.DIRT, event.getMaterial());
+            return true;
+        }));
+        assertEquals(0, entity.getStatistic(Statistic.MINE_BLOCK));
+    }
+
+    // TODO Implement the name method in the StatisticMap and remove the expected
+    @Test(expected = UnsupportedOperationException.class)
+    public void testIncrementStatisticEntityType() {
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(1, event.getNewValue());
+            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(1, entity.getStatistic(Statistic.KILL_ENTITY));
+    }
+
+    @Test
+    public void testIncrementStatisticEntityTypeCancelled() {
+        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
+            Cancellable cancellable = invocation.getArgument(0);
+            cancellable.setCancelled(true);
+            return cancellable;
+        });
+
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(1, event.getNewValue());
+            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY));
+    }
+
+    // TODO Implement the name method in the StatisticMap and remove the expected
+    @Test(expected = UnsupportedOperationException.class)
+    public void testIncrementStatisticEntityTypeWithValue() {
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON, 14);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(14, event.getNewValue());
+            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(14, entity.getStatistic(Statistic.KILL_ENTITY));
+    }
+
+    @Test
+    public void testIncrementStatisticEntityTypeWithValueCancelled() {
+        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
+            Cancellable cancellable = invocation.getArgument(0);
+            cancellable.setCancelled(true);
+            return cancellable;
+        });
+
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON, 14);
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
+            assertSame(entity, event.getPlayer());
+            assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
+            assertEquals(0, event.getPreviousValue());
+            assertEquals(14, event.getNewValue());
+            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertNull(event.getMaterial());
+            return true;
+        }));
+        assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY));
     }
 }

@@ -2,8 +2,9 @@ package net.glowstone.entity;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import com.flowpowered.network.Message;
@@ -38,7 +39,6 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.Answer;
 
 /**
  * Superclass for tests of entity classes. Configures necessary mocks for subclasses.
@@ -48,8 +48,6 @@ import org.mockito.stubbing.Answer;
  * @param <T> the class under test
  */
 public abstract class GlowEntityTest<T extends GlowEntity> {
-
-    public static final Answer<Object> RETURN_FIRST_ARG = invocation -> invocation.getArgument(0);
 
     // Mockito mocks
     @Mock
@@ -126,15 +124,15 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         scoreboard = new GlowScoreboard();
         when(scoreboardManager.getMainScoreboard()).thenReturn(scoreboard);
         when(itemFactory.ensureServerConversions(any(ItemStack.class)))
-                .thenAnswer(RETURN_FIRST_ARG);
+                .thenAnswer(returnsFirstArg());
         oldEventFactory = EventFactory.getInstance();
         EventFactory.setInstance(eventFactory);
-        when(eventFactory.callEvent(any(Event.class))).thenAnswer(RETURN_FIRST_ARG);
+        when(eventFactory.callEvent(any(Event.class))).thenAnswer(returnsFirstArg());
         if (createEntityInSuperSetUp()) {
             entity = entityCreator.apply(location);
         }
         when(eventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
-                RETURN_FIRST_ARG);
+                returnsFirstArg());
         inventory = new GlowPlayerInventory(player);
         Mockito.when(player.getInventory()).thenReturn(inventory);
         Mockito.when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);

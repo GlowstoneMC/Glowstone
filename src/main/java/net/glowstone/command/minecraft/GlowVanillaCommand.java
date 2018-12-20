@@ -19,9 +19,8 @@ import org.jetbrains.annotations.NonNls;
  * a {@link GlowPlayer}, the description, usage and permission-error messages are looked up in the
  * client's locale, overriding whatever has been or is subsequently set in
  * {@link #setDescription(String)}, {@link #setUsage(String)} or
- * {@link #setPermissionMessage(String)}. For non-player command senders and players with unknown
- * locale ({@code {@link GlowPlayer#getLocale()} == null}), messages set with these setters will be
- * used, and the initial values are based on the server's locale.
+ * {@link #setPermissionMessage(String)}. For non-player command senders, the server's locale is
+ * still used, as are messages set with these setters.
  */
 public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String BUNDLE_BASE_NAME = "commands";
@@ -34,41 +33,16 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final LoadingCache<String, ResourceBundle> STRING_TO_BUNDLE_CACHE
         = CacheBuilder.newBuilder()
             .maximumSize(CACHE_SIZE)
-            .build(CacheLoader.from(GlowVanillaCommand::bundleForMinecraftLocaleString));
+            .build(CacheLoader.from(localeStr ->
+                    ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.forLanguageTag(localeStr))));
 
-    private final LoadingCache<ResourceBundle, LocalizedMessageTable> bundleToMessageCache;
+    private final LoadingCache<ResourceBundle, CommandMessages> bundleToMessageCache;
 
-    private static ResourceBundle bundleForMinecraftLocaleString(String localeStr) {
-        if (localeStr == null) {
-            return DEFAULT_RESOURCE_BUNDLE;
-        }
-        Locale locale;
-        String[] pieces = localeStr.split("_");
-        switch (pieces.length) {
-            case 0:
-                return DEFAULT_RESOURCE_BUNDLE;
-            case 1:
-                if (pieces[0].contains("-")) {
-                    locale = Locale.forLanguageTag(localeStr);
-                } else {
-                    locale = new Locale(pieces[0]);
-                }
-                break;
-            case 2:
-                locale = new Locale(pieces[0], pieces[1].toUpperCase(Locale.ENGLISH));
-                break;
-            default:
-                locale = new Locale(pieces[0], pieces[1].toUpperCase(Locale.ENGLISH), pieces[2]);
-        }
-        return ResourceBundle.getBundle(BUNDLE_BASE_NAME, locale);
-    }
-
-    private LocalizedMessageTable readResourceBundle(ResourceBundle bundle) {
-        String name = getName();
-        return new LocalizedMessageTable(
-                bundle.getString(name + DESCRIPTION_SUFFIX),
-                bundle.getString(name + USAGE_SUFFIX),
-                bundle.getString(name + PERMISSION_SUFFIX));
+    private CommandMessages readResourceBundle(ResourceBundle bundle) {
+        return new CommandMessages(
+                bundle.getString(getName() + DESCRIPTION_SUFFIX),
+                bundle.getString(getName() + USAGE_SUFFIX),
+                bundle.getString(getName() + PERMISSION_SUFFIX));
     }
 
     /**
@@ -78,7 +52,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         super(name, "", "", aliases);
         bundleToMessageCache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE).build(
                 CacheLoader.from(this::readResourceBundle));
-        LocalizedMessageTable defaultMessages = readResourceBundle(DEFAULT_RESOURCE_BUNDLE);
+        CommandMessages defaultMessages = readResourceBundle(DEFAULT_RESOURCE_BUNDLE);
         super.setDescription(defaultMessages.getDescription());
         super.setUsage(defaultMessages.getUsageMessage());
         super.setPermissionMessage(defaultMessages.getPermissionMessage());
@@ -86,13 +60,13 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     /**
      * {@inheritDoc}
-     * <p>Delegates to {@link #execute(CommandSender, String, String[], LocalizedMessageTable)}. If
-     * the command sender is a player, then the messages are localized for that player; otherwise,
-     * the server locale is used.</p>
+     * <p>This delegates to {@link #execute(CommandSender, String, String[], CommandMessages)}. If
+     * the command sender is a player, then the description and usage message are for that player's
+     * locale; otherwise, the server locale is used.</p>
      */
     @Override
-    public boolean execute(CommandSender sender, @NonNls String commandLabel, String[] args) {
-        LocalizedMessageTable localizedMessages = null;
+    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        CommandMessages localizedMessages = null;
         if (sender instanceof GlowPlayer) {
             try {
                 localizedMessages = bundleToMessageCache.get(
@@ -102,8 +76,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             }
         }
         if (localizedMessages == null) {
-            localizedMessages = new LocalizedMessageTable(
-                    getDescription(), getUsage(), getPermissionMessage());
+            localizedMessages
+                    = new CommandMessages(getDescription(), getUsage(), getPermissionMessage());
         }
         return execute(sender, commandLabel, args, localizedMessages);
     }
@@ -119,10 +93,10 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      * @return true if the command was successful, otherwise false
      */
     protected abstract boolean execute(CommandSender sender, String commandLabel, String[] args,
-            LocalizedMessageTable localizedMessages);
+            CommandMessages localizedMessages);
 
     @Data
-    protected static class LocalizedMessageTable {
+    private static class CommandMessages {
         private final String description;
         private final String usageMessage;
         private final String permissionMessage;
