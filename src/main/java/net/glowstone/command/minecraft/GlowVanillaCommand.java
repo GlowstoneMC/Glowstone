@@ -30,6 +30,9 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String DESCRIPTION_SUFFIX = ".description";
     private static final String USAGE_SUFFIX = ".usage";
     private static final String PERMISSION_SUFFIX = ".no-permission";
+    private static final String DEFAULT_PERMISSION = "_generic.no-permission";
+    protected static final String USAGE_IS = "_generic.usage";
+
     private static final long CACHE_SIZE = 50;
     private static final LoadingCache<String, ResourceBundle> STRING_TO_BUNDLE_CACHE
         = CacheBuilder.newBuilder()
@@ -39,11 +42,14 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     private final LoadingCache<ResourceBundle, CommandMessages> bundleToMessageCache;
 
-    private CommandMessages readResourceBundle(ResourceBundle bundle) {
+    protected CommandMessages readResourceBundle(ResourceBundle bundle) {
+        String name = getName();
+        String permissionKey = name + PERMISSION_SUFFIX;
         return new CommandMessages(
-                bundle.getString(getName() + DESCRIPTION_SUFFIX),
-                bundle.getString(getName() + USAGE_SUFFIX),
-                bundle.getString(getName() + PERMISSION_SUFFIX));
+                bundle.getString(name + DESCRIPTION_SUFFIX),
+                bundle.getString(name + USAGE_SUFFIX),
+                bundle.getString(
+                        bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION));
     }
 
     /**
@@ -61,26 +67,30 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     /**
      * {@inheritDoc}
-     * <p>This delegates to {@link #execute(CommandSender, String, String[], CommandMessages)}. If
-     * the command sender is a player, then the description and usage message are for that player's
-     * locale; otherwise, the server locale is used.</p>
+     * <p>This delegates to {@link #execute(CommandSender, String, String[], ResourceBundle,
+     * CommandMessages)}. If the command sender is a player, then the description and usage message
+     * are for that player's locale; otherwise, the server locale is used.</p>
      */
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         CommandMessages localizedMessages = null;
+        ResourceBundle bundle = null;
         if (sender instanceof GlowPlayer) {
             try {
-                localizedMessages = bundleToMessageCache.get(
-                        STRING_TO_BUNDLE_CACHE.get(((GlowPlayer) sender).getLocale()));
+                bundle = getBundle((GlowPlayer) sender);
+                localizedMessages = bundleToMessageCache.get(bundle);
             } catch (ExecutionException e) {
                 ConsoleMessages.Warn.Command.L10N_FAILED.log(e, getName(), sender);
             }
+        }
+        if (bundle == null) {
+            bundle = DEFAULT_RESOURCE_BUNDLE;
         }
         if (localizedMessages == null) {
             localizedMessages
                     = new CommandMessages(getDescription(), getUsage(), getPermissionMessage());
         }
-        return execute(sender, commandLabel, args, localizedMessages);
+        return execute(sender, commandLabel, args, bundle, localizedMessages);
     }
 
     /**
@@ -89,15 +99,21 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      * @param sender       Source object which is executing this command
      * @param commandLabel The alias of the command used
      * @param args         All arguments passed to the command, split via ' '
+     * @param resourceBundle The {@code commands.properties} resource bundle for the sender's locale
      * @param localizedMessages Object containing the title, description and permission message in
-     *                     the sender's locale.
+     *                     the sender's locale, or set with setters
      * @return true if the command was successful, otherwise false
      */
     protected abstract boolean execute(CommandSender sender, String commandLabel, String[] args,
-            CommandMessages localizedMessages);
+            ResourceBundle resourceBundle, CommandMessages localizedMessages);
+
+    protected static ResourceBundle getBundle(GlowPlayer sender)
+            throws ExecutionException {
+        return STRING_TO_BUNDLE_CACHE.get(sender.getLocale());
+    }
 
     @Data
-    private static class CommandMessages {
+    protected static class CommandMessages {
         private final String description;
         private final String usageMessage;
         private final String permissionMessage;
