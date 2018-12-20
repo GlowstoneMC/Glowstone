@@ -114,6 +114,20 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         return STRING_TO_BUNDLE_CACHE.get(sender.getLocale());
     }
 
+    /**
+     * Works like {@link #testPermission(CommandSender)} but uses the specified error message.
+     * @param target User to test
+     * @param permissionMessage Error message if user lacks permission
+     * @return true if they can use it, otherwise false
+     */
+    public boolean testPermission(CommandSender target, String permissionMessage) {
+        if (testPermissionSilent(target)) {
+            return true;
+        }
+        target.sendMessage(ChatColor.RED.toString() + permissionMessage);
+        return false;
+    }
+
     protected void sendUsageMessage(CommandSender sender, ResourceBundle resourceBundle) {
         new LocalizedStringImpl(USAGE_IS, resourceBundle)
                 .sendInColor(sender, ChatColor.RED, usageMessage);
