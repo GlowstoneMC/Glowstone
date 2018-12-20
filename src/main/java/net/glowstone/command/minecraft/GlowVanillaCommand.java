@@ -19,8 +19,9 @@ import org.jetbrains.annotations.NonNls;
  * a {@link GlowPlayer}, the description, usage and permission-error messages are looked up in the
  * client's locale, overriding whatever has been or is subsequently set in
  * {@link #setDescription(String)}, {@link #setUsage(String)} or
- * {@link #setPermissionMessage(String)}. For non-player command senders, the server's locale is
- * still used, as are messages set with these setters.
+ * {@link #setPermissionMessage(String)}. For non-player command senders and players with unknown
+ * locale ({@code {@link GlowPlayer#getLocale()} == null}), messages set with these setters will be
+ * used, and the initial values are based on the server's locale.
  */
 public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String BUNDLE_BASE_NAME = "commands";
