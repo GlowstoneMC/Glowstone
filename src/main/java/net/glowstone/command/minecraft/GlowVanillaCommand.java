@@ -124,7 +124,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         if (testPermissionSilent(target)) {
             return true;
         }
-        target.sendMessage(permissionMessage);
+        target.sendMessage(ChatColor.RED.toString() + permissionMessage);
         return false;
     }
 
