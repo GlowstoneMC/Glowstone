@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.inventory.ItemStack;
@@ -57,7 +59,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-@PrepareForTest({Bukkit.class, ChunkManager.class})
+@PrepareForTest( {Bukkit.class, ChunkManager.class})
 @RunWith(PowerMockRunner.class)
 public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
@@ -78,7 +80,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         new ItemStack(Material.SHEARS));
 
     private final ChunkManager chunkManager
-            = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
+        = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
 
     // Mockito mocks
     @Mock(answer = RETURNS_SMART_NULLS)
@@ -101,7 +103,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     // Real objects
 
     private static final GlowPlayerProfile profile
-            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), false);
+        = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), false);
     private GlowScheduler scheduler;
     private final SessionRegistry sessionRegistry = new SessionRegistry();
     private File opsListFile;
@@ -310,12 +312,19 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Test
     public void testGiveExp() {
         entity.giveExp(20);
+        boolean expEvent = true;
         verify(eventFactory).callEvent(argThat(input -> {
-            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
-            assertSame(entity, event.getPlayer());
-            assertEquals(2, event.getNewLevel());
-            assertEquals(1, event.getOldLevel());
-            return true;
+            if (input instanceof PlayerExpChangeEvent) {
+                PlayerExpChangeEvent event = (PlayerExpChangeEvent) input;
+                assertEquals(20, event.getAmount());
+            } else if (input instanceof PlayerLevelChangeEvent) {
+                PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+                assertSame(entity, event.getPlayer());
+                assertEquals(2, event.getNewLevel());
+                assertEquals(1, event.getOldLevel());
+                return true;
+            }
+            return false;
         }));
         assertEquals(2, entity.getLevel());
         assertEquals(0.17, entity.getExp(), 0.1);
@@ -325,7 +334,11 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Test
     public void testGiveExpWithoutNewLevel() {
         entity.giveExp(12);
-        verify(eventFactory, never()).callEvent(any());
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerExpChangeEvent event = (PlayerExpChangeEvent) input;
+            assertEquals(12, event.getAmount());
+            return true;
+        }));
 
         assertEquals(1, entity.getLevel());
         assertEquals(0.70, entity.getExp(), 0.1);
