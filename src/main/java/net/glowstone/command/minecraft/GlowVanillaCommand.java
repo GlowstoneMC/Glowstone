@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.LocalizedStringImpl;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 import org.jetbrains.annotations.NonNls;
@@ -31,7 +33,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String USAGE_SUFFIX = ".usage";
     private static final String PERMISSION_SUFFIX = ".no-permission";
     private static final String DEFAULT_PERMISSION = "_generic.no-permission";
-    protected static final String USAGE_IS = "_generic.usage";
+    private static final String USAGE_IS = "_generic.usage";
 
     private static final long CACHE_SIZE = 50;
     private static final LoadingCache<String, ResourceBundle> STRING_TO_BUNDLE_CACHE
@@ -110,6 +112,11 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     protected static ResourceBundle getBundle(GlowPlayer sender)
             throws ExecutionException {
         return STRING_TO_BUNDLE_CACHE.get(sender.getLocale());
+    }
+
+    protected void sendUsageMessage(CommandSender sender, ResourceBundle resourceBundle) {
+        new LocalizedStringImpl(USAGE_IS, resourceBundle)
+                .sendInColor(sender, ChatColor.RED, usageMessage);
     }
 
     @Data

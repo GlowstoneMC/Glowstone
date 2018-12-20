@@ -59,8 +59,7 @@ public class BanCommand extends GlowVanillaCommand {
             // todo: asynchronous command callbacks?
             return true;
         }
-        new LocalizedStringImpl(USAGE_IS, resourceBundle)
-                .sendInColor(sender, ChatColor.RED, usageMessage);
+        sendUsageMessage(sender, resourceBundle);
         return false;
     }
 
