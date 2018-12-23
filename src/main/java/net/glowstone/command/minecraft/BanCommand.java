@@ -2,28 +2,29 @@ package net.glowstone.command.minecraft;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 
-public class BanCommand extends VanillaCommand {
+public class BanCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public BanCommand() {
-        super("ban", "Bans a player from the server.", "/ban <player> [reason]",
-                Collections.emptyList());
+        super("ban", Collections.emptyList());
         setPermission("minecraft.command.ban");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            ResourceBundle resourceBundle, CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length > 0) {
@@ -32,13 +33,13 @@ public class BanCommand extends VanillaCommand {
             // asynchronously lookup player
             server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
                 if (ex != null) {
-                    sender.sendMessage(ChatColor.RED + "Failed to ban " + name + ": "
-                            + ex.getMessage());
-                    ex.printStackTrace();
+                    new LocalizedStringImpl("ban.exception", resourceBundle)
+                            .sendInColor(sender, ChatColor.RED, name, ex.getMessage());
                     return;
                 }
                 if (player == null) {
-                    sender.sendMessage(ChatColor.RED + "Could not ban player " + args[0]);
+                    new LocalizedStringImpl("ban.no-such-player", resourceBundle)
+                            .sendInColor(sender, ChatColor.RED, name);
                     return;
                 }
                 if (args.length == 1) {
@@ -52,12 +53,13 @@ public class BanCommand extends VanillaCommand {
                     Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(),
                             reason.toString(), null, null);
                 }
-                sender.sendMessage("Banned player " + player.getName());
+                new LocalizedStringImpl("ban.done", resourceBundle)
+                        .send(sender, player.getName());
             });
             // todo: asynchronous command callbacks?
             return true;
         }
-        sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+        sendUsageMessage(sender, resourceBundle);
         return false;
     }
 
