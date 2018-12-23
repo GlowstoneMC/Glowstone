@@ -3,26 +3,26 @@ package net.glowstone.command.minecraft;
 import com.google.common.net.InetAddresses;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
-public class BanIpCommand extends VanillaCommand {
+public class BanIpCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public BanIpCommand() {
-        super("ban-ip", "Bans an IP address from the server.", "/ban-ip <address|player> [reason]",
-            Collections.emptyList());
-        setPermission("minecraft.command.ban-ip");
+        super("ban-ip", Collections.emptyList());
+        setPermission("minecraft.command.ban-ip"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args, ResourceBundle
+            resourceBundle, CommandMessages messages) {
         if (!testPermission(sender)) {
             return true;
         }
@@ -47,14 +47,13 @@ public class BanIpCommand extends VanillaCommand {
                     Bukkit.getBanList(BanList.Type.IP)
                         .addBan(target, reason.toString(), null, null);
                 }
-                sender.sendMessage("Banned IP address " + target);
+                new LocalizedStringImpl("ban-ip.done", resourceBundle).send(sender, target);
                 return true;
             }
-            sender.sendMessage(ChatColor.RED
-                + "You have entered an invalid IP address or a player that is not online");
+            new LocalizedStringImpl("ban-ip.invalid", resourceBundle).send(sender);
             return false;
         }
-        sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+        sendUsageMessage(sender, resourceBundle);
         return false;
     }
 

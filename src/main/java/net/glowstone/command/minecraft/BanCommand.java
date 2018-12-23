@@ -18,7 +18,7 @@ public class BanCommand extends GlowVanillaCommand {
      */
     public BanCommand() {
         super("ban", Collections.emptyList());
-        setPermission("minecraft.command.ban");
+        setPermission("minecraft.command.ban"); // NON-NLS
     }
 
     @Override
@@ -34,12 +34,11 @@ public class BanCommand extends GlowVanillaCommand {
             server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
                 if (ex != null) {
                     new LocalizedStringImpl("ban.exception", resourceBundle)
-                            .sendInColor(sender, ChatColor.RED, name, ex.getMessage());
+                            .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
                     return;
                 }
                 if (player == null) {
-                    new LocalizedStringImpl("ban.no-such-player", resourceBundle)
-                            .sendInColor(sender, ChatColor.RED, name);
+                    commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
                     return;
                 }
                 if (args.length == 1) {

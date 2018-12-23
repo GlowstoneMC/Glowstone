@@ -1,35 +1,39 @@
 package net.glowstone.command.minecraft;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 
-public class BanListCommand extends VanillaCommand {
+public class BanListCommand extends GlowVanillaCommand {
 
+    @NonNls
     private static final List<String> BAN_TYPES = Arrays.asList("ips", "players");
 
     /**
      * Creates the instance for this command.
      */
     public BanListCommand() {
-        super("banlist", "Displays the server's blacklist.", "/banlist [ips|players]",
-            Collections.emptyList());
-        setPermission("minecraft.command.ban.list");
+        super("banlist", Collections.emptyList());
+        setPermission("minecraft.command.ban.list"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args, ResourceBundle
+            resourceBundle, CommandMessages messages) {
         if (!testPermission(sender)) {
             return true;
         }
@@ -37,13 +41,16 @@ public class BanListCommand extends VanillaCommand {
         BanList.Type banType;
 
         if (args.length > 0) {
-            if ("ips".equalsIgnoreCase(args[0])) {
+            Locale locale;
+            Collator caseInsensitive = Collator.getInstance(
+                    resourceBundle.getLocale());
+            caseInsensitive.setStrength(Collator.PRIMARY);
+            if (caseInsensitive.compare(args[0], "ips") == 0) { // NON-NLS
                 banType = BanList.Type.IP;
-            } else if ("players".equalsIgnoreCase(args[0])) {
+            } else if (caseInsensitive.compare(args[0], "players") == 0) { // NON-NLS
                 banType = BanList.Type.NAME;
             } else {
-                sender.sendMessage(
-                    ChatColor.RED + "Invalid parameter '" + args[0] + "'. Usage: " + usageMessage);
+                sendUsageMessage(sender, resourceBundle);
                 return false;
             }
         } else {
@@ -53,13 +60,14 @@ public class BanListCommand extends VanillaCommand {
         final Set<BanEntry> banEntries = Bukkit.getBanList(banType).getBanEntries();
 
         if (banEntries.isEmpty()) {
-            sender.sendMessage("There are no banned players");
+            new LocalizedStringImpl("banlist.empty", resourceBundle).send(sender);
         } else {
             final List<String> targets = banEntries.stream().map(BanEntry::getTarget)
                 .collect(Collectors.toList());
-            sender.sendMessage("There are " + banEntries.size() + " banned players: ");
+            new LocalizedStringImpl("banlist.non-empty", resourceBundle).send(sender,
+                    banEntries.size());
             sender
-                .sendMessage(CommandUtils.prettyPrint(targets.toArray(new String[targets.size()])));
+                .sendMessage(CommandUtils.prettyPrint(targets.toArray(new String[0])));
         }
 
         return true;
