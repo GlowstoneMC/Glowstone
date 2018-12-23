@@ -38,7 +38,7 @@ public class ClearCommand extends GlowVanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String label, String[] args, ResourceBundle
             resourceBundle, CommandMessages messages) {
-        if (!testPermission(sender)) {
+        if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0) {

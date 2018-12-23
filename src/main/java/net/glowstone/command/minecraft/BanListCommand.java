@@ -34,7 +34,7 @@ public class BanListCommand extends GlowVanillaCommand {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args, ResourceBundle
             resourceBundle, CommandMessages messages) {
-        if (!testPermission(sender)) {
+        if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
 
