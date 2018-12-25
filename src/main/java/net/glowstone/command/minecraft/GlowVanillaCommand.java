@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.LocalizedString;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -26,15 +27,22 @@ import org.jetbrains.annotations.NonNls;
  * used, and the initial values are based on the server's locale.
  */
 public abstract class GlowVanillaCommand extends VanillaCommand {
+    @NonNls
     private static final String BUNDLE_BASE_NAME = "commands";
-    private static final ResourceBundle DEFAULT_RESOURCE_BUNDLE
-            = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
+    @NonNls
     private static final String DESCRIPTION_SUFFIX = ".description";
+    @NonNls
     private static final String USAGE_SUFFIX = ".usage";
+    @NonNls
     private static final String PERMISSION_SUFFIX = ".no-permission";
+    @NonNls
     private static final String DEFAULT_PERMISSION = "_generic.no-permission";
+    @NonNls
+    private static final String NO_SUCH_PLAYER = "_generic.no-such-player";
+    @NonNls
     private static final String USAGE_IS = "_generic.usage";
-
+    private static final ResourceBundle SERVER_LOCALE_BUNDLE
+            = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
     private static final long CACHE_SIZE = 50;
     private static final LoadingCache<String, ResourceBundle> STRING_TO_BUNDLE_CACHE
         = CacheBuilder.newBuilder()
@@ -51,7 +59,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
                 bundle.getString(name + DESCRIPTION_SUFFIX),
                 bundle.getString(name + USAGE_SUFFIX),
                 bundle.getString(
-                        bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION));
+                        bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION),
+                new LocalizedStringImpl(NO_SUCH_PLAYER, bundle));
     }
 
     /**
@@ -61,7 +70,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         super(name, "", "", aliases);
         bundleToMessageCache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE).build(
                 CacheLoader.from(this::readResourceBundle));
-        CommandMessages defaultMessages = readResourceBundle(DEFAULT_RESOURCE_BUNDLE);
+        CommandMessages defaultMessages = readResourceBundle(SERVER_LOCALE_BUNDLE);
         super.setDescription(defaultMessages.getDescription());
         super.setUsage(defaultMessages.getUsageMessage());
         super.setPermissionMessage(defaultMessages.getPermissionMessage());
@@ -86,11 +95,14 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             }
         }
         if (bundle == null) {
-            bundle = DEFAULT_RESOURCE_BUNDLE;
+            bundle = SERVER_LOCALE_BUNDLE;
         }
         if (localizedMessages == null) {
-            localizedMessages
-                    = new CommandMessages(getDescription(), getUsage(), getPermissionMessage());
+            localizedMessages = new CommandMessages(
+                    getDescription(),
+                    getUsage(),
+                    getPermissionMessage(),
+                    new LocalizedStringImpl("_generic.no-such-player", SERVER_LOCALE_BUNDLE));
         }
         return execute(sender, commandLabel, args, bundle, localizedMessages);
     }
@@ -130,13 +142,17 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     protected void sendUsageMessage(CommandSender sender, ResourceBundle resourceBundle) {
         new LocalizedStringImpl(USAGE_IS, resourceBundle)
-                .sendInColor(sender, ChatColor.RED, usageMessage);
+                .sendInColor(ChatColor.RED, sender, usageMessage);
     }
 
     @Data
     protected static class CommandMessages {
+        // Only LocalizedString messages that apply to multiple commands should be in this class.
+        // All others are instantiated on demand.
+
         private final String description;
         private final String usageMessage;
         private final String permissionMessage;
+        private final LocalizedString noSuchPlayer;
     }
 }

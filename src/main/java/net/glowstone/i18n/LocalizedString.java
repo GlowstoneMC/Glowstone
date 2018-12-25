@@ -10,5 +10,5 @@ public interface LocalizedString {
 
     void send(CommandSender recipient, Object... args);
 
-    void sendInColor(CommandSender recipient, ChatColor color, Object... args);
+    void sendInColor(ChatColor color, CommandSender recipient, Object... args);
 }
