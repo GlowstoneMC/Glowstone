@@ -43,7 +43,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String USAGE_IS = "_generic.usage";
     private static final ResourceBundle SERVER_LOCALE_BUNDLE
             = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
-    private static final long CACHE_SIZE = 50;
+    public static final long CACHE_SIZE = 50;
     private static final LoadingCache<String, ResourceBundle> STRING_TO_BUNDLE_CACHE
         = CacheBuilder.newBuilder()
             .maximumSize(CACHE_SIZE)
@@ -121,9 +121,18 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     protected abstract boolean execute(CommandSender sender, String commandLabel, String[] args,
             ResourceBundle resourceBundle, CommandMessages localizedMessages);
 
-    protected static ResourceBundle getBundle(GlowPlayer sender)
-            throws ExecutionException {
-        return STRING_TO_BUNDLE_CACHE.get(sender.getLocale());
+    protected static ResourceBundle getBundle(GlowPlayer sender) {
+        String locale = sender.getLocale();
+        try {
+            return STRING_TO_BUNDLE_CACHE.get(locale);
+        } catch (ExecutionException e) {
+            ConsoleMessages.Error.I18n.COMMAND.log(e, locale);
+            return SERVER_LOCALE_BUNDLE;
+        }
+    }
+
+    protected static ResourceBundle getBundle(CommandSender sender) {
+        return sender instanceof GlowPlayer ? getBundle((GlowPlayer) sender) : SERVER_LOCALE_BUNDLE;
     }
 
     /**
