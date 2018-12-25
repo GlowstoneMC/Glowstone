@@ -219,8 +219,13 @@ public class ClearCommand extends GlowVanillaCommand {
                 }
             }
         }
-        new LocalizedStringImpl("clear.done", resourceBundle).send(
-                sender, player.getName(), count);
+        if (count == 1) {
+            new LocalizedStringImpl("clear.done.singular", resourceBundle).send(
+                    sender, player.getName());
+        } else {
+            new LocalizedStringImpl("clear.done", resourceBundle).send(
+                    sender, player.getName(), count);
+        }
         return true;
     }
 
