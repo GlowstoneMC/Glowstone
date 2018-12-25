@@ -1,6 +1,5 @@
 package net.glowstone.command;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import net.glowstone.command.minecraft.GlowVanillaCommand;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.GlowstoneMessages;
@@ -51,7 +48,8 @@ public class GameModeUtils {
             ResourceBundle bundle = ResourceBundle.getBundle("maps/gamemode", locale);
 
             for (String key : bundle.keySet()) {
-                nameToModeBuilder.put(key, GameMode.getByValue(Integer.decode(bundle.getString(key))));
+                nameToModeBuilder.put(key,
+                        GameMode.getByValue(Integer.decode(bundle.getString(key))));
             }
             nameToModeMap = nameToModeBuilder.build();
             ImmutableMap.Builder<GameMode, String> modeToNameBuilder = ImmutableMap.builder();
