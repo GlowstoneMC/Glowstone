@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
@@ -395,7 +396,7 @@ public final class GlowBufUtils {
 
         ByteBufUtils.writeVarInt(buf, particleId);
         Class<?> dataType = particle.particle().getDataType();
-        if (data != null && particle.particle().getDataType() != Void.class
+        if (data != null && !Objects.equals(particle.particle().getDataType(), Void.class)
                 && particle.particle().getDataType().isInstance(data)) {
             if (dataType.equals(Particle.DustOptions.class)) {
                 Particle.DustOptions options = (Particle.DustOptions) data;
