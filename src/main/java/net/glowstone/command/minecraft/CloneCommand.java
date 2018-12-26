@@ -81,7 +81,7 @@ public class CloneCommand extends GlowVanillaCommand {
      */
     public CloneCommand() {
         super("clone", Collections.emptyList());
-        setPermission("minecraft.command.clone");
+        setPermission("minecraft.command.clone"); // NON-NLS
     }
 
     @Override
@@ -172,7 +172,7 @@ public class CloneCommand extends GlowVanillaCommand {
                 || between(lowCorner.getBlockZ(), highCorner.getBlockZ(), to.getBlockZ());
 
         if (overlaps && !cloneMode.isAllowedToOverlap()) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, bundle);
             return false;
         }
 
