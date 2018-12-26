@@ -245,7 +245,7 @@ public class PlayProtocol extends GlowProtocol {
      * Creates the instance for the game's main network protocol.
      */
     public PlayProtocol() {
-        super("PLAY", 0x4F);
+        super("PLAY", 0x55);
 
         inbound(0x00, TeleportConfirmMessage.class, TeleportConfirmCodec.class,
             TeleportConfirmHandler.class);

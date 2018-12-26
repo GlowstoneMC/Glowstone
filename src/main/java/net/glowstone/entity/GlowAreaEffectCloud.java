@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +110,7 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
         metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_COLOR, color);
         metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_RADIUS, radius);
         if (particle != null) {
-            metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLEID, particle.ordinal());
+            metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLE, new ParticleBuilder(particle));
         }
         return Arrays.asList(
                 new SpawnObjectMessage(entityId, getUniqueId(), NETWORK_TYPE_ID, location),

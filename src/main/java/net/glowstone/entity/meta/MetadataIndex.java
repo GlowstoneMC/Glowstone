@@ -31,7 +31,7 @@ import org.bukkit.entity.Blaze;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Drowned;
+import org.bukkit.entity.Dolphin;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Enderman;
@@ -99,9 +99,11 @@ public enum MetadataIndex {
     AREAEFFECTCLOUD_PARTICLE(9, PARTICLE, AreaEffectCloud.class),
 
     ARROW_CRITICAL(6, BYTE, Arrow.class),
-    TIPPEDARROW_COLOR(7, INT, TippedArrow.class),
+    ARROW_SHOOTER_ID(7, OPTUUID, Arrow.class),
 
-    TRIDENT_LOYALTY(7, INT, Trident.class),
+    TIPPEDARROW_COLOR(8, INT, TippedArrow.class),
+
+    TRIDENT_LOYALTY(8, INT, Trident.class),
 
     BOAT_HIT_TIME(6, INT, Boat.class),
     BOAT_DIRECTION(7, INT, Boat.class),
@@ -213,9 +215,10 @@ public enum MetadataIndex {
     ZOMBIE_IS_CHILD(12, BOOLEAN, Zombie.class),
     ZOMBIE_PROFESSION(13, INT, Zombie.class), // Unused as of 1.11
     ZOMBIE_HANDS_RISED_UP(14, BOOLEAN, Zombie.class),
+    ZOMBIE_BECOMING_DROWNED(15, BOOLEAN, Zombie.class),
 
-    ZOMBIE_VILLAGER_IS_CONVERTING(15, BOOLEAN, ZombieVillager.class),
-    ZOMBIE_VILLAGER_PROFESSION(16, INT, ZombieVillager.class),
+    ZOMBIE_VILLAGER_IS_CONVERTING(16, BOOLEAN, ZombieVillager.class),
+    ZOMBIE_VILLAGER_PROFESSION(17, INT, ZombieVillager.class),
 
     ENDERMAN_BLOCK(12, BLOCKID, Enderman.class),
     ENDERMAN_SCREAMING(13, BOOLEAN, Enderman.class),
@@ -243,6 +246,10 @@ public enum MetadataIndex {
 
     PHANTOM_SIZE(12, INT, Phantom.class),
 
+    DOLPHIN_TREASURE_POSITION(12, POSITION, Dolphin.class),
+    DOLPHIN_CAN_FIND_TREASURE(13, BOOLEAN, Dolphin.class),
+    DOLPHIN_HAS_FISH(14, POSITION, Dolphin.class),
+
     FISH_FROM_BUCKET(12, BOOLEAN, Fish.class),
 
     PUFFER_FISH_STATE(13, INT, PufferFish.class),
@@ -254,9 +261,7 @@ public enum MetadataIndex {
     TURTLE_LAYING_EGG(15, BOOLEAN, Turtle.class),
     TURTLE_TRAVEL_POS(16, POSITION, Turtle.class),
     TURTLE_GOING_HOME(17, BOOLEAN, Turtle.class),
-    TURTLE_TRAVELLING(18, BOOLEAN, Turtle.class),
-
-    DROWNED_HAS_TARGET(15, BOOLEAN, Drowned.class),
+    TURTLE_TRAVELING(18, BOOLEAN, Turtle.class),
 
     PARROT_VARIANT(15, INT, GlowParrot.class),
 

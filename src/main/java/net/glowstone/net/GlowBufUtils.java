@@ -135,7 +135,8 @@ public final class GlowBufUtils {
         buf.writeByte(0xff);
     }
 
-    private static void writeValue(ByteBuf buf, Object value, MetadataType type) throws IOException {
+    private static void writeValue(ByteBuf buf, Object value, MetadataType type)
+            throws IOException {
         switch (type) {
             case BYTE:
                 buf.writeByte((Byte) value);
