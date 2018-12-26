@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import com.ibm.icu.text.ListFormatter;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +10,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.glowstone.command.CommandUtils;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
@@ -66,8 +66,9 @@ public class BanListCommand extends GlowVanillaCommand {
                 .collect(Collectors.toList());
             new LocalizedStringImpl("banlist.non-empty", resourceBundle).send(sender,
                     banEntries.size());
-            sender
-                .sendMessage(CommandUtils.prettyPrint(targets.toArray(new String[0])));
+            String[] strings = targets.toArray(new String[0]);
+            sender.sendMessage(
+                    ListFormatter.getInstance(resourceBundle.getLocale()).format(strings));
         }
 
         return true;

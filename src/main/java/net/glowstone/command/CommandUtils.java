@@ -1,7 +1,9 @@
 package net.glowstone.command;
 
+import com.ibm.icu.text.ListFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.block.state.BlockStateData;
@@ -77,24 +79,16 @@ public class CommandUtils {
     }
 
     /**
-     * Converts an array of strings describing list items to a single string listing them.
+     * Converts an array of strings describing list items to a single string listing them, in the
+     * server locale.
      *
      * @param strings one or more strings
      * @return a list of the strings, formatted like "a, b and c"
+     * @deprecated Use a {@link ListFormatter} when the desired locale is known.
      */
-    // FIXME: Replace with the function from the Unicode CLDR that handles almost any language
+    @Deprecated
     public static String prettyPrint(String[] strings) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < strings.length; i++) {
-            String string = strings[i];
-            if (i == strings.length - 1 && strings.length > 1) {
-                builder.append(" and ");
-            } else if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(string);
-        }
-        return builder.toString();
+        return ListFormatter.getInstance(Locale.getDefault()).format(strings);
     }
 
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
