@@ -51,7 +51,7 @@ public final class GlowParticle {
         set(Particle.ENCHANTMENT_TABLE, Effect.FLYING_GLYPH, 25); // enchantmenttable
         set(Particle.FLAME, Effect.FLAME, 26); // flame
         set(Particle.LAVA, Effect.LAVA_POP, 27); // lava
-        set(Particle.FOOTSTEP, Effect.FOOTSTEP, 28); // footstep
+        // set(Particle.FOOTSTEP, Effect.FOOTSTEP, 28); // footstep
         set(Particle.CLOUD, Effect.CLOUD, 29); // cloud
         set(Particle.REDSTONE, Effect.COLOURED_DUST, 30); // reddust
         set(Particle.SNOWBALL, Effect.SNOWBALL_BREAK, 31); // snowballpoof
