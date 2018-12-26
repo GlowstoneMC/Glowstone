@@ -88,7 +88,7 @@ public class CommandUtils {
      */
     @Deprecated
     public static String prettyPrint(String[] strings) {
-        return ListFormatter.getInstance(Locale.getDefault()).format(strings);
+        return ListFormatter.getInstance().format(strings);
     }
 
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
