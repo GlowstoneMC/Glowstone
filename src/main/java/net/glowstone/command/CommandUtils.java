@@ -1,7 +1,5 @@
 package net.glowstone.command;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.block.state.BlockStateData;
@@ -67,13 +65,11 @@ public class CommandUtils {
      * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
      */
     public static String prettyPrint(Entity[] entities) {
-        List<String> names = new ArrayList<>();
+        String[] names = new String[entities.length];
         for (int i = 0; i < entities.length; i++) {
-            Entity entity = entities[i];
-            String name = getName(entity);
-            names.add(name);
+            names[i] = entities[i].getName();
         }
-        return prettyPrint(names.toArray(new String[names.size()]));
+        return prettyPrint(names);
     }
 
     /**
