@@ -17,7 +17,7 @@ public class DefaultGameModeCommand extends GlowVanillaCommand {
      */
     public DefaultGameModeCommand() {
         super("defaultgamemode", Collections.emptyList());
-        setPermission("minecraft.command.defaultgamemode");
+        setPermission("minecraft.command.defaultgamemode"); // NON-NLS
     }
 
     @Override
