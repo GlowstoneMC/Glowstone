@@ -22,7 +22,7 @@ public class GameModeCommand extends GlowVanillaCommand {
      */
     public GameModeCommand() {
         super("gamemode", Collections.emptyList());
-        setPermission("minecraft.command.gamemode");
+        setPermission("minecraft.command.gamemode"); // NON-NLS
     }
 
     @Override
