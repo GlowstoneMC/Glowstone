@@ -136,4 +136,25 @@ public final class GlowStatistic {
         names[stat.ordinal()] = "stat." + key;
     }
 
+    /**
+     * Gets the protocol ID of the category of the given statistic.
+     *
+     * @param statistic the statistic
+     * @return the protocol ID of the category of the given statistic.
+     */
+    public static int getCategoryId(Statistic statistic) {
+        // TODO: Implement sub-statistics and categories (minecraft.mined, minecraft.killed_by...)
+        return 0;
+    }
+
+    /**
+     * Gets the protocol ID of the given statistic within its category.
+     *
+     * @param statistic the statistic
+     * @return the protocol ID of the statistic within its category
+     */
+    public static int getStatisticId(Statistic statistic) {
+        // TODO: Implement numerical statistic IDs
+        return 0;
+    }
 }

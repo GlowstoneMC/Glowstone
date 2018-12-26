@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardTeamMessage;
+import net.glowstone.util.TextMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -67,14 +68,16 @@ public final class GlowTeam implements Team {
         List<String> playerNames = new ArrayList<>(players.size());
         playerNames.addAll(players);
         return ScoreboardTeamMessage
-            .create(name, displayName, prefix, suffix, friendlyFire, seeInvisible,
-                nameTagVisibility, collisionRule, color, playerNames);
+            .create(name, new TextMessage(displayName), new TextMessage(prefix),
+                    new TextMessage(suffix), friendlyFire, seeInvisible, nameTagVisibility,
+                    collisionRule, color, playerNames);
     }
 
     private void update() {
         scoreboard.broadcast(ScoreboardTeamMessage
-            .update(name, displayName, prefix, suffix, friendlyFire, seeInvisible,
-                nameTagVisibility, collisionRule, color));
+            .update(name, new TextMessage(displayName), new TextMessage(prefix),
+                    new TextMessage(suffix), friendlyFire, seeInvisible, nameTagVisibility,
+                    collisionRule, color));
     }
 
     ////////////////////////////////////////////////////////////////////////////

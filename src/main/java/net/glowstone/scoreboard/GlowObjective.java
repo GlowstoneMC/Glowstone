@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
+import net.glowstone.util.TextMessage;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -102,7 +103,8 @@ public final class GlowObjective implements Objective {
             "displayName cannot be longer than 32 characters");
 
         this.displayName = displayName;
-        scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
+        scoreboard.broadcast(
+                ScoreboardObjectiveMessage.update(name, new TextMessage(displayName), renderType));
     }
 
     @Override
@@ -146,7 +148,8 @@ public final class GlowObjective implements Objective {
         checkValid();
         checkNotNull(renderType, "RenderType cannot be null");
         this.renderType = renderType;
-        scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
+        scoreboard.broadcast(
+                ScoreboardObjectiveMessage.update(name, new TextMessage(displayName), renderType));
     }
 
     @Override

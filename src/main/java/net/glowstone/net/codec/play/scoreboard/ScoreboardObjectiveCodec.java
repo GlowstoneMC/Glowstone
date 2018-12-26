@@ -4,6 +4,7 @@ import com.flowpowered.network.Codec;
 import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
 
 public final class ScoreboardObjectiveCodec implements Codec<ScoreboardObjectiveMessage> {
@@ -17,11 +18,17 @@ public final class ScoreboardObjectiveCodec implements Codec<ScoreboardObjective
     public ByteBuf encode(ByteBuf buf, ScoreboardObjectiveMessage message) throws IOException {
         ByteBufUtils.writeUTF8(buf, message.getName());
         buf.writeByte(message.getAction());
-        if (message.getDisplayName() != null) {
-            ByteBufUtils.writeUTF8(buf, message.getDisplayName());
+
+        boolean hasDisplayName = message.getDisplayName() != null;
+        buf.writeBoolean(hasDisplayName);
+        if (hasDisplayName) {
+            GlowBufUtils.writeChat(buf, message.getDisplayName());
         }
-        if (message.getRenderType() != null) {
-            ByteBufUtils.writeUTF8(buf, message.getRenderType().name());
+
+        boolean hasRenderType = message.getRenderType() != null;
+        buf.writeBoolean(hasRenderType);
+        if (hasRenderType) {
+            ByteBufUtils.writeVarInt(buf, message.getRenderType().ordinal());
         }
         return buf;
     }

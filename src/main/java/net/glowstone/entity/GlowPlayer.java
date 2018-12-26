@@ -50,7 +50,6 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
-import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
@@ -94,7 +93,6 @@ import net.glowstone.net.message.play.game.SignEditorMessage;
 import net.glowstone.net.message.play.game.SpawnPositionMessage;
 import net.glowstone.net.message.play.game.StateChangeMessage;
 import net.glowstone.net.message.play.game.StateChangeMessage.Reason;
-import net.glowstone.net.message.play.game.StatisticMessage;
 import net.glowstone.net.message.play.game.TimeMessage;
 import net.glowstone.net.message.play.game.TitleMessage;
 import net.glowstone.net.message.play.game.TitleMessage.Action;
@@ -163,7 +161,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -1970,7 +1967,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         spawnAt(target);
         teleported = true;
 
-        awardAchievement(Achievement.THE_END, false);
         return true;
     }
 
@@ -2000,7 +1996,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         spawnAt(target);
         teleported = true;
 
-        awardAchievement(Achievement.END_PORTAL, false);
         return true;
     }
 
@@ -2831,69 +2826,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public boolean hasAchievement(Achievement achievement) {
-        return stats.hasAchievement(achievement);
+        throw new UnsupportedOperationException("Achievements are no longer implemented.");
     }
 
     @Override
     public void awardAchievement(Achievement achievement) {
-        awardAchievement(achievement, true);
-    }
-
-    /**
-     * Awards the given achievement if the player already has the parent achievement, otherwise does
-     * nothing.
-     *
-     * <p>If {@code awardParents} is true, award the player all parent achievements and the given
-     * achievement, making this method equivalent to {@link #awardAchievement(Achievement)}.
-     *
-     * @param achievement the achievement to award.
-     * @param awardParents whether parent achievements should be awarded.
-     * @return {@code true} if the achievement was awarded, {@code false} otherwise
-     */
-    public boolean awardAchievement(Achievement achievement, boolean awardParents) {
-        if (hasAchievement(achievement)) {
-            return false;
-        }
-
-        Achievement parent = achievement.getParent();
-        if (parent != null && !hasAchievement(parent)) {
-            if (!awardParents || !awardAchievement(parent, true)) {
-                // does not have or failed to award required parent achievement
-                return false;
-            }
-        }
-
-        PlayerAchievementAwardedEvent event = new PlayerAchievementAwardedEvent(this, achievement);
-        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
-            return false; // event was cancelled
-        }
-
-        stats.setAchievement(achievement, true);
-        sendAchievement(achievement, true);
-
-        if (server.getAnnounceAchievements()) {
-            // todo: make message fancier (hover, translated names)
-            server.broadcastMessage(
-                    getName() + " has just earned the achievement " + ChatColor.GREEN + "["
-                            + GlowAchievement.getFancyName(achievement) + "]");
-        }
-        return true;
+        throw new UnsupportedOperationException("Achievements are no longer implemented.");
     }
 
     @Override
     public void removeAchievement(Achievement achievement) {
-        if (!hasAchievement(achievement)) {
-            return;
-        }
-
-        stats.setAchievement(achievement, false);
-        sendAchievement(achievement, false);
-    }
-
-    private void sendAchievement(Achievement achievement, boolean has) {
-        Map<String, Integer> values = new HashMap<>();
-        values.put(GlowAchievement.getName(achievement), has ? 1 : 0);
-        session.send(new StatisticMessage(values));
+        throw new UnsupportedOperationException("Achievements are no longer implemented.");
     }
 
     @Override

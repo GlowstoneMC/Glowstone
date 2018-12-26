@@ -39,8 +39,8 @@ public final class PlayerRecipeMonitor {
         int status = UnlockRecipesMessage.ACTION_INIT;
         int[] recipeIds = new int[0]; // todo: conversion to internal IDs
         int[] toBeDisplayedIds = new int[0]; // todo: conversion to internal IDs
-        return new UnlockRecipesMessage(status, bookOpen, filterCraftable, toBeDisplayedIds,
-            recipeIds);
+        return new UnlockRecipesMessage(status, bookOpen, filterCraftable, false,
+                false, toBeDisplayedIds, recipeIds);
     }
 
     /**

@@ -81,7 +81,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 /**
@@ -114,8 +113,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
                 new TextMessage("third"), new TextMessage("fourth")}),
         UpdateSignMessage.fromPlainText(1, 2, 3, "hello", "hi", "third", "fourth"),
         new PlayerAbilitiesMessage(1, 2f, 3f),
-        new TabCompleteMessage("text", false, null),
-        new TabCompleteMessage("text", false, new BlockVector(1, 2, 3)),
+        new TabCompleteMessage(1, "text"),
         new ClientSettingsMessage("en-en", 16, 1, true, 2, 0),
         new ClientStatusMessage(1),
         new PluginMessage("glowstone", new byte[]{0x00, 0x11}),
@@ -142,7 +140,7 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new SpawnObjectMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
         new SpawnMobMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
             ProtocolTestUtils.getMetadataEntry()),
-        new SpawnPaintingMessage(1, UUID.randomUUID(), "painting", 2, 3, 4, 5),
+        new SpawnPaintingMessage(1, UUID.randomUUID(), 2, 3, 4, 5, 6),
         new SpawnXpOrbMessage(1, 2, 3, 4, (short) 5),
         new EntityVelocityMessage(1, new Vector(1, 2, 3)),
         new EntityVelocityMessage(1, 2, 3, 4),
@@ -205,10 +203,11 @@ public class PlayProtocolTest extends BaseProtocolTest {
         new CraftRecipeRequestMessage(0, 1, true),
         new CraftRecipeResponseMessage(0, 1),
         new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_DISPLAYED_RECIPE, 0),
-        new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_STATUS, true, false),
-        new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_ADD, true, false, new int[]{1, 2, 3}),
-        new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_INIT, true, false, new int[]{1, 2},
-            new int[]{1, 2, 3})
+        new CraftingBookDataMessage(CraftingBookDataMessage.TYPE_STATUS, true, false, true, false),
+        new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_ADD, true, false, true, false,
+                new int[]{1, 2, 3}),
+        new UnlockRecipesMessage(UnlockRecipesMessage.ACTION_INIT, true, false, true, false,
+                new int[]{1, 2}, new int[]{1, 2, 3})
     };
 
     public PlayProtocolTest() {

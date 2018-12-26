@@ -121,10 +121,10 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         int x = artCenter.getBlockX();
         int y = artCenter.getBlockY();
         int z = artCenter.getBlockZ();
-        String title = getArtTitle();
+        int artId = art.getId();
 
         return Collections.singletonList(
-            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z,
+            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), artId, x, y, z,
                 facing.ordinal())
         );
     }

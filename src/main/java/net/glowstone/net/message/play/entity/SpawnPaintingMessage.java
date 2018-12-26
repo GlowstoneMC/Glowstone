@@ -9,7 +9,7 @@ public final class SpawnPaintingMessage implements Message {
 
     private final int id;
     private final UUID uniqueId;
-    private final String title;
+    private final int artId;
     private final int x;
     private final int y;
     private final int z;
