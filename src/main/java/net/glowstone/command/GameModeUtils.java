@@ -20,6 +20,7 @@ import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.GameMode;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class to create GameMode.
@@ -41,6 +42,9 @@ public class GameModeUtils {
         }
 
         public GameModeMaps(Locale locale) {
+            if (locale == null) {
+                locale = Locale.getDefault();
+            }
             unknown = new LocalizedStringImpl("glowstone.gamemode.unknown",
                     ResourceBundle.getBundle("strings", locale)).get();
             ImmutableSortedMap.Builder<String, GameMode> nameToModeBuilder
@@ -68,6 +72,10 @@ public class GameModeUtils {
             .maximumSize(GlowVanillaCommand.CACHE_SIZE)
             .build(CacheLoader.from(GameModeMaps::new));
 
+    private static Locale localeFromNullable(@Nullable Locale in) {
+        return in == null ? Locale.getDefault() : in;
+    }
+
     private GameModeUtils() {
     }
 
@@ -78,9 +86,9 @@ public class GameModeUtils {
      * @param locale The input locale
      * @return The matching mode if any, null otherwise.
      */
-    public static GameMode build(final String mode, final Locale locale) {
+    public static GameMode build(@Nullable final String mode, @Nullable final Locale locale) {
         try {
-            return MAPS_CACHE.get(locale).nameToMode(mode);
+            return MAPS_CACHE.get(localeFromNullable(locale)).nameToMode(mode);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
@@ -94,9 +102,13 @@ public class GameModeUtils {
      * @return A string containing the pretty name of the mode, 'Unknown' if the mode is not known,
      *     or null if the given mode is null.
      */
-    public static String prettyPrint(GameMode gameMode, Locale locale) {
+    @Nullable
+    public static String prettyPrint(@Nullable GameMode gameMode, @Nullable Locale locale) {
+        if (gameMode == null) {
+            return null;
+        }
         try {
-            return MAPS_CACHE.get(locale).modeToName(gameMode);
+            return MAPS_CACHE.get(localeFromNullable(locale)).modeToName(gameMode);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
@@ -110,10 +122,10 @@ public class GameModeUtils {
      * @return A list of autocomplete suggestions
      */
     @NotNull
-    public static List<String> partialMatchingGameModes(String arg, Locale locale) {
+    public static List<String> partialMatchingGameModes(String arg, @Nullable Locale locale) {
         final List<String> candidates;
         try {
-            candidates = MAPS_CACHE.get(locale).modeAutoCompleteList;
+            candidates = MAPS_CACHE.get(localeFromNullable(locale)).modeAutoCompleteList;
         } catch (ExecutionException e) {
             ConsoleMessages.Error.I18n.GAME_MODE.log(e, locale);
             return Collections.emptyList();
