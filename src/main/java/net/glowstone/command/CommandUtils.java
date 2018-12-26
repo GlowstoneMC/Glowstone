@@ -3,7 +3,6 @@ package net.glowstone.command;
 import com.ibm.icu.text.ListFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.block.state.BlockStateData;
