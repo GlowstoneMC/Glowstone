@@ -41,22 +41,6 @@ public enum MetadataType {
         return values()[id];
     }
 
-    /**
-     * Retrieves the {@link MetadataType} enum entry from the data type.
-     *
-     * @param dataType the data type of the enum entry to look up
-     * @return the enum entry corresponding to the provided data type. Null if
-     *     no corresponding entry was found.
-     */
-    public static MetadataType byDataType(Class<?> dataType) {
-        for (MetadataType type : values()) {
-            if (dataType.isAssignableFrom(type.getClass())) {
-                return type;
-            }
-        }
-        return null;
-    }
-
     public int getId() {
         return ordinal();
     }

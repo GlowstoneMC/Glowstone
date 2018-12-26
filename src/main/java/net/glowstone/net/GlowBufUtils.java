@@ -25,6 +25,8 @@ import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.NbtReadLimiter;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.EulerAngle;
@@ -392,10 +394,22 @@ public final class GlowBufUtils {
         Object data = particle.data();
 
         ByteBufUtils.writeVarInt(buf, particleId);
-        if (data != null) {
-            MetadataType type = MetadataType.byDataType(data.getClass());
-            if (type != null) {
-                writeValue(buf, data, type);
+        Class<?> dataType = particle.particle().getDataType();
+        if (data != null && particle.particle().getDataType() != Void.class
+                && particle.particle().getDataType().isInstance(data)) {
+            if (dataType.equals(Particle.DustOptions.class)) {
+                Particle.DustOptions options = (Particle.DustOptions) data;
+                buf.writeFloat(options.getColor().getRed() / 255.0F);
+                buf.writeFloat(options.getColor().getGreen() / 255.0F);
+                buf.writeFloat(options.getColor().getBlue() / 255.0F);
+                buf.writeFloat(options.getSize());
+            } else if (dataType.equals(ItemStack.class)) {
+                ItemStack stack = (ItemStack) data;
+                writeSlot(buf, stack);
+            } else if (dataType.equals(BlockState.class)) {
+                BlockState state = (BlockState) data;
+                // todo: convert state to int
+                ByteBufUtils.writeVarInt(buf, 0);
             }
         }
     }
