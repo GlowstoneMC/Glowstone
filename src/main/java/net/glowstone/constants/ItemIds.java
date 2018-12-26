@@ -14,6 +14,7 @@ import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Temporary mappings for Minecraft's string-based item ids.
@@ -606,27 +607,27 @@ public final class ItemIds {
         return StringUtil.copyPartialMatches(prefix, ids, new ArrayList<>(ids.size()));
     }
 
-    private static void block(int id, String key) {
+    private static void block(int id, @NonNls String key) {
         key = "minecraft:" + key;
         names.put(id, key);
         blocks.put(key, id);
     }
 
-    private static void item(int id, String key) {
+    private static void item(int id, @NonNls String key) {
         key = "minecraft:" + key;
         names.put(id, key);
         items.put(key, id);
     }
 
-    private static void both(int id, String key) {
+    private static void both(int id, @NonNls String key) {
         key = "minecraft:" + key;
         names.put(id, key);
         blocks.put(key, id);
         items.put(key, id);
     }
 
-    private static void alternate(int id, String key) {
-        items.put("minecraft:" + key, id);
+    private static void alternate(int id, @NonNls String key) {
+        items.put("minecraft:" + key, id); // NON-NLS
     }
 
 }
