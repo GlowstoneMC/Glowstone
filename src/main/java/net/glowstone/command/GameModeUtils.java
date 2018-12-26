@@ -72,11 +72,11 @@ public class GameModeUtils {
             .maximumSize(GlowVanillaCommand.CACHE_SIZE)
             .build(CacheLoader.from(GameModeMaps::new));
 
-    private static Locale localeFromNullable(@Nullable Locale in) {
-        return in == null ? Locale.getDefault() : in;
+    private GameModeUtils() {
     }
 
-    private GameModeUtils() {
+    private static Locale localeFromNullable(@Nullable Locale in) {
+        return in == null ? Locale.getDefault() : in;
     }
 
     /**
