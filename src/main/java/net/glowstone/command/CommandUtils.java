@@ -62,11 +62,13 @@ public class CommandUtils {
     }
 
     /**
-     * Converts an array of entities to a readable string.
+     * Converts an array of entities to a readable string, in the server locale.
      *
      * @param entities one or more entities
      * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
+     * @deprecated Use a {@link ListFormatter} when the desired locale is known.
      */
+    @Deprecated
     public static String prettyPrint(Entity[] entities) {
         List<String> names = new ArrayList<>();
         for (int i = 0; i < entities.length; i++) {
