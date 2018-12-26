@@ -54,6 +54,7 @@ import static org.bukkit.Statistic.WALK_ONE_CM;
 import static org.bukkit.Statistic.values;
 
 import org.bukkit.Statistic;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Name mappings for statistics.
@@ -131,7 +132,7 @@ public final class GlowStatistic {
         return names[stat.ordinal()];
     }
 
-    private static void set(Statistic stat, String key) {
+    private static void set(Statistic stat, @NonNls String key) {
         names[stat.ordinal()] = "stat." + key;
     }
 
