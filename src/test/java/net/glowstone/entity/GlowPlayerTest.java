@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +60,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-@PrepareForTest( {Bukkit.class, ChunkManager.class})
+@PrepareForTest({Bukkit.class, ChunkManager.class})
 @RunWith(PowerMockRunner.class)
 public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
@@ -312,11 +313,11 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Test
     public void testGiveExp() {
         entity.giveExp(20);
-        boolean expEvent = true;
-        verify(eventFactory).callEvent(argThat(input -> {
+        verify(eventFactory, times(2)).callEvent(argThat(input -> {
             if (input instanceof PlayerExpChangeEvent) {
                 PlayerExpChangeEvent event = (PlayerExpChangeEvent) input;
                 assertEquals(20, event.getAmount());
+                return true;
             } else if (input instanceof PlayerLevelChangeEvent) {
                 PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
                 assertSame(entity, event.getPlayer());
