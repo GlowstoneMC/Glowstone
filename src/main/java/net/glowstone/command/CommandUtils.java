@@ -37,7 +37,7 @@ public class CommandUtils {
      * @return the block state for {@code type} and {@code state}, or null if none match
      */
     public static BlockStateData readState(CommandSender sender, Material type, String state) {
-        if (isNumeric(state)) {
+        if (NumberUtils.isNumber(state)) {
             return new BlockStateData(Byte.parseByte(state));
         }
         try {
@@ -46,16 +46,6 @@ public class CommandUtils {
             sender.sendMessage(ChatColor.RED + e.getMessage());
             return null;
         }
-    }
-
-    /**
-     * Tests whether the given string is a number.
-     *
-     * @param argument a string
-     * @return true if the string is a number; false otherwise
-     */
-    public static boolean isNumeric(String argument) {
-        return NumberUtils.isNumber(argument);
     }
 
     /**
