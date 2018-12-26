@@ -23,6 +23,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Name mappings for statistics.
@@ -96,7 +97,6 @@ public final class GlowStatistic {
         SUB_STATISTICS.get(statistic).put(data, "stat." + key);
     }
 
-
     private static void generateStatistics() {
         for (Statistic stat : values()) {
             STATISTICS.put(stat, "stat." + UPPER_UNDERSCORE.to(LOWER_CAMEL, stat.name()));
@@ -104,6 +104,10 @@ public final class GlowStatistic {
 
         // Specific case
         STATISTICS.put(PLAY_ONE_TICK, "stat.playOneMinute");
+    }
+
+    private static void set(Statistic stat, @NonNls String key) {
+        names[stat.ordinal()] = "stat." + key;
     }
 
     private static void generateMaterialStatistics() {
