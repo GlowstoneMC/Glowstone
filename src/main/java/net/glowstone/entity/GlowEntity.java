@@ -6,6 +6,7 @@ import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -56,6 +57,7 @@ import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -65,6 +67,7 @@ import org.bukkit.event.entity.EntityPortalExitEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.entity.EntityUnleashEvent.UnleashReason;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
@@ -1024,7 +1027,10 @@ public abstract class GlowEntity implements Entity {
             if (pendingLocationZ.getBlock().getType().isSolid()) {
                 velocity.setZ(0);
             }
-
+            if (this instanceof Projectile) {
+                EventFactory.getInstance()
+                    .callEvent(new ProjectileHitEvent((Projectile) this, pendingBlock));
+            }
             collide(pendingBlock);
         } else {
             if (hasFriction()) {

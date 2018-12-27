@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -26,6 +27,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockCanBuildEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -37,9 +39,9 @@ import org.bukkit.util.Vector;
  */
 public class BlockType extends ItemType {
 
-    protected static final BlockFace[] SIDES = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST,
+    protected static final BlockFace[] SIDES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST,
         BlockFace.SOUTH, BlockFace.WEST};
-    protected static final BlockFace[] ADJACENT = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST,
+    protected static final BlockFace[] ADJACENT = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST,
         BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     protected List<ItemStack> drops;
@@ -104,7 +106,7 @@ public class BlockType extends ItemType {
      * Get the items that will be dropped by digging the block.
      *
      * @param block The block being dug.
-     * @param tool The tool used or {@code null} if fists or no tool was used.
+     * @param tool  The tool used or {@code null} if fists or no tool was used.
      * @return The drops that should be returned.
      */
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
@@ -143,9 +145,9 @@ public class BlockType extends ItemType {
      * Create a new block entity at the given location.
      *
      * @param chunk The chunk to create the block entity at.
-     * @param cx The x coordinate in the chunk.
-     * @param cy The y coordinate in the chunk.
-     * @param cz The z coordinate in the chunk.
+     * @param cx    The x coordinate in the chunk.
+     * @param cy    The y coordinate in the chunk.
+     * @param cz    The z coordinate in the chunk.
      * @return The new BlockEntity, or null if no block entity is used.
      */
     public BlockEntity createBlockEntity(GlowChunk chunk, int cx, int cy, int cz) {
@@ -155,9 +157,8 @@ public class BlockType extends ItemType {
     /**
      * Check whether the block can be placed at the given location.
      *
-     *
-     * @param player The player who placed the block.
-     * @param block The location the block is being placed at.
+     * @param player  The player who placed the block.
+     * @param block   The location the block is being placed at.
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.
      */
@@ -168,14 +169,14 @@ public class BlockType extends ItemType {
     /**
      * Called when a block is placed to calculate what the block will become.
      *
-     * @param player the player who placed the block
-     * @param state the BlockState to edit
-     * @param holding the ItemStack that was being held
-     * @param face the face off which the block is being placed
+     * @param player     the player who placed the block
+     * @param state      the BlockState to edit
+     * @param holding    the ItemStack that was being held
+     * @param face       the face off which the block is being placed
      * @param clickedLoc where in the block the click occurred
      */
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+                           ItemStack holding, Vector clickedLoc) {
         state.setType(holding.getType());
         state.setData(holding.getData());
     }
@@ -183,13 +184,13 @@ public class BlockType extends ItemType {
     /**
      * Called after a block has been placed by a player.
      *
-     * @param player the player who placed the block
-     * @param block the block that was placed
-     * @param holding the the ItemStack that was being held
+     * @param player   the player who placed the block
+     * @param block    the block that was placed
+     * @param holding  the the ItemStack that was being held
      * @param oldState The old block state before the block was placed.
      */
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(),
             block.getData());
     }
@@ -198,14 +199,14 @@ public class BlockType extends ItemType {
      * Called when a player attempts to interact with (right-click) a block of this type already in
      * the world.
      *
-     * @param player the player interacting
-     * @param block the block interacted with
-     * @param face the clicked face
+     * @param player     the player interacting
+     * @param block      the block interacted with
+     * @param face       the clicked face
      * @param clickedLoc where in the block the click occurred
      * @return Whether the interaction occurred.
      */
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+                                 Vector clickedLoc) {
         return false;
     }
 
@@ -213,8 +214,8 @@ public class BlockType extends ItemType {
      * Called when a player attempts to destroy a block.
      *
      * @param player The player interacting
-     * @param block The block the player destroyed
-     * @param face The block face
+     * @param block  The block the player destroyed
+     * @param face   The block face
      */
     public void blockDestroy(GlowPlayer player, GlowBlock block, BlockFace face) {
         // do nothing
@@ -223,13 +224,13 @@ public class BlockType extends ItemType {
     /**
      * Called after a player successfully destroys a block.
      *
-     * @param player The player interacting
-     * @param block The block the player destroyed
-     * @param face The block face
+     * @param player   The player interacting
+     * @param block    The block the player destroyed
+     * @param face     The block face
      * @param oldState The block state of the block the player destroyed.
      */
     public void afterDestroy(GlowPlayer player, GlowBlock block, BlockFace face,
-        GlowBlockState oldState) {
+                             GlowBlockState oldState) {
         block.applyPhysics(oldState.getType(), block.getTypeId(), oldState.getRawData(),
             block.getData());
     }
@@ -248,8 +249,8 @@ public class BlockType extends ItemType {
      * determine if the placement should occur into the air adjacent to the block (normal behavior),
      * or absorbed into the block clicked on.
      *
-     * @param block The block the player right-clicked
-     * @param face The face on which the click occurred
+     * @param block   The block the player right-clicked
+     * @param face    The face on which the click occurred
      * @param holding The ItemStack the player was holding
      * @return Whether the place should occur into the block given.
      */
@@ -260,8 +261,8 @@ public class BlockType extends ItemType {
     /**
      * Called to check if this block can be overridden by a block place which would occur inside it.
      *
-     * @param block The block being targeted by the placement
-     * @param face The face on which the click occurred
+     * @param block   The block being targeted by the placement
+     * @param face    The face on which the click occurred
      * @param holding The ItemStack the player was holding
      * @return Whether this block can be overridden.
      */
@@ -273,16 +274,16 @@ public class BlockType extends ItemType {
      * Called when a neighboring block (within a 3x3x3 cube) has changed its type or data and
      * physics checks should occur.
      *
-     * @param block The block to perform physics checks for
-     * @param face The BlockFace to the changed block, or null if unavailable
+     * @param block        The block to perform physics checks for
+     * @param face         The BlockFace to the changed block, or null if unavailable
      * @param changedBlock The neighboring block that has changed
-     * @param oldType The old type of the changed block
-     * @param oldData The old data of the changed block
-     * @param newType The new type of the changed block
-     * @param newData The new data of the changed block
+     * @param oldType      The old type of the changed block
+     * @param oldData      The old data of the changed block
+     * @param newType      The new type of the changed block
+     * @param newData      The new data of the changed block
      */
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
 
     }
 
@@ -293,29 +294,40 @@ public class BlockType extends ItemType {
      * or {@link GlowBlock#setData} is called with physics enabled, and might
      * be called from plugins or other means of changing the block.
      *
-     * @param block The block that was changed
+     * @param block   The block that was changed
      * @param oldType The old Material
      * @param oldData The old data
      * @param newType The new Material
-     * @param data The new data
+     * @param data    The new data
      */
     public void onBlockChanged(GlowBlock block, Material oldType, byte oldData, Material newType,
-        byte data) {
+                               byte data) {
         // do nothing
     }
 
     /**
-     * Called when the BlockType should calculate the current physics.
+     * <p>Called when the BlockType should calculate the current physics.</p>
+     * <p>Subclasses should override {@link #updatePhysicsAfterEvent(GlowBlock)}
+     * if they need a custom handling of the physics calculation</p>
      *
      * @param block The block
      */
-    public void updatePhysics(GlowBlock block) {
+    public final void updatePhysics(GlowBlock block) {
+        BlockPhysicsEvent event = EventFactory.getInstance()
+            .callEvent(new BlockPhysicsEvent(block, block.getTypeId()));
+        if (!event.isCancelled()) {
+            updatePhysicsAfterEvent(block);
+        }
+    }
+
+    public void updatePhysicsAfterEvent(GlowBlock block) {
         // do nothing
     }
 
+
     @Override
     public final void rightClickBlock(GlowPlayer player, GlowBlock against, BlockFace face,
-        ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
+                                      ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         GlowBlock target = against.getRelative(face);
         final Material targetMat = ItemTable.instance().getBlock(
             target.getRelative(face.getOppositeFace()).getType()).getMaterial();
@@ -431,8 +443,8 @@ public class BlockType extends ItemType {
     /**
      * Called when a player left clicks a block.
      *
-     * @param player the player who clicked the block
-     * @param block the block that was clicked
+     * @param player  the player who clicked the block
+     * @param block   the block that was clicked
      * @param holding the ItemStack that was being held
      */
     public void leftClickBlock(GlowPlayer player, GlowBlock block, ItemStack holding) {
@@ -443,11 +455,11 @@ public class BlockType extends ItemType {
      * Display the warning for finding the wrong MaterialData subclass.
      *
      * @param clazz The expected subclass of MaterialData.
-     * @param data The actual MaterialData found.
+     * @param data  The actual MaterialData found.
      */
     protected void warnMaterialData(Class<?> clazz, MaterialData data) {
         ConsoleMessages.Warn.Block.WRONG_MATERIAL_DATA.log(
-                getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
+            getMaterial(), getClass().getSimpleName(), clazz.getSimpleName(), data);
     }
 
     public void onRedstoneUpdate(GlowBlock block) {
@@ -457,7 +469,7 @@ public class BlockType extends ItemType {
     /**
      * Called when an entity gets updated on top of the block.
      *
-     * @param block the block that was stepped on
+     * @param block  the block that was stepped on
      * @param entity the entity
      */
     public void onEntityStep(GlowBlock block, LivingEntity entity) {

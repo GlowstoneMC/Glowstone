@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Boat;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -27,6 +28,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.Set;
+
+import static org.mockito.ArgumentMatchers.any;
 
 public class UseItemHandlerTest {
 
@@ -48,6 +51,7 @@ public class UseItemHandlerTest {
         actualEventFactory = EventFactory.getInstance();
         // install the mock event factory
         eventFactory = Mockito.mock(EventFactory.class);
+        Mockito.when(eventFactory.callEvent(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
         EventFactory.setInstance(eventFactory);
 
         // create mocks
@@ -67,7 +71,7 @@ public class UseItemHandlerTest {
     }
 
     @Test
-    public void testRightClickAir() throws Exception {
+    public void testRightClickAir() {
         // prepare objects under test
         Location location = new Location(world, 1.0, 1.0, 1.0);
         Location playerLocation = new Location(world, 2.0, 2.0, 2.0);

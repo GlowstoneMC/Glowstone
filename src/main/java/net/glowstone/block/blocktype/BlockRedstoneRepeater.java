@@ -53,8 +53,8 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        super.updatePhysics(me);
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
 
         Diode diode = (Diode) me.getState().getData();
         GlowBlock target = me.getRelative(diode.getFacing().getOppositeFace());

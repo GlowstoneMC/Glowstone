@@ -1,10 +1,13 @@
 package net.glowstone.entity.projectile;
 
 import com.flowpowered.network.Message;
+
 import java.util.Arrays;
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityVelocityMessage;
@@ -15,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
@@ -69,6 +73,7 @@ public abstract class GlowProjectile extends GlowEntity implements Projectile {
                     location, size.getX(), size.getY(), size.getZ())) {
                 if (entity != this && !(entity.equals(shooter))) {
                     if (entity instanceof LivingEntity) {
+                        EventFactory.getInstance().callEvent(new ProjectileHitEvent(this, entity));
                         collide((LivingEntity) entity);
                         break;
                     }

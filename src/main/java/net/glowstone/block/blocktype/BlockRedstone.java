@@ -128,8 +128,8 @@ public class BlockRedstone extends BlockNeedsAttached {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        super.updatePhysics(me);
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
 
         for (BlockFace face : ADJACENT) {
             GlowBlock target = me.getRelative(face);
