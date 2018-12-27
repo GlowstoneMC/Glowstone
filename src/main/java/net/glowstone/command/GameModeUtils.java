@@ -6,6 +6,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +27,11 @@ import org.jetbrains.annotations.Nullable;
  * Utility class to create GameMode.
  */
 public class GameModeUtils {
-
+    private static final Locale ALSO_ACCEPT_LOCALE = Locale.ENGLISH;
     private static final class GameModeMaps {
+        private static final String BASE_NAME = "maps/gamemode";
+        String bundleName;
+        Locale locale;
         private final ImmutableSortedMap<String, GameMode> nameToModeMap;
         private final ImmutableMap<GameMode, String> modeToNameMap;
         private final String unknown;
@@ -45,12 +49,13 @@ public class GameModeUtils {
             if (locale == null) {
                 locale = Locale.getDefault();
             }
-            unknown = new LocalizedStringImpl("glowstone.gamemode.unknown",
-                    ResourceBundle.getBundle("strings", locale)).get();
+            ResourceBundle strings = ResourceBundle.getBundle("strings", locale);
+            unknown = new LocalizedStringImpl("glowstone.gamemode.unknown", strings).get();
+            Collator caseInsensitive = Collator.getInstance(locale);
+            caseInsensitive.setStrength(Collator.PRIMARY);
             ImmutableSortedMap.Builder<String, GameMode> nameToModeBuilder
-                    = new ImmutableSortedMap.Builder<>(InternationalizationUtil.CASE_INSENSITIVE);
-            ResourceBundle bundle = ResourceBundle.getBundle("maps/gamemode", locale);
-
+                    = new ImmutableSortedMap.Builder<>(caseInsensitive);
+            ResourceBundle bundle = ResourceBundle.getBundle(BASE_NAME, locale);
             for (String key : bundle.keySet()) {
                 nameToModeBuilder.put(key,
                         GameMode.getByValue(Integer.decode(bundle.getString(key))));
@@ -58,10 +63,22 @@ public class GameModeUtils {
             nameToModeMap = nameToModeBuilder.build();
             ImmutableMap.Builder<GameMode, String> modeToNameBuilder = ImmutableMap.builder();
             ImmutableList.Builder<String> modeAutocompleteListBuilder = ImmutableList.builder();
-            for (String name : GlowstoneMessages.GameMode.NAMES.get().split(",")) {
+            for (String name : new LocalizedStringImpl("glowstone.gamemode.names", strings)
+                    .get().split(",")) {
                 GameMode mode = nameToModeMap.get(name);
                 modeToNameBuilder.put(mode, name);
-                modeAutocompleteListBuilder.add(name.toLowerCase(Locale.getDefault()));
+                modeAutocompleteListBuilder.add(name.toLowerCase(locale));
+            }
+            if (!ALSO_ACCEPT_LOCALE.equals(locale)) {
+                try {
+                    modeAutocompleteListBuilder.addAll(
+                            MAPS_CACHE.get(ALSO_ACCEPT_LOCALE).modeAutoCompleteList);
+                } catch (ExecutionException e) {
+                    ConsoleMessages.Error.I18n.GAME_MODE.log(e, ALSO_ACCEPT_LOCALE);
+                }
+                // We can't merge nameToModeMap this way because the two locales may have different
+                // case-folding rules (e.g. Turkish dotted/dotless i) and each Map can only use one
+                // locale's rules
             }
             modeToNameMap = modeToNameBuilder.build();
             modeAutoCompleteList = modeAutocompleteListBuilder.build();
@@ -86,9 +103,15 @@ public class GameModeUtils {
      * @param locale The input locale
      * @return The matching mode if any, null otherwise.
      */
+    @Nullable
     public static GameMode build(@Nullable final String mode, @Nullable final Locale locale) {
         try {
-            return MAPS_CACHE.get(localeFromNullable(locale)).nameToMode(mode);
+            Locale targetLocale = localeFromNullable(locale);
+            GameMode out = MAPS_CACHE.get(targetLocale).nameToMode(mode);
+            if (out == null && !ALSO_ACCEPT_LOCALE.equals(targetLocale)) {
+                out = MAPS_CACHE.get(ALSO_ACCEPT_LOCALE).nameToMode(mode);
+            }
+            return out;
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
