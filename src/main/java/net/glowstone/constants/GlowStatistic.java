@@ -33,6 +33,8 @@ public final class GlowStatistic {
     private static final Map<Statistic, String> STATISTICS = new HashMap<>(values().length);
     @NonNls
     private static final Map<Statistic, Map<Enum, String>> SUB_STATISTICS = new HashMap<>();
+    @NonNls
+    private static final String STAT_PREFIX = "stat.";
 
     static {
         generateStatistics();
@@ -50,7 +52,7 @@ public final class GlowStatistic {
      * @return the statistic name.
      */
     public static String getName(Statistic stat) {
-        checkNotNull(stat, "Statistic cannot be null");
+        checkNotNull(stat, "Statistic cannot be null"); // NON-NLS
         return STATISTICS.get(stat);
     }
 
@@ -62,8 +64,8 @@ public final class GlowStatistic {
      * @return the statistic name
      */
     public static String getName(Statistic stat, Material material) {
-        checkNotNull(stat, "Statistic cannot be null");
-        checkNotNull(material, "Material cannot be null");
+        checkNotNull(stat, "Statistic cannot be null"); // NON-NLS
+        checkNotNull(material, "Material cannot be null"); // NON-NLS
 
         if (SUB_STATISTICS.containsKey(stat)) {
             return SUB_STATISTICS.get(stat).get(material);
@@ -80,8 +82,8 @@ public final class GlowStatistic {
      * @return the statistic name
      */
     public static String getName(Statistic stat, EntityType entityType) {
-        checkNotNull(stat, "Statistic cannot be null");
-        checkNotNull(entityType, "EntityType cannot be null");
+        checkNotNull(stat, "Statistic cannot be null"); // NON-NLS
+        checkNotNull(entityType, "EntityType cannot be null"); // NON-NLS
 
         if (SUB_STATISTICS.containsKey(stat)) {
             return SUB_STATISTICS.get(stat).get(entityType);
@@ -94,16 +96,16 @@ public final class GlowStatistic {
         if (!SUB_STATISTICS.containsKey(statistic)) {
             SUB_STATISTICS.put(statistic, new HashMap<>());
         }
-        SUB_STATISTICS.get(statistic).put(data, "stat." + key);
+        SUB_STATISTICS.get(statistic).put(data, STAT_PREFIX + key);
     }
 
     private static void generateStatistics() {
         for (Statistic stat : values()) {
-            STATISTICS.put(stat, "stat." + UPPER_UNDERSCORE.to(LOWER_CAMEL, stat.name()));
+            STATISTICS.put(stat, STAT_PREFIX + UPPER_UNDERSCORE.to(LOWER_CAMEL, stat.name()));
         }
 
         // Specific case
-        STATISTICS.put(PLAY_ONE_TICK, "stat.playOneMinute");
+        STATISTICS.put(PLAY_ONE_TICK, STAT_PREFIX + "playOneMinute");
     }
 
     private static void generateMaterialStatistics() {
