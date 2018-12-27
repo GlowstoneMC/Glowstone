@@ -15,8 +15,6 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import net.glowstone.command.minecraft.GlowVanillaCommand;
 import net.glowstone.i18n.ConsoleMessages;
-import net.glowstone.i18n.GlowstoneMessages;
-import net.glowstone.i18n.InternationalizationUtil;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.GameMode;
 import org.bukkit.util.StringUtil;
@@ -27,8 +25,9 @@ import org.jetbrains.annotations.Nullable;
  * Utility class to create GameMode.
  */
 public class GameModeUtils {
-    private static final Locale ALSO_ACCEPT_LOCALE = Locale.ENGLISH;
+
     private static final class GameModeMaps {
+
         private static final String BASE_NAME = "maps/gamemode";
         String bundleName;
         Locale locale;
@@ -85,6 +84,7 @@ public class GameModeUtils {
         }
     }
 
+    private static final Locale ALSO_ACCEPT_LOCALE = Locale.ENGLISH;
     private static final LoadingCache<Locale, GameModeMaps> MAPS_CACHE = CacheBuilder.newBuilder()
             .maximumSize(GlowVanillaCommand.CACHE_SIZE)
             .build(CacheLoader.from(GameModeMaps::new));
