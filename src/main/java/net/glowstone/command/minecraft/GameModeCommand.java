@@ -75,12 +75,11 @@ public class GameModeCommand extends GlowVanillaCommand {
             CommandSender sender, Player who, GameMode gameMode, ResourceBundle bundle) {
         String gameModeName = GameModeUtils.prettyPrint(gameMode, bundle.getLocale());
         who.setGameMode(gameMode);
-        if (sender.equals(who)) {
-            new LocalizedStringImpl("gamemode.done.self", bundle).send(sender, gameModeName);
-        } else {
+        if (!sender.equals(who)) {
             new LocalizedStringImpl("gamemode.done", bundle)
                     .send(sender, who.getDisplayName(), gameModeName);
         }
+        new LocalizedStringImpl("gamemode.done.to-you", bundle).send(who, gameModeName);
     }
 
     @Override
