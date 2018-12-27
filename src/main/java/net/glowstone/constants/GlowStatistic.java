@@ -23,7 +23,6 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
-import org.jetbrains.annotations.NonNls;
 
 /**
  * Name mappings for statistics.
@@ -52,10 +51,6 @@ public final class GlowStatistic {
     public static String getName(Statistic stat) {
         checkNotNull(stat, "Statistic cannot be null");
         return STATISTICS.get(stat);
-    }
-
-    private static void set(Statistic stat, @NonNls String key) {
-        names[stat.ordinal()] = "stat." + key;
     }
 
     /**
@@ -94,7 +89,7 @@ public final class GlowStatistic {
         return null;
     }
 
-    private static void set(Statistic statistic, Enum data, @NonNls String key) {
+    private static void set(Statistic statistic, Enum data, String key) {
         if (!SUB_STATISTICS.containsKey(statistic)) {
             SUB_STATISTICS.put(statistic, new HashMap<>());
         }
