@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.flowpowered.network.Message;
@@ -21,6 +22,7 @@ import net.glowstone.chunk.GlowChunk;
 import net.glowstone.inventory.GlowPlayerInventory;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowScoreboardManager;
+import net.glowstone.util.GameRuleManager;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -115,6 +117,7 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(world.getChunkAt(any(Location.class))).thenReturn(chunk);
         when(world.getChunkAt(any(Block.class))).thenReturn(chunk);
         when(world.getChunkAt(anyInt(),anyInt())).thenReturn(chunk);
+        when(world.getGameRuleMap()).thenReturn(new GameRuleManager());
         when(server.getItemFactory()).thenReturn(itemFactory);
         entityManager = Mockito.spy(new EntityManager());
         when(world.getEntityManager()).thenReturn(entityManager);
@@ -134,8 +137,8 @@ public abstract class GlowEntityTest<T extends GlowEntity> {
         when(eventFactory.onEntityDamage(any(EntityDamageEvent.class))).thenAnswer(
                 returnsFirstArg());
         inventory = new GlowPlayerInventory(player);
-        Mockito.when(player.getInventory()).thenReturn(inventory);
-        Mockito.when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
+        when(player.getInventory()).thenReturn(inventory);
+        when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
     }
 
     @After

@@ -42,7 +42,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * @return the game rules defined, may be empty
      */
     public String[] getKeys() {
-        return gameRules.keySet().toArray(new String[gameRules.size()]);
+        return gameRules.keySet().toArray(new String[0]);
     }
 
     /**

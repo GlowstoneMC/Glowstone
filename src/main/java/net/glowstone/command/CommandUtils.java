@@ -1,7 +1,5 @@
 package net.glowstone.command;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.block.state.BlockStateData;
@@ -39,7 +37,7 @@ public class CommandUtils {
      * @return the block state for {@code type} and {@code state}, or null if none match
      */
     public static BlockStateData readState(CommandSender sender, Material type, String state) {
-        if (isNumeric(state)) {
+        if (NumberUtils.isNumber(state)) {
             return new BlockStateData(Byte.parseByte(state));
         }
         try {
@@ -51,29 +49,20 @@ public class CommandUtils {
     }
 
     /**
-     * Tests whether the given string is a number.
-     *
-     * @param argument a string
-     * @return true if the string is a number; false otherwise
-     */
-    public static boolean isNumeric(String argument) {
-        return NumberUtils.isNumber(argument);
-    }
-
-    /**
      * Converts an array of entities to a readable string.
      *
      * @param entities one or more entities
      * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
+     * @deprecated Use one of the {@code joinList} overloads in
+     * {@link net.glowstone.command.minecraft.GlowVanillaCommand.CommandMessages}.
      */
+    @Deprecated
     public static String prettyPrint(Entity[] entities) {
-        List<String> names = new ArrayList<>();
+        String[] names = new String[entities.length];
         for (int i = 0; i < entities.length; i++) {
-            Entity entity = entities[i];
-            String name = getName(entity);
-            names.add(name);
+            names[i] = entities[i].getName();
         }
-        return prettyPrint(names.toArray(new String[names.size()]));
+        return prettyPrint(names);
     }
 
     /**
@@ -81,8 +70,10 @@ public class CommandUtils {
      *
      * @param strings one or more strings
      * @return a list of the strings, formatted like "a, b and c"
+     * @deprecated Use one of the {@code joinList} overloads in
+     * {@link net.glowstone.command.minecraft.GlowVanillaCommand.CommandMessages}.
      */
-    // FIXME: Replace with the function from the Unicode CLDR that handles almost any language
+    @Deprecated
     public static String prettyPrint(String[] strings) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < strings.length; i++) {

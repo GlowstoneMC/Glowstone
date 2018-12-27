@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
-import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.GlowVehicle;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
@@ -25,7 +25,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class GlowBoat extends GlowEntity implements Boat {
+public class GlowBoat extends GlowVehicle implements Boat {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     @Getter
