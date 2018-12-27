@@ -53,7 +53,10 @@ public class CommandUtils {
      *
      * @param entities one or more entities
      * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
+     * @deprecated Use one of the {@code joinList} overloads in
+     * {@link net.glowstone.command.minecraft.GlowVanillaCommand.CommandMessages}.
      */
+    @Deprecated
     public static String prettyPrint(Entity[] entities) {
         String[] names = new String[entities.length];
         for (int i = 0; i < entities.length; i++) {
@@ -67,8 +70,10 @@ public class CommandUtils {
      *
      * @param strings one or more strings
      * @return a list of the strings, formatted like "a, b and c"
+     * @deprecated Use one of the {@code joinList} overloads in
+     * {@link net.glowstone.command.minecraft.GlowVanillaCommand.CommandMessages}.
      */
-    // FIXME: Replace with the function from the Unicode CLDR that handles almost any language
+    @Deprecated
     public static String prettyPrint(String[] strings) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < strings.length; i++) {
