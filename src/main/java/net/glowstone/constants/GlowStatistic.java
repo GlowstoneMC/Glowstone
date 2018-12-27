@@ -23,14 +23,15 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Name mappings for statistics.
  */
 public final class GlowStatistic {
-
+    @NonNls
     private static final Map<Statistic, String> STATISTICS = new HashMap<>(values().length);
-
+    @NonNls
     private static final Map<Statistic, Map<Enum, String>> SUB_STATISTICS = new HashMap<>();
 
     static {
@@ -89,7 +90,7 @@ public final class GlowStatistic {
         return null;
     }
 
-    private static void set(Statistic statistic, Enum data, String key) {
+    private static void set(Statistic statistic, Enum data, @NonNls String key) {
         if (!SUB_STATISTICS.containsKey(statistic)) {
             SUB_STATISTICS.put(statistic, new HashMap<>());
         }
