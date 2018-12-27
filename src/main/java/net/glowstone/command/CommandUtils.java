@@ -54,7 +54,7 @@ public class CommandUtils {
      * @param entities one or more entities
      * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
      * @deprecated Use one of the {@code joinList} overloads in
-     * {@link net.glowstone.command.minecraft.GlowVanillaCommand.CommandMessages}.
+     * {@link net.glowstone.command.minecraft.GlowVanillaCommand}'s inner class CommandMessages.
      */
     @Deprecated
     public static String prettyPrint(Entity[] entities) {
@@ -71,7 +71,7 @@ public class CommandUtils {
      * @param strings one or more strings
      * @return a list of the strings, formatted like "a, b and c"
      * @deprecated Use one of the {@code joinList} overloads in
-     * {@link net.glowstone.command.minecraft.GlowVanillaCommand.CommandMessages}.
+     * {@link net.glowstone.command.minecraft.GlowVanillaCommand}'s inner class CommandMessages.
      */
     @Deprecated
     public static String prettyPrint(String[] strings) {
