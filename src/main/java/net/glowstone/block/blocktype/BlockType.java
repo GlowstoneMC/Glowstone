@@ -306,15 +306,13 @@ public class BlockType extends ItemType {
     }
 
     /**
-     * Called when the BlockType should calculate the current physics.
-     * <br/>
-     * <br/>
-     * Subclasses <b>SHOULD NOT</b> override this method,
-     * instead they should override {@link #updatePhysicsAfterEvent(GlowBlock)}
+     * <p>Called when the BlockType should calculate the current physics.</p>
+     * <p>Subclasses should override {@link #updatePhysicsAfterEvent(GlowBlock)}
+     * if they need a custom handling of the physics calculation</p>
      *
      * @param block The block
      */
-    public void updatePhysics(GlowBlock block) {
+    public final void updatePhysics(GlowBlock block) {
         BlockPhysicsEvent event = EventFactory.getInstance()
             .callEvent(new BlockPhysicsEvent(block, block.getTypeId()));
         if (!event.isCancelled()) {
