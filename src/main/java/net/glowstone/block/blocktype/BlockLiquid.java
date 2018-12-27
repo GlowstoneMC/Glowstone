@@ -227,8 +227,8 @@ public abstract class BlockLiquid extends BlockType {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        super.updatePhysics(me);
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
         if (isStationary(me.getType())) {
             me.setType(getOpposite(me.getType()), me.getData(), false);
         }

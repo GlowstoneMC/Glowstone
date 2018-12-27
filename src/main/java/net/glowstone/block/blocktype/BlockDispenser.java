@@ -84,8 +84,8 @@ public class BlockDispenser extends BlockContainer {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        super.updatePhysics(me);
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
         GlowBlock up = me.getRelative(BlockFace.UP);
         boolean powered = me.isBlockPowered() || me.isBlockIndirectlyPowered()
                 || up.isBlockPowered() || up.isBlockIndirectlyPowered();
