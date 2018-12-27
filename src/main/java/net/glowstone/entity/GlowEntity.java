@@ -43,6 +43,7 @@ import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessa
 import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+import net.glowstone.util.TextMessage;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
@@ -1184,24 +1185,25 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public String getCustomName() {
-        String name = metadata.getString(MetadataIndex.NAME_TAG);
-        if (name == null || name.isEmpty()) {
-            name = "";
+        TextMessage name = metadata.getOptChat(MetadataIndex.NAME_TAG);
+        if (name == null) {
+            return "";
         }
-        return name;
+        return name.asPlaintext();
     }
 
     @Override
     public void setCustomName(String name) {
         if (name == null) {
-            name = "";
+            metadata.set(MetadataIndex.NAME_TAG, null);
+            return;
         }
 
         if (name.length() > 64) {
             name = name.substring(0, 64);
         }
 
-        metadata.set(MetadataIndex.NAME_TAG, name); // remove ?
+        metadata.set(MetadataIndex.NAME_TAG, new TextMessage(name));
     }
 
     @Override

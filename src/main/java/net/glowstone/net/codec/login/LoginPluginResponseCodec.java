@@ -11,8 +11,8 @@ public class LoginPluginResponseCodec implements Codec<LoginPluginResponseMessag
     public LoginPluginResponseMessage decode(ByteBuf buf) throws IOException {
         int transactionId = ByteBufUtils.readVarInt(buf);
         boolean successful = buf.readBoolean();
-        int remainingBytes = buf.readableBytes();
-        ByteBuf data = buf.readBytes(remainingBytes);
+        byte[] data = new byte[buf.readableBytes()];
+        buf.readBytes(data);
 
         return new LoginPluginResponseMessage(transactionId, successful, data);
     }
