@@ -98,10 +98,8 @@ public class RegionFile {
 
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
     private final int[] offsets;
-    private final int[] chunkTimestamps;
     private RandomAccessFile file;
     private BitSet sectorsUsed;
-    private int totalSectors;
     private final AtomicInteger sizeDelta = new AtomicInteger();
     /**
      * Returns the modification timestamp of the region file when it was first opened by this
@@ -121,7 +119,6 @@ public class RegionFile {
      */
     public RegionFile(File path) throws IOException {
         offsets = new int[SECTOR_INTS];
-        chunkTimestamps = new int[SECTOR_INTS];
 
         sizeDelta.set(0);
 
@@ -167,24 +164,24 @@ public class RegionFile {
         }
 
         // set up the available sector map
-        totalSectors = (int) file.length() / SECTOR_BYTES;
+        int totalSectors = (int) Math.ceil(file.length() / (double) SECTOR_BYTES);
         sectorsUsed = new BitSet(totalSectors);
 
-        sectorsUsed.set(0);
-        sectorsUsed.set(1);
+        // reserve the first two sectors
+        sectorsUsed.set(0, 2);
 
         // read offset table and timestamp tables
         file.seek(0);
 
-        ByteBuffer header = ByteBuffer.allocate(2 * SECTOR_BYTES);
+        ByteBuffer header = ByteBuffer.allocate(SECTOR_BYTES);
         while (header.hasRemaining()) {
             if (file.getChannel().read(header) == -1) {
                 throw new EOFException();
             }
         }
-        header.clear();
+        header.flip();
 
-        // populate the tables
+        // populate the offset table
         IntBuffer headerAsInts = header.asIntBuffer();
         for (int i = 0; i < SECTOR_INTS; ++i) {
             int offset = headerAsInts.get();
@@ -194,19 +191,13 @@ public class RegionFile {
             int numSectors = offset & 255;
 
             if (offset != 0 && startSector >= 0 && startSector + numSectors <= totalSectors) {
-                for (int sectorNum = 0; sectorNum < numSectors; ++sectorNum) {
-                    sectorsUsed.set(startSector + sectorNum);
-                }
+                sectorsUsed.set(startSector, startSector + numSectors + 1);
             } else if (offset != 0) {
                 GlowServer.logger.warning(
                         "Region \"" + path + "\": offsets[" + i + "] = " + offset + " -> "
                                 + startSector
                                 + "," + numSectors + " does not fit");
             }
-        }
-        // read timestamps from timestamp table
-        for (int i = 0; i < SECTOR_INTS; ++i) {
-            chunkTimestamps[i] = headerAsInts.get();
         }
     }
 
@@ -237,6 +228,7 @@ public class RegionFile {
             return null;
         }
 
+        int totalSectors = sectorsUsed.length();
         int sectorNumber = offset >> 8;
         int numSectors = offset & 0xFF;
         if (sectorNumber + numSectors > totalSectors) {
@@ -320,56 +312,52 @@ public class RegionFile {
             /* we can simply overwrite the old sectors */
             write(sectorNumber, data, length);
         } else {
-            /* we need to allocate new sectors */
-
             /* mark the sectors previously used for this chunk as free */
-            for (int i = 0; i < sectorsAllocated; ++i) {
-                sectorsUsed.clear(sectorNumber + i);
+            if (sectorNumber != 0) {
+                sectorsUsed.clear(sectorNumber, sectorNumber + sectorsAllocated + 1);
             }
 
             /* scan for a free space large enough to store this chunk */
-            int runStart = 2;
-            int runLength = 0;
-            int currentSector = 2;
-            while (runLength < sectorsNeeded) {
-                int nextSector = sectorsUsed.nextClearBit(currentSector + 1);
-                if (currentSector + 1 == nextSector) {
-                    runLength++;
-                } else {
-                    runStart = nextSector;
-                    runLength = 1;
-                }
-                currentSector = nextSector;
-            }
-
-            if (runLength >= sectorsNeeded) {
-                /* we found a free space large enough */
-                sectorNumber = runStart;
-                setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
-                for (int i = 0; i < sectorsNeeded; ++i) {
-                    sectorsUsed.set(sectorNumber + i);
-                }
-                write(sectorNumber, data, length);
-            } else {
+            sectorNumber = findNewSectorStart(sectorsNeeded);
+            if (sectorNumber == -1) {
                 /*
                  * no free space large enough found -- we need to grow the
                  * file
                  */
                 file.seek(file.length());
-                sectorNumber = totalSectors;
                 for (int i = 0; i < sectorsNeeded; ++i) {
                     file.write(emptySector);
-                    sectorsUsed.set(totalSectors + i);
                 }
-                totalSectors += sectorsNeeded;
                 sizeDelta.addAndGet(SECTOR_BYTES * sectorsNeeded);
+                sectorNumber = sectorsUsed.length();
+            }
 
-                write(sectorNumber, data, length);
-                setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
+            sectorsUsed.set(sectorNumber, sectorNumber + sectorsNeeded + 1);
+            write(sectorNumber, data, length);
+            setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
+        }
+    }
+
+    private int findNewSectorStart(int sectorsNeeded) {
+        int start = -1;
+        int runLength = 0;
+        for (int i = sectorsUsed.nextClearBit(0); i < sectorsUsed.length(); i++) {
+            if (sectorsUsed.get(i)) {
+                // must reset
+                start = -1;
+                runLength = 0;
+            } else {
+                if (start == -1) {
+                    start = i;
+                }
+                runLength++;
+                if (runLength >= sectorsNeeded) {
+                    return start;
+                }
             }
         }
-        setTimestamp(x, z, (int) (System.currentTimeMillis() / 1000L));
-        //file.getChannel().force(true);
+        // reached the end, append to the end of the region instead
+        return -1;
     }
 
     /* write a chunk data to the region file at specified sector number */
@@ -399,12 +387,6 @@ public class RegionFile {
         offsets[x + (z << 5)] = offset;
         file.seek((x + (z << 5)) << 2);
         file.writeInt(offset);
-    }
-
-    private void setTimestamp(int x, int z, int value) throws IOException {
-        chunkTimestamps[x + (z << 5)] = value;
-        file.seek(SECTOR_BYTES + ((x + (z << 5)) << 2));
-        file.writeInt(value);
     }
 
     public void close() throws IOException {
