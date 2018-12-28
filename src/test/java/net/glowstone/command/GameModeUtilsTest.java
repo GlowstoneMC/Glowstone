@@ -49,6 +49,5 @@ public class GameModeUtilsTest {
         assertThat(GameModeUtils.prettyPrint(GameMode.ADVENTURE, locale), is("Adventure"));
         assertThat(GameModeUtils.prettyPrint(GameMode.SURVIVAL, locale), is("Survival"));
         assertThat(GameModeUtils.prettyPrint(GameMode.SPECTATOR, locale), is("Spectator"));
-        assertThat(GameModeUtils.prettyPrint(null, locale), nullValue());
     }
 }

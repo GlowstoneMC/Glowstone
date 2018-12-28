@@ -1,5 +1,6 @@
 package net.glowstone.command;
 
+import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -120,14 +121,10 @@ public class GameModeUtils {
      *
      * @param gameMode The mode to print
      * @param locale The output locale
-     * @return A string containing the pretty name of the mode, 'Unknown' if the mode is not known,
-     *     or null if the given mode is null.
+     * @return the pretty name of the mode or 'Unknown' if the mode is not known
      */
-    @Nullable
-    public static String prettyPrint(@Nullable GameMode gameMode, @Nullable Locale locale) {
-        if (gameMode == null) {
-            return null;
-        }
+    public static String prettyPrint(GameMode gameMode, @Nullable Locale locale) {
+        Preconditions.checkNotNull(gameMode, "gameMode cannot be null"); // NON-NLS
         try {
             return MAPS_CACHE.get(localeFromNullable(locale)).modeToName(gameMode);
         } catch (ExecutionException e) {
