@@ -313,6 +313,9 @@ public class BlockType extends ItemType {
      * @param block The block
      */
     public final void updatePhysics(GlowBlock block) {
+        if (!block.getWorld().isInitialized()) {
+            return;
+        }
         BlockPhysicsEvent event = EventFactory.getInstance()
             .callEvent(new BlockPhysicsEvent(block, block.getTypeId()));
         if (!event.isCancelled()) {
