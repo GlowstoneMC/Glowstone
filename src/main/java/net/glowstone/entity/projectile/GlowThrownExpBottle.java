@@ -2,8 +2,8 @@ package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.objects.GlowExperienceOrb;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -43,6 +43,6 @@ public class GlowThrownExpBottle extends GlowProjectile implements ThrownExpBott
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.EXPERIENCE_BOTTLE;
+        return EntityNetworkUtil.getObjectId(EntityType.THROWN_EXP_BOTTLE);
     }
 }

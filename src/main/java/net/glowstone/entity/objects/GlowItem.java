@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -171,7 +172,8 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-                new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.ITEM, location),
+                new SpawnObjectMessage(entityId, getUniqueId(),
+                        EntityNetworkUtil.getObjectId(EntityType.DROPPED_ITEM), location),
                 new EntityMetadataMessage(entityId, metadata.getEntryList()),
                 // these keep the client from assigning a random velocity
                 new EntityTeleportMessage(entityId, location),

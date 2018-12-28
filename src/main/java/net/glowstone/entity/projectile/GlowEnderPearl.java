@@ -4,6 +4,8 @@ import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
 import java.util.Arrays;
 import java.util.List;
+
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
 import net.glowstone.net.message.play.entity.EntityTeleportMessage;
@@ -13,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -107,14 +110,15 @@ public class GlowEnderPearl extends GlowProjectile implements EnderPearl {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.THROWN_ENDERPEARL;
+        return EntityNetworkUtil.getObjectId(EntityType.ENDER_PEARL);
     }
 
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
                 new SpawnObjectMessage(
-                        entityId, getUniqueId(), SpawnObjectMessage.THROWN_ENDERPEARL, location),
+                        entityId, getUniqueId(),
+                        EntityNetworkUtil.getObjectId(EntityType.ENDER_PEARL), location),
                 new EntityMetadataMessage(entityId, metadata.getEntryList()),
                 // These keep the client from assigning a random velocity
                 new EntityTeleportMessage(entityId, location),

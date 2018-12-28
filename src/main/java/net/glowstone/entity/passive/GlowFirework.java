@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -85,7 +86,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
         return Arrays.asList(
             new SpawnObjectMessage(
-                    entityId, UUID.randomUUID(), SpawnObjectMessage.FIREWORK, x, y, z, 0, 0),
+                    entityId, UUID.randomUUID(),
+                    EntityNetworkUtil.getObjectId(EntityType.FIREWORK), x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }

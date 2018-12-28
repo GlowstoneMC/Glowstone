@@ -7,10 +7,11 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.util.EntityUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.SplashPotion;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -77,7 +78,7 @@ public class GlowSplashPotion extends GlowProjectile implements SplashPotion {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.SPLASH_POTION;
+        return EntityNetworkUtil.getObjectId(EntityType.SPLASH_POTION);
     }
 
     @Override

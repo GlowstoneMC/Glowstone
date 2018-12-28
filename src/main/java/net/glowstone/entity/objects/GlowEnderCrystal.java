@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.Explosion;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -47,7 +48,8 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
             new SpawnObjectMessage(entityId,
-                    getUniqueId(), SpawnObjectMessage.ENDER_CRYSTAL, location),
+                    getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.ENDER_CRYSTAL),
+                    location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }

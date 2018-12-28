@@ -3,15 +3,12 @@ package net.glowstone.entity.projectile;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
@@ -117,7 +114,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.ARROW;
+        return EntityNetworkUtil.getObjectId(EntityType.TIPPED_ARROW);
     }
 
     @Override

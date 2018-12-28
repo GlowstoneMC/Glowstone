@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.GlowVehicle;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -53,7 +54,8 @@ public class GlowBoat extends GlowVehicle implements Boat {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.BOAT, location),
+            new SpawnObjectMessage(entityId, getUniqueId(),
+                    EntityNetworkUtil.getObjectId(EntityType.BOAT), location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }

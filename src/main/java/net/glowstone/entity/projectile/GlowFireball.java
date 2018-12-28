@@ -2,14 +2,10 @@ package net.glowstone.entity.projectile;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
+import net.glowstone.entity.EntityNetworkUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
@@ -52,11 +48,11 @@ public class GlowFireball extends GlowProjectile implements Fireball {
     protected int getObjectId() {
         ProjectileSource shooter = getShooter();
         if (shooter instanceof Ghast) {
-            return SpawnObjectMessage.GHAST_FIREBALL;
+            return EntityNetworkUtil.getObjectId(EntityType.FIREBALL);
         } else if (shooter instanceof EnderDragon) {
-            return SpawnObjectMessage.ENDER_DRAGON_FIREBALL;
+            return EntityNetworkUtil.getObjectId(EntityType.DRAGON_FIREBALL);
         }
-        return SpawnObjectMessage.FIREBALL;
+        return EntityNetworkUtil.getObjectId(EntityType.SMALL_FIREBALL);
     }
 
     @Override

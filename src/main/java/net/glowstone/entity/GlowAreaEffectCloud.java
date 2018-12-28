@@ -20,6 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
@@ -28,7 +29,9 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
-    private static final int NETWORK_TYPE_ID = 3;
+    private static final int NETWORK_TYPE_ID =
+            EntityNetworkUtil.getObjectId(EntityType.AREA_EFFECT_CLOUD);
+
     /**
      * Used to implement the reapplication delay. Note that this isn't serialized -- all
      * reapplication delays will effectively end when the chunk unloads.

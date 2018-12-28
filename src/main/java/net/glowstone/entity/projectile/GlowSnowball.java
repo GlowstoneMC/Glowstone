@@ -1,11 +1,12 @@
 package net.glowstone.entity.projectile;
 
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.monster.GlowBlaze;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -63,6 +64,6 @@ public class GlowSnowball extends GlowProjectile implements Snowball {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.SNOWBALL;
+        return EntityNetworkUtil.getObjectId(EntityType.SNOWBALL);
     }
 }
