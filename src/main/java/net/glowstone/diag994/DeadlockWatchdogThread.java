@@ -62,7 +62,6 @@ public class DeadlockWatchdogThread extends LooperThread {
     @Override
     public boolean iterate()
             throws InterruptedException {
-        sleep(60_000);
         boolean deadlockFound = false;
         long[] threadsOfInterest = THREAD_MX_BEAN.findDeadlockedThreads();
         if ((threadsOfInterest != null) && (threadsOfInterest.length > 0)) {
@@ -89,6 +88,7 @@ public class DeadlockWatchdogThread extends LooperThread {
             // Fail fast if current context allows
             System.exit(DEADLOCK_STATUS);
         }
+        sleep(1_000);
         return !deadlockFound; // Terminate when a deadlock is found
     }
 }
