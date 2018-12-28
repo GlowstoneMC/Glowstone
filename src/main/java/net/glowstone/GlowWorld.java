@@ -368,6 +368,11 @@ public class GlowWorld implements World {
     @Getter
     private int maxHeight;
     private Set<Key> activeChunksSet = new HashSet<>();
+    /**
+     * Whether the world has been initialized (i.e. loading/spawn generation is completed).
+     */
+    @Getter
+    private boolean initialized;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -434,6 +439,7 @@ public class GlowWorld implements World {
         setKeepSpawnInMemory(keepSpawnLoaded);
 
         server.getLogger().info("Preparing spawn for " + name + ": done");
+        initialized = true;
         EventFactory.getInstance().callEvent(new WorldLoadEvent(this));
 
         // pulse AI tasks
