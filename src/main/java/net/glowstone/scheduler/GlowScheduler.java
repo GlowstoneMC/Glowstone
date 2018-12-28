@@ -50,8 +50,8 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * Executor to handle execution of async tasks.
      */
-    private final ExecutorService asyncTaskExecutor = Executors
-        .newCachedThreadPool(GlowThreadFactory.INSTANCE);
+    private final ExecutorService asyncTaskExecutor = Executors.newWorkStealingPool(
+            Runtime.getRuntime().availableProcessors());
     /**
      * A list of active tasks.
      */
