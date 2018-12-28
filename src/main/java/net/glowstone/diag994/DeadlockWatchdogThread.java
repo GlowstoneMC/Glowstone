@@ -32,6 +32,9 @@ public class DeadlockWatchdogThread extends LooperThread {
         super("net.glowstone.diag994.DeadlockWatchdogThread");
     }
 
+    /**
+     * Starts the instance.
+     */
     public static void ensureStarted() {
         synchronized (DeadlockWatchdogThread.class) {
             if (INSTANCE.getState() == Thread.State.TERMINATED) {
@@ -45,6 +48,9 @@ public class DeadlockWatchdogThread extends LooperThread {
         }
     }
 
+    /**
+     * Stops the instance. Subsequent calls to ensureStarted will use a new instance.
+     */
     public static void stopInstance() {
         synchronized (DeadlockWatchdogThread.class) {
             INSTANCE.interrupt();
