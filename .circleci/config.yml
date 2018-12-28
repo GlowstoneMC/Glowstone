@@ -43,6 +43,44 @@ jobs:
                 path: target/glowstone.jar
                 destination: glowstone.jar
 
+    build-113-hack:
+        <<: *defaults
+        steps:
+            - run: mvn --version
+            - run: java -version
+
+            - checkout
+
+            - run: |
+                git clone -b 1.13-hack https://github.com/GlowstoneMC/Glowkit.git
+                cd Glowkit
+                ./glowkit p
+                cd Glowkit-Patched
+                mvn install
+
+            - restore_cache:
+                keys:
+                # Use cache for this pom
+                - glowstone-{{ checksum "pom.xml" }}
+                # Fallback to latest cache is an exact match is not found
+                - glowstone-
+
+            - run: mvn -T 1C -B dependency:go-offline
+
+            - save_cache:
+                paths:
+                    - ~/.m2
+                key: glowstone-{{ checksum "pom.xml" }}
+
+            - run: mvn -T 1C -B package
+
+            - store_test_results:
+                path: target/surefire-reports
+
+            - store_artifacts:
+                path: target/glowstone.jar
+                destination: glowstone.jar
+
     build-deploy:
         <<: *defaults
         steps:
@@ -99,4 +137,13 @@ workflows:
             - build:
                 filters:
                     branches:
-                        ignore: dev
+                        ignore:
+                            - dev
+                            - 1.13-hack
+
+    other-branch-build-113-hack:
+        jobs:
+            - build-113-hack:
+                filters:
+                    branches:
+                        only: 1.13-hack
