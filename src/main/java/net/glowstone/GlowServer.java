@@ -110,6 +110,7 @@ import net.glowstone.command.minecraft.WorldBorderCommand;
 import net.glowstone.command.minecraft.XpCommand;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
+import net.glowstone.diag994.DeadlockWatchdogThread;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
@@ -483,6 +484,7 @@ public class GlowServer implements Server {
      */
     public static void main(String... args) {
         try {
+            DeadlockWatchdogThread.ensureStarted();
             GlowServer server = createFromArguments(args);
 
             // we don't want to run a server when called with --version, --help or --generate-config
