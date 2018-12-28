@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.stream.Collectors;
-import net.glowstone.command.CommandUtils;
+import java.util.stream.Stream;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
@@ -62,12 +61,10 @@ public class BanListCommand extends GlowVanillaCommand {
         if (banEntries.isEmpty()) {
             new LocalizedStringImpl("banlist.empty", resourceBundle).send(sender);
         } else {
-            final List<String> targets = banEntries.stream().map(BanEntry::getTarget)
-                .collect(Collectors.toList());
+            final Stream<String> targets = banEntries.stream().map(BanEntry::getTarget);
             new LocalizedStringImpl("banlist.non-empty", resourceBundle).send(sender,
                     banEntries.size());
-            sender
-                .sendMessage(CommandUtils.prettyPrint(targets.toArray(new String[0])));
+            sender.sendMessage(messages.joinList(targets));
         }
 
         return true;

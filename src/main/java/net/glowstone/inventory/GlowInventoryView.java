@@ -60,16 +60,6 @@ public class GlowInventoryView extends InventoryView {
     }
 
     /**
-     * Create an inventory view for a player.
-     *
-     * @param player The player.
-     * @param type The inventory type.
-     * @param topInventory The top inventory.
-     * @param bottomInventory The bottom inventory.
-     */
-
-
-    /**
      * Check if an inventory view is the player's default inventory view.
      *
      * @param view The view to check.

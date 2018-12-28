@@ -50,13 +50,13 @@ public final class StatisticMap {
             checkArgument(
                     stat.getType() == Type.ITEM, "Statistic " + stat + " is not an item statistic");
         }
-        throw new UnsupportedOperationException("Not yet implemented");
+        return GlowStatistic.getName(stat, mat);
     }
 
     private String name(Statistic stat, EntityType type) {
         checkArgument(
                 stat.getType() == Type.ENTITY, "Statistic " + stat + " is not an entity statistic");
-        throw new UnsupportedOperationException("Not yet implemented");
+        return GlowStatistic.getName(stat, type);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -99,13 +99,39 @@ public final class StatisticMap {
         setValue(name, getValue(name) + modify);
     }
 
+    /**
+     * Increment the given Statistic for the given Material.
+     *
+     * @param stat the Statistic
+     * @param material the Material
+     * @param modify the amount to add
+     */
     public void add(Statistic stat, Material material, int modify) {
-        String name = name(stat, material);
+        String name = name(stat);
+
+        if (name != null) {
+            setValue(name, getValue(name) + modify);
+        }
+
+        name = name(stat, material);
         setValue(name, getValue(name) + modify);
     }
 
+    /**
+     * Increment the given Statistic for the given EntityType.
+     *
+     * @param stat the Statistic
+     * @param entityType the EntityType
+     * @param modify the amount to add
+     */
     public void add(Statistic stat, EntityType entityType, int modify) {
-        String name = name(stat, entityType);
+        String name = name(stat);
+
+        if (name != null) {
+            setValue(name, getValue(name) + modify);
+        }
+
+        name = name(stat, entityType);
         setValue(name, getValue(name) + modify);
     }
 

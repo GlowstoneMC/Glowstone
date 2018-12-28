@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Data;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
@@ -43,12 +45,13 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String USAGE_IS = "_generic.usage";
     private static final ResourceBundle SERVER_LOCALE_BUNDLE
             = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
-    private static final long CACHE_SIZE = 50;
+    public static final long CACHE_SIZE = 50;
     private static final LoadingCache<String, ResourceBundle> STRING_TO_BUNDLE_CACHE
         = CacheBuilder.newBuilder()
             .maximumSize(CACHE_SIZE)
             .build(CacheLoader.from(localeStr ->
                     ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.forLanguageTag(localeStr))));
+    public static final String JOINER = "_generic.joiner";
 
     private final LoadingCache<ResourceBundle, CommandMessages> bundleToMessageCache;
 
@@ -60,7 +63,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
                 bundle.getString(name + USAGE_SUFFIX),
                 bundle.getString(
                         bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION),
-                new LocalizedStringImpl(NO_SUCH_PLAYER, bundle));
+                new LocalizedStringImpl(NO_SUCH_PLAYER, bundle),
+                new LocalizedStringImpl(JOINER, bundle).get());
     }
 
     /**
@@ -102,7 +106,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
                     getDescription(),
                     getUsage(),
                     getPermissionMessage(),
-                    new LocalizedStringImpl("_generic.no-such-player", SERVER_LOCALE_BUNDLE));
+                    new LocalizedStringImpl(NO_SUCH_PLAYER, SERVER_LOCALE_BUNDLE),
+                    new LocalizedStringImpl("_generic.joiner", SERVER_LOCALE_BUNDLE).get());
         }
         return execute(sender, commandLabel, args, bundle, localizedMessages);
     }
@@ -121,9 +126,18 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     protected abstract boolean execute(CommandSender sender, String commandLabel, String[] args,
             ResourceBundle resourceBundle, CommandMessages localizedMessages);
 
-    protected static ResourceBundle getBundle(GlowPlayer sender)
-            throws ExecutionException {
-        return STRING_TO_BUNDLE_CACHE.get(sender.getLocale());
+    protected static ResourceBundle getBundle(GlowPlayer sender) {
+        String locale = sender.getLocale();
+        try {
+            return STRING_TO_BUNDLE_CACHE.get(locale);
+        } catch (ExecutionException e) {
+            ConsoleMessages.Error.I18n.COMMAND.log(e, locale);
+            return SERVER_LOCALE_BUNDLE;
+        }
+    }
+
+    protected static ResourceBundle getBundle(CommandSender sender) {
+        return sender instanceof GlowPlayer ? getBundle((GlowPlayer) sender) : SERVER_LOCALE_BUNDLE;
     }
 
     /**
@@ -154,5 +168,39 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         private final String usageMessage;
         private final String permissionMessage;
         private final LocalizedString noSuchPlayer;
+        private final String joiner;
+
+        /**
+         * Returns the given items as a comma-separated list. The comma character and surrounding
+         * spacing are a localized string.
+         *
+         * @param objects the items to format as a list
+         * @return a comma-separated list
+         */
+        public String joinList(Iterable<? extends CharSequence> objects) {
+            return String.join(joiner, objects);
+        }
+
+        /**
+         * Returns the given items as a comma-separated list. The comma character and surrounding
+         * spacing are a localized string.
+         *
+         * @param objects the items to format as a list
+         * @return a comma-separated list
+         */
+        public String joinList(Stream<? extends CharSequence> objects) {
+            return objects.collect(Collectors.joining(joiner));
+        }
+
+        /**
+         * Returns the given items as a comma-separated list. The comma character and surrounding
+         * spacing are a localized string.
+         *
+         * @param objects the items to format as a list
+         * @return a comma-separated list
+         */
+        public String joinList(CharSequence... objects) {
+            return String.join(joiner, objects);
+        }
     }
 }

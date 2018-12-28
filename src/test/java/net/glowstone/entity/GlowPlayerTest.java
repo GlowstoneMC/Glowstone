@@ -10,10 +10,12 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +46,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.inventory.ItemStack;
@@ -78,7 +81,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         new ItemStack(Material.SHEARS));
 
     private final ChunkManager chunkManager
-            = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
+        = PowerMockito.mock(ChunkManager.class, Mockito.RETURNS_MOCKS);
 
     // Mockito mocks
     @Mock(answer = RETURNS_SMART_NULLS)
@@ -101,7 +104,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     // Real objects
 
     private static final GlowPlayerProfile profile
-            = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), false);
+        = new GlowPlayerProfile("TestPlayer", UUID.randomUUID(), false);
     private GlowScheduler scheduler;
     private final SessionRegistry sessionRegistry = new SessionRegistry();
     private File opsListFile;
@@ -310,12 +313,19 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Test
     public void testGiveExp() {
         entity.giveExp(20);
-        verify(eventFactory).callEvent(argThat(input -> {
-            PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
-            assertSame(entity, event.getPlayer());
-            assertEquals(2, event.getNewLevel());
-            assertEquals(1, event.getOldLevel());
-            return true;
+        verify(eventFactory, times(2)).callEvent(argThat(input -> {
+            if (input instanceof PlayerExpChangeEvent) {
+                PlayerExpChangeEvent event = (PlayerExpChangeEvent) input;
+                assertEquals(20, event.getAmount());
+                return true;
+            } else if (input instanceof PlayerLevelChangeEvent) {
+                PlayerLevelChangeEvent event = (PlayerLevelChangeEvent) input;
+                assertSame(entity, event.getPlayer());
+                assertEquals(2, event.getNewLevel());
+                assertEquals(1, event.getOldLevel());
+                return true;
+            }
+            return false;
         }));
         assertEquals(2, entity.getLevel());
         assertEquals(0.17, entity.getExp(), 0.1);
@@ -325,7 +335,11 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     @Test
     public void testGiveExpWithoutNewLevel() {
         entity.giveExp(12);
-        verify(eventFactory, never()).callEvent(any());
+        verify(eventFactory).callEvent(argThat(input -> {
+            PlayerExpChangeEvent event = (PlayerExpChangeEvent) input;
+            assertEquals(12, event.getAmount());
+            return true;
+        }));
 
         assertEquals(1, entity.getLevel());
         assertEquals(0.70, entity.getExp(), 0.1);
@@ -442,8 +456,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         assertEquals(0, entity.getStatistic(Statistic.ANIMALS_BRED));
     }
 
-    // TODO Implement the name method in the StatisticMap and remove the expected
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testIncrementStatisticMaterial() {
         entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT);
         verify(eventFactory).callEvent(argThat(input -> {
@@ -457,6 +470,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
             return true;
         }));
         assertEquals(1, entity.getStatistic(Statistic.MINE_BLOCK));
+        assertEquals(1, entity.getStatistic(Statistic.MINE_BLOCK, Material.DIRT));
     }
 
     @Test
@@ -479,10 +493,10 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
             return true;
         }));
         assertEquals(0, entity.getStatistic(Statistic.MINE_BLOCK));
+        assertEquals(0, entity.getStatistic(Statistic.MINE_BLOCK, Material.DIRT));
     }
 
-    // TODO Implement the name method in the StatisticMap and remove the expected
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testIncrementStatisticMaterialWithValue() {
         entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT, 13);
         verify(eventFactory).callEvent(argThat(input -> {
@@ -496,6 +510,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
             return true;
         }));
         assertEquals(13, entity.getStatistic(Statistic.MINE_BLOCK));
+        assertEquals(13, entity.getStatistic(Statistic.MINE_BLOCK, Material.DIRT));
     }
 
     @Test
@@ -518,23 +533,24 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
             return true;
         }));
         assertEquals(0, entity.getStatistic(Statistic.MINE_BLOCK));
+        assertEquals(0, entity.getStatistic(Statistic.MINE_BLOCK, Material.DIRT));
     }
 
-    // TODO Implement the name method in the StatisticMap and remove the expected
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testIncrementStatisticEntityType() {
-        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON);
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER);
         verify(eventFactory).callEvent(argThat(input -> {
             PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
             assertSame(entity, event.getPlayer());
             assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
             assertEquals(0, event.getPreviousValue());
             assertEquals(1, event.getNewValue());
-            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertEquals(EntityType.CAVE_SPIDER, event.getEntityType());
             assertNull(event.getMaterial());
             return true;
         }));
         assertEquals(1, entity.getStatistic(Statistic.KILL_ENTITY));
+        assertEquals(1, entity.getStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER));
     }
 
     @Test
@@ -545,35 +561,36 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
             return cancellable;
         });
 
-        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON);
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER);
         verify(eventFactory).callEvent(argThat(input -> {
             PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
             assertSame(entity, event.getPlayer());
             assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
             assertEquals(0, event.getPreviousValue());
             assertEquals(1, event.getNewValue());
-            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertEquals(EntityType.CAVE_SPIDER, event.getEntityType());
             assertNull(event.getMaterial());
             return true;
         }));
         assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY));
+        assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER));
     }
 
-    // TODO Implement the name method in the StatisticMap and remove the expected
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testIncrementStatisticEntityTypeWithValue() {
-        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON, 14);
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER, 14);
         verify(eventFactory).callEvent(argThat(input -> {
             PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
             assertSame(entity, event.getPlayer());
             assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
             assertEquals(0, event.getPreviousValue());
             assertEquals(14, event.getNewValue());
-            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertEquals(EntityType.CAVE_SPIDER, event.getEntityType());
             assertNull(event.getMaterial());
             return true;
         }));
         assertEquals(14, entity.getStatistic(Statistic.KILL_ENTITY));
+        assertEquals(14, entity.getStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER));
     }
 
     @Test
@@ -584,17 +601,18 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
             return cancellable;
         });
 
-        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.ENDER_DRAGON, 14);
+        entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER, 14);
         verify(eventFactory).callEvent(argThat(input -> {
             PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
             assertSame(entity, event.getPlayer());
             assertEquals(Statistic.KILL_ENTITY, event.getStatistic());
             assertEquals(0, event.getPreviousValue());
             assertEquals(14, event.getNewValue());
-            assertEquals(EntityType.ENDER_DRAGON, event.getEntityType());
+            assertEquals(EntityType.CAVE_SPIDER, event.getEntityType());
             assertNull(event.getMaterial());
             return true;
         }));
         assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY));
+        assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER));
     }
 }

@@ -194,6 +194,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.help.HelpMap;
@@ -2135,13 +2136,21 @@ public class GlowServer implements Server {
     @Override
     public int broadcast(String message, String permission) {
         int count = 0;
+        Set<CommandSender> sent = new HashSet<>();
         for (Permissible permissible : getPluginManager().getPermissionSubscriptions(permission)) {
             if (permissible instanceof CommandSender && permissible.hasPermission(permission)) {
-                ((CommandSender) permissible).sendMessage(message);
-                ++count;
+                CommandSender cs = ((CommandSender) permissible);
+                sent.add(cs);
             }
         }
-        return count;
+        BroadcastMessageEvent event = EventFactory.getInstance()
+            .callEvent(new BroadcastMessageEvent(message, sent));
+        if (event.isCancelled()) {
+            return 0;
+        }
+
+        sent.forEach(cs -> cs.sendMessage(message));
+        return sent.size();
     }
 
     @Override
