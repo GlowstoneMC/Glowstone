@@ -52,8 +52,11 @@ jobs:
             - checkout
 
             - run: |
-                git clone -b 1.13-hack https://github.com/GlowstoneMC/Glowkit.git
+                git config --global user.name "Glowstone Build"
+                git config --global user.email "example@glowstone.net"
+                git clone https://github.com/GlowstoneMC/Glowkit.git
                 cd Glowkit
+                git checkout 1.13-hack
                 ./glowkit p
                 cd Glowkit-Patched
                 mvn install
