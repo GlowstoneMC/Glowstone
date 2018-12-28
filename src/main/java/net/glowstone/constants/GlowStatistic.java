@@ -75,6 +75,24 @@ public final class GlowStatistic {
     }
 
     /**
+     * Get the statistic name for a specified Statistic and EntityType.
+     *
+     * @param stat the Statistic
+     * @param entityType the EntityType
+     * @return the statistic name
+     */
+    public static String getName(Statistic stat, EntityType entityType) {
+        checkNotNull(stat, "Statistic cannot be null"); // NON-NLS
+        checkNotNull(entityType, "EntityType cannot be null"); // NON-NLS
+
+        if (SUB_STATISTICS.containsKey(stat)) {
+            return SUB_STATISTICS.get(stat).get(entityType);
+        }
+
+        return null;
+    }
+
+    /**
      * Gets the protocol ID of the category of the given statistic.
      *
      * @param statistic the statistic
@@ -94,24 +112,6 @@ public final class GlowStatistic {
     public static int getStatisticId(Statistic statistic) {
         // TODO: Implement numerical statistic IDs
         return 0;
-    }
-
-    /**
-     * Get the statistic name for a specified Statistic and EntityType.
-     *
-     * @param stat the Statistic
-     * @param entityType the EntityType
-     * @return the statistic name
-     */
-    public static String getName(Statistic stat, EntityType entityType) {
-        checkNotNull(stat, "Statistic cannot be null"); // NON-NLS
-        checkNotNull(entityType, "EntityType cannot be null"); // NON-NLS
-
-        if (SUB_STATISTICS.containsKey(stat)) {
-            return SUB_STATISTICS.get(stat).get(entityType);
-        }
-
-        return null;
     }
 
     private static void set(Statistic statistic, Enum data, @NonNls String key) {

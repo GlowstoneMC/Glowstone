@@ -250,7 +250,7 @@ public final class GlowBufUtils {
      * @param buf The buffer.
      * @return The stack read, or null.
      */
-    public static ItemStack readSlot(ByteBuf buf) {
+    public static ItemStack readSlot(ByteBuf buf) throws IOException {
         return readSlot(buf, false);
     }
 
@@ -261,14 +261,14 @@ public final class GlowBufUtils {
      * @param network Mark network source.
      * @return The stack read, or null.
      */
-    public static ItemStack readSlot(ByteBuf buf, boolean network) {
-        short type = buf.readShort();
-        if (type == -1) {
+    public static ItemStack readSlot(ByteBuf buf, boolean network) throws IOException {
+        boolean present = buf.readBoolean();
+        if (!present) {
             return InventoryUtil.createEmptyStack();
         }
 
+        int type = ByteBufUtils.readVarInt(buf);
         int amount = buf.readUnsignedByte();
-        short durability = buf.readShort();
 
         Material material = Material.getMaterial(type);
         if (material == null) {
@@ -276,7 +276,7 @@ public final class GlowBufUtils {
         }
 
         CompoundTag tag = readCompound(buf, network);
-        ItemStack stack = new ItemStack(material, amount, durability);
+        ItemStack stack = new ItemStack(material, amount);
         stack.setItemMeta(GlowItemFactory.instance().readNbt(material, tag));
         return stack;
     }
@@ -289,11 +289,11 @@ public final class GlowBufUtils {
      */
     public static void writeSlot(ByteBuf buf, ItemStack stack) {
         if (InventoryUtil.isEmpty(stack)) {
-            buf.writeShort(-1);
+            buf.writeBoolean(false);
         } else {
-            buf.writeShort(stack.getTypeId());
+            buf.writeBoolean(true);
+            ByteBufUtils.writeVarInt(buf, stack.getTypeId());
             buf.writeByte(stack.getAmount());
-            buf.writeShort(stack.getDurability());
             if (stack.hasItemMeta()) {
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
                 writeCompound(buf, tag);
