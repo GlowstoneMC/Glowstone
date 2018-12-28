@@ -125,7 +125,7 @@ public abstract class BlockLiquid extends BlockType {
         GlowBlockState state = block.getState();
         if (calculateTarget(block.getRelative(DOWN), DOWN, true)) {
             if (!block.getRelative(UP).isLiquid()
-                && Byte.compare(state.getRawData(), STRENGTH_SOURCE) == 0) {
+                && state.getRawData() == STRENGTH_SOURCE) {
                 for (BlockFace face : SIDES) {
                     calculateTarget(block.getRelative(face), face, true);
                 }
@@ -186,9 +186,9 @@ public abstract class BlockLiquid extends BlockType {
         }
         byte strength = fromToEvent.getBlock().getState().getRawData();
         if (DOWN != fromToEvent.getFace()) {
-            if (Byte.compare(strength, isWater(fromToEvent.getBlock().getType())
-                || fromToEvent.getBlock().getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
-                : STRENGTH_MIN_LAVA) < 0) {
+            if (strength < (isWater(fromToEvent.getBlock().getType())
+                    || fromToEvent.getBlock().getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
+                    : STRENGTH_MIN_LAVA)) {
                 // decrease the strength
                 strength += 1;
             } else {
@@ -232,28 +232,27 @@ public abstract class BlockLiquid extends BlockType {
         if (isStationary(me.getType())) {
             me.setType(getOpposite(me.getType()), me.getData(), false);
         }
-        if (Byte.compare(me.getState().getRawData(), STRENGTH_SOURCE) != 0) {
+        boolean isWater = isWater(me.getType());
+        if (me.getState().getRawData() != STRENGTH_SOURCE) {
             BlockFace[] faces = {UP, NORTH, EAST, SOUTH, WEST};
             boolean connected = false;
             int count = 0;
             for (BlockFace face : faces) {
                 if (me.getRelative(face).getType() == me.getType()) {
-                    if (count < 2 && face != UP
-                        && Byte.compare(me.getRelative(face).getState().getRawData(),
-                            STRENGTH_SOURCE) == 0) {
+                    if (isWater && count < 2 && face != UP
+                        && me.getRelative(face).getState().getRawData() == STRENGTH_SOURCE) {
                         count++;
                     }
                     if (!connected && face == UP
-                        || Byte.compare(me.getRelative(face).getState().getRawData(),
-                            me.getState().getRawData()) < 0) {
+                        || me.getRelative(face).getState().getRawData()
+                            < me.getState().getRawData()) {
                         connected = true;
                         if (me.getWorld().getServer().getClassicWater()) {
                             me.getState().setRawData(STRENGTH_SOURCE);
                         }
                     }
                     if (me.getWorld().getServer().getClassicWater()
-                        && Byte.compare(me.getRelative(face).getState().getRawData(),
-                            STRENGTH_SOURCE) == 0) {
+                        && me.getRelative(face).getState().getRawData() == STRENGTH_SOURCE) {
                         me.getRelative(face).setType(Material.AIR);
                     }
                 }
@@ -267,9 +266,9 @@ public abstract class BlockLiquid extends BlockType {
                 return;
             }
         }
-        if (!(Byte.compare(me.getState().getRawData(),
-            isWater(me.getType()) || me.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
-                : STRENGTH_MIN_LAVA) == 0) || me.getRelative(DOWN).getType() == Material.AIR) {
+        if (!(me.getState().getRawData()
+                == (isWater || me.getBiome() == Biome.HELL ? STRENGTH_MIN_WATER
+                        : STRENGTH_MIN_LAVA)) || me.getRelative(DOWN).getType() == Material.AIR) {
             calculateFlow(me);
         }
     }
