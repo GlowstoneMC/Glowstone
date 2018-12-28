@@ -310,7 +310,7 @@ public class RegionFile {
 
         if (sectorNumber != 0 && sectorsAllocated == sectorsNeeded) {
             /* we can simply overwrite the old sectors */
-            write(sectorNumber, data, length);
+            writeSector(sectorNumber, data, length);
         } else {
             /* mark the sectors previously used for this chunk as free */
             if (sectorNumber != 0) {
@@ -333,7 +333,7 @@ public class RegionFile {
             }
 
             sectorsUsed.set(sectorNumber, sectorNumber + sectorsNeeded + 1);
-            write(sectorNumber, data, length);
+            writeSector(sectorNumber, data, length);
             setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
         }
     }
@@ -361,7 +361,7 @@ public class RegionFile {
     }
 
     /* write a chunk data to the region file at specified sector number */
-    private void write(int sectorNumber, byte[] data, int length) throws IOException {
+    private void writeSector(int sectorNumber, byte[] data, int length) throws IOException {
         file.seek(sectorNumber * SECTOR_BYTES);
         file.writeInt(length + 1); // chunk length
         file.writeByte(VERSION_DEFLATE); // chunk version number
