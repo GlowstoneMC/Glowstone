@@ -128,6 +128,9 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     protected static ResourceBundle getBundle(GlowPlayer sender) {
         String locale = sender.getLocale();
+        if (locale == null) {
+            return SERVER_LOCALE_BUNDLE;
+        }
         try {
             return STRING_TO_BUNDLE_CACHE.get(locale);
         } catch (ExecutionException e) {
