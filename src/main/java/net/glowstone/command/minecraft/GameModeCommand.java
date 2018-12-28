@@ -26,17 +26,18 @@ public class GameModeCommand extends GlowVanillaCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args, ResourceBundle bundle,
+    public boolean execute(CommandSender sender, String label, String[] args,
             CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0 || args.length == 1 && !(sender instanceof Player)) {
-            sendUsageMessage(sender, bundle);
+            sendUsageMessage(sender, messages);
             return false;
         }
+        final ResourceBundle bundle = messages.getResourceBundle();
         String gm = args[0];
-        GameMode gamemode = GameModeUtils.build(gm, bundle.getLocale());
+        GameMode gamemode = GameModeUtils.build(gm, messages.getLocale());
         if (gamemode == null) {
             new LocalizedStringImpl("gamemode.nan", bundle)
                     .sendInColor(ChatColor.RED, sender, gm);
