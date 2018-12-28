@@ -2,48 +2,50 @@ package net.glowstone.command.minecraft;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.command.GameModeUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class GameModeCommand extends VanillaCommand {
+public class GameModeCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public GameModeCommand() {
-        super("gamemode", "Change the game mode of a player.", "/gamemode <mode> [player]",
-            Collections.emptyList());
-        setPermission("minecraft.command.gamemode");
+        super("gamemode", Collections.emptyList());
+        setPermission("minecraft.command.gamemode"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args, ResourceBundle bundle,
+            CommandMessages messages) {
+        if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0 || args.length == 1 && !(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, bundle);
             return false;
         }
         String gm = args[0];
-        GameMode gamemode = GameModeUtils.build(gm);
+        GameMode gamemode = GameModeUtils.build(gm, bundle.getLocale());
         if (gamemode == null) {
-            sender.sendMessage(ChatColor.RED + "'" + gm + "' is not a valid number");
+            new LocalizedStringImpl("gamemode.nan", bundle)
+                    .sendInColor(ChatColor.RED, sender, gm);
             return false;
         }
         if (args.length == 1) {
             // self
             Player player = (Player) sender;
-            updateGameMode(sender, player, gamemode);
+            updateGameMode(sender, player, gamemode, bundle);
             return true;
         }
         String name = args[1];
@@ -54,38 +56,37 @@ public class GameModeCommand extends VanillaCommand {
             for (Entity entity : matched) {
                 if (entity instanceof Player) {
                     Player player = (Player) entity;
-                    updateGameMode(sender, player, gamemode);
+                    updateGameMode(sender, player, gamemode, bundle);
                 }
             }
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
+                new LocalizedStringImpl("gamemode.offline", bundle)
+                        .sendInColor(ChatColor.RED, sender, name);
             } else {
-                updateGameMode(sender, player, gamemode);
+                updateGameMode(sender, player, gamemode, bundle);
             }
         }
         return true;
     }
 
-    private void updateGameMode(CommandSender sender, Player who, GameMode gameMode) {
-        String gameModeName = GameModeUtils.prettyPrint(gameMode);
+    private void updateGameMode(
+            CommandSender sender, Player who, GameMode gameMode, ResourceBundle bundle) {
+        String gameModeName = GameModeUtils.prettyPrint(gameMode, bundle.getLocale());
         who.setGameMode(gameMode);
         if (!sender.equals(who)) {
-            sender.sendMessage(
-                who.getDisplayName() + "'s game mode has been updated to " + ChatColor.GRAY + ""
-                    + ChatColor.ITALIC + gameModeName + " Mode" + ChatColor.RESET);
+            new LocalizedStringImpl("gamemode.done", bundle)
+                    .send(sender, who.getDisplayName(), gameModeName);
         }
-        who.sendMessage(
-            "Your game mode has been updated to " + ChatColor.GRAY + "" + ChatColor.ITALIC
-                + gameModeName + " Mode" + ChatColor.RESET);
+        new LocalizedStringImpl("gamemode.done.to-you", bundle).send(who, gameModeName);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
         throws IllegalArgumentException {
         if (args.length == 1) {
-            return GameModeUtils.partialMatchingGameModes(args[0]);
+            return GameModeUtils.partialMatchingGameModes(args[0], getBundle(sender).getLocale());
         }
         return super.tabComplete(sender, alias, args);
     }

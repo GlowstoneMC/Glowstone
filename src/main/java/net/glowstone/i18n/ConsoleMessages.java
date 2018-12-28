@@ -81,6 +81,14 @@ public interface ConsoleMessages {
                 "console.looting-manager.load-failed", Level.SEVERE
         );
 
+        interface I18n {
+            LoggableLocalizedString COMMAND = new LoggableLocalizedStringImpl(
+                    "console.i18n-failed.command", Level.SEVERE);
+
+            LoggableLocalizedString GAME_MODE = new LoggableLocalizedStringImpl(
+                    "console.i18n-failed.gamemode", Level.SEVERE);
+        }
+
         interface Permission {
             LoggableLocalizedString INVALID = new LoggableLocalizedStringImpl(
                     "console.permission.invalid", Level.SEVERE
