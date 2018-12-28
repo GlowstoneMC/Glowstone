@@ -27,7 +27,8 @@ public class LooperThread extends Thread {
     protected Runnable target;
 
     /**
-     * Constructs a net.glowstone.diag994.LooperThread with the given name and target. {@code target} should only be null if
+     * Constructs a net.glowstone.diag994.LooperThread with the given name and target.
+     * {@code target} should only be null if
      * called from a subclass that overrides {@link #iterate()}.
      *
      * @param target If not null, the target this thread will run in {@link #iterate()}.
@@ -39,7 +40,8 @@ public class LooperThread extends Thread {
     }
 
     /**
-     * Constructs a net.glowstone.diag994.LooperThread that belongs to the given {@link ThreadGroup} and has the given
+     * Constructs a net.glowstone.diag994.LooperThread that belongs to the given {@link ThreadGroup}
+     * and has the given
      * target. {@code target} should only be null if called from a subclass that overrides {@link
      * #iterate()}.
      *
@@ -52,7 +54,8 @@ public class LooperThread extends Thread {
     }
 
     /**
-     * <p>Constructs a net.glowstone.diag994.LooperThread with the given name and target, belonging to the given {@link
+     * <p>Constructs a net.glowstone.diag994.LooperThread with the given name and target, belonging
+     * to the given {@link
      * ThreadGroup} and having the given preferred stack size. {@code target} should only be null if
      * called from a subclass that overrides {@link #iterate()}.</p>
      * <p>See {@link Thread#Thread(ThreadGroup, Runnable, String, long)} for caveats about
@@ -71,7 +74,8 @@ public class LooperThread extends Thread {
     }
 
     /**
-     * Constructs a net.glowstone.diag994.LooperThread with the given name and belonging to the given {@link ThreadGroup}.
+     * Constructs a net.glowstone.diag994.LooperThread with the given name and belonging to the
+     * given {@link ThreadGroup}.
      * Protected because it does not set a target, and thus should only be used in subclasses that
      * override {@link #iterate()}.
      *
@@ -83,7 +87,8 @@ public class LooperThread extends Thread {
     }
 
     /**
-     * Constructs a net.glowstone.diag994.LooperThread with the given target. {@code target} should only be null if called
+     * Constructs a net.glowstone.diag994.LooperThread with the given target. {@code target} should
+     * only be null if called
      * from a subclass that overrides {@link #iterate()}.
      *
      * @param target If not null, the target this thread will run in {@link #iterate()}.
@@ -94,7 +99,8 @@ public class LooperThread extends Thread {
     }
 
     /**
-     * Constructs a net.glowstone.diag994.LooperThread with the given name and target, belonging to the given {@link
+     * Constructs a net.glowstone.diag994.LooperThread with the given name and target, belonging to
+     * the given {@link
      * ThreadGroup}. {@code target} should only be null if called from a subclass that overrides
      * {@link #iterate()}.
      *
@@ -109,7 +115,8 @@ public class LooperThread extends Thread {
     }
 
     /**
-     * Constructs a net.glowstone.diag994.LooperThread with the given name. Protected because it does not set a target, and
+     * Constructs a net.glowstone.diag994.LooperThread with the given name. Protected because it
+     * does not set a target, and
      * thus should only be used in subclasses that override {@link #iterate()}.
      *
      * @param name the thread name
@@ -119,7 +126,8 @@ public class LooperThread extends Thread {
     }
 
     /**
-     * Constructs a net.glowstone.diag994.LooperThread with all properties as defaults. Protected because it does not set a
+     * Constructs a net.glowstone.diag994.LooperThread with all properties as defaults. Protected
+     * because it does not set a
      * target, and thus should only be used in subclasses that override {@link #iterate()}.
      */
     protected LooperThread() {
@@ -127,8 +135,8 @@ public class LooperThread extends Thread {
 
     /**
      * The task that will be iterated until it returns false. Cannot be abstract for serialization
-     * reasons, but must be overridden in subclasses if they are instantiated without a target {@link
-     * Runnable}.
+     * reasons, but must be overridden in subclasses if they are instantiated without a target
+     * {@link Runnable}.
      *
      * @return true if this thread should iterate again.
      * @throws InterruptedException          if interrupted in mid-execution.
