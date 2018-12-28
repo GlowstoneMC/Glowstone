@@ -84,7 +84,7 @@ public class ServerShim implements Server {
 
     @Getter
     private final GlowScheduler scheduler
-            = new GlowScheduler(this, worldScheduler, sessionRegistry);
+            = new GlowScheduler(worldScheduler, sessionRegistry);
 
     @Override
     public String getName() {
