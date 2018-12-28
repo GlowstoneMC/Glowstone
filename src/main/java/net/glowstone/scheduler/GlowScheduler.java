@@ -17,6 +17,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -35,6 +36,10 @@ import org.bukkit.scheduler.BukkitWorker;
 public final class GlowScheduler implements BukkitScheduler {
 
     /**
+     * Maximum number of worker threads in the thread pool.
+     */
+    private static final int MAX_THREADS = 64;
+    /**
      * The number of milliseconds between pulses.
      */
     static final int PULSE_EVERY = 50;
@@ -50,8 +55,8 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * Executor to handle execution of async tasks.
      */
-    private final ExecutorService asyncTaskExecutor = Executors
-        .newCachedThreadPool(GlowThreadFactory.INSTANCE);
+    private final ExecutorService asyncTaskExecutor;
+
     /**
      * A list of active tasks.
      */
@@ -107,6 +112,8 @@ public final class GlowScheduler implements BukkitScheduler {
         inTickTaskCondition = worlds.getAdvanceCondition();
         tickEndRun = this.worlds::doTickEnd;
         primaryThread = Thread.currentThread();
+        asyncTaskExecutor = Executors.newCachedThreadPool(GlowThreadFactory.INSTANCE);
+        ((ThreadPoolExecutor) asyncTaskExecutor).setMaximumPoolSize(MAX_THREADS);
     }
 
     /**
