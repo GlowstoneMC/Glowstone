@@ -4,7 +4,6 @@ import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.util.NibbleArray;
@@ -40,7 +39,7 @@ public final class ChunkSection {
     /**
      * The number of bits per block used in the global palette.
      */
-    public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 13;
+    public static final int GLOBAL_PALETTE_BITS_PER_BLOCK = 14;
 
     /**
      * The palette.
@@ -479,29 +478,41 @@ public final class ChunkSection {
             throw new IllegalStateException("Can't write empty sections");
         }
 
-        buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
-        if (palette == null) {
-            ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
-        } else {
-            ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
-            // Foreach loops can't be used due to autoboxing
-            IntListIterator itr = palette.iterator();
-            while (itr.hasNext()) {
-                ByteBufUtils.writeVarInt(buf, itr.nextInt()); // The palette entry
-            }
-        }
-        long[] backing = data.getBacking();
-        ByteBufUtils.writeVarInt(buf, backing.length);
-        buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight
-                .byteSize() : 0));
-        for (long value : backing) {
-            buf.writeLong(value);
-        }
+        // TODO: Currently writes an empty section (all air) - 1.13
+        buf.writeByte(4); // Bits per block
 
-        buf.writeBytes(blockLight.getRawData());
-        if (skylight) {
-            buf.writeBytes(skyLight.getRawData());
-        }
+        // Palette
+        ByteBufUtils.writeVarInt(buf, 1); // Palette length
+        ByteBufUtils.writeVarInt(buf, 0); // Palette data (AIR)
+
+        // Section data (4096 indices of 4-bit, 64 bit longs -> 256 empty longs)
+        ByteBufUtils.writeVarInt(buf, 256); // Data size
+        buf.writeBytes(new byte[2048]); // 256 longs is 2048 bytes
+
+        // buf.writeByte(data.getBitsPerValue()); // Bit per value -> varies
+
+        // if (palette == null) {
+        //     ByteBufUtils.writeVarInt(buf, 0); // Palette size -> 0 -> Use the global palette
+        // } else {
+        //     ByteBufUtils.writeVarInt(buf, palette.size()); // Palette size
+        //     // Foreach loops can't be used due to autoboxing
+        //     IntListIterator itr = palette.iterator();
+        //     while (itr.hasNext()) {
+        //         ByteBufUtils.writeVarInt(buf, itr.nextInt()); // The palette entry
+        //     }
+        // }
+        // long[] backing = data.getBacking();
+        // ByteBufUtils.writeVarInt(buf, backing.length);
+        // buf.ensureWritable((backing.length << 3) + blockLight.byteSize() + (skylight ? skyLight
+        //         .byteSize() : 0));
+        // for (long value : backing) {
+        //     buf.writeLong(value);
+        // }
+
+        // buf.writeBytes(blockLight.getRawData());
+        // if (skylight) {
+        //     buf.writeBytes(skyLight.getRawData());
+        // }
     }
 
     /**

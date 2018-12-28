@@ -773,7 +773,11 @@ public class GlowChunk implements Chunk {
 
         // biomes
         if (entireChunk && biomes != null) {
-            buf.writeBytes(biomes);
+            for (int i = 0; i < 256; i++) {
+                // TODO: 1.13 Biome ID (0 = OCEAN)
+                // For biome IDs, see https://minecraft.gamepedia.com/Biome#Biome_IDs
+                buf.writeInt(0);
+            }
         }
 
         Set<CompoundTag> blockEntities = new HashSet<>();
