@@ -1,8 +1,5 @@
 package net.glowstone.entity;
 
-import com.google.common.collect.ImmutableBiMap;
-import org.bukkit.entity.EntityType;
-
 import static org.bukkit.entity.EntityType.AREA_EFFECT_CLOUD;
 import static org.bukkit.entity.EntityType.ARMOR_STAND;
 import static org.bukkit.entity.EntityType.BAT;
@@ -88,6 +85,9 @@ import static org.bukkit.entity.EntityType.WOLF;
 import static org.bukkit.entity.EntityType.ZOMBIE;
 import static org.bukkit.entity.EntityType.ZOMBIE_HORSE;
 import static org.bukkit.entity.EntityType.ZOMBIE_VILLAGER;
+
+import com.google.common.collect.ImmutableBiMap;
+import org.bukkit.entity.EntityType;
 
 public class EntityNetworkUtil {
     private static final ImmutableBiMap<EntityType, Integer> MOB_IDS
