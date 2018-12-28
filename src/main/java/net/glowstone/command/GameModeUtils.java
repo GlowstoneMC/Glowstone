@@ -29,8 +29,6 @@ public class GameModeUtils {
     private static final class GameModeMaps {
 
         private static final String BASE_NAME = "maps/gamemode";
-        String bundleName;
-        Locale locale;
         private final ImmutableSortedMap<String, GameMode> nameToModeMap;
         private final ImmutableMap<GameMode, String> modeToNameMap;
         private final String unknown;
