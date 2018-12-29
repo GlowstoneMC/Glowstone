@@ -29,4 +29,15 @@ public class BlockDataStoreTest {
         assertThat(BlockDataStore.getBlockDataPaletteId(mutatedNoWl), is(0));
         assertThat(BlockDataStore.getBlockDataPaletteId(mutatedYesWl), is(1));
     }
+
+    @Test
+    public void testMutatedBlockData() {
+        SingletonBlockData<Waterlogged> singleton = BlockDataStore.getBlockDataById(0);
+        Waterlogged mutable = singleton.mutate();
+        assertThat(mutable.isWaterlogged(), is(false));
+
+        mutable.setWaterlogged(true);
+        int newId = BlockDataStore.getBlockDataPaletteId(mutable);
+        assertThat(newId, is(1));
+    }
 }
