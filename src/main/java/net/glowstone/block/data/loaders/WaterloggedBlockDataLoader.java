@@ -47,7 +47,10 @@ public class WaterloggedBlockDataLoader extends BlockDataLoader<Waterlogged> {
 
     @Override
     public int hashBlockData(Waterlogged blockData) {
-        return Objects.hash(blockData.getMaterial().ordinal(),
-                blockData.isWaterlogged() ? 1 : 0);
+        return Objects.hash(
+                blockData.getBaseClass(),
+                blockData.getMaterial().ordinal(),
+                blockData.isWaterlogged()
+        );
     }
 }
