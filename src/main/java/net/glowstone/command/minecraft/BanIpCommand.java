@@ -21,11 +21,12 @@ public class BanIpCommand extends GlowVanillaCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args, ResourceBundle
-            resourceBundle, CommandMessages messages) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
+        final ResourceBundle resourceBundle = messages.getResourceBundle();
         if (args.length > 0) {
             String target = null;
             if (InetAddresses.isInetAddress(args[0])) {
@@ -53,7 +54,7 @@ public class BanIpCommand extends GlowVanillaCommand {
             new LocalizedStringImpl("ban-ip.invalid", resourceBundle).send(sender);
             return false;
         }
-        sendUsageMessage(sender, resourceBundle);
+        sendUsageMessage(sender, messages);
         return false;
     }
 

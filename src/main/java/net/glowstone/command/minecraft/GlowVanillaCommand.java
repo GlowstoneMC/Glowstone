@@ -59,6 +59,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         String name = getName();
         String permissionKey = name + PERMISSION_SUFFIX;
         return new CommandMessages(
+                bundle.getLocale(),
+                bundle,
                 bundle.getString(name + DESCRIPTION_SUFFIX),
                 bundle.getString(name + USAGE_SUFFIX),
                 bundle.getString(
@@ -82,8 +84,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     /**
      * {@inheritDoc}
-     * <p>This delegates to {@link #execute(CommandSender, String, String[], ResourceBundle,
-     * CommandMessages)}. If the command sender is a player, then the description and usage message
+     * <p>This delegates to {@link #execute(CommandSender, String, String[], CommandMessages)}. If
+     * the command sender is a player, then the description and usage message
      * are for that player's locale; otherwise, the server locale is used.</p>
      */
     @Override
@@ -103,13 +105,15 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         }
         if (localizedMessages == null) {
             localizedMessages = new CommandMessages(
+                    Locale.getDefault(),
+                    SERVER_LOCALE_BUNDLE,
                     getDescription(),
                     getUsage(),
                     getPermissionMessage(),
                     new LocalizedStringImpl(NO_SUCH_PLAYER, SERVER_LOCALE_BUNDLE),
                     new LocalizedStringImpl("_generic.joiner", SERVER_LOCALE_BUNDLE).get());
         }
-        return execute(sender, commandLabel, args, bundle, localizedMessages);
+        return execute(sender, commandLabel, args, localizedMessages);
     }
 
     /**
@@ -118,13 +122,12 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      * @param sender       Source object which is executing this command
      * @param commandLabel The alias of the command used
      * @param args         All arguments passed to the command, split via ' '
-     * @param resourceBundle The {@code commands.properties} resource bundle for the sender's locale
      * @param localizedMessages Object containing the title, description and permission message in
      *                     the sender's locale, or set with setters
      * @return true if the command was successful, otherwise false
      */
     protected abstract boolean execute(CommandSender sender, String commandLabel, String[] args,
-            ResourceBundle resourceBundle, CommandMessages localizedMessages);
+            CommandMessages localizedMessages);
 
     protected static ResourceBundle getBundle(GlowPlayer sender) {
         String locale = sender.getLocale();
@@ -157,15 +160,19 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         return false;
     }
 
-    protected void sendUsageMessage(CommandSender sender, ResourceBundle resourceBundle) {
-        new LocalizedStringImpl(USAGE_IS, resourceBundle)
-                .sendInColor(ChatColor.RED, sender, usageMessage);
+    protected void sendUsageMessage(CommandSender sender,
+            CommandMessages commandMessages) {
+        new LocalizedStringImpl(USAGE_IS, commandMessages.getResourceBundle())
+                .sendInColor(ChatColor.RED, sender, commandMessages.getUsageMessage());
     }
 
     @Data
     protected static class CommandMessages {
         // Only LocalizedString messages that apply to multiple commands should be in this class.
         // All others are instantiated on demand.
+
+        private final Locale locale;
+        private final ResourceBundle resourceBundle;
 
         private final String description;
         private final String usageMessage;

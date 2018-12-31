@@ -21,19 +21,20 @@ public class DefaultGameModeCommand extends GlowVanillaCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args, ResourceBundle bundle,
+    public boolean execute(CommandSender sender, String label, String[] args,
             CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
 
         if (args.length == 0) {
-            sendUsageMessage(sender, bundle);
+            sendUsageMessage(sender, messages);
             return false;
         }
 
         final String inputMode = args[0];
-        final GameMode gamemode = GameModeUtils.build(inputMode, bundle.getLocale());
+        final ResourceBundle bundle = messages.getResourceBundle();
+        final GameMode gamemode = GameModeUtils.build(inputMode, messages.getLocale());
 
         if (gamemode == null) {
             new LocalizedStringImpl("defaultgamemode.unknown", bundle)
@@ -44,7 +45,7 @@ public class DefaultGameModeCommand extends GlowVanillaCommand {
         ServerProvider.getServer().setDefaultGameMode(gamemode);
         new LocalizedStringImpl("defaultgamemode.done", bundle).send(sender,
                 ChatColor.GRAY + "" + ChatColor.ITALIC
-                        + GameModeUtils.prettyPrint(gamemode, bundle.getLocale()));
+                        + GameModeUtils.prettyPrint(gamemode, messages.getLocale()));
         return true;
     }
 
