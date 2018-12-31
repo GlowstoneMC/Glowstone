@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
@@ -27,6 +28,15 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 public class LocalizedStringsTest {
+    /**
+     * Keys in strings.properties used in ways other than in LocalizedString instances in
+     * GlowstoneMessages, and which GlowstoneMessages should therefore not be expected to cover.
+     */
+    private static final Set<String> EXEMPT_KEYS = ImmutableSet.of(
+            "glowstone.difficulty.names",
+            "glowstone.difficulty.unknown",
+            "glowstone.gamemode.names",
+            "glowstone.gamemode.unknown");
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings");
     private static final String MOCK_KEY = "foo";
     private static final String MOCK_VALUE_NO_FORMAT = "bar";
@@ -147,6 +157,7 @@ public class LocalizedStringsTest {
                 }
             }
         }
+        unusedKeys.removeAll(EXEMPT_KEYS);
 
         assertTrue("Resource file contains unused keys: " + unusedKeys, unusedKeys.isEmpty());
         assertTrue("Nonexistent keys are being referenced: " + missingRegisteredKeys,

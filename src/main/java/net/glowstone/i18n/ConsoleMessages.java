@@ -85,6 +85,9 @@ public interface ConsoleMessages {
             LoggableLocalizedString COMMAND = new LoggableLocalizedStringImpl(
                     "console.i18n-failed.command", Level.SEVERE);
 
+            LoggableLocalizedString DIFFICULTY = new LoggableLocalizedStringImpl(
+                    "console.i18n-failed.difficulty", Level.SEVERE);
+
             LoggableLocalizedString GAME_MODE = new LoggableLocalizedStringImpl(
                     "console.i18n-failed.gamemode", Level.SEVERE);
         }
