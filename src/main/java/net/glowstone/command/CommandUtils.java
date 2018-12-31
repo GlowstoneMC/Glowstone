@@ -274,4 +274,5 @@ public class CommandUtils {
     public static boolean isPhysical(CommandSender sender) {
         return sender instanceof Entity || sender instanceof BlockCommandSender;
     }
+
 }
