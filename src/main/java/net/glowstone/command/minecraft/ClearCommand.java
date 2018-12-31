@@ -36,17 +36,18 @@ public class ClearCommand extends GlowVanillaCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args, ResourceBundle
-            resourceBundle, CommandMessages messages) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
+        final ResourceBundle resourceBundle = messages.getResourceBundle();
         if (args.length == 0) {
             if ((sender instanceof Player)) {
                 Player player = (Player) sender;
                 return clearAll(sender, player, null, -1, -1, resourceBundle);
             } else {
-                sendUsageMessage(sender, resourceBundle);
+                sendUsageMessage(sender, messages);
                 return false;
             }
         }

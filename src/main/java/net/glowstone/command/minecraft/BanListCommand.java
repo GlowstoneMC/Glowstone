@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -31,25 +30,23 @@ public class BanListCommand extends GlowVanillaCommand {
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args, ResourceBundle
-            resourceBundle, CommandMessages messages) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
-
+        final ResourceBundle resourceBundle = messages.getResourceBundle();
         BanList.Type banType;
 
         if (args.length > 0) {
-            Locale locale;
-            Collator caseInsensitive = Collator.getInstance(
-                    resourceBundle.getLocale());
+            Collator caseInsensitive = Collator.getInstance(messages.getLocale());
             caseInsensitive.setStrength(Collator.PRIMARY);
             if (caseInsensitive.compare(args[0], "ips") == 0) { // NON-NLS
                 banType = BanList.Type.IP;
             } else if (caseInsensitive.compare(args[0], "players") == 0) { // NON-NLS
                 banType = BanList.Type.NAME;
             } else {
-                sendUsageMessage(sender, resourceBundle);
+                sendUsageMessage(sender, messages);
                 return false;
             }
         } else {
