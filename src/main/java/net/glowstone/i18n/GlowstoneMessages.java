@@ -24,11 +24,6 @@ public interface GlowstoneMessages {
         }
     }
 
-    interface GameMode {
-        LocalizedString NAMES = new LocalizedStringImpl("glowstone.gamemode.names");
-        LocalizedString UNKNOWN = new LocalizedStringImpl("glowstone.gamemode.unknown");
-    }
-
     interface Entity {
         LocalizedString UNKNOWN_TYPE_WITH_ID =
                 new LocalizedStringImpl("glowstone.entity.unknown-type-no-id");
