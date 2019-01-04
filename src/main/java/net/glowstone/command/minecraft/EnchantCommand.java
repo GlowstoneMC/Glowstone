@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.GlowEnchantment;
@@ -45,20 +45,19 @@ public class EnchantCommand extends VanillaCommand {
         }
 
         String name = args[0];
-        List<GlowPlayer> players;
+        Stream<GlowPlayer> players;
         if (name.startsWith("@")) {
             CommandTarget target = new CommandTarget(sender, name);
             players = Arrays.stream(target.getMatched(CommandUtils.getLocation(sender)))
                 .filter(GlowPlayer.class::isInstance)
-                .map(GlowPlayer.class::cast)
-                .collect(Collectors.toList());
+                .map(GlowPlayer.class::cast);
         } else {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + " Player '" + name + "' cannot be found");
                 return false;
             } else {
-                players = Collections.singletonList(player);
+                players = Collections.singletonList(player).stream();
             }
         }
 
@@ -76,7 +75,7 @@ public class EnchantCommand extends VanillaCommand {
             return false;
         }
 
-        players.stream()
+        players
             .filter(player -> player.getItemInHand() != null)
             .filter(player -> player.getItemInHand().getData().getItemType() != Material.AIR)
             .filter(player -> enchantment.canEnchantItem(player.getItemInHand()))
