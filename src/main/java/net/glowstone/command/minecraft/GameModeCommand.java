@@ -39,7 +39,7 @@ public class GameModeCommand extends GlowVanillaCommand {
         String gm = args[0];
         GameMode gamemode = GameModeUtils.build(gm, messages.getLocale());
         if (gamemode == null) {
-            new LocalizedStringImpl("gamemode.nan", bundle)
+            new LocalizedStringImpl("gamemode.unknown", bundle)
                     .sendInColor(ChatColor.RED, sender, gm);
             return false;
         }
@@ -63,8 +63,7 @@ public class GameModeCommand extends GlowVanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                new LocalizedStringImpl("gamemode.offline", bundle)
-                        .sendInColor(ChatColor.RED, sender, name);
+                messages.getPlayerOffline().sendInColor(ChatColor.RED, sender, name);
             } else {
                 updateGameMode(sender, player, gamemode, bundle);
             }
@@ -79,6 +78,7 @@ public class GameModeCommand extends GlowVanillaCommand {
         if (!sender.equals(who)) {
             new LocalizedStringImpl("gamemode.done", bundle)
                     .send(sender, who.getDisplayName(), gameModeName);
+            bundle = getBundle(who); // switch to target's locale for gamemode.done.to-you
         }
         new LocalizedStringImpl("gamemode.done.to-you", bundle).send(who, gameModeName);
     }

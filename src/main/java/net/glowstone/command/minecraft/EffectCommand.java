@@ -9,39 +9,39 @@ import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.TickUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 
-public class EffectCommand extends VanillaCommand {
+public class EffectCommand extends GlowVanillaCommand {
 
     private static final List<String> VANILLA_IDS = GlowPotionEffect.getVanillaIds();
+    @NonNls
+    private static final String PREFIX = "minecraft:";
 
     /**
      * Creates the instance for this command.
      */
     public EffectCommand() {
-        super("effect",
-            "Gives a player an effect",
-            "/effect <player> clear "
-                    + "OR /effect <player> <effect> [seconds] [amplifier] [hideParticles]",
-            Collections.emptyList());
-        setPermission("minecraft.command.effect");
+        super("effect", Collections.emptyList());
+        setPermission("minecraft.command.effect"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage:" + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
@@ -57,7 +57,7 @@ public class EffectCommand extends VanillaCommand {
         } else {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + " Player '" + name + "' cannot be found");
+                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players = Collections.singletonList(player);
@@ -69,13 +69,15 @@ public class EffectCommand extends VanillaCommand {
                 for (PotionEffect potionEffect : player.getActivePotionEffects()) {
                     player.removePotionEffect(potionEffect.getType());
                 }
-                sender.sendMessage("Cleared potion effects from " + player.getName());
+                new LocalizedStringImpl("effect.cleared", commandMessages.getResourceBundle())
+                        .send(sender, player.getName());
             }
             return true;
         } else {
             PotionEffectType effectType = GlowPotionEffect.parsePotionEffectId(args[1]);
             if (effectType == null) {
-                sender.sendMessage(ChatColor.RED + "Potion effect " + args[1] + " is unknown");
+                new LocalizedStringImpl("effect.unknown", commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, args[1]);
                 return false;
             }
 
@@ -84,7 +86,7 @@ public class EffectCommand extends VanillaCommand {
                 try {
                     duration = TickUtil.secondsToTicks(Integer.parseInt(args[2]));
                 } catch (NumberFormatException exc) {
-                    sender.sendMessage(ChatColor.RED + args[2] + " is not a valid integer");
+                    commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[2]);
                     return false;
                 }
             }
@@ -94,7 +96,7 @@ public class EffectCommand extends VanillaCommand {
                 try {
                     amplifier = Integer.parseInt(args[3]);
                 } catch (NumberFormatException exc) {
-                    sender.sendMessage(ChatColor.RED + args[3] + " is not a valid integer");
+                    commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[3]);
                     return false;
                 }
             }
@@ -103,14 +105,13 @@ public class EffectCommand extends VanillaCommand {
             if (args.length >= 5 && args[4] != null) {
                 hideParticles = Boolean.parseBoolean(args[4]);
             }
-
+            LocalizedStringImpl doneMessage = new LocalizedStringImpl("effect.done",
+                    commandMessages.getResourceBundle());
             for (GlowPlayer player : players) {
                 player.addPotionEffect(
                     new PotionEffect(effectType, duration, amplifier, false, hideParticles));
-                sender.sendMessage(
-                    "Given " + effectType.getName() + " (ID " + effectType.getId() + ") * "
-                        + amplifier + " to " + player.getName() + " for " + duration / 20
-                        + " seconds");
+                doneMessage.send(sender, effectType.getName(),
+                        effectType.getId(), amplifier, player.getName(), duration / 20);
             }
             return true;
         }
@@ -124,10 +125,10 @@ public class EffectCommand extends VanillaCommand {
         } else if (args.length == 2) {
             String effectName = args[1];
 
-            if (!effectName.startsWith("minecraft:")) {
+            if (!effectName.startsWith(PREFIX)) {
                 final int colonIndex = effectName.indexOf(':');
                 effectName =
-                    "minecraft:" + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
+                    PREFIX + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
             }
 
             return StringUtil

@@ -93,8 +93,7 @@ public class ClearCommand extends GlowVanillaCommand {
                 try {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
-                    new LocalizedStringImpl("clear.nan", resourceBundle)
-                            .sendInColor(ChatColor.RED, sender, dataString);
+                    messages.getNotANumber().sendInColor(ChatColor.RED, sender, dataString);
                     return false;
                 }
                 if (data < -1) {
@@ -108,8 +107,7 @@ public class ClearCommand extends GlowVanillaCommand {
                     try {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
-                        new LocalizedStringImpl("clear.nan", resourceBundle)
-                                .sendInColor(ChatColor.RED, sender, amountString);
+                        messages.getNotANumber().sendInColor(ChatColor.RED, sender, amountString);
                         return false;
                     }
                     if (amount < -1) {

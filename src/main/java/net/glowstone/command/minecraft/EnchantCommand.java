@@ -13,12 +13,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 
-public class EnchantCommand extends VanillaCommand {
+public class EnchantCommand extends GlowVanillaCommand {
 
     private static List<String> VANILLA_IDS = GlowEnchantment.getVanillaIds();
 
@@ -26,21 +25,19 @@ public class EnchantCommand extends VanillaCommand {
      * Creates the instance for this command.
      */
     public EnchantCommand() {
-        super("enchant",
-            "Adds an enchantment to the currently by a player held item",
-            "/enchant <player> <enchantment ID> [level]",
-            Collections.emptyList());
+        super("enchant", Collections.emptyList());
         setPermission("minecraft.command.enchant");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
 
         if (args.length < 3) {
-            sender.sendMessage(ChatColor.RED + "Usage:" + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
@@ -54,7 +51,7 @@ public class EnchantCommand extends VanillaCommand {
         } else {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + " Player '" + name + "' cannot be found");
+                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players = Collections.singletonList(player).stream();

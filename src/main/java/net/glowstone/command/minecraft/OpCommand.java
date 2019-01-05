@@ -3,28 +3,29 @@ package net.glowstone.command.minecraft;
 import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.i18n.ConsoleMessages;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 
-public class OpCommand extends VanillaCommand {
+public class OpCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public OpCommand() {
-        super("op", "Turns a player into a server operator.", "/op <player>",
-                Collections.emptyList());
+        super("op", Collections.emptyList());
         setPermission("minecraft.command.op");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         String name = args[0];
@@ -32,13 +33,14 @@ public class OpCommand extends VanillaCommand {
         // asynchronously lookup player
         server.getOfflinePlayerAsync(name).whenCompleteAsync((player, ex) -> {
             if (ex != null) {
-                sender.sendMessage(ChatColor.RED + "Failed to op " + name + ": "
-                        + ex.getMessage());
-                ex.printStackTrace();
+                new LocalizedStringImpl("op.failed", commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
+                ConsoleMessages.Error.Command.OP_FAILED.log(ex, name);
                 return;
             }
             player.setOp(true);
-            sender.sendMessage("Opped " + player.getName());
+            new LocalizedStringImpl("op.done", commandMessages.getResourceBundle())
+                    .send(sender, name);
         });
         // todo: asynchronous command callbacks?
         return true;

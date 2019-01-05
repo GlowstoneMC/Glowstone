@@ -5,44 +5,48 @@ import java.util.List;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class GiveCommand extends VanillaCommand {
+// FIXME: Ignores the 4th parameter, which is the item data tag
+public class GiveCommand extends GlowVanillaCommand {
+
+    public static final String PREFIX = "minecraft:";
 
     /**
      * Creates the instance for this command.
      */
     public GiveCommand() {
-        super("give", "Gives an item to a player.", "/give <player> <item> [amount]",
-            Collections.emptyList());
+        super("give", Collections.emptyList());
         setPermission("minecraft.command.give");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         String itemName = args[1];
-        if (!itemName.startsWith("minecraft:")) {
-            itemName = "minecraft:" + itemName;
+        if (!itemName.startsWith(PREFIX)) {
+            itemName = PREFIX + itemName;
         }
         Material type = ItemIds.getItem(itemName);
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + "There is no such item with name " + itemName);
+            new LocalizedStringImpl("give.unknown", commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, itemName);
             return false;
         }
         ItemStack stack = new ItemStack(type);
@@ -51,17 +55,19 @@ public class GiveCommand extends VanillaCommand {
             try {
                 int amount = Integer.valueOf(amountString);
                 if (amount > 64) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount
-                        + ") is too big, it must be at most 64");
+                    new LocalizedStringImpl("give.too-many",
+                            commandMessages.getResourceBundle())
+                            .sendInColor(ChatColor.RED, sender, amount);
                     return false;
                 } else if (amount < 1) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount
-                        + ") is too small, it must be at least 1");
+                    new LocalizedStringImpl("give.too-few",
+                            commandMessages.getResourceBundle())
+                            .sendInColor(ChatColor.RED, sender, amount);
                     return false;
                 }
                 stack.setAmount(amount);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + "'" + amountString + "' is not a valid number");
+                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, amountString);
                 return false;
             }
         }
@@ -80,7 +86,7 @@ public class GiveCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player '" + name + "' is not online.");
+                commandMessages.getPlayerOffline().sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 giveItem(sender, player, stack);

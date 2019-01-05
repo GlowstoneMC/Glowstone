@@ -6,35 +6,38 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
-public class ListCommand extends VanillaCommand {
+public class ListCommand extends GlowVanillaCommand {
 
     private static final String[] EMPTY = new String[0];
 
     public ListCommand() {
-        super("list", "Lists players on the server.", "/list [uuids]", Collections.emptyList());
+        super("list", Collections.emptyList());
         setPermission("minecraft.command.list");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-        Collection<String> messages = new ArrayList<>();
-        messages
-            .add("There are " + players.size() + "/" + Bukkit.getMaxPlayers() + " players online:");
-        if (args.length > 0 && (Objects.equals(args[0], "uuids") || Objects
-            .equals(args[0], "ids"))) {
-            Bukkit.getOnlinePlayers()
-                .forEach(p -> messages.add(p.getName()
-                        + " (" + UuidUtils.toString(p.getUniqueId()) + ')'));
+        Collection<String> messages =
+                new ArrayList<>(players.size() + 1);
+        messages.add(new LocalizedStringImpl("list.header", commandMessages.getResourceBundle())
+                .get(players.size(), Bukkit.getMaxPlayers()));
+        if (args.length > 0 && (Objects.equals(args[0], "uuids" /* NON-NLS */) || Objects
+            .equals(args[0], "ids" /* NON-NLS */))) {
+            LocalizedStringImpl nameAndUuidMessage = new LocalizedStringImpl("list.name-and-uuid",
+                    commandMessages.getResourceBundle());
+            Bukkit.getOnlinePlayers().forEach(p -> messages.add(
+                    nameAndUuidMessage.get(p.getName(), UuidUtils.toString(p.getUniqueId()))));
         } else {
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(p.getName()));
         }
@@ -46,7 +49,7 @@ public class ListCommand extends VanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
         throws IllegalArgumentException {
         if (args.length == 1) {
-            return ImmutableList.of("uuids");
+            return ImmutableList.of("uuids"); // NON-NLS
         }
         return Collections.emptyList();
     }
