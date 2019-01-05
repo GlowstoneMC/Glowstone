@@ -220,6 +220,9 @@ public final class GlowScheduler implements BukkitScheduler {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } finally {
+            System.out.flush();
+            System.err.flush();
         }
 
     }
