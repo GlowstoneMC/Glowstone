@@ -13,7 +13,7 @@ public class MeCommand extends GlowVanillaCommand {
      */
     public MeCommand() {
         super("me", Collections.emptyList());
-        setPermission("minecraft.command.me");
+        setPermission("minecraft.command.me"); // NON-NLS
     }
 
     @Override

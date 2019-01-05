@@ -9,6 +9,7 @@ import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,9 +17,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 
 public class EnchantCommand extends GlowVanillaCommand {
 
+    @NonNls
+    private static final String PREFIX = "minecraft:";
     private static List<String> VANILLA_IDS = GlowEnchantment.getVanillaIds();
 
     /**
@@ -26,7 +30,7 @@ public class EnchantCommand extends GlowVanillaCommand {
      */
     public EnchantCommand() {
         super("enchant", Collections.emptyList());
-        setPermission("minecraft.command.enchant");
+        setPermission("minecraft.command.enchant"); // NON-NLS
     }
 
     @Override
@@ -60,7 +64,8 @@ public class EnchantCommand extends GlowVanillaCommand {
 
         Enchantment enchantment = GlowEnchantment.parseEnchantment(args[1]);
         if (enchantment == null) {
-            sender.sendMessage(ChatColor.RED + "Enchantment " + args[1] + " is unknown");
+            new LocalizedStringImpl("enchant.unknown", commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, args[1]);
             return false;
         }
 
@@ -68,10 +73,11 @@ public class EnchantCommand extends GlowVanillaCommand {
         try {
             level = Integer.parseInt(args[2]);
         } catch (NumberFormatException exc) {
-            sender.sendMessage(ChatColor.RED + args[2] + " is not a valid integer");
+            commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[2]);
             return false;
         }
-
+        LocalizedStringImpl successMessage
+                = new LocalizedStringImpl("enchant.done", commandMessages.getResourceBundle());
         players
             .filter(player -> player.getItemInHand() != null)
             .filter(player -> player.getItemInHand().getData().getItemType() != Material.AIR)
@@ -80,7 +86,7 @@ public class EnchantCommand extends GlowVanillaCommand {
                 ItemStack itemInHand = player.getItemInHand();
                 itemInHand.addUnsafeEnchantment(enchantment, level);
                 player.setItemInHand(itemInHand);
-                sender.sendMessage("Enchanting succeeded");
+                successMessage.send(sender);
             });
         return true;
     }
@@ -93,10 +99,10 @@ public class EnchantCommand extends GlowVanillaCommand {
         } else if (args.length == 2) {
             String effectName = args[1];
 
-            if (!effectName.startsWith("minecraft:")) {
+            if (!effectName.startsWith(PREFIX)) {
                 final int colonIndex = effectName.indexOf(':');
                 effectName =
-                    "minecraft:" + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
+                        PREFIX + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
             }
 
             return StringUtil

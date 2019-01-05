@@ -64,7 +64,7 @@ public class EffectCommand extends GlowVanillaCommand {
             }
         }
 
-        if (args[1].equals("clear")) {
+        if (args[1].equals("clear")) { // NON-NLS
             for (GlowPlayer player : players) {
                 for (PotionEffect potionEffect : player.getActivePotionEffects()) {
                     player.removePotionEffect(potionEffect.getType());

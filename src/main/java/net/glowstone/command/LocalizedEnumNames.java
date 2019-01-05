@@ -19,6 +19,7 @@ import net.glowstone.command.minecraft.GlowVanillaCommand;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +49,8 @@ public class LocalizedEnumNames<T> {
      *                               auto-complete, separated by commas
      * @param baseName the base name of the resource bundle
      */
-    public LocalizedEnumNames(IntFunction<? extends T> integerResolver, String unknownKey,
-            String commaSeparatedNamesKey, String baseName) {
+    public LocalizedEnumNames(IntFunction<? extends T> integerResolver, @NonNls String unknownKey,
+            @NonNls String commaSeparatedNamesKey, @NonNls String baseName) {
         this.integerResolver = integerResolver;
         this.unknownKey = unknownKey;
         this.commaSeparatedNamesKey = commaSeparatedNamesKey;
@@ -60,7 +61,7 @@ public class LocalizedEnumNames<T> {
     }
 
     private static <T> ImmutableSortedMap<String, T> resourceBundleToMap(Locale locale,
-            String baseName, IntFunction<? extends T> integerResolver) {
+            @NonNls String baseName, IntFunction<? extends T> integerResolver) {
         Collator caseInsensitive = Collator.getInstance(locale);
         caseInsensitive.setStrength(Collator.PRIMARY);
         ImmutableSortedMap.Builder<String, T> nameToModeBuilder
@@ -156,7 +157,8 @@ public class LocalizedEnumNames<T> {
             if (locale == null) {
                 locale = Locale.getDefault();
             }
-            ResourceBundle strings = ResourceBundle.getBundle("strings", locale);
+            ResourceBundle strings
+                    = ResourceBundle.getBundle("strings", locale); // NON-NLS
             unknown = new LocalizedStringImpl(unknownKey, strings).get();
             nameToModeMap = resourceBundleToMap(locale, baseName, integerResolver);
             ImmutableMap.Builder<T, String> modeToNameBuilder = ImmutableMap.builder();

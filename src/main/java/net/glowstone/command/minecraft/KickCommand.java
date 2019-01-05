@@ -16,7 +16,7 @@ public class KickCommand extends GlowVanillaCommand {
      */
     public KickCommand() {
         super("kick", Collections.emptyList());
-        setPermission("minecraft.command.kick");
+        setPermission("minecraft.command.kick"); // NON-NLS
     }
 
     @Override

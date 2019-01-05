@@ -19,7 +19,7 @@ public class GameRuleCommand extends GlowVanillaCommand {
      */
     public GameRuleCommand() {
         super("gamerule", Collections.emptyList());
-        setPermission("minecraft.command.gamerule");
+        setPermission("minecraft.command.gamerule"); // NON-NLS
     }
 
     @Override

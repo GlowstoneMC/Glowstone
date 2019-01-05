@@ -3,6 +3,7 @@ package net.glowstone.command.minecraft;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTarget;
@@ -22,7 +23,7 @@ public class FunctionCommand extends GlowVanillaCommand {
      */
     public FunctionCommand() {
         super("function", Collections.emptyList());
-        setPermission("minecraft.command.function");
+        setPermission("minecraft.command.function"); // NON-NLS
     }
 
     @Override
@@ -46,15 +47,15 @@ public class FunctionCommand extends GlowVanillaCommand {
         }
         CommandFunction function = functions.get(functionName);
         if (args.length > 2) {
-            String condition = args[1].toLowerCase();
-            if (condition.equals("if")) {
+            String condition = args[1].toLowerCase(Locale.ENGLISH);
+            if (condition.equals("if")) { // NON-NLS
                 if (!anyMatch(sender, args[2], location)) {
                     new LocalizedStringImpl("function.skipped",
                             commandMessages.getResourceBundle())
                             .send(sender, function.getFullName());
                     return false;
                 }
-            } else if (condition.equals("unless")) {
+            } else if (condition.equals("unless")) { // NON-NLS
                 if (anyMatch(sender, args[2], location)) {
                     new LocalizedStringImpl("function.skipped",
                             commandMessages.getResourceBundle())

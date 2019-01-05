@@ -2,6 +2,7 @@ package net.glowstone.command.minecraft;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
@@ -26,7 +27,7 @@ public class GiveCommand extends GlowVanillaCommand {
      */
     public GiveCommand() {
         super("give", Collections.emptyList());
-        setPermission("minecraft.command.give");
+        setPermission("minecraft.command.give"); // NON-NLS
     }
 
     @Override
@@ -80,7 +81,7 @@ public class GiveCommand extends GlowVanillaCommand {
             for (Entity entity : matched) {
                 if (entity instanceof Player) {
                     Player player = (Player) entity;
-                    giveItem(sender, player, stack);
+                    giveItem(sender, player, stack, commandMessages.getResourceBundle());
                 }
             }
         } else {
@@ -89,17 +90,18 @@ public class GiveCommand extends GlowVanillaCommand {
                 commandMessages.getPlayerOffline().sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
-                giveItem(sender, player, stack);
+                giveItem(sender, player, stack, commandMessages.getResourceBundle());
             }
         }
         return true;
     }
 
-    private void giveItem(CommandSender sender, Player player, ItemStack stack) {
+    private void giveItem(CommandSender sender, Player player, ItemStack stack,
+            ResourceBundle resourceBundle) {
         player.getInventory().addItem(stack);
-        sender.sendMessage(
-            "Given [" + ItemIds.getName(stack.getType()) + "] * " + stack.getAmount() + " to "
-                + player.getName());
+        new LocalizedStringImpl("give.done", resourceBundle)
+                .send(sender, ItemIds.getName(stack.getType()), stack.getAmount(),
+                        player.getName());
     }
 
     @Override
