@@ -30,7 +30,7 @@ public class GameRuleCommand extends GlowVanillaCommand {
         }
         GlowWorld world = CommandUtils.getWorld(sender);
         if (args.length == 0) {
-            sender.sendMessage(CommandUtils.prettyPrint(world.getGameRules()));
+            sender.sendMessage(commandMessages.joinList(world.getGameRules()));
             return true;
         }
         if (args.length == 1) {
