@@ -9,7 +9,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.LocalizedString;
@@ -42,6 +43,12 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     @NonNls
     private static final String NO_SUCH_PLAYER = "_generic.no-such-player";
     @NonNls
+    private static final String NAN = "_generic.nan";
+    @NonNls
+    private static final String OFFLINE = "_generic.offline";
+    @NonNls
+    private static final String NO_MATCHES = "_generic.no-matches";
+    @NonNls
     private static final String USAGE_IS = "_generic.usage";
     private static final ResourceBundle SERVER_LOCALE_BUNDLE
             = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
@@ -59,14 +66,11 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         String name = getName();
         String permissionKey = name + PERMISSION_SUFFIX;
         return new CommandMessages(
-                bundle.getLocale(),
                 bundle,
                 bundle.getString(name + DESCRIPTION_SUFFIX),
                 bundle.getString(name + USAGE_SUFFIX),
                 bundle.getString(
-                        bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION),
-                new LocalizedStringImpl(NO_SUCH_PLAYER, bundle),
-                new LocalizedStringImpl(JOINER, bundle).get());
+                        bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION));
     }
 
     /**
@@ -104,14 +108,10 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             bundle = SERVER_LOCALE_BUNDLE;
         }
         if (localizedMessages == null) {
-            localizedMessages = new CommandMessages(
-                    Locale.getDefault(),
-                    SERVER_LOCALE_BUNDLE,
+            localizedMessages = new CommandMessages(SERVER_LOCALE_BUNDLE,
                     getDescription(),
                     getUsage(),
-                    getPermissionMessage(),
-                    new LocalizedStringImpl(NO_SUCH_PLAYER, SERVER_LOCALE_BUNDLE),
-                    new LocalizedStringImpl("_generic.joiner", SERVER_LOCALE_BUNDLE).get());
+                    getPermissionMessage());
         }
         return execute(sender, commandLabel, args, localizedMessages);
     }
@@ -166,7 +166,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
                 .sendInColor(ChatColor.RED, sender, commandMessages.getUsageMessage());
     }
 
-    @Data
+    @Getter
+    @RequiredArgsConstructor
     protected static class CommandMessages {
         // Only LocalizedString messages that apply to multiple commands should be in this class.
         // All others are instantiated on demand.
@@ -178,7 +179,20 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         private final String usageMessage;
         private final String permissionMessage;
         private final LocalizedString noSuchPlayer;
+        private final LocalizedString notANumber;
+        private final LocalizedString playerOffline;
+        private final LocalizedString noMatches;
         private final String joiner;
+
+        public CommandMessages(ResourceBundle bundle, String description,
+                String usageMessage, String permissionMessage) {
+            this(bundle.getLocale(), bundle, description, usageMessage, permissionMessage,
+                    new LocalizedStringImpl(NO_SUCH_PLAYER, bundle),
+                    new LocalizedStringImpl(NAN, bundle),
+                    new LocalizedStringImpl(OFFLINE, bundle),
+                    new LocalizedStringImpl(NO_MATCHES, bundle),
+                    new LocalizedStringImpl(JOINER, bundle).get());
+        }
 
         /**
          * Returns the given items as a comma-separated list. The comma character and surrounding

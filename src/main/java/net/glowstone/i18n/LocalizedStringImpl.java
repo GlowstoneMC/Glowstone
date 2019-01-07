@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class LocalizedStringImpl implements LocalizedString {
-    private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings");
+    private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings"); // NON-NLS
 
     @Getter
     private final String key;

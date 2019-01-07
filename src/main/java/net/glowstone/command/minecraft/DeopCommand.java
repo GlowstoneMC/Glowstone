@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,7 +41,7 @@ public class DeopCommand extends GlowVanillaCommand {
             if (ex != null) {
                 new LocalizedStringImpl("deop.failed", messages.getResourceBundle())
                         .sendInColor(ChatColor.RED, sender, name, ex.getMessage());
-                ex.printStackTrace();
+                ConsoleMessages.Error.Command.DEOP_FAILED.log(ex, name);
                 return;
             }
             if (player.isOp()) {
