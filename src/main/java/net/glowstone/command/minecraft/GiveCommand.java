@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -20,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 // FIXME: Ignores the 4th parameter, which is the item data tag
 public class GiveCommand extends GlowVanillaCommand {
 
-    public static final String PREFIX = "minecraft:";
+    public static final String PREFIX = NamespacedKey.MINECRAFT + ':';
 
     /**
      * Creates the instance for this command.
@@ -40,10 +41,7 @@ public class GiveCommand extends GlowVanillaCommand {
             sendUsageMessage(sender, commandMessages);
             return false;
         }
-        String itemName = args[1];
-        if (!itemName.startsWith(PREFIX)) {
-            itemName = PREFIX + itemName;
-        }
+        String itemName = CommandUtils.toNamespaced(args[1]);
         Material type = ItemIds.getItem(itemName);
         if (type == null) {
             new LocalizedStringImpl("give.unknown", commandMessages.getResourceBundle())

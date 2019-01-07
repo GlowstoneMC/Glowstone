@@ -41,10 +41,7 @@ public class TestForBlockCommand extends VanillaCommand {
             sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
             return false;
         }
-        String itemName = args[3].toLowerCase();
-        if (!itemName.startsWith("minecraft:")) {
-            itemName = "minecraft:" + itemName;
-        }
+        String itemName = CommandUtils.toNamespaced(args[3].toLowerCase());
         Material type = ItemIds.getBlock(itemName);
         if (type == null) {
             sender.sendMessage(ChatColor.RED + itemName + " is not a valid block type.");

@@ -13,6 +13,7 @@ import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.NonNls;
 public class EnchantCommand extends GlowVanillaCommand {
 
     @NonNls
-    private static final String PREFIX = "minecraft:";
+    private static final String PREFIX = NamespacedKey.MINECRAFT + ':';
     private static List<String> VANILLA_IDS = GlowEnchantment.getVanillaIds();
 
     /**
@@ -97,13 +98,7 @@ public class EnchantCommand extends GlowVanillaCommand {
         if (args == null) {
             return Collections.emptyList();
         } else if (args.length == 2) {
-            String effectName = args[1];
-
-            if (!effectName.startsWith(PREFIX)) {
-                final int colonIndex = effectName.indexOf(':');
-                effectName =
-                        PREFIX + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
-            }
+            String effectName = CommandUtils.toNamespaced(args[1]);
 
             return StringUtil
                 .copyPartialMatches(effectName, VANILLA_IDS, new ArrayList(VANILLA_IDS.size()));

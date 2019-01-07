@@ -20,12 +20,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NonNls;
 
 public class ClearCommand extends GlowVanillaCommand {
-
-    @NonNls
-    private static final String VANILLA_ITEM_PREFIX = "minecraft:";
 
     /**
      * Creates the instance for this command.
@@ -77,10 +73,7 @@ public class ClearCommand extends GlowVanillaCommand {
             return false;
         }
         if (args.length >= 2) {
-            String itemName = args[1];
-            if (!itemName.startsWith(VANILLA_ITEM_PREFIX)) {
-                itemName = VANILLA_ITEM_PREFIX + itemName;
-            }
+            String itemName = CommandUtils.toNamespaced(args[1]);
             Material type = ItemIds.getItem(itemName);
             if (type == null) {
                 new LocalizedStringImpl("clear.no-such-item", resourceBundle)

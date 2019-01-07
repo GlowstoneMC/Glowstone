@@ -9,6 +9,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -275,4 +276,13 @@ public class CommandUtils {
         return sender instanceof Entity || sender instanceof BlockCommandSender;
     }
 
+    /**
+     * Returns the input unchanged if it already has a namespace prefix; otherwise, adds the
+     * {@link org.bukkit.NamespacedKey#MINECRAFT} prefix.
+     * @param input a namespaced-key name, or prefix of one, that may or may not be namespaced
+     * @return the input, namespaced
+     */
+    public static String toNamespaced(String input) {
+        return input.indexOf(':') >= 0 ? input : NamespacedKey.MINECRAFT + ':' + input;
+    }
 }

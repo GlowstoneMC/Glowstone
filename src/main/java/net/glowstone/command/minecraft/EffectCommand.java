@@ -17,13 +17,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NonNls;
 
 public class EffectCommand extends GlowVanillaCommand {
 
     private static final List<String> VANILLA_IDS = GlowPotionEffect.getVanillaIds();
-    @NonNls
-    private static final String PREFIX = "minecraft:";
 
     /**
      * Creates the instance for this command.
@@ -123,14 +120,7 @@ public class EffectCommand extends GlowVanillaCommand {
         if (args == null) {
             return Collections.emptyList();
         } else if (args.length == 2) {
-            String effectName = args[1];
-
-            if (!effectName.startsWith(PREFIX)) {
-                final int colonIndex = effectName.indexOf(':');
-                effectName =
-                    PREFIX + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
-            }
-
+            String effectName = CommandUtils.toNamespaced(args[1]);
             return StringUtil
                 .copyPartialMatches(effectName, VANILLA_IDS, new ArrayList<>(VANILLA_IDS.size()));
         }

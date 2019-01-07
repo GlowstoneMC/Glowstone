@@ -55,8 +55,7 @@ public class PlaySoundCommand extends VanillaCommand {
         String stringSound = args[0];
         String stringCategory = args[1];
         String playerPattern = args[2];
-        final Sound sound = GlowSound.getVanillaSound(
-            stringSound.startsWith("minecraft:") ? stringSound : "minecraft:" + stringSound);
+        final Sound sound = GlowSound.getVanillaSound(CommandUtils.toNamespaced(stringSound));
         final SoundCategory soundCategory = SoundUtil.buildSoundCategory(stringCategory);
         List<GlowPlayer> targets;
         boolean relativeLocation = false;
