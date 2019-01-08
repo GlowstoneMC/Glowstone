@@ -101,7 +101,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                     return false;
                 }
             } catch (final NumberFormatException n) {
-                commandMessages.getNotANumber().send(sender, args[8]);
+                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[8]);
                 return false;
             }
         }
@@ -119,7 +119,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                 }
 
             } catch (final NumberFormatException n) {
-                commandMessages.getNotANumber().send(sender, args[7]);
+                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[7]);
                 return false;
             }
         }
@@ -128,7 +128,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
             try {
                 volume = Double.valueOf(args[6]);
             } catch (final NumberFormatException n) {
-                commandMessages.getNotANumber().send(sender, args[6]);
+                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[6]);
                 return false;
             }
         }

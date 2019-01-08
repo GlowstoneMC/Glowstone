@@ -35,7 +35,7 @@ public class SetIdleTimeoutCommand extends GlowVanillaCommand {
         try {
             timeout = Integer.parseInt(stringTimeout);
         } catch (NumberFormatException ex) {
-            commandMessages.getNotANumber().send(sender, stringTimeout);
+            commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, stringTimeout);
             return false;
         }
 
