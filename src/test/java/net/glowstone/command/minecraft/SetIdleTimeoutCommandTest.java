@@ -43,7 +43,7 @@ public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand
 
         MatcherAssert.assertThat(commandResult, is(false));
         Mockito.verify(opSender)
-            .sendMessage(eq(ChatColor.RED + "'invalidNumber' is not a valid number"));
+            .sendMessage(eq(ChatColor.RED + "'invalidNumber' is not a valid number."));
     }
 
     @Test
