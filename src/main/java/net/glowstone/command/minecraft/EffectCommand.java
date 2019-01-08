@@ -26,7 +26,7 @@ public class EffectCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public EffectCommand() {
-        super("effect", Collections.emptyList());
+        super("effect");
         setPermission("minecraft.command.effect"); // NON-NLS
     }
 

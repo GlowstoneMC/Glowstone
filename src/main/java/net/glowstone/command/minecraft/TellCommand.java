@@ -10,28 +10,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class TellCommand extends VanillaCommand {
+public class TellCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public TellCommand() {
-        super("tell", "Send a private message.", "/tell <player> <private message ...>",
-            Arrays.asList("msg", "w"));
+        super("tell", Arrays.asList("msg", "w"));
         setPermission("minecraft.command.tell");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length <= 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         String name = args[0];
@@ -43,7 +42,7 @@ public class TellCommand extends VanillaCommand {
                 .put("type", new CommandTarget.SelectorValue("player")); // only players
             Entity[] matched = target.getMatched(location);
             if (matched.length == 0) {
-                sender.sendMessage(ChatColor.RED + "Selector '" + name + "' found nothing");
+                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
             players = new Player[matched.length];
@@ -53,7 +52,7 @@ public class TellCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayer(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player '" + name + "' cannot be found");
+                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
             players = new Player[]{player};

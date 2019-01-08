@@ -1,7 +1,6 @@
 package net.glowstone.command.minecraft;
 
 import java.util.Arrays;
-import java.util.Collections;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -12,8 +11,8 @@ public class MeCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public MeCommand() {
-        super("me", Collections.emptyList());
-        setPermission("minecraft.command.me"); // NON-NLS
+        super("me");
+        setPermission("minecraft.command.me"); // NON-NLS;
     }
 
     @Override

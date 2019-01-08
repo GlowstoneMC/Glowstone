@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import net.glowstone.command.CommandTarget;
@@ -21,7 +20,7 @@ public class GameModeCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public GameModeCommand() {
-        super("gamemode", Collections.emptyList());
+        super("gamemode");
         setPermission("minecraft.command.gamemode"); // NON-NLS
     }
 

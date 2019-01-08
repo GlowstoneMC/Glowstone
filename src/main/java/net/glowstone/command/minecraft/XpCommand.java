@@ -10,30 +10,28 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class XpCommand extends VanillaCommand {
+public class XpCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public XpCommand() {
-        super("xp", "Adds experience to a player.",
-            "/xp <amount> [player] OR /xp <amount>L [player] OR /xp <amount>l [player]",
-            Collections.emptyList());
+        super("xp");
         setPermission("minecraft.command.xp");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         } else {
             final String stringAmount = args[0];
@@ -53,16 +51,14 @@ public class XpCommand extends VanillaCommand {
                 try {
                     amount = Integer.parseInt(stringAmount.substring(0, stringAmount.length() - 1));
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(
-                        ChatColor.RED + "'" + stringAmount + "' is not a valid number");
+                    commandMessages.getNotANumber().send(sender, stringAmount);
                     return false;
                 }
             } else {
                 try {
                     amount = Integer.parseInt(stringAmount);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(
-                        ChatColor.RED + "'" + stringAmount + "' is not a valid number");
+                    commandMessages.getNotANumber().send(sender, stringAmount);
                     return false;
                 }
 

@@ -1,7 +1,6 @@
 package net.glowstone.command.minecraft;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class FunctionCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public FunctionCommand() {
-        super("function", Collections.emptyList());
+        super("function");
         setPermission("minecraft.command.function"); // NON-NLS
     }
 

@@ -20,7 +20,7 @@ public class DeopCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public DeopCommand() {
-        super("deop", Collections.emptyList());
+        super("deop");
         setPermission("minecraft.command.deop"); // NON-NLS
     }
 
