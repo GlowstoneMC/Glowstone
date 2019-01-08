@@ -150,7 +150,7 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      * @return the numeric tag value
      */
     public Number getNumber(String key) {
-        return get(key, NumericTag.class);
+        return (Number) get(key, NumericTag.class);
     }
 
     /**
