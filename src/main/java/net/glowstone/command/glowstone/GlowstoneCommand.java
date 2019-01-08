@@ -129,8 +129,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
             if (args.length == 1) {
                 // list worlds
                 sender.sendMessage(
-                        "Worlds: " + CommandUtils
-                                .prettyPrint(getWorldNames().toArray(new String[0])));
+                        "Worlds: " + commandMessages.joinList(getWorldNames()));
                 return true;
             }
             if (!(sender instanceof Player)) {

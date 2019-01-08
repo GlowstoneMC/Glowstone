@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
-import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -57,7 +56,7 @@ public class WhitelistCommand extends GlowVanillaCommand {
                 names[i++] = p.getName();
             }
             sender.sendMessage("There are " + names.length + " whitelisted players:");
-            sender.sendMessage(CommandUtils.prettyPrint(names));
+            sender.sendMessage(commandMessages.joinList(names));
             return true;
         }
         if (subcommand.equals("add")) {

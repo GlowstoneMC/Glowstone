@@ -49,46 +49,6 @@ public class CommandUtils {
         }
     }
 
-    /**
-     * Converts an array of entities to a readable string.
-     *
-     * @param entities one or more entities
-     * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
-     * @deprecated Use one of the {@code joinList} overloads in
-     * {@link net.glowstone.command.minecraft.GlowVanillaCommand}'s inner class CommandMessages.
-     */
-    @Deprecated
-    public static String prettyPrint(Entity[] entities) {
-        String[] names = new String[entities.length];
-        for (int i = 0; i < entities.length; i++) {
-            names[i] = entities[i].getName();
-        }
-        return prettyPrint(names);
-    }
-
-    /**
-     * Converts an array of strings describing list items to a single string listing them.
-     *
-     * @param strings one or more strings
-     * @return a list of the strings, formatted like "a, b and c"
-     * @deprecated Use one of the {@code joinList} overloads in
-     * {@link net.glowstone.command.minecraft.GlowVanillaCommand}'s inner class CommandMessages.
-     */
-    @Deprecated
-    public static String prettyPrint(String[] strings) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < strings.length; i++) {
-            String string = strings[i];
-            if (i == strings.length - 1 && strings.length > 1) {
-                builder.append(" and ");
-            } else if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(string);
-        }
-        return builder.toString();
-    }
-
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
     private static GlowWorld getDefaultWorld() {
         return (GlowWorld) ServerProvider.getServer().getWorlds().get(0);

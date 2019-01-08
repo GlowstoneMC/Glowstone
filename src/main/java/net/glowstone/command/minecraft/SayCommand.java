@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import java.util.Arrays;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
@@ -37,7 +38,8 @@ public class SayCommand extends GlowVanillaCommand {
                     commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, arg);
                     return false;
                 }
-                message.append(CommandUtils.prettyPrint(matched)).append(" ");
+                message.append(commandMessages.joinList(
+                        Arrays.stream(matched).map(Entity::getName))).append(" ");
             } else {
                 message.append(arg).append(" ");
             }
