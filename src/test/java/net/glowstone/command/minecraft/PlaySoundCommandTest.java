@@ -84,7 +84,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
         assertThat(command.execute(opSender, "label",
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "300", "2", "volume"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'volume' is not a valid number"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'volume' is not a valid number."));
     }
 
     @Test
