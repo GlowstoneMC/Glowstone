@@ -27,7 +27,7 @@ public class GiveCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public GiveCommand() {
-        super("give", Collections.emptyList());
+        super("give");
         setPermission("minecraft.command.give"); // NON-NLS
     }
 

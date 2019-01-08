@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import lombok.Getter;
@@ -80,7 +79,7 @@ public class CloneCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public CloneCommand() {
-        super("clone", Collections.emptyList());
+        super("clone");
         setPermission("minecraft.command.clone"); // NON-NLS
     }
 
@@ -97,7 +96,7 @@ public class CloneCommand extends GlowVanillaCommand {
         }
         final ResourceBundle bundle = messages.getResourceBundle();
         if (!CommandUtils.isPhysical(sender)) {
-            new LocalizedStringImpl("clone.not-physical", bundle).send(sender);
+            messages.getNotPhysical().send(sender);
             return false;
         }
 

@@ -12,10 +12,9 @@ import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
-public class WhitelistCommand extends VanillaCommand {
+public class WhitelistCommand extends GlowVanillaCommand {
 
     private static final List<String> SUBCOMMANDS = Arrays
             .asList("on", "off", "list", "add", "remove", "reload");
@@ -24,18 +23,18 @@ public class WhitelistCommand extends VanillaCommand {
      * Creates the instance for this command.
      */
     public WhitelistCommand() {
-        super("whitelist", "Manage the server whitelist.",
-                "/whitelist <on|off|list|add|remove|reload>", Collections.emptyList());
+        super("whitelist");
         setPermission("minecraft.command.whitelist");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         String subcommand = args[0];
@@ -102,7 +101,7 @@ public class WhitelistCommand extends VanillaCommand {
             sender.sendMessage("Reloaded the whitelist");
             return true;
         }
-        sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+        sendUsageMessage(sender, commandMessages);
         return false;
     }
 

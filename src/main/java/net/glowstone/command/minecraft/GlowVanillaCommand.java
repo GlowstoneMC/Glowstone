@@ -3,6 +3,7 @@ package net.glowstone.command.minecraft;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -50,6 +51,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String NO_MATCHES = "_generic.no-matches";
     @NonNls
     private static final String USAGE_IS = "_generic.usage";
+    @NonNls
+    private static final String NOT_PHYSICAL = "_generic.not-physical";
     private static final ResourceBundle SERVER_LOCALE_BUNDLE
             = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
     public static final long CACHE_SIZE = 50;
@@ -74,7 +77,20 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     }
 
     /**
-     * Creates an instance, using the command's name to look up the description etc.
+     * Creates an instance with no aliases (i.e. only callable by one name), using the name to look
+     * up the localized description etc.
+     *
+     * @param name the command name
+     */
+    public GlowVanillaCommand(@NonNls String name) {
+        this(name, Collections.emptyList());
+    }
+
+    /**
+     * Creates an instance, using the command's name to look up the localized description etc.
+     *
+     * @param name the command name
+     * @param aliases synonyms to accept for the command
      */
     public GlowVanillaCommand(@NonNls String name, @NonNls List<String> aliases) {
         super(name, "", "", aliases);
@@ -182,6 +198,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         private final LocalizedString notANumber;
         private final LocalizedString playerOffline;
         private final LocalizedString noMatches;
+        private final LocalizedString notPhysical;
         private final String joiner;
 
         public CommandMessages(ResourceBundle bundle, String description,
@@ -191,6 +208,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
                     new LocalizedStringImpl(NAN, bundle),
                     new LocalizedStringImpl(OFFLINE, bundle),
                     new LocalizedStringImpl(NO_MATCHES, bundle),
+                    new LocalizedStringImpl(NOT_PHYSICAL, bundle),
                     new LocalizedStringImpl(JOINER, bundle).get());
         }
 

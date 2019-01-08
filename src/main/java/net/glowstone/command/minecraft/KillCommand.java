@@ -17,8 +17,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class KillCommand extends GlowVanillaCommand {
 
     public KillCommand() {
-        super("kill", Collections.emptyList());
-        setPermission("minecraft.command.kill"); // NON-NLS
+        super("kill");
+        setPermission("minecraft.command.kill"); // NON-NLS;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class KillCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length > 1) {
             return Collections.emptyList();
         }

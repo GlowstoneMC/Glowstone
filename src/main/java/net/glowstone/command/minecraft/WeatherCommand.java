@@ -9,10 +9,9 @@ import net.glowstone.command.CommandUtils;
 import net.glowstone.util.TickUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
-public class WeatherCommand extends VanillaCommand {
+public class WeatherCommand extends GlowVanillaCommand {
 
     private static final List<String> WEATHER = Arrays.asList("clear", "rain", "thunder");
 
@@ -20,18 +19,18 @@ public class WeatherCommand extends VanillaCommand {
      * Creates the instance for this command.
      */
     public WeatherCommand() {
-        super("weather", "Changes the weather in the world.",
-            "/weather <clear|rain|thunder> [duration in seconds]", Collections.emptyList());
+        super("weather");
         setPermission("minecraft.command.weather");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0 || args.length > 2 || !WEATHER.contains(args[0])) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -41,16 +40,16 @@ public class WeatherCommand extends VanillaCommand {
             try {
                 duration = Integer.valueOf(args[1]);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number");
+                commandMessages.getNotANumber().send(sender, args[1]);
                 return false;
             }
             if (duration < 1) {
                 sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1]
-                    + ") is too small, it must be at least 1");
+                        + ") is too small, it must be at least 1");
                 return false;
             } else if (duration > 1000000) {
                 sender.sendMessage(ChatColor.RED + "The number you have entered (" + args[1]
-                    + ") is too big, it must be at most 1000000");
+                        + ") is too big, it must be at most 1000000");
                 return false;
             }
         }
@@ -75,10 +74,10 @@ public class WeatherCommand extends VanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 1) {
             return (List) StringUtil
-                .copyPartialMatches(args[0], WEATHER, new ArrayList(WEATHER.size()));
+                    .copyPartialMatches(args[0], WEATHER, new ArrayList(WEATHER.size()));
         }
         return Collections.emptyList();
     }

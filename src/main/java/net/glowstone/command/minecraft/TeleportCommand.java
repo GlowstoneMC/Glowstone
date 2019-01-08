@@ -1,17 +1,18 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class TeleportCommand extends VanillaCommand {
+/**
+ * /tp was an alias of this command until Minecraft 1.13, but now see {@link TpCommand}.
+ */
+public class TeleportCommand extends GlowVanillaCommand {
 
     private static final Entity[] NO_ENTITY = new Entity[0];
 
@@ -19,20 +20,18 @@ public class TeleportCommand extends VanillaCommand {
      * Creates the instance for this command.
      */
     public TeleportCommand() {
-        super("teleport",
-            "Teleports entities to coordinates relative to the sender",
-            "/teleport <target> <x> <y> <z> [<y-rot> <x-rot>]",
-            Collections.emptyList());
+        super("teleport");
         setPermission("minecraft.command.teleport");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length < 4 || args.length == 5) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
@@ -71,8 +70,8 @@ public class TeleportCommand extends VanillaCommand {
                 }
                 target.teleport(targetLocation);
                 sender.sendMessage(
-                    "Teleported " + target.getName() + " to " + targetLocation.getX() + " "
-                        + targetLocation.getY() + " " + targetLocation.getZ());
+                        "Teleported " + target.getName() + " to " + targetLocation.getX() + " "
+                                + targetLocation.getY() + " " + targetLocation.getZ());
             }
         }
 
