@@ -12,7 +12,7 @@ public class SayCommand extends GlowVanillaCommand {
 
     public SayCommand() {
         super("say");
-        setPermission("minecraft.command.say");
+        setPermission("minecraft.command.say"); // NON-NLS
     }
 
     @Override

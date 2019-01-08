@@ -20,7 +20,7 @@ public class XpCommand extends GlowVanillaCommand {
      */
     public XpCommand() {
         super("xp");
-        setPermission("minecraft.command.xp");
+        setPermission("minecraft.command.xp"); // NON-NLS
     }
 
     @Override

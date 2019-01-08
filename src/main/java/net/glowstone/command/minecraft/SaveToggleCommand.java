@@ -22,7 +22,7 @@ public class SaveToggleCommand extends GlowVanillaCommand {
         super(on ? "save-on" : "save-off");
         this.on = on;
         doneMessageKey = on ? "save-on.done" : "save-off.done";
-        setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off");
+        setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off"); // NON-NLS
     }
 
     @Override

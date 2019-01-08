@@ -20,7 +20,7 @@ public class TpCommand extends GlowVanillaCommand {
      */
     public TpCommand() {
         super("tp");
-        setPermission("minecraft.command.tp");
+        setPermission("minecraft.command.tp"); // NON-NLS
     }
 
     @Override

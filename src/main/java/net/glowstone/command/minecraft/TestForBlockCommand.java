@@ -26,7 +26,7 @@ public class TestForBlockCommand extends GlowVanillaCommand {
      */
     public TestForBlockCommand() {
         super("testforblock");
-        setPermission("minecraft.command.testforblock");
+        setPermission("minecraft.command.testforblock"); // NON-NLS
     }
 
     @Override

@@ -17,7 +17,7 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
      */
     public SetWorldSpawnCommand() {
         super("setworldspawn");
-        setPermission("minecraft.command.setworldspawn");
+        setPermission("minecraft.command.setworldspawn"); // NON-NLS
     }
 
     @Override

@@ -18,7 +18,7 @@ public class ListCommand extends GlowVanillaCommand {
 
     public ListCommand() {
         super("list");
-        setPermission("minecraft.command.list"); // NON-NLS;
+        setPermission("minecraft.command.list"); // NON-NLS
     }
 
     @Override

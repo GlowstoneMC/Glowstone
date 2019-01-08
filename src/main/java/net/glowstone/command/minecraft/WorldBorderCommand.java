@@ -14,7 +14,7 @@ public class WorldBorderCommand extends GlowVanillaCommand {
      */
     public WorldBorderCommand() {
         super("worldborder");
-        setPermission("minecraft.command.worldborder");
+        setPermission("minecraft.command.worldborder"); // NON-NLS
     }
 
     @Override

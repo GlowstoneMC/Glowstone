@@ -24,7 +24,7 @@ public class WhitelistCommand extends GlowVanillaCommand {
      */
     public WhitelistCommand() {
         super("whitelist");
-        setPermission("minecraft.command.whitelist");
+        setPermission("minecraft.command.whitelist"); // NON-NLS
     }
 
     @Override

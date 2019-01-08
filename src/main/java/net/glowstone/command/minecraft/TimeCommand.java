@@ -19,7 +19,7 @@ public class TimeCommand extends GlowVanillaCommand {
      */
     public TimeCommand() {
         super("time");
-        setPermission("minecraft.command.time");
+        setPermission("minecraft.command.time"); // NON-NLS
     }
 
     @Override

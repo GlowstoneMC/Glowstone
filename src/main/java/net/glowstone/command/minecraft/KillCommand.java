@@ -18,7 +18,7 @@ public class KillCommand extends GlowVanillaCommand {
 
     public KillCommand() {
         super("kill");
-        setPermission("minecraft.command.kill"); // NON-NLS;
+        setPermission("minecraft.command.kill"); // NON-NLS
     }
 
     @Override

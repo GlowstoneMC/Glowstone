@@ -15,7 +15,7 @@ public class ToggleDownfallCommand extends GlowVanillaCommand {
 
     public ToggleDownfallCommand() {
         super("toggledownfall");
-        setPermission("minecraft.command.toggledownfall");
+        setPermission("minecraft.command.toggledownfall"); // NON-NLS
     }
 
     @Override

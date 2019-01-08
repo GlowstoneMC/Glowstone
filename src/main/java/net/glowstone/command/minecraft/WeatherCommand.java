@@ -20,7 +20,7 @@ public class WeatherCommand extends GlowVanillaCommand {
      */
     public WeatherCommand() {
         super("weather");
-        setPermission("minecraft.command.weather");
+        setPermission("minecraft.command.weather"); // NON-NLS
     }
 
     @Override

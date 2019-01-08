@@ -29,7 +29,7 @@ public class SummonCommand extends GlowVanillaCommand {
      */
     public SummonCommand() {
         super("summon");
-        setPermission("minecraft.command.summon");
+        setPermission("minecraft.command.summon"); // NON-NLS
     }
 
     @Override

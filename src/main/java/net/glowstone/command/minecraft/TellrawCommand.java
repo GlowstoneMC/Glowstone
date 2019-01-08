@@ -18,7 +18,7 @@ public class TellrawCommand extends GlowVanillaCommand {
      */
     public TellrawCommand() {
         super("tellraw");
-        setPermission("minecraft.command.tellraw");
+        setPermission("minecraft.command.tellraw"); // NON-NLS
     }
 
     @Override

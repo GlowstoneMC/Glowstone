@@ -21,7 +21,7 @@ public class TeleportCommand extends GlowVanillaCommand {
      */
     public TeleportCommand() {
         super("teleport");
-        setPermission("minecraft.command.teleport");
+        setPermission("minecraft.command.teleport"); // NON-NLS
     }
 
     @Override

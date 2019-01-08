@@ -22,7 +22,7 @@ public class SpawnPointCommand extends GlowVanillaCommand {
      */
     public SpawnPointCommand() {
         super("spawnpoint");
-        setPermission("minecraft.command.spawnpoint");
+        setPermission("minecraft.command.spawnpoint"); // NON-NLS
     }
 
     @Override

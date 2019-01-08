@@ -38,7 +38,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
      */
     public GlowstoneCommand() {
         super("glowstone", Arrays.asList("gs"));
-        setPermission("glowstone.debug");
+        setPermission("glowstone.debug"); // NON-NLS
     }
 
     @Override

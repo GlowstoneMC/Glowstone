@@ -20,7 +20,7 @@ public class TellCommand extends GlowVanillaCommand {
      */
     public TellCommand() {
         super("tell", Arrays.asList("msg", "w"));
-        setPermission("minecraft.command.tell");
+        setPermission("minecraft.command.tell"); // NON-NLS
     }
 
     @Override

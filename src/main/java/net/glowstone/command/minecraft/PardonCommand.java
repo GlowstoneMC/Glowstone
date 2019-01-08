@@ -14,7 +14,7 @@ public class PardonCommand extends GlowVanillaCommand {
      */
     public PardonCommand() {
         super("pardon");
-        setPermission("minecraft.command.pardon");
+        setPermission("minecraft.command.pardon"); // NON-NLS
     }
 
     @Override

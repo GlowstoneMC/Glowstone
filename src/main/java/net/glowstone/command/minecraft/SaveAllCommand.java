@@ -11,7 +11,7 @@ public class SaveAllCommand extends GlowVanillaCommand {
 
     public SaveAllCommand() {
         super("save-all");
-        setPermission("minecraft.command.save-all");
+        setPermission("minecraft.command.save-all"); // NON-NLS
     }
 
     @Override

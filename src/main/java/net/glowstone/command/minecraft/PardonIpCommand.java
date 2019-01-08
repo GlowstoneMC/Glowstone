@@ -12,7 +12,7 @@ public class PardonIpCommand extends GlowVanillaCommand {
      */
     public PardonIpCommand() {
         super("pardon-ip");
-        setPermission("minecraft.command.pardon-ip");
+        setPermission("minecraft.command.pardon-ip"); // NON-NLS
     }
 
     @Override

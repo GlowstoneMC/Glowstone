@@ -25,7 +25,7 @@ public class SetBlockCommand extends GlowVanillaCommand {
      */
     public SetBlockCommand() {
         super("setblock");
-        setPermission("minecraft.command.setblock");
+        setPermission("minecraft.command.setblock"); // NON-NLS
     }
 
     @Override

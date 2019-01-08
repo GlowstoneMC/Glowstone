@@ -13,7 +13,7 @@ public class StopCommand extends GlowVanillaCommand {
 
     public StopCommand() {
         super("stop");
-        setPermission("minecraft.command.stop");
+        setPermission("minecraft.command.stop"); // NON-NLS
     }
 
     @Override

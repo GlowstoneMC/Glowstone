@@ -14,7 +14,7 @@ public class OpCommand extends GlowVanillaCommand {
      */
     public OpCommand() {
         super("op");
-        setPermission("minecraft.command.op"); // NON-NLS;
+        setPermission("minecraft.command.op"); // NON-NLS
     }
 
     @Override

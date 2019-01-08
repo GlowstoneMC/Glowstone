@@ -8,7 +8,7 @@ public class SeedCommand extends GlowVanillaCommand {
 
     public SeedCommand() {
         super("seed");
-        setPermission("minecraft.command.seed");
+        setPermission("minecraft.command.seed"); // NON-NLS
     }
 
     @Override

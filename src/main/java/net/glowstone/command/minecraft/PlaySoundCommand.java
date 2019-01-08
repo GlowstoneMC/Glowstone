@@ -34,7 +34,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
      */
     public PlaySoundCommand() {
         super("playsound");
-        setPermission("minecraft.command.playsound");
+        setPermission("minecraft.command.playsound"); // NON-NLS
     }
 
     @Override

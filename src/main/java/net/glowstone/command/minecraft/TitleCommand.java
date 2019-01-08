@@ -22,7 +22,7 @@ public class TitleCommand extends GlowVanillaCommand {
      */
     public TitleCommand() {
         super("title");
-        setPermission("minecraft.command.title");
+        setPermission("minecraft.command.title"); // NON-NLS
     }
 
     private static ChatColor toColor(String name) {

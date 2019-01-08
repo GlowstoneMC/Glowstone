@@ -21,7 +21,7 @@ public class TestForCommand extends GlowVanillaCommand {
      */
     public TestForCommand() {
         super("testfor");
-        setPermission("minecraft.command.testfor");
+        setPermission("minecraft.command.testfor"); // NON-NLS
     }
 
     @Override

@@ -14,7 +14,7 @@ public class SetIdleTimeoutCommand extends GlowVanillaCommand {
      */
     public SetIdleTimeoutCommand() {
         super("setidletimeout");
-        setPermission("minecraft.command.setidletimeout");
+        setPermission("minecraft.command.setidletimeout"); // NON-NLS
     }
 
     @Override
