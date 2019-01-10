@@ -10,7 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 /**
- * /tp was an alias of this command until Minecraft 1.13, but now see {@link TpCommand}.
+ * /tp was an alias of this command until Minecraft 1.10, but now see {@link TpCommand}.
  */
 public class TeleportCommand extends GlowVanillaCommand {
 

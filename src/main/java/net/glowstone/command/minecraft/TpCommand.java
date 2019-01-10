@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 /**
  * Differs from {@link TeleportCommand} in that all relative coordinates are relative to the target
- * rather than the sender. /teleport and /tp were synonyms until Minecraft 1.13.
+ * rather than the sender. /teleport and /tp were synonyms until Minecraft 1.10.
  */
 public class TpCommand extends GlowVanillaCommand {
 
