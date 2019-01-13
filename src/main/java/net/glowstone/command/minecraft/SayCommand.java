@@ -1,33 +1,33 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
+import java.util.Arrays;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 
-public class SayCommand extends VanillaCommand {
+public class SayCommand extends GlowVanillaCommand {
 
     public SayCommand() {
-        super("say", "Say a message.", "/say <message ...>", Collections.emptyList());
-        setPermission("minecraft.command.say");
+        super("say");
+        setPermission("minecraft.command.say"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         StringBuilder message = new StringBuilder("[")
-            .append(sender.getName() == null ? "Server" : sender.getName()).append("] ");
+                .append(sender.getName() == null ? "Server" : sender.getName()).append("] ");
         for (String arg : args) {
             if (arg.startsWith("@") && arg.length() >= 2 && CommandUtils.isPhysical(sender)) {
                 // command targets
@@ -35,10 +35,11 @@ public class SayCommand extends VanillaCommand {
                 CommandTarget target = new CommandTarget(sender, arg);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    sender.sendMessage(ChatColor.RED + "Selector '" + arg + "' found nothing");
+                    commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, arg);
                     return false;
                 }
-                message.append(CommandUtils.prettyPrint(matched)).append(" ");
+                message.append(commandMessages.joinList(
+                        Arrays.stream(matched).map(Entity::getName))).append(" ");
             } else {
                 message.append(arg).append(" ");
             }

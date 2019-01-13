@@ -17,7 +17,7 @@ public class ListCommand extends GlowVanillaCommand {
     private static final String[] EMPTY = new String[0];
 
     public ListCommand() {
-        super("list", Collections.emptyList());
+        super("list");
         setPermission("minecraft.command.list"); // NON-NLS
     }
 
@@ -33,7 +33,7 @@ public class ListCommand extends GlowVanillaCommand {
         messages.add(new LocalizedStringImpl("list.header", commandMessages.getResourceBundle())
                 .get(players.size(), Bukkit.getMaxPlayers()));
         if (args.length > 0 && (Objects.equals(args[0], "uuids" /* NON-NLS */) || Objects
-            .equals(args[0], "ids" /* NON-NLS */))) {
+                .equals(args[0], "ids" /* NON-NLS */))) {
             LocalizedStringImpl nameAndUuidMessage = new LocalizedStringImpl("list.name-and-uuid",
                     commandMessages.getResourceBundle());
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(
@@ -47,7 +47,7 @@ public class ListCommand extends GlowVanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 1) {
             return ImmutableList.of("uuids"); // NON-NLS
         }

@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
 import net.glowstone.i18n.ConsoleMessages;
@@ -14,7 +13,7 @@ public class OpCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public OpCommand() {
-        super("op", Collections.emptyList());
+        super("op");
         setPermission("minecraft.command.op"); // NON-NLS
     }
 

@@ -27,7 +27,7 @@ public class ClearCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public ClearCommand() {
-        super("clear", Collections.emptyList());
+        super("clear");
         setPermission("minecraft.command.clear"); // NON-NLS
     }
 

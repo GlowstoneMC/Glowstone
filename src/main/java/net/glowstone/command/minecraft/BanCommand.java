@@ -17,7 +17,7 @@ public class BanCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public BanCommand() {
-        super("ban", Collections.emptyList());
+        super("ban");
         setPermission("minecraft.command.ban"); // NON-NLS
     }
 

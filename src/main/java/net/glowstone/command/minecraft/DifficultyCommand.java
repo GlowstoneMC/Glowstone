@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
@@ -20,7 +19,7 @@ public class DifficultyCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public DifficultyCommand() {
-        super("difficulty", Collections.emptyList());
+        super("difficulty");
         setPermission("minecraft.command.difficulty"); // NON-NLS
     }
 

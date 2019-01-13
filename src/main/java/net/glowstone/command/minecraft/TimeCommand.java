@@ -6,12 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
-public class TimeCommand extends VanillaCommand {
+public class TimeCommand extends GlowVanillaCommand {
 
     private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add");
     private static final List<String> TIMES = Arrays.asList("day", "night");
@@ -20,19 +18,18 @@ public class TimeCommand extends VanillaCommand {
      * Creates the instance for this command.
      */
     public TimeCommand() {
-        super("time", "Changes the time of the world.",
-                "/time <set|add> <value> OR /time query <daytime|gametime|day>",
-                Collections.emptyList());
-        setPermission("minecraft.command.time");
+        super("time");
+        setPermission("minecraft.command.time"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length != 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
@@ -50,7 +47,7 @@ public class TimeCommand extends VanillaCommand {
                 try {
                     mod = Integer.valueOf(value);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(ChatColor.RED + "'" + value + "' is not a valid number");
+                    commandMessages.getNotANumber().send(sender, value);
                     return false;
                 }
             }
@@ -60,7 +57,7 @@ public class TimeCommand extends VanillaCommand {
             try {
                 mod = Integer.valueOf(value);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + "'" + value + "' is not a valid number");
+                commandMessages.getNotANumber().send(sender, value);
                 return false;
             }
             sender.sendMessage("Added " + mod + " to the time");
@@ -71,20 +68,20 @@ public class TimeCommand extends VanillaCommand {
                     output = "The time is " + world.getTime();
                     break;
                 case "daytime":
-                    output = "The time of day is " +  world.getTime() % 24000;
+                    output = "The time of day is " + world.getTime() % 24000;
                     break;
                 case "day":
                     output = "The day is " + world.getTime() / 24000;
                     break;
                 default:
-                    sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+                    sendUsageMessage(sender, commandMessages);
                     return false;
             }
             sender.sendMessage(output);
             // TODO: Set the success count for command blocks
             return true;
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         world.setTime(add ? world.getTime() + mod : mod);

@@ -1,43 +1,41 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
-public class TellrawCommand extends VanillaCommand {
+public class TellrawCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public TellrawCommand() {
-        super("tellraw", "Send a private JSON message to the given player",
-            "/tellraw <player> <raw-json-message>", Collections.emptyList());
-        setPermission("minecraft.command.tellraw");
+        super("tellraw");
+        setPermission("minecraft.command.tellraw"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
-            sender.sendMessage("There's no player by that name online.");
+            commandMessages.getNoSuchPlayer().send(sender, args[0]);
             return false;
         } else {
             StringBuilder message = new StringBuilder();

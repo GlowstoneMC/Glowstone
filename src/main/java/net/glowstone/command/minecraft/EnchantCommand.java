@@ -30,7 +30,7 @@ public class EnchantCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public EnchantCommand() {
-        super("enchant", Collections.emptyList());
+        super("enchant");
         setPermission("minecraft.command.enchant"); // NON-NLS
     }
 

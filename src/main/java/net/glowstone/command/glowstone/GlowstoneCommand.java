@@ -8,25 +8,27 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.minecraft.GlowVanillaCommand;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.ReflectionProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NonNls;
 
-public class GlowstoneCommand extends BukkitCommand {
+public class GlowstoneCommand extends GlowVanillaCommand {
 
     private static final @NonNls List<String> SUBCOMMANDS
             = Arrays.asList("about", "chunk", "eval", "help", "property", "vm", "world");
@@ -35,48 +37,37 @@ public class GlowstoneCommand extends BukkitCommand {
      * Creates the instance for this command.
      */
     public GlowstoneCommand() {
-        super("glowstone", "A handful of Glowstone commands for debugging purposes",
-                "/glowstone help", Arrays.asList("gs"));
-        setPermission("glowstone.debug");
+        super("glowstone", Arrays.asList("gs"));
+        setPermission("glowstone.debug"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0 || args[0].equalsIgnoreCase("about")) {
+            ResourceBundle b = commandMessages.getResourceBundle();
             // some info about this Glowstone server
-            sender.sendMessage("Information about this server:");
-            sender.sendMessage(
-                    " - " + ChatColor.GOLD + "Server brand: " + ChatColor.AQUA + Bukkit.getName()
-                            + ChatColor.RESET + ".");
-            sender.sendMessage(
-                    " - " + ChatColor.GOLD + "Server name: " + ChatColor.AQUA + Bukkit
-                            .getServerName()
-                            + ChatColor.RESET + ".");
-            sender.sendMessage(
-                    " - " + ChatColor.GOLD + "Glowstone version: " + ChatColor.AQUA + Bukkit
-                            .getVersion() + ChatColor.RESET + ".");
-            sender.sendMessage(" - " + ChatColor.GOLD + "API version: " + ChatColor.AQUA + Bukkit
-                    .getBukkitVersion() + ChatColor.RESET + ".");
-            sender.sendMessage(
-                    " - " + ChatColor.GOLD + "Players: " + ChatColor.AQUA + Bukkit
-                            .getOnlinePlayers()
-                            .size() + ChatColor.RESET + ".");
-            sender.sendMessage(
-                    " - " + ChatColor.GOLD + "Worlds: " + ChatColor.AQUA + Bukkit.getWorlds().size()
-                            + ChatColor.RESET + ".");
-            sender.sendMessage(
-                    " - " + ChatColor.GOLD + "Plugins: " + ChatColor.AQUA + Bukkit
-                            .getPluginManager()
-                            .getPlugins().length + ChatColor.RESET + ".");
+            new LocalizedStringImpl("glowstone.about", b).send(sender);
+            LocalizedStringImpl t
+                    = new LocalizedStringImpl("glowstone.about._template", b);
+            sendBullet(sender, t, b, "glowstone.about.brand", Bukkit.getName());
+            sendBullet(sender, t, b, "glowstone.about.name", Bukkit.getServerName());
+            sendBullet(sender, t, b, "glowstone.about.version", Bukkit.getVersion());
+            sendBullet(sender, t, b, "glowstone.about.api-version", Bukkit.getBukkitVersion());
+            sendBullet(sender, t, b, "glowstone.about.players",
+                    Bukkit.getOnlinePlayers().size());
+            sendBullet(sender, t, b, "glowstone.about.worlds", Bukkit.getWorlds().size());
+            sendBullet(sender, t, b, "glowstone.about.plugins",
+                    Bukkit.getPluginManager().getPlugins().length);
 
             // thread count
             int threadCount = 0;
             Set<Thread> threads = Thread.getAllStackTraces().keySet();
-            for (Thread t : threads) {
-                if (t.getThreadGroup() == Thread.currentThread().getThreadGroup()) {
+            for (Thread thread : threads) {
+                if (thread.getThreadGroup() == Thread.currentThread().getThreadGroup()) {
                     threadCount++;
                 }
             }
@@ -138,8 +129,7 @@ public class GlowstoneCommand extends BukkitCommand {
             if (args.length == 1) {
                 // list worlds
                 sender.sendMessage(
-                        "Worlds: " + CommandUtils
-                                .prettyPrint(getWorldNames().toArray(new String[0])));
+                        "Worlds: " + commandMessages.joinList(getWorldNames()));
                 return true;
             }
             if (!(sender instanceof Player)) {
@@ -193,6 +183,12 @@ public class GlowstoneCommand extends BukkitCommand {
         sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <"
                 + SUBCOMMANDS.stream().collect(Collectors.joining("|")) + ">");
         return false;
+    }
+
+    private static void sendBullet(CommandSender sender,
+            LocalizedStringImpl template, ResourceBundle resourceBundle, @NonNls String key,
+            Object value) {
+        template.send(sender, new LocalizedStringImpl(key, resourceBundle), value);
     }
 
     @Override

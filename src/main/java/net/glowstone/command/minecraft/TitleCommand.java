@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.glowstone.entity.GlowPlayer;
@@ -12,20 +11,18 @@ import net.glowstone.net.message.play.game.TitleMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-public class TitleCommand extends VanillaCommand {
+public class TitleCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public TitleCommand() {
-        super("title", "Sends a title to the specified player(s)",
-                "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
-        setPermission("minecraft.command.title");
+        super("title");
+        setPermission("minecraft.command.title"); // NON-NLS
     }
 
     private static ChatColor toColor(String name) {
@@ -96,25 +93,27 @@ public class TitleCommand extends VanillaCommand {
         return text;
     }
 
+    // CAUTION: Most usage messages in this method can't be replaced with sendUsageMessage, because
+    // they're subcommand-specific.
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
-            sender.sendMessage("There's no player by that name online.");
+            commandMessages.getNoSuchPlayer().send(sender, args[0]);
             return false;
         }
 
         String action = args[1];
-
         if (action.equalsIgnoreCase("clear")) {
             ((GlowPlayer) player).clearTitle();
             sender.sendMessage("Cleared " + player.getName() + "'s title");
@@ -123,6 +122,7 @@ public class TitleCommand extends VanillaCommand {
             sender.sendMessage("Reset " + player.getName() + "'s title");
         } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
+                sendUsageMessage(sender, commandMessages);
                 sender.sendMessage(
                         ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
@@ -208,7 +208,7 @@ public class TitleCommand extends VanillaCommand {
 
             sender.sendMessage("Updated " + player.getName() + "'s times");
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 

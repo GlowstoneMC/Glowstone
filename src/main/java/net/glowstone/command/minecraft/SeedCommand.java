@@ -1,26 +1,24 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import net.glowstone.command.CommandUtils;
-import org.bukkit.World;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 
-public class SeedCommand extends VanillaCommand {
+public class SeedCommand extends GlowVanillaCommand {
 
     public SeedCommand() {
-        super("seed", "Displays the world seed.", "/seed", Collections.emptyList());
-        setPermission("minecraft.command.seed");
+        super("seed");
+        setPermission("minecraft.command.seed"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
-
-        final World world = CommandUtils.getWorld(sender);
-        sender.sendMessage("Seed: " + world.getSeed());
+        new LocalizedStringImpl("seed.output", commandMessages.getResourceBundle())
+                .send(sender, CommandUtils.getWorld(sender).getSeed());
         return true;
     }
 }
