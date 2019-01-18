@@ -63,13 +63,14 @@ public class PlaySoundCommand extends GlowVanillaCommand {
         double pitch = 1;
 
         if (sound == null) {
-            sender.sendMessage(ChatColor.RED + "'" + stringSound + "' is not a valid sound.");
+            new LocalizedStringImpl("playsound.invalid", commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, stringSound);
             return false;
         }
 
         if (soundCategory == null) {
-            sender.sendMessage(
-                    ChatColor.RED + "'" + stringCategory + "' is not a valid sound category.");
+            new LocalizedStringImpl("playsound.invalid", commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, stringCategory);
             return false;
         }
 
@@ -96,8 +97,9 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                 minimumVolume = Double.valueOf(args[8]);
 
                 if (minimumVolume < 0 || minimumVolume > 1) {
-                    sender.sendMessage(ChatColor.RED + "Minimum volume value (" + args[8]
-                            + ") must be between 0 and 1");
+                    new LocalizedStringImpl("playsound.invalid.volume",
+                            commandMessages.getResourceBundle())
+                            .sendInColor(ChatColor.RED, sender, args[8]);
                     return false;
                 }
             } catch (final NumberFormatException n) {
@@ -111,8 +113,9 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                 pitch = Double.valueOf(args[7]);
 
                 if (pitch < 0 || pitch > 2) {
-                    sender.sendMessage(ChatColor.RED + "Pitch value (" + args[7]
-                            + ") must be between 0 and 2");
+                    new LocalizedStringImpl("playsound.invalid.pitch",
+                            commandMessages.getResourceBundle())
+                            .sendInColor(ChatColor.RED, sender, args[7]);
                     return false;
                 } else if (pitch < 0.5) {
                     pitch = 0.5;
@@ -154,7 +157,7 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                     soundLocation = targetLocation;
                 }
             } catch (final NumberFormatException n) {
-                new LocalizedStringImpl("playsound.position-invalid",
+                new LocalizedStringImpl("playsound.invalid.position",
                         commandMessages.getResourceBundle())
                         .sendInColor(ChatColor.RED, sender, args[3], args[4], args[5]);
                 return false;

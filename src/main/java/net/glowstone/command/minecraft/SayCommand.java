@@ -3,6 +3,7 @@ package net.glowstone.command.minecraft;
 import java.util.Arrays;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.GlowstoneMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -27,7 +28,9 @@ public class SayCommand extends GlowVanillaCommand {
             return false;
         }
         StringBuilder message = new StringBuilder("[")
-                .append(sender.getName() == null ? "Server" : sender.getName()).append("] ");
+                .append(sender.getName() == null
+                        ? GlowstoneMessages.Command.SAY_SERVER.get() : sender.getName())
+                .append("] ");
         for (String arg : args) {
             if (arg.startsWith("@") && arg.length() >= 2 && CommandUtils.isPhysical(sender)) {
                 // command targets
@@ -39,9 +42,9 @@ public class SayCommand extends GlowVanillaCommand {
                     return false;
                 }
                 message.append(commandMessages.joinList(
-                        Arrays.stream(matched).map(Entity::getName))).append(" ");
+                        Arrays.stream(matched).map(Entity::getName))).append(' ');
             } else {
-                message.append(arg).append(" ");
+                message.append(arg).append(' ');
             }
         }
         Bukkit.broadcastMessage(message.toString());

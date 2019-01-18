@@ -22,6 +22,8 @@ public interface GlowstoneMessages {
             LocalizedString UNKNOWN_COMMAND =
                 new LocalizedStringImpl("glowstone.command.error.unknown-command");
         }
+
+        LocalizedString SAY_SERVER = new LocalizedStringImpl("glowstone.command.say.server");
     }
 
     interface Entity {
