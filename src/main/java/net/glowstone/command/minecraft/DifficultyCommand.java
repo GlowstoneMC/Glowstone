@@ -13,7 +13,7 @@ public class DifficultyCommand extends GlowVanillaCommand {
 
     private static final LocalizedEnumNames<Difficulty> DIFFICULTIES
             = new LocalizedEnumNames<>(Difficulty::getByValue, "glowstone.difficulty.unknown",
-            "glowstone.difficulty.names", "maps/difficulty");
+            "glowstone.difficulty.names", "maps/difficulty", false);
 
     /**
      * Creates the instance for this command.
