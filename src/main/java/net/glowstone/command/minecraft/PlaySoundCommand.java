@@ -69,7 +69,8 @@ public class PlaySoundCommand extends GlowVanillaCommand {
         }
 
         if (soundCategory == null) {
-            new LocalizedStringImpl("playsound.invalid", commandMessages.getResourceBundle())
+            new LocalizedStringImpl("playsound.invalid.category",
+                    commandMessages.getResourceBundle())
                     .sendInColor(ChatColor.RED, sender, stringCategory);
             return false;
         }
