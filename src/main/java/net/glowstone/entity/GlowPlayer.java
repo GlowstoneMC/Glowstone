@@ -519,11 +519,11 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private List<Conversation> conversations = new ArrayList<>();
     private Set<BossBar> bossBars = ConcurrentHashMap.newKeySet();
     /**
-     * The player's previous chunk x coordinate.
+     * The player's previous chunk X coordinate.
      */
     private int prevCentralX;
     /**
-     * The player's previous chunk x coordinate.
+     * The player's previous chunk Z coordinate.
      */
     private int prevCentralZ;
     /**

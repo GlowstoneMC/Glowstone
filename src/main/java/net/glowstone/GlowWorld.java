@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -48,6 +49,8 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
+import net.glowstone.forkjoinpools.ForkPulse;
+import net.glowstone.forkjoinpools.ForkPulsePlayers;
 import net.glowstone.generator.structures.GlowStructure;
 import net.glowstone.io.WorldMetadataService.WorldFinalValues;
 import net.glowstone.io.WorldStorageProvider;
@@ -464,7 +467,7 @@ public class GlowWorld implements World {
      */
     public void pulse() {
         List<GlowEntity> allEntities = new ArrayList<>(entityManager.getAll());
-        List<GlowPlayer> players = new LinkedList<>();
+        List<GlowPlayer> players = new ArrayList<>();
 
         activeChunksSet.clear();
 
@@ -478,10 +481,10 @@ public class GlowWorld implements World {
             if (entity instanceof GlowPlayer) {
                 players.add((GlowPlayer) entity);
                 updateActiveChunkCollection(entity);
-            } else {
-                entity.pulse();
             }
         }
+
+        ForkJoinPool.commonPool().invoke(new ForkPulse((ArrayList<GlowEntity>) allEntities, 0, allEntities.size() - 1));
 
         updateBlocksInActiveChunks();
         // why update blocks before Players or Entities? if there is a specific reason we should
@@ -608,7 +611,10 @@ public class GlowWorld implements World {
     }
 
     private void pulsePlayers(List<GlowPlayer> players) {
-        players.stream().filter(Objects::nonNull).forEach(GlowEntity::pulse);
+        //players.stream().filter(Objects::nonNull).forEach(GlowEntity::pulse);
+        ArrayList<GlowPlayer> list = players.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+        ForkPulsePlayers pulse = new ForkPulsePlayers(list, 0, list.size() - 1);
+        ForkJoinPool.commonPool().invoke(pulse);
     }
 
     private void handleSleepAndWake(List<GlowPlayer> players) {
