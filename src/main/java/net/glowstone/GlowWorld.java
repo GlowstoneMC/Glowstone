@@ -1,24 +1,6 @@
 package net.glowstone;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.flowpowered.network.Message;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -31,20 +13,9 @@ import net.glowstone.chunk.ChunkSection;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.chunk.GlowChunkSnapshot.EmptySnapshot;
-import net.glowstone.constants.GlowBiome;
-import net.glowstone.constants.GlowBiomeClimate;
-import net.glowstone.constants.GlowEffect;
-import net.glowstone.constants.GlowParticle;
-import net.glowstone.constants.GlowSound;
-import net.glowstone.constants.GlowTree;
+import net.glowstone.constants.*;
 import net.glowstone.data.CommandFunction;
-import net.glowstone.entity.CustomEntityDescriptor;
-import net.glowstone.entity.EntityManager;
-import net.glowstone.entity.EntityRegistry;
-import net.glowstone.entity.GlowEntity;
-import net.glowstone.entity.GlowLightningStrike;
-import net.glowstone.entity.GlowLivingEntity;
-import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.*;
 import net.glowstone.entity.objects.GlowFallingBlock;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.physics.BoundingBox;
@@ -55,37 +26,19 @@ import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
+import net.glowstone.parallelism.ForkPulse;
+import net.glowstone.parallelism.ForkPulsePlayers;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import net.glowstone.util.RayUtil;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.collection.ConcurrentSet;
 import net.glowstone.util.config.WorldConfig;
-import org.bukkit.BlockChangeDelegate;
-import org.bukkit.Chunk;
-import org.bukkit.ChunkSnapshot;
-import org.bukkit.Difficulty;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.TreeType;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -93,12 +46,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.event.world.SpawnChangeEvent;
-import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.event.world.WorldInitEvent;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldSaveEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
+import org.bukkit.event.world.*;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -111,6 +59,17 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NonNls;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A class which represents the in-game world.
@@ -464,7 +423,7 @@ public class GlowWorld implements World {
      */
     public void pulse() {
         List<GlowEntity> allEntities = new ArrayList<>(entityManager.getAll());
-        List<GlowPlayer> players = new LinkedList<>();
+        List<GlowPlayer> players = new ArrayList<>();
 
         activeChunksSet.clear();
 
@@ -478,10 +437,11 @@ public class GlowWorld implements World {
             if (entity instanceof GlowPlayer) {
                 players.add((GlowPlayer) entity);
                 updateActiveChunkCollection(entity);
-            } else {
-                entity.pulse();
             }
         }
+
+        ForkJoinPool.commonPool().invoke(new ForkPulse((ArrayList<GlowEntity>) allEntities,
+                0, allEntities.size() - 1));
 
         updateBlocksInActiveChunks();
         // why update blocks before Players or Entities? if there is a specific reason we should
@@ -608,7 +568,9 @@ public class GlowWorld implements World {
     }
 
     private void pulsePlayers(List<GlowPlayer> players) {
-        players.stream().filter(Objects::nonNull).forEach(GlowEntity::pulse);
+        ArrayList<GlowPlayer> list = players.stream().filter(
+                Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+        ForkJoinPool.commonPool().invoke(new ForkPulsePlayers(list, 0, list.size() - 1));
     }
 
     private void handleSleepAndWake(List<GlowPlayer> players) {
