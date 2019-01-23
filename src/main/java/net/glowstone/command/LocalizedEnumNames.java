@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import lombok.Getter;
 import net.glowstone.command.minecraft.GlowVanillaCommand;
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  * This is used to map an enum or multiton type to and from the localized names of its instances,
  * which have their own properties file. These properties files are unusual in that the localized
  * names are keys, not values; the values are integers that are mapped to instances of T using
- * {@code integerResolver}.
+ * {@code keyResolver}.
  *
  * @param <T> the type being mapped to and from strings.
  */
@@ -35,41 +37,70 @@ public class LocalizedEnumNames<T> {
 
     private static final Locale ALSO_ACCEPT_LOCALE = Locale.ENGLISH;
     private final LoadingCache<Locale, Entry> cache;
-    private final IntFunction<? extends T> integerResolver;
+    private final Function<String, ? extends T> keyResolver;
     private final String unknownKey;
     private final String commaSeparatedNamesKey;
     private final String baseName;
+    private final boolean reversedMap; // localized names are values, not keys
 
     /**
      * Creates an instance.
-     *
      * @param integerResolver used to map integers in the resource bundle to instances of T
      * @param unknownKey a key in strings.properties that provides a name for unknown future values
      * @param commaSeparatedNamesKey a key in strings.properties that provides canonical names for
-     *                               auto-complete, separated by commas
+     *                               auto-complete, separated by commas; or null to build one using
+     *                               all values of the resource bundle
      * @param baseName the base name of the resource bundle
+     * @param reversedMap true if the keys and values are reversed
      */
     public LocalizedEnumNames(IntFunction<? extends T> integerResolver, @NonNls String unknownKey,
-            @NonNls String commaSeparatedNamesKey, @NonNls String baseName) {
-        this.integerResolver = integerResolver;
+            @Nullable @NonNls String commaSeparatedNamesKey, @NonNls String baseName,
+            boolean reversedMap) {
+        this((Function<String, ? extends T>) (key -> integerResolver.apply(Integer.decode(key))),
+                unknownKey, commaSeparatedNamesKey, baseName, reversedMap);
+    }
+
+    /**
+     * Creates an instance.
+     * @param keyResolver used to map keys in the resource bundle to instances of T
+     * @param unknownKey a key in strings.properties that provides a name for unknown future values
+     * @param commaSeparatedNamesKey a key in strings.properties that provides canonical names for
+     *                               auto-complete, separated by commas; or null to build one using
+     *                               all values of the resource bundle
+     * @param baseName the base name of the resource bundle
+     * @param reversedMap true if the keys and values are reversed
+     */
+    public LocalizedEnumNames(Function<String, ? extends T> keyResolver, @NonNls String unknownKey,
+            @Nullable @NonNls String commaSeparatedNamesKey, @NonNls String baseName,
+            boolean reversedMap) {
+        this.keyResolver = keyResolver;
         this.unknownKey = unknownKey;
         this.commaSeparatedNamesKey = commaSeparatedNamesKey;
         this.baseName = baseName;
+        this.reversedMap = reversedMap;
         cache = CacheBuilder.newBuilder()
                 .maximumSize(GlowVanillaCommand.CACHE_SIZE)
                 .build(CacheLoader.from(Entry::new));
     }
 
-    private static <T> ImmutableSortedMap<String, T> resourceBundleToMap(Locale locale,
-            @NonNls String baseName, IntFunction<? extends T> integerResolver) {
+    private <T> ImmutableSortedMap<String, T> resourceBundleToMap(Locale locale,
+            @NonNls String baseName, Function<String, T> integerResolver) {
         Collator caseInsensitive = Collator.getInstance(locale);
         caseInsensitive.setStrength(Collator.PRIMARY);
         ImmutableSortedMap.Builder<String, T> nameToModeBuilder
                 = new ImmutableSortedMap.Builder<String, T>(caseInsensitive);
         ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale);
         for (String key : bundle.keySet()) {
-            nameToModeBuilder.put(key,
-                    integerResolver.apply(Integer.decode(bundle.getString(key))));
+            String outKey;
+            String outValue;
+            if (reversedMap) {
+                outKey = bundle.getString(key);
+                outValue = key;
+            } else {
+                outKey = key;
+                outValue = bundle.getString(key);
+            }
+            nameToModeBuilder.put(outKey, (T) keyResolver.apply(outValue));
         }
         return nameToModeBuilder.build();
     }
@@ -139,7 +170,7 @@ public class LocalizedEnumNames<T> {
 
     private final class Entry {
 
-        private final ImmutableSortedMap<String, T> nameToModeMap;
+        private final ImmutableSortedMap<String, ? extends T> nameToModeMap;
         private final ImmutableMap<T, String> modeToNameMap;
         private final String unknown;
         @Getter
@@ -160,14 +191,21 @@ public class LocalizedEnumNames<T> {
             ResourceBundle strings
                     = ResourceBundle.getBundle("strings", locale); // NON-NLS
             unknown = new LocalizedStringImpl(unknownKey, strings).get();
-            nameToModeMap = resourceBundleToMap(locale, baseName, integerResolver);
+            nameToModeMap = resourceBundleToMap(locale, baseName, keyResolver);
             ImmutableMap.Builder<T, String> modeToNameBuilder = ImmutableMap.builder();
             ImmutableList.Builder<String> modeAutocompleteListBuilder = ImmutableList.builder();
-            for (String name : new LocalizedStringImpl(commaSeparatedNamesKey, strings)
-                    .get().split(",")) {
-                T mode = nameToModeMap.get(name);
-                modeToNameBuilder.put(mode, name);
-                modeAutocompleteListBuilder.add(name.toLowerCase(locale));
+            if (commaSeparatedNamesKey != null) {
+                for (String name : new LocalizedStringImpl(commaSeparatedNamesKey, strings)
+                        .get().split(",")) {
+                    T mode = nameToModeMap.get(name);
+                    modeToNameBuilder.put(mode, name);
+                    modeAutocompleteListBuilder.add(name.toLowerCase(locale));
+                }
+            } else {
+                for (Map.Entry<String, ? extends T> entry : nameToModeMap.entrySet()) {
+                    modeToNameBuilder.put(entry.getValue(), entry.getKey());
+                    modeAutocompleteListBuilder.add(entry.getKey());
+                }
             }
             if (!ALSO_ACCEPT_LOCALE.equals(locale)) {
                 try {
