@@ -37,7 +37,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public GlowstoneCommand() {
-        super("glowstone", Arrays.asList("gs"));
+        super("glowstone", Arrays.asList("gs")); // NON-NLS
         setPermission("glowstone.debug"); // NON-NLS
     }
 
@@ -47,7 +47,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
-        if (args.length == 0 || args[0].equalsIgnoreCase("about")) {
+        if (args.length == 0 || args[0].equalsIgnoreCase("about")) { // NON-NLS
             ResourceBundle b = commandMessages.getResourceBundle();
             // some info about this Glowstone server
             new LocalizedStringImpl("glowstone.about", b).send(sender);
@@ -71,11 +71,10 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                     threadCount++;
                 }
             }
-            sender.sendMessage(" - " + ChatColor.GOLD + "Threads: " + ChatColor.AQUA + threadCount
-                    + ChatColor.RESET + ".");
+            sendBullet(sender, t, b, "glowstone.about.threads", threadCount);
             return false;
         }
-        if ("help".equalsIgnoreCase(args[0])) {
+        if ("help".equalsIgnoreCase(args[0])) { // NON-NLS
             // some help
             sender.sendMessage(ChatColor.GOLD + "Glowstone command help:");
             sender.sendMessage(helpForSubCommand(label, "about", "Information about this server"));
@@ -91,7 +90,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                     + " to worlds"));
             return false;
         }
-        if ("property".equalsIgnoreCase(args[0])) {
+        if (isPropertySubcommand(args[0])) { // NON-NLS
             if (args.length == 1) {
                 // list all
                 System.getProperties().forEach((key, value) -> sender.sendMessage(
@@ -111,7 +110,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
             }
             return false;
         }
-        if ("vm".equalsIgnoreCase(args[0])) {
+        if ("vm".equalsIgnoreCase(args[0])) { // NON-NLS
             RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
             List<String> arguments = runtimeMxBean.getInputArguments();
             if (arguments.size() == 0) {
@@ -125,7 +124,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
 
             return false;
         }
-        if ("world".equalsIgnoreCase(args[0]) || "worlds".equalsIgnoreCase(args[0])) {
+        if (isWorldSubcommand(args[0])) {  // NON-NLS
             if (args.length == 1) {
                 // list worlds
                 sender.sendMessage(
@@ -185,6 +184,10 @@ public class GlowstoneCommand extends GlowVanillaCommand {
         return false;
     }
 
+    private boolean isWorldSubcommand(String arg) {
+        return "world".equalsIgnoreCase(arg) || "worlds".equalsIgnoreCase(arg); // NON-NLS
+    }
+
     private static void sendBullet(CommandSender sender,
             LocalizedStringImpl template, ResourceBundle resourceBundle, @NonNls String key,
             Object value) {
@@ -194,9 +197,9 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
             throws IllegalArgumentException {
-        Preconditions.checkNotNull(sender, "Sender cannot be null");
-        Preconditions.checkNotNull(args, "Arguments cannot be null");
-        Preconditions.checkNotNull(alias, "Alias cannot be null");
+        Preconditions.checkNotNull(sender, "Sender cannot be null"); // NON-NLS
+        Preconditions.checkNotNull(args, "Arguments cannot be null"); // NON-NLS
+        Preconditions.checkNotNull(alias, "Alias cannot be null"); // NON-NLS
         if (args.length == 0) {
             return Collections.emptyList();
         }
@@ -204,18 +207,21 @@ public class GlowstoneCommand extends GlowVanillaCommand {
             return StringUtil
                     .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
         }
-        if (args.length == 2 && args[0].equalsIgnoreCase("property")) {
+        if (args.length == 2 && isPropertySubcommand(args[0])) {
             return StringUtil
                     .copyPartialMatches(args[1], System.getProperties().stringPropertyNames(),
                             new ArrayList<>(System.getProperties().stringPropertyNames().size()));
         }
-        if (args.length == 2 && (args[0].equalsIgnoreCase("world") || args[0]
-                .equalsIgnoreCase("worlds")) && sender instanceof Player) {
+        if (args.length == 2 && isWorldSubcommand(args[0]) && sender instanceof Player) {
             Collection<String> worlds = getWorldNames();
             return StringUtil
                     .copyPartialMatches(args[1], worlds, new ArrayList<>(worlds.size()));
         }
         return Collections.emptyList();
+    }
+
+    private boolean isPropertySubcommand(String arg) {
+        return "property".equalsIgnoreCase(arg); // NON-NLS
     }
 
     private String helpForSubCommand(String label, String subcommand, String description) {

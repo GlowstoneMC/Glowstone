@@ -76,7 +76,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "300", "2", "300"}), is(false));
         Mockito.verify(opSender)
-            .sendMessage(eq(ChatColor.RED + "Minimum volume value (300) must be between 0 and 1"));
+            .sendMessage(eq(ChatColor.RED + "Minimum volume value (300) must be between 0 and 1."));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "300", "300", "1"}), is(false));
         Mockito.verify(opSender)
-            .sendMessage(eq(ChatColor.RED + "Pitch value (300) must be between 0 and 2"));
+            .sendMessage(eq(ChatColor.RED + "Pitch value (300) must be between 0 and 2."));
     }
 
     @Test
