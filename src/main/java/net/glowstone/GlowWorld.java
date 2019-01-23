@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -55,6 +56,8 @@ import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.message.play.entity.EntityStatusMessage;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
+import net.glowstone.parallelism.ForkPulse;
+import net.glowstone.parallelism.ForkPulsePlayers;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
 import net.glowstone.util.RayUtil;
@@ -464,7 +467,7 @@ public class GlowWorld implements World {
      */
     public void pulse() {
         List<GlowEntity> allEntities = new ArrayList<>(entityManager.getAll());
-        List<GlowPlayer> players = new LinkedList<>();
+        List<GlowPlayer> players = new ArrayList<>();
 
         activeChunksSet.clear();
 
@@ -478,10 +481,11 @@ public class GlowWorld implements World {
             if (entity instanceof GlowPlayer) {
                 players.add((GlowPlayer) entity);
                 updateActiveChunkCollection(entity);
-            } else {
-                entity.pulse();
             }
         }
+
+        ForkJoinPool.commonPool().invoke(new ForkPulse(
+                (ArrayList<GlowEntity>) allEntities, 0, allEntities.size() - 1));
 
         updateBlocksInActiveChunks();
         // why update blocks before Players or Entities? if there is a specific reason we should
@@ -608,7 +612,9 @@ public class GlowWorld implements World {
     }
 
     private void pulsePlayers(List<GlowPlayer> players) {
-        players.stream().filter(Objects::nonNull).forEach(GlowEntity::pulse);
+        ArrayList<GlowPlayer> list = players.stream().filter(Objects::nonNull).
+                collect(Collectors.toCollection(ArrayList::new));
+        ForkJoinPool.commonPool().invoke(new ForkPulsePlayers(list, 0, list.size() - 1));
     }
 
     private void handleSleepAndWake(List<GlowPlayer> players) {
