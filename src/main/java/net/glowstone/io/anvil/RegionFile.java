@@ -98,6 +98,7 @@ public class RegionFile {
 
     private static final byte[] emptySector = new byte[SECTOR_BYTES];
     private final int[] offsets;
+    private final int[] chunkTimestamps;
     private RandomAccessFile file;
     private BitSet sectorsUsed;
     private final AtomicInteger sizeDelta = new AtomicInteger();
@@ -119,6 +120,7 @@ public class RegionFile {
      */
     public RegionFile(File path) throws IOException {
         offsets = new int[SECTOR_INTS];
+        chunkTimestamps = new int[SECTOR_INTS];
 
         sizeDelta.set(0);
 
@@ -173,7 +175,7 @@ public class RegionFile {
         // read offset table and timestamp tables
         file.seek(0);
 
-        ByteBuffer header = ByteBuffer.allocate(SECTOR_BYTES);
+        ByteBuffer header = ByteBuffer.allocate(2 * SECTOR_BYTES);
         while (header.hasRemaining()) {
             if (file.getChannel().read(header) == -1) {
                 throw new EOFException();
@@ -198,6 +200,10 @@ public class RegionFile {
                                 + startSector
                                 + "," + numSectors + " does not fit");
             }
+        }
+
+        for (int i = 0; i < SECTOR_INTS; ++i) {
+            chunkTimestamps[i] = headerAsInts.get();
         }
     }
 
@@ -335,6 +341,7 @@ public class RegionFile {
             sectorsUsed.set(sectorNumber, sectorNumber + sectorsNeeded + 1);
             writeSector(sectorNumber, data, length);
             setOffset(x, z, sectorNumber << 8 | sectorsNeeded);
+            setTimestamp(x, z, (int) (System.currentTimeMillis() / 1000L));
         }
     }
 
@@ -387,6 +394,12 @@ public class RegionFile {
         offsets[x + (z << 5)] = offset;
         file.seek((x + (z << 5)) << 2);
         file.writeInt(offset);
+    }
+
+    private void setTimestamp(int x, int z, int value) throws IOException {
+        chunkTimestamps[x + (z << 5)] = value;
+        file.seek(SECTOR_BYTES + ((x + (z << 5)) << 2));
+        file.writeInt(value);
     }
 
     public void close() throws IOException {
