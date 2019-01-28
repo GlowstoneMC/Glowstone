@@ -22,8 +22,9 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsAddressResolverGroup;
+import io.netty.resolver.dns.SingletonDnsServerAddressStreamProvider;
+import io.netty.util.internal.SocketUtils;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,7 @@ public class HttpClient {
     private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(
         GlowServer.EPOLL ? EpollDatagramChannel.class : GlowServer.KQUEUE
             ? KQueueDatagramChannel.class : NioDatagramChannel.class,
-        DefaultDnsServerAddressStreamProvider.INSTANCE);
+        new SingletonDnsServerAddressStreamProvider(SocketUtils.socketAddress("1.1.1.1", 53)));
 
     /**
      * Opens a URL.
