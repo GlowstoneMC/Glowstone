@@ -1361,7 +1361,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void setSettings(ClientSettings settings) {
         String newLocale = settings.getLocale();
-        if(!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
+        if (!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
             EventFactory.getInstance().callEvent(new PlayerLocaleChangeEvent(this, newLocale));
         }
         forceStream = settings.getViewDistance() != this.settings.getViewDistance()
