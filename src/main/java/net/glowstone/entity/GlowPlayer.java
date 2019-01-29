@@ -175,6 +175,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
@@ -1359,6 +1360,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param settings The settings to set.
      */
     public void setSettings(ClientSettings settings) {
+        String newLocale = settings.getLocale();
+        if(!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
+            EventFactory.getInstance().callEvent(new PlayerLocaleChangeEvent(this, newLocale));
+        }
         forceStream = settings.getViewDistance() != this.settings.getViewDistance()
                 && settings.getViewDistance() + 1 <= server.getViewDistance();
         this.settings = settings;
@@ -2221,7 +2226,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getLocale() {
-        return null;
+        return settings.getLocale();
     }
 
     @Override
