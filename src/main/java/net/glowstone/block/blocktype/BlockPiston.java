@@ -2,7 +2,9 @@ package net.glowstone.block.blocktype;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Getter;
+import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.chunk.GlowChunk;
@@ -14,6 +16,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonBaseMaterial;
 
@@ -94,6 +97,14 @@ public class BlockPiston extends BlockDirectional {
                 }
 
                 blocks.add(block);
+            }
+
+            BlockPistonExtendEvent event = EventFactory.getInstance().callEvent(
+                    new BlockPistonExtendEvent(me, blocks, pistonBlockFace)
+            );
+
+            if (event.isCancelled()) {
+                return;
             }
 
             world.getRawPlayers().stream().filter(player -> player.canSeeChunk(chunkKey))
