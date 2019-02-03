@@ -4,67 +4,69 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 
-public class EnchantCommand extends VanillaCommand {
+public class EnchantCommand extends GlowVanillaCommand {
 
+    @NonNls
+    private static final String PREFIX = NamespacedKey.MINECRAFT + ':';
     private static List<String> VANILLA_IDS = GlowEnchantment.getVanillaIds();
 
     /**
      * Creates the instance for this command.
      */
     public EnchantCommand() {
-        super("enchant",
-            "Adds an enchantment to the currently by a player held item",
-            "/enchant <player> <enchantment ID> [level]",
-            Collections.emptyList());
-        setPermission("minecraft.command.enchant");
+        super("enchant");
+        setPermission("minecraft.command.enchant"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
 
         if (args.length < 3) {
-            sender.sendMessage(ChatColor.RED + "Usage:" + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
         String name = args[0];
-        List<GlowPlayer> players;
+        Stream<GlowPlayer> players;
         if (name.startsWith("@")) {
             CommandTarget target = new CommandTarget(sender, name);
             players = Arrays.stream(target.getMatched(CommandUtils.getLocation(sender)))
                 .filter(GlowPlayer.class::isInstance)
-                .map(GlowPlayer.class::cast)
-                .collect(Collectors.toList());
+                .map(GlowPlayer.class::cast);
         } else {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + " Player '" + name + "' cannot be found");
+                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
-                players = Collections.singletonList(player);
+                players = Collections.singletonList(player).stream();
             }
         }
 
         Enchantment enchantment = GlowEnchantment.parseEnchantment(args[1]);
         if (enchantment == null) {
-            sender.sendMessage(ChatColor.RED + "Enchantment " + args[1] + " is unknown");
+            new LocalizedStringImpl("enchant.unknown", commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, args[1]);
             return false;
         }
 
@@ -72,11 +74,12 @@ public class EnchantCommand extends VanillaCommand {
         try {
             level = Integer.parseInt(args[2]);
         } catch (NumberFormatException exc) {
-            sender.sendMessage(ChatColor.RED + args[2] + " is not a valid integer");
+            commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[2]);
             return false;
         }
-
-        players.stream()
+        LocalizedStringImpl successMessage
+                = new LocalizedStringImpl("enchant.done", commandMessages.getResourceBundle());
+        players
             .filter(player -> player.getItemInHand() != null)
             .filter(player -> player.getItemInHand().getData().getItemType() != Material.AIR)
             .filter(player -> enchantment.canEnchantItem(player.getItemInHand()))
@@ -84,7 +87,7 @@ public class EnchantCommand extends VanillaCommand {
                 ItemStack itemInHand = player.getItemInHand();
                 itemInHand.addUnsafeEnchantment(enchantment, level);
                 player.setItemInHand(itemInHand);
-                sender.sendMessage("Enchanting succeeded");
+                successMessage.send(sender);
             });
         return true;
     }
@@ -95,13 +98,7 @@ public class EnchantCommand extends VanillaCommand {
         if (args == null) {
             return Collections.emptyList();
         } else if (args.length == 2) {
-            String effectName = args[1];
-
-            if (!effectName.startsWith("minecraft:")) {
-                final int colonIndex = effectName.indexOf(':');
-                effectName =
-                    "minecraft:" + effectName.substring(colonIndex == -1 ? 0 : (colonIndex + 1));
-            }
+            String effectName = CommandUtils.toNamespaced(args[1]);
 
             return StringUtil
                 .copyPartialMatches(effectName, VANILLA_IDS, new ArrayList(VANILLA_IDS.size()));

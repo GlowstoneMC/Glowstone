@@ -97,6 +97,7 @@ public final class EntityStorage {
         bind(new EndermiteStore());
         bind(new GhastStore());
         bind(new GuardianStore());
+        bind(new ElderGuardianStore());
         bind(new IronGolemStore());
         bind(new SlimeStore<>(GlowSlime.class, EntityType.SLIME, GlowSlime::new));
         bind(new SlimeStore<>(GlowMagmaCube.class, EntityType.MAGMA_CUBE, GlowMagmaCube::new));
@@ -241,7 +242,7 @@ public final class EntityStorage {
     private static EntityStore<?> find(Class<? extends GlowEntity> clazz, @NonNls String type) {
         EntityStore<?> store = classTable.get(clazz);
         if (store == null) {
-            // todo: maybe try to look up a parent class's store if one isn't found
+            // TODO maybe try to look up a parent class's store if one isn't found
             throw new IllegalArgumentException("Unknown entity type to " + type + ": " + clazz);
         }
         return store;

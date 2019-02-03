@@ -472,6 +472,7 @@ public class GlowInventory implements Inventory {
                     slotItem.setAmount(slotItem.getAmount() - toRemove);
                 } else {
                     toRemove -= slotItem.getAmount();
+                    item.setAmount(0);
                     slot.setItem(new ItemStack(Material.AIR, 0));
                 }
             }

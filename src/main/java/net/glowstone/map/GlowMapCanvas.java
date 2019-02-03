@@ -34,7 +34,7 @@ public final class GlowMapCanvas implements MapCanvas {
      *
      * @param mapView The {@link MapView} to associate with this canvas and render
      * @param player The player to pass to {@link MapRenderer#render(MapView, MapCanvas, Player)}
-     * @return a new, rendered {@link GlowMapCanvas}
+     * @return a new, rendered GlowMapCanvas
      */
     public static GlowMapCanvas createAndRender(MapView mapView, Player player) {
         GlowMapCanvas out = new GlowMapCanvas(mapView);

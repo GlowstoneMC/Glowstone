@@ -539,6 +539,10 @@ public class GlowBlock implements Block {
      * @param newData the new data
      */
     public void applyPhysics(Material oldType, Material newType, byte oldData, byte newData) {
+        if (!world.isInitialized()) {
+            // World is still loading.
+            return;
+        }
         // notify the surrounding blocks that this block has changed
         ItemTable itemTable = ItemTable.instance();
 

@@ -5,27 +5,26 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 
-public class WorldBorderCommand extends VanillaCommand {
+public class WorldBorderCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public WorldBorderCommand() {
         super("worldborder");
-        setUsage("/worldborder <set|center|damage|warning|get|add> ...");
-        setPermission("minecraft.command.worldborder");
+        setPermission("minecraft.command.worldborder"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         if (args[0].equalsIgnoreCase("center")) {
@@ -256,7 +255,7 @@ public class WorldBorderCommand extends VanillaCommand {
                 return false;
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         return false;

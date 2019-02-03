@@ -77,13 +77,13 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.16.22</version>
+      <version>1.18.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.2.4-SNAPSHOT</version>
+      <version>1.2.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.eatthepath</groupId>
@@ -287,7 +287,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <configuration>
           <forceCreation>true</forceCreation>
           <archive>

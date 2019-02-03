@@ -2,7 +2,7 @@ package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;

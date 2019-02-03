@@ -1,7 +1,7 @@
 Glowstone is free software licensed under the MIT license:
 
 ------------------------------------------------------------------------------
-Glowstone Copyright (C) 2015-2018 The Glowstone Project.
+Glowstone Copyright (C) 2015-2019 The Glowstone Project.
 Glowstone Copyright (C) 2011-2014 Tad Hardesty.
 Lightstone Copyright (C) 2010-2011 Graham Edgecombe.
 

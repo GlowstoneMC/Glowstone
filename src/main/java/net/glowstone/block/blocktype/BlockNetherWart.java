@@ -4,6 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.NetherWartsState;
 import org.bukkit.block.BlockFace;
@@ -17,7 +18,7 @@ public class BlockNetherWart extends BlockNeedsAttached {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ())
             == Material.SOUL_SAND.getId();
     }

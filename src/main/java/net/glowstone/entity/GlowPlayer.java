@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
@@ -32,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -50,6 +52,7 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
+import net.glowstone.command.LocalizedEnumNames;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
@@ -64,6 +67,7 @@ import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.passive.GlowFishingHook;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
@@ -169,11 +173,15 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -209,6 +217,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public static final int SELF_ID = 0;
     public static final int HOOK_MAX_DISTANCE = 32;
+
+    private static final Achievement[] ACHIEVEMENT_VALUES = Achievement.values();
+    private static final LocalizedEnumNames<Achievement> ACHIEVEMENT_NAMES
+            = new LocalizedEnumNames<Achievement>(
+                    (Function<String, Achievement>) Achievement::valueOf,
+            "glowstone.achievement.unknown",
+            null, "maps/achievement", true);
 
     /**
      * The network session attached to this player.
@@ -1345,6 +1360,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param settings The settings to set.
      */
     public void setSettings(ClientSettings settings) {
+        String newLocale = settings.getLocale();
+        if (!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
+            EventFactory.getInstance().callEvent(new PlayerLocaleChangeEvent(this, newLocale));
+        }
         forceStream = settings.getViewDistance() != this.settings.getViewDistance()
                 && settings.getViewDistance() + 1 <= server.getViewDistance();
         this.settings = settings;
@@ -1677,8 +1696,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setLevel(int level) {
-        this.level = Math.max(level, 0);
-        sendExperience();
+        int newLevel = Math.max(level, 0);
+
+        if (newLevel != this.level) {
+            EventFactory.getInstance().callEvent(
+                    new PlayerLevelChangeEvent(this, this.level, newLevel));
+            this.level = newLevel;
+            sendExperience();
+        }
     }
 
     @Override
@@ -1689,6 +1714,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void giveExp(int xp) {
+        PlayerExpChangeEvent event = EventFactory.getInstance()
+            .callEvent(new PlayerExpChangeEvent(this, xp));
+        xp = event.getAmount();
         totalExperience += xp;
 
         // gradually award levels based on xp points
@@ -1697,7 +1725,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             exp += value;
             if (exp >= 1) {
                 exp -= 1;
-                value = 1.0f / getExpToLevel(++level);
+                setLevel(level + 1);
+                value = 1.0f / getExpToLevel(level);
             }
         }
         sendExperience();
@@ -2197,7 +2226,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getLocale() {
-        return null;
+        return settings.getLocale();
     }
 
     @Override
@@ -2863,10 +2892,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendAchievement(achievement, true);
 
         if (server.getAnnounceAchievements()) {
-            // todo: make message fancier (hover, translated names)
-            server.broadcastMessage(
-                    getName() + " has just earned the achievement " + ChatColor.GREEN + "["
-                            + GlowAchievement.getFancyName(achievement) + "]");
+            // todo: make message fancier (hover)
+            server.broadcastMessage(GlowstoneMessages.Achievement.EARNED.get(
+                    getName(), ACHIEVEMENT_NAMES.valueToName(Locale.getDefault(), achievement)));
         }
         return true;
     }
@@ -2922,34 +2950,55 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void incrementStatistic(Statistic statistic) {
-        stats.add(statistic, 1);
+        incrementStatistic(statistic, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, int amount) {
-        stats.add(statistic, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, amount);
+        }
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, Material material) {
-        stats.add(statistic, material, 1);
+        incrementStatistic(statistic, material, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, Material material, int amount) {
-        stats.add(statistic, material, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount, material));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, material, amount);
+        }
     }
 
     @Override
     public void incrementStatistic(Statistic statistic,
             EntityType entityType) throws IllegalArgumentException {
-        stats.add(statistic, entityType, 1);
+        incrementStatistic(statistic, entityType, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, EntityType entityType,
             int amount) throws IllegalArgumentException {
-        stats.add(statistic, entityType, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount, entityType));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, entityType, amount);
+        }
     }
 
     @Override
@@ -3376,13 +3425,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param clicked the enchanting-table slot used: 0 for top, 1 for middle, 2 for bottom
      */
     public void enchanted(int clicked) {
-        level -= clicked + 1;
-        if (level < 0) {
-            level = 0;
-            exp = 0;
-            totalExperience = 0;
+        int newLevel = level - clicked - 1;
+        if (newLevel < 0) {
+            setExp(0);
+            setTotalExperience(0);
         }
-        setLevel(level);
+
+        setLevel(newLevel);
         setXpSeed(ThreadLocalRandom.current().nextInt()); //TODO use entity's random instance?
     }
 

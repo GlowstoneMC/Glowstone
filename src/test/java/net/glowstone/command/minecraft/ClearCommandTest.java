@@ -48,7 +48,7 @@ public class ClearCommandTest extends CommandTestWithFakePlayers<ClearCommand> {
         assertTrue(command.execute(opSender, "label",
                 new String[]{"ChuckNorris", "minecraft:diamond_axe", "-1", "0"}));
         Mockito.verify(opSender)
-                .sendMessage(eq("ChuckNorris has 2 items that match the criteria"));
+                .sendMessage(eq("ChuckNorris has 2 items that match the criteria."));
         checkInventory(inventory, 96, itemTypeMatcher(Material.DIRT));
         checkInventory(inventory, 2, itemTypeMatcher(Material.DIAMOND_AXE));
         checkInventory(inventory, 1, itemTypeMatcher(Material.DIAMOND));

@@ -2,12 +2,15 @@ package net.glowstone.command.minecraft;
 
 import java.util.Collections;
 import java.util.List;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
+import org.jetbrains.annotations.NonNls;
 
-public class SaveToggleCommand extends VanillaCommand {
+public class SaveToggleCommand extends GlowVanillaCommand {
 
+    @NonNls
+    private final String doneMessageKey;
     private final boolean on;
 
     /**
@@ -16,22 +19,23 @@ public class SaveToggleCommand extends VanillaCommand {
      * @param on true for {@code /save-on}; false for {@code /save-off}
      */
     public SaveToggleCommand(boolean on) {
-        super(on ? "save-on" : "save-off",
-            on ? "Enables automatic server saves." : "Disables automatic sever saves.",
-            on ? "/save-on" : "/save-off", Collections.emptyList());
+        super(on ? "save-on" : "save-off");
         this.on = on;
-        setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off");
+        doneMessageKey = on ? "save-on.done" : "save-off.done";
+        setPermission(on ? "minecraft.command.save-on" : "minecraft.command.save-off"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         for (World world : sender.getServer().getWorlds()) {
             world.setAutoSave(on);
         }
-        sender.sendMessage("Turned " + (on ? "on" : "off") + " world auto-saving");
+        new LocalizedStringImpl(doneMessageKey, commandMessages.getResourceBundle())
+                .send(sender);
         return true;
     }
 

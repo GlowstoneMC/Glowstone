@@ -976,6 +976,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             playerDamageTick = ticksLived;
             if (health - amount <= 0) {
                 killer = determinePlayer(source);
+                if (killer != null) {
+                    killer.incrementStatistic(Statistic.KILL_ENTITY, getType());
+                }
             }
         }
 

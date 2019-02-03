@@ -2,8 +2,8 @@ package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
@@ -67,7 +67,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
     public void testExecuteFailsUnknownTarget() {
         assertThat(command.execute(opSender, "label",
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Player 'player' cannot be found"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "Player 'player' cannot be found."));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "300", "2", "300"}), is(false));
         Mockito.verify(opSender)
-            .sendMessage(eq(ChatColor.RED + "Minimum volume value (300) must be between 0 and 1"));
+            .sendMessage(eq(ChatColor.RED + "Minimum volume value (300) must be between 0 and 1."));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
         assertThat(command.execute(opSender, "label",
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "300", "2", "volume"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'volume' is not a valid number"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'volume' is not a valid number."));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "300", "300", "1"}), is(false));
         Mockito.verify(opSender)
-            .sendMessage(eq(ChatColor.RED + "Pitch value (300) must be between 0 and 2"));
+            .sendMessage(eq(ChatColor.RED + "Pitch value (300) must be between 0 and 2."));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
         assertThat(command.execute(opSender, "label",
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "300", "pitch", "1"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'pitch' is not a valid number"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'pitch' is not a valid number."));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
         assertThat(command.execute(opSender, "label",
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "0", "volume", "1", "1"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'volume' is not a valid number"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "'volume' is not a valid number."));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
         assertThat(command.execute(opSender, "label",
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "0", "0",
                 "Y", "30", "1", "1"}), is(false));
-        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The position (0,0,Y) is invalid"));
+        Mockito.verify(opSender).sendMessage(eq(ChatColor.RED + "The position (0,0,Y) is invalid."));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
             new String[]{"minecraft:entity.parrot.imitate.wither", "master", "player1", "100000",
                 "100000", "100000"}), is(false));
         Mockito.verify(opSender)
-            .sendMessage(eq(ChatColor.RED + "player1 is too far away to hear the sound"));
+            .sendMessage(eq(ChatColor.RED + "player1 is too far away to hear the sound."));
     }
 
     @Test
@@ -244,8 +244,7 @@ public class PlaySoundCommandTest extends CommandTestWithFakePlayers<PlaySoundCo
                 "minecraft:entity.parrot.imitate.wither.skeleton")));
         assertThat(command.tabComplete(opSender, "alias",
             new String[]{"chuckNorris:entity.parrot.imitate.wither"}),
-            is(ImmutableList.of("minecraft:entity.parrot.imitate.wither",
-                "minecraft:entity.parrot.imitate.wither.skeleton")));
+                is(Collections.emptyList()));
 
         assertThat(command.tabComplete(opSender, "alias", new String[]{"sound", "hosti"}),
             is(ImmutableList.of("hostile")));

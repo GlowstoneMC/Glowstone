@@ -17,7 +17,7 @@ import org.bukkit.material.MaterialData;
 public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Material type = block.getRelative(BlockFace.DOWN).getType();
         return (type == Material.GRASS_BLOCK || type == Material.DIRT || type == Material.FARMLAND)
                 && block.getRelative(BlockFace.UP).getType() == Material.AIR;

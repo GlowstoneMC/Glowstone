@@ -3,10 +3,11 @@ package net.glowstone.i18n;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-class LocalizedStringImpl implements LocalizedString {
-    private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings");
+public class LocalizedStringImpl implements LocalizedString {
+    private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings"); // NON-NLS
 
     @Getter
     private final String key;
@@ -18,7 +19,7 @@ class LocalizedStringImpl implements LocalizedString {
         this.resourceBundle = STRINGS;
     }
 
-    LocalizedStringImpl(String key, ResourceBundle resourceBundle) {
+    public LocalizedStringImpl(String key, ResourceBundle resourceBundle) {
         this.key = key;
         this.resourceBundle = resourceBundle;
     }
@@ -38,4 +39,8 @@ class LocalizedStringImpl implements LocalizedString {
         recipient.sendMessage(get(args));
     }
 
+    @Override
+    public void sendInColor(ChatColor color, CommandSender recipient, Object... args) {
+        recipient.sendMessage(color.toString() + get(args));
+    }
 }

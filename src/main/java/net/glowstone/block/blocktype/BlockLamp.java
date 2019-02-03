@@ -26,7 +26,8 @@ public class BlockLamp extends BlockType {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
         boolean powered = me.isBlockPowered() || me.isBlockIndirectlyPowered();
 
         if (powered != (me.getType() == Material.REDSTONE_LAMP_ON)) {

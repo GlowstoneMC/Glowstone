@@ -1,7 +1,5 @@
 package net.glowstone.command;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.block.state.BlockStateData;
@@ -11,6 +9,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -39,7 +38,7 @@ public class CommandUtils {
      * @return the block state for {@code type} and {@code state}, or null if none match
      */
     public static BlockStateData readState(CommandSender sender, Material type, String state) {
-        if (isNumeric(state)) {
+        if (NumberUtils.isNumber(state)) {
             return new BlockStateData(Byte.parseByte(state));
         }
         try {
@@ -48,53 +47,6 @@ public class CommandUtils {
             sender.sendMessage(ChatColor.RED + e.getMessage());
             return null;
         }
-    }
-
-    /**
-     * Tests whether the given string is a number.
-     *
-     * @param argument a string
-     * @return true if the string is a number; false otherwise
-     */
-    public static boolean isNumeric(String argument) {
-        return NumberUtils.isNumber(argument);
-    }
-
-    /**
-     * Converts an array of entities to a readable string.
-     *
-     * @param entities one or more entities
-     * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
-     */
-    public static String prettyPrint(Entity[] entities) {
-        List<String> names = new ArrayList<>();
-        for (int i = 0; i < entities.length; i++) {
-            Entity entity = entities[i];
-            String name = getName(entity);
-            names.add(name);
-        }
-        return prettyPrint(names.toArray(new String[names.size()]));
-    }
-
-    /**
-     * Converts an array of strings describing list items to a single string listing them.
-     *
-     * @param strings one or more strings
-     * @return a list of the strings, formatted like "a, b and c"
-     */
-    // FIXME: Replace with the function from the Unicode CLDR that handles almost any language
-    public static String prettyPrint(String[] strings) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < strings.length; i++) {
-            String string = strings[i];
-            if (i == strings.length - 1 && strings.length > 1) {
-                builder.append(" and ");
-            } else if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(string);
-        }
-        return builder.toString();
     }
 
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
@@ -282,5 +234,15 @@ public class CommandUtils {
 
     public static boolean isPhysical(CommandSender sender) {
         return sender instanceof Entity || sender instanceof BlockCommandSender;
+    }
+
+    /**
+     * Returns the input unchanged if it already has a namespace prefix; otherwise, adds the
+     * {@link org.bukkit.NamespacedKey#MINECRAFT} prefix.
+     * @param input a namespaced-key name, or prefix of one, that may or may not be namespaced
+     * @return the input, namespaced
+     */
+    public static String toNamespaced(String input) {
+        return input.indexOf(':') >= 0 ? input : NamespacedKey.MINECRAFT + ':' + input;
     }
 }

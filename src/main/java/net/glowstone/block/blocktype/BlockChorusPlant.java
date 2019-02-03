@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,7 +24,7 @@ public class BlockChorusPlant extends BlockType {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         boolean sideSupport = false;
         for (BlockFace face : SIDES) {
             Block relative = block.getRelative(face);

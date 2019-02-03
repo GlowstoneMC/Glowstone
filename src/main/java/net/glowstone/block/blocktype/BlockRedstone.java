@@ -85,7 +85,7 @@ public class BlockRedstone extends BlockNeedsAttached {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         if (block.getRelative(BlockFace.DOWN).getType().isSolid()) {
             return true;
         }
@@ -128,8 +128,8 @@ public class BlockRedstone extends BlockNeedsAttached {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        super.updatePhysics(me);
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
 
         for (BlockFace face : ADJACENT) {
             GlowBlock target = me.getRelative(face);

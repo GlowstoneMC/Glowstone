@@ -35,7 +35,8 @@ public class BlockFalling extends BlockType {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
         Block below = me.getRelative(BlockFace.DOWN);
         if (!supportingBlock(below.getType())) {
             //Simulates real Minecraft delay on block fall

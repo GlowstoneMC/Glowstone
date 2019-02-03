@@ -59,13 +59,14 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         FlowerType[] flowers = FlowerForestPopulator.FLOWERS;
                         Material flower = flowers[ThreadLocalRandom.current()
                             .nextInt(flowers.length)].getType();
-                        if (ItemTable.instance().getBlock(flower).canPlaceAt(b, BlockFace.DOWN)) {
+                        if (ItemTable.instance().getBlock(flower)
+                                .canPlaceAt(null, b, BlockFace.DOWN)) {
                             blockState.setType(flower);
                         }
                     } else {
                         Material tallGrass = Material.LONG_GRASS;
                         if (ItemTable.instance().getBlock(tallGrass)
-                            .canPlaceAt(b, BlockFace.DOWN)) {
+                            .canPlaceAt(null, b, BlockFace.DOWN)) {
                             // grow tall grass if possible
                             blockState.setType(tallGrass);
                             blockState.setData(new LongGrass(GrassSpecies.NORMAL));

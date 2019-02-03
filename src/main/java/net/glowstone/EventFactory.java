@@ -63,6 +63,9 @@ public class EventFactory {
      * @return the called event
      */
     public <T extends Event> T callEvent(T event) {
+        if (event.getHandlers().getRegisteredListeners().length == 0) {
+            return event;
+        }
         Server server = ServerProvider.getServer();
         if (event.isAsynchronous()) {
             server.getPluginManager().callEvent(event);
