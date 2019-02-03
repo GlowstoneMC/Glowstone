@@ -1,12 +1,12 @@
 version: 2
 defaults: &defaults
     docker:
-        - image: shipilev/openjdk-shenandoah:8
+        - image: circleci/openjdk:8-jdk
 
     working_directory: ~/glowstone
 
     environment:
-        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC -XX:+AggressiveHeap
+        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC -XX:+AggressiveHeap -XX:+UseStringDeduplication
 jobs:
     build:
         <<: *defaults
