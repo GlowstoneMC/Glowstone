@@ -6,7 +6,7 @@ defaults: &defaults
     working_directory: ~/glowstone
 
     environment:
-        MAVEN_OPTS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC
+        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC
 jobs:
     build:
         <<: *defaults
