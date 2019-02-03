@@ -20,33 +20,30 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NonNls;
 
 public class ClearCommand extends GlowVanillaCommand {
-
-    @NonNls
-    private static final String VANILLA_ITEM_PREFIX = "minecraft:";
 
     /**
      * Creates the instance for this command.
      */
     public ClearCommand() {
-        super("clear", Collections.emptyList());
+        super("clear");
         setPermission("minecraft.command.clear"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args, ResourceBundle
-            resourceBundle, CommandMessages messages) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
+        final ResourceBundle resourceBundle = messages.getResourceBundle();
         if (args.length == 0) {
             if ((sender instanceof Player)) {
                 Player player = (Player) sender;
                 return clearAll(sender, player, null, -1, -1, resourceBundle);
             } else {
-                sendUsageMessage(sender, resourceBundle);
+                sendUsageMessage(sender, messages);
                 return false;
             }
         }
@@ -76,10 +73,7 @@ public class ClearCommand extends GlowVanillaCommand {
             return false;
         }
         if (args.length >= 2) {
-            String itemName = args[1];
-            if (!itemName.startsWith(VANILLA_ITEM_PREFIX)) {
-                itemName = VANILLA_ITEM_PREFIX + itemName;
-            }
+            String itemName = CommandUtils.toNamespaced(args[1]);
             Material type = ItemIds.getItem(itemName);
             if (type == null) {
                 new LocalizedStringImpl("clear.no-such-item", resourceBundle)
@@ -92,8 +86,7 @@ public class ClearCommand extends GlowVanillaCommand {
                 try {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
-                    new LocalizedStringImpl("clear.nan", resourceBundle)
-                            .sendInColor(ChatColor.RED, sender, dataString);
+                    messages.getNotANumber().sendInColor(ChatColor.RED, sender, dataString);
                     return false;
                 }
                 if (data < -1) {
@@ -107,8 +100,7 @@ public class ClearCommand extends GlowVanillaCommand {
                     try {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
-                        new LocalizedStringImpl("clear.nan", resourceBundle)
-                                .sendInColor(ChatColor.RED, sender, amountString);
+                        messages.getNotANumber().sendInColor(ChatColor.RED, sender, amountString);
                         return false;
                     }
                     if (amount < -1) {

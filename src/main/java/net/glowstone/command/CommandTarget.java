@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NonNls;
 
 public class CommandTarget {
 
@@ -27,6 +28,7 @@ public class CommandTarget {
      */
     @Getter
     private final SelectorType selector;
+    @NonNls
     private final HashMap<String, SelectorValue> arguments;
 
     /**

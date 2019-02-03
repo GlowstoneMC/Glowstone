@@ -17,16 +17,17 @@ public class BanCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public BanCommand() {
-        super("ban", Collections.emptyList());
+        super("ban");
         setPermission("minecraft.command.ban"); // NON-NLS
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args,
-            ResourceBundle resourceBundle, CommandMessages commandMessages) {
+            CommandMessages commandMessages) {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
+        final ResourceBundle resourceBundle = commandMessages.getResourceBundle();
         if (args.length > 0) {
             String name = args[0];
             GlowServer server = (GlowServer) ServerProvider.getServer();
@@ -58,7 +59,7 @@ public class BanCommand extends GlowVanillaCommand {
             // todo: asynchronous command callbacks?
             return true;
         }
-        sendUsageMessage(sender, resourceBundle);
+        sendUsageMessage(sender, commandMessages);
         return false;
     }
 

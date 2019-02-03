@@ -41,6 +41,14 @@ public interface ConsoleMessages {
                 "console.classpath.load-failed", Level.WARNING
         );
 
+        interface Command {
+            LoggableLocalizedString DEOP_FAILED = new LoggableLocalizedStringImpl(
+                    "console.command.deop.failed", Level.SEVERE);
+
+            LoggableLocalizedString OP_FAILED = new LoggableLocalizedStringImpl(
+                    "console.command.op.failed", Level.SEVERE);
+        }
+
         interface Function {
             LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.function.load-failed", Level.SEVERE
@@ -84,6 +92,9 @@ public interface ConsoleMessages {
         interface I18n {
             LoggableLocalizedString COMMAND = new LoggableLocalizedStringImpl(
                     "console.i18n-failed.command", Level.SEVERE);
+
+            LoggableLocalizedString DIFFICULTY = new LoggableLocalizedStringImpl(
+                    "console.i18n-failed.difficulty", Level.SEVERE);
 
             LoggableLocalizedString GAME_MODE = new LoggableLocalizedStringImpl(
                     "console.i18n-failed.gamemode", Level.SEVERE);

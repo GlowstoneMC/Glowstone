@@ -3,13 +3,15 @@ package net.glowstone.command.minecraft;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.LocalizedString;
@@ -42,7 +44,15 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     @NonNls
     private static final String NO_SUCH_PLAYER = "_generic.no-such-player";
     @NonNls
+    private static final String NAN = "_generic.nan";
+    @NonNls
+    private static final String OFFLINE = "_generic.offline";
+    @NonNls
+    private static final String NO_MATCHES = "_generic.no-matches";
+    @NonNls
     private static final String USAGE_IS = "_generic.usage";
+    @NonNls
+    private static final String NOT_PHYSICAL = "_generic.not-physical";
     private static final ResourceBundle SERVER_LOCALE_BUNDLE
             = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
     public static final long CACHE_SIZE = 50;
@@ -59,16 +69,28 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         String name = getName();
         String permissionKey = name + PERMISSION_SUFFIX;
         return new CommandMessages(
+                bundle,
                 bundle.getString(name + DESCRIPTION_SUFFIX),
                 bundle.getString(name + USAGE_SUFFIX),
                 bundle.getString(
-                        bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION),
-                new LocalizedStringImpl(NO_SUCH_PLAYER, bundle),
-                new LocalizedStringImpl(JOINER, bundle).get());
+                        bundle.containsKey(permissionKey) ? permissionKey : DEFAULT_PERMISSION));
     }
 
     /**
-     * Creates an instance, using the command's name to look up the description etc.
+     * Creates an instance with no aliases (i.e. only callable by one name), using the name to look
+     * up the localized description etc.
+     *
+     * @param name the command name
+     */
+    public GlowVanillaCommand(@NonNls String name) {
+        this(name, Collections.emptyList());
+    }
+
+    /**
+     * Creates an instance, using the command's name to look up the localized description etc.
+     *
+     * @param name the command name
+     * @param aliases synonyms to accept for the command
      */
     public GlowVanillaCommand(@NonNls String name, @NonNls List<String> aliases) {
         super(name, "", "", aliases);
@@ -82,8 +104,8 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     /**
      * {@inheritDoc}
-     * <p>This delegates to {@link #execute(CommandSender, String, String[], ResourceBundle,
-     * CommandMessages)}. If the command sender is a player, then the description and usage message
+     * <p>This delegates to {@link #execute(CommandSender, String, String[], CommandMessages)}. If
+     * the command sender is a player, then the description and usage message
      * are for that player's locale; otherwise, the server locale is used.</p>
      */
     @Override
@@ -102,14 +124,12 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             bundle = SERVER_LOCALE_BUNDLE;
         }
         if (localizedMessages == null) {
-            localizedMessages = new CommandMessages(
+            localizedMessages = new CommandMessages(SERVER_LOCALE_BUNDLE,
                     getDescription(),
                     getUsage(),
-                    getPermissionMessage(),
-                    new LocalizedStringImpl(NO_SUCH_PLAYER, SERVER_LOCALE_BUNDLE),
-                    new LocalizedStringImpl("_generic.joiner", SERVER_LOCALE_BUNDLE).get());
+                    getPermissionMessage());
         }
-        return execute(sender, commandLabel, args, bundle, localizedMessages);
+        return execute(sender, commandLabel, args, localizedMessages);
     }
 
     /**
@@ -118,16 +138,18 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
      * @param sender       Source object which is executing this command
      * @param commandLabel The alias of the command used
      * @param args         All arguments passed to the command, split via ' '
-     * @param resourceBundle The {@code commands.properties} resource bundle for the sender's locale
      * @param localizedMessages Object containing the title, description and permission message in
      *                     the sender's locale, or set with setters
      * @return true if the command was successful, otherwise false
      */
     protected abstract boolean execute(CommandSender sender, String commandLabel, String[] args,
-            ResourceBundle resourceBundle, CommandMessages localizedMessages);
+            CommandMessages localizedMessages);
 
     protected static ResourceBundle getBundle(GlowPlayer sender) {
         String locale = sender.getLocale();
+        if (locale == null) {
+            return SERVER_LOCALE_BUNDLE;
+        }
         try {
             return STRING_TO_BUNDLE_CACHE.get(locale);
         } catch (ExecutionException e) {
@@ -154,21 +176,41 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         return false;
     }
 
-    protected void sendUsageMessage(CommandSender sender, ResourceBundle resourceBundle) {
-        new LocalizedStringImpl(USAGE_IS, resourceBundle)
-                .sendInColor(ChatColor.RED, sender, usageMessage);
+    protected void sendUsageMessage(CommandSender sender,
+            CommandMessages commandMessages) {
+        new LocalizedStringImpl(USAGE_IS, commandMessages.getResourceBundle())
+                .sendInColor(ChatColor.RED, sender, commandMessages.getUsageMessage());
     }
 
-    @Data
+    @Getter
+    @RequiredArgsConstructor
     protected static class CommandMessages {
         // Only LocalizedString messages that apply to multiple commands should be in this class.
         // All others are instantiated on demand.
+
+        private final Locale locale;
+        private final ResourceBundle resourceBundle;
 
         private final String description;
         private final String usageMessage;
         private final String permissionMessage;
         private final LocalizedString noSuchPlayer;
+        private final LocalizedString notANumber;
+        private final LocalizedString playerOffline;
+        private final LocalizedString noMatches;
+        private final LocalizedString notPhysical;
         private final String joiner;
+
+        public CommandMessages(ResourceBundle bundle, String description,
+                String usageMessage, String permissionMessage) {
+            this(bundle.getLocale(), bundle, description, usageMessage, permissionMessage,
+                    new LocalizedStringImpl(NO_SUCH_PLAYER, bundle),
+                    new LocalizedStringImpl(NAN, bundle),
+                    new LocalizedStringImpl(OFFLINE, bundle),
+                    new LocalizedStringImpl(NO_MATCHES, bundle),
+                    new LocalizedStringImpl(NOT_PHYSICAL, bundle),
+                    new LocalizedStringImpl(JOINER, bundle).get());
+        }
 
         /**
          * Returns the given items as a comma-separated list. The comma character and surrounding

@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
@@ -32,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -50,6 +52,8 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
+import net.glowstone.command.LocalizedEnumNames;
+import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
@@ -62,6 +66,7 @@ import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.passive.GlowFishingHook;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
@@ -169,6 +174,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
@@ -209,6 +215,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public static final int SELF_ID = 0;
     public static final int HOOK_MAX_DISTANCE = 32;
+
+    private static final Achievement[] ACHIEVEMENT_VALUES = Achievement.values();
+    private static final LocalizedEnumNames<Achievement> ACHIEVEMENT_NAMES
+            = new LocalizedEnumNames<Achievement>(
+                    (Function<String, Achievement>) Achievement::valueOf,
+            "glowstone.achievement.unknown",
+            null, "maps/achievement", true);
 
     /**
      * The network session attached to this player.
@@ -1345,6 +1358,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param settings The settings to set.
      */
     public void setSettings(ClientSettings settings) {
+        String newLocale = settings.getLocale();
+        if (!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
+            EventFactory.getInstance().callEvent(new PlayerLocaleChangeEvent(this, newLocale));
+        }
         forceStream = settings.getViewDistance() != this.settings.getViewDistance()
                 && settings.getViewDistance() + 1 <= server.getViewDistance();
         this.settings = settings;
@@ -2205,7 +2222,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getLocale() {
-        return null;
+        return settings.getLocale();
     }
 
     @Override

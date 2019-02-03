@@ -9,6 +9,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -46,46 +47,6 @@ public class CommandUtils {
             sender.sendMessage(ChatColor.RED + e.getMessage());
             return null;
         }
-    }
-
-    /**
-     * Converts an array of entities to a readable string.
-     *
-     * @param entities one or more entities
-     * @return a list of the entities' names, formatted like "Alice, Bob and Creeper"
-     * @deprecated Use one of the {@code joinList} overloads in
-     * {@link net.glowstone.command.minecraft.GlowVanillaCommand}'s inner class CommandMessages.
-     */
-    @Deprecated
-    public static String prettyPrint(Entity[] entities) {
-        String[] names = new String[entities.length];
-        for (int i = 0; i < entities.length; i++) {
-            names[i] = entities[i].getName();
-        }
-        return prettyPrint(names);
-    }
-
-    /**
-     * Converts an array of strings describing list items to a single string listing them.
-     *
-     * @param strings one or more strings
-     * @return a list of the strings, formatted like "a, b and c"
-     * @deprecated Use one of the {@code joinList} overloads in
-     * {@link net.glowstone.command.minecraft.GlowVanillaCommand}'s inner class CommandMessages.
-     */
-    @Deprecated
-    public static String prettyPrint(String[] strings) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < strings.length; i++) {
-            String string = strings[i];
-            if (i == strings.length - 1 && strings.length > 1) {
-                builder.append(" and ");
-            } else if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(string);
-        }
-        return builder.toString();
     }
 
     // TODO: Move this into the Server class within Glowkit, and implement it with GlowServer.
@@ -273,5 +234,15 @@ public class CommandUtils {
 
     public static boolean isPhysical(CommandSender sender) {
         return sender instanceof Entity || sender instanceof BlockCommandSender;
+    }
+
+    /**
+     * Returns the input unchanged if it already has a namespace prefix; otherwise, adds the
+     * {@link org.bukkit.NamespacedKey#MINECRAFT} prefix.
+     * @param input a namespaced-key name, or prefix of one, that may or may not be namespaced
+     * @return the input, namespaced
+     */
+    public static String toNamespaced(String input) {
+        return input.indexOf(':') >= 0 ? input : NamespacedKey.MINECRAFT + ':' + input;
     }
 }

@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import net.glowstone.command.CommandTarget;
@@ -21,24 +20,25 @@ public class GameModeCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public GameModeCommand() {
-        super("gamemode", Collections.emptyList());
+        super("gamemode");
         setPermission("minecraft.command.gamemode"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args, ResourceBundle bundle,
+    public boolean execute(CommandSender sender, String label, String[] args,
             CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
         if (args.length == 0 || args.length == 1 && !(sender instanceof Player)) {
-            sendUsageMessage(sender, bundle);
+            sendUsageMessage(sender, messages);
             return false;
         }
+        final ResourceBundle bundle = messages.getResourceBundle();
         String gm = args[0];
-        GameMode gamemode = GameModeUtils.build(gm, bundle.getLocale());
+        GameMode gamemode = GameModeUtils.build(gm, messages.getLocale());
         if (gamemode == null) {
-            new LocalizedStringImpl("gamemode.nan", bundle)
+            new LocalizedStringImpl("gamemode.unknown", bundle)
                     .sendInColor(ChatColor.RED, sender, gm);
             return false;
         }
@@ -62,8 +62,7 @@ public class GameModeCommand extends GlowVanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                new LocalizedStringImpl("gamemode.offline", bundle)
-                        .sendInColor(ChatColor.RED, sender, name);
+                messages.getPlayerOffline().sendInColor(ChatColor.RED, sender, name);
             } else {
                 updateGameMode(sender, player, gamemode, bundle);
             }
@@ -78,6 +77,7 @@ public class GameModeCommand extends GlowVanillaCommand {
         if (!sender.equals(who)) {
             new LocalizedStringImpl("gamemode.done", bundle)
                     .send(sender, who.getDisplayName(), gameModeName);
+            bundle = getBundle(who); // switch to target's locale for gamemode.done.to-you
         }
         new LocalizedStringImpl("gamemode.done.to-you", bundle).send(who, gameModeName);
     }

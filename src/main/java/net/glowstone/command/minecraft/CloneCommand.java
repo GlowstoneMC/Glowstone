@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import lombok.Getter;
@@ -80,24 +79,24 @@ public class CloneCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public CloneCommand() {
-        super("clone", Collections.emptyList());
+        super("clone");
         setPermission("minecraft.command.clone"); // NON-NLS
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args,
-            ResourceBundle bundle, CommandMessages messages) {
+            CommandMessages messages) {
         if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
 
         if (args.length < 9) {
-            sendUsageMessage(sender, bundle);
+            sendUsageMessage(sender, messages);
             return false;
         }
-
+        final ResourceBundle bundle = messages.getResourceBundle();
         if (!CommandUtils.isPhysical(sender)) {
-            new LocalizedStringImpl("clone.not-physical", bundle).send(sender);
+            messages.getNotPhysical().send(sender);
             return false;
         }
 
@@ -114,7 +113,7 @@ public class CloneCommand extends GlowVanillaCommand {
 
         // TODO: Investigate what happens when maskMode or cloneMode are invalid (thus, null).
         if (maskMode == null || cloneMode == null) {
-            sendUsageMessage(sender, bundle);
+            sendUsageMessage(sender, messages);
             return false;
         }
 
@@ -157,7 +156,7 @@ public class CloneCommand extends GlowVanillaCommand {
                 break;
 
             default:
-                sendUsageMessage(sender, bundle);
+                sendUsageMessage(sender, messages);
                 return false;
         }
 
@@ -172,7 +171,7 @@ public class CloneCommand extends GlowVanillaCommand {
                 || between(lowCorner.getBlockZ(), highCorner.getBlockZ(), to.getBlockZ());
 
         if (overlaps && !cloneMode.isAllowedToOverlap()) {
-            sendUsageMessage(sender, bundle);
+            sendUsageMessage(sender, messages);
             return false;
         }
 

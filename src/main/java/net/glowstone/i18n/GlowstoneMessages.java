@@ -1,6 +1,10 @@
 package net.glowstone.i18n;
 
 public interface GlowstoneMessages {
+    interface Achievement {
+        LocalizedString EARNED = new LocalizedStringImpl("glowstone.achievement.earned");
+    }
+
     interface Advancement {
         LocalizedString TITLE = new LocalizedStringImpl("glowstone.advancement.title");
     }
@@ -22,11 +26,8 @@ public interface GlowstoneMessages {
             LocalizedString UNKNOWN_COMMAND =
                 new LocalizedStringImpl("glowstone.command.error.unknown-command");
         }
-    }
 
-    interface GameMode {
-        LocalizedString NAMES = new LocalizedStringImpl("glowstone.gamemode.names");
-        LocalizedString UNKNOWN = new LocalizedStringImpl("glowstone.gamemode.unknown");
+        LocalizedString SAY_SERVER = new LocalizedStringImpl("glowstone.command.say.server");
     }
 
     interface Entity {

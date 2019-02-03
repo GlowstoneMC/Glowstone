@@ -6,31 +6,31 @@ import java.util.Collections;
 import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.util.StringUtil;
 
-public class GameRuleCommand extends VanillaCommand {
+public class GameRuleCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public GameRuleCommand() {
-        super("gamerule", "Changes the rules of the server.", "/gamerule [rule] [new value]",
-            Collections.emptyList());
-        setPermission("minecraft.command.gamerule");
+        super("gamerule");
+        setPermission("minecraft.command.gamerule"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         GlowWorld world = CommandUtils.getWorld(sender);
         if (args.length == 0) {
-            sender.sendMessage(CommandUtils.prettyPrint(world.getGameRules()));
+            sender.sendMessage(commandMessages.joinList(world.getGameRules()));
             return true;
         }
         if (args.length == 1) {
@@ -43,14 +43,16 @@ public class GameRuleCommand extends VanillaCommand {
                 sender.sendMessage(gamerule + " = " + value);
                 return true;
             } else {
-                sender.sendMessage(
-                    ChatColor.RED + "No game rule called '" + gamerule + "' is available");
+                new LocalizedStringImpl("gamerule.unknown", commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, gamerule);
                 return false;
             }
         }
         String value = StringUtils.join(args, " ", 1, args.length);
         world.setGameRuleValue(args[0], value);
-        sender.sendMessage("Game rule " + args[0] + " has been updated to " + value);
+        // TODO: Should we use the actual value, in case the type conversion was messy?
+        new LocalizedStringImpl("gamerule.done", commandMessages.getResourceBundle())
+                .send(sender, args[0], value);
         return true;
     }
 

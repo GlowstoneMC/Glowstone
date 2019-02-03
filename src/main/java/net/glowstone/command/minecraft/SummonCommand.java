@@ -19,37 +19,35 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
-public class SummonCommand extends VanillaCommand {
+public class SummonCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public SummonCommand() {
-        super("summon", "Summons an entity.", "/summon <EntityName> [x] [y] [z] [dataTag]",
-            Collections.<String>emptyList());
-        setPermission("minecraft.command.summon");
+        super("summon");
+        setPermission("minecraft.command.summon"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage(
-                "This command can only be executed by a player or via command blocks.");
+            commandMessages.getNotPhysical().send(sender);
             return true;
         }
 
         Location location = CommandUtils.getLocation(sender);
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
         if (args.length >= 4) {
@@ -61,7 +59,7 @@ public class SummonCommand extends VanillaCommand {
         CompoundTag tag = null;
         if (args.length >= 5) {
             String data = String
-                .join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
+                    .join(" ", new ArrayList<>(Arrays.asList(args)).subList(4, args.length));
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
@@ -76,12 +74,12 @@ public class SummonCommand extends VanillaCommand {
         GlowEntity entity;
         if (EntityType.fromName(entityName) != null) {
             entity = (GlowEntity) location.getWorld()
-                .spawnEntity(location, EntityType.fromName(entityName));
+                    .spawnEntity(location, EntityType.fromName(entityName));
         } else {
             Class<? extends GlowEntity> clazz = EntityRegistry.getCustomEntityDescriptor(entityName)
-                .getEntityClass();
+                    .getEntityClass();
             entity = ((GlowWorld) location.getWorld())
-                .spawn(location, clazz, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                    .spawn(location, clazz, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
         if (tag != null) {
             EntityStorage.load(entity, tag);
@@ -100,7 +98,7 @@ public class SummonCommand extends VanillaCommand {
             CustomEntityDescriptor descriptor = EntityRegistry.getCustomEntityDescriptor(type);
             if (!descriptor.isSummonable()) {
                 sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName()
-                    + "' cannot be summoned.");
+                        + "' cannot be summoned.");
                 return false;
             }
             return true;
@@ -108,14 +106,14 @@ public class SummonCommand extends VanillaCommand {
         if (entityType != null && EntityRegistry.getEntity(entityType) == null) {
             if (sender != null) {
                 sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName()
-                    + "' is not implemented yet.");
+                        + "' is not implemented yet.");
             }
             return false;
         } else if (entityType != null && (!entityType.isSpawnable() && !Summonable.class
-            .isAssignableFrom(EntityRegistry.getEntity(entityType)))) {
+                .isAssignableFrom(EntityRegistry.getEntity(entityType)))) {
             if (sender != null) {
                 sender.sendMessage(ChatColor.RED + "The entity '" + entityType.getName()
-                    + "' cannot be summoned.");
+                        + "' cannot be summoned.");
             }
             return false;
         } else if (entityType == null && !EntityRegistry.isCustomEntityRegistered(type)) {
@@ -129,7 +127,7 @@ public class SummonCommand extends VanillaCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         Preconditions.checkNotNull(sender, "Sender cannot be null");
         Preconditions.checkNotNull(args, "Arguments cannot be null");
         Preconditions.checkNotNull(alias, "Alias cannot be null");
@@ -138,7 +136,7 @@ public class SummonCommand extends VanillaCommand {
             ArrayList<String> completion = new ArrayList<>();
             for (EntityType type : EntityType.values()) {
                 if (checkSummon(null, type.getName()) && type.getName().toLowerCase()
-                    .startsWith(arg)) {
+                        .startsWith(arg)) {
                     completion.add(type.getName());
                 }
             }
