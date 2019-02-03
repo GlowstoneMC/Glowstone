@@ -6,7 +6,7 @@ defaults: &defaults
     working_directory: ~/glowstone
 
     environment:
-        MAVEN_OPTS: -Xms64M -Xmx1G -XX:+UseG1GC
+        MAVEN_OPTS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC
 jobs:
     build:
         <<: *defaults
@@ -30,7 +30,7 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -T 1C -B package
+            - run: mvn -B package
 
             - store_test_results:
                 path: target/surefire-reports
@@ -61,9 +61,9 @@ jobs:
             # Ensure we are on the right repo before attempting a deploy
             - run: |
                 if [ "${CIRCLE_PROJECT_USERNAME}" == "GlowstoneMC" ]; then
-                  mvn -T 1C -B -s .circleci/maven.xml source:jar javadoc:jar deploy
+                  mvn 1C -B -s .circleci/maven.xml source:jar javadoc:jar deploy
                 else
-                  mvn -T 1C -B package
+                  mvn 1C -B package
                 fi
 
             - store_test_results:
