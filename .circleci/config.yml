@@ -61,9 +61,9 @@ jobs:
             # Ensure we are on the right repo before attempting a deploy
             - run: |
                 if [ "${CIRCLE_PROJECT_USERNAME}" == "GlowstoneMC" ]; then
-                  mvn 1C -B -s .circleci/maven.xml source:jar javadoc:jar deploy
+                  mvn -B -s .circleci/maven.xml source:jar javadoc:jar deploy
                 else
-                  mvn 1C -B package
+                  mvn -B package
                 fi
 
             - store_test_results:
