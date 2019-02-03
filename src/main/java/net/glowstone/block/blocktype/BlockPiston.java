@@ -103,7 +103,7 @@ public class BlockPiston extends BlockDirectional {
                     new BlockPistonExtendEvent(me, blocks, pistonBlockFace)
             );
 
-            if(event.isCancelled()) {
+            if (event.isCancelled()) {
                 return;
             }
 
