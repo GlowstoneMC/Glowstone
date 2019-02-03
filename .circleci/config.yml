@@ -1,7 +1,4 @@
 version: 2
-machine:
-    environment:
-      _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
 defaults: &defaults
     docker:
         - image: circleci/openjdk:8-jdk
@@ -9,7 +6,7 @@ defaults: &defaults
     working_directory: ~/glowstone
 
     environment:
-        MAVEN_OPTS: -Xmx1024m
+        MAVEN_OPTS: -Xms64M -Xmx1G -XX:+UseG1GC
 jobs:
     build:
         <<: *defaults
