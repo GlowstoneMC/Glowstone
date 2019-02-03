@@ -6,7 +6,7 @@ defaults: &defaults
     working_directory: ~/glowstone
 
     environment:
-        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+AggressiveOpts -XX:+UseStringDeduplication -XX:StringDeduplicationAgeThreshold=1 -XX:+UseG1GC -XX:MaxGCPauseMillis=10000 -XX:G1ReservePercent=0 -XX:MinHeapFreeRatio=0 -XX:MaxHeapFreeRatio=0 -XX:MaxMetaspaceSize=72m -XX:G1HeapWastePercent=0 -XX:G1OldCSetRegionThresholdPercent=100 -XX:G1NewSizePercent=1 -XX:G1MaxNewSizePercent=50 -XX:InitiatingHeapOccupancyPercent=10 -XX:G1MixedGCLiveThresholdPercent=15
+        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+AggressiveOpts -XX:+UseStringDeduplication -XX:StringDeduplicationAgeThreshold=1 -XX:+UseG1GC -XX:MaxGCPauseMillis=10000 -XX:G1ReservePercent=0 -XX:MinHeapFreeRatio=0 -XX:MaxHeapFreeRatio=0 -XX:MaxMetaspaceSize=80m -XX:G1HeapWastePercent=0 -XX:G1OldCSetRegionThresholdPercent=100 -XX:G1NewSizePercent=1 -XX:G1MaxNewSizePercent=50 -XX:InitiatingHeapOccupancyPercent=10 -XX:G1MixedGCLiveThresholdPercent=15
 jobs:
     build:
         <<: *defaults
@@ -23,7 +23,7 @@ jobs:
                 # Fallback to latest cache is an exact match is not found
                 - glowstone-
 
-            - run: mvn -T 1C -B dependency:go-offline
+            - run: mvn -T 1C -B dependency:resolve-plugins dependency:go-offline
 
             - save_cache:
                 paths:
@@ -51,7 +51,7 @@ jobs:
                 # Fallback to latest cache is an exact match is not found
                 - glowstone-
 
-            - run: mvn -T 1C -B dependency:go-offline
+            - run: mvn -T 1C -B dependency:resolve-plugins dependency:go-offline
 
             - save_cache:
                 paths:
