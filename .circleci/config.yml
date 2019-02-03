@@ -6,7 +6,7 @@ defaults: &defaults
     working_directory: ~/glowstone
 
     environment:
-        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC -XX:+UseStringDeduplication
+        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+AggressiveOpts -XX:+UseG1GC -XX:+UseStringDeduplication -XX:G1ReservePercent=1 -XX:MaxGCPauseMillis=1000 -XX:MinHeapFreeRatio=0 -XX:MaxHeapFreeRatio=0 -XX:MaxMetaspaceSize=128m -XX:MaxNewSize=6400000
 jobs:
     build:
         <<: *defaults
