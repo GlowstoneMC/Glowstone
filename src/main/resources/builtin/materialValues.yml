@@ -5,6 +5,8 @@ default:
   flameResistance: -1
   fireResistance: -1
   baseMapColor: 44
+  pistonPushBehavior: MOVE
+  pistonPullBehavior: MOVE
 values:
   # Incomplete:
   # hardness, blastResistance, lightOpacity, flameResistance, fireResistance, baseMapColor
@@ -40,9 +42,13 @@ values:
   SAPLING:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   BEDROCK:
     hardness: -1
     blastResistance: 18000000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   WATER:
     lightOpacity: 3
     hardness: 100
@@ -138,6 +144,8 @@ values:
     lightOpacity: 1
     hardness: 4
     blastResistance: 20
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   LONG_GRASS:
     hardness: 0
     lightOpacity: 0
