@@ -1,15 +1,19 @@
 package net.glowstone.block.blocktype;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.ItemTable;
+import net.glowstone.block.PistonMoveBehavior;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockActionMessage;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -89,7 +93,13 @@ public class BlockPiston extends BlockDirectional {
                     break;
                 }
 
-                // TODO: handle non-pushable blocks.
+                PistonMoveBehavior pushBehavior = ((GlowBlock) block).getMaterialValues().getPistonPushBehavior();
+                if (pushBehavior == PistonMoveBehavior.BREAK) {
+                    break;
+                }
+                if (pushBehavior == PistonMoveBehavior.DONT_MOVE) {
+                    return;
+                }
 
                 // if block after push limit is not air then do not push
                 if (i == PUSH_LIMIT + 1) {
@@ -115,6 +125,18 @@ public class BlockPiston extends BlockDirectional {
             // extended state for piston base
             me.setData((byte) (me.getData() | 0x08));
 
+            GlowBlock lastBlock = me.getRelative(pistonBlockFace, blocks.size() + 1);
+            if (lastBlock.getMaterialValues().getPistonPushBehavior() == PistonMoveBehavior.BREAK) {
+                // breakNaturally causes client desync, so we have to do it manually
+                Collection<ItemStack> drops = ItemTable.instance().getBlock(lastBlock.getType()).getMinedDrops(lastBlock);
+                Location location = lastBlock.getLocation();
+
+                setType(lastBlock, 0, 0);
+
+                drops.stream().forEach(stack -> lastBlock.getWorld().dropItemNaturally(location, stack));
+            }
+
+            // TODO Apply physics so gravity-affected stuff falls properly
             for (int i = blocks.size() - 1; i >= 0; i--) {
                 Block block = blocks.get(i);
 
@@ -148,8 +170,14 @@ public class BlockPiston extends BlockDirectional {
                 return;
             }
 
-            setType(relativeBlock, block.getTypeId(), block.getData());
-            setType(block, 0, 0);
+            PistonMoveBehavior pullBehavior = ((GlowBlock) block).getMaterialValues().getPistonPullBehavior();
+            if (pullBehavior == PistonMoveBehavior.MOVE) {
+                // TODO Apply physics so gravity-affected stuff falls properly
+                setType(relativeBlock, block.getTypeId(), block.getData());
+                setType(block, 0, 0);
+            } else {
+                relativeBlock.setTypeIdAndData(0, (byte) 0, true);
+            }
 
             return;
         }
