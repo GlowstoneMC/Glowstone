@@ -1,12 +1,12 @@
 version: 2
 defaults: &defaults
-    docker:
-        - image: circleci/openjdk:8-jdk
+    machine:
+        image: circleci/classic:201711-01
 
     working_directory: ~/glowstone
 
     environment:
-        JAVA_TOOL_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+AggressiveOpts -XX:+UseStringDeduplication -XX:StringDeduplicationAgeThreshold=2 -XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -XX:G1ReservePercent=10 -XX:MinHeapFreeRatio=0 -XX:MaxHeapFreeRatio=5 -XX:MaxMetaspaceSize=87m -XX:G1HeapWastePercent=0 -XX:G1OldCSetRegionThresholdPercent=100 -XX:G1NewSizePercent=0 -XX:G1MaxNewSizePercent=50 -XX:InitiatingHeapOccupancyPercent=10 -XX:G1MixedGCLiveThresholdPercent=15
+        JAVA_TOOL_OPTIONS: -Xmx1024m -XX:+AggressiveOpts -XX:+UseG1GC
 jobs:
     build:
         <<: *defaults
@@ -30,7 +30,7 @@ jobs:
                     - ~/.m2
                 key: glowstone-{{ checksum "pom.xml" }}
 
-            - run: mvn -B package
+            - run: mvn -T 1C -B package
 
             - store_test_results:
                 path: target/surefire-reports
@@ -61,9 +61,9 @@ jobs:
             # Ensure we are on the right repo before attempting a deploy
             - run: |
                 if [ "${CIRCLE_PROJECT_USERNAME}" == "GlowstoneMC" ]; then
-                  mvn -B -s .circleci/maven.xml source:jar javadoc:jar deploy
+                  mvn -T 1C -B -s .circleci/maven.xml source:jar javadoc:jar deploy
                 else
-                  mvn -B package
+                  mvn -T 1C -B package
                 fi
 
             - store_test_results:
