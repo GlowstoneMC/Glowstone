@@ -659,29 +659,29 @@ public class GlowChunk implements Chunk {
         return heightMap[z * WIDTH + x] & 0xff;
     }
 
-    public float getRegionalDifficulty() {
-        final float moonPhase = world.getMoonPhase();
+    public double getRegionalDifficulty() {
+        final double moonPhase = world.getMoonPhase();
         final long worldTime = world.getFullTime();
         final Difficulty worldDifficulty = world.getDifficulty();
 
-        float totalTimeFactor;
+        double totalTimeFactor;
         if (worldTime > (21 * TickUtil.TICKS_PER_HOUR)) {
-            totalTimeFactor = 0.25f;
+            totalTimeFactor = 0.25;
         } else if (worldTime < TickUtil.TICKS_PER_HOUR) {
             totalTimeFactor = 0;
         } else {
-            totalTimeFactor = (float) (worldTime - TickUtil.TICKS_PER_HOUR) / 5760000;
+            totalTimeFactor =  (worldTime - TickUtil.TICKS_PER_HOUR) / 5760000d;
         }
 
-        float chunkFactor;
+        double chunkFactor;
         if (inhabitedTime > (50 * TickUtil.TICKS_PER_HOUR)) {
             chunkFactor = 1;
         } else {
-            chunkFactor = (float) inhabitedTime / 3600000;
+            chunkFactor = inhabitedTime / 3600000d;
         }
 
         if (worldDifficulty != Difficulty.HARD) {
-            chunkFactor *= (3f / 4f);
+            chunkFactor *= 3d / 4d;
         }
 
         if (moonPhase / 4 > totalTimeFactor) {
@@ -694,7 +694,7 @@ public class GlowChunk implements Chunk {
             chunkFactor /= 2;
         }
 
-        float regionalDifficulty = 0.75f + totalTimeFactor + chunkFactor;
+        double regionalDifficulty = 0.75 + totalTimeFactor + chunkFactor;
 
         if (worldDifficulty == Difficulty.NORMAL) {
             regionalDifficulty *= 2;
@@ -706,15 +706,15 @@ public class GlowChunk implements Chunk {
         return regionalDifficulty;
     }
 
-    public float getClampedRegionalDifficulty() {
-        final float rd = getRegionalDifficulty();
+    public double getClampedRegionalDifficulty() {
+        final double rd = getRegionalDifficulty();
 
         if (rd < 2.0) {
-            return 0.0f;
+            return 0;
         } else if (rd > 4.0) {
-            return 1.0f;
+            return 1;
         } else {
-            return (rd - 2.0f) / 2.0f;
+            return (rd - 2) / 2;
         }
     }
 

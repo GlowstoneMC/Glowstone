@@ -748,21 +748,21 @@ public class GlowWorld implements World {
         return RayUtil.getExposure(location, entity.getLocation());
     }
 
-    public float getMoonPhase() {
+    public double getMoonPhase() {
         // https://minecraft.gamepedia.com/Moon#Phases
         double actualPhase = Math.floor((double) fullTime / TickUtil.TICKS_PER_DAY) % 8;
 
         if (actualPhase >= 0 && actualPhase < 1) {
-            return 1.0f;
+            return 1.0;
         } else if ((actualPhase >= 1 && actualPhase < 2) || (actualPhase >= 7 && actualPhase < 8)) {
-            return 0.75f;
+            return 0.75;
         } else if ((actualPhase >= 2 && actualPhase < 3) || (actualPhase >= 6 && actualPhase < 7)) {
-            return 0.50f;
+            return 0.50;
         } else if ((actualPhase >= 3 && actualPhase < 4) || (actualPhase >= 5 && actualPhase < 6)) {
-            return 0.25f;
+            return 0.25;
         }
 
-        return 0f;
+        return 0;
     }
 
     public Collection<GlowPlayer> getRawPlayers() {
