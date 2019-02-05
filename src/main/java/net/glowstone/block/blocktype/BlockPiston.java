@@ -3,21 +3,22 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
+import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.PistonMoveBehavior;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.BlockActionMessage;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -25,6 +26,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonBaseMaterial;
 
 public class BlockPiston extends BlockDirectional {
+    @AllArgsConstructor
+    private static class BlockInfo {
+        @Getter
+        @Setter
+        private GlowBlock block;
+
+        @Getter
+        @Setter
+        private BlockFace ignoredFace;
+    }
 
     private static final int PUSH_LIMIT = 12;
     /**
@@ -81,36 +92,38 @@ public class BlockPiston extends BlockDirectional {
         GlowWorld world = me.getWorld();
 
         if (me.isBlockIndirectlyPowered() && !isPistonExtended(me)) {
-            List<Block> blocks = new ArrayList<>();
+            List<Block> blocksToMove = new ArrayList<>();
+            List<Block> blocksToBreak = new ArrayList<>();
 
-            // get all blocks to be pushed by piston
-            // add 2 to push limit to compensate for i starting at 1 and also to get the block after
-            // the push limit
-            for (int i = 1; i < PUSH_LIMIT + 2; i++) {
-                Block block = me.getRelative(pistonBlockFace, i);
+            boolean allowMovement = addBlock(me, pistonBlockFace,
+                new BlockInfo(me.getRelative(pistonBlockFace), pistonBlockFace.getOppositeFace()),
+                blocksToMove, blocksToBreak);
 
-                if (block.getType() == Material.AIR) {
-                    break;
+            blocksToMove.sort((a, b) -> {
+                switch (pistonBlockFace) {
+                    case NORTH:
+                        return a.getZ() - b.getZ();
+                    case SOUTH:
+                        return b.getZ() - a.getZ();
+                    case EAST:
+                        return b.getX() - a.getX();
+                    case WEST:
+                        return a.getX() - b.getX();
+                    case UP:
+                        return b.getY() - a.getY();
+                    case DOWN:
+                        return a.getY() - b.getY();
                 }
 
-                PistonMoveBehavior pushBehavior = ((GlowBlock) block).getMaterialValues().getPistonPushBehavior();
-                if (pushBehavior == PistonMoveBehavior.BREAK) {
-                    break;
-                }
-                if (pushBehavior == PistonMoveBehavior.DONT_MOVE) {
-                    return;
-                }
+                return 0;
+            });
 
-                // if block after push limit is not air then do not push
-                if (i == PUSH_LIMIT + 1) {
-                    return;
-                }
-
-                blocks.add(block);
+            if (!allowMovement) {
+                return;
             }
 
             BlockPistonExtendEvent event = EventFactory.getInstance().callEvent(
-                    new BlockPistonExtendEvent(me, blocks, pistonBlockFace)
+                    new BlockPistonExtendEvent(me, blocksToMove, pistonBlockFace)
             );
 
             if (event.isCancelled()) {
@@ -125,22 +138,15 @@ public class BlockPiston extends BlockDirectional {
             // extended state for piston base
             me.setData((byte) (me.getData() | 0x08));
 
-            GlowBlock lastBlock = me.getRelative(pistonBlockFace, blocks.size() + 1);
-            if (lastBlock.getMaterialValues().getPistonPushBehavior() == PistonMoveBehavior.BREAK) {
-                // breakNaturally causes client desync, so we have to do it manually
-                Collection<ItemStack> drops = ItemTable.instance().getBlock(lastBlock.getType()).getMinedDrops(lastBlock);
-                Location location = lastBlock.getLocation();
-
-                setType(lastBlock, 0, 0);
-
-                drops.stream().forEach(stack -> lastBlock.getWorld().dropItemNaturally(location, stack));
+            for (Block block : blocksToBreak) {
+                breakBlock((GlowBlock) block);
             }
 
-            // TODO Apply physics so gravity-affected stuff falls properly
-            for (int i = blocks.size() - 1; i >= 0; i--) {
-                Block block = blocks.get(i);
-
+            for (Block block : blocksToMove) {
                 setType(block.getRelative(pistonBlockFace), block.getTypeId(), block.getData());
+
+                // Need to do this to remove pulled blocks
+                setType(block, 0, 0);
             }
 
             // set piston head block when extended
@@ -162,21 +168,45 @@ public class BlockPiston extends BlockDirectional {
         setType(me, me.getTypeId(), me.getData() & ~0x08);
 
         if (sticky) {
-            Block block = me.getRelative(pistonBlockFace, 2);
-            Block relativeBlock = me.getRelative(pistonBlockFace);
+            List<Block> blocksToMove = new ArrayList<>();
+            List<Block> blocksToBreak = new ArrayList<>();
+            boolean allowMovement = addBlock(me, pistonBlockFace.getOppositeFace(),
+                new BlockInfo(me.getRelative(pistonBlockFace, 2), pistonBlockFace.getOppositeFace()),
+                blocksToMove, blocksToBreak);
 
-            if (block.isEmpty()) {
-                relativeBlock.setTypeIdAndData(0, (byte) 0, true);
+            if (!allowMovement) {
+                setType(me.getRelative(pistonBlockFace), 0, 0);
                 return;
             }
 
-            PistonMoveBehavior pullBehavior = ((GlowBlock) block).getMaterialValues().getPistonPullBehavior();
-            if (pullBehavior == PistonMoveBehavior.MOVE) {
-                // TODO Apply physics so gravity-affected stuff falls properly
-                setType(relativeBlock, block.getTypeId(), block.getData());
+            blocksToMove.sort((a, b) -> {
+                switch (pistonBlockFace) {
+                    case NORTH:
+                        return b.getZ() - a.getZ();
+                    case SOUTH:
+                        return a.getZ() - b.getZ();
+                    case EAST:
+                        return a.getX() - b.getX();
+                    case WEST:
+                        return b.getX() - a.getX();
+                    case UP:
+                        return a.getY() - b.getY();
+                    case DOWN:
+                        return b.getY() - a.getY();
+                }
+
+                return 0;
+            });
+
+            for (Block block : blocksToBreak) {
+                breakBlock((GlowBlock) block);
+            }
+
+            for (Block block : blocksToMove) {
+                setType(block.getRelative(pistonBlockFace.getOppositeFace()), block.getTypeId(), block.getData());
+
+                // Need to do this to remove pulled blocks
                 setType(block, 0, 0);
-            } else {
-                relativeBlock.setTypeIdAndData(0, (byte) 0, true);
             }
 
             return;
@@ -184,6 +214,92 @@ public class BlockPiston extends BlockDirectional {
 
         // remove piston head after retracting
         setType(me.getRelative(pistonBlockFace), 0, 0);
+    }
+
+    // FIXME Remove this
+    private static Logger logger = Logger.getLogger(BlockPiston.class.getName());
+
+    private static final BlockFace[] ADJACENT_FACES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+
+    private boolean addBlock(GlowBlock piston, BlockFace movementDirection,
+                             BlockInfo blockInfo, List<Block> blocksToMove, List<Block> blocksToBreak) {
+
+        GlowBlock block = blockInfo.getBlock();
+        BlockFace ignoredFace = blockInfo.getIgnoredFace();
+        boolean isPushing = (movementDirection == ignoredFace.getOppositeFace());
+        MaterialValueManager.ValueCollection materialValues = block.getMaterialValues();
+        PistonMoveBehavior moveBehavior =
+            isPushing ? materialValues.getPistonPushBehavior() : materialValues.getPistonPullBehavior();
+
+        if (block.isEmpty()) {
+            return true;
+        }
+
+        if (blocksToMove.size() >= PUSH_LIMIT) {
+            return false;
+        }
+
+        if (isPushing) {
+            switch (moveBehavior) {
+                case MOVE:
+                    blocksToMove.add(block);
+                    break;
+                case BREAK:
+                    blocksToBreak.add(block);
+                    return true;
+                case DONT_MOVE:
+                    return false;
+            }
+        } else {
+            switch (moveBehavior) {
+                case MOVE:
+                    blocksToMove.add(block);
+                    break;
+                case BREAK:
+                case DONT_MOVE:
+                    return true;
+            }
+        }
+
+        if (block.getType() == Material.SLIME_BLOCK) {
+            boolean allowMovement = true;
+            for (BlockFace face : ADJACENT_FACES) {
+                GlowBlock nextBlock = block.getRelative(face);
+
+                if (nextBlock.getLocation().equals(piston.getLocation())) {
+                    continue;
+                }
+
+                if (face == ignoredFace || blocksToMove.contains(nextBlock)) {
+                    continue;
+                }
+
+                allowMovement = addBlock(piston, movementDirection,
+                    new BlockInfo(block.getRelative(face), face.getOppositeFace()), blocksToMove, blocksToBreak);
+
+                if (!allowMovement) {
+                    break;
+                }
+            }
+            return allowMovement;
+        } else if(movementDirection != ignoredFace) {
+            GlowBlock nextBlock = block.getRelative(movementDirection);
+            if (nextBlock.getLocation().equals(piston.getLocation())) {
+                return false;
+            }
+
+            return addBlock(piston, movementDirection,
+                new BlockInfo(nextBlock, movementDirection.getOppositeFace()), blocksToMove, blocksToBreak);
+        } else {
+            return true;
+        }
+    }
+
+    private void breakBlock(GlowBlock block) {
+        Collection<ItemStack> drops = ItemTable.instance().getBlock(block.getType()).getMinedDrops(block);
+        Location location = block.getLocation();
+        setType(block, 0, 0);
+        drops.stream().forEach((stack) -> block.getWorld().dropItemNaturally(location, stack));
     }
 
     private boolean isPistonExtended(Block block) {
