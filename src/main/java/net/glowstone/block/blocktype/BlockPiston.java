@@ -17,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonBaseMaterial;
 
@@ -128,6 +129,22 @@ public class BlockPiston extends BlockDirectional {
         }
 
         if (!isPistonExtended(me)) {
+            return;
+        }
+
+        List<Block> blocksToMove = new ArrayList<>();
+        if (sticky) {
+            Block blockToMove = me.getRelative(pistonBlockFace, 2);
+            if (!blockToMove.isEmpty()) {
+                blocksToMove.add(blockToMove);
+            }
+        }
+
+        BlockPistonRetractEvent event = EventFactory.getInstance().callEvent(
+                new BlockPistonRetractEvent(me, blocksToMove, pistonBlockFace)
+        );
+
+        if (event.isCancelled()) {
             return;
         }
 
