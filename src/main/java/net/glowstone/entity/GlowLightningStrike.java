@@ -125,10 +125,12 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
                         PigZapEvent event = new PigZapEvent(pig, this, zombie);
                         if (EventFactory.getInstance().callEvent(event).isCancelled()) {
                             zombie.remove();
+                        } else {
+                            // Only the custom name is copied, all other attributes are overwritten
+                            zombie.setCustomName(pig.getCustomName());
+                            pig.remove();
+                            world.spawn(location, zombie, CreatureSpawnEvent.SpawnReason.LIGHTNING);
                         }
-                        pig.remove();
-                        world.spawn(location, zombie, CreatureSpawnEvent.SpawnReason.LIGHTNING);
-                        
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }

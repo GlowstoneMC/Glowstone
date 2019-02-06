@@ -1430,13 +1430,10 @@ public class GlowWorld implements World {
                 entity.remove();
             } else {
                 List<Message> spawnMessage = entity.createSpawnMessage();
-                final GlowEntity finalEntity = entity;
-                getRawPlayers().stream().filter(player -> player.canSeeEntity(finalEntity))
+                getRawPlayers().stream().filter(player -> player.canSeeEntity(entity))
                     .forEach(player -> player.getSession().sendAll(spawnMessage
                         .toArray(new Message[spawnMessage.size()])));
             }
-        } catch (NoSuchMethodError | IllegalAccessError e) {
-            GlowServer.logger.log(Level.WARNING, "Invalid entity spawn: ", e);
         } catch (Throwable t) {
             GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", t);
         }
