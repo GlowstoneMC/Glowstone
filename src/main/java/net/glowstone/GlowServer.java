@@ -2129,11 +2129,6 @@ public class GlowServer implements Server {
     }
 
     @Override
-    public int broadcastMessage(String message) {
-        return broadcast(message, BROADCAST_CHANNEL_USERS);
-    }
-
-    @Override
     public int broadcast(String message, String permission) {
         int count = 0;
         Set<CommandSender> sent = new HashSet<>();
@@ -2154,13 +2149,20 @@ public class GlowServer implements Server {
     }
 
     @Override
-    public void broadcast(BaseComponent component) {
+    public int broadcastMessage(String message) {
+        return broadcast(message, BROADCAST_CHANNEL_USERS);
+    }
 
+    @Override
+    public void broadcast(BaseComponent component) {
+        broadcastMessage(component.toLegacyText());
     }
 
     @Override
     public void broadcast(BaseComponent... components) {
-
+        for (BaseComponent component : components) {
+            broadcast(component);
+        }
     }
 
     /**
