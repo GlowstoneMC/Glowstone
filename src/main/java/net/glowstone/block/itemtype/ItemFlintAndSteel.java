@@ -1,5 +1,7 @@
 package net.glowstone.block.itemtype;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
@@ -15,8 +17,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemFlintAndSteel extends ItemTool {
 
