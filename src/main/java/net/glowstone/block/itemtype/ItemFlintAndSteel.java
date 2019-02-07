@@ -6,12 +6,17 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemFlintAndSteel extends ItemTool {
 
@@ -41,11 +46,15 @@ public class ItemFlintAndSteel extends ItemTool {
         if (face == BlockFace.UP || face == BlockFace.DOWN) {
             target = target.getRelative(face);
             int limit = 0;
+            List<Block> blocks = new ArrayList<>();
             while (target.getType() == Material.AIR && limit < 23) {
                 target.setType(Material.PORTAL);
+                blocks.add(target);
                 target = target.getRelative(face);
                 limit++;
             }
+            EventFactory.getInstance().callEvent(new PortalCreateEvent(
+                blocks, target.getWorld(), PortalCreateEvent.CreateReason.FIRE));
         }
     }
 
