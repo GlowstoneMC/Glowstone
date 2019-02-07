@@ -55,7 +55,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
 
             block.setData((byte) (block.getData() | 0x4));
             if (block.getWorld().getEnvironment() != Environment.THE_END) {
-                searchForCompletedPortal(player, block);
+                searchForCompletedEnderPortal(player, block);
             }
             return true;
         }
@@ -65,13 +65,13 @@ public class BlockEnderPortalFrame extends BlockDropless {
     /**
      * Checks for a completed portal at all relevant positions.
      */
-    private void searchForCompletedPortal(GlowPlayer player, GlowBlock changed) {
+    private void searchForCompletedEnderPortal(GlowPlayer player, GlowBlock changed) {
         for (int i = 0; i < 4; i++) {
             for (int j = -1; j <= 1; j++) {
                 GlowBlock center = changed.getRelative(SIDES[i], 2)
                     .getRelative(SIDES[(i + 1) % 4], j);
-                if (isCompletedPortal(center)) {
-                    createPortal(player, center);
+                if (isCompletedEnderPortal(center)) {
+                    createEnderPortal(player, center);
                     return;
                 }
             }
@@ -81,7 +81,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
     /**
      * Check whether there is a completed portal with the specified center.
      */
-    private boolean isCompletedPortal(GlowBlock center) {
+    private boolean isCompletedEnderPortal(GlowBlock center) {
         for (int i = 0; i < 4; i++) {
             for (int j = -1; j <= 1; j++) {
                 GlowBlock block = center.getRelative(SIDES[i], 2)
@@ -98,7 +98,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
     /**
      * Spawn the portal and call the {@link EntityCreatePortalEvent}.
      */
-    private void createPortal(GlowPlayer player, GlowBlock center) {
+    private void createEnderPortal(GlowPlayer player, GlowBlock center) {
         List<BlockState> blocks = new ArrayList<>(9);
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
