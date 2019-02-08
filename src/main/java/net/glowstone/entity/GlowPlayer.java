@@ -820,6 +820,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void pulse() {
         super.pulse();
+        incrementStatistic(Statistic.TIME_SINCE_DEATH);
 
         if (usageItem != null) {
             if (usageItem.equals(getItemInHand())) { //todo: implement offhand
@@ -1248,6 +1249,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             active = true;
             deathTicks = 0;
+            setStatistic(Statistic.TIME_SINCE_DEATH, 0);
             spawnAt(event.getRespawnLocation());
         } finally {
             worldLock.writeLock().unlock();
