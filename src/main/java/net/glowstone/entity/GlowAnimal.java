@@ -10,6 +10,7 @@ import net.glowstone.util.InventoryUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -61,6 +62,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
                 // TODO heal
                 // TODO only consume the item if the animal is healed or something else
                 player.getInventory().consumeItem(message.getHand());
+                player.incrementStatistic(Statistic.ANIMALS_BRED);
                 return true;
             }
         }
