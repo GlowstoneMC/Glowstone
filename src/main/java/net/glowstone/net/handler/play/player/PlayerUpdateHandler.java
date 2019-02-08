@@ -3,6 +3,7 @@ package net.glowstone.net.handler.play.player;
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
@@ -121,24 +122,36 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         delta.setY(Math.abs(delta.getY()));
         delta.setZ(Math.abs(delta.getZ()));
         int flatDistance = (int) Math.round(Math.hypot(delta.getX(), delta.getZ()) * 100.0);
-        if (message.isOnGround()) {
-            if (flatDistance > 0) {
-                if (player.isSprinting()) {
-                    player.incrementStatistic(Statistic.SPRINT_ONE_CM, flatDistance);
-                } else if (player.isSneaking()) {
-                    player.incrementStatistic(Statistic.CROUCH_ONE_CM, flatDistance);
-                } else {
-                    player.incrementStatistic(Statistic.WALK_ONE_CM, flatDistance);
+        if (flatDistance <= 0) {
+            return;
+        }
+        if (player.isInsideVehicle()) {
+            final GlowEntity vehicle = player.getVehicle();
+            if (vehicle != null) {
+                switch (vehicle.getType()) {
+                    case BOAT:
+                        player.incrementStatistic(Statistic.BOAT_ONE_CM, flatDistance);
+                        break;
+                    case MINECART:
+                        player.incrementStatistic(Statistic.MINECART_ONE_CM, flatDistance);
+                        break;
                 }
             }
+        } else if (message.isOnGround()) {
+            if (player.isSprinting()) {
+                player.incrementStatistic(Statistic.SPRINT_ONE_CM, flatDistance);
+            } else if (player.isSneaking()) {
+                player.incrementStatistic(Statistic.CROUCH_ONE_CM, flatDistance);
+            } else {
+                player.incrementStatistic(Statistic.WALK_ONE_CM, flatDistance);
+            }
+
         } else if (player.isFlying()) {
-            if (flatDistance > 0) {
-                player.incrementStatistic(Statistic.FLY_ONE_CM, flatDistance);
-            }
+            player.incrementStatistic(Statistic.FLY_ONE_CM, flatDistance);
+
         } else if (player.isInWater()) {
-            if (flatDistance > 0) {
-                player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
-            }
+            player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
+
         }
     }
 }
