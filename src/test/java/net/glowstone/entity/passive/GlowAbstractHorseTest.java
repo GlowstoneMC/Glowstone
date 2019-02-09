@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.EnumSet;
 import java.util.function.Function;
@@ -13,6 +14,26 @@ public abstract class GlowAbstractHorseTest<T extends GlowAbstractHorse> extends
     protected GlowAbstractHorseTest(
             Function<Location, ? extends T> entityCreator) {
         super(entityCreator);
+    }
+
+    @Test
+    @Override
+    public void testSetAgeAdult() {
+        entity.setTamed(true);
+        super.testSetAgeAdult();
+    }
+
+    @Test
+    public void testCannotBreedIfUntamed() {
+        entity.setAge(0);
+        entity.setTamed(false);
+        assertFalse(entity.canBreed());
+    }
+
+    @Test
+    public void testSetAgeAdultCannotBreedTamed() {
+        entity.setTamed(true);
+        testSetAgeAdultCannotBreed();
     }
 
     @Test
