@@ -55,26 +55,16 @@ public class GlowAnimal extends GlowAgeable implements Animals {
                     || InventoryUtil.isEmpty(item)) {
                 return false;
             }
-            Material type = item.getType();
-            boolean successfullyUsed = false;
-            if (getBreedingFoods().contains(type)) {
-                if (canBreed()) {
-                    // TODO set love mode if possible and spawn particles
-                    // and don't set successfullyUsed if love mode is not possible
-                    player.incrementStatistic(Statistic.ANIMALS_BRED);
-                    successfullyUsed = true;
-                } else {
-                    int growth = computeGrowthAmount(type);
-                    if (growth > 0) {
-                        grow(growth);
-                        successfullyUsed = true;
-                    }
-                }
-            }
-            if (successfullyUsed && GameMode.CREATIVE != player.getGameMode()) {
+
+            if (GameMode.CREATIVE != player.getGameMode()
+                    && getBreedingFoods().contains(item.getType())) {
+                // TODO set love mode if possible and spawn particles
+                // TODO heal
+                // TODO only consume the item if the animal is healed or something else
                 player.getInventory().consumeItem(message.getHand());
+                player.incrementStatistic(Statistic.ANIMALS_BRED);
+                return true;
             }
-            return successfullyUsed;
         }
 
         return false;
