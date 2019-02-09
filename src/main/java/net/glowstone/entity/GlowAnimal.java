@@ -59,6 +59,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
             boolean successfullyUsed = false;
             if (getBreedingFoods().contains(type)) {
                 if (canBreed()) {
+                    setInLove(1000); // TODO get the correct duration
                     // TODO set love mode if possible and spawn particles
                     // and don't set successfullyUsed if love mode is not possible
                     player.incrementStatistic(Statistic.ANIMALS_BRED);
