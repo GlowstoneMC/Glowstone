@@ -1,31 +1,53 @@
 package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
+import com.google.common.collect.ImmutableMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowHorseInventory;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.EntityUtils;
+import net.glowstone.util.InventoryUtil;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.HorseInventory;
+import org.bukkit.inventory.ItemStack;
 
 public class GlowHorse extends GlowAbstractHorse implements Horse {
 
+    private static final Map<Material, Double> HEALING_FOODS = ImmutableMap
+            .<Material, Double>builder()
+            .put(Material.SUGAR, 1.0)
+            .put(Material.WHEAT, 2.0)
+            .put(Material.APPLE, 3.0)
+            .put(Material.GOLDEN_CARROT, 4.0)
+            .put(Material.GOLDEN_APPLE, 10.0)
+            .put(Material.HAY_BLOCK, 20.0)
+            .build();
+    private static final Variant[] VARIANTS = Variant.values();
+    private static final Color[] COLORS = Color.values();
+    private static final Style[] STYLES = Style.values();
+
     @Getter
     @Setter
-    private Variant variant = Variant.values()[new Random().nextInt(2)];
+    private Variant variant = VARIANTS[ThreadLocalRandom.current().nextInt(2)];
     @Getter
-    private Color color = Color.values()[new Random().nextInt(6)];
+    private Color color = COLORS[ThreadLocalRandom.current().nextInt(6)];
     @Getter
-    private Style style = Style.values()[new Random().nextInt(3)];
+    private Style style = STYLES[ThreadLocalRandom.current().nextInt(3)];
     @Getter
     @Setter
     private boolean eatingHay;
@@ -41,6 +63,24 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     public GlowHorse(Location location) {
         super(location, EntityType.HORSE, 15);
         setSize(1.4F, 1.6F);
+    }
+
+    @Override
+    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
+        if (getHealth() < getMaxHealth()) {
+            ItemStack item = InventoryUtil
+                    .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
+            Double healingAmount = HEALING_FOODS.get(item.getType());
+            if (healingAmount != null) {
+                if (GameMode.CREATIVE != player.getGameMode()) {
+                    player.getInventory().consumeItem(message.getHand());
+                }
+                EntityUtils.heal(this, healingAmount, EntityRegainHealthEvent.RegainReason.EATING);
+                super.entityInteract(player, message); // or else damaged horses wouldn't breed
+                return true;
+            }
+        }
+        return super.entityInteract(player, message);
     }
 
     @Override
