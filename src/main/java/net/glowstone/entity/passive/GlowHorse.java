@@ -12,10 +12,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.inventory.GlowHorseInventory;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
-import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.EntityUtils;
-import net.glowstone.util.InventoryUtil;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,7 +21,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.HorseInventory;
-import org.bukkit.inventory.ItemStack;
 
 public class GlowHorse extends GlowAbstractHorse implements Horse {
 
@@ -66,21 +62,14 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     }
 
     @Override
-    public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
-        if (getHealth() < getMaxHealth()) {
-            ItemStack item = InventoryUtil
-                    .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
-            Double healingAmount = HEALING_FOODS.get(item.getType());
-            if (healingAmount != null) {
-                if (GameMode.CREATIVE != player.getGameMode()) {
-                    player.getInventory().consumeItem(message.getHand());
-                }
-                EntityUtils.heal(this, healingAmount, EntityRegainHealthEvent.RegainReason.EATING);
-                super.entityInteract(player, message); // or else damaged horses wouldn't breed
-                return true;
-            }
+    protected boolean tryFeed(Material food, GlowPlayer player) {
+        Double healingAmount = HEALING_FOODS.get(food);
+        if (healingAmount != null) {
+            EntityUtils.heal(this, healingAmount, EntityRegainHealthEvent.RegainReason.EATING);
+            super.tryFeed(food, player);
+            return true;
         }
-        return super.entityInteract(player, message);
+        return super.tryFeed(food, player);
     }
 
     @Override
