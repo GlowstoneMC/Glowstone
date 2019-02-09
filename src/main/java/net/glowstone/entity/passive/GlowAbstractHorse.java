@@ -3,7 +3,6 @@ package net.glowstone.entity.passive;
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,7 +106,7 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
 
     @Override
     public Set<Material> getBreedingFoods() {
-        return isTamed() ? BREEDING_FOODS : Collections.emptySet();
+        return BREEDING_FOODS;
     }
 
     @Override
