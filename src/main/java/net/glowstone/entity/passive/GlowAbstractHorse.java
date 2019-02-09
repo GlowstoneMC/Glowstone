@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -34,6 +35,19 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
             .put(Material.GOLDEN_APPLE, TickUtil.minutesToTicks(4))
             .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(3))
             .build();
+
+    @Override
+    protected boolean tryFeed(Material food, GlowPlayer player) {
+        if (isAdult() && !isTamed()) {
+            int taming = computeTamingAmount(food);
+            if (taming > 0) {
+                domestication = Math.max(domestication + taming, maxDomestication);
+                super.tryFeed(food, player);
+                return true;
+            }
+        }
+        return super.tryFeed(food, player);
+    }
 
     @Getter
     @Setter
@@ -107,6 +121,11 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     @Override
     public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
+    }
+
+    protected int computeTamingAmount(Material material) {
+        // TODO
+        return BREEDING_FOODS.contains(material) ? 10 : 0;
     }
 
     @Override

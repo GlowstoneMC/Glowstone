@@ -44,6 +44,32 @@ public class GlowAnimal extends GlowAgeable implements Animals {
         return 120;
     }
 
+    /**
+     * Determines whether this entity can eat an item, if so, applies the effects of eating it.
+     *
+     * @param player the player feeding the entity, for statistical purposes
+     * @param type an item that may be food
+     * @return true if the item should be consumed; false otherwise
+     */
+    protected boolean tryFeed(Material type, GlowPlayer player) {
+        if (getBreedingFoods().contains(type)) {
+            if (canBreed()) {
+                setInLove(1000); // TODO get the correct duration
+                // TODO set love mode if possible and spawn particles
+                // and don't set successfullyUsed if love mode is not possible
+                player.incrementStatistic(Statistic.ANIMALS_BRED);
+                return true;
+            } else {
+                int growth = computeGrowthAmount(type);
+                if (growth > 0) {
+                    grow(growth);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (!super.entityInteract(player, message)
@@ -55,23 +81,7 @@ public class GlowAnimal extends GlowAgeable implements Animals {
                     || InventoryUtil.isEmpty(item)) {
                 return false;
             }
-            Material type = item.getType();
-            boolean successfullyUsed = false;
-            if (getBreedingFoods().contains(type)) {
-                if (canBreed()) {
-                    setInLove(1000); // TODO get the correct duration
-                    // TODO set love mode if possible and spawn particles
-                    // and don't set successfullyUsed if love mode is not possible
-                    player.incrementStatistic(Statistic.ANIMALS_BRED);
-                    successfullyUsed = true;
-                } else {
-                    int growth = computeGrowthAmount(type);
-                    if (growth > 0) {
-                        grow(growth);
-                        successfullyUsed = true;
-                    }
-                }
-            }
+            boolean successfullyUsed = tryFeed(item.getType(), player);
             if (successfullyUsed && GameMode.CREATIVE != player.getGameMode()) {
                 player.getInventory().consumeItem(message.getHand());
             }
