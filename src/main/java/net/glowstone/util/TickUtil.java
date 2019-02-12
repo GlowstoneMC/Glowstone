@@ -13,6 +13,10 @@ public final class TickUtil {
      */
     public static final short TICKS_PER_MINUTE = TICKS_PER_SECOND * 60;
     /**
+     * The lenght in ticks of one hour.
+     */
+    public static final int TICKS_PER_HOUR = TICKS_PER_MINUTE * 60;
+    /**
      * The length in ticks of one Minecraft day.
      */
     public static final int TICKS_PER_DAY = 24000;

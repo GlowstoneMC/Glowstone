@@ -4,6 +4,7 @@ import com.flowpowered.network.MessageHandler;
 import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
+import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.game.PositionRotationMessage;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
 
 public final class PlayerUpdateHandler implements MessageHandler<GlowSession, PlayerUpdateMessage> {
 
@@ -94,6 +96,7 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         if (player.isOnGround() != message.isOnGround()) {
             if (message.isOnGround() && player.getVelocity().getY() > 0) {
                 // jump
+                player.incrementStatistic(Statistic.JUMP);
                 if (player.isSprinting()) {
                     player.addExhaustion(0.2f);
                 } else {
@@ -119,24 +122,38 @@ public final class PlayerUpdateHandler implements MessageHandler<GlowSession, Pl
         delta.setY(Math.abs(delta.getY()));
         delta.setZ(Math.abs(delta.getZ()));
         int flatDistance = (int) Math.round(Math.hypot(delta.getX(), delta.getZ()) * 100.0);
-        if (message.isOnGround()) {
-            if (flatDistance > 0) {
-                if (player.isSprinting()) {
-                    player.incrementStatistic(Statistic.SPRINT_ONE_CM, flatDistance);
-                } else if (player.isSneaking()) {
-                    player.incrementStatistic(Statistic.CROUCH_ONE_CM, flatDistance);
-                } else {
-                    player.incrementStatistic(Statistic.WALK_ONE_CM, flatDistance);
+        if (flatDistance <= 0) {
+            return;
+        }
+        if (player.isInsideVehicle()) {
+            final GlowEntity vehicle = player.getVehicle();
+            if (vehicle != null) {
+                switch (vehicle.getType()) {
+                    case BOAT:
+                        player.incrementStatistic(Statistic.BOAT_ONE_CM, flatDistance);
+                        break;
+                    case MINECART:
+                        player.incrementStatistic(Statistic.MINECART_ONE_CM, flatDistance);
+                        break;
+                    default:
+                        break;
                 }
             }
+        } else if (message.isOnGround()) {
+            if (player.isSprinting()) {
+                player.incrementStatistic(Statistic.SPRINT_ONE_CM, flatDistance);
+            } else if (player.isSneaking()) {
+                player.incrementStatistic(Statistic.CROUCH_ONE_CM, flatDistance);
+            } else {
+                player.incrementStatistic(Statistic.WALK_ONE_CM, flatDistance);
+            }
+
         } else if (player.isFlying()) {
-            if (flatDistance > 0) {
-                player.incrementStatistic(Statistic.FLY_ONE_CM, flatDistance);
-            }
+            player.incrementStatistic(Statistic.FLY_ONE_CM, flatDistance);
+
         } else if (player.isInWater()) {
-            if (flatDistance > 0) {
-                player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
-            }
+            player.incrementStatistic(Statistic.SWIM_ONE_CM, flatDistance);
+
         }
     }
 }
