@@ -707,6 +707,8 @@ values:
     fireResistance: 20
   SLIME_BLOCK:
     hardness: 0
+    pistonPushBehavior: MOVE_STICKY
+    pistonPullBehavior: MOVE_STICKY
   BARRIER:
     hardness: -1
     blastResistance: 18000003

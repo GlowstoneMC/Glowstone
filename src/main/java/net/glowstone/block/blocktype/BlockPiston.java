@@ -3,12 +3,8 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -26,16 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.PistonBaseMaterial;
 
 public class BlockPiston extends BlockDirectional {
-    @AllArgsConstructor
-    private static class BlockInfo {
-        @Getter
-        @Setter
-        private GlowBlock block;
-
-        @Getter
-        @Setter
-        private BlockFace ignoredFace;
-    }
 
     private static final int PUSH_LIMIT = 12;
     /**
@@ -96,7 +82,7 @@ public class BlockPiston extends BlockDirectional {
             List<Block> blocksToBreak = new ArrayList<>();
 
             boolean allowMovement = addBlock(me, pistonBlockFace,
-                new BlockInfo(me.getRelative(pistonBlockFace), pistonBlockFace.getOppositeFace()),
+                me.getRelative(pistonBlockFace), pistonBlockFace.getOppositeFace(),
                 blocksToMove, blocksToBreak);
 
             blocksToMove.sort((a, b) -> {
@@ -171,7 +157,7 @@ public class BlockPiston extends BlockDirectional {
             List<Block> blocksToMove = new ArrayList<>();
             List<Block> blocksToBreak = new ArrayList<>();
             boolean allowMovement = addBlock(me, pistonBlockFace.getOppositeFace(),
-                new BlockInfo(me.getRelative(pistonBlockFace, 2), pistonBlockFace.getOppositeFace()),
+                me.getRelative(pistonBlockFace, 2), pistonBlockFace.getOppositeFace(),
                 blocksToMove, blocksToBreak);
 
             if (!allowMovement) {
@@ -216,16 +202,12 @@ public class BlockPiston extends BlockDirectional {
         setType(me.getRelative(pistonBlockFace), 0, 0);
     }
 
-    // FIXME Remove this
-    private static Logger logger = Logger.getLogger(BlockPiston.class.getName());
-
     private static final BlockFace[] ADJACENT_FACES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
 
     private boolean addBlock(GlowBlock piston, BlockFace movementDirection,
-                             BlockInfo blockInfo, List<Block> blocksToMove, List<Block> blocksToBreak) {
+                             GlowBlock block, BlockFace ignoredFace,
+                             List<Block> blocksToMove, List<Block> blocksToBreak) {
 
-        GlowBlock block = blockInfo.getBlock();
-        BlockFace ignoredFace = blockInfo.getIgnoredFace();
         boolean isPushing = (movementDirection == ignoredFace.getOppositeFace());
         MaterialValueManager.ValueCollection materialValues = block.getMaterialValues();
         PistonMoveBehavior moveBehavior =
@@ -241,6 +223,7 @@ public class BlockPiston extends BlockDirectional {
 
         if (isPushing) {
             switch (moveBehavior) {
+                case MOVE_STICKY:
                 case MOVE:
                     blocksToMove.add(block);
                     break;
@@ -252,6 +235,7 @@ public class BlockPiston extends BlockDirectional {
             }
         } else {
             switch (moveBehavior) {
+                case MOVE_STICKY:
                 case MOVE:
                     blocksToMove.add(block);
                     break;
@@ -261,7 +245,7 @@ public class BlockPiston extends BlockDirectional {
             }
         }
 
-        if (block.getType() == Material.SLIME_BLOCK) {
+        if (moveBehavior == PistonMoveBehavior.MOVE_STICKY) {
             boolean allowMovement = true;
             for (BlockFace face : ADJACENT_FACES) {
                 GlowBlock nextBlock = block.getRelative(face);
@@ -275,7 +259,7 @@ public class BlockPiston extends BlockDirectional {
                 }
 
                 allowMovement = addBlock(piston, movementDirection,
-                    new BlockInfo(block.getRelative(face), face.getOppositeFace()), blocksToMove, blocksToBreak);
+                    block.getRelative(face), face.getOppositeFace(), blocksToMove, blocksToBreak);
 
                 if (!allowMovement) {
                     break;
@@ -289,7 +273,7 @@ public class BlockPiston extends BlockDirectional {
             }
 
             return addBlock(piston, movementDirection,
-                new BlockInfo(nextBlock, movementDirection.getOppositeFace()), blocksToMove, blocksToBreak);
+                nextBlock, movementDirection.getOppositeFace(), blocksToMove, blocksToBreak);
         } else {
             return true;
         }
