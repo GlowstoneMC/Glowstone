@@ -65,6 +65,38 @@ public class BlockPiston extends BlockDirectional {
         // TODO: handle breaking of piston extension
     }
 
+    private void performMovement(BlockFace direction, List<Block> blocksToMove, List<Block> blocksToBreak) {
+        blocksToMove.sort((a, b) -> {
+            switch (direction) {
+                case NORTH:
+                    return a.getZ() - b.getZ();
+                case SOUTH:
+                    return b.getZ() - a.getZ();
+                case EAST:
+                    return b.getX() - a.getX();
+                case WEST:
+                    return a.getX() - b.getX();
+                case UP:
+                    return b.getY() - a.getY();
+                case DOWN:
+                    return a.getY() - b.getY();
+            }
+
+            return 0;
+        });
+
+        for (Block block : blocksToBreak) {
+            breakBlock((GlowBlock) block);
+        }
+
+        for (Block block : blocksToMove) {
+            setType(block.getRelative(direction), block.getTypeId(), block.getData());
+
+            // Need to do this to remove pulled blocks
+            setType(block, 0, 0);
+        }
+    }
+
     @Override
     public void onRedstoneUpdate(GlowBlock me) {
         PistonBaseMaterial piston = (PistonBaseMaterial) me.getState().getData();
@@ -84,25 +116,6 @@ public class BlockPiston extends BlockDirectional {
             boolean allowMovement = addBlock(me, pistonBlockFace,
                 me.getRelative(pistonBlockFace), pistonBlockFace.getOppositeFace(),
                 blocksToMove, blocksToBreak);
-
-            blocksToMove.sort((a, b) -> {
-                switch (pistonBlockFace) {
-                    case NORTH:
-                        return a.getZ() - b.getZ();
-                    case SOUTH:
-                        return b.getZ() - a.getZ();
-                    case EAST:
-                        return b.getX() - a.getX();
-                    case WEST:
-                        return a.getX() - b.getX();
-                    case UP:
-                        return b.getY() - a.getY();
-                    case DOWN:
-                        return a.getY() - b.getY();
-                }
-
-                return 0;
-            });
 
             if (!allowMovement) {
                 return;
@@ -124,16 +137,7 @@ public class BlockPiston extends BlockDirectional {
             // extended state for piston base
             me.setData((byte) (me.getData() | 0x08));
 
-            for (Block block : blocksToBreak) {
-                breakBlock((GlowBlock) block);
-            }
-
-            for (Block block : blocksToMove) {
-                setType(block.getRelative(pistonBlockFace), block.getTypeId(), block.getData());
-
-                // Need to do this to remove pulled blocks
-                setType(block, 0, 0);
-            }
+            performMovement(pistonBlockFace, blocksToMove, blocksToBreak);
 
             // set piston head block when extended
             setType(me.getRelative(pistonBlockFace), 34, sticky ? me.getData() | 0x08 : rawFace);
@@ -165,35 +169,7 @@ public class BlockPiston extends BlockDirectional {
                 return;
             }
 
-            blocksToMove.sort((a, b) -> {
-                switch (pistonBlockFace) {
-                    case NORTH:
-                        return b.getZ() - a.getZ();
-                    case SOUTH:
-                        return a.getZ() - b.getZ();
-                    case EAST:
-                        return a.getX() - b.getX();
-                    case WEST:
-                        return b.getX() - a.getX();
-                    case UP:
-                        return a.getY() - b.getY();
-                    case DOWN:
-                        return b.getY() - a.getY();
-                }
-
-                return 0;
-            });
-
-            for (Block block : blocksToBreak) {
-                breakBlock((GlowBlock) block);
-            }
-
-            for (Block block : blocksToMove) {
-                setType(block.getRelative(pistonBlockFace.getOppositeFace()), block.getTypeId(), block.getData());
-
-                // Need to do this to remove pulled blocks
-                setType(block, 0, 0);
-            }
+            performMovement(pistonBlockFace.getOppositeFace(), blocksToMove, blocksToBreak);
 
             return;
         }
