@@ -69,7 +69,9 @@ public class BlockPiston extends BlockDirectional {
         // TODO: handle breaking of piston extension
     }
 
-    private void performMovement(BlockFace direction, List<Block> blocksToMove, List<Block> blocksToBreak) {
+    private void performMovement(BlockFace direction,
+        List<Block> blocksToMove, List<Block> blocksToBreak) {
+
         blocksToMove.sort((a, b) -> {
             switch (direction) {
                 case NORTH:
@@ -182,11 +184,15 @@ public class BlockPiston extends BlockDirectional {
         setType(me.getRelative(pistonBlockFace), 0, 0);
     }
 
-    private static final BlockFace[] ADJACENT_FACES = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
+    private static final BlockFace[] ADJACENT_FACES = new BlockFace[] {
+        BlockFace.NORTH, BlockFace.EAST,
+        BlockFace.SOUTH, BlockFace.WEST,
+        BlockFace.UP, BlockFace.DOWN
+    };
 
     private boolean addBlock(GlowBlock piston, BlockFace movementDirection,
-                             GlowBlock block, BlockFace ignoredFace,
-                             List<Block> blocksToMove, List<Block> blocksToBreak) {
+        GlowBlock block, BlockFace ignoredFace,
+        List<Block> blocksToMove, List<Block> blocksToBreak) {
 
         boolean isPushing = (movementDirection == ignoredFace.getOppositeFace());
         MaterialValueManager.ValueCollection materialValues = block.getMaterialValues();
@@ -250,7 +256,7 @@ public class BlockPiston extends BlockDirectional {
                 }
             }
             return allowMovement;
-        } else if(movementDirection != ignoredFace) {
+        } else if (movementDirection != ignoredFace) {
             GlowBlock nextBlock = block.getRelative(movementDirection);
             if (nextBlock.getLocation().equals(piston.getLocation())) {
                 return false;
