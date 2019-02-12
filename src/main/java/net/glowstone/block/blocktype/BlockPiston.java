@@ -84,9 +84,9 @@ public class BlockPiston extends BlockDirectional {
                     return b.getY() - a.getY();
                 case DOWN:
                     return a.getY() - b.getY();
+                default:
+                    return 0;
             }
-
-            return 0;
         });
 
         for (Block block : blocksToBreak) {
@@ -212,6 +212,8 @@ public class BlockPiston extends BlockDirectional {
                     return true;
                 case DONT_MOVE:
                     return false;
+                default:
+                    return true;
             }
         } else {
             switch (moveBehavior) {
@@ -221,6 +223,8 @@ public class BlockPiston extends BlockDirectional {
                     break;
                 case BREAK:
                 case DONT_MOVE:
+                    return true;
+                default:
                     return true;
             }
         }
