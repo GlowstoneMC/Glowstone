@@ -204,6 +204,7 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
+
 /**
  * Represents an in-game player.
  *
@@ -819,6 +820,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void pulse() {
         super.pulse();
+        incrementStatistic(Statistic.TIME_SINCE_DEATH);
 
         if (usageItem != null) {
             if (usageItem.equals(getItemInHand())) { //todo: implement offhand
@@ -1247,6 +1249,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             active = true;
             deathTicks = 0;
+            setStatistic(Statistic.TIME_SINCE_DEATH, 0);
             spawnAt(event.getRespawnLocation());
         } finally {
             worldLock.writeLock().unlock();
@@ -3443,6 +3446,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void clearTitle() {
         session.send(new TitleMessage(Action.CLEAR));
+    }
+
+    @Override
+    public void setOnGround(boolean onGround) {
+        super.setOnGround(onGround);
+        int fallDistance = Math.round(getFallDistance());
+        this.incrementStatistic(Statistic.FALL_ONE_CM, fallDistance);
     }
 
     @Override
