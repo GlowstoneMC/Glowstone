@@ -1,5 +1,7 @@
 package net.glowstone.util;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TravelAgent;
@@ -9,9 +11,15 @@ import org.bukkit.block.BlockFace;
 
 public class NetherTravelAgent implements TravelAgent {
 
+    @Getter
+    @Setter(chain = true)
     private int searchRadius = 128;
+    @Getter
+    @Setter(chain = true)
     private int creationRadius = 16;
-    private boolean canCreate = true;
+    @Getter
+    @Setter
+    private boolean canCreatePortal = true;
     private World world;
 
     public NetherTravelAgent(World world) {
@@ -20,39 +28,6 @@ public class NetherTravelAgent implements TravelAgent {
         }
         this.world = world;
     }
-
-    @Override
-    public TravelAgent setSearchRadius(int searchRadius) {
-        this.searchRadius = searchRadius;
-        return this;
-    }
-
-    @Override
-    public int getSearchRadius() {
-        return searchRadius;
-    }
-
-    @Override
-    public TravelAgent setCreationRadius(int i) {
-        creationRadius = i;
-        return this;
-    }
-
-    @Override
-    public int getCreationRadius() {
-        return creationRadius;
-    }
-
-    @Override
-    public boolean getCanCreatePortal() {
-        return canCreate;
-    }
-
-    @Override
-    public void setCanCreatePortal(boolean b) {
-        canCreate = b;
-    }
-
 
     @Override
     public Location findPortal(Location destination) {
