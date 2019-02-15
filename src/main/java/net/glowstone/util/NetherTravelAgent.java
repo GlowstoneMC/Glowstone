@@ -89,7 +89,8 @@ public class NetherTravelAgent implements TravelAgent {
         if (existing != null) {
             return existing;
         }
-        return createPortal(location) ? location : null;
+        createPortal(location);
+        return location; // Bukkit javadoc says to return this even if createPortal fails
     }
 
     @Override
