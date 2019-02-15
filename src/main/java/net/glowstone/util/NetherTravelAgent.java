@@ -85,8 +85,11 @@ public class NetherTravelAgent implements TravelAgent {
 
     @Override
     public Location findOrCreate(Location location) {
-        // TODO: Need impl
-        return null;
+        Location existing = findPortal(location);
+        if (existing != null) {
+            return existing;
+        }
+        return createPortal(location) ? location : null;
     }
 
     @Override
