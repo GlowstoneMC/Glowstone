@@ -20,7 +20,6 @@ public class NetherTravelAgent implements TravelAgent {
     @Setter
     private int creationRadius = 16;
     @Accessors(chain = false)
-    @Getter
     @Setter
     private boolean canCreatePortal = true;
     private World world;
@@ -69,6 +68,11 @@ public class NetherTravelAgent implements TravelAgent {
         }
         createPortal(location);
         return location; // Bukkit javadoc says to return this even if createPortal fails
+    }
+
+    @Override
+    public boolean getCanCreatePortal() {
+        return false;
     }
 
     @Override
