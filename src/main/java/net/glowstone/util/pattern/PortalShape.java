@@ -3,6 +3,7 @@ package net.glowstone.util.pattern;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 /**
@@ -10,11 +11,27 @@ import org.bukkit.block.BlockFace;
  */
 public class PortalShape {
 
+    /**
+     * The direction that is considered left.
+     */
     private final BlockFace left;
+    /**
+     * All blocks that already are portal blocks.
+     */
+    @Getter
     private int portalBlockCount;
+    /**
+     * The bottom leftmost location.
+     */
     private Location bottomLeft;
+    /**
+     * The height oft this portal.
+     */
     @Getter
     private int height;
+    /**
+     * The width of this portal.
+     */
     @Getter
     private int width;
 
@@ -25,8 +42,8 @@ public class PortalShape {
             left = BlockFace.NORTH;
         } else {
             throw new IllegalArgumentException(
-                    "Invalid Blockface: " + portalFace
-                            + ". Supported are only NORTH, SOUTH, EAST, WEST");
+                "Invalid Blockface: " + portalFace
+                    + ". Supported are only NORTH, SOUTH, EAST, WEST");
         }
 
         //Locations are mutable so we have to clone to compare y-values
@@ -34,11 +51,10 @@ public class PortalShape {
 
         // calculations start on the lower part, so we have to move down
         while (location.getY() > buildLocation.getY() - 21 && location.getY() > 0 // validate y axis
-                && canBuildThrough(downImmutable(location).getBlock().getType())) {
+            && canBuildThrough(downImmutable(location).getBlock().getType())) {
             // move downwards
             location.subtract(0, 1, 0);
         }
-
 
         // No obsidian in 23 block range
         if (downImmutable(location).getBlock().getType() != Material.OBSIDIAN) {
@@ -66,12 +82,54 @@ public class PortalShape {
 
         // calculate portal height
         height = calculatePortalHeight();
+        System.out.println(width);
+        System.out.println(height);
+    }
+
+    /**
+     * Check whether a given Material counts as empty in a portal.
+     *
+     * @param material the material to check for
+     * @return whether the material counts as empty
+     */
+    private static boolean canBuildThrough(Material material) {
+        return material == Material.AIR || material == Material.FIRE || material == Material.PORTAL;
+    }
+
+    /**
+     * Go down 1 block from a Location without changing the Location itself.
+     * Needed to perform a "look-ahead" while preserving the original location.
+     *
+     * @param in the location to go down from
+     * @return a new Location with the y-value decreased by one
+     */
+    private static Location downImmutable(Location in) {
+        return new Location(in.getWorld(), in.getX(), in.getY() - 1, in.getZ());
+    }
+
+    /**
+     * Offset from a given location in a certain direction by a specific amount of times.
+     * Needed to preserve the original location while offsetting.
+     *
+     * @param in     the original location to offset from
+     * @param face   the direction in which to offset
+     * @param offset how many times to offset
+     * @return a new Location with the specified offset
+     */
+    private static Location offsetImmutable(Location in, BlockFace face, int offset) {
+        return new Location(
+            in.getWorld(),
+            in.getX() + (face.getModX() * offset),
+            in.getY() + (face.getModY() * offset),
+            in.getZ() + (face.getModZ() * offset)
+        );
     }
 
     /**
      * Get the distance to one edge of the possible portal. Returns -1 if no end is reached.
+     *
      * @param location the location from where to check. Not modified in process.
-     * @param face the side of the edge to check for
+     * @param face     the side of the edge to check for
      * @return the distance or -1 in case of an invalid shape
      */
     private int getDistanceUntilEdge(Location location, BlockFace face) {
@@ -84,7 +142,7 @@ public class PortalShape {
             destLoc.add(face.getModX(), face.getModY(), face.getModZ());
             // Break if either an obstacle or the end of the obsidian "line" is reached
             if (!canBuildThrough(destLoc.getBlock().getType())
-                    || downImmutable(destLoc).getBlock().getType() != Material.OBSIDIAN) {
+                || downImmutable(destLoc).getBlock().getType() != Material.OBSIDIAN) {
                 break;
             }
         }
@@ -92,12 +150,17 @@ public class PortalShape {
         return destLoc.getBlock().getType() == Material.OBSIDIAN ? i : -1;
     }
 
+    /**
+     * Calculate the portals height.
+     *
+     * @return the height or 0 in case of failure
+     */
     private int calculatePortalHeight() {
         for (height = 0; height < 21; ++height) {
             boolean flag = false;
             for (int i = 0; i < width; ++i) {
                 Location location = offsetImmutable(bottomLeft, left.getOppositeFace(), i)
-                        .add(0, height, 0);
+                    .add(0, height, 0);
                 Material material = location.getBlock().getType();
 
                 if (!canBuildThrough(material)) {
@@ -105,7 +168,7 @@ public class PortalShape {
                     break;
                 }
 
-                if (material == Material.PORTAL)  {
+                if (material == Material.PORTAL) {
                     ++portalBlockCount;
                 }
 
@@ -130,7 +193,7 @@ public class PortalShape {
 
         for (int j = 0; j < this.width; ++j) {
             if (offsetImmutable(bottomLeft, left, -j).add(0, height, 0).getBlock().getType()
-                    != Material.OBSIDIAN) {
+                != Material.OBSIDIAN) {
                 height = 0;
                 break;
             }
@@ -147,42 +210,29 @@ public class PortalShape {
     }
 
     /**
-     * Check whether a given Material counts as empty in a portal.
-     * @param material the material to check for
-     * @return whether the material counts as empty
-     */
-    private static boolean canBuildThrough(Material material) {
-        return material == Material.AIR || material == Material.FIRE || material == Material.PORTAL;
-    }
-
-    /**
      * Validate the portal shape.
+     *
      * @return whether the portal shape is valid
      */
     public boolean validate() {
         return bottomLeft != null && width >= 2 && width <= 21 && height >= 3 && height <= 21;
     }
 
+    /**
+     * Place the portal blocks.
+     */
+    @SuppressWarnings("deprecation")
     public void placePortalBlocks() {
+        // Dirty hack: directly calculate the metadata; Bukkit does not have portal material data :/
+        byte meta = (byte) (left == BlockFace.WEST ? 1 : 2);
         for (int i = 0; i < width; ++i) {
-            Location blockpos = offsetImmutable(bottomLeft, left.getOppositeFace(), i);
-
-            for (int j = 0; j < this.height; ++j) {
-                blockpos.add(0, j, 0).getBlock().setType(Material.PORTAL);
+            //we have to go down 1 block as Locations are mutable.
+            Location loc = offsetImmutable(bottomLeft, left.getOppositeFace(), i).subtract(0, 1, 0);
+            for (int j = 0; j < height; ++j) {
+                Block block = loc.add(0, 1, 0).getBlock();
+                block.setType(Material.PORTAL);
+                block.setData(meta);
             }
         }
-    }
-
-    private static Location downImmutable(Location in) {
-        return new Location(in.getWorld(), in.getX(),in.getY() - 1, in.getZ());
-    }
-
-    private static Location offsetImmutable(Location in, BlockFace face, int offset) {
-        return new Location(
-                in.getWorld(),
-                in.getX() + (face.getModX() * offset),
-                in.getY() + (face.getModY() * offset),
-                in.getZ() + (face.getModZ() * offset)
-        );
     }
 }

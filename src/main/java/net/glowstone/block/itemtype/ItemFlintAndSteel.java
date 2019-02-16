@@ -53,9 +53,9 @@ public class ItemFlintAndSteel extends ItemTool {
                 target.getLocation().add(face.getModX(), face.getModY(), face.getModZ());
 
         PortalShape shape = new PortalShape(fireLocation, BlockFace.WEST);
-        if (!shape.validate()) {
+        if (!shape.validate() && shape.getPortalBlockCount() == 0) {
             shape = new PortalShape(target.getLocation(), BlockFace.NORTH);
-            if (!shape.validate()) {
+            if (!shape.validate() && shape.getPortalBlockCount() == 0) {
                 return false;
             }
             shape.placePortalBlocks();
