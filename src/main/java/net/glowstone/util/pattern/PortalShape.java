@@ -82,8 +82,6 @@ public class PortalShape {
 
         // calculate portal height
         height = calculatePortalHeight();
-        System.out.println(width);
-        System.out.println(height);
     }
 
     /**
@@ -191,7 +189,7 @@ public class PortalShape {
             }
         }
 
-        for (int j = 0; j < this.width; ++j) {
+        for (int j = 0; j < width; ++j) {
             if (offsetImmutable(bottomLeft, left, -j).add(0, height, 0).getBlock().getType()
                 != Material.OBSIDIAN) {
                 height = 0;
