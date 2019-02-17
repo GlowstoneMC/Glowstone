@@ -52,7 +52,7 @@ public class BlockPortal extends BlockType {
             //getBoolean("enable-zombie-pigmen-portal-spawns")
             // Increasing spawn chance with increasing difficulty.
             // If random * 2000 is 0, it is still not bigger than the ordinal of peaceful (0)
-            || ThreadLocalRandom.current().nextInt(200) > block.getWorld().getDifficulty().ordinal()
+            || ThreadLocalRandom.current().nextInt(2000) > world.getDifficulty().ordinal()
         ) {
             return;
         }
