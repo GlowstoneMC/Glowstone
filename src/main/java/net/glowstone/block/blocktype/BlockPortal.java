@@ -14,7 +14,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class BlockPortal extends BlockType {
     @Override
-    public void onNearBlockChanged(final GlowBlock block, BlockFace face, GlowBlock changedBlock, Material oldType, byte oldData, Material newType, byte newData) {
+    public void onNearBlockChanged(final GlowBlock block, BlockFace face, GlowBlock changedBlock,
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         if (newType == oldType || (oldType != Material.PORTAL && oldType != Material.OBSIDIAN)) {
             return;
         }
@@ -24,7 +25,8 @@ public class BlockPortal extends BlockType {
             return;
         }
         PortalShape shape = new PortalShape(block.getLocation(), left);
-        if (shape.validate() && shape.getPortalBlockCount() == shape.getHeight() * shape.getWidth()) {
+        if (shape.validate()
+                && shape.getPortalBlockCount() == shape.getHeight() * shape.getWidth()) {
             return;
         }
         block.setType(Material.AIR);
@@ -34,21 +36,23 @@ public class BlockPortal extends BlockType {
     public void updateBlock(GlowBlock block) {
         // remove invalid portal blocks
         if ((block.getData() & 3) == 0) {
-           block.setType(Material.AIR);
+            block.setType(Material.AIR);
             System.out.println(block.getLocation());
             return;
         }
         GlowWorld world = block.getWorld();
         GlowServer server = world.getServer();
         // No pigman spawns without nether
-        if (!server.getAllowNether() ||
+        if (!server.getAllowNether()
             // Pigmen only spawn in overworld
-            world.getEnvironment() != World.Environment.NORMAL ||
-                //!server.spigot().getSpigotConfig(). // TODO: Implement Spigot config
-                //    getBoolean("enable-zombie-pigmen-portal-spawns") || // Pigmen spawning explicitly disabled
+            || world.getEnvironment() != World.Environment.NORMAL
+            // Pigmen spawning explicitly disabled
+            // TODO: Uncomment after implementing Spigot config
+            //|| !server.spigot().getSpigotConfig().
+            //getBoolean("enable-zombie-pigmen-portal-spawns")
             // Increasing spawn chance with increasing difficulty.
             // If random * 2000 is 0, it is still not bigger than the ordinal of peaceful (0)
-            ThreadLocalRandom.current().nextInt(200) > block.getWorld().getDifficulty().ordinal()
+            || ThreadLocalRandom.current().nextInt(200) > block.getWorld().getDifficulty().ordinal()
         ) {
             return;
         }
