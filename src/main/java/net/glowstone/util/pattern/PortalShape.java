@@ -1,10 +1,14 @@
 package net.glowstone.util.pattern;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
+import net.glowstone.EventFactory;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.world.PortalCreateEvent;
 
 /**
  * A PortalShape functions as a validator for Nether Portals.
@@ -221,16 +225,24 @@ public class PortalShape {
      */
     @SuppressWarnings("deprecation")
     public void placePortalBlocks() {
-        // Dirty hack: directly calculate the metadata; Bukkit does not have portal material data :/
-        byte meta = (byte) (left == BlockFace.WEST ? 1 : 2);
+        List<Block> portalBlocks = new ArrayList<>(6);
         for (int i = 0; i < width; ++i) {
             //we have to go down 1 block as Locations are mutable.
             Location loc = offsetImmutable(bottomLeft, left.getOppositeFace(), i).subtract(0, 1, 0);
             for (int j = 0; j < height; ++j) {
-                Block block = loc.add(0, 1, 0).getBlock();
+                portalBlocks.add(loc.add(0, 1, 0).getBlock());
+            }
+        }
+        PortalCreateEvent event = new PortalCreateEvent(portalBlocks, bottomLeft.getWorld(),
+            PortalCreateEvent.CreateReason.FIRE);
+        if (!EventFactory.getInstance().callEvent(event).isCancelled()) {
+            // Dirty hack: directly calculate the metadata; Bukkit does not have portal material data :/
+            byte meta = (byte) (left == BlockFace.WEST ? 1 : 2);
+            event.getBlocks().forEach(block -> {
                 block.setType(Material.PORTAL);
                 block.setData(meta);
-            }
+            });
+
         }
     }
 }
