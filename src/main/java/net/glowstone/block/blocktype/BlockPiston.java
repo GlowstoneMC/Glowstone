@@ -3,6 +3,7 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import lombok.Getter;
 import net.glowstone.EventFactory;
@@ -157,15 +158,16 @@ public class BlockPiston extends BlockDirectional {
         }
 
         List<Block> blocksToMove = new ArrayList<>();
+        List<Block> blocksToBreak = new ArrayList<>();
+
         if (sticky) {
-            Block blockToMove = me.getRelative(pistonBlockFace, 2);
-            if (!blockToMove.isEmpty()) {
-                blocksToMove.add(blockToMove);
-            }
+            addBlock(me, pistonBlockFace.getOppositeFace(),
+                me.getRelative(pistonBlockFace, 2), pistonBlockFace.getOppositeFace(),
+                blocksToMove, blocksToBreak);
         }
 
         BlockPistonRetractEvent event = EventFactory.getInstance().callEvent(
-                new BlockPistonRetractEvent(me, blocksToMove, pistonBlockFace)
+            new BlockPistonRetractEvent(me, blocksToMove, pistonBlockFace)
         );
 
         if (event.isCancelled()) {
@@ -180,25 +182,12 @@ public class BlockPiston extends BlockDirectional {
         // normal state for piston
         setType(me, me.getTypeId(), me.getData() & ~0x08);
 
-        if (sticky) {
-            List<Block> blocksToMove = new ArrayList<>();
-            List<Block> blocksToBreak = new ArrayList<>();
-            boolean allowMovement = addBlock(me, pistonBlockFace.getOppositeFace(),
-                me.getRelative(pistonBlockFace, 2), pistonBlockFace.getOppositeFace(),
-                blocksToMove, blocksToBreak);
-
-            if (!allowMovement) {
-                setType(me.getRelative(pistonBlockFace), 0, 0);
-                return;
-            }
-
+        if (sticky && blocksToMove.size() > 0) {
             performMovement(pistonBlockFace.getOppositeFace(), blocksToMove, blocksToBreak);
-
-            return;
+        } else {
+            // remove piston head
+            me.getRelative(pistonBlockFace).setTypeIdAndData(0, (byte) 0, true);
         }
-
-        // remove piston head after retracting
-        setType(me.getRelative(pistonBlockFace), 0, 0);
     }
 
     private static final BlockFace[] ADJACENT_FACES = new BlockFace[] {
