@@ -29,6 +29,7 @@ public class ItemFlintAndSteel extends ItemTool {
             fireTnt(target, player);
             return true;
         }
+
         if (tryFireNetherPortal(target, face)) {
             return true;
         }
