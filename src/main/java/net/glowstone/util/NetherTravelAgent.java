@@ -27,6 +27,10 @@ public class NetherTravelAgent implements TravelAgent {
     private boolean canCreatePortal = true;
     private World world;
 
+    /**
+     * Construct a new TravelAgent.
+     * @param world the world this agent operates in
+     */
     public NetherTravelAgent(World world) {
         if (world.getEnvironment() == World.Environment.THE_END) {
             throw new UnsupportedOperationException("Not supported yet.");
@@ -73,7 +77,7 @@ public class NetherTravelAgent implements TravelAgent {
                 found = location;
             }
         }
-        return found; // Bukkit javadoc says to return the input location if no portal could be found
+        return found; // Bukkit JDoc says to return the input location if no portal could be found
     }
 
     @Override
@@ -107,18 +111,19 @@ public class NetherTravelAgent implements TravelAgent {
         int random = ThreadLocalRandom.current().nextInt(4);
         int worldHeight = world.getEnvironment() == World.Environment.NETHER ? 128 : 256;
 
-        //try to find a suitable area for building the portal in range between x - 16, z - 16 and x + 16, z + 16.
+        //try to find a suitable area for building the portal in range between
+        // x - 16, z - 16 and x + 16, z + 16.
 
         //first attempt: find a portal spot that not only guarantees space for the portal, but also
         //space around it
         // iteration from x - 16 to x + 16
         for (int tempX = reqX - 16; tempX <= reqX + 16; ++tempX) {
             // calculation of xOffset from the requested location
-            double xOffset = (double) tempX + 0.5D - reqX;
+            double offsetX = (double) tempX + 0.5D - reqX;
             // iteration from z - 16 to z + 16
             for (int tempZ = reqZ - 16; tempZ <= reqZ + 16; ++tempZ) {
                 // calculation of zOffset from the requested location
-                double zOffset = (double) tempZ + 0.5D - reqZ;
+                double offsetZ = (double) tempZ + 0.5D - reqZ;
                 // search for suitable build location
                 yLoop:
                 for (int tempY = worldHeight - 1; tempY >= 0; --tempY) {
@@ -130,14 +135,15 @@ public class NetherTravelAgent implements TravelAgent {
                         continue;
                     }
                     // Move to the ground
-                    while (tempY > 0 && location.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+                    while (tempY > 0 && location.getBlock()
+                        .getRelative(BlockFace.DOWN).getType() == Material.AIR) {
                         --tempY;
                         location.subtract(0, 1, 0);
                     }
 
-                    //try portals in all four directions
+                    // try portals in all four directions
                     for (int riv = random; riv < random + 4; ++riv) {
-                        //Coefficients to easily check whether the environment
+                        // coefficients to easily check whether the environment
                         // is "save" (solid blocks at the ground, air around the portal)
                         int coEff1 = riv % 2;
                         int coEff2 = 1 - coEff1;
@@ -146,26 +152,29 @@ public class NetherTravelAgent implements TravelAgent {
                             coEff2 = -coEff2;
                         }
 
-                        //guarantee space before portal
+                        // guarantee space before portal
                         for (int safeSpace1 = 0; safeSpace1 < 3; ++safeSpace1) {
-                            //guarantee portal width
+                            // guarantee portal width
                             for (int safeSpace2 = -1; safeSpace2 < 3; ++safeSpace2) {
-                                //-1 is ground, 0-3 room above -> nether portal is 5 blocks high
+                                // -1 is ground, 0-3 room above -> nether portal is 5 blocks high
                                 for (int height = -1; height < 4; ++height) {
-                                    location.setX(tempX + safeSpace2 * coEff1 + safeSpace1 * coEff2);
+                                    location.setX(
+                                        tempX + safeSpace2 * coEff1 + safeSpace1 * coEff2);
                                     location.setY(tempY + height);
-                                    location.setZ(tempZ + safeSpace2 * coEff2 - safeSpace1 * coEff1);
+                                    location.setZ(
+                                        tempZ + safeSpace2 * coEff2 - safeSpace1 * coEff1);
                                     Material material = location.getBlock().getType();
-                                    if (height < 0 && !material.isSolid() || height >= 0 && material != Material.AIR) {
+                                    if (height < 0 && !material.isSolid()
+                                        || height >= 0 && material != Material.AIR) {
                                         continue yLoop;
                                     }
                                 }
                             }
                         }
-                        //calculate yOffset from requested location
-                        double yOffset = (double) tempY + 0.5D - reqY;
-                        //calculate portal distance from requested location
-                        double newDist = xOffset * xOffset + yOffset * yOffset + zOffset * zOffset;
+                        // calculate yOffset from requested location
+                        double offsetY = (double) tempY + 0.5D - reqY;
+                        // calculate portal distance from requested location
+                        double newDist = offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ;
                         // if the new portal location is closer to the requested one, yield it for
                         // portal placement
                         if (distance < 0.0D || newDist < distance) {
@@ -180,17 +189,17 @@ public class NetherTravelAgent implements TravelAgent {
             }
         }
 
-        //If no portal spot is found this way, try to find a position where at least portal width and
-        //height are guaranteed
+        // If no portal spot is found this way, try to find a position where at least portal width
+        // and height are guaranteed
         if (distance < 0.0D) {
             // iteration from x - 16 to x + 16
             for (int tempX = reqX - 16; tempX <= reqX + 16; ++tempX) {
                 // calculation of xOffset from the requested location
-                double xOffset = (double) tempX + 0.5D - reqX;
+                double offsetX = (double) tempX + 0.5D - reqX;
                 // iteration from z - 16 to z + 16
                 for (int tempZ = reqZ - 16; tempZ <= reqZ + 16; ++tempZ) {
                     // calculation of zOffset from the requested location
-                    double zOffset = (double) tempZ + 0.5D - reqZ;
+                    double offsetZ = (double) tempZ + 0.5D - reqZ;
                     // search for suitable build location
                     yLoop2:
                     for (int tempY = worldHeight - 1; tempY >= 0; --tempY) {
@@ -202,40 +211,43 @@ public class NetherTravelAgent implements TravelAgent {
                             continue;
                         }
                         // if block is air, move to the ground
-                        while (tempY > 0 && location.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
-                            --tempY;
+                        while (tempY > 0 && location
+                            .getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
                             location.subtract(0, 1, 0);
+                            --tempY;
                         }
 
-                        //try portals in x and z direction, just needs to be done 2 times as we don't
-                        //require extra space around the portal
+                        // try portals in x and z direction, just needs to be done 2 times as we
+                        // don't require extra space around the portal
                         for (int riv = random; riv < random + 2; ++riv) {
                             // coefficients for easier checking
                             int coEff1 = riv % 2;
                             int coEff2 = 1 - coEff1;
 
-                            //just guarantee portal width
+                            // just guarantee portal width
                             for (int safeSpace = -1; safeSpace < 3; ++safeSpace) {
-                                //-1 is ground, 0-3 room above -> nether portal is 5 blocks high
+                                // -1 is ground, 0-3 room above -> nether portal is 5 blocks high
                                 for (int height = -1; height < 4; ++height) {
                                     location.setX(tempX + safeSpace * coEff1);
                                     location.setY(tempY + height);
                                     location.setZ(tempZ + safeSpace * coEff2);
 
                                     Material material = location.getBlock().getType();
-                                    if (height < 0 && !material.isSolid() || height >= 0 && material != Material.AIR) {
+                                    if (height < 0 && !material.isSolid()
+                                        || height >= 0 && material != Material.AIR) {
                                         continue yLoop2;
                                     }
                                 }
                             }
 
-                            //calculate yOffset from requested location
-                            double yOffset = (double) tempY + 0.5D - reqY;
-                            //calculate portal distance from requested location
-                            double newDist = xOffset * xOffset + yOffset * yOffset + zOffset * zOffset;
+                            // calculate yOffset from requested location
+                            double offsetY = (double) tempY + 0.5D - reqY;
+                            // calculate portal distance from requested location
+                            double newDist =
+                                offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ;
 
-                            // if the new portal location is closer to the requested one, yield it for
-                            // portal placement
+                            // if the new portal location is closer to the requested one, yield it
+                            // for portal placement
                             if (distance < 0.0D || newDist < distance) {
                                 distance = newDist;
                                 actualX = tempX;
@@ -260,7 +272,8 @@ public class NetherTravelAgent implements TravelAgent {
             coEff2 = -coEff2;
         }
 
-        // Id still no place is found, create an obsidian platform in the void to place the portal onto
+        // Id still no place is found, create an obsidian
+        // platform in the void to place the portal onto
         if (distance < 0.0D) {
             actualY = Math.min(Math.max(actualY, 70), worldHeight - 10);
             finalY = actualY;
@@ -271,18 +284,22 @@ public class NetherTravelAgent implements TravelAgent {
                         int curX = finalX + safeWidth * coEff1 + safeBeforeAfter * coEff2;
                         int curY = finalY + height;
                         int curZ = finalZ + safeWidth * coEff2 - safeBeforeAfter * coEff1;
-                        new Location(world, curX, curY, curZ).getBlock().setType(height < 0 ? Material.OBSIDIAN : Material.AIR);
+                        new Location(world, curX, curY, curZ).getBlock()
+                            .setType(height < 0 ? Material.OBSIDIAN : Material.AIR);
                     }
                 }
             }
         }
 
-        //calculate portal axis based on coefficient 1
+        // calculate portal axis based on coefficient 1
         byte meta = (byte) (coEff1 == 0 ? 2 : 1);
         ArrayList<Block> blocks = new ArrayList<>(6);
         for (int width = -1; width < 3; ++width) {
             for (int height = -1; height < 4; ++height) {
-                Block block = new Location(world, finalX + width * coEff1, finalY + height, finalZ + width * coEff2).getBlock();
+                int curX = finalX + width * coEff1;
+                int curY = finalY + height;
+                int curZ = finalZ + width * coEff2;
+                Block block = new Location(world, curX, curY, curZ).getBlock();
                 if (width == -1 || width == 2 || height == -1 || height == 3) {
                     block.setType(Material.OBSIDIAN);
                 } else {
@@ -290,9 +307,11 @@ public class NetherTravelAgent implements TravelAgent {
                 }
             }
         }
-        PortalCreateEvent event = new PortalCreateEvent(blocks, world, PortalCreateEvent.CreateReason.OBC_DESTINATION);
-        if(!EventFactory.getInstance().callEvent(event).isCancelled()) {
-            event.getBlocks().forEach(block -> block.setTypeIdAndData(Material.PORTAL.getId(), meta, false));
+        PortalCreateEvent event =
+            new PortalCreateEvent(blocks, world, PortalCreateEvent.CreateReason.OBC_DESTINATION);
+        if (!EventFactory.getInstance().callEvent(event).isCancelled()) {
+            event.getBlocks().forEach(block ->
+                block.setTypeIdAndData(Material.PORTAL.getId(), meta, false));
             return true;
         }
         return false;
