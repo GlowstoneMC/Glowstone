@@ -59,6 +59,7 @@ import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.net.message.play.player.ServerDifficultyMessage;
 import net.glowstone.util.BlockStateDelegate;
 import net.glowstone.util.GameRuleManager;
+import net.glowstone.util.GlowTravelAgent;
 import net.glowstone.util.RayUtil;
 import net.glowstone.util.TickUtil;
 import net.glowstone.util.collection.ConcurrentSet;
@@ -375,6 +376,11 @@ public class GlowWorld implements World {
      */
     @Getter
     private boolean initialized;
+    /**
+     * The TravelAgent of this world. Currently is null when this world is a THE_END world.
+     */
+    @Getter
+    private GlowTravelAgent travelAgent;
 
     /**
      * Creates a new world from the options in the given WorldCreator.
@@ -390,6 +396,8 @@ public class GlowWorld implements World {
         // set up values from WorldCreator
         name = creator.name();
         environment = creator.environment();
+        // end portals are not implemented yet
+        if(environment != Environment.THE_END) travelAgent = new GlowTravelAgent(this);
         worldType = creator.type();
         generateStructures = creator.generateStructures();
 

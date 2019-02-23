@@ -15,7 +15,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.world.PortalCreateEvent;
 
 @Accessors(chain = true)
-public class TravelAgentImpl implements TravelAgent {
+public class GlowTravelAgent implements TravelAgent {
 
     @Getter
     @Setter
@@ -31,7 +31,7 @@ public class TravelAgentImpl implements TravelAgent {
      * Construct a new TravelAgent.
      * @param world the world this agent operates in
      */
-    public TravelAgentImpl(World world) {
+    public GlowTravelAgent(World world) {
         if (world.getEnvironment() == World.Environment.THE_END) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
