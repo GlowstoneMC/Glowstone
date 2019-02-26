@@ -38,6 +38,13 @@ public abstract class GlowAbstractHorseTest<T extends GlowAbstractHorse> extends
     }
 
     @Test
+    @Override
+    public void testSetBreedTrueBaby() {
+        entity.setTamed(true);
+        super.testSetBreedTrueBaby();
+    }
+
+    @Test
     public void testSetBreedTrueAdultUntamed() {
         entity.setTamed(false);
         entity.setBreed(true);
