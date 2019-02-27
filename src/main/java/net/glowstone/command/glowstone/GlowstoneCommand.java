@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
@@ -40,7 +39,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
      * displayed in lowercase).
      */
     private enum Subcommand {
-        ABOUT {
+        ABOUT("about") {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
@@ -70,7 +69,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                 sendBullet(sender, t, b, "glowstone.about.threads", threadCount);
                 return false;
             }
-        }, CHUNK {
+        }, CHUNK("chunk") {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
@@ -83,7 +82,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                         .send(sender, chunk.getX(), chunk.getZ());
                 return true;
             }
-        }, EVAL {
+        }, EVAL("eval") {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
@@ -108,7 +107,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                 }
                 return true;
             }
-        }, HELP {
+        }, HELP("help") {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
@@ -117,7 +116,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                 }
                 return false;
             }
-        }, PROPERTY {
+        }, PROPERTY("property") {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
@@ -142,7 +141,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                 }
                 return false;
             }
-        }, VM {
+        }, VM("vm") {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
@@ -160,7 +159,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                 }
                 return false;
             }
-        }, WORLD {
+        }, WORLD("world", "worlds") {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
@@ -189,23 +188,22 @@ public class GlowstoneCommand extends GlowVanillaCommand {
                         .send(player, world.getName());
                 return true;
             }
-        },
-        /**
-         * Alias for {@link #WORLD}.
-         */
-        WORLDS {
-            @Override
-            boolean execute(CommandSender sender, String label, String[] args,
-                    CommandMessages commandMessages) {
-                return WORLD.execute(sender, label, args, commandMessages);
-            }
         };
 
-        private final @NonNls String lowerCaseName = toString().toLowerCase(Locale.ENGLISH);
-        private final @NonNls String keyPrefix
-                = "glowstone.subcommand." + lowerCaseName;
-        private final @NonNls String usageKey = keyPrefix + ".usage";
-        private final @NonNls String descriptionKey = keyPrefix + ".description";
+        private final String[] otherNames;
+
+        private final @NonNls String mainName;
+        private final @NonNls String keyPrefix;
+        private final @NonNls String usageKey;
+        private final @NonNls String descriptionKey;
+
+        Subcommand(String mainName, String... otherNames) {
+            this.otherNames = otherNames;
+            this.mainName = mainName;
+            keyPrefix = "glowstone.subcommand." + mainName;
+            usageKey = keyPrefix + ".usage";
+            descriptionKey = keyPrefix + ".description";
+        }
 
         void sendHelp(CommandSender sender, String label, ResourceBundle resourceBundle) {
             sender.sendMessage("- " + ChatColor.GOLD + "/" + label + " "
@@ -219,17 +217,22 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     }
 
     private static final @NonNls List<String> SUBCOMMANDS = Arrays.stream(Subcommand.values())
-            .map(subcommand -> subcommand.lowerCaseName)
+            .map(subcommand -> subcommand.mainName)
             .collect(ImmutableList.toImmutableList());
     private static final ImmutableSortedMap<String, Subcommand> SUBCOMMAND_MAP;
 
     static {
         Collator englishCaseInsensitive = Collator.getInstance(Locale.ENGLISH);
         englishCaseInsensitive.setStrength(Collator.PRIMARY);
-        SUBCOMMAND_MAP = Arrays.stream(Subcommand.values())
-                .collect(ImmutableSortedMap.toImmutableSortedMap(
-                        englishCaseInsensitive, Object::toString,
-                        Function.identity()));
+        ImmutableSortedMap.Builder subcommandMapBuilder
+                = new ImmutableSortedMap.Builder(englishCaseInsensitive);
+        for (Subcommand subcommand : Subcommand.values()) {
+            subcommandMapBuilder.put(subcommand.mainName, subcommand);
+            for (String name : subcommand.otherNames) {
+                subcommandMapBuilder.put(name, subcommand);
+            }
+        }
+        SUBCOMMAND_MAP = subcommandMapBuilder.build();
     }
 
     /**
