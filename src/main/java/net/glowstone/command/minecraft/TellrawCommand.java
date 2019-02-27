@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -52,7 +53,9 @@ public class TellrawCommand extends GlowVanillaCommand {
             try {
                 obj = JSONValue.parseWithException(json);
             } catch (ParseException e) {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON: " + e.getMessage());
+                new LocalizedStringImpl("tellraw.invalid.json.message",
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
             if (obj instanceof JSONArray || obj instanceof JSONObject) {
@@ -60,7 +63,9 @@ public class TellrawCommand extends GlowVanillaCommand {
                 player.sendMessage(components);
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON");
+                new LocalizedStringImpl("tellraw.invalid.json.message",
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender);
                 return false;
             }
         }
