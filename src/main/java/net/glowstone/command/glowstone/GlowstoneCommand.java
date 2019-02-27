@@ -1,15 +1,21 @@
 package net.glowstone.command.glowstone;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedMap;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
@@ -30,8 +36,195 @@ import org.jetbrains.annotations.NonNls;
 
 public class GlowstoneCommand extends GlowVanillaCommand {
 
-    private static final @NonNls List<String> SUBCOMMANDS
-            = Arrays.asList("about", "chunk", "eval", "help", "property", "vm", "world");
+    /**
+     * Each value's name is the actual subcommand name (case-insensitive with English case folding,
+     * displayed in lowercase).
+     */
+    private enum Subcommand {
+        ABOUT {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                ResourceBundle b = commandMessages.getResourceBundle();
+                // some info about this Glowstone server
+                new LocalizedStringImpl("glowstone.about", b).send(sender);
+                LocalizedStringImpl t
+                        = new LocalizedStringImpl("glowstone.about._template", b);
+                sendBullet(sender, t, b, "glowstone.about.brand", Bukkit.getName());
+                sendBullet(sender, t, b, "glowstone.about.name", Bukkit.getServerName());
+                sendBullet(sender, t, b, "glowstone.about.version", Bukkit.getVersion());
+                sendBullet(sender, t, b, "glowstone.about.api-version", Bukkit.getBukkitVersion());
+                sendBullet(sender, t, b, "glowstone.about.players",
+                        Bukkit.getOnlinePlayers().size());
+                sendBullet(sender, t, b, "glowstone.about.worlds", Bukkit.getWorlds().size());
+                sendBullet(sender, t, b, "glowstone.about.plugins",
+                        Bukkit.getPluginManager().getPlugins().length);
+
+                // thread count
+                int threadCount = 0;
+                Set<Thread> threads = Thread.getAllStackTraces().keySet();
+                for (Thread thread : threads) {
+                    if (thread.getThreadGroup() == Thread.currentThread().getThreadGroup()) {
+                        threadCount++;
+                    }
+                }
+                sendBullet(sender, t, b, "glowstone.about.threads", threadCount);
+                return false;
+            }
+        }, CHUNK {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                if (!CommandUtils.isPhysical(sender)) {
+                    commandMessages.getNotPhysical().sendInColor(ChatColor.RED, sender);
+                    return false;
+                }
+                Chunk chunk = CommandUtils.getLocation(sender).getChunk();
+                new LocalizedStringImpl("glowstone.chunk", commandMessages.getResourceBundle())
+                        .send(sender, chunk.getX(), chunk.getZ());
+                return true;
+            }
+        }, EVAL {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                if (args.length == 1) {
+                    sendHelp(sender, label, commandMessages.getResourceBundle());
+                    return false;
+                }
+                StringBuilder builder = new StringBuilder();
+                for (int i = 1; i < args.length; i++) {
+                    builder.append(args[i] + (i == args.length - 1 ? "" : " "));
+                }
+                ReflectionProcessor processor = new ReflectionProcessor(builder.toString(),
+                        sender instanceof Entity ? sender : ServerProvider.getServer());
+                Object result = processor.process();
+                if (result == null) {
+                    new LocalizedStringImpl("glowstone.eval.null",
+                            commandMessages.getResourceBundle())
+                            .send(sender);
+                } else {
+                    new LocalizedStringImpl("glowstone.eval", commandMessages.getResourceBundle())
+                            .send(sender, result);
+                }
+                return true;
+            }
+        }, HELP {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                for (Subcommand subcommand : Subcommand.values()) {
+                    subcommand.sendHelp(sender, label, commandMessages.getResourceBundle());
+                }
+                return false;
+            }
+        }, PROPERTY {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                ResourceBundle bundle = commandMessages.getResourceBundle();
+                if (args.length == 1) {
+                    LocalizedStringImpl propertyTemplate = new LocalizedStringImpl(
+                            "glowstone.property", bundle);
+                    // list all
+                    System.getProperties().forEach(
+                        (key, value) -> propertyTemplate.send(sender, key, value));
+                } else {
+                    // get a property
+                    String key = args[1].toLowerCase();
+                    String value = System.getProperty(key);
+                    if (value == null) {
+                        new LocalizedStringImpl("glowstone.property.invalid", bundle)
+                                .sendInColor(ChatColor.RED, sender, key);
+                    } else {
+                        new LocalizedStringImpl("glowstone.property", bundle)
+                                .send(sender, key, value);
+                    }
+                }
+                return false;
+            }
+        }, VM {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+                List<String> arguments = runtimeMxBean.getInputArguments();
+                ResourceBundle bundle = commandMessages.getResourceBundle();
+                if (arguments.size() == 0) {
+                    new LocalizedStringImpl("glowstone.vm.empty", bundle).send(sender);
+                } else {
+                    new LocalizedStringImpl("glowstone.vm", bundle).send(sender, arguments.size());
+                    for (String argument : arguments) {
+                        sender.sendMessage(
+                                " - '" + ChatColor.AQUA + argument + ChatColor.RESET + "'.");
+                    }
+                }
+                return false;
+            }
+        }, WORLD {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                ResourceBundle bundle = commandMessages.getResourceBundle();
+                if (args.length == 1) {
+                    // list worlds
+                    new LocalizedStringImpl("glowstone.worlds", bundle)
+                            .send(sender, commandMessages.joinList(getWorldNames()));
+                    return true;
+                }
+                if (!(sender instanceof Player)) {
+                    new LocalizedStringImpl("glowstone.world.not-player", bundle)
+                            .sendInColor(ChatColor.RED, sender);
+                    return false;
+                }
+                GlowPlayer player = (GlowPlayer) sender;
+                String worldName = args[1];
+                GlowWorld world = player.getServer().getWorld(worldName);
+                if (world == null) {
+                    new LocalizedStringImpl("glowstone.world.invalid", bundle)
+                            .sendInColor(ChatColor.RED, sender, worldName);
+                    return false;
+                }
+                player.teleport(world.getSpawnLocation());
+                new LocalizedStringImpl("glowstone.world.done", bundle)
+                        .send(player, world.getName());
+                return true;
+            }
+        },
+        /**
+         * Alias for {@link #WORLD}.
+         */
+        WORLDS {
+            @Override
+            boolean execute(CommandSender sender, String label, String[] args,
+                    CommandMessages commandMessages) {
+                return WORLD.execute(sender, label, args, commandMessages);
+            }
+        };
+
+        private final @NonNls String lowerCaseName = toString().toLowerCase(Locale.ENGLISH);
+        private final @NonNls String keyPrefix
+                = "glowstone.subcommand." + lowerCaseName;
+        private final @NonNls String usageKey = keyPrefix + ".usage";
+        private final @NonNls String descriptionKey = keyPrefix + ".description";
+
+        void sendHelp(CommandSender sender, String label, ResourceBundle resourceBundle) {
+            sender.sendMessage("- " + ChatColor.GOLD + "/" + label + " "
+                    + ChatColor.AQUA + new LocalizedStringImpl(usageKey, resourceBundle).get()
+                    + ChatColor.GRAY + ": "
+                    + new LocalizedStringImpl(descriptionKey, resourceBundle).get());
+        }
+
+        abstract boolean execute(CommandSender sender, String label, String[] args,
+                CommandMessages commandMessages);
+    }
+
+    private static final @NonNls List<String> SUBCOMMANDS = Arrays.stream(Subcommand.values())
+            .map(subcommand -> subcommand.lowerCaseName)
+            .collect(ImmutableList.toImmutableList());
+    private static final Map<String, Subcommand> SUBCOMMAND_MAP = Arrays.stream(Subcommand.values())
+            .collect(ImmutableSortedMap.toImmutableSortedMap(
+                    Collator.getInstance(Locale.ENGLISH), Object::toString, Function.identity()));
 
     /**
      * Creates the instance for this command.
@@ -47,145 +240,15 @@ public class GlowstoneCommand extends GlowVanillaCommand {
         if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
-        if (args.length == 0 || args[0].equalsIgnoreCase("about")) { // NON-NLS
-            ResourceBundle b = commandMessages.getResourceBundle();
-            // some info about this Glowstone server
-            new LocalizedStringImpl("glowstone.about", b).send(sender);
-            LocalizedStringImpl t
-                    = new LocalizedStringImpl("glowstone.about._template", b);
-            sendBullet(sender, t, b, "glowstone.about.brand", Bukkit.getName());
-            sendBullet(sender, t, b, "glowstone.about.name", Bukkit.getServerName());
-            sendBullet(sender, t, b, "glowstone.about.version", Bukkit.getVersion());
-            sendBullet(sender, t, b, "glowstone.about.api-version", Bukkit.getBukkitVersion());
-            sendBullet(sender, t, b, "glowstone.about.players",
-                    Bukkit.getOnlinePlayers().size());
-            sendBullet(sender, t, b, "glowstone.about.worlds", Bukkit.getWorlds().size());
-            sendBullet(sender, t, b, "glowstone.about.plugins",
-                    Bukkit.getPluginManager().getPlugins().length);
-
-            // thread count
-            int threadCount = 0;
-            Set<Thread> threads = Thread.getAllStackTraces().keySet();
-            for (Thread thread : threads) {
-                if (thread.getThreadGroup() == Thread.currentThread().getThreadGroup()) {
-                    threadCount++;
-                }
-            }
-            sendBullet(sender, t, b, "glowstone.about.threads", threadCount);
+        Subcommand subcommand = null;
+        if (args.length >= 1) {
+            subcommand = SUBCOMMAND_MAP.get(args[0]);
+        }
+        if (subcommand == null) {
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
-        if ("help".equalsIgnoreCase(args[0])) { // NON-NLS
-            // some help
-            sender.sendMessage(ChatColor.GOLD + "Glowstone command help:");
-            sender.sendMessage(helpForSubCommand(label, "about", "Information about this server"));
-            sender.sendMessage(helpForSubCommand(label, "eval <eval>", "Evaluate a reflection "
-                    + "string"));
-            sender.sendMessage(helpForSubCommand(label, "help", "Shows the help screen"));
-            sender.sendMessage(helpForSubCommand(label, "property [name]", "Lists or gets system "
-                    + "properties"));
-            sender.sendMessage(helpForSubCommand(label, "chunk", "Gets the coordinates of the "
-                    + "current chunk"));
-            sender.sendMessage(helpForSubCommand(label, "vm", "Lists JVM options"));
-            sender.sendMessage(helpForSubCommand(label, "world [teleportTo]", "Lists or teleports"
-                    + " to worlds"));
-            return false;
-        }
-        if (isPropertySubcommand(args[0])) { // NON-NLS
-            if (args.length == 1) {
-                // list all
-                System.getProperties().forEach((key, value) -> sender.sendMessage(
-                        "Property '" + ChatColor.AQUA + key + ChatColor.RESET + "' = \""
-                                + ChatColor.GOLD + value + ChatColor.RESET + "\"."));
-            } else {
-                // get a property
-                String key = args[1].toLowerCase();
-                String value = System.getProperty(key);
-                if (value == null) {
-                    sender.sendMessage(ChatColor.RED + "Unknown system property '" + key + "'.");
-                } else {
-                    sender.sendMessage(
-                            "Property '" + ChatColor.AQUA + key + ChatColor.RESET + "' = \""
-                                    + ChatColor.GOLD + value + ChatColor.RESET + "\".");
-                }
-            }
-            return false;
-        }
-        if ("vm".equalsIgnoreCase(args[0])) { // NON-NLS
-            RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
-            List<String> arguments = runtimeMxBean.getInputArguments();
-            if (arguments.size() == 0) {
-                sender.sendMessage("There are no VM arguments.");
-            } else {
-                sender.sendMessage("Glowstone VM arguments (" + arguments.size() + "):");
-                for (String argument : arguments) {
-                    sender.sendMessage(" - '" + ChatColor.AQUA + argument + ChatColor.RESET + "'.");
-                }
-            }
-
-            return false;
-        }
-        if (isWorldSubcommand(args[0])) {  // NON-NLS
-            if (args.length == 1) {
-                // list worlds
-                sender.sendMessage(
-                        "Worlds: " + commandMessages.joinList(getWorldNames()));
-                return true;
-            }
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + "Only players can switch worlds.");
-                return false;
-            }
-            GlowPlayer player = (GlowPlayer) sender;
-            String worldName = args[1];
-            GlowWorld world = player.getServer().getWorld(worldName);
-            if (world == null) {
-                sender.sendMessage(
-                        ChatColor.RED + "World '" + worldName
-                                + "' is not loaded, or does not exist");
-                return false;
-            }
-            player.teleport(world.getSpawnLocation());
-            player.sendMessage("Teleported to world '" + world.getName() + "'.");
-            return true;
-        }
-        if ("chunk".equalsIgnoreCase(args[0])) {
-            if (!CommandUtils.isPhysical(sender)) {
-                sender.sendMessage(
-                        ChatColor.RED + "This command may only be used by physical objects");
-                return false;
-            }
-            Chunk chunk = CommandUtils.getLocation(sender).getChunk();
-            sender
-                    .sendMessage(
-                            "Chunk coordinates: [x=" + chunk.getX() + ", z=" + chunk.getZ() + "]");
-            return true;
-        }
-        if ("eval".equalsIgnoreCase(args[0])) {
-            if (args.length == 1) {
-                // no args, send usage
-                sender.sendMessage(ChatColor.RED + "Usage: /" + label + " eval <eval>");
-                return false;
-            }
-            StringBuilder builder = new StringBuilder();
-            for (int i = 1; i < args.length; i++) {
-                builder.append(args[i] + (i == args.length - 1 ? "" : " "));
-            }
-            ReflectionProcessor processor = new ReflectionProcessor(builder.toString(),
-                    sender instanceof Entity ? sender : ServerProvider.getServer());
-            Object result = processor.process();
-            sender.sendMessage(
-                    ChatColor.GOLD + "Eval returned: " + (result == null ? ChatColor.RED
-                            + "<no value>"
-                            : ChatColor.AQUA + result.toString()));
-            return true;
-        }
-        sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <"
-                + SUBCOMMANDS.stream().collect(Collectors.joining("|")) + ">");
-        return false;
-    }
-
-    private boolean isWorldSubcommand(String arg) {
-        return "world".equalsIgnoreCase(arg) || "worlds".equalsIgnoreCase(arg); // NON-NLS
+        return subcommand.execute(sender, label, args, commandMessages);
     }
 
     private static void sendBullet(CommandSender sender,
@@ -200,37 +263,37 @@ public class GlowstoneCommand extends GlowVanillaCommand {
         Preconditions.checkNotNull(sender, "Sender cannot be null"); // NON-NLS
         Preconditions.checkNotNull(args, "Arguments cannot be null"); // NON-NLS
         Preconditions.checkNotNull(alias, "Alias cannot be null"); // NON-NLS
-        if (args.length == 0) {
-            return Collections.emptyList();
-        }
-        if (args.length == 1) {
-            return StringUtil
-                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
-        }
-        if (args.length == 2 && isPropertySubcommand(args[0])) {
-            return StringUtil
-                    .copyPartialMatches(args[1], System.getProperties().stringPropertyNames(),
-                            new ArrayList<>(System.getProperties().stringPropertyNames().size()));
-        }
-        if (args.length == 2 && isWorldSubcommand(args[0]) && sender instanceof Player) {
-            Collection<String> worlds = getWorldNames();
-            return StringUtil
-                    .copyPartialMatches(args[1], worlds, new ArrayList<>(worlds.size()));
+        switch (args.length) {
+            case 1:
+                return StringUtil.copyPartialMatches(args[0], SUBCOMMANDS,
+                        new ArrayList<>(SUBCOMMANDS.size()));
+            case 2:
+                switch (SUBCOMMAND_MAP.get(args[0])) {
+                    case PROPERTY:
+                        return StringUtil
+                                .copyPartialMatches(args[1],
+                                        System.getProperties().stringPropertyNames(),
+                                        new ArrayList<>(
+                                                System.getProperties().stringPropertyNames()
+                                                        .size()));
+                    case WORLD:
+                        if (sender instanceof Player) {
+                            Collection<String> worlds = getWorldNames();
+                            return StringUtil
+                                    .copyPartialMatches(args[1], worlds,
+                                            new ArrayList<>(worlds.size()));
+                        } // else fall through
+                    default:
+                    // fall through
+                }
+                // fall through
+            default:
+            // fall through
         }
         return Collections.emptyList();
     }
 
-    private boolean isPropertySubcommand(String arg) {
-        return "property".equalsIgnoreCase(arg); // NON-NLS
-    }
-
-    private String helpForSubCommand(String label, String subcommand, String description) {
-        return "- " + ChatColor.GOLD + "/" + label + " "
-                + ChatColor.AQUA + subcommand
-                + ChatColor.GRAY + ": " + description;
-    }
-
-    private Collection<String> getWorldNames() {
+    private static Collection<String> getWorldNames() {
         return ServerProvider.getServer().getWorlds().stream().map(World::getName)
                 .collect(Collectors.toList());
     }
