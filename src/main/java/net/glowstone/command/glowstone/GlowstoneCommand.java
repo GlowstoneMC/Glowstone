@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
@@ -222,9 +221,16 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     private static final @NonNls List<String> SUBCOMMANDS = Arrays.stream(Subcommand.values())
             .map(subcommand -> subcommand.lowerCaseName)
             .collect(ImmutableList.toImmutableList());
-    private static final Map<String, Subcommand> SUBCOMMAND_MAP = Arrays.stream(Subcommand.values())
-            .collect(ImmutableSortedMap.toImmutableSortedMap(
-                    Collator.getInstance(Locale.ENGLISH), Object::toString, Function.identity()));
+    private static final ImmutableSortedMap<String, Subcommand> SUBCOMMAND_MAP;
+
+    static {
+        Collator englishCaseInsensitive = Collator.getInstance(Locale.ENGLISH);
+        englishCaseInsensitive.setStrength(Collator.PRIMARY);
+        SUBCOMMAND_MAP = Arrays.stream(Subcommand.values())
+                .collect(ImmutableSortedMap.toImmutableSortedMap(
+                        englishCaseInsensitive, Object::toString,
+                        Function.identity()));
+    }
 
     /**
      * Creates the instance for this command.
