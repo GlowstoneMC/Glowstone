@@ -43,30 +43,29 @@ public class GlowstoneCommand extends GlowVanillaCommand {
             @Override
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
-                ResourceBundle b = commandMessages.getResourceBundle();
+                ResourceBundle bundle = commandMessages.getResourceBundle();
                 // some info about this Glowstone server
-                new LocalizedStringImpl("glowstone.about", b).send(sender);
-                LocalizedStringImpl t
-                        = new LocalizedStringImpl("glowstone.about._template", b);
-                sendBullet(sender, t, b, "glowstone.about.brand", Bukkit.getName());
-                sendBullet(sender, t, b, "glowstone.about.name", Bukkit.getServerName());
-                sendBullet(sender, t, b, "glowstone.about.version", Bukkit.getVersion());
-                sendBullet(sender, t, b, "glowstone.about.api-version", Bukkit.getBukkitVersion());
-                sendBullet(sender, t, b, "glowstone.about.players",
+                new LocalizedStringImpl("glowstone.about", bundle).send(sender);
+                LocalizedStringImpl tpl
+                        = new LocalizedStringImpl("glowstone.about._template", bundle);
+                sendBullet(sender, tpl, bundle, "glowstone.about.brand", Bukkit.getName());
+                sendBullet(sender, tpl, bundle, "glowstone.about.name", Bukkit.getServerName());
+                sendBullet(sender, tpl, bundle, "glowstone.about.version", Bukkit.getVersion());
+                sendBullet(sender, tpl, bundle, "glowstone.about.api-version",
+                        Bukkit.getBukkitVersion());
+                sendBullet(sender, tpl, bundle, "glowstone.about.players",
                         Bukkit.getOnlinePlayers().size());
-                sendBullet(sender, t, b, "glowstone.about.worlds", Bukkit.getWorlds().size());
-                sendBullet(sender, t, b, "glowstone.about.plugins",
+                sendBullet(sender, tpl, bundle, "glowstone.about.worlds",
+                        Bukkit.getWorlds().size());
+                sendBullet(sender, tpl, bundle, "glowstone.about.plugins",
                         Bukkit.getPluginManager().getPlugins().length);
 
-                // thread count
-                int threadCount = 0;
-                Set<Thread> threads = Thread.getAllStackTraces().keySet();
-                for (Thread thread : threads) {
-                    if (thread.getThreadGroup() == Thread.currentThread().getThreadGroup()) {
-                        threadCount++;
-                    }
-                }
-                sendBullet(sender, t, b, "glowstone.about.threads", threadCount);
+                // thread count for group, non-recursive
+                ThreadGroup myGroup = Thread.currentThread().getThreadGroup();
+                long threadCount = Thread.getAllStackTraces().keySet().stream()
+                        .filter(thread -> thread.getThreadGroup() == myGroup)
+                        .count();
+                sendBullet(sender, tpl, bundle, "glowstone.about.threads", threadCount);
                 return false;
             }
         }, CHUNK("chunk") {
@@ -279,18 +278,14 @@ public class GlowstoneCommand extends GlowVanillaCommand {
             case 2:
                 switch (SUBCOMMAND_MAP.get(args[0])) {
                     case PROPERTY:
-                        return StringUtil
-                                .copyPartialMatches(args[1],
-                                        System.getProperties().stringPropertyNames(),
-                                        new ArrayList<>(
-                                                System.getProperties().stringPropertyNames()
-                                                        .size()));
+                        Set<String> propertyNames = System.getProperties().stringPropertyNames();
+                        return StringUtil.copyPartialMatches(args[1],
+                                propertyNames, new ArrayList<>(propertyNames.size()));
                     case WORLD:
                         if (sender instanceof Player) {
                             Collection<String> worlds = getWorldNames();
-                            return StringUtil
-                                    .copyPartialMatches(args[1], worlds,
-                                            new ArrayList<>(worlds.size()));
+                            return StringUtil.copyPartialMatches(args[1], worlds,
+                                    new ArrayList<>(worlds.size()));
                         } // else fall through
                     default:
                     // fall through
