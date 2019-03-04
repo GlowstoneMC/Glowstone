@@ -295,7 +295,9 @@ public class BlockPiston extends BlockDirectional {
 
         Location location = block.getLocation();
         setType(block, 0, 0);
-        drops.stream().forEach((stack) -> block.getWorld().dropItemNaturally(location, stack));
+        if (drops.size() > 0 && !(blockType instanceof BlockLiquid)) {
+            drops.stream().forEach((stack) -> block.getWorld().dropItemNaturally(location, stack));
+        }
     }
 
     private boolean isPistonExtended(Block block) {
