@@ -10,6 +10,7 @@ import net.glowstone.block.state.InvalidBlockStateException;
 import net.glowstone.block.state.StateSerialization;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
@@ -41,7 +42,9 @@ public class SetBlockCommand extends GlowVanillaCommand {
         String itemName = CommandUtils.toNamespaced(args[3].toLowerCase());
         Material type = ItemIds.getBlock(itemName);
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + itemName + " is not a valid block type");
+            new LocalizedStringImpl("setblock.invalid.type",
+                    commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, itemName);
             return false;
         }
         Location location = CommandUtils
@@ -76,11 +79,14 @@ public class SetBlockCommand extends GlowVanillaCommand {
                 tag.mergeInto(prev, true);
                 block.getBlockEntity().loadNbt(prev);
             } catch (MojangsonParseException e) {
-                sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
+                new LocalizedStringImpl("setblock.invalid.data",
+                        commandMessages.getResourceBundle())
+                        .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
         }
-        sender.sendMessage("Block placed");
+        new LocalizedStringImpl("setblock.invalid.data", commandMessages.getResourceBundle())
+                .send(sender);
         return true;
     }
 
