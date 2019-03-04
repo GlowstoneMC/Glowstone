@@ -275,7 +275,24 @@ public class BlockPiston extends BlockDirectional {
     }
 
     private void breakBlock(GlowBlock block) {
-        Collection<ItemStack> drops = ItemTable.instance().getBlock(block.getType()).getMinedDrops(block);
+        if(block.isEmpty()) {
+            return;
+        }
+
+        GlowWorld world = (GlowWorld) block.getWorld();
+
+        Collection<ItemStack> drops = new ArrayList<>();
+
+        BlockType blockType = ItemTable.instance().getBlock(block.getType());
+        if (world.getGameRuleMap().getBoolean("doTileDrops")) {
+            drops.addAll(blockType.getMinedDrops(block));
+        } else {
+            // Container contents is dropped anyways
+            if (blockType instanceof BlockContainer) {
+                drops.addAll(((BlockContainer) blockType).getContentDrops(block));
+            }
+        }
+
         Location location = block.getLocation();
         setType(block, 0, 0);
         drops.stream().forEach((stack) -> block.getWorld().dropItemNaturally(location, stack));
