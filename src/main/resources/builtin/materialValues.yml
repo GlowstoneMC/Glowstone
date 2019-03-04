@@ -54,18 +54,26 @@ values:
     hardness: 100
     blastResistance: 500
     baseMapColor: 48
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   STATIONARY_WATER:
     lightOpacity: 3
     hardness: 100
     blastResistance: 500
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   LAVA:
     lightOpacity: 0
     hardness: 100
     blastResistance: 500
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   STATIONARY_LAVA:
     lightOpacity: 0
     hardness: 100
     blastResistance: 500
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   SAND:
     tool: SPADE
     hardness: 0.5
@@ -97,6 +105,8 @@ values:
     fireResistance: 60
     hardness: 0.2
     blastResistance: 1
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   SPONGE:
     hardness: 0.6
     blastResistance: 3
@@ -116,6 +126,8 @@ values:
     tool: PICKAXE
     hardness: 3.5
     blastResistance: 17.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   SANDSTONE:
     tool: PICKAXE
     hardness: 0.8
@@ -127,6 +139,8 @@ values:
     lightOpacity: 0
     hardness: 0.2
     blastResistance: 1
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   POWERED_RAIL:
     lightOpacity: 0
     hardness: 0.7
@@ -164,6 +178,8 @@ values:
     lightOpacity: 0
     hardness: 0.5
     blastResistance: 2.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   WOOL:
     tool: SHEARS
     flameResistance: 30
@@ -179,17 +195,25 @@ values:
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   RED_ROSE:
     hardness: 0
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   BROWN_MUSHROOM:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   RED_MUSHROOM:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   GOLD_BLOCK:
     tool: IRON_PICKAXE
     hardness: 3
@@ -228,17 +252,25 @@ values:
     tool: DIAMOND_PICKAXE
     hardness: 50
     blastResistance: 6000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   TORCH:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   FIRE:
     lightOpacity: 0
     hardness: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   MOB_SPAWNER:
     tool: PICKAXE
     lightOpacity: 0
     hardness: 5
     blastResistance: 25
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   WOOD_STAIRS:
     tool: AXE
     lightOpacity: 0
@@ -250,9 +282,13 @@ values:
     lightOpacity: 0
     hardness: 2.5
     blastResistance: 12.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   REDSTONE_WIRE:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   DIAMOND_ORE:
     tool: IRON_PICKAXE
     hardness: 3
@@ -268,6 +304,8 @@ values:
   CROPS:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   SOIL:
     tool: SPADE
     lightOpacity: 0
@@ -276,24 +314,34 @@ values:
     tool: PICKAXE
     hardness: 3.5
     blastResistance: 17.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   BURNING_FURNACE:
     hardness: 3.5
     blastResistance: 17.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   SIGN_POST:
     tool: AXE
     lightOpacity: 0
     hardness: 1
     blastResistance: 5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   WOODEN_DOOR:
     tool: AXE
     lightOpacity: 0
     hardness: 3
     blastResistance: 15
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   LADDER:
     tool: AXE
     lightOpacity: 0
     hardness: 0.4
     blastResistance: 2
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   RAILS:
     tool: PICKAXE
     lightOpacity: 0
@@ -309,25 +357,35 @@ values:
     hardness: 1
     lightOpacity: 0
     blastResistance: 5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   LEVER:
     hardness: 0.5
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   STONE_PLATE:
     tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   IRON_DOOR_BLOCK:
     tool: PICKAXE
     hardness: 5
     lightOpacity: 0
     blastResistance: 25
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   WOOD_PLATE:
     tool: AXE
     hardness: 2
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   REDSTONE_ORE:
     tool: IRON_PICKAXE
     hardness: 3
@@ -338,17 +396,25 @@ values:
   REDSTONE_TORCH_OFF:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   REDSTONE_TORCH_ON:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   STONE_BUTTON:
     hardness: 0.5
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   SNOW:
     tool: SPADE
     hardness: 0.1
     lightOpacity: 0
     blastResistance: 0.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   ICE:
     tool: PICKAXE
     hardness: 0.5
@@ -361,6 +427,8 @@ values:
     hardness: 0.4
     lightOpacity: 0
     blastResistance: 2
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   CLAY:
     tool: SPADE
     hardness: 0.6
@@ -368,10 +436,14 @@ values:
   SUGAR_CANE_BLOCK:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   JUKEBOX:
     tool: AXE
     hardness: 2
     blastResistance: 30
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   FENCE:
     tool: AXE
     hardness: 2
@@ -381,6 +453,8 @@ values:
     tool: AXE
     hardness: 1
     blastResistance: 5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   NETHERRACK:
     tool: PICKAXE
     hardness: 0.4
@@ -394,20 +468,30 @@ values:
   PORTAL:
     lightOpacity: 0
     hardness: -1
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   JACK_O_LANTERN:
     tool: AXE
     hardness: 1
     blastResistance: 5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   CAKE_BLOCK:
     hardness: 0.5
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   DIODE_BLOCK_OFF:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   DIODE_BLOCK_ON:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   STAINED_GLASS:
     hardness: 0.3
     lightOpacity: 0
@@ -443,6 +527,8 @@ values:
     tool: AXE
     hardness: 1
     blastResistance: 5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   PUMPKIN_STEM:
     hardness: 0
     lightOpacity: 0
@@ -456,6 +542,8 @@ values:
     flameResistance: 15
     fireResistance: 100
     blastResistance: 1
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   FENCE_GATE:
     tool: AXE
     hardness: 2
@@ -476,6 +564,8 @@ values:
     blastResistance: 2.5
   WATER_LILY:
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   NETHER_BRICK:
     tool: PICKAXE
     hardness: 2
@@ -494,16 +584,22 @@ values:
     hardness: 0
     lightOpacity: 0
     blastResistance: 5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   ENCHANTMENT_TABLE:
     tool: PICKAXE
     hardness: 5
     lightOpacity: 0
     blastResistance: 6000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   BREWING_STAND:
     tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   CAULDRON:
     tool: PICKAXE
     hardness: 2
@@ -513,10 +609,14 @@ values:
     hardness: -1
     lightOpacity: 0
     blastResistance: 3000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   ENDER_PORTAL_FRAME:
     hardness: -1
     lightOpacity: 0
     blastResistance: 18000000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   ENDER_STONE:
     tool: PICKAXE
     hardness: 3
@@ -525,6 +625,8 @@ values:
     hardness: 3
     lightOpacity: 0
     blastResistance: 45
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   REDSTONE_LAMP_OFF:
     hardness: 0.3
     blastResistance: 1.5
@@ -547,6 +649,8 @@ values:
     hardness: 0.2
     lightOpacity: 0
     blastResistance: 15
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   SANDSTONE_STAIRS:
     tool: PICKAXE
     hardness: 0.8
@@ -561,12 +665,18 @@ values:
     hardness: 22.5
     lightOpacity: 0
     blastResistance: 3000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   TRIPWIRE_HOOK:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   TRIPWIRE:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   EMERALD_BLOCK:
     tool: IRON_PICKAXE
     hardness: 5
@@ -592,10 +702,14 @@ values:
   COMMAND:
     hardness: -1
     blastResistance: 18000000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   BEACON:
     hardness: 3
     lightOpacity: 0
     blastResistance: 15
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   COBBLE_WALL:
     tool: PICKAXE
     hardness: 2
@@ -604,6 +718,8 @@ values:
   FLOWER_POT:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   CARROT:
     hardness: 0
     lightOpacity: 0
@@ -614,41 +730,59 @@ values:
     hardness: 0.5
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   SKULL:
     hardness: 1
     lightOpacity: 0
     blastResistance: 5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   ANVIL:
     tool: PICKAXE
     hardness: 5
     lightOpacity: 0
     blastResistance: 6000
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   TRAPPED_CHEST:
     tool: AXE
     hardness: 2.5
     lightOpacity: 0
     blastResistance: 12.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   GOLD_PLATE:
     tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   IRON_PLATE:
     tool: PICKAXE
     hardness: 0.5
     lightOpacity: 0
     blastResistance: 2.5
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   REDSTONE_COMPARATOR_OFF:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   REDSTONE_COMPARATOR_ON:
     hardness: 0
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   DAYLIGHT_DETECTOR:
     tool: AXE
     hardness: 0.2
     lightOpacity: 0
     blastResistance: 1
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   REDSTONE_BLOCK:
     tool: PICKAXE
     hardness: 5
@@ -662,6 +796,8 @@ values:
     hardness: 3
     lightOpacity: 0
     blastResistance: 24
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   QUARTZ_BLOCK:
     tool: PICKAXE
     hardness: 0.8
@@ -679,6 +815,8 @@ values:
     tool: PICKAXE
     hardness: 3.5
     blastResistance: 17.5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   STAINED_CLAY:
     hardness: 1.4
   STAINED_GLASS_PANE:
@@ -691,6 +829,8 @@ values:
     flameResistance: 30
     fireResistance: 60
     blastResistance: 1
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   LOG_2:
     hardness: 2
     flameResistance: 5
@@ -712,6 +852,8 @@ values:
   BARRIER:
     hardness: -1
     blastResistance: 18000003
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   IRON_TRAPDOOR:
     tool: PICKAXE
     hardness: 5
@@ -756,13 +898,19 @@ values:
     tool: AXE
     hardness: 1
     blastResistance: 5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   WALL_BANNER:
     tool: AXE
     hardness: 1
     blastResistance: 5
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   DAYLIGHT_DETECTOR_INVERTED:
     hardness: 0.2
     lightOpacity: 0
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
   RED_SANDSTONE:
     tool: PICKAXE
     hardness: 0.8
@@ -826,19 +974,137 @@ values:
     tool: AXE
     hardness: 3
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   BIRCH_DOOR:
     tool: AXE
     hardness: 3
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   JUNGLE_DOOR:
     tool: AXE
     hardness: 3
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   ACACIA_DOOR:
     tool: AXE
     hardness: 3
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
   DARK_OAK_DOOR:
     tool: AXE
     hardness: 3
     lightOpacity: 0
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  STRUCTURE_BLOCK:
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
+  END_GATEWAY:
+    pistonPushBehavior: DONT_MOVE
+    pistonPullBehavior: DONT_MOVE
+  WHITE_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  ORANGE_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  MAGENTA_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  LIGHT_BLUE_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  YELLOW_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  LIME_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  PINK_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  GRAY_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  SILVER_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  CYAN_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  PURPLE_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  BLUE_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  BROWN_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  GREEN_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  RED_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  BLACK_GLAZED_TERRACOTTA:
+    pistonPushBehavior: MOVE
+    pistonPullBehavior: DONT_MOVE
+  CHORUS_PLANT:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  CHORUS_FLOWER:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  WHITE_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  ORANGE_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  MAGENTA_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  LIGHT_BLUE_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  YELLOW_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  LIME_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  PINK_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  GRAY_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  SILVER_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  CYAN_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  PURPLE_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  BLUE_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  BROWN_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  GREEN_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  RED_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
+  BLACK_SHULKER_BOX:
+    pistonPushBehavior: BREAK
+    pistonPullBehavior: DONT_MOVE
