@@ -275,7 +275,7 @@ public class BlockPiston extends BlockDirectional {
     }
 
     private void breakBlock(GlowBlock block) {
-        if(block.isEmpty()) {
+        if (block.isEmpty()) {
             return;
         }
 
