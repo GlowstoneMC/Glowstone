@@ -8,6 +8,7 @@ import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.constants.GameRules;
 import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
@@ -91,7 +92,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
 
             if (!effect) { // if it's not just a visual effect
                 // set target block on fire if required
-                if (world.getGameRuleMap().getBoolean("doFireTick")) {
+                if (world.getGameRuleMap().getBoolean(GameRules.DO_FIRE_TICK)) {
                     GlowBlock block = world.getBlockAt(location);
                     setBlockOnFire(block);
                     for (int i = 0; i < 4; i++) {

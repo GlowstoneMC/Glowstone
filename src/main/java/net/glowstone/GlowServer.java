@@ -15,8 +15,6 @@ import com.tobedevoured.naether.NaetherException;
 import com.tobedevoured.naether.api.Naether;
 import com.tobedevoured.naether.impl.NaetherImpl;
 import com.tobedevoured.naether.util.RepoBuilder;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.kqueue.KQueue;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -132,6 +130,7 @@ import net.glowstone.io.anvil.AnvilWorldStorageProvider;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.Networking;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.net.message.play.player.AdvancementsMessage;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
@@ -427,14 +426,6 @@ public class GlowServer implements Server {
      */
     @Getter
     private final FishingRewardManager fishingRewardManager;
-    /**
-     * Whether the Linux epoll native transport is available for Netty.
-     */
-    public static final boolean EPOLL = Epoll.isAvailable();
-    /**
-     * Whether the macOS/BSD kqueue native transport is available for Netty.
-     */
-    public static final boolean KQUEUE = KQueue.isAvailable();
     /**
      * Libraries that are known to cause problems when loaded up via the server config or plugin
      * dependencies.
@@ -880,9 +871,9 @@ public class GlowServer implements Server {
     }
 
     private void bind() {
-        if (EPOLL) {
+        if (Networking.EPOLL_AVAILABLE) {
             ConsoleMessages.Info.NativeTransport.EPOLL.log();
-        } else if (KQUEUE) {
+        } else if (Networking.KQUEUE_AVAILABLE) {
             ConsoleMessages.Info.NativeTransport.KQUEUE.log();
         }
 
@@ -2129,13 +2120,7 @@ public class GlowServer implements Server {
     }
 
     @Override
-    public int broadcastMessage(String message) {
-        return broadcast(message, BROADCAST_CHANNEL_USERS);
-    }
-
-    @Override
     public int broadcast(String message, String permission) {
-        int count = 0;
         Set<CommandSender> sent = new HashSet<>();
         for (Permissible permissible : getPluginManager().getPermissionSubscriptions(permission)) {
             if (permissible instanceof CommandSender && permissible.hasPermission(permission)) {
@@ -2155,12 +2140,19 @@ public class GlowServer implements Server {
 
     @Override
     public void broadcast(BaseComponent component) {
-
+        broadcastMessage(component.toLegacyText());
     }
 
     @Override
     public void broadcast(BaseComponent... components) {
+        for (BaseComponent component : components) {
+            broadcast(component);
+        }
+    }
 
+    @Override
+    public int broadcastMessage(String message) {
+        return broadcast(message, BROADCAST_CHANNEL_USERS);
     }
 
     /**

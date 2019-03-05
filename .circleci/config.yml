@@ -1,16 +1,12 @@
 version: 2
-machine:
-    environment:
-      _JAVA_OPTIONS: "-Xms1024m -Xmx1024m"
 defaults: &defaults
     machine:
-        # If updating to a JDK9 image, ensure that build-deploy still tests against JDK8 until we drop support for it
         image: circleci/classic:201711-01
 
     working_directory: ~/glowstone
 
     environment:
-        MAVEN_OPTS: -Xmx1024m
+        JAVA_TOOL_OPTIONS: -Xmx1024m -XX:+AggressiveOpts -XX:+UseG1GC
 jobs:
     build:
         <<: *defaults
@@ -27,7 +23,7 @@ jobs:
                 # Fallback to latest cache is an exact match is not found
                 - glowstone-
 
-            - run: mvn -T 1C -B dependency:go-offline
+            - run: mvn -T 1C -B dependency:resolve-plugins dependency:go-offline
 
             - save_cache:
                 paths:
@@ -96,7 +92,7 @@ jobs:
                 # Fallback to latest cache is an exact match is not found
                 - glowstone-
 
-            - run: mvn -T 1C -B dependency:go-offline
+            - run: mvn -T 1C -B dependency:resolve-plugins dependency:go-offline
 
             - save_cache:
                 paths:
