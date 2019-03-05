@@ -8,7 +8,10 @@ import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.entity.monster.GlowPigZombie;
+import net.glowstone.entity.passive.GlowPig;
 import net.glowstone.entity.physics.BoundingBox;
+import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.entity.SpawnLightningStrikeMessage;
 import org.bukkit.Location;
@@ -20,9 +23,12 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.Pig;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PigZapEvent;
 import org.bukkit.util.Vector;
 
 /**
@@ -112,6 +118,19 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
                     if (entity instanceof Damageable) {
                         ((Damageable) entity)
                             .damage(5, this, EntityDamageEvent.DamageCause.LIGHTNING);
+                    }
+                    if (entity instanceof Pig) {
+                        GlowPig pig = (GlowPig) entity;
+                        GlowPigZombie zombie = EntityStorage.create(GlowPigZombie.class, location);
+                        PigZapEvent event = new PigZapEvent(pig, this, zombie);
+                        if (EventFactory.getInstance().callEvent(event).isCancelled()) {
+                            zombie.remove();
+                        } else {
+                            // Only the custom name is copied, all other attributes are overwritten
+                            zombie.setCustomName(pig.getCustomName());
+                            pig.remove();
+                            world.spawn(location, zombie, CreatureSpawnEvent.SpawnReason.LIGHTNING);
+                        }
                     }
                     entity.setFireTicks(entity.getMaxFireTicks());
                 }

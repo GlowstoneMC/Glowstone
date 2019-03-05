@@ -1433,6 +1433,35 @@ public class GlowWorld implements World {
         return null; // TODO: work on type mismatches
     }
 
+    //Needed for Events which mutate Entities before they are spawned
+    public <T extends GlowEntity> T spawn(Location location, T entity, SpawnReason reason)
+            throws IllegalArgumentException {
+        checkNotNull(entity).setRawLocation(location, false);
+        checkNotNull(reason);
+        checkNotNull(location);
+        try {
+            EntitySpawnEvent spawnEvent = null;
+            if (entity instanceof LivingEntity) {
+                spawnEvent = EventFactory.getInstance()
+                    .callEvent(new CreatureSpawnEvent((LivingEntity) entity, reason));
+            } else if (!(entity instanceof Item)) { // ItemSpawnEvent is called elsewhere
+                spawnEvent = EventFactory.getInstance().callEvent(new EntitySpawnEvent(entity));
+            }
+            if (spawnEvent != null && spawnEvent.isCancelled()) {
+                // TODO: separate spawning and construction for better event cancellation
+                entity.remove();
+            } else {
+                List<Message> spawnMessage = entity.createSpawnMessage();
+                getRawPlayers().stream().filter(player -> player.canSeeEntity(entity))
+                    .forEach(player -> player.getSession().sendAll(spawnMessage
+                        .toArray(new Message[spawnMessage.size()])));
+            }
+        } catch (Throwable t) {
+            GlowServer.logger.log(Level.SEVERE, "Unable to spawn entity: ", t);
+        }
+        return entity;
+    }
+
     /**
      * Spawns an entity.
      *
