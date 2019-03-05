@@ -882,10 +882,8 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 deathEvent.getDrops().addAll(data.getItems());
                 // Only drop experience when hit by a player within 5 seconds (100 game ticks)
                 if (ticksLived - playerDamageTick <= 100 && data.getExperience() > 0) {
-                    // split experience
-                    Integer[] values = ExperienceSplitter.cut(data.getExperience());
                     ThreadLocalRandom random = ThreadLocalRandom.current();
-                    for (Integer exp : values) {
+                    ExperienceSplitter.forEachCut(data.getExperience(), exp -> {
                         double modX = random.nextDouble() - 0.5;
                         double modZ = random.nextDouble() - 0.5;
                         Location xpLocation = new Location(world,
@@ -898,7 +896,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                         if (getLastDamager() != null) {
                             orb.setTriggerEntityId(getLastDamager().getUniqueId());
                         }
-                    }
+                    });
                 }
             }
             deathEvent = EventFactory.getInstance().callEvent(deathEvent);
