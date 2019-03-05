@@ -213,7 +213,7 @@ public class GlowBossBar implements BossBar {
             flags |= 0x02;
         }
         if (this.flags.contains(BarFlag.CREATE_FOG)) {
-            flags |= 0x02;
+            flags |= 0x04;
         }
         return flags;
     }
