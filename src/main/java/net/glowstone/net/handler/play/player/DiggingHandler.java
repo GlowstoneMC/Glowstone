@@ -14,6 +14,7 @@ import net.glowstone.block.blocktype.BlockContainer;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemTimedUsage;
 import net.glowstone.block.itemtype.ItemType;
+import net.glowstone.constants.GameRules;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.net.GlowSession;
@@ -171,7 +172,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             // destroy the block
             if (!block.isEmpty() && !block.isLiquid() && (player.getGameMode() != GameMode.CREATIVE
                     || blockType instanceof BlockContainer) && world.getGameRuleMap()
-                    .getBoolean("doTileDrops")) {
+                    .getBoolean(GameRules.DO_TILE_DROPS)) {
                 Collection<ItemStack> drops = blockType.getDrops(block, holding);
                 if (blockType instanceof BlockContainer
                         && player.getGameMode() == GameMode.CREATIVE) {

@@ -24,6 +24,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
@@ -855,7 +856,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 return;
             }
             List<ItemStack> items = null;
-            boolean dropInventory = !world.getGameRuleMap().getBoolean("keepInventory");
+            boolean dropInventory = !world.getGameRuleMap().getBoolean(GameRules.KEEP_INVENTORY);
             if (dropInventory) {
                 items = Arrays.stream(player.getInventory().getContents())
                         .filter(stack -> !InventoryUtil.isEmpty(stack))
@@ -876,7 +877,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             player.incrementStatistic(Statistic.DEATHS);
         } else {
             EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
-            if (world.getGameRuleMap().getBoolean("doMobLoot")) {
+            if (world.getGameRuleMap().getBoolean(GameRules.DO_MOB_LOOT)) {
                 LootData data = LootingManager.generate(this);
                 deathEvent.getDrops().addAll(data.getItems());
                 // Only drop experience when hit by a player within 5 seconds (100 game ticks)

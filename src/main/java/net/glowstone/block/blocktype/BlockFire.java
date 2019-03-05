@@ -8,6 +8,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Difficulty;
@@ -74,7 +75,7 @@ public class BlockFire extends BlockNeedsAttached {
 
     @Override
     public void updateBlock(GlowBlock block) {
-        if (!block.getWorld().getGameRuleMap().getBoolean("doFireTick")) {
+        if (!block.getWorld().getGameRuleMap().getBoolean(GameRules.DO_FIRE_TICK)) {
             return;
         }
 
