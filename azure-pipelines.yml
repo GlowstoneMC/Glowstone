@@ -6,17 +6,54 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
+jobs:
+- job: build
+  displayName: "Test"
 
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: false
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+  pool:
+    vmImage: ubuntu-16.04
+  
+  variables:
+    JAVA_TOOL_OPTIONS: "-Xmx1024m -XX:+AggressiveOpts -XX:+UseG1GC"
+
+  steps:
+  - task: Maven@3
+    displayName: "Maven: Setup"
+    inputs:
+      mavenPomFile: "pom.xml"
+      mavenOptions: "-B"
+      javaHomeOption: "JDKVersion"
+      jdkVersionOption: "1.11"
+      jdkArchitectureOption: "x64"
+      publishJUnitResults: false
+      goals: "dependency:resolve-plugins dependency:go-offline"
+  
+  - task: Maven@3
+    displayName: "Maven: Build"
+    inputs:
+      mavenPomFile: "pom.xml"
+      mavenOptions: "-B"
+      javaHomeOption: "JDKVersion"
+      jdkVersionOption: "1.8"
+      jdkArchitectureOption: "x64"
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: "package source:jar javadoc:jar"
+
+  - task: PublishPipelineArtifact@0
+    displayName: "Artifact: Glowstone"
+    inputs:
+      artifactName: 'Glowstone'
+      targetPath: 'target/glowstone.jar'
+
+  - task: PublishPipelineArtifact@0
+    displayName: "Artifact: JavaDoc JAR"
+    inputs:
+      artifactName: 'JavaDoc JAR'
+      targetPath: 'target/glowstone-javadoc.jar'
+
+  - task: PublishPipelineArtifact@0
+    displayName: "Artifact: Sources JAR"
+    inputs:
+      artifactName: 'Sources JAR'
+      targetPath: 'target/glowstone-sources.jar'
