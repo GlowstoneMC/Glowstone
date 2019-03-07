@@ -14,19 +14,9 @@ jobs:
     vmImage: ubuntu-16.04
   
   variables:
-    JAVA_TOOL_OPTIONS: "-Xmx1024m -XX:+AggressiveOpts -XX:+UseG1GC"
+    JAVA_TOOL_OPTIONS: "-XX:+AggressiveOpts -XX:+UseG1GC"
 
   steps:
-  - task: Maven@3
-    displayName: "Maven: Setup"
-    inputs:
-      mavenPomFile: "pom.xml"
-      javaHomeOption: "JDKVersion"
-      jdkVersionOption: "1.8"
-      jdkArchitectureOption: "x64"
-      publishJUnitResults: false
-      goals: "dependency:resolve-plugins dependency:go-offline"
-  
   - task: Maven@3
     displayName: "Maven: Build"
     inputs:
