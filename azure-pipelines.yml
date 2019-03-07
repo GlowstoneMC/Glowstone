@@ -21,9 +21,8 @@ jobs:
     displayName: "Maven: Setup"
     inputs:
       mavenPomFile: "pom.xml"
-      mavenOptions: "-B"
       javaHomeOption: "JDKVersion"
-      jdkVersionOption: "1.11"
+      jdkVersionOption: "1.8"
       jdkArchitectureOption: "x64"
       publishJUnitResults: false
       goals: "dependency:resolve-plugins dependency:go-offline"
@@ -32,7 +31,6 @@ jobs:
     displayName: "Maven: Build"
     inputs:
       mavenPomFile: "pom.xml"
-      mavenOptions: "-B"
       javaHomeOption: "JDKVersion"
       jdkVersionOption: "1.8"
       jdkArchitectureOption: "x64"
