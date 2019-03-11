@@ -330,6 +330,8 @@
         <configuration>
           <failIfNoTests>true</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
         </configuration>
       </plugin>
       <plugin>
