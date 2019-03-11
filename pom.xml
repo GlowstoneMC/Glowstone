@@ -335,7 +335,7 @@
       <plugin>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok-maven-plugin</artifactId>
-        <version>1.16.22.0</version>
+        <version>1.18.4.0</version>
         <executions>
           <execution>
             <id>delombok</id>
@@ -384,6 +384,11 @@
 
   <reporting>
     <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.4-SNAPSHOT</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

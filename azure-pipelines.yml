@@ -21,8 +21,10 @@ jobs:
     displayName: "Maven: Build"
     inputs:
       mavenPomFile: "pom.xml"
+
+      codeCoverageToolOption: "jaCoCo"
       javaHomeOption: "JDKVersion"
-      jdkVersionOption: "1.8"
+      jdkVersionOption: "1.11"
       jdkArchitectureOption: "x64"
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
