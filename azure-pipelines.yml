@@ -24,7 +24,7 @@ jobs:
     inputs:
       mavenPomFile: "pom.xml"
 
-      codeCoverageToolOption: "cobertura"
+      codeCoverageToolOption: "jaCoCo"
       javaHomeOption: "JDKVersion"
       jdkVersionOption: "1.11"
       jdkArchitectureOption: "x64"

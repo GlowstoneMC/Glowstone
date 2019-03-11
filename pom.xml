@@ -330,6 +330,8 @@
         <configuration>
           <failIfNoTests>true</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
         </configuration>
       </plugin>
       <plugin>
@@ -385,9 +387,9 @@
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.7</version>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.4-SNAPSHOT</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
