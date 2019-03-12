@@ -4,7 +4,9 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- master
+  branches:
+    include:
+    - "*"
 
 jobs:
 - job: build
@@ -12,36 +14,54 @@ jobs:
 
   pool:
     vmImage: ubuntu-16.04
-  
+
   variables:
-    JAVA_TOOL_OPTIONS: "-XX:+AggressiveOpts -XX:+UseG1GC"
+    JAVA_TOOL_OPTIONS: "-XX:+UseG1GC"  # No aggressive opts in JDK 11
 
   steps:
   - task: Maven@3
     displayName: "Maven: Build"
+
     inputs:
+      mavenOptions: '-Xmx2048m'
       mavenPomFile: "pom.xml"
+
       javaHomeOption: "JDKVersion"
-      jdkVersionOption: "1.8"
+      jdkVersionOption: "1.11"
       jdkArchitectureOption: "x64"
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
       goals: "package source:jar javadoc:jar"
+      options: "--batch-mode"
+
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish Coverage Results"
+
+    inputs:
+      codeCoverageTool: "jaCoCo"
+      summaryFileLocation: "$(System.DefaultWorkingDirectory)/target/site/jacoco/jacoco.xml"
+      reportDirectory: "$(System.DefaultWorkingDirectory)/target/site/jacoco"
+      additionalCodeCoverageFiles: "$(System.DefaultWorkingDirectory)/**/jacoco.exec"
+      failIfCoverageEmpty: false
 
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: Glowstone"
+
     inputs:
       artifactName: 'Glowstone'
       targetPath: 'target/glowstone.jar'
 
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: JavaDoc JAR"
+
     inputs:
       artifactName: 'JavaDoc JAR'
       targetPath: 'target/glowstone-javadoc.jar'
 
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: Sources JAR"
+
     inputs:
       artifactName: 'Sources JAR'
       targetPath: 'target/glowstone-sources.jar'
