@@ -12,12 +12,6 @@ jobs:
 - job: build
   displayName: "Build"
 
-  matrix:
-    Java8:
-      jdk_version: 1.8
-    Java11:
-      jdk_version: 1.11
-
   pool:
     vmImage: ubuntu-16.04
 
@@ -33,7 +27,7 @@ jobs:
       mavenPomFile: "pom.xml"
 
       javaHomeOption: "JDKVersion"
-      jdkVersionOption: "$(jdk_version)"
+      jdkVersionOption: "1.11"
       jdkArchitectureOption: "x64"
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
