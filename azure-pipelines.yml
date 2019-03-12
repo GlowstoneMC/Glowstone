@@ -10,7 +10,7 @@ trigger:
 
 jobs:
 - job: build
-  displayName: "Test"
+  displayName: "Build"
 
   pool:
     vmImage: ubuntu-16.04
@@ -51,6 +51,7 @@ jobs:
     inputs:
       artifactName: 'Glowstone'
       targetPath: 'target/glowstone.jar'
+      publishLocation: 'container'
 
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: JavaDoc JAR"
@@ -58,6 +59,7 @@ jobs:
     inputs:
       artifactName: 'JavaDoc JAR'
       targetPath: 'target/glowstone-javadoc.jar'
+      publishLocation: 'container'
 
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: Sources JAR"
@@ -65,3 +67,4 @@ jobs:
     inputs:
       artifactName: 'Sources JAR'
       targetPath: 'target/glowstone-sources.jar'
+      publishLocation: 'container'
