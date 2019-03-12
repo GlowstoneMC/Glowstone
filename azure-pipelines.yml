@@ -21,6 +21,7 @@ jobs:
   steps:
   - task: Maven@3
     displayName: "Maven: Build"
+
     inputs:
       mavenOptions: '-Xmx2048m'
       mavenPomFile: "pom.xml"
@@ -34,20 +35,39 @@ jobs:
       goals: "package source:jar javadoc:jar"
       options: "--batch-mode"
 
+  - task: CmdLine@2
+    displayName: "Output contents of target/site/jacoco"
+
+    inputs:
+      script: "ls $(System.DefaultWorkingDirectory)/target/site/jacoco"
+
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish Coverage Results"
+
+    inputs:
+      codeCoverageTool: "jaCoCo"
+      summaryFileLocation: "$(System.DefaultWorkingDirectory)/target/site/jacoco/coverage.xml"
+      reportDirectory: "$(System.DefaultWorkingDirectory)/target/site/jacoco"
+      additionalCodeCoverageFiles: "$(System.DefaultWorkingDirectory)/**/jacoco.exec"
+      failIfCoverageEmpty: false
+
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: Glowstone"
+
     inputs:
       artifactName: 'Glowstone'
       targetPath: 'target/glowstone.jar'
 
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: JavaDoc JAR"
+
     inputs:
       artifactName: 'JavaDoc JAR'
       targetPath: 'target/glowstone-javadoc.jar'
 
   - task: PublishPipelineArtifact@0
     displayName: "Artifact: Sources JAR"
+
     inputs:
       artifactName: 'Sources JAR'
       targetPath: 'target/glowstone-sources.jar'
