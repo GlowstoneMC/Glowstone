@@ -22,9 +22,9 @@ jobs:
   - task: Maven@3
     displayName: "Maven: Build"
     inputs:
+      mavenOptions: '-Xmx2048m'
       mavenPomFile: "pom.xml"
 
-      codeCoverageToolOption: "jaCoCo"
       javaHomeOption: "JDKVersion"
       jdkVersionOption: "1.11"
       jdkArchitectureOption: "x64"
