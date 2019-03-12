@@ -14,7 +14,7 @@ jobs:
 
   pool:
     vmImage: ubuntu-16.04
-  
+
   variables:
     JAVA_TOOL_OPTIONS: "-XX:+AggressiveOpts -XX:+UseG1GC"
 
@@ -23,6 +23,7 @@ jobs:
     displayName: "Maven: Build"
     inputs:
       mavenPomFile: "pom.xml"
+      mavenOptions: "--batch-mode"
 
       codeCoverageToolOption: "jaCoCo"
       javaHomeOption: "JDKVersion"
