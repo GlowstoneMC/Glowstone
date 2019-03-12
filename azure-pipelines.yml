@@ -16,8 +16,10 @@ jobs:
     matrix:
       Java8:
         jdk_version: 1.8
+        artifact_suffix: '-Java8'
       Java11:
         jdk_version: 1.11
+        artifact_suffix: ''
 
   pool:
     vmImage: ubuntu-16.04
@@ -57,7 +59,7 @@ jobs:
 
     inputs:
       artifactName: 'Glowstone'
-      targetPath: 'target/glowstone.jar'
+      targetPath: 'target/glowstone$(artifact_suffix).jar'
       publishLocation: 'container'
 
   - task: PublishPipelineArtifact@0
@@ -65,7 +67,7 @@ jobs:
 
     inputs:
       artifactName: 'JavaDoc JAR'
-      targetPath: 'target/glowstone-javadoc.jar'
+      targetPath: 'target/glowstone-javadoc$(artifact_suffix).jar'
       publishLocation: 'container'
 
   - task: PublishPipelineArtifact@0
@@ -73,5 +75,5 @@ jobs:
 
     inputs:
       artifactName: 'Sources JAR'
-      targetPath: 'target/glowstone-sources.jar'
+      targetPath: 'target/glowstone-sources$(artifact_suffix).jar'
       publishLocation: 'container'
