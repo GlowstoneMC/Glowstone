@@ -16,7 +16,7 @@ jobs:
     matrix:
       Java8:
         jdk_version: 1.8
-        artifact_suffix: ' (Java 8)'
+        artifact_suffix: '-Java8'
       Java11:
         jdk_version: 1.11
         artifact_suffix: ''
