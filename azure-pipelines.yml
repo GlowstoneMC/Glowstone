@@ -45,21 +45,21 @@ jobs:
       additionalCodeCoverageFiles: "$(System.DefaultWorkingDirectory)/**/jacoco.exec"
       failIfCoverageEmpty: false
 
-  - task: PublishBuildArtifacts@0
+  - task: PublishBuildArtifacts@1
     displayName: "Artifact: Glowstone"
 
     inputs:
       artifactName: 'Glowstone'
       pathtoPublish: 'target/glowstone.jar'
 
-  - task: PublishBuildArtifacts@0
+  - task: PublishBuildArtifacts@1
     displayName: "Artifact: JavaDoc JAR"
 
     inputs:
       artifactName: 'JavaDoc JAR'
       pathtoPublish: 'target/glowstone-javadoc.jar'
 
-  - task: PublishBuildArtifacts@0
+  - task: PublishBuildArtifacts@1
     displayName: "Artifact: Sources JAR"
 
     inputs:
