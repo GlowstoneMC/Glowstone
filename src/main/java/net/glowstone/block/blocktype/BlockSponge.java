@@ -5,7 +5,6 @@ import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.util.BlockMaterialValidator;
 import net.glowstone.util.TaxicabBlockIterator;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -38,7 +37,7 @@ public class BlockSponge extends BlockType {
             TaxicabBlockIterator iterator = new TaxicabBlockIterator(block);
             iterator.setMaxDistance(7);
             iterator.setMaxBlocks(66);
-            iterator.setValidator(new BlockMaterialValidator(WATER_MATERIALS));
+            iterator.setPredicate(x -> WATER_MATERIALS.contains(x.getType()));
 
             if (iterator.hasNext()) {
                 sponge = sponge.clone();
