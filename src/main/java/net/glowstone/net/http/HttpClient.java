@@ -29,7 +29,7 @@ import net.glowstone.net.Networking;
 
 public class HttpClient {
 
-    # TODO: support configurable DNS servers in glowstone.yml and add IPv6 defaults
+    // TODO: support configurable DNS servers in glowstone.yml and add IPv6 defaults
     private static MultiDnsServerAddressStreamProvider dnsProvider = new DnsAddressResolverGroup(
             Networking.bestDatagramChannel(),
             new MultiDnsServerAddressStreamProvider(
