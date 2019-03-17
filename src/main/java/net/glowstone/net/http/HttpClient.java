@@ -16,7 +16,9 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsAddressResolverGroup;
+import io.netty.resolver.dns.DnsServerAddressStreamProviders;
 import io.netty.resolver.dns.MultiDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.SequentialDnsServerAddressStreamProvider;
 import io.netty.util.internal.SocketUtils;
@@ -30,16 +32,15 @@ import net.glowstone.net.Networking;
 public class HttpClient {
 
     // TODO: support configurable DNS servers in glowstone.yml and add IPv6 defaults
-    private static MultiDnsServerAddressStreamProvider dnsProvider = new DnsAddressResolverGroup(
-            Networking.bestDatagramChannel(),
-            new MultiDnsServerAddressStreamProvider(
-                    DnsServerAddressStreamProviders.platformDefault(),
-                    new SequentialDnsServerAddressStreamProvider(
-                            SocketUtils.socketAddress("1.1.1.1", DefaultDnsServerAddressStreamProvider.DNS_PORT),
-                            SocketUtils.socketAddress("1.0.0.1", DefaultDnsServerAddressStreamProvider.DNS_PORT)
-                        )
-                )
-        );
+    private static MultiDnsServerAddressStreamProvider dnsProvider = new MultiDnsServerAddressStreamProvider(
+            DnsServerAddressStreamProviders.platformDefault(),
+            new SequentialDnsServerAddressStreamProvider(
+                    SocketUtils.socketAddress("1.1.1.1", DefaultDnsServerAddressStreamProvider.DNS_PORT),
+                    SocketUtils.socketAddress("1.0.0.1", DefaultDnsServerAddressStreamProvider.DNS_PORT)));
+    
+    private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(
+        Networking.bestDatagramChannel(),
+        dnsProvider);
 
     /**
      * Opens a URL.
