@@ -43,14 +43,16 @@ public class TestForCommand extends GlowVanillaCommand {
             entities = target.getMatched(CommandUtils.getLocation(sender));
 
             if (entities.length == 0) {
-                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
         } else {
             // TODO: Select custom-named non-player entities?
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
-                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 entities = new Entity[]{player};
@@ -63,7 +65,8 @@ public class TestForCommand extends GlowVanillaCommand {
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
-                sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
+                        .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
             for (Entity entity : entities) {
@@ -71,7 +74,8 @@ public class TestForCommand extends GlowVanillaCommand {
                     CompoundTag entityTag = new CompoundTag();
                     EntityStorage.save((GlowEntity) entity, entityTag);
                     if (tag.matches(entityTag)) {
-                        sender.sendMessage("Found " + CommandUtils.getName(entity));
+                        sender.sendMessage(
+                                "Found " + CommandUtils.getName(entity));
                     } else {
                         sender.sendMessage(ChatColor.RED + CommandUtils.getName(entity)
                                 + " did not match the required data structure");

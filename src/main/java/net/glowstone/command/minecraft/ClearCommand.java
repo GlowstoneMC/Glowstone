@@ -62,14 +62,16 @@ public class ClearCommand extends GlowVanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                messages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                messages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players.add(player);
             }
         }
         if (players.size() == 0) {
-            messages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+            messages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                    .sendInColor(ChatColor.RED, sender, name);
             return false;
         }
         if (args.length >= 2) {
@@ -86,7 +88,8 @@ public class ClearCommand extends GlowVanillaCommand {
                 try {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
-                    messages.getNotANumber().sendInColor(ChatColor.RED, sender, dataString);
+                    messages.getGeneric(GenericMessage.NAN)
+                            .sendInColor(ChatColor.RED, sender, dataString);
                     return false;
                 }
                 if (data < -1) {
@@ -100,7 +103,8 @@ public class ClearCommand extends GlowVanillaCommand {
                     try {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
-                        messages.getNotANumber().sendInColor(ChatColor.RED, sender, amountString);
+                        messages.getGeneric(GenericMessage.NAN)
+                                .sendInColor(ChatColor.RED, sender, amountString);
                         return false;
                     }
                     if (amount < -1) {

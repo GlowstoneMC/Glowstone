@@ -79,13 +79,12 @@ public class SetBlockCommand extends GlowVanillaCommand {
                 tag.mergeInto(prev, true);
                 block.getBlockEntity().loadNbt(prev);
             } catch (MojangsonParseException e) {
-                new LocalizedStringImpl("setblock.invalid.data",
-                        commandMessages.getResourceBundle())
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
                         .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
         }
-        new LocalizedStringImpl("setblock.invalid.data", commandMessages.getResourceBundle())
+        new LocalizedStringImpl("setblock.done", commandMessages.getResourceBundle())
                 .send(sender);
         return true;
     }
