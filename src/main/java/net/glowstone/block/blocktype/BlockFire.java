@@ -1,6 +1,7 @@
 package net.glowstone.block.blocktype;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
@@ -54,7 +55,7 @@ public class BlockFire extends BlockNeedsAttached {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override
