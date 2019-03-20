@@ -9,8 +9,18 @@ trigger:
     - "*"
 
 jobs:
-- job: build-java8
-  displayName: "Build (Java 8)"
+- job: build
+  displayName: "Build"
+
+  strategy:
+    matrix:
+      Java8:
+        jdk_version: 1.8
+        artifact_suffix: '-Java8'
+      Java11:
+        jdk_version: 1.11
+        artifact_suffix: ''
+
   pool:
     vmImage: ubuntu-16.04
   variables:
@@ -20,7 +30,6 @@ jobs:
   steps:
   - template: etc/azure-templates/build.yml
   - template: etc/azure-templates/publish-artifacts.yml
-jobs:
 - job: build-java11
   displayName: "Build (Java 11)"
   pool:
@@ -33,11 +42,34 @@ jobs:
   - template: etc/azure-templates/build.yml
   - task: PublishCodeCoverageResults@1
     displayName: "Publish Coverage Results"
+
     inputs:
       codeCoverageTool: "jaCoCo"
       summaryFileLocation: "$(System.DefaultWorkingDirectory)/target/site/jacoco/jacoco.xml"
       reportDirectory: "$(System.DefaultWorkingDirectory)/target/site/jacoco"
       additionalCodeCoverageFiles: "$(System.DefaultWorkingDirectory)/**/jacoco.exec"
       failIfCoverageEmpty: false
-  - template: etc/azure-templates/publish-artifacts.yml
-  
+
+  - task: PublishPipelineArtifact@0
+    displayName: "Artifact: Glowstone"
+
+    inputs:
+      artifactName: 'Glowstone'
+      targetPath: 'target/glowstone$(artifact_suffix).jar'
+      publishLocation: 'container'
+
+  - task: PublishPipelineArtifact@0
+    displayName: "Artifact: JavaDoc JAR"
+
+    inputs:
+      artifactName: 'JavaDoc JAR'
+      targetPath: 'target/glowstone-javadoc$(artifact_suffix).jar'
+      publishLocation: 'container'
+
+  - task: PublishPipelineArtifact@0
+    displayName: "Artifact: Sources JAR"
+
+    inputs:
+      artifactName: 'Sources JAR'
+      targetPath: 'target/glowstone-sources$(artifact_suffix).jar'
+      publishLocation: 'container'
