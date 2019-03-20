@@ -9,7 +9,7 @@ trigger:
     - "*"
 
 jobs:
-- job: build
+- job: build8
   displayName: "Build"
   pool:
     vmImage: ubuntu-16.04
@@ -19,7 +19,7 @@ jobs:
   steps:
   - template: etc/azure-templates/build.yml
   - template: etc/azure-templates/publish-artifacts.yml
-- job: build-java11
+- job: build11
   displayName: "Build (Java 11)"
   pool:
     vmImage: ubuntu-16.04
