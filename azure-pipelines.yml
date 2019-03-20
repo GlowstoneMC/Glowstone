@@ -16,7 +16,7 @@ jobs:
     matrix:
       Java8:
         jdk_version: 1.8
-        artifact_suffix: '-Java8'
+        artifact_suffix: ' (Java 8)'
       Java11:
         jdk_version: 1.11
         artifact_suffix: ''
@@ -58,8 +58,8 @@ jobs:
     displayName: "Artifact: Glowstone"
 
     inputs:
-      artifactName: 'Glowstone'
-      targetPath: 'target/glowstone$(artifact_suffix).jar'
+      artifactName: 'Glowstone$(artifact_suffix)'
+      targetPath: 'target/glowstone.jar'
       publishLocation: 'container'
 
   - task: PublishPipelineArtifact@0
