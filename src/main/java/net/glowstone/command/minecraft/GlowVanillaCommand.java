@@ -4,7 +4,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -219,12 +221,13 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             this.description = description;
             this.usageMessage = usageMessage;
             this.permissionMessage = permissionMessage;
-            ImmutableMap.Builder<GenericMessage, LocalizedString>
-                    genericMessages = ImmutableMap.builder();
+            // ImmutableMap.Builder does not optimize for enums, but immutableEnumMap does
+            EnumMap<GenericMessage, LocalizedString> genericMessages
+                    = new EnumMap<GenericMessage, LocalizedString>(GenericMessage.class);
             for (GenericMessage message : GenericMessage.values()) {
                 genericMessages.put(message, new LocalizedStringImpl(message.key, resourceBundle));
             }
-            this.genericMessages = genericMessages.build();
+            this.genericMessages = Maps.immutableEnumMap(genericMessages);
             joiner = new LocalizedStringImpl(JOINER, bundle).get();
         }
 
