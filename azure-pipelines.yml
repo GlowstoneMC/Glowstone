@@ -48,9 +48,8 @@ jobs:
 
   - task: PublishCodeCoverageResults@1
     displayName: "Publish Coverage Results"
-
+    enabled: $(coverage)
     inputs:
-      enabled: $(coverage)
       codeCoverageTool: "jaCoCo"
       summaryFileLocation: "$(System.DefaultWorkingDirectory)/target/site/jacoco/jacoco.xml"
       reportDirectory: "$(System.DefaultWorkingDirectory)/target/site/jacoco"
