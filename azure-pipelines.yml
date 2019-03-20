@@ -11,20 +11,9 @@ trigger:
 jobs:
 - job: build
   displayName: "Build"
-
-  strategy:
-    matrix:
-      Java8:
-        jdk_version: 1.8
-        artifact_suffix: '-Java8'
-      Java11:
-        jdk_version: 1.11
-        artifact_suffix: ''
-
   pool:
     vmImage: ubuntu-16.04
   variables:
-    JAVA_TOOL_OPTIONS: "-XX:+UseG1GC"  # No aggressive opts in JDK 11
     jdk_version: 1.8
     artifact_suffix: ' (Java 8)'
   steps:
@@ -50,26 +39,4 @@ jobs:
       additionalCodeCoverageFiles: "$(System.DefaultWorkingDirectory)/**/jacoco.exec"
       failIfCoverageEmpty: false
 
-  - task: PublishPipelineArtifact@0
-    displayName: "Artifact: Glowstone"
-
-    inputs:
-      artifactName: 'Glowstone'
-      targetPath: 'target/glowstone$(artifact_suffix).jar'
-      publishLocation: 'container'
-
-  - task: PublishPipelineArtifact@0
-    displayName: "Artifact: JavaDoc JAR"
-
-    inputs:
-      artifactName: 'JavaDoc JAR'
-      targetPath: 'target/glowstone-javadoc$(artifact_suffix).jar'
-      publishLocation: 'container'
-
-  - task: PublishPipelineArtifact@0
-    displayName: "Artifact: Sources JAR"
-
-    inputs:
-      artifactName: 'Sources JAR'
-      targetPath: 'target/glowstone-sources$(artifact_suffix).jar'
-      publishLocation: 'container'
+  - template: etc/azure-templates/publish-artifacts.yml
