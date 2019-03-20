@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -22,7 +23,7 @@ public class TaxicabBlockIterator implements Iterator<Block> {
 
     private int maxDistance = Integer.MAX_VALUE;
     private int maxBlocks = Integer.MAX_VALUE;
-    private Validator<Block> validator;
+    private Predicate<Block> predicate;
 
     /**
      * Creates an instance.
@@ -43,12 +44,12 @@ public class TaxicabBlockIterator implements Iterator<Block> {
         this.maxBlocks = maxBlocks;
     }
 
-    public void setValidator(Validator<Block> validator) {
-        this.validator = validator;
+    public void setPredicate(Predicate<Block> predicate) {
+        this.predicate = predicate;
     }
 
     private boolean isValid(Block block) {
-        return validator == null || validator.isValid(block);
+        return predicate == null || predicate.test(block);
     }
 
     @Override

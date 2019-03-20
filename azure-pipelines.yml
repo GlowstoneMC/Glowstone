@@ -54,26 +54,23 @@ jobs:
       additionalCodeCoverageFiles: "$(System.DefaultWorkingDirectory)/**/jacoco.exec"
       failIfCoverageEmpty: false
 
-  - task: PublishPipelineArtifact@0
+  - task: PublishBuildArtifacts@1
     displayName: "Artifact: Glowstone"
 
     inputs:
       artifactName: 'Glowstone$(artifact_suffix)'
-      targetPath: 'target/glowstone.jar'
-      publishLocation: 'container'
+      pathtoPublish: 'target/glowstone.jar'
 
-  - task: PublishPipelineArtifact@0
+  - task: PublishBuildArtifacts@1
     displayName: "Artifact: JavaDoc JAR"
 
     inputs:
-      artifactName: 'JavaDoc JAR'
-      targetPath: 'target/glowstone-javadoc$(artifact_suffix).jar'
-      publishLocation: 'container'
+      artifactName: 'JavaDoc JAR$(artifact_suffix)'
+      pathtoPublish: 'target/glowstone-javadoc.jar'
 
-  - task: PublishPipelineArtifact@0
+  - task: PublishBuildArtifacts@1
     displayName: "Artifact: Sources JAR"
 
     inputs:
-      artifactName: 'Sources JAR'
-      targetPath: 'target/glowstone-sources$(artifact_suffix).jar'
-      publishLocation: 'container'
+      artifactName: 'Sources JAR$(artifact_suffix)'
+      pathtoPublish: 'target/glowstone-sources.jar'

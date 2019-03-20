@@ -76,5 +76,19 @@ public interface MaterialValueManager {
          * @return the base map color for this material
          */
         byte getBaseMapColor();
+
+        /**
+         * Returns the piston push behavior (move/drop/don't move) of this value. Suitable only for blocks.
+         *
+         * @return the piston push behavior
+         */
+        PistonMoveBehavior getPistonPushBehavior();
+
+        /**
+         * Returns the piston pull behavior (move/drop/don't move) of this value. Suitable only for blocks.
+         *
+         * @return the piston pull behavior
+         */
+        PistonMoveBehavior getPistonPullBehavior();
     }
 }

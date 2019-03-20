@@ -45,7 +45,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         } else {
             warnMaterialData(DoublePlant.class, data);
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override

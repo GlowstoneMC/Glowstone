@@ -112,5 +112,17 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         public byte getBaseMapColor() {
             return ((Number) get("baseMapColor")).byteValue();
         }
+
+        @Override
+        public PistonMoveBehavior getPistonPushBehavior() {
+            String behaviorName = (String) get("pistonPushBehavior");
+            return PistonMoveBehavior.valueOf(behaviorName);
+        }
+
+        @Override
+        public PistonMoveBehavior getPistonPullBehavior() {
+            String behaviorName = (String) get("pistonPullBehavior");
+            return PistonMoveBehavior.valueOf(behaviorName);
+        }
     }
 }
