@@ -16,10 +16,12 @@ jobs:
   variables:
     jdk_version: 1.8
     artifact_suffix: ' (Java 8)'
+
   steps:
   - template: etc/azure-templates/build.yml
   # No coverage reports needed on Java 8
   - template: etc/azure-templates/publish-artifacts.yml
+
 - job: build11
   displayName: "Build (Java 11)"
   pool:
@@ -28,6 +30,7 @@ jobs:
     JAVA_TOOL_OPTIONS: "-XX:+UseG1GC"  # No aggressive opts in JDK 11
     jdk_version: 1.11
     artifact_suffix: ''
+
   steps:
   - template: etc/azure-templates/build.yml
   - task: PublishCodeCoverageResults@1
@@ -41,3 +44,4 @@ jobs:
       failIfCoverageEmpty: false
 
   - template: etc/azure-templates/publish-artifacts.yml
+  
