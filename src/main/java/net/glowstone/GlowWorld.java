@@ -397,7 +397,9 @@ public class GlowWorld implements World {
         name = creator.name();
         environment = creator.environment();
         // end portals are not implemented yet
-        if(environment != Environment.THE_END) travelAgent = new GlowTravelAgent(this);
+        if (environment != Environment.THE_END) {
+            travelAgent = new GlowTravelAgent(this);
+        }
         worldType = creator.type();
         generateStructures = creator.generateStructures();
 
