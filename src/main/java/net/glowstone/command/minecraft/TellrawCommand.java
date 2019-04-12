@@ -1,6 +1,5 @@
 package net.glowstone.command.minecraft;
 
-import net.glowstone.i18n.LocalizedStringImpl;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -36,7 +35,7 @@ public class TellrawCommand extends GlowVanillaCommand {
         Player player = Bukkit.getPlayerExact(args[0]);
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
-            commandMessages.getNoSuchPlayer().send(sender, args[0]);
+            commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER).send(sender, args[0]);
             return false;
         } else {
             StringBuilder message = new StringBuilder();
@@ -53,8 +52,7 @@ public class TellrawCommand extends GlowVanillaCommand {
             try {
                 obj = JSONValue.parseWithException(json);
             } catch (ParseException e) {
-                new LocalizedStringImpl("tellraw.invalid.json.message",
-                        commandMessages.getResourceBundle())
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
                         .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
@@ -63,9 +61,8 @@ public class TellrawCommand extends GlowVanillaCommand {
                 player.sendMessage(components);
                 return true;
             } else {
-                new LocalizedStringImpl("tellraw.invalid.json.message",
-                        commandMessages.getResourceBundle())
-                        .sendInColor(ChatColor.RED, sender);
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
+                        .sendInColor(ChatColor.RED, sender, json);
                 return false;
             }
         }

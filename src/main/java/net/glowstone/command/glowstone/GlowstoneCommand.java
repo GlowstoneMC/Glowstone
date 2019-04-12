@@ -73,7 +73,8 @@ public class GlowstoneCommand extends GlowVanillaCommand {
             boolean execute(CommandSender sender, String label, String[] args,
                     CommandMessages commandMessages) {
                 if (!CommandUtils.isPhysical(sender)) {
-                    commandMessages.getNotPhysical().sendInColor(ChatColor.RED, sender);
+                    commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL)
+                            .sendInColor(ChatColor.RED, sender);
                     return false;
                 }
                 Chunk chunk = CommandUtils.getLocation(sender).getChunk();

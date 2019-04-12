@@ -47,7 +47,7 @@ public class TimeCommand extends GlowVanillaCommand {
                 try {
                     mod = Integer.valueOf(value);
                 } catch (NumberFormatException ex) {
-                    commandMessages.getNotANumber().send(sender, value);
+                    commandMessages.getGeneric(GenericMessage.NAN).send(sender, value);
                     return false;
                 }
             }
@@ -57,7 +57,7 @@ public class TimeCommand extends GlowVanillaCommand {
             try {
                 mod = Integer.valueOf(value);
             } catch (NumberFormatException ex) {
-                commandMessages.getNotANumber().send(sender, value);
+                commandMessages.getGeneric(GenericMessage.NAN).send(sender, value);
                 return false;
             }
             sender.sendMessage("Added " + mod + " to the time");

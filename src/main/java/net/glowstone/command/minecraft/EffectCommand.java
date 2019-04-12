@@ -54,7 +54,8 @@ public class EffectCommand extends GlowVanillaCommand {
         } else {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
-                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players = Collections.singletonList(player);
@@ -83,7 +84,8 @@ public class EffectCommand extends GlowVanillaCommand {
                 try {
                     duration = TickUtil.secondsToTicks(Integer.parseInt(args[2]));
                 } catch (NumberFormatException exc) {
-                    commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[2]);
+                    commandMessages.getGeneric(GenericMessage.NAN)
+                            .sendInColor(ChatColor.RED, sender, args[2]);
                     return false;
                 }
             }
@@ -93,7 +95,8 @@ public class EffectCommand extends GlowVanillaCommand {
                 try {
                     amplifier = Integer.parseInt(args[3]);
                 } catch (NumberFormatException exc) {
-                    commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[3]);
+                    commandMessages.getGeneric(GenericMessage.NAN)
+                            .sendInColor(ChatColor.RED, sender, args[3]);
                     return false;
                 }
             }

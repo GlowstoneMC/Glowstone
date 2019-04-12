@@ -86,7 +86,8 @@ public class PlaySoundCommand extends GlowVanillaCommand {
             final GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(playerPattern);
 
             if (player == null) {
-                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, playerPattern);
+                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, playerPattern);
                 return false;
             } else {
                 targets = Collections.singletonList(player);
@@ -104,7 +105,8 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                     return false;
                 }
             } catch (final NumberFormatException n) {
-                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[8]);
+                commandMessages.getGeneric(GenericMessage.NAN)
+                        .sendInColor(ChatColor.RED, sender, args[8]);
                 return false;
             }
         }
@@ -123,7 +125,8 @@ public class PlaySoundCommand extends GlowVanillaCommand {
                 }
 
             } catch (final NumberFormatException n) {
-                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[7]);
+                commandMessages.getGeneric(GenericMessage.NAN)
+                        .sendInColor(ChatColor.RED, sender, args[7]);
                 return false;
             }
         }
@@ -132,7 +135,8 @@ public class PlaySoundCommand extends GlowVanillaCommand {
             try {
                 volume = Double.valueOf(args[6]);
             } catch (final NumberFormatException n) {
-                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[6]);
+                commandMessages.getGeneric(GenericMessage.NAN)
+                        .sendInColor(ChatColor.RED, sender, args[6]);
                 return false;
             }
         }
