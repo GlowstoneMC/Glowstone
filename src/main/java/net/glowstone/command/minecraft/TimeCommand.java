@@ -1,48 +1,53 @@
 package net.glowstone.command.minecraft;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import net.glowstone.GlowWorld;
+import java.util.Locale;
 import net.glowstone.command.CommandUtils;
-import net.glowstone.command.GlowVanillaCommand;
+import net.glowstone.command.GlowCommandWithSubcommands;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NonNls;
 
-public class TimeCommand extends GlowVanillaCommand {
+public class TimeCommand extends GlowCommandWithSubcommands {
 
-    private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add");
-    private static final List<String> TIMES = Arrays.asList("day", "night");
-
-    /**
-     * Creates the instance for this command.
-     */
-    public TimeCommand() {
-        super("time");
-        setPermission("minecraft.command.time"); // NON-NLS
-    }
-
-    @Override
-    public boolean execute(CommandSender sender, String label, String[] args,
-            CommandMessages commandMessages) {
-        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
+    @NonNls
+    private static final String ROOT_COMMAND_NAME = "time";
+    @NonNls
+    private static final ImmutableList<String> TIMES = ImmutableList.of("day", "night");
+    @NonNls
+    private static final ImmutableList<String> QUERIES =
+            ImmutableList.of("gametime", "daytime", "day");
+    private static final Subcommand ADD = new Subcommand(ROOT_COMMAND_NAME, "add") {
+            @Override
+        protected boolean execute(CommandSender sender, String label, String[] args,
+                CommandMessages commandMessages) {
+            int mod;
+                try {
+                mod = Integer.valueOf(args[1]);
+            } catch (NumberFormatException ex) {
+                commandMessages.getGeneric(GenericMessage.NAN).send(sender, args[1]);
+                return false;
+            }
+            sender.sendMessage("Added " + mod + " to the time");
+            World world = CommandUtils.getWorld(sender);
+            world.setTime(world.getTime() + mod);
             return true;
         }
-        if (args.length != 2) {
-            sendUsageMessage(sender, commandMessages);
-            return false;
-        }
-        GlowWorld world = CommandUtils.getWorld(sender);
-        String subcommand = args[0];
-        String value = args[1];
-        int mod;
-        boolean add;
-        if (subcommand.equals("set")) {
-            add = false;
-            if (value.equals("day")) {
+    };
+    private static final Subcommand SET = new Subcommand(ROOT_COMMAND_NAME, "set") {
+
+        @Override
+        protected boolean execute(CommandSender sender, String label, String[] args,
+                CommandMessages commandMessages) {
+            int mod;
+            String value = args[1].toLowerCase(Locale.ENGLISH);
+            if (value.equals("day")) { // NON-NLS
                 mod = 1000;
-            } else if (value.equals("night")) {
+            } else if (value.equals("night")) { // NON-NLS
                 mod = 13000;
             } else {
                 try {
@@ -52,19 +57,26 @@ public class TimeCommand extends GlowVanillaCommand {
                     return false;
                 }
             }
+            CommandUtils.getWorld(sender).setTime(mod);
             sender.sendMessage("Set the time to " + mod);
-        } else if (subcommand.equals("add")) {
-            add = true;
-            try {
-                mod = Integer.valueOf(value);
-            } catch (NumberFormatException ex) {
-                commandMessages.getGeneric(GenericMessage.NAN).send(sender, value);
-                return false;
-            }
-            sender.sendMessage("Added " + mod + " to the time");
-        } else if (subcommand.equals("query")) {
+            return true;
+        }
+
+        @Override
+        public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+                throws IllegalArgumentException {
+            return (List) StringUtil
+                    .copyPartialMatches(args[1], TIMES, new ArrayList(TIMES.size()));
+        }
+    };
+    private static final Subcommand QUERY = new Subcommand(ROOT_COMMAND_NAME, "query") {
+
+        @Override
+        protected boolean execute(CommandSender sender, String label, String[] args,
+                CommandMessages commandMessages) {
+            World world = CommandUtils.getWorld(sender);
             String output;
-            switch (value.toLowerCase()) {
+            switch (args[1].toLowerCase()) {
                 case "gametime":
                     output = "The time is " + world.getTime();
                     break;
@@ -81,25 +93,21 @@ public class TimeCommand extends GlowVanillaCommand {
             sender.sendMessage(output);
             // TODO: Set the success count for command blocks
             return true;
-        } else {
-            sendUsageMessage(sender, commandMessages);
-            return false;
         }
-        world.setTime(add ? world.getTime() + mod : mod);
-        return true;
-    }
 
-    @Override
-    public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
-        if (args.length == 1) {
+        @Override
+        public List<String> tabComplete(CommandSender sender, String alias, String[] args)
+                throws IllegalArgumentException {
             return (List) StringUtil
-                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
+                    .copyPartialMatches(args[1], QUERIES, new ArrayList(QUERIES.size()));
         }
-        if (args.length == 2 && args[0].equals("set")) {
-            return (List) StringUtil
-                    .copyPartialMatches(args[1], TIMES, new ArrayList(TIMES.size()));
-        }
-        return Collections.emptyList();
+    };
+
+    /**
+     * Creates the instance for this command.
+     */
+    public TimeCommand() {
+        super("time", Arrays.asList(ADD, SET, QUERY));
+        setPermission("minecraft.command.time"); // NON-NLS
     }
 }

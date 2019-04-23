@@ -45,4 +45,9 @@ public class LocalizedStringImpl implements LocalizedString {
     public void sendInColor(ChatColor color, CommandSender recipient, Object... args) {
         recipient.sendMessage(color.toString() + get(args));
     }
+
+    @Override
+    public String toString() {
+        return get();
+    }
 }

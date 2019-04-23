@@ -111,11 +111,12 @@ public class GlowCommandWithSubcommands extends GlowVanillaCommand {
         @Getter
         private final @NonNls
         String mainName;
-        private final @NonNls String keyPrefix;
+        protected final @NonNls String keyPrefix;
         private final @NonNls String usageKey;
         private final @NonNls String descriptionKey;
 
-        protected Subcommand(String commandName, String mainName, String... otherNames) {
+        protected Subcommand(@NonNls String commandName, @NonNls String mainName,
+                String... otherNames) {
             this.otherNames = otherNames;
             this.mainName = mainName;
             keyPrefix = commandName + ".subcommand." + mainName;
@@ -149,5 +150,11 @@ public class GlowCommandWithSubcommands extends GlowVanillaCommand {
 
         protected abstract boolean execute(CommandSender sender, String label, String[] args,
                 CommandMessages commandMessages);
+
+        protected void sendUsageMessage(CommandSender sender,
+                CommandMessages commandMessages) {
+            commandMessages.getGeneric(GenericMessage.USAGE_IS).sendInColor(ChatColor.RED, sender,
+                    new LocalizedStringImpl(usageKey, commandMessages.getResourceBundle()));
+        }
     }
 }
