@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.constants.GlowSound;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.LocalizedStringImpl;

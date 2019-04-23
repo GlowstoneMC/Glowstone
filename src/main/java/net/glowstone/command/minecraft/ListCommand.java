@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.Bukkit;

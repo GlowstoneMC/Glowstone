@@ -8,6 +8,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.RectangularRegion;

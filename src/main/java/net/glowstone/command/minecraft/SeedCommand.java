@@ -1,6 +1,7 @@
 package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.command.CommandSender;
 

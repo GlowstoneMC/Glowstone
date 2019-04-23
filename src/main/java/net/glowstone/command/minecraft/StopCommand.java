@@ -2,6 +2,7 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.command.GlowVanillaCommand;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 

@@ -2,6 +2,7 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

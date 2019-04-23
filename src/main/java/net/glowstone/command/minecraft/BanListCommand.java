@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Stream;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;

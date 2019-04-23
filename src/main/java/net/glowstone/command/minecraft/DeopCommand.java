@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;

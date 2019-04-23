@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.RectangularRegion;
 import net.glowstone.util.nbt.CompoundTag;

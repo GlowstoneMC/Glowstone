@@ -7,6 +7,7 @@ import java.util.Map;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.data.CommandFunction;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.ChatColor;

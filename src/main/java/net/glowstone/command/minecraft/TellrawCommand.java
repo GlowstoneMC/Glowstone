@@ -1,5 +1,6 @@
 package net.glowstone.command.minecraft;
 
+import net.glowstone.command.GlowVanillaCommand;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;

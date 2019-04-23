@@ -10,6 +10,7 @@ import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
 import net.glowstone.block.state.StateSerialization;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.mojangson.Mojangson;

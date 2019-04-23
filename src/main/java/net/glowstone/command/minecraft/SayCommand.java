@@ -3,6 +3,7 @@ package net.glowstone.command.minecraft;
 import java.util.Arrays;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.GlowstoneMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -1,6 +1,6 @@
 package net.glowstone.command.glowstone;
 
-import net.glowstone.command.minecraft.GlowVanillaCommand;
+import net.glowstone.command.GlowVanillaCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

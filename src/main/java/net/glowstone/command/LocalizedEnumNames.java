@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import lombok.Getter;
-import net.glowstone.command.minecraft.GlowVanillaCommand;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.util.StringUtil;

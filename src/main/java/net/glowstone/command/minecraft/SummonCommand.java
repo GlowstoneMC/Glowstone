@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.entity.CustomEntityDescriptor;
 import net.glowstone.entity.EntityRegistry;
 import net.glowstone.entity.GlowEntity;

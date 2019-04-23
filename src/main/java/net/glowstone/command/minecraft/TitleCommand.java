@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.net.message.play.game.TitleMessage;

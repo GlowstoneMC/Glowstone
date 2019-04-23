@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.command.GlowVanillaCommand;
 import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;

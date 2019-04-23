@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.command.GlowVanillaCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;

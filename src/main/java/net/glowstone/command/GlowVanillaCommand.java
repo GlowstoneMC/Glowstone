@@ -1,4 +1,4 @@
-package net.glowstone.command.minecraft;
+package net.glowstone.command;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -264,4 +264,5 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             return String.join(joiner, objects);
         }
     }
+
 }

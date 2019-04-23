@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import net.glowstone.GlowWorld;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.command.GlowVanillaCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.StringUtil;
 
