@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NonNls;
 
 public class GlowstoneCommand extends GlowCommandWithSubcommands {
 
+    private static final String ROOT_COMMAND_NAME = "glowstone";
     private static final Subcommand WORLD = new Subcommand(
             ROOT_COMMAND_NAME, "world", "worlds") {
         @Override
@@ -195,7 +196,6 @@ public class GlowstoneCommand extends GlowCommandWithSubcommands {
             return false;
         }
     };
-    public static final String ROOT_COMMAND_NAME = "glowstone";
 
     /**
      * Creates the instance for this command.
