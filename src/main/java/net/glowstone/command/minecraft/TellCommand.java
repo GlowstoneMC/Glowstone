@@ -3,8 +3,10 @@ package net.glowstone.command.minecraft;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +21,7 @@ public class TellCommand extends GlowVanillaCommand {
      * Creates the instance for this command.
      */
     public TellCommand() {
-        super("tell", Arrays.asList("msg", "w"));
+        super("tell", Arrays.asList("msg", "w")); // NON-NLS
         setPermission("minecraft.command.tell"); // NON-NLS
     }
 
@@ -39,10 +41,11 @@ public class TellCommand extends GlowVanillaCommand {
             Location location = CommandUtils.getLocation(sender);
             CommandTarget target = new CommandTarget(sender, name);
             target.getArguments()
-                .put("type", new CommandTarget.SelectorValue("player")); // only players
+                .put("type", new CommandTarget.SelectorValue("player")); // NON-NLS; only players
             Entity[] matched = target.getMatched(location);
             if (matched.length == 0) {
-                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
             players = new Player[matched.length];
@@ -52,21 +55,25 @@ public class TellCommand extends GlowVanillaCommand {
         } else {
             Player player = Bukkit.getPlayer(name);
             if (player == null) {
-                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
             players = new Player[]{player};
         }
         String senderName = CommandUtils.getName(sender);
         String message = StringUtils.join(args, ' ', 1, args.length);
+        ResourceBundle bundle = commandMessages.getResourceBundle();
+        LocalizedStringImpl senderMessage = new LocalizedStringImpl("tell.sender", bundle);
         for (Player player : players) {
             if (sender.equals(player)) {
-                sender.sendMessage(ChatColor.RED + "You can't send a private message to yourself!");
+                new LocalizedStringImpl("tell.self", bundle)
+                        .sendInColor(ChatColor.RED, sender);
                 continue;
             }
-            player.sendMessage(ChatColor.GRAY + senderName + " whispers " + message);
-            sender.sendMessage(
-                ChatColor.GRAY + "[" + senderName + "->" + player.getName() + "] " + message);
+            new LocalizedStringImpl("tell.recipient", getBundle(player))
+                    .send(player, senderName, message);
+            senderMessage.send(sender, senderName, player.getName(), message);
         }
         return true;
     }

@@ -1,5 +1,9 @@
 package net.glowstone.net.handler.play.player;
 
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
+
+import java.util.Set;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
@@ -27,10 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Set;
-
-import static org.mockito.ArgumentMatchers.any;
-
 public class UseItemHandlerTest {
 
     private EventFactory actualEventFactory;
@@ -51,7 +51,7 @@ public class UseItemHandlerTest {
         actualEventFactory = EventFactory.getInstance();
         // install the mock event factory
         eventFactory = Mockito.mock(EventFactory.class);
-        Mockito.when(eventFactory.callEvent(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(eventFactory.callEvent(any(Event.class))).thenAnswer(returnsFirstArg());
         EventFactory.setInstance(eventFactory);
 
         // create mocks

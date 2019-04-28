@@ -33,6 +33,7 @@ import net.glowstone.chunk.ChunkSection;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.chunk.GlowChunkSnapshot.EmptySnapshot;
+import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowBiome;
 import net.glowstone.constants.GlowBiomeClimate;
 import net.glowstone.constants.GlowEffect;
@@ -613,7 +614,7 @@ public class GlowWorld implements World {
         // also used to occasionally pulse some blocks (see "tickMap" and "requestPulse()")
 
         // Modulus by 24000, the tick length of a day
-        if (gameRuleMap.getBoolean("doDaylightCycle")) {
+        if (gameRuleMap.getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
             time = (time + 1) % TickUtil.TICKS_PER_DAY;
         }
     }
@@ -635,7 +636,7 @@ public class GlowWorld implements World {
                 wakeUpAllPlayers(players);
                 // no need to send them the time - handle that normally
             } else { // otherwise check whether everyone is asleep
-                boolean skipNight = gameRuleMap.getBoolean("doDaylightCycle")
+                boolean skipNight = gameRuleMap.getBoolean(GameRules.DO_DAYLIGHT_CYCLE)
                     && areAllPlayersSleeping(players);
                 // check gamerule before iterating players (micro-optimization)
                 if (skipNight) {
@@ -2018,13 +2019,13 @@ public class GlowWorld implements World {
         if (!gameRuleMap.setValue(rule, value)) {
             return false;
         }
-        if (rule.equals("doDaylightCycle")) {
+        if (rule.equals(GameRules.DO_DAYLIGHT_CYCLE)) {
             // inform clients about the daylight cycle change
             getRawPlayers().forEach(GlowPlayer::sendTime);
-        } else if (rule.equals("reducedDebugInfo")) {
+        } else if (rule.equals(GameRules.REDUCED_DEBUG_INFO)) {
             // inform clients about the debug info change
             EntityStatusMessage message = new EntityStatusMessage(0,
-                gameRuleMap.getBoolean("reducedDebugInfo")
+                gameRuleMap.getBoolean(GameRules.REDUCED_DEBUG_INFO)
                     ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO
                     : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
             for (GlowPlayer player : getRawPlayers()) {

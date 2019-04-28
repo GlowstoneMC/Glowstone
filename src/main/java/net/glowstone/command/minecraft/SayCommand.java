@@ -38,7 +38,8 @@ public class SayCommand extends GlowVanillaCommand {
                 CommandTarget target = new CommandTarget(sender, arg);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, arg);
+                    commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                            .sendInColor(ChatColor.RED, sender, arg);
                     return false;
                 }
                 message.append(commandMessages.joinList(

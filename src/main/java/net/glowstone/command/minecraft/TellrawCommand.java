@@ -35,7 +35,7 @@ public class TellrawCommand extends GlowVanillaCommand {
         Player player = Bukkit.getPlayerExact(args[0]);
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
-            commandMessages.getNoSuchPlayer().send(sender, args[0]);
+            commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER).send(sender, args[0]);
             return false;
         } else {
             StringBuilder message = new StringBuilder();
@@ -52,7 +52,8 @@ public class TellrawCommand extends GlowVanillaCommand {
             try {
                 obj = JSONValue.parseWithException(json);
             } catch (ParseException e) {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON: " + e.getMessage());
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
+                        .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
             if (obj instanceof JSONArray || obj instanceof JSONObject) {
@@ -60,7 +61,8 @@ public class TellrawCommand extends GlowVanillaCommand {
                 player.sendMessage(components);
                 return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "Failed to parse JSON");
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
+                        .sendInColor(ChatColor.RED, sender, json);
                 return false;
             }
         }

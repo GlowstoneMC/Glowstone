@@ -41,7 +41,7 @@ public class ListCommand extends GlowVanillaCommand {
         } else {
             Bukkit.getOnlinePlayers().forEach(p -> messages.add(p.getName()));
         }
-        sender.sendMessage(messages.toArray(EMPTY));
+        messages.forEach(sender::sendMessage);
         return true;
     }
 

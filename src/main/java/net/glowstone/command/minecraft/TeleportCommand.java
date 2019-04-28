@@ -2,6 +2,7 @@ package net.glowstone.command.minecraft;
 
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,7 +37,8 @@ public class TeleportCommand extends GlowVanillaCommand {
         }
 
         if (!CommandUtils.isPhysical(sender)) {
-            sender.sendMessage("This command can only be executed by physical objects.");
+            commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL)
+                    .sendInColor(ChatColor.RED, sender);
             return false;
         }
 
@@ -53,7 +55,8 @@ public class TeleportCommand extends GlowVanillaCommand {
         }
 
         if (targets.length == 0) {
-            sender.sendMessage(ChatColor.RED + "There's no entity matching the target.");
+            commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                    .sendInColor(ChatColor.RED, sender, args[0]);
         } else {
             for (Entity target : targets) {
                 String x = args[1];
@@ -69,9 +72,9 @@ public class TeleportCommand extends GlowVanillaCommand {
                     targetLocation.setPitch(target.getLocation().getPitch());
                 }
                 target.teleport(targetLocation);
-                sender.sendMessage(
-                        "Teleported " + target.getName() + " to " + targetLocation.getX() + " "
-                                + targetLocation.getY() + " " + targetLocation.getZ());
+                new LocalizedStringImpl("teleport.done", commandMessages.getResourceBundle())
+                        .send(sender, target.getName(), targetLocation.getX(),
+                                targetLocation.getY(), targetLocation.getZ());
             }
         }
 

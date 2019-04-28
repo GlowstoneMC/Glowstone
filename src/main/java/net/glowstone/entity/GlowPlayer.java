@@ -53,6 +53,7 @@ import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.command.LocalizedEnumNames;
+import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
@@ -673,7 +674,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world
                 .getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world
-                .getGameRuleMap().getBoolean("reducedDebugInfo")));
+                .getGameRuleMap().getBoolean(GameRules.REDUCED_DEBUG_INFO)));
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
@@ -3194,7 +3195,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void sendTime() {
         long time = getPlayerTime();
-        if (!playerTimeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
+        if (!playerTimeRelative || !world.getGameRuleMap().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
             time *= -1; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));

@@ -32,7 +32,8 @@ public class KickCommand extends GlowVanillaCommand {
         String playerName = args[0];
         Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) {
-            commandMessages.getPlayerOffline().sendInColor(ChatColor.RED, sender, playerName);
+            commandMessages.getGeneric(GenericMessage.OFFLINE)
+                    .sendInColor(ChatColor.RED, sender, playerName);
             return false;
         }
         if (args.length == 1) {
