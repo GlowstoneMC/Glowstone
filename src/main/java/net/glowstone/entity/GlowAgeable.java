@@ -77,7 +77,9 @@ public class GlowAgeable extends GlowCreature implements Ageable {
         if (love > 0) {
             setInLove(love - 1);
             if (love % 20 == 0) {
-                world.showParticle(location, Effect.HEART, 0, 0, 0, 1, 1);
+                world.showParticle(location, Effect.HEART, 0,
+                        /* float above head */ (float) (getHeight() + 0.5),
+                        0, 1, 1);
             }
             // TODO: Search for a mate if in MobState.IDLE
         }
