@@ -98,15 +98,11 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
 
     @Override
     protected int computeGrowthAmount(Material material) {
-        if (canGrow()) {
-            Integer mapResult = GROWING_FOODS.get(material);
-
-            if (mapResult != null) {
-                return Math.min(mapResult, Math.abs(getAge()));
-            }
+        if (!canGrow()) {
+            return 0;
         }
-
-        return 0;
+        int mapResult = GROWING_FOODS.getOrDefault(material, 0);
+        return Math.min(mapResult, Math.abs(getAge()));
     }
 
     @Override
