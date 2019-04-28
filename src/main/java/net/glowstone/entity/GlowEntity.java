@@ -50,6 +50,7 @@ import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.TravelAgent;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
@@ -560,6 +561,9 @@ public abstract class GlowEntity implements Entity {
         if (fireTicks > 0) {
             --fireTicks;
         }
+        if (portalCooldown > 0) {
+            --portalCooldown;
+        }
         metadata.setBit(MetadataIndex.STATUS, StatusFlags.ON_FIRE, fireTicks > 0);
 
         // resend position if it's been a while, causes ItemFrames to disappear and GlowPaintings
@@ -600,6 +604,32 @@ public abstract class GlowEntity implements Entity {
                                     .clone(), velocity.clone(), new Vector()));
                         if (!e.getAfter().equals(velocity)) {
                             setVelocity(e.getAfter());
+                        }
+                    }
+                }
+            } else if (currentBlock.getType().equals(Material.PORTAL)) {
+                EventFactory.getInstance().callEvent(
+                    new EntityPortalEnterEvent(this, currentBlock.getLocation()));
+                if (server.getAllowNether() && portalCooldown <= 0) {
+                    GlowWorld w = getWorld().getEnvironment().equals(Environment.NETHER)
+                        ? server.getWorld("world") : server.getWorld("world_nether");
+                    TravelAgent agent = w.getTravelAgent();
+                    boolean destIsNether = w.getEnvironment().equals(Environment.NETHER);
+                    int destX = destIsNether ? location.getBlockX() / 8 : location.getBlockX() * 8;
+                    int destY = destIsNether ? location.getBlockY() / 8 : location.getBlockY() * 8;
+                    int destZ = destIsNether ? location.getBlockZ() / 8 : location.getBlockZ() * 8;
+                    Location requested = new Location(w, destX, destY, destZ);
+                    if (agent.getCanCreatePortal() || agent.findPortal(requested) != null) {
+                        Location teleportLocation = agent.findOrCreate(requested);
+                        EntityPortalEvent p = EventFactory.getInstance().callEvent(
+                            new EntityPortalEvent(this,
+                                location.clone(), teleportLocation.clone(), agent));
+                        if (!p.isCancelled()) {
+                            teleport(p.getTo());
+                            setPortalCooldown(300);
+                            setVelocity(EventFactory.getInstance().callEvent(
+                                new EntityPortalExitEvent(this, previousLocation,
+                                    location.clone(), velocity.clone(), new Vector())).getAfter());
                         }
                     }
                 }
