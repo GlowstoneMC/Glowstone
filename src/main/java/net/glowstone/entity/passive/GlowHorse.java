@@ -65,9 +65,9 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
     protected boolean tryFeed(Material food, GlowPlayer player) {
         Double healingAmount = HEALING_FOODS.get(food);
         if (healingAmount != null) {
-            EntityUtils.heal(this, healingAmount, EntityRegainHealthEvent.RegainReason.EATING);
-            super.tryFeed(food, player);
-            return true;
+            boolean healed = EntityUtils.heal(this, healingAmount,
+                    EntityRegainHealthEvent.RegainReason.EATING);
+            return super.tryFeed(food, player) || healed;
         }
         return super.tryFeed(food, player);
     }
