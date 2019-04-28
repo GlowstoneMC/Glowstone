@@ -102,7 +102,7 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
             return 0;
         }
         int mapResult = GROWING_FOODS.getOrDefault(material, 0);
-        return Math.min(mapResult, Math.abs(getAge()));
+        return Math.min(mapResult, -getAge());
     }
 
     @Override
