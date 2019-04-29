@@ -65,6 +65,12 @@ public abstract class GlowAbstractHorseTest<T extends GlowAbstractHorse> extends
                 entity.getBreedingFoods());
     }
 
+    @Override
+    public void testFoodSetsLoveMode() {
+        entity.setTamed(true);
+        super.testFoodSetsLoveMode();
+    }
+
     @Test
     @Override
     public void testComputeGrowthAmount() {
