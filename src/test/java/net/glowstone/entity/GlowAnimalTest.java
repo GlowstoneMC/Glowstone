@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.EnumSet;
 import java.util.function.Function;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
-import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +28,7 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
                 InteractEntityMessage.Action.INTERACT.ordinal());
         for (Material foodType : entity.getBreedingFoods()) {
             try {
-                entity.setAge(TickUtil.minutesToTicks(5));
+                entity.setBreed(true);
                 ItemStack food = new ItemStack(foodType, 2);
                 inventory.setItemInMainHand(food);
                 entity.entityInteract(player, interact);
