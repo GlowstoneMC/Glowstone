@@ -48,6 +48,24 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
         }
     }
 
+    @Test
+    public void testFoodDoesNotSetLoveModeAfterBreeding() {
+        InteractEntityMessage interact = new InteractEntityMessage(1,
+                InteractEntityMessage.Action.INTERACT.ordinal());
+        entity.setAge(1);
+        for (Material foodType : entity.getBreedingFoods()) {
+            ItemStack food = new ItemStack(foodType, 1);
+            inventory.setItemInMainHand(food);
+            entity.entityInteract(player, interact);
+
+            // Should not consume food
+            assertEquals(1, inventory.getItemInMainHand().getAmount());
+
+            // Should not set love mode
+            assertEquals(0, entity.getInLove());
+        }
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void testGetBreedingFoodsReturnsImmutableSet() {
         entity.getBreedingFoods().add(Material.SANDSTONE);
