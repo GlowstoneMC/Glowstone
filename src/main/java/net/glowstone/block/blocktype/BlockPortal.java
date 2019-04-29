@@ -5,22 +5,24 @@ import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.monster.GlowPigZombie;
+import net.glowstone.entity.physics.BoundingBox;
 import net.glowstone.util.pattern.PortalShape;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.util.Vector;
 
 public class BlockPortal extends BlockType {
+
     @Override
     public void onNearBlockChanged(final GlowBlock block, BlockFace face, GlowBlock changedBlock,
                                    Material oldType, byte oldData, Material newType, byte newData) {
         if (newType == oldType || (oldType != Material.PORTAL && oldType != Material.OBSIDIAN)) {
             return;
         }
-        int faceData = block.getData() & 3;
-        BlockFace left = faceData == 1 ? BlockFace.WEST : faceData == 2 ? BlockFace.NORTH : null;
+        BlockFace left = getFace(block.getData());
         if (left == null) {
             return;
         }
@@ -30,6 +32,18 @@ public class BlockPortal extends BlockType {
             return;
         }
         block.setType(Material.AIR);
+    }
+
+    public static BoundingBox getBoundingBox(GlowBlock block) {
+        boolean north = getFace(block.getData()) == BlockFace.NORTH;
+        Vector base = new Vector(north ? .375 : 0, 0, north ? 0 : .375);
+        Vector size = new Vector(north ? .25 : 1, 1, north ? 1 : .25);
+        return BoundingBox.fromPositionAndSize(block.getLocation().toVector().add(base), size);
+    }
+
+    private static BlockFace getFace(int blockData) {
+        int faceData = blockData & 3;
+        return faceData == 1 ? BlockFace.WEST : faceData == 2 ? BlockFace.NORTH : null;
     }
 
     @Override

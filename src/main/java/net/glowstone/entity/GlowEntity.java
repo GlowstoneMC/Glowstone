@@ -23,6 +23,8 @@ import lombok.Setter;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
+import net.glowstone.block.GlowBlock;
+import net.glowstone.block.blocktype.BlockPortal;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -292,6 +294,10 @@ public abstract class GlowEntity implements Entity {
     @Getter
     @Setter
     private int portalCooldown;
+
+    @Getter
+    private boolean isInPortal;
+
     /**
      * Whether this entity has operator permissions.
      */
@@ -607,33 +613,41 @@ public abstract class GlowEntity implements Entity {
                         }
                     }
                 }
-            } else if (currentBlock.getType().equals(Material.PORTAL)) {
+            }
+        }
+        GlowBlock block = world.getBlockAt(location);
+        if (block.getType().equals(Material.PORTAL) &&
+            BlockPortal.getBoundingBox(block).intersects(boundingBox)) {
+            if (!isInPortal) {
                 EventFactory.getInstance().callEvent(
-                    new EntityPortalEnterEvent(this, currentBlock.getLocation()));
-                if (server.getAllowNether() && portalCooldown <= 0) {
-                    GlowWorld w = getWorld().getEnvironment().equals(Environment.NETHER)
-                        ? server.getWorld("world") : server.getWorld("world_nether");
-                    TravelAgent agent = w.getTravelAgent();
-                    boolean destIsNether = w.getEnvironment().equals(Environment.NETHER);
-                    int destX = destIsNether ? location.getBlockX() / 8 : location.getBlockX() * 8;
-                    int destY = destIsNether ? location.getBlockY() / 8 : location.getBlockY() * 8;
-                    int destZ = destIsNether ? location.getBlockZ() / 8 : location.getBlockZ() * 8;
-                    Location requested = new Location(w, destX, destY, destZ);
-                    if (agent.getCanCreatePortal() || agent.findPortal(requested) != null) {
-                        Location teleportLocation = agent.findOrCreate(requested);
-                        EntityPortalEvent p = EventFactory.getInstance().callEvent(
-                            new EntityPortalEvent(this,
-                                location.clone(), teleportLocation.clone(), agent));
-                        if (!p.isCancelled()) {
-                            teleport(p.getTo());
-                            setPortalCooldown(300);
-                            setVelocity(EventFactory.getInstance().callEvent(
-                                new EntityPortalExitEvent(this, previousLocation,
-                                    location.clone(), velocity.clone(), new Vector())).getAfter());
-                        }
+                    new EntityPortalEnterEvent(this, block.getLocation()));
+                isInPortal = true;
+            }
+            if (server.getAllowNether() && portalCooldown <= 0) {
+                GlowWorld w = getWorld().getEnvironment().equals(Environment.NETHER)
+                    ? server.getWorld("world") : server.getWorld("world_nether");
+                TravelAgent agent = w.getTravelAgent();
+                boolean destIsNether = w.getEnvironment().equals(Environment.NETHER);
+                int destX = destIsNether ? location.getBlockX() / 8 : location.getBlockX() * 8;
+                int destY = destIsNether ? location.getBlockY() / 8 : location.getBlockY() * 8;
+                int destZ = destIsNether ? location.getBlockZ() / 8 : location.getBlockZ() * 8;
+                Location requested = new Location(w, destX, destY, destZ);
+                if (agent.getCanCreatePortal() || agent.findPortal(requested) != null) {
+                    Location teleportLocation = agent.findOrCreate(requested);
+                    EntityPortalEvent p = EventFactory.getInstance().callEvent(
+                        new EntityPortalEvent(this,
+                            location.clone(), teleportLocation.clone(), agent));
+                    if (!p.isCancelled()) {
+                        teleport(p.getTo());
+                        setPortalCooldown(300);
+                        setVelocity(EventFactory.getInstance().callEvent(
+                            new EntityPortalExitEvent(this, previousLocation,
+                                location.clone(), velocity.clone(), new Vector())).getAfter());
                     }
                 }
             }
+        } else {
+            isInPortal = false;
         }
 
         if (leashHolderUniqueId != null && ticksLived < 2) {
