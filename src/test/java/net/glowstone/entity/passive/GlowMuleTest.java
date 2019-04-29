@@ -41,6 +41,10 @@ public class GlowMuleTest extends GlowChestedHorseTest<GlowMule> {
         assertFalse(entity.canBreed());
     }
 
+    /**
+     * This override instead tests that the "breeding foods" do <em>not</em> set love mode, since
+     * mules can't breed (but still have their healing and growth foods listed as "breeding foods").
+     */
     @Test
     @Override
     public void testFoodSetsLoveMode() {
