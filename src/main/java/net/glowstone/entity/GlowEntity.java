@@ -616,8 +616,8 @@ public abstract class GlowEntity implements Entity {
             }
         }
         GlowBlock block = world.getBlockAt(location);
-        if (block.getType().equals(Material.PORTAL) &&
-            BlockPortal.getBoundingBox(block).intersects(boundingBox)) {
+        if (block.getType().equals(Material.PORTAL)
+            && BlockPortal.getBoundingBox(block).intersects(boundingBox)) {
             if (!isInPortal) {
                 EventFactory.getInstance().callEvent(
                     new EntityPortalEnterEvent(this, block.getLocation()));
