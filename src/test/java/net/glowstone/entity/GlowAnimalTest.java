@@ -1,13 +1,16 @@
 package net.glowstone.entity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.EnumSet;
 import java.util.function.Function;
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import net.glowstone.util.TickUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 
 public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTest<T> {
     protected GlowAnimalTest(
@@ -20,6 +23,32 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
         assertEquals(EnumSet.noneOf(Material.class), entity.getBreedingFoods());
     }
 
+    @Test
+    public void testFoodSetsLoveMode() {
+        InteractEntityMessage interact = new InteractEntityMessage(1,
+                InteractEntityMessage.Action.INTERACT.ordinal());
+        for (Material foodType : entity.getBreedingFoods()) {
+            try {
+                entity.setAge(TickUtil.minutesToTicks(5));
+                ItemStack food = new ItemStack(foodType, 2);
+                inventory.setItemInMainHand(food);
+                entity.entityInteract(player, interact);
+
+                // Should consume food
+                assertEquals(1, inventory.getItemInMainHand().getAmount());
+
+                // Should set love mode
+                assertTrue(entity.getInLove() > 0);
+
+                // Using food a 2nd time should not consume it
+                entity.entityInteract(player, interact);
+                assertEquals(1, inventory.getItemInMainHand().getAmount());
+            } finally {
+                entity.setInLove(0);
+            }
+        }
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void testGetBreedingFoodsReturnsImmutableSet() {
         entity.getBreedingFoods().add(Material.SANDSTONE);
@@ -29,22 +58,22 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
     @Override
     public void testComputeGrowthAmount() {
         entity.setAge(-21000);
-        Assertions.assertEquals(0, entity.computeGrowthAmount(null));
-        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.SAND));
+        assertEquals(0, entity.computeGrowthAmount(null));
+        assertEquals(0, entity.computeGrowthAmount(Material.SAND));
 
         for (Material food : entity.getBreedingFoods()) {
-            Assertions.assertEquals(2100, entity.computeGrowthAmount(food), food.name());
+            assertEquals(2100, entity.computeGrowthAmount(food), food.name());
         }
     }
 
     @Test
     public void testComputeGrowthAmountAdult() {
         entity.setAge(0);
-        Assertions.assertEquals(0, entity.computeGrowthAmount(null));
-        Assertions.assertEquals(0, entity.computeGrowthAmount(Material.SAND));
+        assertEquals(0, entity.computeGrowthAmount(null));
+        assertEquals(0, entity.computeGrowthAmount(Material.SAND));
 
         for (Material food : entity.getBreedingFoods()) {
-            Assertions.assertEquals(0, entity.computeGrowthAmount(food), food.name());
+            assertEquals(0, entity.computeGrowthAmount(food), food.name());
         }
     }
 }
