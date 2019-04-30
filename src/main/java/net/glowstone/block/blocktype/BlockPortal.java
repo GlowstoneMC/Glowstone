@@ -16,6 +16,24 @@ import org.bukkit.util.Vector;
 
 public class BlockPortal extends BlockType {
 
+    /**
+     * Gets the Axis-specific bounding box of the specified block. Only works for Portal blocks.
+     *
+     * @param block the block to get the bounding box from.
+     * @return the resulting bounding box, axis alignment dependent.
+     */
+    public static BoundingBox getBoundingBox(GlowBlock block) {
+        boolean north = getFace(block.getData()) == BlockFace.NORTH;
+        Vector base = new Vector(north ? .375 : 0, 0, north ? 0 : .375);
+        Vector size = new Vector(north ? .25 : 1, 1, north ? 1 : .25);
+        return BoundingBox.fromPositionAndSize(block.getLocation().toVector().add(base), size);
+    }
+
+    private static BlockFace getFace(int blockData) {
+        int faceData = blockData & 3;
+        return faceData == 1 ? BlockFace.WEST : faceData == 2 ? BlockFace.NORTH : null;
+    }
+
     @Override
     public void onNearBlockChanged(final GlowBlock block, BlockFace face, GlowBlock changedBlock,
                                    Material oldType, byte oldData, Material newType, byte newData) {
@@ -28,22 +46,10 @@ public class BlockPortal extends BlockType {
         }
         PortalShape shape = new PortalShape(block.getLocation(), left);
         if (shape.validate()
-                && shape.getPortalBlockCount() == shape.getHeight() * shape.getWidth()) {
+            && shape.getPortalBlockCount() == shape.getHeight() * shape.getWidth()) {
             return;
         }
         block.setType(Material.AIR);
-    }
-
-    public static BoundingBox getBoundingBox(GlowBlock block) {
-        boolean north = getFace(block.getData()) == BlockFace.NORTH;
-        Vector base = new Vector(north ? .375 : 0, 0, north ? 0 : .375);
-        Vector size = new Vector(north ? .25 : 1, 1, north ? 1 : .25);
-        return BoundingBox.fromPositionAndSize(block.getLocation().toVector().add(base), size);
-    }
-
-    private static BlockFace getFace(int blockData) {
-        int faceData = blockData & 3;
-        return faceData == 1 ? BlockFace.WEST : faceData == 2 ? BlockFace.NORTH : null;
     }
 
     @Override

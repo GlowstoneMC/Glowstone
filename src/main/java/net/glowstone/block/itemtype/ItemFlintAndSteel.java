@@ -15,7 +15,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-
 public class ItemFlintAndSteel extends ItemTool {
 
     public ItemFlintAndSteel() {

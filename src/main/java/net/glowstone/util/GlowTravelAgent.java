@@ -33,7 +33,7 @@ public class GlowTravelAgent implements TravelAgent {
      */
     public GlowTravelAgent(World world) {
         if (world.getEnvironment() == World.Environment.THE_END) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException("End Portals are not supported yet.");
         }
         this.world = world;
     }
@@ -314,11 +314,6 @@ public class GlowTravelAgent implements TravelAgent {
                 block.setTypeIdAndData(Material.PORTAL.getId(), meta, false));
             return true;
         }
-        return false;
-    }
-
-    private boolean canBuildPortal(Location loc, BlockFace facing) {
-        // TODO: Need impl
         return false;
     }
 }

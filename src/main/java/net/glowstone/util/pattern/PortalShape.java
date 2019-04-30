@@ -16,6 +16,21 @@ import org.bukkit.event.world.PortalCreateEvent;
 public class PortalShape {
 
     /**
+     * Max portal width or height.
+     */
+    private static final int MAX_PORTAL_WIDTH_HEIGHT = 21;
+
+    /**
+     * Min portal height.
+     */
+    private static final int MIN_PORTAL_HEIGHT = 3;
+
+    /**
+     * Min portal width.
+     */
+    private static final int MIN_PORTAL_WIDTH = 2;
+
+    /**
      * The direction that is considered left.
      */
     private final BlockFace left;
@@ -54,8 +69,8 @@ public class PortalShape {
         Location location = buildLocation.clone();
 
         // calculations start on the lower part, so we have to move down
-        while (location.getY() > buildLocation.getY() - 21 && location.getY() > 0 // validate y axis
-            && canBuildThrough(downImmutable(location).getBlock().getType())) {
+        while (location.getY() > buildLocation.getY() - MAX_PORTAL_WIDTH_HEIGHT
+            && location.getY() > 0 && canBuildThrough(downImmutable(location).getBlock().getType())) {
             // move downwards
             location.subtract(0, 1, 0);
         }
@@ -80,7 +95,7 @@ public class PortalShape {
         width = getDistanceUntilEdge(bottomLeft, left.getOppositeFace()) + 1;
 
         // Portal too big / too small
-        if (width < 2 || width > 21) {
+        if (width < MIN_PORTAL_WIDTH || width > MAX_PORTAL_WIDTH_HEIGHT) {
             return;
         }
 
@@ -138,8 +153,8 @@ public class PortalShape {
         // Clone the location as Location objects are mutable
         Location destLoc = location.clone();
 
-        int i;
-        for (i = 0; i < 22; ++i) {
+        int distance;
+        for (distance = 0; distance <= MAX_PORTAL_WIDTH_HEIGHT; ++distance) {
             // Move onwards
             destLoc.add(face.getModX(), face.getModY(), face.getModZ());
             // Break if either an obstacle or the end of the obsidian "line" is reached
@@ -149,7 +164,7 @@ public class PortalShape {
             }
         }
         // If the target block is not obsidian, the portal is invalid.
-        return destLoc.getBlock().getType() == Material.OBSIDIAN ? i : -1;
+        return destLoc.getBlock().getType() == Material.OBSIDIAN ? distance : -1;
     }
 
     /**
@@ -158,7 +173,7 @@ public class PortalShape {
      * @return the height or 0 in case of failure
      */
     private int calculatePortalHeight() {
-        for (height = 0; height < 21; ++height) {
+        for (height = 0; height < MAX_PORTAL_WIDTH_HEIGHT; ++height) {
             boolean flag = false;
             for (int i = 0; i < width; ++i) {
                 Location location = offsetImmutable(bottomLeft, left.getOppositeFace(), i)
@@ -201,14 +216,15 @@ public class PortalShape {
             }
         }
 
-        if (height <= 21 && height >= 3) {
+        if (height <= MAX_PORTAL_WIDTH_HEIGHT && height >= MIN_PORTAL_HEIGHT) {
             return height;
-        } else {
-            bottomLeft = null;
-            width = 0;
-            height = 0;
-            return 0;
         }
+
+        bottomLeft = null;
+        width = 0;
+        height = 0;
+        return 0;
+
     }
 
     /**
@@ -217,7 +233,8 @@ public class PortalShape {
      * @return whether the portal shape is valid
      */
     public boolean validate() {
-        return bottomLeft != null && width >= 2 && width <= 21 && height >= 3 && height <= 21;
+        return bottomLeft != null && width >= MIN_PORTAL_WIDTH && width <= MAX_PORTAL_WIDTH_HEIGHT
+            && height >= MIN_PORTAL_HEIGHT && height <= MAX_PORTAL_WIDTH_HEIGHT;
     }
 
     /**
@@ -242,7 +259,6 @@ public class PortalShape {
                 block.setType(Material.PORTAL);
                 block.setData(meta);
             });
-
         }
     }
 }
