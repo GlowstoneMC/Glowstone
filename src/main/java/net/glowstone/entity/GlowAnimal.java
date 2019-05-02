@@ -45,25 +45,26 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     }
 
     /**
-     * Determines whether this entity can eat an item, if so, applies the effects of eating it.
+     * Determines whether this entity can eat an item while healthy, and if so, applies the effects
+     * of eating it.
      *
      * @param player the player feeding the entity, for statistical purposes
      * @param type an item that may be food
      * @return true if the item should be consumed; false otherwise
      */
     protected boolean tryFeed(Material type, GlowPlayer player) {
-        if (getBreedingFoods().contains(type)) {
-            if (canBreed() && (getInLove() <= 0)) {
-                setInLove(1000); // TODO get the correct duration
-                player.incrementStatistic(Statistic.ANIMALS_BRED);
-                return true;
-            } else {
-                int growth = computeGrowthAmount(type);
-                if (growth > 0) {
-                    grow(growth);
-                    return true;
-                }
-            }
+        if (!getBreedingFoods().contains(type)) {
+            return false;
+        }
+        if (canBreed() && getInLove() <= 0) {
+            setInLove(1000); // TODO get the correct duration
+            player.incrementStatistic(Statistic.ANIMALS_BRED);
+            return true;
+        }
+        int growth = computeGrowthAmount(type);
+        if (growth > 0) {
+            grow(growth);
+            return true;
         }
         return false;
     }
@@ -72,15 +73,16 @@ public class GlowAnimal extends GlowAgeable implements Animals {
     public boolean entityInteract(GlowPlayer player, InteractEntityMessage message) {
         if (!super.entityInteract(player, message)
                 && message.getAction() == InteractEntityMessage.Action.INTERACT.ordinal()) {
-            ItemStack item = InventoryUtil
-                    .itemOrEmpty(player.getInventory().getItem(message.getHandSlot()));
-
-            if (player.getGameMode().equals(GameMode.SPECTATOR)
-                    || InventoryUtil.isEmpty(item)) {
+            GameMode gameMode = player.getGameMode();
+            if (gameMode == GameMode.SPECTATOR) {
+                return false;
+            }
+            ItemStack item = player.getInventory().getItem(message.getHandSlot());
+            if (InventoryUtil.isEmpty(item)) {
                 return false;
             }
             boolean successfullyUsed = tryFeed(item.getType(), player);
-            if (successfullyUsed && GameMode.CREATIVE != player.getGameMode()) {
+            if (successfullyUsed && GameMode.CREATIVE != gameMode) {
                 player.getInventory().consumeItem(message.getHand());
             }
             return successfullyUsed;

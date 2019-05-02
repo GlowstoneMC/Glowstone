@@ -36,19 +36,6 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
             .put(Material.HAY_BLOCK, TickUtil.minutesToTicks(3))
             .build();
 
-    @Override
-    protected boolean tryFeed(Material food, GlowPlayer player) {
-        if (isAdult() && !isTamed()) {
-            int taming = computeTamingAmount(food);
-            if (taming > 0) {
-                domestication = Math.max(domestication + taming, maxDomestication);
-                super.tryFeed(food, player);
-                return true;
-            }
-        }
-        return super.tryFeed(food, player);
-    }
-
     @Getter
     @Setter
     private int domestication;
@@ -65,6 +52,20 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     public GlowAbstractHorse(Location location, EntityType type, double maxHealth) {
         super(location, type, maxHealth);
         setSize(1.3964f, 1.6f);
+    }
+
+    @Override
+    protected boolean tryFeed(Material food, GlowPlayer player) {
+        if (!isAdult() || isTamed()) {
+            return super.tryFeed(food, player);
+        }
+        int taming = computeDomestication(food);
+        if (taming > 0) {
+            domestication = Math.max(domestication + taming, maxDomestication);
+            super.tryFeed(food, player); // can have another effect in addition to taming
+            return true;
+        }
+        return super.tryFeed(food, player);
     }
 
     @Override
@@ -123,9 +124,18 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
         return BREEDING_FOODS;
     }
 
-    protected int computeTamingAmount(Material material) {
+    /**
+     * Returns the amount to increment the {@linkplain #setDomestication(int) domestication}
+     * (progress toward taming) when the given food is consumed by an untamed adult mob, before
+     * applying the {@linkplain #getMaxDomestication() maximum domestication}. Zero is returned for
+     * any item this mob cannot eat.
+     *
+     * @param food the food to consume
+     * @return the amount of domestication to gain
+     */
+    protected int computeDomestication(Material food) {
         // TODO
-        return BREEDING_FOODS.contains(material) ? 10 : 0;
+        return BREEDING_FOODS.contains(food) ? 10 : 0;
     }
 
     @Override

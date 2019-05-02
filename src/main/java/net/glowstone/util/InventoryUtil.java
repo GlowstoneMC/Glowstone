@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
+import javax.annotation.Nullable;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;
@@ -30,7 +30,7 @@ public class InventoryUtil {
      * @param stack the ItemStack to check
      * @return whether the given ItemStack is empty
      */
-    public static boolean isEmpty(ItemStack stack) {
+    public static boolean isEmpty(@Nullable ItemStack stack) {
         return stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0;
     }
 
