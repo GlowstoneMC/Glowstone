@@ -532,18 +532,21 @@ public class GlowBlock implements Block {
 
     @Override
     public boolean isPassable() {
-        return false;
+        return isEmpty(); // TODO
     }
 
     @Override
     public @Nullable RayTraceResult rayTrace(@NotNull Location start, @NotNull Vector direction,
             double maxDistance, @NotNull FluidCollisionMode fluidCollisionMode) {
-        return null;
+        return null; // TODO
     }
 
     @Override
     public @NotNull BoundingBox getBoundingBox() {
-        return null;
+        if (isEmpty()) {
+            return new BoundingBox(x,y,z,x,y,z); // 0x0x0 bounding box
+        }
+        return BoundingBox.of(this); // TODO: Some blocks don't fill their space
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -28,6 +28,12 @@ import org.bukkit.inventory.ItemStack;
  * A class which represents an inventory.
  */
 public class GlowInventory implements Inventory {
+    @Override
+    public HashMap<Integer, ItemStack> removeItemAnySlot(
+            ItemStack... items) throws IllegalArgumentException {
+        // TODO
+        return new HashMap<>();
+    }
 
     /**
      * This inventory's slots.

@@ -60,6 +60,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
@@ -81,6 +82,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
@@ -402,6 +404,11 @@ public abstract class GlowEntity implements Entity {
     @Override
     public Chunk getChunk() {
         return location.getChunk();
+    }
+
+    @Override
+    public CreatureSpawnEvent.@NotNull SpawnReason getEntitySpawnReason() {
+        return null;
     }
 
     /**
@@ -1005,6 +1012,11 @@ public abstract class GlowEntity implements Entity {
     @Override
     public double getWidth() {
         return boundingBox.getSize().getX();
+    }
+
+    @Override
+    public org.bukkit.util.@NotNull BoundingBox getBoundingBox() {
+        return BoundingBox.copyOf(boundingBox);
     }
 
     @Override

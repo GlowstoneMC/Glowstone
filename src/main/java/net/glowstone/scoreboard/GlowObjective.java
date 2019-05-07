@@ -13,6 +13,7 @@ import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Scoreboard objective and associated data.
@@ -109,6 +110,20 @@ public final class GlowObjective implements Objective {
     public DisplaySlot getDisplaySlot() throws IllegalStateException {
         checkValid();
         return displaySlot;
+    }
+
+    @Override
+    public org.bukkit.scoreboard.@NotNull RenderType getRenderType() throws IllegalStateException {
+        return renderType == RenderType.HEARTS
+                ? org.bukkit.scoreboard.RenderType.HEARTS
+                : org.bukkit.scoreboard.RenderType.INTEGER;
+    }
+
+    @Override
+    public void setRenderType(org.bukkit.scoreboard.@NotNull RenderType renderType)
+            throws IllegalStateException {
+        this.renderType = (renderType == org.bukkit.scoreboard.RenderType.HEARTS
+                ? RenderType.HEARTS : RenderType.INTEGER);
     }
 
     /**

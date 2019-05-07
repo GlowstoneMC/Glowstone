@@ -409,8 +409,8 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.ACACIA_BOAT, 400);
         furnaceFuels.put(Material.BIRCH_BOAT, 400);
         furnaceFuels.put(Material.DARK_OAK_BOAT, 400);
-        furnaceFuels.put(Material.BOAT_JUNGLE, 400);
-        furnaceFuels.put(Material.BOAT_SPRUCE, 400);
+        furnaceFuels.put(Material.JUNGLE_BOAT, 400);
+        furnaceFuels.put(Material.SPRUCE_BOAT, 400);
         furnaceFuels.put(Material.BOOKSHELF, 300);
         furnaceFuels.put(Material.BOW, 300);
         furnaceFuels.put(Material.BOWL, 100);
