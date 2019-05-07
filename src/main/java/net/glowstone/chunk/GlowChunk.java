@@ -33,9 +33,11 @@ import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a chunk of the map.
@@ -158,6 +160,15 @@ public class GlowChunk implements Chunk {
         return getBlockEntities();
     }
 
+    @NotNull
+    @Override
+    public BlockState[] getTileEntities(boolean useSnapshot) {
+        if (!useSnapshot) {
+            return getBlockEntities();
+        }
+        throw new UnsupportedOperationException("getTileEntities(true) not yet implemented"); // TODO
+    }
+
     /**
      * Returns the states of the block entities (e.g. container blocks) in this chunk.
      *
@@ -196,6 +207,16 @@ public class GlowChunk implements Chunk {
         }
 
         return this.isSlimeChunk == 1;
+    }
+
+    @Override
+    public boolean isForceLoaded() {
+        return false;
+    }
+
+    @Override
+    public void setForceLoaded(boolean b) {
+
     }
 
     @Override
@@ -314,35 +335,86 @@ public class GlowChunk implements Chunk {
      * @param cz   the Z coordinate of the BlockEntity
      * @param type the type of BlockEntity
      * @return The BlockEntity that was created.
+     * @deprecated Uses ordinals in place of old integer IDs.
      */
+    @Deprecated
     public BlockEntity createEntity(int cx, int cy, int cz, int type) {
-        Material material = Material.getMaterial(type);
+        return createEntity(cx, cy, cz, Material.values()[type]);
+    }
 
-        switch (material) {
+    /**
+     * If needed, create a new block entity at the given location.
+     *
+     * @param cx   the X coordinate of the BlockEntity
+     * @param cy   the Y coordinate of the BlockEntity
+     * @param cz   the Z coordinate of the BlockEntity
+     * @param type the type of BlockEntity
+     * @return The BlockEntity that was created.
+     */
+    public BlockEntity createEntity(int cx, int cy, int cz, Material type) {
+        switch (type) {
+            // TODO: List may be incomplete
             case SIGN:
-            case SIGN_POST:
             case WALL_SIGN:
-            case BED_BLOCK:
+            case BLACK_BED:
+            case BLUE_BED:
+            case GREEN_BED:
+            case CYAN_BED:
+            case RED_BED:
+            case PURPLE_BED:
+            case BROWN_BED:
+            case GRAY_BED:
+            case LIGHT_GRAY_BED:
+            case LIGHT_BLUE_BED:
+            case LIME_BED:
+            case ORANGE_BED:
+            case PINK_BED:
+            case MAGENTA_BED:
+            case YELLOW_BED:
+            case WHITE_BED:
             case CHEST:
             case TRAPPED_CHEST:
-            case BURNING_FURNACE:
             case FURNACE:
             case DISPENSER:
             case DROPPER:
             case END_GATEWAY:
             case HOPPER:
-            case MOB_SPAWNER:
+            case SPAWNER:
             case NOTE_BLOCK:
             case JUKEBOX:
             case BREWING_STAND:
-            case SKULL:
-            case COMMAND:
-            case COMMAND_CHAIN:
-            case COMMAND_REPEATING:
+            case PLAYER_HEAD:
+            case CREEPER_HEAD:
+            case DRAGON_HEAD:
+            case ZOMBIE_HEAD:
+            case SKELETON_SKULL:
+            case WITHER_SKELETON_SKULL:
+            case PLAYER_WALL_HEAD:
+            case CREEPER_WALL_HEAD:
+            case DRAGON_WALL_HEAD:
+            case ZOMBIE_WALL_HEAD:
+            case SKELETON_WALL_SKULL:
+            case WITHER_SKELETON_WALL_SKULL:
+            case COMMAND_BLOCK:
+            case CHAIN_COMMAND_BLOCK:
+            case REPEATING_COMMAND_BLOCK:
             case BEACON:
-            case BANNER:
-            case WALL_BANNER:
-            case STANDING_BANNER:
+            case BLACK_BANNER:
+            case BLUE_BANNER:
+            case GREEN_BANNER:
+            case CYAN_BANNER:
+            case RED_BANNER:
+            case PURPLE_BANNER:
+            case BROWN_BANNER:
+            case GRAY_BANNER:
+            case LIGHT_GRAY_BANNER:
+            case LIGHT_BLUE_BANNER:
+            case LIME_BANNER:
+            case ORANGE_BANNER:
+            case PINK_BANNER:
+            case MAGENTA_BANNER:
+            case YELLOW_BANNER:
+            case WHITE_BANNER:
             case FLOWER_POT:
             case STRUCTURE_BLOCK:
             case WHITE_SHULKER_BOX:
@@ -353,7 +425,7 @@ public class GlowChunk implements Chunk {
             case LIME_SHULKER_BOX:
             case PINK_SHULKER_BOX:
             case GRAY_SHULKER_BOX:
-            case SILVER_SHULKER_BOX:
+            case LIGHT_GRAY_SHULKER_BOX:
             case CYAN_SHULKER_BOX:
             case PURPLE_SHULKER_BOX:
             case BLUE_SHULKER_BOX:
@@ -361,13 +433,11 @@ public class GlowChunk implements Chunk {
             case GREEN_SHULKER_BOX:
             case RED_SHULKER_BOX:
             case BLACK_SHULKER_BOX:
-            case ENCHANTMENT_TABLE:
+            case ENCHANTING_TABLE:
             case ENDER_CHEST:
             case DAYLIGHT_DETECTOR:
-            case DAYLIGHT_DETECTOR_INVERTED:
-            case REDSTONE_COMPARATOR_OFF:
-            case REDSTONE_COMPARATOR_ON:
-                BlockType blockType = ItemTable.instance().getBlock(material);
+            case COMPARATOR:
+                BlockType blockType = ItemTable.instance().getBlock(type);
                 if (blockType == null) {
                     return null;
                 }

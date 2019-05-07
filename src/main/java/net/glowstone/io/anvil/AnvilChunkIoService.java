@@ -189,7 +189,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
 
             CompoundTag sectionTag = new CompoundTag();
             sectionTag.putByte("Y", i); // NON-NLS
-            sec.optimize();
+            sec.recount();
             sec.writeToNbt(sectionTag);
             sectionTags.add(sectionTag);
         }
