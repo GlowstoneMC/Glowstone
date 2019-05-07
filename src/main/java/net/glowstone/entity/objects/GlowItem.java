@@ -113,11 +113,6 @@ public class GlowItem extends GlowEntity implements Item {
     }
 
     @Override
-    public void setRotation(float yaw, float pitch) {
-
-    }
-
-    @Override
     public EntityType getType() {
         return EntityType.DROPPED_ITEM;
     }

@@ -1021,6 +1021,12 @@ public abstract class GlowEntity implements Entity {
     }
 
     @Override
+    public void setRotation(float yaw, float pitch) {
+        location.setPitch(pitch);
+        location.setYaw(yaw);
+    }
+
+    @Override
     public double getHeight() {
         return boundingBox.getSize().getY();
     }

@@ -901,7 +901,7 @@ shaped:
   - g g
   - g g
 - result:
-    type: GOLD_CHESTPLATE
+    type: GOLDEN_CHESTPLATE
   ingredients:
     e:
       type: GOLD_INGOT
@@ -910,7 +910,7 @@ shaped:
   - eee
   - eee
 - result:
-    type: GOLD_LEGGINGS
+    type: GOLDEN_LEGGINGS
   ingredients:
     g:
       type: GOLD_INGOT
@@ -2104,7 +2104,7 @@ shaped:
   - c c
   - c c
 - result:
-    type: GOLD_HELMET
+    type: GOLDEN_HELMET
   ingredients:
     c:
       type: GOLD_INGOT
@@ -2112,7 +2112,7 @@ shaped:
   - ccc
   - c c
 - result:
-    type: GOLD_BOOTS
+    type: GOLDEN_BOOTS
   ingredients:
     c:
       type: GOLD_INGOT
