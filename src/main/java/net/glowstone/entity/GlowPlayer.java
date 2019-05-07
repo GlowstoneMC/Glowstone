@@ -3717,7 +3717,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 case GRAVEL:
                 case MYCELIUM:
                 case SOUL_SAND:
-                    baseDamage = ToolType.SPADE.matches(tool.getType()) ? 1 : 2;
+                    baseDamage = ToolType.SHOVEL.matches(tool.getType()) ? 1 : 2;
                     break;
                 case OAK_LOG:
                 case DARK_OAK_LOG:

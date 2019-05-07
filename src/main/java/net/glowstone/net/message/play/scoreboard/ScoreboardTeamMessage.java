@@ -53,6 +53,12 @@ public final class ScoreboardTeamMessage implements Message {
                 friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, players);
     }
 
+    public static ScoreboardTeamMessage create(String name, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeInvisible, Team.OptionStatus nameTagVisibility,
+            Team.OptionStatus collisionRule, ChatColor color, List<String> playerNames) {
+        return create(name, new TextMessage(displayName), new TextMessage(prefix), new TextMessage(suffix),
+                friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color, playerNames);
+    }
+
     public static ScoreboardTeamMessage remove(String teamName) {
         return new ScoreboardTeamMessage(teamName, Action.REMOVE, null, null, null, false, false,
                 null, null, ChatColor.RESET, null);
@@ -65,6 +71,13 @@ public final class ScoreboardTeamMessage implements Message {
                                                Team.OptionStatus collisionRule, ChatColor color) {
         return new ScoreboardTeamMessage(teamName, Action.UPDATE, displayName, prefix, suffix,
                 friendlyFire, seeInvisible, nametagVisibility, collisionRule, color, null);
+    }
+
+    public static ScoreboardTeamMessage update(String name, String displayName, String prefix, String suffix,
+            boolean friendlyFire, boolean seeInvisible, Team.OptionStatus nameTagVisibility,
+            Team.OptionStatus collisionRule, ChatColor color) {
+        return update(name, new TextMessage(displayName), new TextMessage(prefix), new TextMessage(suffix),
+                friendlyFire, seeInvisible, nameTagVisibility, collisionRule, color);
     }
 
     public static ScoreboardTeamMessage addPlayers(String teamName, List<String> entries) {

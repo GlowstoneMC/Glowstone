@@ -399,12 +399,10 @@ public final class CraftingManager implements Iterable<Recipe> {
         dynamicRecipes.add(new DynamicRecipe(new GlowMapCopyMatcher()));
         dynamicRecipes.add(new DynamicRecipe(new GlowMapZoomMatcher()));
 
-        // Smelting fuels (time is in ticks)
-        for (Material wool : MaterialUtil.BANNERS) {
-            furnaceFuels.put(wool, 300);
-        }
+        putAllAsFuels(MaterialUtil.BANNERS, 300);
         furnaceFuels.put(Material.BLAZE_ROD, 2400);
         furnaceFuels.put(Material.COAL_BLOCK, 16000);
+        putAllAsFuels(MaterialUtil.BOATS, 400);
         furnaceFuels.put(Material.OAK_BOAT, 400);
         furnaceFuels.put(Material.ACACIA_BOAT, 400);
         furnaceFuels.put(Material.BIRCH_BOAT, 400);
@@ -414,40 +412,41 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.BOOKSHELF, 300);
         furnaceFuels.put(Material.BOW, 300);
         furnaceFuels.put(Material.BOWL, 100);
-        furnaceFuels.put(Material.CARPET, 67);
+        putAllAsFuels(MaterialUtil.CARPETS, 67);
         furnaceFuels.put(Material.COAL, 1600);
         furnaceFuels.put(Material.CHEST, 300);
-        furnaceFuels.put(Material.WORKBENCH, 300);
+        furnaceFuels.put(Material.CRAFTING_TABLE, 300);
         furnaceFuels.put(Material.DAYLIGHT_DETECTOR, 300);
-        furnaceFuels.put(Material.DAYLIGHT_DETECTOR_INVERTED, 300);
-        furnaceFuels.put(Material.FENCE, 300);
-        furnaceFuels.put(Material.FENCE_GATE, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_FENCES, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_GATES, 300);
         furnaceFuels.put(Material.FISHING_ROD, 300);
         furnaceFuels.put(Material.JUKEBOX, 300);
         furnaceFuels.put(Material.LADDER, 300);
         furnaceFuels.put(Material.LAVA_BUCKET, 20000);
-        furnaceFuels.put(Material.HUGE_MUSHROOM_1, 300);
-        furnaceFuels.put(Material.HUGE_MUSHROOM_2, 300);
+        furnaceFuels.put(Material.BROWN_MUSHROOM_BLOCK, 300);
+        furnaceFuels.put(Material.RED_MUSHROOM_BLOCK, 300);
         furnaceFuels.put(Material.NOTE_BLOCK, 300);
-        furnaceFuels.put(Material.SAPLING, 100);
+        putAllAsFuels(MaterialUtil.SAPLINGS, 100);
         furnaceFuels.put(Material.SIGN, 200);
         furnaceFuels.put(Material.STICK, 100);
-        furnaceFuels.put(Material.TRAP_DOOR, 300);
+        putAllAsFuels(MaterialUtil.TRAPDOORS, 300);
         furnaceFuels.put(Material.TRAPPED_CHEST, 300);
-        furnaceFuels.put(Material.LOG, 300);
-        furnaceFuels.put(Material.WOOD, 300);
-        furnaceFuels.put(Material.WOOD_BUTTON, 300);
-        furnaceFuels.put(Material.WOOD_PLATE, 300);
-        furnaceFuels.put(Material.WOOD_STAIRS, 300);
+        putAllAsFuels(MaterialUtil.LOGS, 300);
+        putAllAsFuels(MaterialUtil.WOODS, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_BUTTONS, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_PRESSURE_PLATES, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_STAIRS, 300);
         furnaceFuels.put(Material.WOODEN_AXE, 200);
         furnaceFuels.put(Material.WOODEN_HOE, 200);
         furnaceFuels.put(Material.WOODEN_PICKAXE, 200);
         furnaceFuels.put(Material.WOODEN_SHOVEL, 200);
         furnaceFuels.put(Material.WOODEN_SWORD, 200);
-        furnaceFuels.put(Material.WOOD_STEP, 150);
-        for (Material wool : MaterialUtil.WOOLS) {
-            furnaceFuels.put(wool, 100);
-        }
+        putAllAsFuels(MaterialUtil.WOODEN_SLABS, 300);
+        putAllAsFuels(MaterialUtil.WOOLS, 100);
+    }
+
+    private void putAllAsFuels(Iterable<Material> materials, int duration) {
+        materials.forEach(wood -> furnaceFuels.put(wood, duration));
     }
 
     /**
@@ -506,10 +505,11 @@ public final class CraftingManager implements Iterable<Recipe> {
                     = ItemStack.deserialize((Map<String, Object>) data.get("input")); // NON-NLS
             ItemStack resultStack
                     = ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS
+            NamespacedKey key = readKey(data, resultStack);
             float xp = ((Number) data.get("xp")).floatValue(); // NON-NLS
             furnaceRecipes.add(
-                    new FurnaceRecipe(resultStack, inputStack.getType(), inputStack.getDurability(),
-                            xp));
+                    new FurnaceRecipe(key, resultStack, inputStack.getType(),
+                            inputStack.getDurability(), xp, 200));
         }
     }
 

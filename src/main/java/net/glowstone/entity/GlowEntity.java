@@ -1016,7 +1016,8 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public org.bukkit.util.@NotNull BoundingBox getBoundingBox() {
-        return BoundingBox.copyOf(boundingBox);
+        return org.bukkit.util.BoundingBox.of(location, boundingBox.getSize().getX(),
+                boundingBox.getSize().getY(), boundingBox.getSize().getZ());
     }
 
     @Override

@@ -535,7 +535,7 @@ public final class ItemIds {
         if (!items.containsKey(name)) {
             return null;
         }
-        return Material.getMaterial(items.get(name));
+        return Material.getMaterial(name);
     }
 
     /**
@@ -548,7 +548,7 @@ public final class ItemIds {
         if (!blocks.containsKey(name)) {
             return null;
         }
-        return Material.getMaterial(blocks.get(name));
+        return Material.getMaterial(name);
     }
 
     /**

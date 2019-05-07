@@ -1,10 +1,17 @@
 package net.glowstone.inventory;
 
+import com.destroystokyo.paper.Namespaced;
 import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,15 +21,27 @@ import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An implementation of {@link ItemMeta}, created through {@link GlowItemFactory}.
  */
 public class GlowMetaItem implements ItemMeta {
 
+    private final SetMultimap<Attribute, AttributeModifier> attributeModifiers
+            = new HashMultimap<>();
+    private final Set<Namespaced> placeableKeys = new HashSet<>();
+    private final Set<Namespaced> destroyableKeys = new HashSet<>();
+    private final Set<Material> canPlaceOn = new HashSet<>();
+    private final Set<Material> canDestroy = new HashSet<>();
     @Getter
     @Setter
     private String displayName;
@@ -125,6 +144,60 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
+    public Set<Material> getCanDestroy() {
+        return new HashSet<>(canDestroy);
+    }
+
+    @Override
+    public void setCanDestroy(Set<Material> canDestroy) {
+        this.canDestroy.clear();
+        this.canDestroy.addAll(canDestroy);
+    }
+
+    @Override
+    public Set<Material> getCanPlaceOn() {
+        return new HashSet<>(canPlaceOn);
+    }
+
+    @Override
+    public void setCanPlaceOn(Set<Material> canPlaceOn) {
+        this.canPlaceOn.clear();
+        this.canPlaceOn.addAll(canPlaceOn)
+    }
+
+    @Override
+    public @NotNull Set<Namespaced> getDestroyableKeys() {
+        return new HashSet<>(destroyableKeys);
+    }
+
+    @Override
+    public void setDestroyableKeys(@NotNull Collection<Namespaced> canDestroy) {
+        destroyableKeys.clear();
+        destroyableKeys.addAll(canDestroy);
+    }
+
+    @Override
+    public @NotNull Set<Namespaced> getPlaceableKeys() {
+        return new HashSet<>(placeableKeys);
+    }
+
+    @Override
+    public @NotNull void setPlaceableKeys(@NotNull Collection<Namespaced> canPlaceOn) {
+        placeableKeys.clear();
+        placeableKeys.addAll(canPlaceOn);
+    }
+
+    @Override
+    public boolean hasPlaceableKeys() {
+        return !placeableKeys.isEmpty();
+    }
+
+    @Override
+    public boolean hasDestroyableKeys() {
+        return !destroyableKeys.isEmpty();
+    }
+
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new HashMap<>();
         result.put("meta-type", "UNSPECIFIC");
@@ -148,7 +221,7 @@ public class GlowMetaItem implements ItemMeta {
                 result.put("ItemFlags", hideFlags);
             }
         }
-
+        // TODO: New fields added in 1.13
         return result;
     }
 
@@ -336,6 +409,62 @@ public class GlowMetaItem implements ItemMeta {
     public boolean hasItemFlag(ItemFlag itemFlag) {
         int bitModifier = getBitModifier(itemFlag);
         return (hideFlag & bitModifier) == bitModifier;
+    }
+
+    @Override
+    public boolean hasAttributeModifiers() {
+        return !attributeModifiers.isEmpty();
+    }
+
+    @Override
+    public @Nullable Multimap<Attribute, AttributeModifier> getAttributeModifiers() {
+        return new HashMultimap<>(attributeModifiers);
+    }
+
+    @Override
+    public @NotNull Multimap<Attribute, AttributeModifier> getAttributeModifiers(
+            @NotNull EquipmentSlot slot) {
+        return Multimaps.filterValues(getAttributeModifiers(),
+                modifier -> slot == modifier.getSlot());
+    }
+
+    @Override
+    public @Nullable Collection<AttributeModifier> getAttributeModifiers(
+            @NotNull Attribute attribute) {
+        return null;
+    }
+
+    @Override
+    public boolean addAttributeModifier(@NotNull Attribute attribute,
+            @NotNull AttributeModifier modifier) {
+        return false;
+    }
+
+    @Override
+    public void setAttributeModifiers(
+            @Nullable Multimap<Attribute, AttributeModifier> attributeModifiers) {
+
+    }
+
+    @Override
+    public boolean removeAttributeModifier(@NotNull Attribute attribute) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAttributeModifier(@NotNull EquipmentSlot slot) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAttributeModifier(@NotNull Attribute attribute,
+            @NotNull AttributeModifier modifier) {
+        return false;
+    }
+
+    @Override
+    public @NotNull CustomItemTagContainer getCustomTagContainer() {
+        return null;
     }
 
     private byte getBitModifier(ItemFlag hideFlag) {
