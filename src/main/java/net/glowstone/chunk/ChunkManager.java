@@ -307,55 +307,6 @@ public final class ChunkManager {
             }
         }
 
-        // extended sections
-        short[][] extSections = generator.generateExtBlockSections(world, random, x, z, biomes);
-        if (extSections != null) {
-            ChunkSection[] sections = new ChunkSection[extSections.length];
-            for (int i = 0; i < extSections.length; ++i) {
-                if (extSections[i] != null) {
-                    sections[i] = ChunkSection.fromIdArray(extSections[i]);
-                }
-            }
-            chunk.initializeSections(sections);
-            chunk.setBiomes(biomes.biomes);
-            chunk.automaticHeightMap();
-            return;
-        }
-
-        // normal sections
-        byte[][] blockSections = generator.generateBlockSections(world, random, x, z, biomes);
-        if (blockSections != null) {
-            ChunkSection[] sections = new ChunkSection[blockSections.length];
-            for (int i = 0; i < blockSections.length; ++i) {
-                if (blockSections[i] != null) {
-                    sections[i] = ChunkSection.fromIdArray(blockSections[i]);
-                }
-            }
-            chunk.initializeSections(sections);
-            chunk.setBiomes(biomes.biomes);
-            chunk.automaticHeightMap();
-            return;
-        }
-
-        // deprecated flat generation
-        byte[] types = generator.generate(world, random, x, z);
-        ChunkSection[] sections = new ChunkSection[8];
-        for (int sy = 0; sy < sections.length; ++sy) {
-            // We can't use a normal constructor here due to the "interesting"
-            // choices used for this deprecated API (blocks are in vertical columns)
-            ChunkSection sec = new ChunkSection();
-            int by = 16 * sy;
-            for (int cx = 0; cx < 16; ++cx) {
-                for (int cz = 0; cz < 16; ++cz) {
-                    for (int cy = by; cy < by + 16; ++cy) {
-                        char type = (char) types[(((cx << 4) + cz) << 7) + cy];
-                        sec.setType(cx, cy, cz, (char) (type << 4));
-                    }
-                }
-            }
-            sections[sy] = sec;
-        }
-        chunk.initializeSections(sections);
         chunk.setBiomes(biomes.biomes);
         chunk.automaticHeightMap();
     }

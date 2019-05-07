@@ -1270,7 +1270,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return state != MobState.NO_AI;
     }
 
-    @Override
     public void playAnimation(EntityAnimation animation) {
         AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
         getWorld().getRawPlayers().stream()

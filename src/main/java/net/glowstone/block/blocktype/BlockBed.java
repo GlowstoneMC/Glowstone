@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.entity.BedEntity;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.state.GlowBed;
@@ -30,11 +31,6 @@ import org.bukkit.util.Vector;
 
 public class BlockBed extends BlockType {
 
-    private static final ImmutableSet<Material> BEDS = ImmutableSet.copyOf(EnumSet.of(
-            Material.WHITE_BED, Material.YELLOW_BED, Material.PINK_BED, Material.MAGENTA_BED,
-            Material.LIGHT_BLUE_BED, Material.LIME_BED, Material.ORANGE_BED, Material.LIGHT_GRAY_BED,
-            Material.GRAY_BED, Material.BROWN_BED, Material.RED_BED, Material.PURPLE_BED,
-            Material.BLUE_BED, Material.GREEN_BED, Material.CYAN_BED, Material.BLACK_BED));
     private static final ImmutableSet<Biome> EXPLOSIVE_IN_BIOMES = ImmutableSet.copyOf(EnumSet.of(
             Biome.NETHER, Biome.THE_END, Biome.END_BARRENS, Biome.END_MIDLANDS,
             Biome.END_HIGHLANDS, Biome.SMALL_END_ISLANDS));
@@ -280,7 +276,7 @@ public class BlockBed extends BlockType {
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
         GlowBlockState oldState) {
         Material type = block.getType();
-        if (!BEDS.contains(type)) {
+        if (!MaterialUtil.BEDS.contains(type)) {
             return;
         }
         GlowBed bed = (GlowBed) block.getState();

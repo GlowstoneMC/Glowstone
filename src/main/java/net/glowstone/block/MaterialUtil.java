@@ -1,0 +1,18 @@
+package net.glowstone.block;
+
+import com.google.common.collect.ImmutableSet;
+import java.util.EnumSet;
+import org.bukkit.Material;
+
+public class MaterialUtil {
+    public static final ImmutableSet<Material> BEDS = ImmutableSet.copyOf(EnumSet.of(
+            Material.WHITE_BED, Material.YELLOW_BED, Material.PINK_BED, Material.MAGENTA_BED,
+            Material.LIGHT_BLUE_BED, Material.LIME_BED, Material.ORANGE_BED, Material.LIGHT_GRAY_BED,
+            Material.GRAY_BED, Material.BROWN_BED, Material.RED_BED, Material.PURPLE_BED,
+            Material.BLUE_BED, Material.GREEN_BED, Material.CYAN_BED, Material.BLACK_BED));
+    public static final ImmutableSet<Material> WOOLS = ImmutableSet.copyOf(EnumSet.of(
+            Material.WHITE_WOOL, Material.YELLOW_WOOL, Material.PINK_WOOL, Material.MAGENTA_WOOL,
+            Material.LIGHT_BLUE_WOOL, Material.LIME_WOOL, Material.ORANGE_WOOL, Material.LIGHT_GRAY_WOOL,
+            Material.GRAY_WOOL, Material.BROWN_WOOL, Material.RED_WOOL, Material.PURPLE_WOOL,
+            Material.BLUE_WOOL, Material.GREEN_WOOL, Material.CYAN_WOOL, Material.BLACK_WOOL));
+}
