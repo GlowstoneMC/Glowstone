@@ -20,5 +20,8 @@ public class MaterialUtil {
             Material.LIGHT_BLUE_BANNER, Material.LIME_BANNER, Material.ORANGE_BANNER, Material.LIGHT_GRAY_BANNER,
             Material.GRAY_BANNER, Material.BROWN_BANNER, Material.RED_BANNER, Material.PURPLE_BANNER,
             Material.BLUE_BANNER, Material.GREEN_BANNER, Material.CYAN_BANNER, Material.BLACK_BANNER));
-
+    public static final ImmutableSet<Material> BUTTONS = ImmutableSet.copyOf(EnumSet.of(
+            Material.STONE_BUTTON, Material.OAK_BUTTON, Material.DARK_OAK_BUTTON,
+            Material.ACACIA_BUTTON, Material.BIRCH_BUTTON, Material.JUNGLE_BUTTON,
+            Material.SPRUCE_BUTTON));
 }
