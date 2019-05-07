@@ -3,15 +3,14 @@ package net.glowstone.net.handler.play.player;
 import static net.glowstone.net.message.play.player.DiggingMessage.START_DIGGING;
 
 import com.flowpowered.network.MessageHandler;
-import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.blocktype.BlockContainer;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.itemtype.ItemTimedUsage;
@@ -37,13 +36,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
-
-    private final ImmutableSet<Material> AIR_TYPES = ImmutableSet.copyOf(EnumSet.of(
-            Material.AIR, Material.VOID_AIR, Material.CAVE_AIR));
-
-    // TODO: Incomplete list
-    private final ImmutableSet<Material> DOUBLE_PLANT_TYPES = ImmutableSet.copyOf(EnumSet.of(
-            Material.TALL_GRASS, Material.LARGE_FERN, Material.ROSE_BUSH, Material.SUNFLOWER));
 
     @Override
     public void handle(GlowSession session, DiggingMessage message) {
@@ -71,7 +63,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 Action action = Action.LEFT_CLICK_BLOCK;
                 Block eventBlock = block;
                 if (player.getLocation().distanceSquared(block.getLocation()) > 36
-                        || AIR_TYPES.contains(material)) {
+                        || MaterialUtil.AIR_VARIANTS.contains(material)) {
                     action = Action.LEFT_CLICK_AIR;
                     eventBlock = null;
                 }
@@ -165,7 +157,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
 
             MaterialData data = block.getState().getData();
-            if (DOUBLE_PLANT_TYPES.contains(material)) {
+            if (MaterialUtil.DOUBLE_PLANTS.contains(material)) {
                 if (block.getRelative(BlockFace.DOWN).getType() == material) {
                     block = block.getRelative(BlockFace.DOWN);
                 }
@@ -205,7 +197,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (revert) {
             // replace the block that wasn't really dug
             BlockPlacementHandler.revert(player, block);
-        } else if (!AIR_TYPES.contains(material)) {
+        } else if (!MaterialUtil.AIR_VARIANTS.contains(material)) {
             BlockType blockType = ItemTable.instance().getBlock(material);
             blockType.leftClickBlock(player, block, holding);
         }

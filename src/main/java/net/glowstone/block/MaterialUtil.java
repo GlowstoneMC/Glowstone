@@ -162,6 +162,8 @@ public class MaterialUtil {
                     Material.OAK_PRESSURE_PLATE, Material.DARK_OAK_PRESSURE_PLATE,
                     Material.ACACIA_PRESSURE_PLATE, Material.BIRCH_PRESSURE_PLATE,
                     Material.JUNGLE_PRESSURE_PLATE, Material.SPRUCE_PRESSURE_PLATE));
+    public static final ImmutableSet<Material> AIR_VARIANTS = ImmutableSet.copyOf(EnumSet.of(
+        Material.AIR, Material.CAVE_AIR, Material.VOID_AIR, Material.STRUCTURE_VOID));
 
     // 1.14 adds Material.CORNFLOWER, Material.LILY_OF_THE_VALLEY, Material.WITHER_ROSE
     public static final ImmutableSet<Material> OVERWORLD_FLOWERS = ImmutableSet.copyOf(EnumSet.of(
@@ -179,6 +181,9 @@ public class MaterialUtil {
             Material.LILAC,
             Material.ROSE_BUSH,
             Material.PEONY));
+    public static final ImmutableSet<Material> DOUBLE_PLANTS = ImmutableSet.copyOf(EnumSet.of(
+            // TODO: Incomplete list
+            Material.TALL_GRASS, Material.LARGE_FERN, Material.ROSE_BUSH, Material.SUNFLOWER));
 
     private static ImmutableSet<Material> allMaterialsEndingWith(String suffix) {
         return allMaterialsThat(material -> material.name().endsWith(suffix));

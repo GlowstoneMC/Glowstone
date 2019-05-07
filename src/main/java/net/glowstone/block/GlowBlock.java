@@ -265,7 +265,7 @@ public class GlowBlock implements Block {
 
     @Override
     public boolean isEmpty() {
-        return getType() == Material.AIR;
+        return MaterialUtil.AIR_VARIANTS.contains(getType());
     }
 
     @Override
