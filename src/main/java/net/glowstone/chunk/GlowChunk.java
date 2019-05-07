@@ -25,6 +25,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
 import net.glowstone.util.TickUtil;
@@ -339,7 +340,7 @@ public class GlowChunk implements Chunk {
      */
     @Deprecated
     public BlockEntity createEntity(int cx, int cy, int cz, int type) {
-        return createEntity(cx, cy, cz, Material.values()[type]);
+        return createEntity(cx, cy, cz, FlatteningUtil.getMaterialFromBaseId(type));
     }
 
     /**

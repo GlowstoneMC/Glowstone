@@ -27,6 +27,7 @@ import lombok.ToString;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.chunk.ChunkManager;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.ChunkSection;
@@ -2021,7 +2022,7 @@ public class GlowWorld implements World {
         getRawPlayers().stream()
                 .filter(player -> player.getLocation().distanceSquared(loc) <= radiusSquared)
                 .forEach(player -> player.showParticle(loc, particle,
-                        new MaterialData(Material.values()[id], (byte) data),
+                        new MaterialData(FlatteningUtil.getMaterialFromBaseId(id), (byte) data),
                         offsetX, offsetY, offsetZ, speed, amount));
     }
 

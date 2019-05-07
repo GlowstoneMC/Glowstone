@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowCraftingInventory;
@@ -399,13 +400,15 @@ public final class CraftingManager implements Iterable<Recipe> {
         dynamicRecipes.add(new DynamicRecipe(new GlowMapZoomMatcher()));
 
         // Smelting fuels (time is in ticks)
-        furnaceFuels.put(Material.BANNER, 300);
+        for (Material wool : MaterialUtil.BANNERS) {
+            furnaceFuels.put(wool, 300);
+        }
         furnaceFuels.put(Material.BLAZE_ROD, 2400);
         furnaceFuels.put(Material.COAL_BLOCK, 16000);
-        furnaceFuels.put(Material.BOAT, 400);
-        furnaceFuels.put(Material.BOAT_ACACIA, 400);
-        furnaceFuels.put(Material.BOAT_BIRCH, 400);
-        furnaceFuels.put(Material.BOAT_DARK_OAK, 400);
+        furnaceFuels.put(Material.OAK_BOAT, 400);
+        furnaceFuels.put(Material.ACACIA_BOAT, 400);
+        furnaceFuels.put(Material.BIRCH_BOAT, 400);
+        furnaceFuels.put(Material.DARK_OAK_BOAT, 400);
         furnaceFuels.put(Material.BOAT_JUNGLE, 400);
         furnaceFuels.put(Material.BOAT_SPRUCE, 400);
         furnaceFuels.put(Material.BOOKSHELF, 300);
@@ -436,13 +439,15 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.WOOD_BUTTON, 300);
         furnaceFuels.put(Material.WOOD_PLATE, 300);
         furnaceFuels.put(Material.WOOD_STAIRS, 300);
-        furnaceFuels.put(Material.WOOD_AXE, 200);
-        furnaceFuels.put(Material.WOOD_HOE, 200);
-        furnaceFuels.put(Material.WOOD_PICKAXE, 200);
-        furnaceFuels.put(Material.WOOD_SPADE, 200);
-        furnaceFuels.put(Material.WOOD_SWORD, 200);
+        furnaceFuels.put(Material.WOODEN_AXE, 200);
+        furnaceFuels.put(Material.WOODEN_HOE, 200);
+        furnaceFuels.put(Material.WOODEN_PICKAXE, 200);
+        furnaceFuels.put(Material.WOODEN_SHOVEL, 200);
+        furnaceFuels.put(Material.WOODEN_SWORD, 200);
         furnaceFuels.put(Material.WOOD_STEP, 150);
-        furnaceFuels.put(Material.WOOL, 100);
+        for (Material wool : MaterialUtil.WOOLS) {
+            furnaceFuels.put(wool, 100);
+        }
     }
 
     /**

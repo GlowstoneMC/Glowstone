@@ -17,6 +17,7 @@ import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
@@ -671,11 +672,11 @@ public class CompoundTag extends Tag<Map<String, Tag>>
                 }
                 return Optional.ofNullable(type);
             case INT:
-                return Optional.ofNullable(Material.getMaterial(getInt(key)));
+                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getInt(key)));
             case SHORT:
-                return Optional.ofNullable(Material.getMaterial(getShort(key)));
+                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getShort(key)));
             case BYTE:
-                return Optional.ofNullable(Material.getMaterial(getByte(key)));
+                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getByte(key)));
             default:
                 return Optional.empty();
         }

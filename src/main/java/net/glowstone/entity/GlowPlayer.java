@@ -50,6 +50,7 @@ import net.glowstone.block.ItemTable;
 import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.blocktype.BlockBed;
 import net.glowstone.block.entity.SignEntity;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.block.itemtype.ItemFood;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
@@ -420,7 +421,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         public void playEffect(Location location, Effect effect, int id, int data, float offsetX,
                 float offsetY, float offsetZ, float speed, int particleCount, int radius) {
             if (effect.getType() == Type.VISUAL && particleCount > 0) {
-                MaterialData material = new MaterialData(Material.values()[id], (byte) data);
+                MaterialData material = new MaterialData(FlatteningUtil.getMaterialFromBaseId(id),
+                        (byte) data);
                 showParticle(location, effect, material, offsetX, offsetY, offsetZ, speed,
                         particleCount);
             } else {
