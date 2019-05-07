@@ -2605,7 +2605,7 @@ shaped:
   - e e
   - eee
 - result:
-    type: BOAT_SPRUCE
+    type: SPRUCE_BOAT
   ingredients:
     e:
       type: WOOD
@@ -2614,7 +2614,7 @@ shaped:
   - e e
   - eee
 - result:
-    type: BOAT_BIRCH
+    type: BIRCH_BOAT
   ingredients:
     e:
       type: WOOD
@@ -2623,7 +2623,7 @@ shaped:
   - e e
   - eee
 - result:
-    type: BOAT_JUNGLE
+    type: JUNGLE_BOAT
   ingredients:
     e:
       type: WOOD
@@ -2632,7 +2632,7 @@ shaped:
   - e e
   - eee
 - result:
-    type: BOAT_ACACIA
+    type: ACACIA_BOAT
   ingredients:
     e:
       type: WOOD
@@ -2641,7 +2641,7 @@ shaped:
   - e e
   - eee
 - result:
-    type: BOAT_DARK_OAK
+    type: DARK_OAK_BOAT
   ingredients:
     e:
       type: WOOD
