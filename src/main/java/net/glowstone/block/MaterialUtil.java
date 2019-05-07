@@ -10,6 +10,12 @@ import org.bukkit.Material;
  * Useful constant groups of materials, many of which were just 1 or 2 materials pre-Flattening.
  */
 public class MaterialUtil {
+    public static final ImmutableSet<Material> DYES = ImmutableSet.copyOf(EnumSet.of(
+            Material.BONE_MEAL, Material.DANDELION_YELLOW, Material.PINK_DYE, Material.MAGENTA_DYE,
+            Material.LIGHT_BLUE_DYE, Material.LIME_DYE, Material.ORANGE_DYE,
+            Material.LIGHT_GRAY_DYE, Material.GRAY_DYE, Material.COCOA_BEANS, Material.ROSE_RED,
+            Material.PURPLE_DYE, Material.LAPIS_LAZULI, Material.CACTUS_GREEN, Material.CYAN_DYE,
+            Material.INK_SAC));
     public static final ImmutableSet<Material> WOOLS = ImmutableSet.copyOf(EnumSet.of(
             Material.WHITE_WOOL, Material.YELLOW_WOOL, Material.PINK_WOOL, Material.MAGENTA_WOOL,
             Material.LIGHT_BLUE_WOOL, Material.LIME_WOOL, Material.ORANGE_WOOL,
