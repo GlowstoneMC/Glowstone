@@ -41,6 +41,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +61,7 @@ import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.MaterialValueManager;
 import net.glowstone.block.entity.state.GlowDispenser;
 import net.glowstone.boss.GlowBossBar;
+import net.glowstone.boss.GlowKeyedBossBar;
 import net.glowstone.command.glowstone.ColorCommand;
 import net.glowstone.command.glowstone.GlowstoneCommand;
 import net.glowstone.command.minecraft.BanCommand;
@@ -168,10 +171,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Keyed;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.StructureType;
 import org.bukkit.Tag;
 import org.bukkit.UnsafeValues;
 import org.bukkit.Warning.WarningState;
@@ -185,6 +190,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
@@ -208,6 +214,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.loot.LootTable;
+import org.bukkit.map.MapView;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -223,6 +230,7 @@ import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.util.CachedServerIcon;
 import org.bukkit.util.permissions.DefaultPermissions;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The core class of the Glowstone server.
@@ -335,6 +343,10 @@ public class GlowServer implements Server {
      * The {@link GlowAdvancement}s of this server.
      */
     private final Map<NamespacedKey, Advancement> advancements;
+    /**
+     * The {@link KeyedBossBar}s of this server.
+     */
+    private final ConcurrentMap<NamespacedKey, KeyedBossBar> bossBars;
     /**
      * Default root permissions.
      */
@@ -470,6 +482,7 @@ public class GlowServer implements Server {
         ipBans = new GlowBanList(this, Type.IP);
 
         loadConfig();
+        bossBars = new ConcurrentHashMap<>();
     }
 
     /**
@@ -1488,9 +1501,21 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @NotNull <T extends Keyed> Iterable<Tag<T>> getTags(@NotNull String s,
+            @NotNull Class<T> aClass) {
+        return null;
+    }
+
+    @Override
     public LootTable getLootTable(NamespacedKey tableKey) {
         // TODO: 1.13, possible re-use our existing loot tables and implement the new API
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @NotNull List<Entity> selectEntities(@NotNull CommandSender commandSender,
+            @NotNull String s) throws IllegalArgumentException {
+        return null;
     }
 
     /**
@@ -1861,6 +1886,11 @@ public class GlowServer implements Server {
     @Override
     public boolean suggestPlayerNamesWhenNullTabCompletions() {
         return config.getBoolean(Key.SUGGEST_PLAYER_NAMES_WHEN_NULL_TAB_COMPLETIONS);
+    }
+
+    @Override
+    public @NotNull String getPermissionMessage() {
+        return null;
     }
 
     @Override
@@ -2273,6 +2303,11 @@ public class GlowServer implements Server {
     }
 
     @Override
+    public @org.jetbrains.annotations.Nullable MapView getMap(int i) {
+        return null;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<World> getWorlds() {
         // Shenanigans needed to cast List<GlowWorld> to List<World>
@@ -2358,7 +2393,6 @@ public class GlowServer implements Server {
         return false;
     }
 
-    @Override
     public GlowMapView getMap(short id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -2366,6 +2400,18 @@ public class GlowServer implements Server {
     @Override
     public GlowMapView createMap(World world) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
+            @NotNull StructureType structureType) {
+        return null;
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
+            @NotNull StructureType structureType, int i, boolean b) {
+        return null;
     }
 
     @Override
@@ -2515,6 +2561,31 @@ public class GlowServer implements Server {
     @Override
     public BossBar createBossBar(String title, BarColor color, BarStyle style, BarFlag... flags) {
         return new GlowBossBar(title, color, style, flags);
+    }
+
+    @Override
+    public @NotNull KeyedBossBar createBossBar(NamespacedKey key,
+            @Nullable String title, BarColor barColor,
+            BarStyle barStyle, BarFlag... barFlags) {
+        KeyedBossBar bar = new GlowKeyedBossBar(key, title, barColor, barStyle, 1.0, barFlags);
+        bossBars.put(key, bar);
+        return bar;
+    }
+
+    @Override
+    public @NotNull Iterator<KeyedBossBar> getBossBars() {
+        return bossBars.values().iterator();
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable KeyedBossBar getBossBar(
+            @NotNull NamespacedKey namespacedKey) {
+        return bossBars.get(namespacedKey);
+    }
+
+    @Override
+    public boolean removeBossBar(@NotNull NamespacedKey namespacedKey) {
+        return bossBars.remove(namespacedKey) != null;
     }
 
     @Override
