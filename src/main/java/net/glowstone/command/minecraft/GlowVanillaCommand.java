@@ -3,7 +3,10 @@ package net.glowstone.command.minecraft;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -31,6 +34,25 @@ import org.jetbrains.annotations.NonNls;
  * used, and the initial values are based on the server's locale.
  */
 public abstract class GlowVanillaCommand extends VanillaCommand {
+    /**
+     * Keys for localizable messages shared by more than one command.
+     */
+    @RequiredArgsConstructor
+    public enum GenericMessage {
+        DEFAULT_PERMISSION("_generic.no-permission"),
+        NO_SUCH_PLAYER("_generic.no-such-player"),
+        NAN("_generic.nan"),
+        OFFLINE("_generic.offline"),
+        NO_MATCHES("_generic.no-matches"),
+        USAGE_IS("_generic.usage"),
+        NOT_PHYSICAL("_generic.not_physical"),
+        NOT_PHYSICAL_COORDS("_generic.not-physical-coord"),
+        TOO_HIGH("_generic.too-high"),
+        TOO_LOW("_generic.too-low"),
+        INVALID_JSON("_generic.invalid-json");
+        @NonNls private final String key;
+    }
+
     @NonNls
     private static final String BUNDLE_BASE_NAME = "commands";
     @NonNls
@@ -41,18 +63,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
     private static final String PERMISSION_SUFFIX = ".no-permission";
     @NonNls
     private static final String DEFAULT_PERMISSION = "_generic.no-permission";
-    @NonNls
-    private static final String NO_SUCH_PLAYER = "_generic.no-such-player";
-    @NonNls
-    private static final String NAN = "_generic.nan";
-    @NonNls
-    private static final String OFFLINE = "_generic.offline";
-    @NonNls
-    private static final String NO_MATCHES = "_generic.no-matches";
-    @NonNls
-    private static final String USAGE_IS = "_generic.usage";
-    @NonNls
-    private static final String NOT_PHYSICAL = "_generic.not-physical";
+
     private static final ResourceBundle SERVER_LOCALE_BUNDLE
             = ResourceBundle.getBundle(BUNDLE_BASE_NAME);
     public static final long CACHE_SIZE = 50;
@@ -61,7 +72,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             .maximumSize(CACHE_SIZE)
             .build(CacheLoader.from(localeStr ->
                     ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.forLanguageTag(localeStr))));
-    public static final String JOINER = "_generic.joiner";
+    public static final String JOINER = "_generic._joiner";
 
     private final LoadingCache<ResourceBundle, CommandMessages> bundleToMessageCache;
 
@@ -178,38 +189,46 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
 
     protected void sendUsageMessage(CommandSender sender,
             CommandMessages commandMessages) {
-        new LocalizedStringImpl(USAGE_IS, commandMessages.getResourceBundle())
+        commandMessages.getGeneric(GenericMessage.USAGE_IS)
                 .sendInColor(ChatColor.RED, sender, commandMessages.getUsageMessage());
     }
 
-    @Getter
-    @RequiredArgsConstructor
     protected static class CommandMessages {
         // Only LocalizedString messages that apply to multiple commands should be in this class.
         // All others are instantiated on demand.
-
+        private final ImmutableMap<GenericMessage, LocalizedString> genericMessages;
+        @Getter
         private final Locale locale;
+        @Getter
         private final ResourceBundle resourceBundle;
-
+        @Getter
         private final String description;
+        @Getter
         private final String usageMessage;
+        @Getter
         private final String permissionMessage;
-        private final LocalizedString noSuchPlayer;
-        private final LocalizedString notANumber;
-        private final LocalizedString playerOffline;
-        private final LocalizedString noMatches;
-        private final LocalizedString notPhysical;
+        @Getter
         private final String joiner;
+
+        public LocalizedString getGeneric(GenericMessage which) {
+            return genericMessages.get(which);
+        }
 
         public CommandMessages(ResourceBundle bundle, String description,
                 String usageMessage, String permissionMessage) {
-            this(bundle.getLocale(), bundle, description, usageMessage, permissionMessage,
-                    new LocalizedStringImpl(NO_SUCH_PLAYER, bundle),
-                    new LocalizedStringImpl(NAN, bundle),
-                    new LocalizedStringImpl(OFFLINE, bundle),
-                    new LocalizedStringImpl(NO_MATCHES, bundle),
-                    new LocalizedStringImpl(NOT_PHYSICAL, bundle),
-                    new LocalizedStringImpl(JOINER, bundle).get());
+            locale = bundle.getLocale();
+            resourceBundle = bundle;
+            this.description = description;
+            this.usageMessage = usageMessage;
+            this.permissionMessage = permissionMessage;
+            // ImmutableMap.Builder does not optimize for enums, but immutableEnumMap does
+            EnumMap<GenericMessage, LocalizedString> genericMessages
+                    = new EnumMap<GenericMessage, LocalizedString>(GenericMessage.class);
+            for (GenericMessage message : GenericMessage.values()) {
+                genericMessages.put(message, new LocalizedStringImpl(message.key, resourceBundle));
+            }
+            this.genericMessages = Maps.immutableEnumMap(genericMessages);
+            joiner = new LocalizedStringImpl(JOINER, bundle).get();
         }
 
         /**

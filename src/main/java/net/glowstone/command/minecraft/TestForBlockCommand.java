@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.state.BlockStateData;
 import net.glowstone.block.state.InvalidBlockStateException;
@@ -41,14 +42,16 @@ public class TestForBlockCommand extends GlowVanillaCommand {
         }
         String itemName = CommandUtils.toNamespaced(args[3].toLowerCase());
         Material type = ItemIds.getBlock(itemName);
+        ResourceBundle bundle = messages.getResourceBundle();
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + itemName + " is not a valid block type.");
+            new LocalizedStringImpl("testforblock.invalid-block", bundle)
+                    .sendInColor(ChatColor.RED, sender, itemName);
         }
         Location location = CommandUtils
                 .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
         GlowBlock block = (GlowBlock) location.getBlock();
         if (block.getType() != type) {
-            new LocalizedStringImpl("testforblock.wrong-block", messages.getResourceBundle())
+            new LocalizedStringImpl("testforblock.wrong-block", bundle)
                     .sendInColor(ChatColor.RED, sender,
                             location.getBlockX(), location.getBlockY(), location.getBlockZ(),
                             ItemIds.getName(block.getType()), ItemIds.getName(type));
@@ -61,7 +64,7 @@ public class TestForBlockCommand extends GlowVanillaCommand {
                 return false;
             }
             if (data.isNumeric() && block.getData() != data.getNumericValue()) {
-                new LocalizedStringImpl("testforblock.wrong-data", messages.getResourceBundle())
+                new LocalizedStringImpl("testforblock.wrong-data", bundle)
                         .sendInColor(ChatColor.RED, sender,
                                 location.getBlockX(), location.getBlockY(), location.getBlockZ(),
                                 block.getData(), data);
@@ -73,7 +76,7 @@ public class TestForBlockCommand extends GlowVanillaCommand {
                     if (!matches) {
                         // TODO: Print the actual state of the block
                         new LocalizedStringImpl("testforblock.wrong-state",
-                                messages.getResourceBundle())
+                                bundle)
                                 .sendInColor(ChatColor.RED, sender,
                                         location.getBlockX(), location.getBlockY(),
                                         location.getBlockZ(),
@@ -94,19 +97,20 @@ public class TestForBlockCommand extends GlowVanillaCommand {
                 CompoundTag blockTag = new CompoundTag();
                 block.getBlockEntity().saveNbt(blockTag);
                 if (!tag.matches(blockTag)) {
-                    sender.sendMessage(
-                            ChatColor.RED + "The block at " + location.getBlockX() + ", " + location
-                                    .getBlockY() + ", " + location.getBlockZ()
-                                    + " did not have the required NBT keys");
+                    new LocalizedStringImpl("testforblock.wrong-data", bundle).sendInColor(
+                            ChatColor.RED, sender,
+                            location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+                            blockTag, tag);
                     return false;
                 }
             } catch (MojangsonParseException e) {
-                sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
+                messages.getGeneric(GenericMessage.INVALID_JSON)
+                        .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
         }
         // All is well
-        new LocalizedStringImpl("testforblock.wrong-data", messages.getResourceBundle())
+        new LocalizedStringImpl("testforblock.done", bundle)
                 .send(sender, location.getBlockX(), location.getBlockY(), location.getBlockZ());
         return true;
     }

@@ -49,7 +49,8 @@ public class TpCommand extends GlowVanillaCommand {
                     CommandTarget target = new CommandTarget(sender, name);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
-                        commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, name);
+                        commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                .sendInColor(ChatColor.RED, sender, name);
                         return false;
                     }
                     for (Entity entity : matched) {
@@ -62,7 +63,8 @@ public class TpCommand extends GlowVanillaCommand {
                 } else {
                     Player player = Bukkit.getPlayerExact(name);
                     if (player == null) {
-                        commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                        commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                                .sendInColor(ChatColor.RED, sender, name);
                         return false;
                     } else {
                         from.teleport(player);
@@ -81,7 +83,8 @@ public class TpCommand extends GlowVanillaCommand {
                     CommandTarget target = new CommandTarget(sender, fromName);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
-                        commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, fromName);
+                        commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                .sendInColor(ChatColor.RED, sender, fromName);
                         return false;
                     }
                     for (Entity entity : matched) {
@@ -91,7 +94,8 @@ public class TpCommand extends GlowVanillaCommand {
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             }
@@ -99,7 +103,8 @@ public class TpCommand extends GlowVanillaCommand {
                         } else {
                             Player player = Bukkit.getPlayerExact(destName);
                             if (player == null) {
-                                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             } else {
@@ -126,7 +131,8 @@ public class TpCommand extends GlowVanillaCommand {
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             }
@@ -134,7 +140,8 @@ public class TpCommand extends GlowVanillaCommand {
                         } else {
                             Player player2 = Bukkit.getPlayerExact(destName);
                             if (player2 == null) {
-                                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             } else {

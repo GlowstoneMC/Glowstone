@@ -39,7 +39,8 @@ public class BanCommand extends GlowVanillaCommand {
                     return;
                 }
                 if (player == null) {
-                    commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                    commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                            .sendInColor(ChatColor.RED, sender, name);
                     return;
                 }
                 if (args.length == 1) {

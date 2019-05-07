@@ -53,12 +53,12 @@ import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
 import net.glowstone.command.LocalizedEnumNames;
+import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
 import net.glowstone.constants.GlowParticle;
 import net.glowstone.constants.GlowSound;
-import net.glowstone.entity.EntityAnimation;
 import net.glowstone.entity.meta.ClientSettings;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataIndex.StatusFlags;
@@ -203,6 +203,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
+
 
 /**
  * Represents an in-game player.
@@ -672,7 +673,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world
                 .getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world
-                .getGameRuleMap().getBoolean("reducedDebugInfo")));
+                .getGameRuleMap().getBoolean(GameRules.REDUCED_DEBUG_INFO)));
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
@@ -819,6 +820,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void pulse() {
         super.pulse();
+        incrementStatistic(Statistic.TIME_SINCE_DEATH);
 
         if (usageItem != null) {
             if (usageItem.equals(getItemInHand())) { //todo: implement offhand
@@ -1247,6 +1249,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             active = true;
             deathTicks = 0;
+            setStatistic(Statistic.TIME_SINCE_DEATH, 0);
             spawnAt(event.getRespawnLocation());
         } finally {
             worldLock.writeLock().unlock();
@@ -3191,7 +3194,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void sendTime() {
         long time = getPlayerTime();
-        if (!playerTimeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
+        if (!playerTimeRelative || !world.getGameRuleMap().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
             time *= -1; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));
@@ -3443,6 +3446,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void clearTitle() {
         session.send(new TitleMessage(Action.CLEAR));
+    }
+
+    @Override
+    public void setOnGround(boolean onGround) {
+        super.setOnGround(onGround);
+        int fallDistance = Math.round(getFallDistance());
+        this.incrementStatistic(Statistic.FALL_ONE_CM, fallDistance);
     }
 
     @Override

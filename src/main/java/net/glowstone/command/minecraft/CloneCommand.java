@@ -96,7 +96,7 @@ public class CloneCommand extends GlowVanillaCommand {
         }
         final ResourceBundle bundle = messages.getResourceBundle();
         if (!CommandUtils.isPhysical(sender)) {
-            messages.getNotPhysical().send(sender);
+            messages.getGeneric(GenericMessage.NOT_PHYSICAL).send(sender);
             return false;
         }
 

@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ public class BlockWeb extends BlockType {
             .matches(tool.getType()))) {
             return DROP_STRING;
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override

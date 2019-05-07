@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.GlowAnvilInventory;
@@ -29,7 +30,7 @@ public class BlockAnvil extends BlockFalling {
         // extend 2 parents
         ToolType neededTool = ToolType.PICKAXE;
         if (tool == null || !neededTool.matches(tool.getType())) {
-            return BlockDropless.EMPTY_STACK;
+            return Collections.emptyList();
         }
 
         return getMinedDrops(block);

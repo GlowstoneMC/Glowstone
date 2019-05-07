@@ -1,50 +1,6 @@
 package net.glowstone.generator;
 
 import static net.glowstone.GlowServer.getWorldConfig;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_BIG_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_BIG_HILLS2;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_DEEP_OCEAN;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_DEFAULT;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_DEFAULT_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_EXTREME_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_FLATLANDS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_FLATLANDS_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_FLAT_SHORE;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_HIGH_PLATEAU;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_HIGH_SPIKES;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_LOW_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_LOW_SPIKES;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_MID_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_MID_HILLS2;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_MID_PLAINS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_OCEAN;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_RIVER;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_ROCKY_SHORE;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_SWAMPLAND;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_HEIGHT_SWAMPLAND_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_BIG_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_BIG_HILLS2;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_DEEP_OCEAN;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_DEFAULT;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_DEFAULT_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_EXTREME_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_FLATLANDS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_FLATLANDS_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_FLAT_SHORE;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_HIGH_PLATEAU;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_HIGH_SPIKES;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_LOW_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_LOW_SPIKES;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_MID_HILLS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_MID_HILLS2;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_MID_PLAINS;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_OCEAN;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_RIVER;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_ROCKY_SHORE;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_SWAMPLAND;
-import static net.glowstone.util.config.WorldConfig.Key.BIOME_SCALE_SWAMPLAND_HILLS;
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_BASE_SIZE;
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_BIOME_HEIGHT_OFFSET;
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_BIOME_HEIGHT_WEIGHT;
@@ -62,14 +18,11 @@ import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_HEIGHT_NOISE_S
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_HEIGHT_SCALE;
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_STRETCH_Y;
 import static net.glowstone.util.config.WorldConfig.Key.OVERWORLD_SURFACE_SCALE;
-import static org.bukkit.block.Biome.BEACHES;
+import static org.bukkit.block.Biome.BEACH;
 import static org.bukkit.block.Biome.BIRCH_FOREST_HILLS;
-import static org.bukkit.block.Biome.COLD_BEACH;
 import static org.bukkit.block.Biome.DEEP_OCEAN;
 import static org.bukkit.block.Biome.DESERT;
 import static org.bukkit.block.Biome.DESERT_HILLS;
-import static org.bukkit.block.Biome.EXTREME_HILLS;
-import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
 import static org.bukkit.block.Biome.FOREST_HILLS;
 import static org.bukkit.block.Biome.FROZEN_OCEAN;
 import static org.bukkit.block.Biome.FROZEN_RIVER;
@@ -79,13 +32,12 @@ import static org.bukkit.block.Biome.JUNGLE_HILLS;
 import static org.bukkit.block.Biome.MESA;
 import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
 import static org.bukkit.block.Biome.MESA_ROCK;
-import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
-import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
+import static org.bukkit.block.Biome.MOUNTAINS;
+import static org.bukkit.block.Biome.MUSHROOM_FIELDS;
+import static org.bukkit.block.Biome.MUSHROOM_FIELD_SHORE;
 import static org.bukkit.block.Biome.MUTATED_BIRCH_FOREST;
 import static org.bukkit.block.Biome.MUTATED_BIRCH_FOREST_HILLS;
 import static org.bukkit.block.Biome.MUTATED_DESERT;
-import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS;
-import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS_WITH_TREES;
 import static org.bukkit.block.Biome.MUTATED_FOREST;
 import static org.bukkit.block.Biome.MUTATED_ICE_FLATS;
 import static org.bukkit.block.Biome.MUTATED_JUNGLE;
@@ -93,6 +45,7 @@ import static org.bukkit.block.Biome.MUTATED_JUNGLE_EDGE;
 import static org.bukkit.block.Biome.MUTATED_MESA;
 import static org.bukkit.block.Biome.MUTATED_MESA_CLEAR_ROCK;
 import static org.bukkit.block.Biome.MUTATED_MESA_ROCK;
+import static org.bukkit.block.Biome.MUTATED_MOUNTAINS;
 import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA;
 import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA_HILLS;
 import static org.bukkit.block.Biome.MUTATED_ROOFED_FOREST;
@@ -101,19 +54,22 @@ import static org.bukkit.block.Biome.MUTATED_SAVANNA_ROCK;
 import static org.bukkit.block.Biome.MUTATED_SWAMPLAND;
 import static org.bukkit.block.Biome.MUTATED_TAIGA;
 import static org.bukkit.block.Biome.MUTATED_TAIGA_COLD;
+import static org.bukkit.block.Biome.MUTATED_WOODED_MOUNTAINS;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.REDWOOD_TAIGA;
 import static org.bukkit.block.Biome.REDWOOD_TAIGA_HILLS;
 import static org.bukkit.block.Biome.RIVER;
 import static org.bukkit.block.Biome.SAVANNA;
 import static org.bukkit.block.Biome.SAVANNA_ROCK;
-import static org.bukkit.block.Biome.SMALLER_EXTREME_HILLS;
+import static org.bukkit.block.Biome.SMALLER_MOUNTAINS;
+import static org.bukkit.block.Biome.SNOWY_BEACH;
 import static org.bukkit.block.Biome.STONE_BEACH;
 import static org.bukkit.block.Biome.SWAMPLAND;
 import static org.bukkit.block.Biome.TAIGA;
 import static org.bukkit.block.Biome.TAIGA_COLD;
 import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
+import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
 
 import com.jogamp.opencl.CLBuffer;
 import com.jogamp.opencl.CLKernel;
@@ -123,8 +79,6 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
@@ -173,14 +127,14 @@ public class OverworldGenerator extends GlowChunkGenerator {
     private static double biomeScaleWeight;
 
     static {
-        setBiomeSpecificGround(new SandyGroundGenerator(), BEACHES, COLD_BEACH, DESERT,
+        setBiomeSpecificGround(new SandyGroundGenerator(), BEACH, SNOWY_BEACH, DESERT,
                 DESERT_HILLS, MUTATED_DESERT);
         setBiomeSpecificGround(new RockyGroundGenerator(), STONE_BEACH);
         setBiomeSpecificGround(new SnowyGroundGenerator(), MUTATED_ICE_FLATS);
-        setBiomeSpecificGround(new MycelGroundGenerator(), MUSHROOM_ISLAND, MUSHROOM_ISLAND_SHORE);
-        setBiomeSpecificGround(new StonePatchGroundGenerator(), EXTREME_HILLS);
-        setBiomeSpecificGround(new GravelPatchGroundGenerator(), MUTATED_EXTREME_HILLS,
-                MUTATED_EXTREME_HILLS_WITH_TREES);
+        setBiomeSpecificGround(new MycelGroundGenerator(), MUSHROOM_FIELDS, MUSHROOM_FIELD_SHORE);
+        setBiomeSpecificGround(new StonePatchGroundGenerator(), MOUNTAINS);
+        setBiomeSpecificGround(new GravelPatchGroundGenerator(), MUTATED_MOUNTAINS,
+                MUTATED_WOODED_MOUNTAINS);
         setBiomeSpecificGround(new DirtAndStonePatchGroundGenerator(), MUTATED_SAVANNA,
                 MUTATED_SAVANNA_ROCK);
         setBiomeSpecificGround(new DirtPatchGroundGenerator(), REDWOOD_TAIGA, REDWOOD_TAIGA_HILLS,
@@ -193,16 +147,16 @@ public class OverworldGenerator extends GlowChunkGenerator {
         setBiomeHeight(BiomeHeight.OCEAN, OCEAN, FROZEN_OCEAN);
         setBiomeHeight(BiomeHeight.DEEP_OCEAN, DEEP_OCEAN);
         setBiomeHeight(BiomeHeight.RIVER, RIVER, FROZEN_RIVER);
-        setBiomeHeight(BiomeHeight.FLAT_SHORE, BEACHES, COLD_BEACH, MUSHROOM_ISLAND_SHORE);
+        setBiomeHeight(BiomeHeight.FLAT_SHORE, BEACH, SNOWY_BEACH, MUSHROOM_FIELD_SHORE);
         setBiomeHeight(BiomeHeight.ROCKY_SHORE, STONE_BEACH);
         setBiomeHeight(BiomeHeight.FLATLANDS, DESERT, ICE_FLATS, SAVANNA);
-        setBiomeHeight(BiomeHeight.EXTREME_HILLS, EXTREME_HILLS, EXTREME_HILLS_WITH_TREES,
-                MUTATED_EXTREME_HILLS, MUTATED_EXTREME_HILLS_WITH_TREES);
+        setBiomeHeight(BiomeHeight.MOUNTAINS, MOUNTAINS, WOODED_MOUNTAINS,
+                MUTATED_MOUNTAINS, MUTATED_WOODED_MOUNTAINS);
         setBiomeHeight(BiomeHeight.MID_PLAINS, TAIGA, TAIGA_COLD, REDWOOD_TAIGA);
         setBiomeHeight(BiomeHeight.SWAMPLAND, SWAMPLAND);
-        setBiomeHeight(BiomeHeight.LOW_HILLS, MUSHROOM_ISLAND);
+        setBiomeHeight(BiomeHeight.LOW_HILLS, MUSHROOM_FIELDS);
         setBiomeHeight(BiomeHeight.HILLS, ICE_MOUNTAINS, DESERT_HILLS, FOREST_HILLS, TAIGA_HILLS,
-                SMALLER_EXTREME_HILLS, JUNGLE_HILLS, BIRCH_FOREST_HILLS, TAIGA_COLD_HILLS,
+                SMALLER_MOUNTAINS, JUNGLE_HILLS, BIRCH_FOREST_HILLS, TAIGA_COLD_HILLS,
                 REDWOOD_TAIGA_HILLS, MUTATED_MESA_ROCK, MUTATED_MESA_CLEAR_ROCK);
         setBiomeHeight(BiomeHeight.HIGH_PLATEAU, SAVANNA_ROCK, MESA_ROCK, MESA_CLEAR_ROCK);
         setBiomeHeight(BiomeHeight.FLATLANDS_HILLS, MUTATED_DESERT);

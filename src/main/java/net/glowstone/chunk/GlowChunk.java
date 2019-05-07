@@ -27,8 +27,10 @@ import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.net.message.play.game.ChunkDataMessage;
+import net.glowstone.util.TickUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Chunk;
+import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.block.data.BlockData;
@@ -113,6 +115,9 @@ public class GlowChunk implements Chunk {
 
     @Setter
     private int isSlimeChunk = -1;
+    @Getter
+    @Setter
+    private long inhabitedTime;
 
     /**
      * Creates a new chunk with a specified X and Z coordinate.
@@ -182,10 +187,10 @@ public class GlowChunk implements Chunk {
     public boolean isSlimeChunk() {
         if (isSlimeChunk == -1) {
             boolean isSlimeChunk = new Random(this.world.getSeed()
-                    + (long) (this.x * this.x * 0x4c1906)
-                    + (long) (this.x * 0x5ac0db)
-                    + (long) (this.z * this.z) * 0x4307a7L
-                    + (long) (this.z * 0x5f24f) ^ 0x3ad8025f).nextInt(10) == 0;
+                + (long) (this.x * this.x * 0x4c1906)
+                + (long) (this.x * 0x5ac0db)
+                + (long) (this.z * this.z) * 0x4307a7L
+                + (long) (this.z * 0x5f24f) ^ 0x3ad8025f).nextInt(10) == 0;
 
             this.isSlimeChunk = (isSlimeChunk ? 1 : 0);
         }
@@ -202,8 +207,8 @@ public class GlowChunk implements Chunk {
     public GlowChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome,
                                               boolean includeBiomeTempRain) {
         return new GlowChunkSnapshot(x, z, world, sections,
-                includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null,
-                includeBiomeTempRain, isSlimeChunk());
+            includeMaxBlockY ? heightMap.clone() : null, includeBiome ? biomes.clone() : null,
+            includeBiomeTempRain, isSlimeChunk());
     }
 
     @Override
@@ -246,7 +251,7 @@ public class GlowChunk implements Chunk {
         }
 
         if (EventFactory.getInstance()
-                .callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
+            .callEvent(new ChunkUnloadEvent(this)).isCancelled()) {
             return false;
         }
 
@@ -274,15 +279,15 @@ public class GlowChunk implements Chunk {
     public void initializeSections(ChunkSection[] initSections) {
         if (isLoaded()) {
             GlowServer.logger.log(Level.SEVERE,
-                    "Tried to initialize already loaded chunk (" + x + "," + z + ")",
-                    new Throwable());
+                "Tried to initialize already loaded chunk (" + x + "," + z + ")",
+                new Throwable());
             return;
         }
         if (initSections.length != SEC_COUNT) {
             GlowServer.logger.log(Level.WARNING,
-                    "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was "
-                            + initSections.length,
-                    new Throwable());
+                "Got an unexpected section length - wanted " + SEC_COUNT + ", but length was "
+                    + initSections.length,
+                new Throwable());
         }
         //GlowServer.logger.log(Level.INFO, "Initializing chunk ({0},{1})", new Object[]{x, z});
 
@@ -377,7 +382,7 @@ public class GlowChunk implements Chunk {
                     return entity;
                 } catch (Exception ex) {
                     GlowServer.logger
-                            .log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
+                        .log(Level.SEVERE, "Unable to initialize block entity for " + type, ex);
                     return null;
                 }
             default:
@@ -665,6 +670,76 @@ public class GlowChunk implements Chunk {
     }
 
     /**
+     * Gets the regional difficulty for this chunk.
+     *
+     * @return the regional difficulty
+     */
+    public double getRegionalDifficulty() {
+        final double moonPhase = world.getMoonPhase();
+        final long worldTime = world.getFullTime();
+        final Difficulty worldDifficulty = world.getDifficulty();
+
+        double totalTimeFactor;
+        if (worldTime > (21 * TickUtil.TICKS_PER_HOUR)) {
+            totalTimeFactor = 0.25;
+        } else if (worldTime < TickUtil.TICKS_PER_HOUR) {
+            totalTimeFactor = 0;
+        } else {
+            totalTimeFactor =  (worldTime - TickUtil.TICKS_PER_HOUR) / 5760000d;
+        }
+
+        double chunkFactor;
+        if (inhabitedTime > (50 * TickUtil.TICKS_PER_HOUR)) {
+            chunkFactor = 1;
+        } else {
+            chunkFactor = inhabitedTime / 3600000d;
+        }
+
+        if (worldDifficulty != Difficulty.HARD) {
+            chunkFactor *= 3d / 4d;
+        }
+
+        if (moonPhase / 4 > totalTimeFactor) {
+            chunkFactor += totalTimeFactor;
+        } else {
+            chunkFactor += moonPhase / 4;
+        }
+
+        if (worldDifficulty == Difficulty.EASY) {
+            chunkFactor /= 2;
+        }
+
+        double regionalDifficulty = 0.75 + totalTimeFactor + chunkFactor;
+
+        if (worldDifficulty == Difficulty.NORMAL) {
+            regionalDifficulty *= 2;
+        }
+        if (worldDifficulty == Difficulty.HARD) {
+            regionalDifficulty *= 3;
+        }
+
+        return regionalDifficulty;
+    }
+
+    /**
+     * Returns 0.0 if the regional difficulty is below 2.0 and 1.0 if it is above 4.0, with a linear
+     * increase between those values.
+     *
+     * @return a rescaled regional difficulty clamped to the range [0.0, 1.0]
+     */
+    public double getClampedRegionalDifficulty() {
+        final double rd = getRegionalDifficulty();
+
+        if (rd < 2.0) {
+            return 0;
+        } else if (rd > 4.0) {
+            return 1;
+        } else {
+            return (rd - 2) / 2;
+        }
+    }
+
+    /**
      * Set the entire height map of this chunk.
      *
      * @param newHeightMap The height map.
@@ -713,7 +788,7 @@ public class GlowChunk implements Chunk {
     private int coordinateToIndex(int x, int z, int y) {
         if (x < 0 || z < 0 || y < 0 || x >= WIDTH || z >= HEIGHT || y >= DEPTH) {
             throw new IndexOutOfBoundsException(
-                    "Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
+                "Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
         }
 
         return (y * HEIGHT + z) * WIDTH + x;
@@ -798,6 +873,10 @@ public class GlowChunk implements Chunk {
         return new ChunkDataMessage(x, z, entireChunk, sectionBitmask, buf, blockEntities);
     }
 
+    public void addTick() {
+        inhabitedTime++;
+    }
+
     /**
      * A chunk key represents the X and Z coordinates of a chunk in a manner suitable for use as a
      * key in a hash table or set.
@@ -807,7 +886,7 @@ public class GlowChunk implements Chunk {
 
         // Key cache storage
         private static final Long2ObjectOpenHashMap<Key> keys
-                = new Long2ObjectOpenHashMap<>(512, 0.5F);
+            = new Long2ObjectOpenHashMap<>(512, 0.5F);
 
         /**
          * The x-coordinate.

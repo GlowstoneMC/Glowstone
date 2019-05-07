@@ -12,7 +12,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -42,7 +41,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
             && data.getHalf() != Half.TOP) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(block.getType())));
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override
@@ -66,7 +65,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
     @Override
     public boolean isFertilizable(GlowBlock block) {
         Material species = block.getType();
-        return species != Material.TALL_GRASS && species != Material.LARGE_FERN
+        return species != Material.TALL_GRASS && species != Material.LARGE_FERN;
     }
 
     @Override

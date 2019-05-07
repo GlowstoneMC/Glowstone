@@ -5,11 +5,13 @@ import java.util.ResourceBundle;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NonNls;
 
 public class LocalizedStringImpl implements LocalizedString {
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings"); // NON-NLS
 
     @Getter
+    @NonNls
     private final String key;
 
     private final ResourceBundle resourceBundle;
@@ -19,7 +21,7 @@ public class LocalizedStringImpl implements LocalizedString {
         this.resourceBundle = STRINGS;
     }
 
-    public LocalizedStringImpl(String key, ResourceBundle resourceBundle) {
+    public LocalizedStringImpl(@NonNls String key, ResourceBundle resourceBundle) {
         this.key = key;
         this.resourceBundle = resourceBundle;
     }

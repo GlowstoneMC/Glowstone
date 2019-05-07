@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -54,8 +55,8 @@ public class InventoryUtil {
     /**
      * Get a random slot index in an Inventory.
      *
-     * @param random a Random instance
-     * @param inventory the inventory
+     * @param random      a Random instance
+     * @param inventory   the inventory
      * @param ignoreEmpty whether to skip empty items in the inventory
      * @return the index of a random slot in the inventory, -1 if no possible slot was found
      */
@@ -78,9 +79,8 @@ public class InventoryUtil {
     /**
      * Inflicts damage to an item. Unbreaking enchantment is applied if present.
      *
-     * @param player the player holding the item, or null if held by a dispenser
+     * @param player  the player holding the item, or null if held by a dispenser
      * @param holding the item
-     *
      * @return the updated item stack
      */
     public static ItemStack damageItem(GlowPlayer player, ItemStack holding) {
@@ -94,15 +94,24 @@ public class InventoryUtil {
         if (durability > 0 && ThreadLocalRandom.current().nextDouble() < 1 / (durability + 1)) {
             return holding;
         }
-
-        holding.setDurability((short) (holding.getDurability() + 1));
+        int damage = 1;
+        if (player != null) {
+            PlayerItemDamageEvent event = EventFactory.getInstance()
+                .callEvent(new PlayerItemDamageEvent(player, holding, damage));
+            if (event.isCancelled()) {
+                return holding;
+            }
+            damage = event.getDamage();
+        }
+        holding.setDurability((short) (holding.getDurability() + damage));
         if (holding.getDurability() == holding.getType().getMaxDurability() + 1) {
             if (player != null) {
                 EventFactory.getInstance()
-                        .callEvent(new PlayerItemBreakEvent(player, holding));
+                    .callEvent(new PlayerItemBreakEvent(player, holding));
             }
             return createEmptyStack();
         }
+
         return holding;
     }
 
@@ -111,7 +120,7 @@ public class InventoryUtil {
      * is in Creative mode.
      *
      * @param player the player holding the item
-     * @param item the item to consume
+     * @param item   the item to consume
      */
     public static void consumeHeldItem(HumanEntity player, ItemStack item) {
         if (player.getGameMode() == GameMode.CREATIVE) {

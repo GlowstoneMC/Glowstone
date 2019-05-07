@@ -85,6 +85,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // initialize the chunk
         chunk.initializeSections(sections);
         chunk.setPopulated(levelTag.getBoolean("TerrainPopulated", false)); // NON-NLS
+        levelTag.readLong("InhabitedTime", chunk::setInhabitedTime);
 
         // read biomes
         levelTag.readByteArray("Biomes", chunk::setBiomes); // NON-NLS
@@ -172,8 +173,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // core properties
         levelTags.putInt("xPos", chunk.getX()); // NON-NLS
         levelTags.putInt("zPos", chunk.getZ()); // NON-NLS
-        levelTags.putBool("TerrainPopulated", chunk.isPopulated()); // NON-NLS
         levelTags.putLong("LastUpdate", 0); // NON-NLS
+        levelTags.putLong("InhabitedTime", chunk.getInhabitedTime()); // NON-NLS
+        levelTags.putBool("TerrainPopulated", chunk.isPopulated()); // NON-NLS
 
         // chunk sections
         List<CompoundTag> sectionTags = new ArrayList<>();

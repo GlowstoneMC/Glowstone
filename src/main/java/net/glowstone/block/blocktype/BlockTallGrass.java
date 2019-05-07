@@ -33,7 +33,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
         if (ThreadLocalRandom.current().nextFloat() < .125) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override

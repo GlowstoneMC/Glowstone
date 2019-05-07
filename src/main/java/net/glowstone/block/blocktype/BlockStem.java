@@ -45,7 +45,7 @@ public class BlockStem extends BlockCrops {
             return Collections.unmodifiableList(
                 Arrays.asList(new ItemStack(seedsType, ThreadLocalRandom.current().nextInt(4))));
         } else {
-            return BlockDropless.EMPTY_STACK;
+            return Collections.emptyList();
         }
     }
 

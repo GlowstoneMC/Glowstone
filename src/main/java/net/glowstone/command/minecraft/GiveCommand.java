@@ -66,7 +66,8 @@ public class GiveCommand extends GlowVanillaCommand {
                 }
                 stack.setAmount(amount);
             } catch (NumberFormatException ex) {
-                commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, amountString);
+                commandMessages.getGeneric(GenericMessage.NAN)
+                        .sendInColor(ChatColor.RED, sender, amountString);
                 return false;
             }
         }
@@ -85,7 +86,8 @@ public class GiveCommand extends GlowVanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                commandMessages.getPlayerOffline().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.OFFLINE)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 giveItem(sender, player, stack, commandMessages.getResourceBundle());

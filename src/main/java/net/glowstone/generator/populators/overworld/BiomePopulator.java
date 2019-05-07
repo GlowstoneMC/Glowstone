@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import net.glowstone.GlowWorld;
+import net.glowstone.constants.GameRules;
 import net.glowstone.generator.decorators.EntityDecorator;
 import net.glowstone.generator.decorators.overworld.CactusDecorator;
 import net.glowstone.generator.decorators.overworld.DeadBushDecorator;
@@ -152,7 +153,8 @@ public class BiomePopulator extends BlockPopulator {
     }
 
     protected void populateOnGround(World world, Random random, Chunk chunk) {
-        boolean doMobSpawning = ((GlowWorld) world).getGameRuleMap().getBoolean("doMobSpawning");
+        boolean doMobSpawning = ((GlowWorld) world).getGameRuleMap()
+                .getBoolean(GameRules.DO_MOB_SPAWNING);
         if (doMobSpawning) {
             for (EntityDecorator entityDecorator : entityDecorators) {
                 entityDecorator.populate(world, random, chunk);

@@ -56,7 +56,8 @@ public class EnchantCommand extends GlowVanillaCommand {
         } else {
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
-                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players = Collections.singletonList(player).stream();
@@ -74,7 +75,8 @@ public class EnchantCommand extends GlowVanillaCommand {
         try {
             level = Integer.parseInt(args[2]);
         } catch (NumberFormatException exc) {
-            commandMessages.getNotANumber().sendInColor(ChatColor.RED, sender, args[2]);
+            commandMessages.getGeneric(GenericMessage.NAN)
+                    .sendInColor(ChatColor.RED, sender, args[2]);
             return false;
         }
         LocalizedStringImpl successMessage
