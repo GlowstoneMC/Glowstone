@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -96,7 +97,8 @@ public class GlowMetaItem implements ItemMeta {
 
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
             CompoundTag enchantmentTag = new CompoundTag();
-            enchantmentTag.putShort("id", enchantment.getKey().getId());
+
+            enchantmentTag.putString("key", enchantment.getKey().getKey().toString());
             enchantmentTag.putShort("lvl", enchantment.getValue());
             ench.add(enchantmentTag);
         }
@@ -107,8 +109,10 @@ public class GlowMetaItem implements ItemMeta {
     protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
         Map<Enchantment, Integer> result = new HashMap<>(4);
         tag.iterateCompoundList(name, enchantmentTag -> {
-            if (enchantmentTag.isShort("id") && enchantmentTag.isShort("lvl")) {
-                Enchantment enchantment = Enchantment.getById(enchantmentTag.getShort("id"));
+            if (enchantmentTag.isString("key") && enchantmentTag.isShort("lvl")) {
+                Enchantment enchantment = Enchantment.getByKey(
+                        NbtSerialization.namespacedKeyFromString(
+                                enchantmentTag.getString("key")));
                 result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
             }
         });
@@ -162,7 +166,7 @@ public class GlowMetaItem implements ItemMeta {
     @Override
     public void setCanPlaceOn(Set<Material> canPlaceOn) {
         this.canPlaceOn.clear();
-        this.canPlaceOn.addAll(canPlaceOn)
+        this.canPlaceOn.addAll(canPlaceOn);
     }
 
     @Override

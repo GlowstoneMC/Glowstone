@@ -15,6 +15,7 @@ import net.glowstone.block.MaterialUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowCraftingInventory;
+import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -517,12 +518,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         NamespacedKey key;
         if (data.containsKey("key")) { // NON-NLS
             String keyRaw = (String) data.get("key"); // NON-NLS
-            if (keyRaw.indexOf(':') == -1) {
-                key = new NamespacedKey(NamespacedKey.MINECRAFT, keyRaw);
-            } else {
-                key = new NamespacedKey(keyRaw.substring(0, keyRaw.indexOf(':')),
-                        keyRaw.substring(keyRaw.indexOf(':') + 1, keyRaw.length()));
-            }
+            key = NbtSerialization.namespacedKeyFromString(keyRaw);
         } else {
             // todo: remove ambiguity of items with 'data/damage' values inside recipes.yml (will
             // take a long time...)
@@ -530,4 +526,5 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
         return key;
     }
+
 }
