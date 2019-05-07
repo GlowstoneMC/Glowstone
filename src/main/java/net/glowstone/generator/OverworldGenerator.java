@@ -26,12 +26,15 @@ import static org.bukkit.block.Biome.DESERT_HILLS;
 import static org.bukkit.block.Biome.FOREST_HILLS;
 import static org.bukkit.block.Biome.FROZEN_OCEAN;
 import static org.bukkit.block.Biome.FROZEN_RIVER;
+import static org.bukkit.block.Biome.GRAVELLY_MOUNTAINS;
 import static org.bukkit.block.Biome.ICE_FLATS;
 import static org.bukkit.block.Biome.ICE_MOUNTAINS;
 import static org.bukkit.block.Biome.JUNGLE_HILLS;
 import static org.bukkit.block.Biome.MESA;
 import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
 import static org.bukkit.block.Biome.MESA_ROCK;
+import static org.bukkit.block.Biome.MODIFIED_JUNGLE;
+import static org.bukkit.block.Biome.MODIFIED_JUNGLE_EDGE;
 import static org.bukkit.block.Biome.MOUNTAINS;
 import static org.bukkit.block.Biome.MUSHROOM_FIELDS;
 import static org.bukkit.block.Biome.MUSHROOM_FIELD_SHORE;
@@ -40,20 +43,17 @@ import static org.bukkit.block.Biome.MUTATED_BIRCH_FOREST_HILLS;
 import static org.bukkit.block.Biome.MUTATED_DESERT;
 import static org.bukkit.block.Biome.MUTATED_FOREST;
 import static org.bukkit.block.Biome.MUTATED_ICE_FLATS;
-import static org.bukkit.block.Biome.MUTATED_JUNGLE;
-import static org.bukkit.block.Biome.MUTATED_JUNGLE_EDGE;
 import static org.bukkit.block.Biome.MUTATED_MESA;
 import static org.bukkit.block.Biome.MUTATED_MESA_CLEAR_ROCK;
 import static org.bukkit.block.Biome.MUTATED_MESA_ROCK;
-import static org.bukkit.block.Biome.MUTATED_MOUNTAINS;
 import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA;
 import static org.bukkit.block.Biome.MUTATED_REDWOOD_TAIGA_HILLS;
 import static org.bukkit.block.Biome.MUTATED_ROOFED_FOREST;
 import static org.bukkit.block.Biome.MUTATED_SAVANNA;
 import static org.bukkit.block.Biome.MUTATED_SAVANNA_ROCK;
+import static org.bukkit.block.Biome.MUTATED_SNOWY_TAIGA;
 import static org.bukkit.block.Biome.MUTATED_SWAMPLAND;
 import static org.bukkit.block.Biome.MUTATED_TAIGA;
-import static org.bukkit.block.Biome.MUTATED_TAIGA_COLD;
 import static org.bukkit.block.Biome.MUTATED_WOODED_MOUNTAINS;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.REDWOOD_TAIGA;
@@ -63,11 +63,11 @@ import static org.bukkit.block.Biome.SAVANNA;
 import static org.bukkit.block.Biome.SAVANNA_ROCK;
 import static org.bukkit.block.Biome.SMALLER_MOUNTAINS;
 import static org.bukkit.block.Biome.SNOWY_BEACH;
+import static org.bukkit.block.Biome.SNOWY_TAIGA;
+import static org.bukkit.block.Biome.SNOWY_TAIGA_HILLS;
 import static org.bukkit.block.Biome.STONE_BEACH;
 import static org.bukkit.block.Biome.SWAMPLAND;
 import static org.bukkit.block.Biome.TAIGA;
-import static org.bukkit.block.Biome.TAIGA_COLD;
-import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
 import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
 
@@ -133,7 +133,7 @@ public class OverworldGenerator extends GlowChunkGenerator {
         setBiomeSpecificGround(new SnowyGroundGenerator(), MUTATED_ICE_FLATS);
         setBiomeSpecificGround(new MycelGroundGenerator(), MUSHROOM_FIELDS, MUSHROOM_FIELD_SHORE);
         setBiomeSpecificGround(new StonePatchGroundGenerator(), MOUNTAINS);
-        setBiomeSpecificGround(new GravelPatchGroundGenerator(), MUTATED_MOUNTAINS,
+        setBiomeSpecificGround(new GravelPatchGroundGenerator(), GRAVELLY_MOUNTAINS,
                 MUTATED_WOODED_MOUNTAINS);
         setBiomeSpecificGround(new DirtAndStonePatchGroundGenerator(), MUTATED_SAVANNA,
                 MUTATED_SAVANNA_ROCK);
@@ -151,21 +151,21 @@ public class OverworldGenerator extends GlowChunkGenerator {
         setBiomeHeight(BiomeHeight.ROCKY_SHORE, STONE_BEACH);
         setBiomeHeight(BiomeHeight.FLATLANDS, DESERT, ICE_FLATS, SAVANNA);
         setBiomeHeight(BiomeHeight.MOUNTAINS, MOUNTAINS, WOODED_MOUNTAINS,
-                MUTATED_MOUNTAINS, MUTATED_WOODED_MOUNTAINS);
-        setBiomeHeight(BiomeHeight.MID_PLAINS, TAIGA, TAIGA_COLD, REDWOOD_TAIGA);
+                GRAVELLY_MOUNTAINS, MUTATED_WOODED_MOUNTAINS);
+        setBiomeHeight(BiomeHeight.MID_PLAINS, TAIGA, SNOWY_TAIGA, REDWOOD_TAIGA);
         setBiomeHeight(BiomeHeight.SWAMPLAND, SWAMPLAND);
         setBiomeHeight(BiomeHeight.LOW_HILLS, MUSHROOM_FIELDS);
         setBiomeHeight(BiomeHeight.HILLS, ICE_MOUNTAINS, DESERT_HILLS, FOREST_HILLS, TAIGA_HILLS,
-                SMALLER_MOUNTAINS, JUNGLE_HILLS, BIRCH_FOREST_HILLS, TAIGA_COLD_HILLS,
+                SMALLER_MOUNTAINS, JUNGLE_HILLS, BIRCH_FOREST_HILLS, SNOWY_TAIGA_HILLS,
                 REDWOOD_TAIGA_HILLS, MUTATED_MESA_ROCK, MUTATED_MESA_CLEAR_ROCK);
         setBiomeHeight(BiomeHeight.HIGH_PLATEAU, SAVANNA_ROCK, MESA_ROCK, MESA_CLEAR_ROCK);
         setBiomeHeight(BiomeHeight.FLATLANDS_HILLS, MUTATED_DESERT);
         setBiomeHeight(BiomeHeight.BIG_HILLS, MUTATED_ICE_FLATS);
         setBiomeHeight(BiomeHeight.BIG_HILLS2, MUTATED_BIRCH_FOREST_HILLS);
         setBiomeHeight(BiomeHeight.SWAMPLAND_HILLS, MUTATED_SWAMPLAND);
-        setBiomeHeight(BiomeHeight.DEFAULT_HILLS, MUTATED_JUNGLE, MUTATED_JUNGLE_EDGE,
+        setBiomeHeight(BiomeHeight.DEFAULT_HILLS, MODIFIED_JUNGLE, MODIFIED_JUNGLE_EDGE,
                 MUTATED_BIRCH_FOREST, MUTATED_ROOFED_FOREST);
-        setBiomeHeight(BiomeHeight.MID_HILLS, MUTATED_TAIGA, MUTATED_TAIGA_COLD,
+        setBiomeHeight(BiomeHeight.MID_HILLS, MUTATED_TAIGA, MUTATED_SNOWY_TAIGA,
                 MUTATED_REDWOOD_TAIGA, MUTATED_REDWOOD_TAIGA_HILLS);
         setBiomeHeight(BiomeHeight.MID_HILLS2, MUTATED_FOREST);
         setBiomeHeight(BiomeHeight.LOW_SPIKES, MUTATED_SAVANNA);

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
+import javax.annotation.Nullable;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
@@ -163,7 +163,7 @@ public class BlockType extends ItemType {
      * @param against The face the block is being placed against.
      * @return Whether the placement is valid.
      */
-    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(@Nullable GlowPlayer player, GlowBlock block, BlockFace against) {
         return true;
     }
 
@@ -314,7 +314,7 @@ public class BlockType extends ItemType {
             return;
         }
         BlockPhysicsEvent event = EventFactory.getInstance()
-            .callEvent(new BlockPhysicsEvent(block, block.getTypeId()));
+            .callEvent(new BlockPhysicsEvent(block, block.getBlockData()));
         if (!event.isCancelled()) {
             updatePhysicsAfterEvent(block);
         }
