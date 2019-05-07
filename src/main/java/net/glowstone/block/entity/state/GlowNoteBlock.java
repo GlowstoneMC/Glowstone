@@ -39,35 +39,49 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     private static Instrument instrumentOf(Material mat) {
         switch (mat) {
-            case WOOD:
+            case OAK_WOOD:
+            case DARK_OAK_WOOD:
+            case ACACIA_WOOD:
+            case BIRCH_WOOD:
+            case JUNGLE_WOOD:
+            case SPRUCE_WOOD:
             case ACACIA_STAIRS:
-            case BIRCH_WOOD_STAIRS:
-            case JUNGLE_WOOD_STAIRS:
-            case SPRUCE_WOOD_STAIRS:
+            case BIRCH_STAIRS:
+            case JUNGLE_STAIRS:
+            case SPRUCE_STAIRS:
             case DARK_OAK_STAIRS:
-            case WOOD_STAIRS:
+            case OAK_STAIRS:
             case BOOKSHELF:
             case CHEST:
-            case FENCE:
+            case OAK_FENCE:
             case ACACIA_FENCE:
             case BIRCH_FENCE:
             case DARK_OAK_FENCE:
             case JUNGLE_FENCE:
-            case NETHER_FENCE:
+            case NETHER_BRICK_FENCE:
             case SPRUCE_FENCE:
-            case TRAP_DOOR:
+            case OAK_TRAPDOOR:
+            case DARK_OAK_TRAPDOOR:
+            case ACACIA_TRAPDOOR:
+            case BIRCH_TRAPDOOR:
+            case JUNGLE_TRAPDOOR:
+            case SPRUCE_TRAPDOOR:
             case ACACIA_FENCE_GATE:
             case BIRCH_FENCE_GATE:
             case DARK_OAK_FENCE_GATE:
-            case FENCE_GATE:
+            case OAK_FENCE_GATE:
             case JUNGLE_FENCE_GATE:
             case SPRUCE_FENCE_GATE:
             case DAYLIGHT_DETECTOR:
-            case DAYLIGHT_DETECTOR_INVERTED:
             case TRAPPED_CHEST:
             case NOTE_BLOCK:
-            case WORKBENCH:
-            case LOG:
+            case CRAFTING_TABLE:
+            case OAK_LOG:
+            case DARK_OAK_LOG:
+            case ACACIA_LOG:
+            case BIRCH_LOG:
+            case JUNGLE_LOG:
+            case SPRUCE_LOG:
                 return Instrument.BASS_GUITAR;
             case SAND:
             case GRAVEL:

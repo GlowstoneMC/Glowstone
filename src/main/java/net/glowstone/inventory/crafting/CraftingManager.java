@@ -434,6 +434,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         furnaceFuels.put(Material.TRAPPED_CHEST, 300);
         putAllAsFuels(MaterialUtil.LOGS, 300);
         putAllAsFuels(MaterialUtil.WOODS, 300);
+        putAllAsFuels(MaterialUtil.PLANKS, 300);
         putAllAsFuels(MaterialUtil.WOODEN_BUTTONS, 300);
         putAllAsFuels(MaterialUtil.WOODEN_PRESSURE_PLATES, 300);
         putAllAsFuels(MaterialUtil.WOODEN_STAIRS, 300);

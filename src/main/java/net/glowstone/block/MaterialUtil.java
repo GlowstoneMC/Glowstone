@@ -119,6 +119,9 @@ public class MaterialUtil {
     public static final ImmutableSet<Material> LOGS = ImmutableSet.copyOf(EnumSet.of(
             Material.OAK_LOG, Material.DARK_OAK_LOG, Material.ACACIA_LOG, Material.BIRCH_LOG,
             Material.JUNGLE_LOG, Material.SPRUCE_LOG));
+    public static final ImmutableSet<Material> PLANKS = ImmutableSet.copyOf(EnumSet.of(
+            Material.OAK_PLANKS, Material.DARK_OAK_PLANKS, Material.ACACIA_PLANKS, Material.BIRCH_PLANKS,
+            Material.JUNGLE_PLANKS, Material.SPRUCE_PLANKS));
     public static final ImmutableSet<Material> WOODS = ImmutableSet.copyOf(EnumSet.of(
             Material.OAK_WOOD, Material.DARK_OAK_WOOD, Material.ACACIA_WOOD, Material.BIRCH_WOOD,
             Material.JUNGLE_WOOD, Material.SPRUCE_WOOD));

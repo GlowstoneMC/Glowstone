@@ -600,7 +600,7 @@ shapeless:
   - type: SLIME_BLOCK
 shaped:
 - result:
-    type: WOOD_PICKAXE
+    type: WOODEN_PICKAXE
   ingredients:
     e:
       type: STICK
@@ -646,7 +646,7 @@ shaped:
   - ' e '
   - ' e '
 - result:
-    type: GOLD_PICKAXE
+    type: GOLDEN_PICKAXE
   ingredients:
     e:
       type: STICK
@@ -1560,7 +1560,7 @@ shaped:
   - 'ee '
   - eee
 - result:
-    type: SPRUCE_WOOD_STAIRS
+    type: SPRUCE_STAIRS
     amount: 4
   ingredients:
     e:
@@ -1905,7 +1905,7 @@ shaped:
   - cec
   - ' c '
 - result:
-    type: WOOD_AXE
+    type: WOODEN_AXE
   ingredients:
     c:
       type: WOOD
@@ -1997,7 +1997,7 @@ shaped:
   - ' f'
   - ' f'
 - result:
-    type: GOLD_AXE
+    type: GOLDEN_AXE
   ingredients:
     c:
       type: GOLD_INGOT
@@ -2008,7 +2008,7 @@ shaped:
   - cf
   - ' f'
 - result:
-    type: GOLD_HOE
+    type: GOLDEN_HOE
   ingredients:
     b:
       type: GOLD_INGOT
@@ -2824,7 +2824,7 @@ shaped:
   - 'a '
   - ' d'
 - result:
-    type: WOOD_SPADE
+    type: WOODEN_SHOVEL
   ingredients:
     c:
       type: STICK
@@ -2836,7 +2836,7 @@ shaped:
   - c
   - c
 - result:
-    type: STONE_SPADE
+    type: STONE_SHOVEL
   ingredients:
     c:
       type: STICK
@@ -2848,7 +2848,7 @@ shaped:
   - c
   - c
 - result:
-    type: IRON_SPADE
+    type: IRON_SHOVEL
   ingredients:
     c:
       type: STICK
@@ -2859,7 +2859,7 @@ shaped:
   - c
   - c
 - result:
-    type: DIAMOND_SPADE
+    type: DIAMOND_SHOVEL
   ingredients:
     c:
       type: STICK
@@ -2870,7 +2870,7 @@ shaped:
   - c
   - c
 - result:
-    type: GOLD_SPADE
+    type: GOLDEN_SHOVEL
   ingredients:
     c:
       type: STICK
@@ -2881,7 +2881,7 @@ shaped:
   - c
   - c
 - result:
-    type: WOOD_SWORD
+    type: WOODEN_SWORD
   ingredients:
     c:
       type: STICK
@@ -2927,7 +2927,7 @@ shaped:
   - b
   - c
 - result:
-    type: GOLD_SWORD
+    type: GOLDEN_SWORD
   ingredients:
     c:
       type: STICK

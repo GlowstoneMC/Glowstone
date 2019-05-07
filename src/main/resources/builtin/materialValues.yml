@@ -19,12 +19,12 @@ values:
     hardness: 1.5
     baseMapColor: 44
   GRASS:
-    tool: SPADE
+    tool: SHOVEL
     blastResistance: 3
     hardness: 0.6
     baseMapColor: 4
   DIRT:
-    tool: SPADE
+    tool: SHOVEL
     blastResistance: 2.5
     hardness: 0.5
     baseMapColor: 40
@@ -75,10 +75,10 @@ values:
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   SAND:
-    tool: SPADE
+    tool: SHOVEL
     hardness: 0.5
   GRAVEL:
-    tool: SPADE
+    tool: SHOVEL
     hardness: 0.6
     blastResistance: 3
   GOLD_ORE:
@@ -307,7 +307,7 @@ values:
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   SOIL:
-    tool: SPADE
+    tool: SHOVEL
     lightOpacity: 0
     hardness: 0.6
   FURNACE:
@@ -409,7 +409,7 @@ values:
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   SNOW:
-    tool: SPADE
+    tool: SHOVEL
     hardness: 0.1
     lightOpacity: 0
     blastResistance: 0.5
@@ -430,7 +430,7 @@ values:
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   CLAY:
-    tool: SPADE
+    tool: SHOVEL
     hardness: 0.6
     blastResistance: 3
   SUGAR_CANE_BLOCK:
@@ -460,7 +460,7 @@ values:
     hardness: 0.4
     blastResistance: 2
   SOUL_SAND:
-    tool: SPADE
+    tool: SHOVEL
     hardness: 0.5
   GLOWSTONE:
     hardness: 0.3
@@ -559,7 +559,7 @@ values:
     hardness: 1.5
     lightOpacity: 0
   MYCEL:
-    tool: SPADE
+    tool: SHOVEL
     hardness: 0.6
     blastResistance: 2.5
   WATER_LILY:
@@ -681,7 +681,7 @@ values:
     tool: IRON_PICKAXE
     hardness: 5
     blastResistance: 30
-  SPRUCE_WOOD_STAIRS:
+  SPRUCE_STAIRS:
     hardness: 2
     lightOpacity: 0
     flameResistance: 5

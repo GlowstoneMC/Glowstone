@@ -25,7 +25,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 public class EnchantmentManager {
 
     private static final MaterialMatcher[] ENCHANTABLE_TOOLS = new MaterialMatcher[]{ToolType.AXE,
-        ToolType.PICKAXE, ToolType.SPADE};
+        ToolType.PICKAXE, ToolType.SHOVEL};
 
     private final Random random = new Random();
     private final GlowPlayer player;

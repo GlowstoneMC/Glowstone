@@ -55,7 +55,7 @@ public class BlockStairs extends BlockType {
             case BIRCH_WOOD_STAIRS:
             case DARK_OAK_STAIRS:
             case JUNGLE_WOOD_STAIRS:
-            case SPRUCE_WOOD_STAIRS:
+            case SPRUCE_STAIRS:
             case WOOD_STAIRS:
                 return true;
             default:
