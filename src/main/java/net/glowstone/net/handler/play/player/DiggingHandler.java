@@ -3,7 +3,9 @@ package net.glowstone.net.handler.play.player;
 import static net.glowstone.net.message.play.player.DiggingMessage.START_DIGGING;
 
 import com.flowpowered.network.MessageHandler;
+import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Objects;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
@@ -32,11 +34,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.DoublePlant;
 import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 public final class DiggingHandler implements MessageHandler<GlowSession, DiggingMessage> {
+
+    private final ImmutableSet<Material> AIR_TYPES = ImmutableSet.copyOf(EnumSet.of(
+            Material.AIR, Material.VOID_AIR, Material.CAVE_AIR));
+
+    // TODO: Incomplete list
+    private final ImmutableSet<Material> DOUBLE_PLANT_TYPES = ImmutableSet.copyOf(EnumSet.of(
+            Material.TALL_GRASS, Material.LARGE_FERN, Material.ROSE_BUSH, Material.SUNFLOWER));
 
     @Override
     public void handle(GlowSession session, DiggingMessage message) {
@@ -54,6 +61,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
 
         boolean blockBroken = false;
         boolean revert = false;
+        Material material = block.getType();
         switch (message.getState()) {
             case START_DIGGING:
                 if (block.equals(player.getDigging()) || block.isLiquid()) {
@@ -63,7 +71,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 Action action = Action.LEFT_CLICK_BLOCK;
                 Block eventBlock = block;
                 if (player.getLocation().distanceSquared(block.getLocation()) > 36
-                        || block.getTypeId() == 0) {
+                        || AIR_TYPES.contains(material)) {
                     action = Action.LEFT_CLICK_AIR;
                     eventBlock = null;
                 }
@@ -109,7 +117,7 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
                 // Update client with block
                 // (FINISH_DIGGING is client's guess based on wall-clock time, not ticks, and is
                 // untrusted)
-                player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
+                player.sendBlockChange(block.getLocation(), material, block.getData());
                 break;
             case DiggingMessage.STATE_DROP_ITEM:
                 player.dropItemInHand(false);
@@ -157,14 +165,13 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             }
 
             MaterialData data = block.getState().getData();
-            if (data instanceof DoublePlant) {
-                if (((DoublePlant) data).getSpecies() == DoublePlantSpecies.PLANT_APEX && block
-                        .getRelative(BlockFace.DOWN).getState().getData() instanceof DoublePlant) {
+            if (DOUBLE_PLANT_TYPES.contains(material)) {
+                if (block.getRelative(BlockFace.DOWN).getType() == material) {
                     block = block.getRelative(BlockFace.DOWN);
                 }
             }
 
-            BlockType blockType = ItemTable.instance().getBlock(block.getType());
+            BlockType blockType = ItemTable.instance().getBlock(material);
             if (blockType != null) {
                 blockType.blockDestroy(player, block, face);
             }
@@ -188,8 +195,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
             player.addExhaustion(0.005f);
 
             // STEP_SOUND actually is the block break particles
-            world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), 64,
-                    player);
+            world.playEffectExceptTo(block.getLocation(), Effect.STEP_SOUND,
+                    block.getType().getId(), 64, player);
             GlowBlockState state = block.getState();
             block.setType(Material.AIR);
             if (blockType != null) {
@@ -198,8 +205,8 @@ public final class DiggingHandler implements MessageHandler<GlowSession, Digging
         } else if (revert) {
             // replace the block that wasn't really dug
             BlockPlacementHandler.revert(player, block);
-        } else if (block.getType() != Material.AIR) {
-            BlockType blockType = ItemTable.instance().getBlock(block.getType());
+        } else if (!AIR_TYPES.contains(material)) {
+            BlockType blockType = ItemTable.instance().getBlock(material);
             blockType.leftClickBlock(player, block, holding);
         }
     }
