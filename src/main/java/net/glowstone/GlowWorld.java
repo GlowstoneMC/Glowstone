@@ -1497,7 +1497,8 @@ public class GlowWorld implements World {
             return Biome.NETHER;
         }
 
-        return Biome.values()[getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF)];
+        return GlowBiome.getBiome(getChunkAt(x >> 4, z >> 4).getBiome(x & 0xF, z & 0xF))
+                .getType();
     }
 
     @Override

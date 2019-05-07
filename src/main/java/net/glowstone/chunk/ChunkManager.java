@@ -511,7 +511,7 @@ public final class ChunkManager {
         @Override
         public Biome getBiome(int x, int z) {
             // upcasting is very important to get extended biomes
-            return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF);
+            return GlowBiome.getBiome(biomes[x | z << 4] & 0xFF).getType();
         }
 
         @Override

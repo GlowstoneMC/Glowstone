@@ -146,7 +146,7 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     @Override
     public Biome getBiome(int x, int z) {
-        return GlowBiome.getBiome(rawBiomes[coordToIndex(x, z)]);
+        return GlowBiome.getBiome(rawBiomes[coordToIndex(x, z)]).getType();
     }
 
     @Override
