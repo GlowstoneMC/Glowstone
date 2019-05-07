@@ -6,6 +6,7 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.data.BlockData;
 
 /**
  * Class representing a snapshot of a chunk.
@@ -110,7 +111,6 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return sy < 0 || sy >= rawSections.length || rawSections[sy] == null;
     }
 
-    @Override
     public int getBlockTypeId(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) >> 4;
@@ -118,13 +118,20 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
 
     @Override
     public Material getBlockType(int x, int y, int z) {
-        return Material.getMaterial(getBlockTypeId(x, y, z));
+        BlockData data = getBlockData(x, y, z);
+        return data == null ? Material.AIR : data.getMaterial();
     }
 
     @Override
-    public int getBlockData(int x, int y, int z) {
+    public int getData(int x, int y, int z) {
         ChunkSection section = getSection(y);
         return section == null ? 0 : section.getType(x, y, z) & 0xF;
+    }
+
+    @Override
+    public BlockData getBlockData(int x, int y, int z) {
+        ChunkSection section = getSection(y);
+        return section == null ? null : section.getBlockData(x, y, z);
     }
 
     @Override
@@ -154,7 +161,6 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         return temp[coordToIndex(x, z)];
     }
 
-    @Override
     public double getRawBiomeRainfall(int x, int z) {
         return humid[coordToIndex(x, z)];
     }
@@ -179,8 +185,13 @@ public class GlowChunkSnapshot implements ChunkSnapshot {
         }
 
         @Override
-        public int getBlockData(int x, int y, int z) {
-            return 0;
+        public Material getBlockType(int x, int y, int z) {
+            return Material.AIR;
+        }
+
+        @Override
+        public BlockData getBlockData(int x, int y, int z) {
+            return null;
         }
 
         @Override
