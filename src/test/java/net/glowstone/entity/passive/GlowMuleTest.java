@@ -3,6 +3,9 @@ package net.glowstone.entity.passive;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import net.glowstone.net.message.play.player.InteractEntityMessage;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 
 public class GlowMuleTest extends GlowChestedHorseTest<GlowMule> {
@@ -38,4 +41,26 @@ public class GlowMuleTest extends GlowChestedHorseTest<GlowMule> {
         assertFalse(entity.canBreed());
     }
 
+    /**
+     * This override instead tests that the "breeding foods" do <em>not</em> set love mode, since
+     * mules can't breed (but still have their healing and growth foods listed as "breeding foods").
+     */
+    @Test
+    @Override
+    public void testFoodSetsLoveMode() {
+        entity.setTamed(true);
+        InteractEntityMessage interact = new InteractEntityMessage(1,
+                InteractEntityMessage.Action.INTERACT.ordinal(), /* main hand */ 0);
+        for (Material foodType : entity.getBreedingFoods()) {
+            ItemStack food = new ItemStack(foodType, 1);
+            inventory.setItemInMainHand(food);
+            entity.entityInteract(player, interact);
+
+            // Should not consume food
+            assertEquals(1, inventory.getItemInMainHand().getAmount());
+
+            // Should not set love mode
+            assertEquals(0, entity.getInLove());
+        }
+    }
 }

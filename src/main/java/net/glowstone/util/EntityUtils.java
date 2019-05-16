@@ -18,22 +18,25 @@ public class EntityUtils {
      * @param target the entity to heal
      * @param amount the amount of health to regain
      * @param reason the reason supplied to the {@link EntityRegainHealthEvent}
+     * @return whether any health was regained this way
      */
-    public static void heal(LivingEntity target, double amount,
+    public static boolean heal(LivingEntity target, double amount,
             EntityRegainHealthEvent.RegainReason reason) {
-        if (target.isDead()) {
-            return; // too late!
+        if (target.isDead() || amount <= 0) {
+            return false;
         }
         final double maxHealth = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         final double currentHealth = target.getHealth();
         if (currentHealth >= maxHealth) {
-            return;
+            return false;
         }
         EntityRegainHealthEvent event = new EntityRegainHealthEvent(target, amount, reason);
         EventFactory.getInstance().callEvent(event);
-        if (!event.isCancelled()) {
-            target.setHealth(Math.min(maxHealth, currentHealth + event.getAmount()));
+        if (event.isCancelled() || event.getAmount() <= 0) {
+            return false;
         }
+        target.setHealth(Math.min(maxHealth, currentHealth + event.getAmount()));
+        return true;
     }
 
     /**

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;
@@ -54,6 +55,20 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     }
 
     @Override
+    protected boolean tryFeed(Material food, GlowPlayer player) {
+        if (!isAdult() || isTamed()) {
+            return super.tryFeed(food, player);
+        }
+        int taming = computeDomestication(food);
+        if (taming > 0) {
+            domestication = Math.max(domestication + taming, maxDomestication);
+            super.tryFeed(food, player); // can have another effect in addition to taming
+            return true;
+        }
+        return super.tryFeed(food, player);
+    }
+
+    @Override
     public List<Message> createSpawnMessage() {
         List<Message> messages = super.createSpawnMessage();
         MetadataMap map = new MetadataMap(GlowHorse.class);
@@ -71,6 +86,11 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     @Override
     public void setVariant(Horse.Variant variant) {
         // Field has been removed in 1.11
+    }
+
+    @Override
+    public boolean canBreed() {
+        return super.canBreed() && isTamed();
     }
 
     private int getHorseFlags() {
@@ -102,6 +122,20 @@ public abstract class GlowAbstractHorse extends GlowTameable implements Abstract
     @Override
     public Set<Material> getBreedingFoods() {
         return BREEDING_FOODS;
+    }
+
+    /**
+     * Returns the amount to increment the {@linkplain #setDomestication(int) domestication}
+     * (progress toward taming) when the given food is consumed by an untamed adult mob, before
+     * applying the {@linkplain #getMaxDomestication() maximum domestication}. Zero is returned for
+     * any item this mob cannot eat.
+     *
+     * @param food the food to consume
+     * @return the amount of domestication to gain
+     */
+    protected int computeDomestication(Material food) {
+        // TODO
+        return BREEDING_FOODS.contains(food) ? 10 : 0;
     }
 
     @Override
