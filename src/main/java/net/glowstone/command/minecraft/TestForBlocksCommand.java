@@ -4,11 +4,13 @@ import static net.glowstone.util.RectangularRegion.IterationDirection.FORWARDS;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.RectangularRegion;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.ChatColor;
@@ -111,7 +113,7 @@ public class TestForBlocksCommand extends GlowVanillaCommand {
         }
 
         if (!CommandUtils.isPhysical(sender)) {
-            commandMessages.getNotPhysical().send(sender);
+            commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL).send(sender);
             return false;
         }
 
@@ -141,6 +143,7 @@ public class TestForBlocksCommand extends GlowVanillaCommand {
 
         int blocksMatched = 0;
 
+        ResourceBundle bundle = commandMessages.getResourceBundle();
         while (fromIterator.hasNext() && toIterator.hasNext()) {
             Location fromLocation = fromIterator.next();
             Location toLocation = toIterator.next();
@@ -153,12 +156,14 @@ public class TestForBlocksCommand extends GlowVanillaCommand {
                     blocksMatched++;
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "Source and destination are not identical");
+                new LocalizedStringImpl("testforblocks.no-match", bundle)
+                        .sendInColor(ChatColor.RED, sender);
                 return false;
             }
         }
 
-        sender.sendMessage(blocksMatched + " blocks compared");
+        new LocalizedStringImpl("testforblocks.done", bundle)
+                .send(sender, blocksMatched);
 
         return true;
     }

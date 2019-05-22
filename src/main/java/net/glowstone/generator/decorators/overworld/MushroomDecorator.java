@@ -7,9 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Dirt;
 import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DirtType;
 
 public class MushroomDecorator extends BlockDecorator {
 
@@ -59,20 +57,13 @@ public class MushroomDecorator extends BlockDecorator {
                 if (y < 255 && block.getType() == Material.AIR) {
                     boolean canPlaceShroom;
                     switch (blockBelow.getType()) {
-                        case MYCEL:
+                        case MYCELIUM:
+                        case PODZOL:
                             canPlaceShroom = true;
                             break;
-                        case GRASS:
-                            canPlaceShroom = (block.getLightLevel() < 13);
-                            break;
+                        case GRASS_BLOCK:
                         case DIRT:
-                            MaterialData data = blockBelow.getState().getData();
-                            if (data instanceof Dirt) {
-                                canPlaceShroom = (((Dirt) data).getType() == DirtType.PODZOL
-                                        || block.getLightLevel() < 13);
-                            } else {
-                                canPlaceShroom = false;
-                            }
+                            canPlaceShroom = (block.getLightLevel() < 13);
                             break;
                         default:
                             canPlaceShroom = false;

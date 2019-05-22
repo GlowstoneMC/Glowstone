@@ -13,15 +13,14 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 public class TaigaPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.TAIGA, Biome.TAIGA_HILLS, Biome.MUTATED_TAIGA,
-        Biome.TAIGA_COLD,
-        Biome.TAIGA_COLD_HILLS, Biome.MUTATED_TAIGA_COLD};
+    private static final Biome[] BIOMES = {Biome.TAIGA, Biome.TAIGA_HILLS, Biome.TAIGA_MOUNTAINS,
+        Biome.SNOWY_TAIGA,
+        Biome.SNOWY_TAIGA_HILLS, Biome.SNOWY_TAIGA_MOUNTAINS};
     private static final DoublePlantDecoration[] DOUBLE_PLANTS = {
-        new DoublePlantDecoration(DoublePlantSpecies.LARGE_FERN, 1)};
+        new DoublePlantDecoration(Material.LARGE_FERN, 1)};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 2),
         new TreeDecoration(TallRedwoodTree::new, 1)};
 

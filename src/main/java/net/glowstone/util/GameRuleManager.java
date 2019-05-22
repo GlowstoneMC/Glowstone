@@ -22,7 +22,6 @@ import static net.glowstone.constants.GameRules.SHOW_DEATH_MESSAGES;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.jetbrains.annotations.NonNls;
 
 /**

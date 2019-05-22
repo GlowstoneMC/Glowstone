@@ -15,13 +15,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
-
 import net.glowstone.EventFactory;
 import net.glowstone.block.BuiltinMaterialValueManager;
 import net.glowstone.block.GlowBlock;
@@ -56,6 +54,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -76,7 +75,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
     private static final List<ItemStack> BREAKING_TOOLS = ImmutableList.of(
         new ItemStack(Material.DIAMOND_AXE),
         new ItemStack(Material.DIAMOND_PICKAXE),
-        new ItemStack(Material.DIAMOND_SPADE),
+        new ItemStack(Material.DIAMOND_SHOVEL),
         new ItemStack(Material.DIAMOND_SWORD),
         new ItemStack(Material.SHEARS));
 
@@ -200,7 +199,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testDigDirtWoodenShovel() {
-        entity.setItemInHand(new ItemStack(Material.WOOD_SPADE));
+        entity.setItemInHand(new ItemStack(Material.WOODEN_SHOVEL));
         when(block.getType()).thenReturn(Material.DIRT);
         assertDiggingTimeEquals(8);
     }
@@ -210,7 +209,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         for (ItemStack tool : BREAKING_TOOLS) {
             entity.setItemInHand(tool.clone());
             when(block.getType()).thenReturn(Material.DIRT);
-            assertDiggingTimeEquals(tool.getType() == Material.DIAMOND_SPADE ? 2 : 15);
+            assertDiggingTimeEquals(tool.getType() == Material.DIAMOND_SHOVEL ? 2 : 15);
         }
     }
 
@@ -222,7 +221,7 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testDigStoneWoodenPickaxe() {
-        entity.setItemInHand(new ItemStack(Material.WOOD_PICKAXE));
+        entity.setItemInHand(new ItemStack(Material.WOODEN_PICKAXE));
         when(block.getType()).thenReturn(Material.STONE);
         assertDiggingTimeEquals(23);
     }
@@ -398,11 +397,8 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testIncrementStatisticCancelled() {
-        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
-            Cancellable cancellable = invocation.getArgument(0);
-            cancellable.setCancelled(true);
-            return cancellable;
-        });
+        when(eventFactory.callEvent(any(Event.class)))
+                .thenAnswer(cancelIfInstance(PlayerStatisticIncrementEvent.class));
 
         entity.incrementStatistic(Statistic.ANIMALS_BRED);
         verify(eventFactory).callEvent(argThat(input -> {
@@ -436,11 +432,8 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testIncrementStatisticWithValueCancelled() {
-        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
-            Cancellable cancellable = invocation.getArgument(0);
-            cancellable.setCancelled(true);
-            return cancellable;
-        });
+        when(eventFactory.callEvent(any(Event.class)))
+                .thenAnswer(cancelIfInstance(PlayerStatisticIncrementEvent.class));
 
         entity.incrementStatistic(Statistic.ANIMALS_BRED, 12);
         verify(eventFactory).callEvent(argThat(input -> {
@@ -475,11 +468,8 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testIncrementStatisticMaterialCancelled() {
-        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
-            Cancellable cancellable = invocation.getArgument(0);
-            cancellable.setCancelled(true);
-            return cancellable;
-        });
+        when(eventFactory.callEvent(any(Event.class)))
+                .thenAnswer(cancelIfInstance(PlayerStatisticIncrementEvent.class));
 
         entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT);
         verify(eventFactory).callEvent(argThat(input -> {
@@ -515,11 +505,8 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testIncrementStatisticMaterialWithValueCancelled() {
-        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
-            Cancellable cancellable = invocation.getArgument(0);
-            cancellable.setCancelled(true);
-            return cancellable;
-        });
+        when(eventFactory.callEvent(any(Event.class)))
+                .thenAnswer(cancelIfInstance(PlayerStatisticIncrementEvent.class));
 
         entity.incrementStatistic(Statistic.MINE_BLOCK, Material.DIRT, 13);
         verify(eventFactory).callEvent(argThat(input -> {
@@ -555,11 +542,8 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testIncrementStatisticEntityTypeCancelled() {
-        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
-            Cancellable cancellable = invocation.getArgument(0);
-            cancellable.setCancelled(true);
-            return cancellable;
-        });
+        when(eventFactory.callEvent(any(Event.class)))
+                .thenAnswer(cancelIfInstance(PlayerStatisticIncrementEvent.class));
 
         entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER);
         verify(eventFactory).callEvent(argThat(input -> {
@@ -595,12 +579,8 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
 
     @Test
     public void testIncrementStatisticEntityTypeWithValueCancelled() {
-        when(eventFactory.callEvent(any(PlayerStatisticIncrementEvent.class))).thenAnswer(invocation -> {
-            Cancellable cancellable = invocation.getArgument(0);
-            cancellable.setCancelled(true);
-            return cancellable;
-        });
-
+        when(eventFactory.callEvent(any(Event.class))).thenAnswer(
+                cancelIfInstance(PlayerStatisticIncrementEvent.class));
         entity.incrementStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER, 14);
         verify(eventFactory).callEvent(argThat(input -> {
             PlayerStatisticIncrementEvent event = (PlayerStatisticIncrementEvent) input;
@@ -614,5 +594,24 @@ public class GlowPlayerTest extends GlowHumanEntityTest<GlowPlayer> {
         }));
         assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY));
         assertEquals(0, entity.getStatistic(Statistic.KILL_ENTITY, EntityType.CAVE_SPIDER));
+    }
+
+    /**
+     * Creates an Answer that calls {@link Cancellable#setCancelled(boolean)}(true) if the argument
+     * is an instance of the specified class, then returns it. All other events are returned
+     * unmodified.
+     *
+     * @param typeToCancel the type of event to cancel
+     * @return an Answer that returns the possibly-cancelled first argument
+     */
+    protected static Answer<Event> cancelIfInstance(
+            final Class<? extends Cancellable> typeToCancel) {
+        return invocation -> {
+            Event event = invocation.getArgument(0);
+            if (typeToCancel.isInstance(event)) {
+                ((Cancellable) event).setCancelled(true);
+            }
+            return event;
+        };
     }
 }

@@ -1,11 +1,13 @@
 package net.glowstone.block.blocktype;
 
+import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.Collections;
-
+import java.util.EnumSet;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.entity.BedEntity;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.state.GlowBed;
@@ -28,6 +30,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public class BlockBed extends BlockType {
+
+    private static final ImmutableSet<Biome> EXPLOSIVE_IN_BIOMES = ImmutableSet.copyOf(EnumSet.of(
+            Biome.NETHER, Biome.THE_END, Biome.END_BARRENS, Biome.END_MIDLANDS,
+            Biome.END_HIGHLANDS, Biome.SMALL_END_ISLANDS));
 
     /**
      * Helper method for set whether the specified bed blocks are occupied.
@@ -93,7 +99,7 @@ public class BlockBed extends BlockType {
 
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        return Collections.singletonList(new ItemStack(Material.BED, 1,
+        return Collections.singletonList(new ItemStack(block.getType(), 1,
                 (((GlowBed) block.getState()).getColor().getWoolData())));
     }
 
@@ -128,41 +134,77 @@ public class BlockBed extends BlockType {
      */
     public static boolean isValidSpawn(Material material) {
         switch (material) {
+            // TODO: Some materials new in 1.13 and some plant types may be missing
             case AIR:
-            case SAPLING:
+            case OAK_SAPLING:
+            case DARK_OAK_SAPLING:
+            case BIRCH_SAPLING:
+            case ACACIA_SAPLING:
+            case SPRUCE_SAPLING:
+            case JUNGLE_SAPLING:
             case POWERED_RAIL:
             case DETECTOR_RAIL:
-            case LONG_GRASS:
+            case TALL_GRASS:
             case DEAD_BUSH:
-            case YELLOW_FLOWER:
-            case RED_ROSE:
+            case SUNFLOWER:
+            case POPPY:
             case BROWN_MUSHROOM:
             case RED_MUSHROOM:
             case TORCH:
             case REDSTONE_WIRE:
-            case CROPS:
-            case RAILS:
+            case CARROTS:
+            case POTATOES:
+            case WHEAT:
+            case RAIL:
+            case ACTIVATOR_RAIL:
             case LEVER:
-            case REDSTONE_TORCH_OFF:
-            case REDSTONE_TORCH_ON:
+            case REDSTONE_TORCH:
             case STONE_BUTTON:
             case SNOW:
-            case SUGAR_CANE_BLOCK:
-            case DIODE_BLOCK_OFF:
-            case DIODE_BLOCK_ON:
+            case SUGAR_CANE:
+            case COMPARATOR:
+            case REPEATER:
             case VINE:
             case TRIPWIRE_HOOK:
             case TRIPWIRE:
             case FLOWER_POT:
-            case WOOD_BUTTON:
-            case SKULL:
-            case GOLD_PLATE:
-            case IRON_PLATE:
-            case REDSTONE_COMPARATOR_OFF:
-            case REDSTONE_COMPARATOR_ON:
-            case ACTIVATOR_RAIL:
-            case CARPET:
-            case DOUBLE_PLANT:
+            case OAK_BUTTON:
+            case DARK_OAK_BUTTON:
+            case ACACIA_BUTTON:
+            case JUNGLE_BUTTON:
+            case SPRUCE_BUTTON:
+            case BIRCH_BUTTON:
+            case PLAYER_HEAD:
+            case WITHER_SKELETON_SKULL:
+            case SKELETON_SKULL:
+            case ZOMBIE_HEAD:
+            case CREEPER_HEAD:
+            case DRAGON_HEAD:
+            case PLAYER_WALL_HEAD:
+            case WITHER_SKELETON_WALL_SKULL:
+            case SKELETON_WALL_SKULL:
+            case ZOMBIE_WALL_HEAD:
+            case CREEPER_WALL_HEAD:
+            case DRAGON_WALL_HEAD:
+            case HEAVY_WEIGHTED_PRESSURE_PLATE:
+            case LIGHT_WEIGHTED_PRESSURE_PLATE:
+            case WHITE_CARPET:
+            case YELLOW_CARPET:
+            case ORANGE_CARPET:
+            case LIGHT_BLUE_CARPET:
+            case PINK_CARPET:
+            case MAGENTA_CARPET:
+            case LIME_CARPET:
+            case GRAY_CARPET:
+            case LIGHT_GRAY_CARPET:
+            case PURPLE_CARPET:
+            case BLUE_CARPET:
+            case GREEN_CARPET:
+            case CYAN_CARPET:
+            case RED_CARPET:
+            case BROWN_CARPET:
+            case BLACK_CARPET:
+            case LARGE_FERN:
                 return true;
             default:
                 return false;
@@ -233,21 +275,23 @@ public class BlockBed extends BlockType {
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
         GlowBlockState oldState) {
-        if (block.getType() == Material.BED_BLOCK) {
-            GlowBed bed = (GlowBed) block.getState();
-            bed.setColor(DyeColor.getByWoolData(holding.getData().getData()));
-            bed.update(true);
-            BlockFace direction = ((Bed) bed.getData()).getFacing();
-            GlowBlock headBlock = block.getRelative(direction);
-            headBlock.setType(Material.BED_BLOCK);
-            GlowBed headBlockState = (GlowBed) headBlock.getState();
-            headBlockState.setColor(DyeColor.getByWoolData(holding.getData().getData()));
-            MaterialData data = headBlockState.getData();
-            ((Bed) data).setHeadOfBed(true);
-            ((Bed) data).setFacingDirection(direction);
-            headBlockState.setData(data);
-            headBlockState.update(true);
+        Material type = block.getType();
+        if (!MaterialUtil.BEDS.contains(type)) {
+            return;
         }
+        GlowBed bed = (GlowBed) block.getState();
+        bed.setColor(DyeColor.getByWoolData(holding.getData().getData()));
+        bed.update(true);
+        BlockFace direction = ((Bed) bed.getData()).getFacing();
+        GlowBlock headBlock = block.getRelative(direction);
+        headBlock.setType(type);
+        GlowBed headBlockState = (GlowBed) headBlock.getState();
+        headBlockState.setColor(DyeColor.getByWoolData(holding.getData().getData()));
+        MaterialData data = headBlockState.getData();
+        ((Bed) data).setHeadOfBed(true);
+        ((Bed) data).setFacingDirection(direction);
+        headBlockState.setData(data);
+        headBlockState.update(true);
     }
 
     @Override
@@ -263,7 +307,7 @@ public class BlockBed extends BlockType {
 
         // Disallow sleeping in nether and end biomes
         Biome biome = block.getBiome();
-        if (biome == Biome.HELL || biome == Biome.SKY) {
+        if (EXPLOSIVE_IN_BIOMES.contains(biome)) {
             // Set off an explosion at the bed slightly stronger than TNT
             world.createExplosion(block.getLocation(), 5F, true);
             return true;

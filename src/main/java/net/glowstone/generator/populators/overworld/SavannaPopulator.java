@@ -7,14 +7,14 @@ import net.glowstone.generator.decorators.overworld.DoublePlantDecorator.DoubleP
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.AcaciaTree;
 import net.glowstone.generator.objects.trees.GenericTree;
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 public class SavannaPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.SAVANNA, Biome.SAVANNA_ROCK};
+    private static final Biome[] BIOMES = {Biome.SAVANNA, Biome.SAVANNA_PLATEAU};
     private static final DoublePlantDecoration[] DOUBLE_PLANTS = {
-        new DoublePlantDecoration(DoublePlantSpecies.DOUBLE_TALLGRASS, 1)};
+        new DoublePlantDecoration(Material.TALL_GRASS, 1)};
     private static final TreeDecoration[] TREES = {new TreeDecoration(AcaciaTree::new, 4),
         new TreeDecoration(GenericTree::new, 1)};
 

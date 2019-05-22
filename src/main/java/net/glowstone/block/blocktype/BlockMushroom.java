@@ -17,9 +17,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.material.Dirt;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.types.DirtType;
 
 public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -33,15 +30,12 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         GlowBlock belowBlock = block.getRelative(BlockFace.DOWN);
         Material type = belowBlock.getType();
-        MaterialData data = belowBlock.getState().getData();
-        if (type == Material.GRASS
-            || data instanceof Dirt && ((Dirt) data).getType() != DirtType.PODZOL) {
+        if (type == Material.GRASS_BLOCK || type == Material.DIRT) {
             if (block.getLightLevel()
-                < 13) { // checking light level for dirt, coarse dirt and grass
+                    < 13) { // checking light level for dirt, coarse dirt and grass
                 return true;
             }
-        } else if (type == Material.MYCEL
-            || data instanceof Dirt && ((Dirt) data).getType() == DirtType.PODZOL) {
+        } else if (type == Material.MYCELIUM || type == Material.PODZOL) {
             // not checking light level if mycel or podzol
             return true;
         }
@@ -76,10 +70,10 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
         Location loc = block.getLocation();
         BlockStateDelegate blockStateDelegate = new BlockStateDelegate();
         if (GlowTree.newInstance(type, ThreadLocalRandom.current(), blockStateDelegate)
-            .generate(loc)) {
+                .generate(loc)) {
             List<BlockState> blockStates = new ArrayList<>(blockStateDelegate.getBlockStates());
             StructureGrowEvent growEvent = new StructureGrowEvent(loc, type, true, player,
-                blockStates);
+                    blockStates);
             EventFactory.getInstance().callEvent(growEvent);
             if (!growEvent.isCancelled()) {
                 for (BlockState state : blockStates) {
@@ -128,7 +122,7 @@ public class BlockMushroom extends BlockNeedsAttached implements IBlockGrowable 
                 }
                 nx = x + ThreadLocalRandom.current().nextInt(3) - 1;
                 ny = y + ThreadLocalRandom.current().nextInt(2) - ThreadLocalRandom.current()
-                    .nextInt(2);
+                        .nextInt(2);
                 nz = z + ThreadLocalRandom.current().nextInt(3) - 1;
             }
 

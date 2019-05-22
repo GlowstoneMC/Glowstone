@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.GameMode;

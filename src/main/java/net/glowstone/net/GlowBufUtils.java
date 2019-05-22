@@ -18,6 +18,7 @@ import net.glowstone.entity.meta.MetadataMap;
 import net.glowstone.entity.meta.MetadataMap.Entry;
 import net.glowstone.entity.meta.MetadataType;
 import net.glowstone.inventory.GlowItemFactory;
+import net.glowstone.util.GlowUnsafeValues;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.TextMessage;
@@ -25,6 +26,7 @@ import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.NbtInputStream;
 import net.glowstone.util.nbt.NbtOutputStream;
 import net.glowstone.util.nbt.NbtReadLimiter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.BlockState;
@@ -269,8 +271,9 @@ public final class GlowBufUtils {
 
         int type = ByteBufUtils.readVarInt(buf);
         int amount = buf.readUnsignedByte();
+        GlowUnsafeValues unsafeValues = (GlowUnsafeValues) Bukkit.getServer().getUnsafe();
 
-        Material material = Material.getMaterial(type);
+        Material material = unsafeValues.fromId(type);
         if (material == null) {
             return InventoryUtil.createEmptyStack();
         }
@@ -292,7 +295,7 @@ public final class GlowBufUtils {
             buf.writeBoolean(false);
         } else {
             buf.writeBoolean(true);
-            ByteBufUtils.writeVarInt(buf, stack.getTypeId());
+            ByteBufUtils.writeVarInt(buf, stack.getType().getId());
             buf.writeByte(stack.getAmount());
             if (stack.hasItemMeta()) {
                 CompoundTag tag = GlowItemFactory.instance().writeNbt(stack.getItemMeta());
@@ -396,7 +399,7 @@ public final class GlowBufUtils {
 
         ByteBufUtils.writeVarInt(buf, particleId);
         Class<?> dataType = particle.particle().getDataType();
-        if (data != null && !Objects.equals(particle.particle().getDataType(), Void.class)
+        if (data != null && !particle.particle().getDataType().equals(Void.class)
                 && particle.particle().getDataType().isInstance(data)) {
             if (dataType.equals(Particle.DustOptions.class)) {
                 Particle.DustOptions options = (Particle.DustOptions) data;

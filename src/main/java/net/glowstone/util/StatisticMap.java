@@ -3,6 +3,7 @@ package net.glowstone.util;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import net.glowstone.constants.GlowAchievement;
@@ -22,8 +23,14 @@ public final class StatisticMap {
     private final Map<String, Integer> values = new HashMap<>();
 
     public StatisticMessage toMessage() {
-        // TODO: 1.13, properly implement statistics
-        return new StatisticMessage(Collections.emptyMap());
+        Map<Statistic, Integer> statKeyedValues = new EnumMap<>(Statistic.class);
+        for (Statistic stat : Statistic.values()) {
+            Integer value = values.get(stat.name());
+            if (value != null) {
+                statKeyedValues.put(stat, value);
+            }
+        }
+        return new StatisticMessage(statKeyedValues);
     }
 
     ////////////////////////////////////////////////////////////////////////////

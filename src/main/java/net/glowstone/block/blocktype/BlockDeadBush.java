@@ -32,7 +32,7 @@ public class BlockDeadBush extends BlockNeedsAttached {
         // If the block below the dead bush is removed,
         // the bush will simply disappear without dropping anything.
         if (tool == null) {
-            return BlockDropless.EMPTY_STACK;
+            return Collections.emptyList();
         }
 
         // Dead bush drops it self when broken with shears

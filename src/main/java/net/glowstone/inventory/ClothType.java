@@ -9,8 +9,8 @@ public enum ClothType implements MaterialMatcher {
         Material.CHAINMAIL_HELMET),
     IRON(Material.IRON_BOOTS, Material.IRON_LEGGINGS, Material.IRON_CHESTPLATE,
         Material.IRON_HELMET),
-    GOLD(Material.GOLD_BOOTS, Material.GOLD_LEGGINGS, Material.GOLD_CHESTPLATE,
-        Material.GOLD_HELMET),
+    GOLD(Material.GOLDEN_BOOTS, Material.GOLDEN_LEGGINGS, Material.GOLDEN_CHESTPLATE,
+        Material.GOLDEN_HELMET),
     DIAMOND(Material.DIAMOND_BOOTS, Material.DIAMOND_LEGGINGS, Material.DIAMOND_CHESTPLATE,
         Material.DIAMOND_HELMET);
 

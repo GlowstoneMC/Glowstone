@@ -11,9 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowCraftingInventory;
+import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -398,51 +400,55 @@ public final class CraftingManager implements Iterable<Recipe> {
         dynamicRecipes.add(new DynamicRecipe(new GlowMapCopyMatcher()));
         dynamicRecipes.add(new DynamicRecipe(new GlowMapZoomMatcher()));
 
-        // Smelting fuels (time is in ticks)
-        furnaceFuels.put(Material.BANNER, 300);
+        putAllAsFuels(MaterialUtil.BANNERS, 300);
         furnaceFuels.put(Material.BLAZE_ROD, 2400);
         furnaceFuels.put(Material.COAL_BLOCK, 16000);
-        furnaceFuels.put(Material.BOAT, 400);
-        furnaceFuels.put(Material.BOAT_ACACIA, 400);
-        furnaceFuels.put(Material.BOAT_BIRCH, 400);
-        furnaceFuels.put(Material.BOAT_DARK_OAK, 400);
-        furnaceFuels.put(Material.BOAT_JUNGLE, 400);
-        furnaceFuels.put(Material.BOAT_SPRUCE, 400);
+        putAllAsFuels(MaterialUtil.BOATS, 400);
+        furnaceFuels.put(Material.OAK_BOAT, 400);
+        furnaceFuels.put(Material.ACACIA_BOAT, 400);
+        furnaceFuels.put(Material.BIRCH_BOAT, 400);
+        furnaceFuels.put(Material.DARK_OAK_BOAT, 400);
+        furnaceFuels.put(Material.JUNGLE_BOAT, 400);
+        furnaceFuels.put(Material.SPRUCE_BOAT, 400);
         furnaceFuels.put(Material.BOOKSHELF, 300);
         furnaceFuels.put(Material.BOW, 300);
         furnaceFuels.put(Material.BOWL, 100);
-        furnaceFuels.put(Material.CARPET, 67);
+        putAllAsFuels(MaterialUtil.CARPETS, 67);
         furnaceFuels.put(Material.COAL, 1600);
         furnaceFuels.put(Material.CHEST, 300);
-        furnaceFuels.put(Material.WORKBENCH, 300);
+        furnaceFuels.put(Material.CRAFTING_TABLE, 300);
         furnaceFuels.put(Material.DAYLIGHT_DETECTOR, 300);
-        furnaceFuels.put(Material.DAYLIGHT_DETECTOR_INVERTED, 300);
-        furnaceFuels.put(Material.FENCE, 300);
-        furnaceFuels.put(Material.FENCE_GATE, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_FENCES, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_GATES, 300);
         furnaceFuels.put(Material.FISHING_ROD, 300);
         furnaceFuels.put(Material.JUKEBOX, 300);
         furnaceFuels.put(Material.LADDER, 300);
         furnaceFuels.put(Material.LAVA_BUCKET, 20000);
-        furnaceFuels.put(Material.HUGE_MUSHROOM_1, 300);
-        furnaceFuels.put(Material.HUGE_MUSHROOM_2, 300);
+        furnaceFuels.put(Material.BROWN_MUSHROOM_BLOCK, 300);
+        furnaceFuels.put(Material.RED_MUSHROOM_BLOCK, 300);
         furnaceFuels.put(Material.NOTE_BLOCK, 300);
-        furnaceFuels.put(Material.SAPLING, 100);
+        putAllAsFuels(MaterialUtil.SAPLINGS, 100);
         furnaceFuels.put(Material.SIGN, 200);
         furnaceFuels.put(Material.STICK, 100);
-        furnaceFuels.put(Material.TRAP_DOOR, 300);
+        putAllAsFuels(MaterialUtil.TRAPDOORS, 300);
         furnaceFuels.put(Material.TRAPPED_CHEST, 300);
-        furnaceFuels.put(Material.LOG, 300);
-        furnaceFuels.put(Material.WOOD, 300);
-        furnaceFuels.put(Material.WOOD_BUTTON, 300);
-        furnaceFuels.put(Material.WOOD_PLATE, 300);
-        furnaceFuels.put(Material.WOOD_STAIRS, 300);
-        furnaceFuels.put(Material.WOOD_AXE, 200);
-        furnaceFuels.put(Material.WOOD_HOE, 200);
-        furnaceFuels.put(Material.WOOD_PICKAXE, 200);
-        furnaceFuels.put(Material.WOOD_SPADE, 200);
-        furnaceFuels.put(Material.WOOD_SWORD, 200);
-        furnaceFuels.put(Material.WOOD_STEP, 150);
-        furnaceFuels.put(Material.WOOL, 100);
+        putAllAsFuels(MaterialUtil.LOGS, 300);
+        putAllAsFuels(MaterialUtil.WOODS, 300);
+        putAllAsFuels(MaterialUtil.PLANKS, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_BUTTONS, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_PRESSURE_PLATES, 300);
+        putAllAsFuels(MaterialUtil.WOODEN_STAIRS, 300);
+        furnaceFuels.put(Material.WOODEN_AXE, 200);
+        furnaceFuels.put(Material.WOODEN_HOE, 200);
+        furnaceFuels.put(Material.WOODEN_PICKAXE, 200);
+        furnaceFuels.put(Material.WOODEN_SHOVEL, 200);
+        furnaceFuels.put(Material.WOODEN_SWORD, 200);
+        putAllAsFuels(MaterialUtil.WOODEN_SLABS, 300);
+        putAllAsFuels(MaterialUtil.WOOLS, 100);
+    }
+
+    private void putAllAsFuels(Iterable<Material> materials, int duration) {
+        materials.forEach(wood -> furnaceFuels.put(wood, duration));
     }
 
     /**
@@ -501,10 +507,11 @@ public final class CraftingManager implements Iterable<Recipe> {
                     = ItemStack.deserialize((Map<String, Object>) data.get("input")); // NON-NLS
             ItemStack resultStack
                     = ItemStack.deserialize((Map<String, Object>) data.get("result")); // NON-NLS
+            NamespacedKey key = readKey(data, resultStack);
             float xp = ((Number) data.get("xp")).floatValue(); // NON-NLS
             furnaceRecipes.add(
-                    new FurnaceRecipe(resultStack, inputStack.getType(), inputStack.getDurability(),
-                            xp));
+                    new FurnaceRecipe(key, resultStack, inputStack.getType(),
+                            inputStack.getDurability(), xp, 200));
         }
     }
 
@@ -512,12 +519,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         NamespacedKey key;
         if (data.containsKey("key")) { // NON-NLS
             String keyRaw = (String) data.get("key"); // NON-NLS
-            if (keyRaw.indexOf(':') == -1) {
-                key = new NamespacedKey(NamespacedKey.MINECRAFT, keyRaw);
-            } else {
-                key = new NamespacedKey(keyRaw.substring(0, keyRaw.indexOf(':')),
-                        keyRaw.substring(keyRaw.indexOf(':') + 1, keyRaw.length()));
-            }
+            key = NbtSerialization.namespacedKeyFromString(keyRaw);
         } else {
             // todo: remove ambiguity of items with 'data/damage' values inside recipes.yml (will
             // take a long time...)
@@ -525,4 +527,5 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
         return key;
     }
+
 }

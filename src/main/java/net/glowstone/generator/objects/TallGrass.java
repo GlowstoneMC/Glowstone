@@ -33,7 +33,7 @@ public class TallGrass implements TerrainObject {
             Block block = world.getBlockAt(x, y, z);
             Material blockTypeBelow = block.getRelative(BlockFace.DOWN).getType();
             if (y < 255 && block.getType() == Material.AIR && (
-                    blockTypeBelow == Material.GRASS || blockTypeBelow == Material.DIRT)) {
+                    blockTypeBelow == Material.GRASS_BLOCK || blockTypeBelow == Material.DIRT)) {
                 BlockState state = block.getState();
                 state.setType(Material.LONG_GRASS);
                 state.setData(grassType);

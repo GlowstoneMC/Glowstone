@@ -24,26 +24,26 @@ public final class GlowEnchantment extends Enchantment implements Choice {
 
     private static final MaterialMatcher SWORD_OR_AXE = item ->
         EnchantmentTarget.WEAPON.includes(item)
-            || item.equals(Material.WOOD_AXE)
+            || item.equals(Material.WOODEN_AXE)
             || item.equals(Material.STONE_AXE)
             || item.equals(Material.IRON_AXE)
             || item.equals(Material.DIAMOND_AXE)
-            || item.equals(Material.GOLD_AXE);
-    private static final MaterialMatcher BASE_TOOLS = item -> item.equals(Material.WOOD_SPADE)
-        || item.equals(Material.STONE_SPADE)
-        || item.equals(Material.IRON_SPADE)
-        || item.equals(Material.DIAMOND_SPADE)
-        || item.equals(Material.GOLD_SPADE)
-        || item.equals(Material.WOOD_PICKAXE)
+            || item.equals(Material.GOLDEN_AXE);
+    private static final MaterialMatcher BASE_TOOLS = item -> item.equals(Material.WOODEN_SHOVEL)
+        || item.equals(Material.STONE_SHOVEL)
+        || item.equals(Material.IRON_SHOVEL)
+        || item.equals(Material.DIAMOND_SHOVEL)
+        || item.equals(Material.GOLDEN_SHOVEL)
+        || item.equals(Material.WOODEN_PICKAXE)
         || item.equals(Material.STONE_PICKAXE)
         || item.equals(Material.IRON_PICKAXE)
         || item.equals(Material.DIAMOND_PICKAXE)
-        || item.equals(Material.GOLD_PICKAXE)
-        || item.equals(Material.WOOD_AXE)
+        || item.equals(Material.GOLDEN_PICKAXE)
+        || item.equals(Material.WOODEN_AXE)
         || item.equals(Material.STONE_AXE)
         || item.equals(Material.IRON_AXE)
         || item.equals(Material.DIAMOND_AXE)
-        || item.equals(Material.GOLD_AXE);
+        || item.equals(Material.GOLDEN_AXE);
     private static final MaterialMatcher DIGGING_TOOLS = material -> BASE_TOOLS.matches(material)
         || material == Material.SHEARS;
     private static final MaterialMatcher ALL_THINGS = material ->
@@ -52,7 +52,7 @@ public final class GlowEnchantment extends Enchantment implements Choice {
             || EnchantmentTarget.ARMOR.includes(material)
             || material == Material.FISHING_ROD
             || material == Material.BOW
-            || material == Material.CARROT_STICK;
+            || material == Material.CARROT_ON_A_STICK;
     private static final int GROUP_NONE = 0;
     private static final int GROUP_PROTECT = 1;
     private static final int GROUP_ATTACK = 2;

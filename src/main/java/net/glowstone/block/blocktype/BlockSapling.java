@@ -25,12 +25,11 @@ import org.bukkit.material.Sapling;
 public class BlockSapling extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
-    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        int typeIdBelow = block.getWorld()
-            .getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
-        Material typeBelow = Material.getMaterial(typeIdBelow);
-        return typeBelow == Material.GRASS || typeBelow == Material.DIRT
-            || typeBelow == Material.SOIL;
+    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+        Material typeBelow = block.getWorld()
+            .getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ());
+        return typeBelow == Material.GRASS_BLOCK || typeBelow == Material.DIRT
+            || typeBelow == Material.FARMLAND;
     }
 
     @Override

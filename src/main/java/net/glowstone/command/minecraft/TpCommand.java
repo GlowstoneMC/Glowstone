@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * Differs from {@link TeleportCommand} in that all relative coordinates are relative to the target
@@ -48,7 +49,8 @@ public class TpCommand extends GlowVanillaCommand {
                     CommandTarget target = new CommandTarget(sender, name);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
-                        commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, name);
+                        commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                .sendInColor(ChatColor.RED, sender, name);
                         return false;
                     }
                     for (Entity entity : matched) {
@@ -61,7 +63,8 @@ public class TpCommand extends GlowVanillaCommand {
                 } else {
                     Player player = Bukkit.getPlayerExact(name);
                     if (player == null) {
-                        commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                        commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                                .sendInColor(ChatColor.RED, sender, name);
                         return false;
                     } else {
                         from.teleport(player);
@@ -80,7 +83,8 @@ public class TpCommand extends GlowVanillaCommand {
                     CommandTarget target = new CommandTarget(sender, fromName);
                     Entity[] matched = target.getMatched(location);
                     if (matched.length == 0) {
-                        commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, fromName);
+                        commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                .sendInColor(ChatColor.RED, sender, fromName);
                         return false;
                     }
                     for (Entity entity : matched) {
@@ -90,7 +94,8 @@ public class TpCommand extends GlowVanillaCommand {
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             }
@@ -98,7 +103,8 @@ public class TpCommand extends GlowVanillaCommand {
                         } else {
                             Player player = Bukkit.getPlayerExact(destName);
                             if (player == null) {
-                                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             } else {
@@ -125,7 +131,8 @@ public class TpCommand extends GlowVanillaCommand {
                             CommandTarget target2 = new CommandTarget(sender, destName);
                             Entity[] matched2 = target2.getMatched(location2);
                             if (matched2.length == 0) {
-                                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             }
@@ -133,7 +140,8 @@ public class TpCommand extends GlowVanillaCommand {
                         } else {
                             Player player2 = Bukkit.getPlayerExact(destName);
                             if (player2 == null) {
-                                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender,
+                                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                                        .sendInColor(ChatColor.RED, sender,
                                         destName);
                                 return false;
                             } else {
@@ -147,9 +155,106 @@ public class TpCommand extends GlowVanillaCommand {
                     return true;
                 }
             default:
-                sender.sendMessage(
-                        ChatColor.RED + "Coordinate-based teleporting is not supported yet!");
+                sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
                 return false;
         }
+    }
+
+    private Entity[] matchEntities(CommandSender sender, String selector) {
+        if (selector.startsWith("@") && CommandUtils.isPhysical(sender)) {
+            Location location = CommandUtils.getLocation(sender);
+            CommandTarget target = new CommandTarget(sender, selector);
+            Entity[] matched = target.getMatched(location);
+            if (matched.length == 0) {
+                sender.sendMessage(
+                        ChatColor.RED + "Selector " + selector + " found nothing");
+            }
+            return matched;
+        } else {
+            Player player = Bukkit.getPlayerExact(selector);
+            if (player == null) {
+                sender.sendMessage(
+                        ChatColor.RED + "Player '" + selector + "' is not online");
+                return new Entity[0];
+            } else {
+                return new Entity[] { player };
+            }
+        }
+    }
+
+    private boolean teleportSenderToEntity(CommandSender sender, String name) {
+        Entity from;
+        if (sender instanceof Player) {
+            from = (Entity) sender;
+        } else {
+            sender.sendMessage(ChatColor.RED + "Only entities can be teleported");
+            return false;
+        }
+
+        Entity[] matched = matchEntities(sender, name);
+
+        if (matched.length == 0) {
+            return false;
+        } else {
+            Entity destination = matched[0];
+
+            from.teleport(destination, PlayerTeleportEvent.TeleportCause.COMMAND);
+            sender.sendMessage(
+                    "Teleported " + CommandUtils.getName(from) + " to " + CommandUtils
+                            .getName(destination));
+            return true;
+        }
+    }
+
+    private boolean teleportEntityToEntity(CommandSender sender, String fromName, String destName) {
+        Entity[] matchedFrom = matchEntities(sender, fromName);
+        Entity[] matchedDest = matchEntities(sender, destName);
+
+        if (matchedDest.length == 0) {
+            return false;
+        } else {
+            Entity destination = matchedDest[0];
+
+            for (Entity entity : matchedFrom) {
+                entity.teleport(destination, PlayerTeleportEvent.TeleportCause.COMMAND);
+                sender.sendMessage(
+                        "Teleported " + CommandUtils.getName(entity) + " to " + CommandUtils
+                                .getName(destination));
+            }
+            return true;
+        }
+    }
+
+    private boolean teleportToLocation(CommandSender sender, String name,
+                                       String x, String y, String z,
+                                       String yaw, String pitch) {
+        Entity[] entities;
+        if (name == null) {
+            if (sender instanceof Player) {
+                entities = new Entity[] { (Entity) sender };
+            } else {
+                sender.sendMessage(ChatColor.RED + "Only entities can be teleported");
+                return false;
+            }
+        } else {
+            entities = matchEntities(sender, name);
+            if (entities.length == 0) {
+                return false;
+            }
+        }
+
+        Location location = CommandUtils.getLocation(sender);
+        location = CommandUtils.getLocation(location, x, y, z);
+        if (yaw != null && pitch != null) {
+            location = CommandUtils.getRotation(location, yaw, pitch);
+        }
+
+        for (Entity entity : entities) {
+            entity.teleport(location, PlayerTeleportEvent.TeleportCause.COMMAND);
+            sender.sendMessage(
+                    "Teleported " + CommandUtils.getName(entity) + " to " + location.getX()
+                            + ", " + location.getY() + ", " + location.getZ());
+        }
+        return true;
     }
 }

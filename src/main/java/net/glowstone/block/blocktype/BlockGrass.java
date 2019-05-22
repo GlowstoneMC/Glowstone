@@ -85,7 +85,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                     y += ThreadLocalRandom.current().nextInt(3) * ThreadLocalRandom.current()
                         .nextInt(3) / 2;
                     z += ThreadLocalRandom.current().nextInt(3) - 1;
-                    if (world.getBlockAt(x, y, z).getType() == Material.GRASS) {
+                    if (world.getBlockAt(x, y, z).getType() == Material.GRASS_BLOCK) {
                         j++;
                         continue;
                     }
@@ -129,7 +129,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                         && targetAbove.getMaterialValues().getLightOpacity() <= 2
                         && targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
-                    state.setType(Material.GRASS);
+                    state.setType(Material.GRASS_BLOCK);
                     state.setRawData((byte) 0);
                     BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
                     EventFactory.getInstance().callEvent(spreadEvent);

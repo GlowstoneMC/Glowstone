@@ -85,13 +85,13 @@ public class Lake implements TerrainObject {
                         if (TerrainObject.killPlantAbove(block)) {
                             break;
                         }
-                        if (this.type == Material.STATIONARY_WATER && (
+                        if (this.type == Material.WATER && (
                                 blockType == Material.ICE
                                         || blockType == Material.PACKED_ICE)) {
                             type = blockType;
                         }
                     } else if (y == MAX_HEIGHT / 2 - 1) {
-                        if (type == Material.STATIONARY_WATER && GlowBiomeClimate
+                        if (type == Material.WATER && GlowBiomeClimate
                                 .isCold(world.getBiome(sourceX + x, sourceZ + z),
                                         sourceX + x, y, sourceZ + z)) {
                             type = Material.ICE;
@@ -113,7 +113,7 @@ public class Lake implements TerrainObject {
                     if (block.getType() == Material.DIRT
                             && !blockAbove.getType().isOccluding()
                             && blockAbove.getLightLevel() > 0) {
-                        block.setType(mycelBiome ? Material.MYCEL : Material.GRASS);
+                        block.setType(mycelBiome ? Material.MYCELIUM : Material.GRASS_BLOCK);
                     }
                 }
             }

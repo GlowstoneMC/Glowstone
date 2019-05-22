@@ -11,6 +11,7 @@ import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -231,4 +232,15 @@ public final class NbtSerialization {
         return Arrays.asList(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    public static NamespacedKey namespacedKeyFromString(String keyRaw) {
+        NamespacedKey key;
+        int colon = keyRaw.indexOf(':');
+        if (colon == -1) {
+            key = new NamespacedKey(NamespacedKey.MINECRAFT, keyRaw);
+        } else {
+            key = new NamespacedKey(keyRaw.substring(0, colon),
+                    keyRaw.substring(colon + 1, keyRaw.length()));
+        }
+        return key;
+    }
 }

@@ -32,10 +32,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
     public static final Message[] EMPTY_MESSAGE_ARRAY = new Message[0];
@@ -326,6 +329,21 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             }
         }
 
+        return null;
+    }
+
+    @Override
+    public @NotNull BoundingBox getBoundingBox() {
+        return null;
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+
+    }
+
+    @Override
+    public CreatureSpawnEvent.@NotNull SpawnReason getEntitySpawnReason() {
         return null;
     }
 }

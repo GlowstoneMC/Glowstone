@@ -6,6 +6,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -50,9 +51,9 @@ public class BlockFalling extends BlockType {
         me = me.getWorld().getBlockAt(me.getX(), me.getY(), me.getZ());
 
         if (!me.isEmpty()) {
-            byte data = me.getData();
+            BlockData data = me.getBlockData();
             me.setType(Material.AIR);
-            me.getWorld().spawnFallingBlock(me.getLocation().add(0.50, 0.00, 0.50), drop, data);
+            me.getWorld().spawnFallingBlock(me.getLocation().add(0.50, 0.00, 0.50), data);
         }
     }
 
@@ -61,9 +62,7 @@ public class BlockFalling extends BlockType {
             case AIR:
             case FIRE:
             case WATER:
-            case STATIONARY_WATER:
             case LAVA:
-            case STATIONARY_LAVA:
                 return false;
             default:
                 return true;

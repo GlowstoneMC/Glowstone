@@ -1,6 +1,9 @@
 package net.glowstone.block.itemtype;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,14 +23,7 @@ import org.bukkit.util.Vector;
  */
 public class ItemType {
 
-    private int id = -1;
-    /**
-     * Get the Material assigned to this ItemType.
-     *
-     * @return The corresponding Material.
-     */
-    @Getter
-    private Material material;
+    private List<Material> materials;
 
     /**
      * The type of block to place when the item is used.
@@ -44,37 +40,27 @@ public class ItemType {
      */
     @Getter
     @Setter(AccessLevel.PROTECTED)
-    private int maxStackSize = 64;
+    private int maxStackSize = -1;
+
 
     /**
-     * Get the id assigned to this ItemType.
+     * Get the Material assigned to this ItemType.
      *
-     * @return The corresponding id.
-     * @deprecated Magic value
+     * @return The corresponding Material.
+     * @deprecated ItemTypes can be assigned to multiple materials. Use getMaterials.
      */
     @Deprecated
-    public final int getId() {
-        return material == null ? id : material.getId();
+    public final Material getMaterial() {
+        return materials.get(0);
     }
 
     /**
-     * Assign an item ID to this ItemType (for internal use only).
+     * Get the Materials assigned to this ItemType.
      *
-     * @param id The internal item id for this item.
-     * @deprecated Magic value
+     * @return The Materials.
      */
-    @Deprecated
-    public final void setId(int id) {
-        if (material != null && this.id != -1) {
-            throw new IllegalStateException("ID is already set in " + this);
-        }
-        Material mat = Material.getMaterial(id);
-
-        if (mat == null) {
-            this.id = id;
-        } else {
-            setMaterial(mat);
-        }
+    public final ImmutableList<Material> getMaterials() {
+        return ImmutableList.copyOf(materials);
     }
 
     /**
@@ -83,12 +69,14 @@ public class ItemType {
      * @param material The internal material for this item.
      */
     public final void setMaterial(Material material) {
-        if (this.material != null && id != -1) {
-            throw new IllegalStateException("Material is already set in " + this);
-        }
         Preconditions.checkNotNull(material);
-        this.material = material;
-        id = material.getId();
+        if (materials == null) {
+            materials = new ArrayList<>();
+        }
+        if (maxStackSize != -1 && maxStackSize != material.getMaxStackSize()) {
+            throw new IllegalStateException("Material is not compatible with " + this);
+        }
+        materials.add(material);
         maxStackSize = material.getMaxStackSize();
     }
 
@@ -169,7 +157,7 @@ public class ItemType {
     @Override
     public final String toString() {
         return getClass().getSimpleName()
-                + "{" + (getMaterial() == null ? getId() : getMaterial())  + "}";
+                + "{" + getMaterial()  + "}";
     }
 
     /**

@@ -12,7 +12,7 @@ import org.bukkit.material.MaterialData;
 public class StoneBoulder implements TerrainObject {
 
     private static final SortedSet<Material> GROUND_TYPES = ImmutableSortedSet
-            .of(Material.GRASS, Material.DIRT, Material.STONE);
+            .of(Material.GRASS_BLOCK, Material.DIRT, Material.STONE);
 
     @Override
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {

@@ -3,6 +3,7 @@ package net.glowstone.command.minecraft;
 import java.util.Collections;
 import java.util.List;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -36,8 +37,8 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
                 spawnLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
                         : ((BlockCommandSender) sender).getBlock().getLocation();
             } else {
-                sender.sendMessage(ChatColor.RED
-                        + "Default coordinates can not be used without a physical user.");
+                commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL_COORDS)
+                        .sendInColor(ChatColor.RED, sender);
                 return false;
             }
         } else if (args.length >= 3) { // manage arguments
@@ -46,8 +47,8 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
             // Get the sender coordinates if relative is used
             if (args[0].startsWith("~") || args[1].startsWith("~") || args[2].startsWith("~")) {
                 if (!CommandUtils.isPhysical(sender)) {
-                    sender.sendMessage(ChatColor.RED
-                            + "Relative coordinates can not be used without a physical user.");
+                    commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL_COORDS)
+                            .sendInColor(ChatColor.RED, sender);
                     return false;
                 } else {
                     senderLocation = sender instanceof Entity ? ((Entity) sender).getLocation()
@@ -63,23 +64,22 @@ public class SetWorldSpawnCommand extends GlowVanillaCommand {
             return false;
         }
 
-        if (spawnLocation.getBlockY() < 0) {
-            sender.sendMessage(ChatColor.RED + "The y coordinate (" + spawnLocation.getBlockY()
-                    + ") is too small, it must be at least 0.");
+        int newY = spawnLocation.getBlockY();
+        if (newY < 0) {
+            commandMessages.getGeneric(GenericMessage.TOO_LOW).sendInColor(ChatColor.RED, sender);
             return false;
-        } else if (spawnLocation.getBlockY() > world.getMaxHeight()) {
-            sender.sendMessage(ChatColor.RED + "'" + spawnLocation.getBlockY()
-                    + "' is too high for the current world. Max value is '" + world.getMaxHeight()
-                    + "'.");
+        } else if (newY > world.getMaxHeight()) {
+            commandMessages.getGeneric(GenericMessage.TOO_HIGH)
+                    .sendInColor(ChatColor.RED, sender, world.getMaxHeight());
             return false;
         }
 
-        world.setSpawnLocation(spawnLocation.getBlockX(), spawnLocation.getBlockY(),
-                spawnLocation.getBlockZ());
-        sender.sendMessage(
-                "Set world spawn point to " + spawnLocation.getBlockX() + ", " + spawnLocation
-                        .getBlockY() + ", " + spawnLocation.getBlockZ() + ".");
-
+        int newX = spawnLocation.getBlockX();
+        int newZ = spawnLocation.getBlockZ();
+        world.setSpawnLocation(newX, newY,
+                newZ);
+        new LocalizedStringImpl("setworldspawn.done", commandMessages.getResourceBundle())
+                .send(sender, newX, newY, newZ);
         return true;
     }
 

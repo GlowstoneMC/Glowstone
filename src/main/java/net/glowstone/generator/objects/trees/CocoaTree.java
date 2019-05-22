@@ -6,21 +6,19 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
-import org.bukkit.material.Vine;
 
 public class CocoaTree extends JungleTree {
 
     private static final BlockFace[] COCOA_FACES = {BlockFace.NORTH, BlockFace.EAST,
-        BlockFace.SOUTH, BlockFace.WEST};
+            BlockFace.SOUTH, BlockFace.WEST};
     private static final CocoaPlantSize[] COCOA_SIZE = {CocoaPlantSize.SMALL, CocoaPlantSize.MEDIUM,
-        CocoaPlantSize.LARGE};
+            CocoaPlantSize.LARGE};
 
     /**
      * Initializes this tree, preparing it to attempt to generate.
      *
-     * @param random the PRNG
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and
      */
     public CocoaTree(Random random, BlockStateDelegate delegate) {
@@ -49,8 +47,7 @@ public class CocoaTree extends JungleTree {
             int radius = 2 - ny / 2;
             for (int x = baseX - radius; x <= baseX + radius; x++) {
                 for (int z = baseZ - radius; z <= baseZ + radius; z++) {
-                    if (blockTypeAt(x, y, z, world)
-                            == Material.LEAVES) {
+                    if (LEAF_TYPES.contains(blockTypeAt(x, y, z, world))) {
                         if (random.nextInt(4) == 0
                                 && blockTypeAt(x - 1, y, z, world)
                                 == Material.AIR) {
@@ -82,26 +79,30 @@ public class CocoaTree extends JungleTree {
             if (random.nextInt(3) != 0
                     && blockTypeAt(trunkX - 1, trunkY + y, trunkZ, world)
                     == Material.AIR) {
-                delegate.setTypeAndData(world, trunkX - 1, trunkY + y,
-                        trunkZ, Material.VINE, new Vine(BlockFace.EAST));
+                // TODO: 1.13, set direction to EAST
+                delegate.setType(world, trunkX - 1, trunkY + y,
+                        trunkZ, Material.VINE);
             }
             if (random.nextInt(3) != 0
                     && blockTypeAt(trunkX + 1, trunkY + y, trunkZ, world)
                     == Material.AIR) {
-                delegate.setTypeAndData(world, trunkX + 1, trunkY + y,
-                        trunkZ, Material.VINE, new Vine(BlockFace.WEST));
+                // TODO: 1.13, set direction to WEST
+                delegate.setType(world, trunkX + 1, trunkY + y,
+                        trunkZ, Material.VINE);
             }
             if (random.nextInt(3) != 0
                     && blockTypeAt(trunkX, trunkY + y, trunkZ - 1, world)
                     == Material.AIR) {
-                delegate.setTypeAndData(world, trunkX, trunkY + y,
-                        trunkZ - 1, Material.VINE, new Vine(BlockFace.SOUTH));
+                // TODO: 1.13, set direction to SOUTH
+                delegate.setType(world, trunkX, trunkY + y,
+                        trunkZ - 1, Material.VINE);
             }
             if (random.nextInt(3) != 0
                     && blockTypeAt(trunkX, trunkY + y, trunkZ + 1, world)
                     == Material.AIR) {
-                delegate.setTypeAndData(world, trunkX, trunkY + y,
-                        trunkZ + 1, Material.VINE, new Vine(BlockFace.NORTH));
+                // TODO: 1.13, set direction to NORTH
+                delegate.setType(world, trunkX, trunkY + y,
+                        trunkZ + 1, Material.VINE);
             }
         }
     }
@@ -111,7 +112,8 @@ public class CocoaTree extends JungleTree {
             if (blockTypeAt(x, y - i, z, world) != Material.AIR) {
                 break;
             }
-            delegate.setTypeAndData(world, x, y - i, z, Material.VINE, new Vine(face));
+            // TODO: 1.13, set direction of vine
+            delegate.setType(world, x, y - i, z, Material.VINE);
         }
     }
 
@@ -126,9 +128,10 @@ public class CocoaTree extends JungleTree {
                                 .getBlockState(world, sourceX, sourceY + height - 5 + y,
                                         sourceZ)
                                 .getBlock().getRelative(cocoaFace);
-                        delegate.setTypeAndData(world, block.getX(), block.getY(),
+                        // TODO: 1.13, set Cocoa BlockData
+                        delegate.setType(world, block.getX(), block.getY(),
                                 block.getZ(),
-                                Material.COCOA, new CocoaPlant(size, cocoaFace.getOppositeFace()));
+                                Material.COCOA);
                     }
                 }
             }

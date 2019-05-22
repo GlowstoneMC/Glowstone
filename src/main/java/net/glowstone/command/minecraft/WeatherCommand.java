@@ -40,7 +40,7 @@ public class WeatherCommand extends GlowVanillaCommand {
             try {
                 duration = Integer.valueOf(args[1]);
             } catch (NumberFormatException ex) {
-                commandMessages.getNotANumber().send(sender, args[1]);
+                commandMessages.getGeneric(GenericMessage.NAN).send(sender, args[1]);
                 return false;
             }
             if (duration < 1) {

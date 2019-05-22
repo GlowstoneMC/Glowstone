@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -40,7 +41,7 @@ public class BlockStairs extends BlockType {
             || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override
@@ -54,7 +55,7 @@ public class BlockStairs extends BlockType {
             case BIRCH_WOOD_STAIRS:
             case DARK_OAK_STAIRS:
             case JUNGLE_WOOD_STAIRS:
-            case SPRUCE_WOOD_STAIRS:
+            case SPRUCE_STAIRS:
             case WOOD_STAIRS:
                 return true;
             default:

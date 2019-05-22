@@ -32,6 +32,7 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Dolphin;
+import org.bukkit.entity.Drowned;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Enderman;
@@ -104,6 +105,8 @@ public enum MetadataIndex {
     TIPPEDARROW_COLOR(8, INT, TippedArrow.class),
 
     TRIDENT_LOYALTY(8, INT, Trident.class),
+
+    TRIDENT_LOYALTY(7, INT, Trident.class),
 
     BOAT_HIT_TIME(6, INT, Boat.class),
     BOAT_DIRECTION(7, INT, Boat.class),
@@ -261,7 +264,9 @@ public enum MetadataIndex {
     TURTLE_LAYING_EGG(15, BOOLEAN, Turtle.class),
     TURTLE_TRAVEL_POS(16, POSITION, Turtle.class),
     TURTLE_GOING_HOME(17, BOOLEAN, Turtle.class),
-    TURTLE_TRAVELING(18, BOOLEAN, Turtle.class),
+    TURTLE_TRAVELLING(18, BOOLEAN, Turtle.class),
+
+    DROWNED_HAS_TARGET(15, BOOLEAN, Drowned.class),
 
     PARROT_VARIANT(15, INT, GlowParrot.class),
 

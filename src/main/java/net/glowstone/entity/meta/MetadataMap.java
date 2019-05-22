@@ -182,6 +182,14 @@ public class MetadataMap implements DynamicallyTypedMapWithFloats<MetadataIndex>
         return get(index, MetadataType.OPTPOSITION, null);
     }
 
+    public TextMessage getChat(MetadataIndex index) {
+        return get(index, MetadataType.CHAT, null);
+    }
+
+    public TextMessage getOptChat(MetadataIndex index) {
+        return get(index, MetadataType.OPTCHAT, null);
+    }
+
     /**
      * Gets the optional chat value for the given MetadataIndex.
      *

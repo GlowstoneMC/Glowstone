@@ -17,6 +17,7 @@ import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.DynamicallyTypedMapWithDoubles;
@@ -286,6 +287,16 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         return get(key, IntArrayTag.class);
     }
 
+    /**
+     * Returns the value of an {@code long[]} subtag.
+     *
+     * @param key the key to look up
+     * @return the tag value
+     */
+    public long[] getLongArray(@NonNls String key) {
+        return get(key, LongArrayTag.class);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Fancy gets
 
@@ -436,6 +447,10 @@ public class CompoundTag extends Tag<Map<String, Tag>>
      */
     public boolean readIntArray(@NonNls String key, Consumer<? super int[]> consumer) {
         return readTag(key, IntArrayTag.class, consumer);
+    }
+
+    public boolean readLongArray(@NonNls String key, Consumer<? super long[]> consumer) {
+        return readTag(key, LongArrayTag.class, consumer);
     }
 
     /**
@@ -657,11 +672,11 @@ public class CompoundTag extends Tag<Map<String, Tag>>
                 }
                 return Optional.ofNullable(type);
             case INT:
-                return Optional.ofNullable(Material.getMaterial(getInt(key)));
+                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getInt(key)));
             case SHORT:
-                return Optional.ofNullable(Material.getMaterial(getShort(key)));
+                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getShort(key)));
             case BYTE:
-                return Optional.ofNullable(Material.getMaterial(getByte(key)));
+                return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getByte(key)));
             default:
                 return Optional.empty();
         }
@@ -835,6 +850,16 @@ public class CompoundTag extends Tag<Map<String, Tag>>
         return is(key, IntArrayTag.class);
     }
 
+    /**
+     * Test whether the subtag with the given key is of {@code long[]} type.
+     *
+     * @param key the key to look up
+     * @return true if the subtag exists and is an {@code long[]}; false otherwise
+     */
+    public boolean isLongArray(@NonNls String key) {
+        return is(key, LongArrayTag.class);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Fancy is
 
@@ -916,6 +941,10 @@ public class CompoundTag extends Tag<Map<String, Tag>>
 
     public void putIntArray(@NonNls String key, int... value) {
         put(key, new IntArrayTag(value));
+    }
+
+    public void putLongArray(@NonNls String key, long... value) {
+        put(key, new LongArrayTag(value));
     }
 
     ////////////////////////////////////////////////////////////////////////////

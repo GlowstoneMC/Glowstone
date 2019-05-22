@@ -154,6 +154,14 @@ public final class NbtOutputStream implements Closeable {
                 }
                 break;
 
+            case LONG_ARRAY:
+                long[] longs = (long[]) tag.getValue();
+                os.writeInt(longs.length);
+                for (long value : longs) {
+                    os.writeLong(value);
+                }
+                break;
+
             default:
                 throw new IOException("Invalid tag type: " + type + ".");
         }

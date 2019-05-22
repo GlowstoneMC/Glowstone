@@ -238,6 +238,22 @@ public final class GlowScoreboard implements Scoreboard {
     }
 
     @Override
+    public Objective registerNewObjective(String name, String criteria,
+            String displayName) throws IllegalArgumentException {
+        Objective objective = registerNewObjective(name, criteria);
+        objective.setDisplayName(displayName);
+        return objective;
+    }
+
+    public Objective registerNewObjective(String name, String criteria,
+            String displayName, org.bukkit.scoreboard.RenderType renderType)
+            throws IllegalArgumentException {
+        Objective objective = registerNewObjective(name, criteria, displayName);
+        objective.setRenderType(renderType);
+        return objective;
+    }
+
+    @Override
     public Objective getObjective(String name) throws IllegalArgumentException {
         return objectives.get(name);
     }

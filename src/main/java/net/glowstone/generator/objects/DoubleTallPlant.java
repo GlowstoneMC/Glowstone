@@ -6,14 +6,14 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.DoublePlant;
-import org.bukkit.material.types.DoublePlantSpecies;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.Bisected.Half;
 
 public class DoubleTallPlant implements TerrainObject {
 
-    private final DoublePlantSpecies species;
+    private final Material species;
 
-    public DoubleTallPlant(DoublePlantSpecies species) {
+    public DoubleTallPlant(Material species) {
         this.species = species;
     }
 
@@ -33,15 +33,18 @@ public class DoubleTallPlant implements TerrainObject {
             Block block = world.getBlockAt(x, y, z);
             Block topBlock = block.getRelative(BlockFace.UP);
             if (y < 255 && block.isEmpty() && topBlock.isEmpty()
-                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
+                    && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS_BLOCK) {
                 BlockState state = block.getState();
-                state.setType(Material.DOUBLE_PLANT);
-                state.setData(new DoublePlant(species));
+                state.setType(species);
+                Bisected lower = (Bisected) species.createBlockData();
+                lower.setHalf(Half.BOTTOM);
+                state.setBlockData(lower);
                 state.update(true);
                 state = topBlock.getState();
-                state.setType(Material.DOUBLE_PLANT);
-                state.setData(new DoublePlant(DoublePlantSpecies.PLANT_APEX));
-                state.update(true);
+                state.setType(species);
+                Bisected upper = (Bisected) species.createBlockData();
+                upper.setHalf(Half.TOP);
+                state.setBlockData(upper);
                 placed = true;
             }
         }

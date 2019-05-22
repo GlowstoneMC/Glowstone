@@ -1,20 +1,21 @@
 package net.glowstone.generator.biomegrid;
 
+import static org.bukkit.block.Biome.BADLANDS;
+import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
 import static org.bukkit.block.Biome.DESERT;
-import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
-import static org.bukkit.block.Biome.ICE_FLATS;
+import static org.bukkit.block.Biome.GIANT_TREE_TAIGA;
 import static org.bukkit.block.Biome.JUNGLE;
 import static org.bukkit.block.Biome.JUNGLE_EDGE;
-import static org.bukkit.block.Biome.MESA;
-import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
-import static org.bukkit.block.Biome.MESA_ROCK;
 import static org.bukkit.block.Biome.PLAINS;
-import static org.bukkit.block.Biome.REDWOOD_TAIGA;
-import static org.bukkit.block.Biome.SWAMPLAND;
+import static org.bukkit.block.Biome.SNOWY_TAIGA;
+import static org.bukkit.block.Biome.SNOWY_TUNDRA;
+import static org.bukkit.block.Biome.SWAMP;
 import static org.bukkit.block.Biome.TAIGA;
-import static org.bukkit.block.Biome.TAIGA_COLD;
+import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
+import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,22 +32,22 @@ public class BiomeEdgeMapLayer extends MapLayer {
     private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = new HashMap<>();
 
     static {
-        MESA_EDGES.put(GlowBiome.getId(MESA_ROCK), GlowBiome.getId(MESA));
-        MESA_EDGES.put(GlowBiome.getId(MESA_CLEAR_ROCK), GlowBiome.getId(MESA));
+        MESA_EDGES.put(GlowBiome.getId(WOODED_BADLANDS_PLATEAU), GlowBiome.getId(BADLANDS));
+        MESA_EDGES.put(GlowBiome.getId(BADLANDS_PLATEAU), GlowBiome.getId(BADLANDS));
 
-        MEGA_TAIGA_EDGES.put(GlowBiome.getId(REDWOOD_TAIGA), GlowBiome.getId(TAIGA));
+        MEGA_TAIGA_EDGES.put(GlowBiome.getId(GIANT_TREE_TAIGA), GlowBiome.getId(TAIGA));
 
-        DESERT_EDGES.put(GlowBiome.getId(DESERT), GlowBiome.getId(EXTREME_HILLS_WITH_TREES));
+        DESERT_EDGES.put(GlowBiome.getId(DESERT), GlowBiome.getId(WOODED_MOUNTAINS));
 
-        SWAMP1_EDGES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(PLAINS));
-        SWAMP2_EDGES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(JUNGLE_EDGE));
+        SWAMP1_EDGES.put(GlowBiome.getId(SWAMP), GlowBiome.getId(PLAINS));
+        SWAMP2_EDGES.put(GlowBiome.getId(SWAMP), GlowBiome.getId(JUNGLE_EDGE));
 
         EDGES.put(MESA_EDGES, null);
         EDGES.put(MEGA_TAIGA_EDGES, null);
-        EDGES.put(DESERT_EDGES, Arrays.asList(GlowBiome.getId(ICE_FLATS)));
-        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(TAIGA_COLD),
-            GlowBiome.getId(ICE_FLATS)));
-        EDGES.put(SWAMP2_EDGES, Arrays.asList(GlowBiome.getId(JUNGLE)));
+        EDGES.put(DESERT_EDGES, Collections.singletonList(GlowBiome.getId(SNOWY_TUNDRA)));
+        EDGES.put(SWAMP1_EDGES, Arrays.asList(GlowBiome.getId(DESERT), GlowBiome.getId(SNOWY_TAIGA),
+                GlowBiome.getId(SNOWY_TUNDRA)));
+        EDGES.put(SWAMP2_EDGES, Collections.singletonList(GlowBiome.getId(JUNGLE)));
     }
 
     private final MapLayer belowLayer;
@@ -79,16 +80,16 @@ public class BiomeEdgeMapLayer extends MapLayer {
                         int rightVal = values[j + 2 + (i + 1) * gridSizeX];
                         if (entry.getValue() == null && (
                                 !map.containsKey(upperVal)
-                                || !map.containsKey(lowerVal)
-                                || !map.containsKey(leftVal)
-                                || !map.containsKey(rightVal))) {
+                                        || !map.containsKey(lowerVal)
+                                        || !map.containsKey(leftVal)
+                                        || !map.containsKey(rightVal))) {
                             val = map.get(centerVal);
                             break;
                         } else if (entry.getValue() != null && (
                                 entry.getValue().contains(upperVal)
-                                || entry.getValue().contains(lowerVal)
-                                || entry.getValue().contains(leftVal)
-                                || entry.getValue().contains(rightVal))) {
+                                        || entry.getValue().contains(lowerVal)
+                                        || entry.getValue().contains(leftVal)
+                                        || entry.getValue().contains(rightVal))) {
                             val = map.get(centerVal);
                             break;
                         }

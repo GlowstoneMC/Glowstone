@@ -58,7 +58,8 @@ public class KillCommand extends GlowVanillaCommand {
                 CommandTarget target = new CommandTarget(sender, name);
                 Entity[] matched = target.getMatched(location);
                 if (matched.length == 0) {
-                    commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, name);
+                    commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                            .sendInColor(ChatColor.RED, sender, name);
                     return false;
                 }
                 LocalizedStringImpl killDoneMessage = new LocalizedStringImpl("kill.done",
@@ -76,7 +77,8 @@ public class KillCommand extends GlowVanillaCommand {
             } else {
                 Player player = Bukkit.getPlayerExact(name);
                 if (player == null) {
-                    commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                    commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                            .sendInColor(ChatColor.RED, sender, name);
                     return false;
                 } else {
                     player.damage(Double.MAX_VALUE, EntityDamageEvent.DamageCause.VOID);

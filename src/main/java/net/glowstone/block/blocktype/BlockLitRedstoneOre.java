@@ -6,6 +6,7 @@ import net.glowstone.block.GlowBlockState;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockFadeEvent;
 
+// TODO: Merge into BlockRedstoneOre.
 public class BlockLitRedstoneOre extends BlockRedstoneOre {
 
     @Override

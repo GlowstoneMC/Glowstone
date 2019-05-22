@@ -62,7 +62,8 @@ public class GameModeCommand extends GlowVanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                messages.getPlayerOffline().sendInColor(ChatColor.RED, sender, name);
+                messages.getGeneric(GenericMessage.OFFLINE)
+                        .sendInColor(ChatColor.RED, sender, name);
             } else {
                 updateGameMode(sender, player, gamemode, bundle);
             }

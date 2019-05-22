@@ -5,6 +5,7 @@ import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.io.entity.EntityStorage;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
@@ -43,44 +44,52 @@ public class TestForCommand extends GlowVanillaCommand {
             entities = target.getMatched(CommandUtils.getLocation(sender));
 
             if (entities.length == 0) {
-                commandMessages.getNoMatches().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             }
         } else {
             // TODO: Select custom-named non-player entities?
             GlowPlayer player = (GlowPlayer) Bukkit.getPlayerExact(args[0]);
             if (player == null) {
-                commandMessages.getNoSuchPlayer().sendInColor(ChatColor.RED, sender, name);
+                commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 entities = new Entity[]{player};
             }
         }
 
+        LocalizedStringImpl foundMessage = new LocalizedStringImpl("testfor.found",
+                commandMessages.getResourceBundle());
         if (args.length >= 2) {
             String data = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             CompoundTag tag;
             try {
                 tag = Mojangson.parseCompound(data);
             } catch (MojangsonParseException e) {
-                sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
+                        .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
+            LocalizedStringImpl wrongDataMessage =
+                    new LocalizedStringImpl("testfor.wrong-data",
+                            commandMessages.getResourceBundle());
             for (Entity entity : entities) {
                 if (entity instanceof GlowEntity) {
                     CompoundTag entityTag = new CompoundTag();
                     EntityStorage.save((GlowEntity) entity, entityTag);
                     if (tag.matches(entityTag)) {
-                        sender.sendMessage("Found " + CommandUtils.getName(entity));
+                        foundMessage.send(sender, CommandUtils.getName(entity));
                     } else {
-                        sender.sendMessage(ChatColor.RED + CommandUtils.getName(entity)
-                                + " did not match the required data structure");
+                        wrongDataMessage.sendInColor(ChatColor.RED, sender,
+                                CommandUtils.getName(entity));
                     }
                 }
             }
         } else {
             for (Entity entity : entities) {
-                sender.sendMessage("Found " + CommandUtils.getName(entity));
+                foundMessage.send(sender, CommandUtils.getName(entity));
             }
         }
 

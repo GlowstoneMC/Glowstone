@@ -96,7 +96,7 @@ public class CloneCommand extends GlowVanillaCommand {
         }
         final ResourceBundle bundle = messages.getResourceBundle();
         if (!CommandUtils.isPhysical(sender)) {
-            messages.getNotPhysical().send(sender);
+            messages.getGeneric(GenericMessage.NOT_PHYSICAL).send(sender);
             return false;
         }
 
@@ -197,13 +197,14 @@ public class CloneCommand extends GlowVanillaCommand {
 
             if (blockFilter.shouldClone(fromBlock)) {
                 GlowBlock toBlock = world.getBlockAt(toLocation);
-                toBlock.setTypeIdAndData(fromBlock.getTypeId(), fromBlock.getData(), false);
+                toBlock.setType(fromBlock.getType());
+                toBlock.setBlockData(fromBlock.getBlockData());
 
                 BlockEntity fromEntity = fromBlock.getBlockEntity();
                 if (fromEntity != null) {
                     BlockEntity toEntity = toBlock.getChunk()
                             .createEntity(toBlock.getX(), toBlock.getY(), toBlock
-                                    .getZ(), toBlock.getTypeId());
+                                    .getZ(), toBlock.getType());
                     if (toEntity != null) {
                         CompoundTag entityTag = new CompoundTag();
                         fromEntity.saveNbt(entityTag);
