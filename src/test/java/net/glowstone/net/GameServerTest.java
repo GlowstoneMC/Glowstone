@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import net.glowstone.GlowServer;
+import net.glowstone.util.config.ServerConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import org.powermock.reflect.Whitebox;
 public class GameServerTest {
 
     private static final InetSocketAddress LOCALHOST_IPV4;
+    private static final InetSocketAddress LOCALHOST_IPV6;
     private final List<LogRecord> logRecords = new CopyOnWriteArrayList<>();
     private final Handler handler = new Handler() {
         @Override
@@ -44,10 +46,15 @@ public class GameServerTest {
         }
     };
 
+    public static final int PORT = 25565;
+
     static {
         try {
             LOCALHOST_IPV4 = new InetSocketAddress(
-                        InetAddress.getByAddress(new byte[]{127,0,0,1}), 25565);
+                        InetAddress.getByAddress(new byte[]{127,0,0,1}), ServerConfig.DEFAULT_PORT);
+            LOCALHOST_IPV6 = new InetSocketAddress(
+                    InetAddress.getByAddress(new byte[]{0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,1}),
+                    ServerConfig.DEFAULT_PORT);
         } catch (UnknownHostException e) {
             throw new AssertionError(e);
         }
@@ -79,9 +86,15 @@ public class GameServerTest {
     }
 
     @Test
-    public void testOnBindSuccess() throws UnknownHostException {
+    public void testOnBindSuccessIpv4() throws UnknownHostException {
         gameServer.onBindSuccess(LOCALHOST_IPV4);
         assertLoggedExactlyOnce("Successfully bound server to 127.0.0.1:25565.", Level.INFO);
+    }
+
+    @Test
+    public void testOnBindSuccessIpv6() throws UnknownHostException {
+        gameServer.onBindSuccess(LOCALHOST_IPV6);
+        assertLoggedExactlyOnce("Successfully bound server to [0:0:0:0:0:0:0:1]:25565.", Level.INFO);
     }
 
     @Test

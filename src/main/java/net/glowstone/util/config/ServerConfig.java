@@ -38,6 +38,7 @@ import org.yaml.snakeyaml.error.YAMLException;
  */
 public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
 
+    public static final int DEFAULT_PORT = 25565;
     /**
      * The directory configurations are stored in.
      */
@@ -387,7 +388,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
     public enum Key {
         // server
         SERVER_IP("server.ip", "", Migrate.PROPS, "server-ip", String.class::isInstance),
-        SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port", Validators.PORT),
+        SERVER_PORT("server.port", DEFAULT_PORT, Migrate.PROPS, "server-port", Validators.PORT),
         SERVER_NAME("server.name", "Glowstone Server", Migrate.PROPS, "server-name",
                 String.class::isInstance),
         LOG_FILE("server.log-file", "logs/log-%D.txt", String.class::isInstance),

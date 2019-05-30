@@ -2,8 +2,6 @@ package net.glowstone.i18n;
 
 import java.text.Format;
 import java.text.MessageFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -12,12 +10,6 @@ import org.jetbrains.annotations.NonNls;
 
 public class LocalizedStringImpl implements LocalizedString {
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings"); // NON-NLS
-    static final NumberFormat PLAIN_INTEGER_FORMAT
-            = NumberFormat.getIntegerInstance(Locale.ROOT);
-
-    static {
-        PLAIN_INTEGER_FORMAT.setGroupingUsed(false);
-    }
 
     @Getter
     @NonNls
