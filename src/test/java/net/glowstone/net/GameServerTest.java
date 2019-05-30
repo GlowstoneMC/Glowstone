@@ -1,6 +1,7 @@
 package net.glowstone.net;
 
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.CountDownLatch;
@@ -18,8 +19,17 @@ import org.powermock.reflect.Whitebox;
 
 public class GameServerTest {
 
-    private static final InetSocketAddress LOCALHOST_IPV4 =
-            InetSocketAddress.createUnresolved("127.0.0.1", 25565);
+    private static final InetSocketAddress LOCALHOST_IPV4;
+
+    static {
+        try {
+            LOCALHOST_IPV4 = new InetSocketAddress(
+                        InetAddress.getByAddress(new byte[]{127,0,0,1}), 25565);
+        } catch (UnknownHostException e) {
+            throw new AssertionError(e);
+        }
+    }
+
     @Mock private GlowServer glowServer;
     private Logger logger;
     private Logger unspiedLogger;
