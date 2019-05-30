@@ -35,17 +35,15 @@ public class GameServerTest {
     private GameServer gameServer;
 
     @AfterEach
-    public void tearDownClass() {
-        Whitebox.setInternalState(null, "logger", unspiedLogger,
-                GlowServer.class);
+    public void tearDownClass() throws IllegalAccessException {
+        Whitebox.getField(GlowServer.class, "logger").set(null, unspiedLogger);
     }
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IllegalAccessException {
         unspiedLogger = GlowServer.logger;
         logger = Mockito.mock(Logger.class);
-        Whitebox.setInternalState(null, "logger", logger,
-                GlowServer.class);
+        Whitebox.getField(GlowServer.class, "logger").set(null, logger);
         glowServer = Mockito.mock(GlowServer.class, Answers.RETURNS_SMART_NULLS);
         CountDownLatch latch = new CountDownLatch(1);
         gameServer = new GameServer(glowServer, latch);
