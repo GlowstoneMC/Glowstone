@@ -40,7 +40,7 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
         System.exit(1);
     }
 
-    /** Package-visible for testing. */
+    // Package-visible for testing.
     static void logBindFailure(InetSocketAddress address, Throwable t) {
         ConsoleMessages.Error.Net.BIND_FAILED.log(
                 address.getAddress().getHostAddress(), address.getPort());
