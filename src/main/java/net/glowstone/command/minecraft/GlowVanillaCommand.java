@@ -45,7 +45,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         OFFLINE("_generic.offline"),
         NO_MATCHES("_generic.no-matches"),
         USAGE_IS("_generic.usage"),
-        NOT_PHYSICAL("_generic.not_physical"),
+        NOT_PHYSICAL("_generic.not-physical"),
         NOT_PHYSICAL_COORDS("_generic.not-physical-coord"),
         TOO_HIGH("_generic.too-high"),
         TOO_LOW("_generic.too-low"),
