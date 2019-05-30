@@ -1,8 +1,11 @@
 package net.glowstone.i18n;
 
+import static net.glowstone.i18n.LocalizedStringImpl.ROOT_INTEGER_FORMAT;
+
 import java.util.logging.Level;
 
 public interface ConsoleMessages {
+
     interface Error {
         interface Biome {
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -169,8 +172,8 @@ public interface ConsoleMessages {
 
         interface Net {
             LoggableLocalizedString BIND_FAILED = new LoggableLocalizedStringImpl(
-                    "console.net.bind-failed", Level.SEVERE
-            );
+                    "console.net.bind-failed", Level.SEVERE)
+                    .setFormatByArgumentIndex(1, ROOT_INTEGER_FORMAT);
 
             LoggableLocalizedString BIND_FAILED_UNKNOWN = new LoggableLocalizedStringImpl(
                     "console.net.bind-failed.unknown", Level.SEVERE
@@ -250,10 +253,12 @@ public interface ConsoleMessages {
 
         interface Net {
             LoggableLocalizedString BINDING = new LoggableLocalizedStringImpl(
-                    "console.net.binding", Level.INFO);
+                    "console.net.binding", Level.INFO)
+                    .setFormatByArgumentIndex(1, ROOT_INTEGER_FORMAT);
 
             LoggableLocalizedString BOUND = new LoggableLocalizedStringImpl(
-                    "console.net.bound", Level.INFO);
+                    "console.net.bound", Level.INFO)
+                    .setFormatByArgumentIndex(1, ROOT_INTEGER_FORMAT);
 
             LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
                     "console.net.unknown-client-status-action", Level.INFO);
