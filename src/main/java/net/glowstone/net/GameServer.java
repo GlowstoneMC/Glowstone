@@ -36,6 +36,12 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
 
     @Override
     public void onBindFailure(InetSocketAddress address, Throwable t) {
+        logBindFailure(address, t);
+        System.exit(1);
+    }
+
+    /** Package-visible for testing. */
+    static void logBindFailure(InetSocketAddress address, Throwable t) {
         ConsoleMessages.Error.Net.BIND_FAILED.log(
                 address.getAddress().getHostAddress(), address.getPort());
         if (t.getMessage().contains("Cannot assign requested address")) { // NON-NLS
@@ -45,7 +51,6 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
         } else {
             ConsoleMessages.Error.Net.BIND_FAILED_UNKNOWN.log(t);
         }
-        System.exit(1);
     }
 
     @Override

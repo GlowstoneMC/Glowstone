@@ -7,7 +7,6 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.security.Permission;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -86,25 +85,9 @@ public class GameServerTest {
     }
 
     @Test
-    public void testOnBindFailure() {
-        SecurityException e = new SecurityException();
-        final SecurityManager securityManager = new SecurityManager() {
-            public void checkPermission( Permission permission ) {
-                if( "exitVM".equals( permission.getName() ) ) {
-                    throw e;
-                }
-            }
-        } ;
-        System.setSecurityManager( securityManager ) ;
-        try {
-            gameServer
-                    .onBindFailure(LOCALHOST_IPV4, new ConnectException("Exception-handling test"));
-            throw new AssertionError("Expected an exception from System.exit call");
-        } catch (SecurityException expected) {
-            assertLoggedExactlyOnce("Failed to bind server to 127.0.0.1:25565.", Level.SEVERE);
-        } finally {
-            System.setSecurityManager(null);
-        }
+    public void testLogBindFailure() {
+        gameServer.logBindFailure(LOCALHOST_IPV4, new ConnectException("Exception-handling test"));
+        assertLoggedExactlyOnce("Failed to bind server to 127.0.0.1:25565.", Level.SEVERE);
     }
 
     private void assertLoggedExactlyOnce(String expectedMessage, Level expectedLevel) {
