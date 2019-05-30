@@ -1,5 +1,6 @@
 package net.glowstone.net;
 
+import java.lang.reflect.Field;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -36,18 +37,24 @@ public class GameServerTest {
 
     @AfterEach
     public void tearDownClass() throws IllegalAccessException {
-        Whitebox.getField(GlowServer.class, "logger").set(null, unspiedLogger);
+        setLogger(unspiedLogger);
     }
 
     @BeforeEach
     public void setUp() throws IllegalAccessException {
         unspiedLogger = GlowServer.logger;
         logger = Mockito.mock(Logger.class);
-        Whitebox.getField(GlowServer.class, "logger").set(null, logger);
+        setLogger(logger);
         glowServer = Mockito.mock(GlowServer.class, Answers.RETURNS_SMART_NULLS);
         CountDownLatch latch = new CountDownLatch(1);
         gameServer = new GameServer(glowServer, latch);
         latch.countDown();
+    }
+
+    private static void setLogger(Logger logger) throws IllegalAccessException {
+        Field field = Whitebox.getField(GlowServer.class, "logger");
+        field.setAccessible(true);
+        field.set(null, logger);
     }
 
     @Test
