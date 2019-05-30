@@ -31,7 +31,7 @@ public class LocalizedStringImpl implements LocalizedString {
 
     public LocalizedStringImpl(@NonNls String key, ResourceBundle resourceBundle) {
         this.key = key;
-        this.resourceBundle = STRINGS;
+        this.resourceBundle = resourceBundle;
         pattern = resourceBundle.getString(getKey());
         format = new MessageFormat(pattern, resourceBundle.getLocale());
     }
