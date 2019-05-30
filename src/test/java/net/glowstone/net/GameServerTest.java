@@ -11,6 +11,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
@@ -40,7 +41,7 @@ public class GameServerTest {
 
     @BeforeEach
     public void setUp() {
-        glowServer = Mockito.mock(GlowServer.class);
+        glowServer = Mockito.mock(GlowServer.class, Answers.RETURNS_SMART_NULLS);
         CountDownLatch latch = new CountDownLatch(1);
         gameServer = new GameServer(glowServer, latch);
         latch.countDown();
