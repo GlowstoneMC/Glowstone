@@ -28,7 +28,7 @@ public class GameServerTest {
     @BeforeClass
     public void setUpClass() {
         unspiedLogger = GlowServer.logger;
-        logger = Mockito.spy(unspiedLogger);
+        logger = Mockito.mock(Logger.class);
         Whitebox.setInternalState(null, "logger", logger,
                 GlowServer.class);
     }
