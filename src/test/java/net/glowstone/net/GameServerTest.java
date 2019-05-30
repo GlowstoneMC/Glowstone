@@ -8,8 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.glowstone.GlowServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -35,15 +34,7 @@ public class GameServerTest {
     private Logger unspiedLogger;
     private GameServer gameServer;
 
-    @BeforeClass
-    public void setUpClass() {
-        unspiedLogger = GlowServer.logger;
-        logger = Mockito.mock(Logger.class);
-        Whitebox.setInternalState(null, "logger", logger,
-                GlowServer.class);
-    }
-
-    @AfterClass
+    @AfterEach
     public void tearDownClass() {
         Whitebox.setInternalState(null, "logger", unspiedLogger,
                 GlowServer.class);
@@ -51,6 +42,10 @@ public class GameServerTest {
 
     @BeforeEach
     public void setUp() {
+        unspiedLogger = GlowServer.logger;
+        logger = Mockito.mock(Logger.class);
+        Whitebox.setInternalState(null, "logger", logger,
+                GlowServer.class);
         glowServer = Mockito.mock(GlowServer.class, Answers.RETURNS_SMART_NULLS);
         CountDownLatch latch = new CountDownLatch(1);
         gameServer = new GameServer(glowServer, latch);
