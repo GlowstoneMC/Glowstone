@@ -12,8 +12,12 @@ import org.jetbrains.annotations.NonNls;
 
 public class LocalizedStringImpl implements LocalizedString {
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings"); // NON-NLS
-    static final NumberFormat ROOT_INTEGER_FORMAT
+    static final NumberFormat PLAIN_INTEGER_FORMAT
             = NumberFormat.getIntegerInstance(Locale.ROOT);
+
+    static {
+        PLAIN_INTEGER_FORMAT.setGroupingUsed(false);
+    }
 
     @Getter
     @NonNls
