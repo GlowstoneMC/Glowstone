@@ -7,8 +7,9 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.security.Permission;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -26,8 +27,8 @@ import org.powermock.reflect.Whitebox;
 public class GameServerTest {
 
     private static final InetSocketAddress LOCALHOST_IPV4;
-    private final List<LogRecord> logRecords = new ArrayList<>();
-    private final Handler HANDLER = new Handler() {
+    private final List<LogRecord> logRecords = new CopyOnWriteArrayList<>();
+    private final Handler handler = new Handler() {
         @Override
         public void publish(LogRecord logRecord) {
             logRecords.add(logRecord);
@@ -60,12 +61,12 @@ public class GameServerTest {
 
     @AfterEach
     public void tearDownClass() throws IllegalAccessException {
-        GlowServer.logger.removeHandler(HANDLER);
+        GlowServer.logger.removeHandler(handler);
     }
 
     @BeforeEach
     public void setUp() throws IllegalAccessException {
-        GlowServer.logger.addHandler(HANDLER);
+        GlowServer.logger.addHandler(handler);
         glowServer = Mockito.mock(GlowServer.class, Answers.RETURNS_SMART_NULLS);
         CountDownLatch latch = new CountDownLatch(1);
         gameServer = new GameServer(glowServer, latch);
@@ -86,8 +87,24 @@ public class GameServerTest {
 
     @Test
     public void testOnBindFailure() {
-        gameServer.onBindFailure(LOCALHOST_IPV4, new ConnectException("Exception-handling test"));
-        assertLoggedExactlyOnce("Failed to bind server to 127.0.0.1:25565.", Level.SEVERE);
+        SecurityException e = new SecurityException();
+        final SecurityManager securityManager = new SecurityManager() {
+            public void checkPermission( Permission permission ) {
+                if( "exitVM".equals( permission.getName() ) ) {
+                    throw e;
+                }
+            }
+        } ;
+        System.setSecurityManager( securityManager ) ;
+        try {
+            gameServer
+                    .onBindFailure(LOCALHOST_IPV4, new ConnectException("Exception-handling test"));
+            throw new AssertionError("Expected an exception from System.exit call");
+        } catch (SecurityException expected) {
+            assertLoggedExactlyOnce("Failed to bind server to 127.0.0.1:25565.", Level.SEVERE);
+        } finally {
+            System.setSecurityManager(null);
+        }
     }
 
     private void assertLoggedExactlyOnce(String expectedMessage, Level expectedLevel) {
