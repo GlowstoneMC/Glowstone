@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -24,6 +25,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 public class GameServerTest {
+
+    private static final Formatter LOG_FORMATTER = new Formatter() {
+        @Override
+        public String format(LogRecord logRecord) {
+            return String.format("[%s] %s", logRecord.getLevel(), logRecord.getMessage());
+        }
+    };
 
     private static final InetSocketAddress LOCALHOST_IPV4;
     private static final InetSocketAddress LOCALHOST_IPV6;
@@ -106,7 +114,7 @@ public class GameServerTest {
         }
         assertEquals(1, matches, () -> {
             return "Actual log entries:\n"
-                    + logRecords.stream().map(LogRecord::toString).collect(Collectors.joining("\n"));
+                    + logRecords.stream().map(LOG_FORMATTER::format).collect(Collectors.joining("\n"));
         });
     }
 }
