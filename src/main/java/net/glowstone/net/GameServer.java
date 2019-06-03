@@ -57,8 +57,7 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
 
     // Package-visible for testing.
     static void logBindFailure(InetSocketAddress address, Throwable t) {
-        ConsoleMessages.Error.Net.BIND_FAILED.log(
-                address.getAddress().getHostAddress(), address.getPort());
+        ConsoleMessages.Error.Net.BIND_FAILED.log(formatAddress(address));
         if (t.getMessage().contains("Cannot assign requested address")) { // NON-NLS
             ConsoleMessages.Error.Net.CANNOT_ASSIGN.log(t);
         } else if (t.getMessage().contains("Address already in use")) { // NON-NLS
