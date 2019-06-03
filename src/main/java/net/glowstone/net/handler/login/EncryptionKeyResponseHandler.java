@@ -40,6 +40,12 @@ public final class EncryptionKeyResponseHandler implements
             "https://sessionserver.mojang.com/session/minecraft/hasJoined";
     private static final JSONParser PARSER = new JSONParser();
 
+    private final HttpClient httpClient;
+
+    public EncryptionKeyResponseHandler(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
     @Override
     public void handle(GlowSession session, EncryptionKeyResponseMessage message) {
         PrivateKey privateKey = session.getServer().getKeyPair().getPrivate();
@@ -118,7 +124,7 @@ public final class EncryptionKeyResponseHandler implements
             }
         }
 
-        HttpClient.connect(url, session.getChannel().eventLoop(), new ClientAuthCallback(session));
+        httpClient.connect(url, session.getChannel().eventLoop(), new ClientAuthCallback(session));
     }
 
     @AllArgsConstructor

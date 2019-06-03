@@ -46,6 +46,17 @@ public abstract class GlowProtocol extends AbstractProtocol {
         }
     }
 
+    protected <M extends Message, C extends Codec<? super M>,
+        H extends MessageHandler<?, ? super M>> void inbound(
+        int opcode, Class<M> message, Class<C> codec, H handler) {
+        try {
+            inboundCodecs.bind(message, codec, opcode);
+            handlers.bind(message, handler);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            getLogger().error("Error registering inbound " + opcode + " in " + getName(), e);
+        }
+    }
+
     protected <M extends Message, C extends Codec<? super M>> void outbound(int opcode,
         Class<M> message, Class<C> codec) {
         try {

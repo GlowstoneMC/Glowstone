@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSocketServer;
+import net.glowstone.net.protocol.ProtocolProvider;
 
 /**
  * Implementation of a server for the remote console protocol.
@@ -23,8 +24,9 @@ public class RconServer extends GlowSocketServer {
      *         binding.
      * @param password the remote operator's password
      */
-    public RconServer(GlowServer server, CountDownLatch latch, String password) {
-        super(server, latch);
+    public RconServer(GlowServer server, ProtocolProvider protocolProvider,
+                      CountDownLatch latch, String password) {
+        super(server, protocolProvider, latch);
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
