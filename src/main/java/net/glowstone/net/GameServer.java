@@ -19,7 +19,7 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
         StringBuilder out = new StringBuilder();
         InetAddress ipAddress = socketAddress.getAddress();
         if (ipAddress instanceof Inet6Address) {
-            // e.g. [::1]:25565
+            // per RFC 2732, e.g. [::1]:25565
             out.append('[').append(ipAddress.getHostAddress()).append(']');
         } else {
             // e.g. 127.0.0.1:25565

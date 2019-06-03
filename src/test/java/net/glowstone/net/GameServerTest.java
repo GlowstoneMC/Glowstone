@@ -2,7 +2,6 @@ package net.glowstone.net;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.lang.reflect.Field;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -14,6 +13,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import net.glowstone.GlowServer;
 import net.glowstone.util.config.ServerConfig;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.reflect.Whitebox;
 
 public class GameServerTest {
 
@@ -79,12 +78,6 @@ public class GameServerTest {
         latch.countDown();
     }
 
-    private static void setLogger(Logger logger) throws IllegalAccessException {
-        Field field = Whitebox.getField(GlowServer.class, "logger");
-        field.setAccessible(true);
-        field.set(null, logger);
-    }
-
     @Test
     public void testOnBindSuccessIpv4() throws UnknownHostException {
         gameServer.onBindSuccess(LOCALHOST_IPV4);
@@ -111,6 +104,9 @@ public class GameServerTest {
                 assertEquals(expectedLevel, logRecord.getLevel());
             }
         }
-        assertEquals(1, matches);
+        assertEquals(1, matches, () -> {
+            return "Actual log entries:\n"
+                    + logRecords.stream().map(LogRecord::toString).collect(Collectors.joining("\n"));
+        });
     }
 }
