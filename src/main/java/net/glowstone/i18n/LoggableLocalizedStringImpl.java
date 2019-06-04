@@ -1,5 +1,6 @@
 package net.glowstone.i18n;
 
+import java.text.Format;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,12 @@ class LoggableLocalizedStringImpl extends LocalizedStringImpl
         super(key);
         this.logLevel = logLevel;
         this.logger = GlowServer.logger;
+    }
+
+    @Override
+    LoggableLocalizedStringImpl setFormatByArgumentIndex(int argumentIndex, Format format) {
+        return (LoggableLocalizedStringImpl)
+                (super.setFormatByArgumentIndex(argumentIndex, format));
     }
 
     LoggableLocalizedStringImpl(String key, Level logLevel,

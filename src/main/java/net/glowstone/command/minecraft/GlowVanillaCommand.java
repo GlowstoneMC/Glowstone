@@ -45,7 +45,7 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
         OFFLINE("_generic.offline"),
         NO_MATCHES("_generic.no-matches"),
         USAGE_IS("_generic.usage"),
-        NOT_PHYSICAL("_generic.not_physical"),
+        NOT_PHYSICAL("_generic.not-physical"),
         NOT_PHYSICAL_COORDS("_generic.not-physical-coord"),
         TOO_HIGH("_generic.too-high"),
         TOO_LOW("_generic.too-low"),
@@ -72,6 +72,18 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             .maximumSize(CACHE_SIZE)
             .build(CacheLoader.from(localeStr ->
                     ResourceBundle.getBundle(BUNDLE_BASE_NAME, Locale.forLanguageTag(localeStr))));
+    private static final LoadingCache<ResourceBundle, ImmutableMap<GenericMessage, LocalizedString>>
+            COMMON_MESSAGES_CACHE = CacheBuilder.newBuilder()
+            .maximumSize(CACHE_SIZE)
+            .build(CacheLoader.from(resourceBundle -> {
+                // ImmutableMap.Builder does not optimize for enums, but immutableEnumMap does
+                EnumMap<GenericMessage, LocalizedString> genericMessages
+                        = new EnumMap<GenericMessage, LocalizedString>(GenericMessage.class);
+                for (GenericMessage message : GenericMessage.values()) {
+                    genericMessages.put(message, new LocalizedStringImpl(message.key, resourceBundle));
+                }
+                return Maps.immutableEnumMap(genericMessages);
+            }));
     public static final String JOINER = "_generic._joiner";
 
     private final LoadingCache<ResourceBundle, CommandMessages> bundleToMessageCache;
@@ -221,13 +233,11 @@ public abstract class GlowVanillaCommand extends VanillaCommand {
             this.description = description;
             this.usageMessage = usageMessage;
             this.permissionMessage = permissionMessage;
-            // ImmutableMap.Builder does not optimize for enums, but immutableEnumMap does
-            EnumMap<GenericMessage, LocalizedString> genericMessages
-                    = new EnumMap<GenericMessage, LocalizedString>(GenericMessage.class);
-            for (GenericMessage message : GenericMessage.values()) {
-                genericMessages.put(message, new LocalizedStringImpl(message.key, resourceBundle));
+            try {
+                this.genericMessages = COMMON_MESSAGES_CACHE.get(bundle);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
             }
-            this.genericMessages = Maps.immutableEnumMap(genericMessages);
             joiner = new LocalizedStringImpl(JOINER, bundle).get();
         }
 
