@@ -492,11 +492,12 @@ public class GlowSession extends BasicSession {
      *
      * @param proto the new protocol
      */
+    @Override
     public void setProtocol(GlowProtocol proto) {
         getChannel().flush();
 
         updatePipeline("codecs", new CodecsHandler(proto));
-        setProtocol(proto);
+        super.setProtocol(proto);
     }
 
     /**
