@@ -27,7 +27,7 @@ jobs:
   pool:
     vmImage: ubuntu-16.04
   variables:
-    JAVA_TOOL_OPTIONS: "-XX:+UseG1GC"  # No aggressive opts in JDK 11
+    JAVA_TOOL_OPTIONS: "-XX:+UseG1GC -Xss4m"  # No aggressive opts in JDK 11
     jdk_version: 1.11
     artifact_suffix: ''
 
