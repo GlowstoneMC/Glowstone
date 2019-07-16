@@ -193,9 +193,6 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>target/generated-sources/delombok</sourceDirectory>
-    <testSourceDirectory>target/generated-test-sources/delombok</testSourceDirectory>
-
     <finalName>glowstone</finalName>
 
     <directory>${project.basedir}/target</directory>
