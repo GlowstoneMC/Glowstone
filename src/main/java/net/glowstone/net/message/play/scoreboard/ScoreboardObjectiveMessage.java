@@ -36,12 +36,6 @@ public final class ScoreboardObjectiveMessage implements Message {
             RenderType.INTEGER);
     }
 
-    @Deprecated
-    public static ScoreboardObjectiveMessage update(String name, TextMessage displayName,
-            RenderType renderType) {
-        return update(name, new TextMessage(displayName), renderType);
-    }
-
     public static ScoreboardObjectiveMessage update(String name, TextMessage displayName,
         RenderType renderType) {
         return new ScoreboardObjectiveMessage(name, displayName, Action.UPDATE.ordinal(),

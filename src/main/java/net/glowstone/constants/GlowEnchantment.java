@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.util.WeightedRandom.Choice;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
@@ -67,7 +68,8 @@ public final class GlowEnchantment extends Enchantment implements Choice {
     private final Impl impl;
 
     private GlowEnchantment(Impl impl) {
-        super(impl.id);
+        // TODO: properly use namespaced keys
+        super(NamespacedKey.minecraft(impl.getVanillaId().split(":")[1]));
         this.impl = impl;
     }
 
@@ -94,32 +96,21 @@ public final class GlowEnchantment extends Enchantment implements Choice {
      * @return The associated Enchantment, or null.
      */
     public static Enchantment parseEnchantment(String enchantmentName) {
-        try {
-            int vanillaId = Integer.parseInt(enchantmentName);
-            Enchantment enchantment = Enchantment.getById(vanillaId);
+        if (enchantmentName.startsWith("minecraft:")) {
+            Enchantment enchantment = GlowEnchantment.getByVanillaId(enchantmentName);
 
             if (enchantment == null) {
                 return null;
             } else {
                 return enchantment;
             }
-        } catch (NumberFormatException exc) {
-            if (enchantmentName.startsWith("minecraft:")) {
-                Enchantment enchantment = GlowEnchantment.getByVanillaId(enchantmentName);
+        } else {
+            Enchantment enchantment = Enchantment.getByName(enchantmentName);
 
-                if (enchantment == null) {
-                    return null;
-                } else {
-                    return enchantment;
-                }
+            if (enchantment == null) {
+                return null;
             } else {
-                Enchantment enchantment = Enchantment.getByName(enchantmentName);
-
-                if (enchantment == null) {
-                    return null;
-                } else {
-                    return enchantment;
-                }
+                return enchantment;
             }
         }
     }
@@ -132,6 +123,10 @@ public final class GlowEnchantment extends Enchantment implements Choice {
     public String getName() {
         // nb: returns enum name, not text name
         return impl.name();
+    }
+
+    public int getId() {
+        return impl.id;
     }
 
     @Override

@@ -37,8 +37,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class GlowMetaItem implements ItemMeta {
 
-    private final SetMultimap<Attribute, AttributeModifier> attributeModifiers
-            = new HashMultimap<>();
+    private final SetMultimap<Attribute, AttributeModifier> attributeModifiers = HashMultimap.create();
     private final Set<Namespaced> placeableKeys = new HashSet<>();
     private final Set<Namespaced> destroyableKeys = new HashSet<>();
     private final Set<Material> canPlaceOn = new HashSet<>();
@@ -422,7 +421,7 @@ public class GlowMetaItem implements ItemMeta {
 
     @Override
     public @Nullable Multimap<Attribute, AttributeModifier> getAttributeModifiers() {
-        return new HashMultimap<>(attributeModifiers);
+        return HashMultimap.create(attributeModifiers);
     }
 
     @Override

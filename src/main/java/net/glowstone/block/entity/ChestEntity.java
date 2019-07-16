@@ -57,6 +57,6 @@ public class ChestEntity extends ContainerEntity {
         super.update(player);
 
         player.getSession().send(new BlockActionMessage(block.getX(), block.getY(), block.getZ(), 1,
-            viewers == 0 ? 0 : 1, block.getTypeId()));
+            viewers == 0 ? 0 : 1, block.getType().getId()));
     }
 }

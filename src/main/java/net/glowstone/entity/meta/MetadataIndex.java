@@ -106,8 +106,6 @@ public enum MetadataIndex {
 
     TRIDENT_LOYALTY(8, INT, Trident.class),
 
-    TRIDENT_LOYALTY(7, INT, Trident.class),
-
     BOAT_HIT_TIME(6, INT, Boat.class),
     BOAT_DIRECTION(7, INT, Boat.class),
     BOAT_DAMAGE_TAKEN(8, FLOAT, Boat.class),

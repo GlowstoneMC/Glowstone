@@ -41,7 +41,20 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         if (!(meta instanceof PotionMeta)) {
             return;
         }
-        this.copyFrom((PotionMeta) meta);
+        copyFrom((PotionMeta) meta);
+    }
+
+    /**
+     * Copies potion data from another instance
+     *
+     * @param source The object to copy from
+     */
+    public void copyFrom(PotionMeta source) {
+        setBasePotionData(source.getBasePotionData());
+        setColor(source.getColor());
+        for (PotionEffect effect : source.getCustomEffects()) {
+            addCustomEffect(effect, true);
+        }
     }
 
     /**
@@ -172,11 +185,6 @@ public class GlowMetaPotion extends GlowMetaItem implements PotionMeta {
         }
 
         return false;
-    }
-
-    @Override
-    public void clearCustomEffects0() {
-        clearCustomEffects();
     }
 
     @Override

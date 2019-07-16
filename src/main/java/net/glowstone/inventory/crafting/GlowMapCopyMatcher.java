@@ -16,13 +16,13 @@ public class GlowMapCopyMatcher extends ItemMatcher {
             }
 
             switch (item.getType()) {
-                case MAP:
+                case FILLED_MAP:
                     if (original != null) {
                         return null; // More than one original
                     }
                     original = item;
                     break;
-                case EMPTY_MAP:
+                case MAP:
                     copies += 1;
                     break;
                 default:

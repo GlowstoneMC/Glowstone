@@ -26,6 +26,9 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
     @Getter
     @Setter
     private int repairCost;
+    @Getter
+    @Setter
+    private int maximumRepairCost;
 
     /**
      * Creates an instance for the given player.
@@ -33,6 +36,8 @@ public class GlowAnvilInventory extends GlowInventory implements AnvilInventory 
      */
     public GlowAnvilInventory(InventoryHolder holder) {
         super(holder, InventoryType.ANVIL);
+
+        maximumRepairCost = 40;
 
         getSlot(FIRST_ITEM_SLOT).setType(SlotType.CRAFTING);
         getSlot(SECOND_ITEM_SLOT).setType(SlotType.CRAFTING);

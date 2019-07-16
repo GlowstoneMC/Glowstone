@@ -16,6 +16,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.InventoryView.Property;
@@ -207,7 +208,7 @@ public class EnchantmentManager {
         ItemStack resource = inventory.getSecondary();
 
         if (item == null || !canEnchant(item) || player.getGameMode() != GameMode.CREATIVE && (
-            resource == null || resource.getType() != Material.INK_SACK
+            resource == null || resource.getType() != Material.INK_SAC
                 || resource.getDurability() != 4)) {
             clearEnch();
         } else {
@@ -306,7 +307,8 @@ public class EnchantmentManager {
             enchants = calculateCurrentEnchants(item, i, enchLevelCosts[i]);
             if (enchants != null && !enchants.isEmpty()) {
                 LeveledEnchant chosen = WeightedRandom.getRandom(random, enchants);
-                enchId[i] = chosen.getEnchantment().getId();
+                // TODO: rework enchantment associations to be friendly with new API and namespaced keys
+                enchId[i] = ((GlowEnchantment) GlowEnchantment.getByVanillaId(chosen.getEnchantment().getKey().toString())).getId();
                 enchLevel[i] = chosen.getEnchantmentLevel();
             }
         }

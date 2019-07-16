@@ -71,7 +71,7 @@ public class GlowMetaSpawn extends GlowMetaItem implements SpawnEggMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.MONSTER_EGG;
+        return material.getKey().getKey().contains("spawn_egg");
     }
 
     public boolean hasSpawnedType() {

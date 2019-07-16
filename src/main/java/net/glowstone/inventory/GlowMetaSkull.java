@@ -73,7 +73,7 @@ public class GlowMetaSkull extends GlowMetaItem implements SkullMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.SKULL_ITEM;
+        return material.getKey().getKey().contains("skull") || material.getKey().getKey().contains("head");
     }
 
     @Override

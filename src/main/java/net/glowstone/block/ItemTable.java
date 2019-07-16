@@ -528,7 +528,7 @@ public final class ItemTable {
     ////////////////////////////////////////////////////////////////////////////
     // Type access
 
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public ItemType getItem(int id) {
         return getItem(FlatteningUtil.getMaterialFromBaseId(id));
     }
@@ -547,7 +547,7 @@ public final class ItemTable {
         return type;
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public BlockType getBlock(int id) {
         return getBlock(FlatteningUtil.getMaterialFromBaseId(id));
     }

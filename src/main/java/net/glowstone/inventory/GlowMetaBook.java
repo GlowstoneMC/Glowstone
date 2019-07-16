@@ -65,7 +65,7 @@ class GlowMetaBook extends GlowMetaItem implements BookMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.BOOK_AND_QUILL || material == Material.WRITTEN_BOOK;
+        return material == Material.WRITABLE_BOOK || material == Material.WRITTEN_BOOK;
     }
 
     @Override
