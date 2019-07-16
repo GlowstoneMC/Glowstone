@@ -23,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A class which represents an inventory.
@@ -30,7 +31,7 @@ import org.bukkit.inventory.ItemStack;
 public class GlowInventory implements Inventory {
     @Override
     public HashMap<Integer, ItemStack> removeItemAnySlot(
-            ItemStack... items) throws IllegalArgumentException {
+            @NotNull ItemStack... items) throws IllegalArgumentException {
         // TODO
         return new HashMap<>();
     }

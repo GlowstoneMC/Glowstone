@@ -1,11 +1,16 @@
 package net.glowstone.inventory;
 
 import net.glowstone.util.nbt.CompoundTag;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 /**
  * An implementation of {@link ItemFactory} responsible for creating ItemMetas.
@@ -28,7 +33,7 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     @Override
-    public ItemMeta getItemMeta(Material material) {
+    public ItemMeta getItemMeta(@NotNull Material material) {
         return makeMeta(material, null);
     }
 
@@ -62,18 +67,25 @@ public final class GlowItemFactory implements ItemFactory {
     }
 
     @Override
-    public ItemMeta asMetaFor(ItemMeta meta, ItemStack stack) throws IllegalArgumentException {
+    public ItemMeta asMetaFor(@NotNull ItemMeta meta, ItemStack stack) throws IllegalArgumentException {
         return makeMeta(stack.getType(), toGlowMeta(meta));
     }
 
     @Override
-    public ItemMeta asMetaFor(ItemMeta meta, Material material) throws IllegalArgumentException {
+    public ItemMeta asMetaFor(@NotNull ItemMeta meta, @NotNull Material material) throws IllegalArgumentException {
         return makeMeta(material, toGlowMeta(meta));
     }
 
+    @NotNull
     @Override
     public Color getDefaultLeatherColor() {
         return LEATHER_COLOR;
+    }
+
+    @Override
+    public @NotNull Material updateMaterial(@NotNull ItemMeta meta, @NotNull Material material) throws IllegalArgumentException {
+        // TODO: implementation (1.13.2)
+        throw new NotImplementedException();
     }
 
     @Override
@@ -85,7 +97,7 @@ public final class GlowItemFactory implements ItemFactory {
     @Override
     public String getI18NDisplayName(ItemStack itemStack) {
         // TODO: Implementation (1.12.1)
-        return null;
+        return WordUtils.capitalize(itemStack.getType().name().replaceAll("_", " ").toLowerCase(Locale.ROOT));
     }
 
     /**

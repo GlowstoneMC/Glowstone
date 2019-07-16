@@ -112,6 +112,7 @@ import net.glowstone.command.minecraft.WorldBorderCommand;
 import net.glowstone.command.minecraft.XpCommand;
 import net.glowstone.constants.GlowEnchantment;
 import net.glowstone.constants.GlowPotionEffect;
+import net.glowstone.data.GlowTag;
 import net.glowstone.entity.EntityIdManager;
 import net.glowstone.entity.FishingRewardManager;
 import net.glowstone.entity.GlowPlayer;
@@ -348,6 +349,10 @@ public class GlowServer implements Server {
      */
     private final ConcurrentMap<NamespacedKey, KeyedBossBar> bossBars;
     /**
+     * The {@link Tag}s of this server, per registry, mapped by namespaced key.
+     */
+    private final Map<String, Map<NamespacedKey, Tag<? extends Keyed>>> tags;
+    /**
      * Default root permissions.
      */
     public Permission permissionRoot;
@@ -483,6 +488,7 @@ public class GlowServer implements Server {
 
         loadConfig();
         bossBars = new ConcurrentHashMap<>();
+        tags = new HashMap<>();
     }
 
     /**
@@ -1495,19 +1501,22 @@ public class GlowServer implements Server {
     }
 
     @Override
-    public <T extends Keyed> Tag<T> getTag(String registry, NamespacedKey tagKey, Class<T> entriesClass) {
-        // TODO: 1.13
-        throw new UnsupportedOperationException("Not supported yet.");
+    public <T extends Keyed> Tag<T> getTag(@NotNull String registry, @NotNull NamespacedKey tagKey, @NotNull Class<T> clazz) {
+        // TODO: what are we supposed to do with clazz?
+        return (Tag<T>) tags.computeIfAbsent(registry, k -> new HashMap<>()).computeIfAbsent(tagKey, k -> new GlowTag<T>(tagKey));
     }
 
     @Override
-    public @NotNull <T extends Keyed> Iterable<Tag<T>> getTags(@NotNull String s,
-            @NotNull Class<T> aClass) {
+    public @NotNull <T extends Keyed> Iterable<Tag<T>> getTags(@NotNull String registry,
+            @NotNull Class<T> clazz) {
+        // TODO: what are we supposed to do with clazz?
+        // TODO: 1.13 impl
+        //return tags.computeIfAbsent(registry, k -> new HashMap<>()).values();
         return null;
     }
 
     @Override
-    public LootTable getLootTable(NamespacedKey tableKey) {
+    public LootTable getLootTable(@NotNull NamespacedKey tableKey) {
         // TODO: 1.13, possible re-use our existing loot tables and implement the new API
         throw new UnsupportedOperationException("Not supported yet.");
     }
