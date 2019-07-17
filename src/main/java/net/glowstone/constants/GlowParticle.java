@@ -1,34 +1,42 @@
 package net.glowstone.constants;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.google.common.base.Preconditions;
+import com.google.common.primitives.Floats;
 import lombok.Getter;
+import net.glowstone.block.flattening.GlowBlockData;
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Id mappings for particles.
  */
 public class GlowParticle {
 
-    private static final int[] EMPTY = new int[0];
-    private static final int[] ONE_EMPTY = new int[]{0};
+    private static final Object[] ONE_EMPTY = new Object[]{0};
+    private static final Float[] EMPTY_DUST_OPTIONS = new Float[4];
     private static final int[] TWO_EMPTY = new int[]{0, 0};
+
+    private static final Function<Object, Object[]> PARTICLE_HANDLER_RETURN_SELF = o -> new Object[]{o};
 
     private static int count = 0;
     private static final Map<Particle, NamespacedKey> PARTICLES_BY_API = new HashMap<>();
     private static final Map<Effect, NamespacedKey> PARTICLES_BY_EFFECT = new HashMap<>();
     private static final Map<NamespacedKey, GlowParticle> PARTICLES_BY_NAME = new HashMap<>();
+    private static final Map<Class<?>, Function<Object, Object[]>> PARTICLE_DATA_HANDLERS = new HashMap<>();
 
     static {
+        // Vanilla particles
         registerParticle("ambient_entity_effect", Particle.SPELL_MOB_AMBIENT);
         registerParticle("angry_villager", Particle.VILLAGER_ANGRY);
         registerParticle(Particle.BARRIER);
@@ -80,6 +88,29 @@ public class GlowParticle {
         registerParticle(Particle.BUBBLE_COLUMN_UP);
         registerParticle(Particle.NAUTILUS);
         registerParticle(Particle.DOLPHIN);
+
+        // Particle data handlers
+        registerParticleDataHandler(Void.class, o -> ArrayUtils.EMPTY_OBJECT_ARRAY);
+        registerParticleDataHandler(Particle.DustOptions.class, o -> {
+            if (o.getClass() != Particle.DustOptions.class) {
+                return EMPTY_DUST_OPTIONS;
+            }
+            Particle.DustOptions dust = (Particle.DustOptions) o;
+            Color color = dust.getColor();
+            float red = color.getRed() / 255f;
+            float green = color.getGreen() / 255f;
+            float blue = color.getRed() / 255f;
+            float size = Floats.constrainToRange(dust.getSize(), 0.01f, 4.0f);
+            return new Float[]{red, green, blue, size};
+        });
+        registerParticleDataHandler(ItemStack.class, PARTICLE_HANDLER_RETURN_SELF);
+        registerParticleDataHandler(BlockData.class, o -> {
+            if (o.getClass() != BlockData.class) {
+                return ArrayUtils.EMPTY_INTEGER_OBJECT_ARRAY;
+            }
+            GlowBlockData blockData = (GlowBlockData) o;
+            return new Integer[]{blockData.serialize()};
+        });
     }
 
     @Getter
@@ -88,17 +119,21 @@ public class GlowParticle {
     int id;
     @Getter
     private Class<?> dataType;
+    @Getter
+    private Function<Object, Object[]> dataHandler;
     private boolean longDistance;
 
     private GlowParticle(NamespacedKey name) {
         this.name = name;
         this.dataType = null;
+        this.dataHandler = null;
         this.id = count++;
     }
 
     private GlowParticle(NamespacedKey name, Class<?> dataType) {
         this(name);
         this.dataType = dataType;
+        this.dataHandler = PARTICLE_DATA_HANDLERS.get(this.dataType);
     }
 
     private GlowParticle(NamespacedKey name, Class<?> dataType, boolean longDistance) {
@@ -117,6 +152,16 @@ public class GlowParticle {
             default:
                 longDistance = false;
         }
+    }
+
+    /**
+     * Gets the extra data for this particle.
+     *
+     * @param o The data parameter, of type {@link GlowParticle#getDataType()}
+     * @return The networkable data that represents this extra particle data
+     */
+    public Object[] getExtData(Object o) {
+        return dataHandler.apply(o);
     }
 
     public static GlowParticle getParticle(NamespacedKey name) {
@@ -154,42 +199,6 @@ public class GlowParticle {
     }
 
     /**
-     * Convert a MaterialData to an extData array if possible for a particle.
-     *
-     * @param particle the Particle to validate.
-     * @param material the MaterialData to convert.
-     * @return The extData array for the particle effect.
-     */
-    public static int[] getExtData(Particle particle, MaterialData material) {
-        switch (particle) {
-            case ITEM_BREAK:
-                if (material == null) {
-                    return TWO_EMPTY;
-                }
-
-                // http://wiki.vg/Protocol#Particle
-                // data 'Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of
-                // 2, "blockcrack" and "blockdust" have lengths of 1, the rest have 0'
-                // iconcrack_(id)_(data) 36
-                return new int[]{material.getItemTypeId(), material.getData()};
-            case TILE_BREAK:
-                if (material == null) {
-                    return ONE_EMPTY;
-                }
-
-                return new int[]{material.getItemTypeId() + (material.getData() << 12)};
-            case TILE_DUST:
-                if (material == null) {
-                    return ONE_EMPTY;
-                }
-
-                return new int[]{material.getItemTypeId()};
-            default:
-                return EMPTY;
-        }
-    }
-
-    /**
      * Convert an object to an extData array if possible for a particle.
      *
      * @param particle the Particle to validate.
@@ -197,36 +206,7 @@ public class GlowParticle {
      * @return The extData array for the particle effect.
      */
     public static Object[] getExtData(Particle particle, Object object) {
-        if (particle.getDataType() == Void.class) {
-            return EMPTY;
-        }
-
-        if (particle.getDataType() == MaterialData.class) {
-            if (object == null) {
-                return ONE_EMPTY;
-            }
-
-            MaterialData material = (MaterialData) object;
-
-            return new int[]{material.getItemType().getId() + (material.getData() << 12)};
-        }
-
-        if (particle.getDataType() == ItemStack.class) {
-            if (object == null) {
-                return TWO_EMPTY;
-            }
-
-            ItemStack item = (ItemStack) object;
-
-            // http://wiki.vg/Protocol#Particle
-            // data 'Length depends on particle. "iconcrack" [Effect.ITEM_BREAK] has length of 2,
-            // "blockcrack" and "blockdust" have lengths of 1, the rest have 0'
-            // iconcrack_(id)_(data) 36
-            return new int[]{item.getTypeId(), item.getDurability()};
-        }
-
-        // doesn't make sense, there are only 3 particle data types
-        return null;
+        return getParticle(particle).getExtData(object);
     }
 
     /**
@@ -275,13 +255,20 @@ public class GlowParticle {
         return true;
     }
 
-    public static void registerParticle(String name) {
-        NamespacedKey key = NamespacedKey.minecraft(name);
-        PARTICLES_BY_NAME.put(key, new GlowParticle(key));
+    /**
+     * Register a new particle data handler for a certain class.
+     *
+     * @param clazz The class to handle
+     * @param handler The function that handles instances of this class
+     * @return If there was not already a handler for this class, and the handler was registered successfully
+     */
+    public static boolean registerParticleDataHandler(Class<?> clazz, Function<Object, Object[]> handler) {
+        return PARTICLE_DATA_HANDLERS.putIfAbsent(clazz, handler) == null;
     }
 
-    public static void registerParticleDataHandler(Class<?> clazz, Supplier<Object[]> handler) {
-
+    private static void registerParticle(String name) {
+        NamespacedKey key = NamespacedKey.minecraft(name);
+        PARTICLES_BY_NAME.put(key, new GlowParticle(key));
     }
 
     private static GlowParticle registerParticle(String name, Particle particle) {
