@@ -237,10 +237,10 @@ public final class NbtSerialization {
         NamespacedKey key;
         int colon = keyRaw.indexOf(':');
         if (colon == -1) {
-            key = new NamespacedKey(NamespacedKey.MINECRAFT, keyRaw);
+            key = NamespacedKey.minecraft(keyRaw);
         } else {
             key = new NamespacedKey(keyRaw.substring(0, colon),
-                    keyRaw.substring(colon + 1, keyRaw.length()));
+                    keyRaw.substring(colon + 1));
         }
         return key;
     }

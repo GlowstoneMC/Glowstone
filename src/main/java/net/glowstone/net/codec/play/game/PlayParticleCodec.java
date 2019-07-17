@@ -1,11 +1,13 @@
 package net.glowstone.net.codec.play.game;
 
 import com.flowpowered.network.Codec;
-import com.flowpowered.network.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import java.io.IOException;
+import net.glowstone.entity.meta.MetadataType;
+import net.glowstone.net.GlowBufUtils;
 import net.glowstone.net.message.play.game.PlayParticleMessage;
+
+import java.io.IOException;
 
 public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
 
@@ -27,8 +29,11 @@ public final class PlayParticleCodec implements Codec<PlayParticleMessage> {
         buf.writeFloat(message.getData());
         buf.writeInt(message.getCount());
 
-        for (int extData : message.getExtData()) {
-            ByteBufUtils.writeVarInt(buf, extData);
+        for (Object extData : message.getExtData()) {
+            MetadataType type = MetadataType.byClass(extData.getClass());
+            if (type != null) {
+                GlowBufUtils.writeValue(buf, extData, type);
+            }
         }
 
         return buf;

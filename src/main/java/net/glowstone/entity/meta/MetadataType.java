@@ -1,6 +1,9 @@
 package net.glowstone.entity.meta;
 
 import com.destroystokyo.paper.ParticleBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +42,14 @@ public enum MetadataType {
 
     public static MetadataType byId(int id) {
         return values()[id];
+    }
+    public static MetadataType byClass(Class<?> clazz) {
+        for (MetadataType type : MetadataType.values()) {
+            if (type.getDataType() == clazz) {
+                return type;
+            }
+        }
+        return null;
     }
 
     public int getId() {

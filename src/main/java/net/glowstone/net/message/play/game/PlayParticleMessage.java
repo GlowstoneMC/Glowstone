@@ -16,7 +16,7 @@ public final class PlayParticleMessage implements Message {
     private final float ofsZ;
     private final float data;
     private final int count;
-    private final int[] extData;
+    private final Object[] extData;
 
 }
 

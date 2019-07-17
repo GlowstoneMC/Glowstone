@@ -140,7 +140,7 @@ public final class GlowBufUtils {
         buf.writeByte(0xff);
     }
 
-    private static void writeValue(ByteBuf buf, Object value, MetadataType type)
+    public static void writeValue(ByteBuf buf, Object value, MetadataType type)
             throws IOException {
         switch (type) {
             case BYTE:
