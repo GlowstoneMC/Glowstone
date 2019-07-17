@@ -25,8 +25,7 @@ import org.bukkit.util.Vector;
 public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessage> {
 
     private static final SortedSet<Material> IGNORE_MATS = ImmutableSortedSet.of(
-            Material.AIR, Material.WATER, Material.LAVA, Material.STATIONARY_LAVA,
-            Material.STATIONARY_WATER);
+            Material.AIR, Material.WATER, Material.LAVA);
 
     @Override
     public void handle(GlowSession session, UseItemMessage message) {
@@ -44,7 +43,7 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
         BlockFace face = BlockFace.SELF;
 
         List<Block> targetBlocks = player.getLastTwoTargetBlocks(IGNORE_MATS, 5);
-        if (targetBlocks != null && targetBlocks.size() > 0) {
+        if (targetBlocks.size() > 0) {
             block = (GlowBlock) targetBlocks.get(targetBlocks.size() - 1);
             if (targetBlocks.size() > 1) {
                 face = block.getFace(targetBlocks.get(0));
@@ -81,7 +80,8 @@ public class UseItemHandler implements MessageHandler<GlowSession, UseItemMessag
         PlayerInteractEvent event = EventFactory.getInstance().onPlayerInteract(
                 player, Action.RIGHT_CLICK_AIR, slot);
 
-        if (event.useItemInHand() == null || event.useItemInHand() == Event.Result.DENY) {
+        event.useItemInHand();
+        if (event.useItemInHand() == Event.Result.DENY) {
             return;
         }
 

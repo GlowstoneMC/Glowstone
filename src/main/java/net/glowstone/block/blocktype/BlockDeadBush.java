@@ -9,6 +9,7 @@ import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockDeadBush extends BlockNeedsAttached {
 
@@ -27,6 +28,7 @@ public class BlockDeadBush extends BlockNeedsAttached {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
         // If the block below the dead bush is removed,

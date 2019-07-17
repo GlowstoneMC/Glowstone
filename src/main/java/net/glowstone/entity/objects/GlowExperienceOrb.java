@@ -19,6 +19,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
 
@@ -64,7 +65,7 @@ public class GlowExperienceOrb extends GlowEntity implements ExperienceOrb {
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull EntityDamageEvent.DamageCause cause) {
         if (!isInvulnerable()) {
             remove();
         }

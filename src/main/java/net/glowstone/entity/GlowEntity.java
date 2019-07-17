@@ -1448,7 +1448,7 @@ public abstract class GlowEntity implements Entity {
         damage(amount, null, cause);
     }
 
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1586,6 +1586,7 @@ public abstract class GlowEntity implements Entity {
      * @throws IllegalStateException if not currently leashed
      * @see org.bukkit.entity.LivingEntity#getLeashHolder()
      */
+    @NotNull
     public Entity getLeashHolder() throws IllegalStateException {
         if (!isLeashed()) {
             throw new IllegalStateException("Entity not leashed");

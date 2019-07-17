@@ -521,10 +521,20 @@ public class GlowChunk implements Chunk {
      * @param z    The Z coordinate.
      * @param y    The Y coordinate.
      * @param type The type.
-     * @deprecated Removed in 1.13.
      */
-    @Deprecated
-    public void setType(int x, int z, int y, int type) {
+    public void setType(int x, int z, int y, Material type) {
+        setType(x, z, y, type.getId());
+    }
+
+    /**
+     * Sets the type of a block within this chunk.
+     *
+     * @param x    The X coordinate.
+     * @param z    The Z coordinate.
+     * @param y    The Y coordinate.
+     * @param type The type.
+     */
+    private void setType(int x, int z, int y, int type) {
         if (type < 0 || type > 0xfff) {
             throw new IllegalArgumentException("Block type out of range: " + type);
         }

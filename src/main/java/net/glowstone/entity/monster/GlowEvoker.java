@@ -9,6 +9,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Evoker;
 import org.bukkit.entity.Spellcaster;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEvoker extends GlowMonster implements Evoker {
 
@@ -44,7 +45,7 @@ public class GlowEvoker extends GlowMonster implements Evoker {
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull EntityDamageEvent.DamageCause cause) {
         super.damage(amount, source, cause);
         castSpell(Spellcaster.Spell.SUMMON_VEX); // todo: remove this, demo purposes
     }

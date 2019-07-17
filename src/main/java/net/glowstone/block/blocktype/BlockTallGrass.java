@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -24,6 +25,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
                 || typeBelow == Material.FARMLAND;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (ThreadLocalRandom.current().nextFloat() < .125) {

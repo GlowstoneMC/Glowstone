@@ -10,9 +10,11 @@ import org.bukkit.World.Environment;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockIce extends BlockType {
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
         return Collections.emptyList();

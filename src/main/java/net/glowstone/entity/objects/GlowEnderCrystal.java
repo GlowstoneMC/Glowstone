@@ -24,6 +24,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.util.BlockVector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
 
@@ -73,13 +74,13 @@ public class GlowEnderCrystal extends GlowEntity implements EnderCrystal {
             return false;
         }
 
-        damage(0, this, null);
+        damage(0, this, DamageCause.BLOCK_EXPLOSION);
 
         return true;
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         if (source instanceof EnderDragon) {
             return;
         }

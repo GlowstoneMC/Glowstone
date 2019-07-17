@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import net.glowstone.GlowServer;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
@@ -37,7 +38,7 @@ public final class NbtSerialization {
     public static ItemStack readItem(CompoundTag tag) {
         final Material[] material = {null};
         if ((!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
-                        && !tag.readShort("id", id -> material[0] = Material.getMaterial(id)))
+                        && !tag.readShort("id", id -> material[0] = FlatteningUtil.getMaterialFromStateId(id)))
                 || material[0] == null || material[0] == Material.AIR) {
             return null;
         }

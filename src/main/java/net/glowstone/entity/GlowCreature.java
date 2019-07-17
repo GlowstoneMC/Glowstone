@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import com.destroystokyo.paper.entity.Pathfinder;
 import com.flowpowered.network.Message;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.loot.LootTable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a creature entity such as a pig.
@@ -58,5 +62,36 @@ public class GlowCreature extends GlowLivingEntity implements Creature {
         // todo: equipment
         //result.add(createEquipmentMessage());
         return result;
+    }
+
+    // TODO: 1.13
+    @Override
+    public @NotNull Pathfinder getPathfinder() {
+        return null;
+    }
+
+    @Override
+    public boolean isInDaylight() {
+        return false;
+    }
+
+    @Override
+    public void setLootTable(@Nullable LootTable table) {
+
+    }
+
+    @Override
+    public @Nullable LootTable getLootTable() {
+        return null;
+    }
+
+    @Override
+    public void setSeed(long seed) {
+
+    }
+
+    @Override
+    public long getSeed() {
+        return 0;
     }
 }

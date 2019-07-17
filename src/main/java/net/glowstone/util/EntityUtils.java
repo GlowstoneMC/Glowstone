@@ -79,7 +79,7 @@ public class EntityUtils {
                             Math.max(1, (int) (baseAmplifier * instantIntensity + 0.5)),
                             effect.isAmbient(),
                             effect.hasParticles(),
-                            effect.getColor()));
+                            effect.hasIcon()));
         } else {
             if (durationIntensity <= 0.0) {
                 return;
@@ -90,7 +90,7 @@ public class EntityUtils {
                     baseAmplifier,
                     effect.isAmbient(),
                     effect.hasParticles(),
-                    effect.getColor()));
+                    effect.hasIcon()));
         }
     }
 }

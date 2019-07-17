@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockSugarCane extends BlockNeedsAttached {
 
@@ -96,6 +97,7 @@ public class BlockSugarCane extends BlockNeedsAttached {
         return false;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
         // Overridden for sugar cane to remove data from the dropped item

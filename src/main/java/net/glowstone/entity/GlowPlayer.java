@@ -753,7 +753,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         boolean pvpAllowed = server.isPvpEnabled() && world.getPVP();
         if (!pvpAllowed) {
             if (source instanceof Player) {
@@ -1721,58 +1721,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         } else {
             return 1.54;
         }
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable Block getTargetBlock(int maxDistance,
-            TargetBlockInfo.@NotNull FluidMode fluidMode) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable BlockFace getTargetBlockFace(int maxDistance,
-            TargetBlockInfo.@NotNull FluidMode fluidMode) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable TargetBlockInfo getTargetBlockInfo(int maxDistance,
-            TargetBlockInfo.@NotNull FluidMode fluidMode) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable Entity getTargetEntity(int maxDistance,
-            boolean ignoreBlocks) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable TargetEntityInfo getTargetEntityInfo(int maxDistance,
-            boolean ignoreBlocks) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable Block getTargetBlockExact(int maxDistance) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable Block getTargetBlockExact(int maxDistance,
-            @NotNull FluidCollisionMode fluidCollisionMode) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable RayTraceResult rayTraceBlocks(double maxDistance) {
-        return null;
-    }
-
-    @Override
-    public @org.jetbrains.annotations.Nullable RayTraceResult rayTraceBlocks(double maxDistance,
-            @NotNull FluidCollisionMode fluidCollisionMode) {
-        return null;
     }
 
     @Override

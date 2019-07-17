@@ -10,11 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockWoodenTrapDoor extends BlockOpenable {
 
-    private static final Collection<ItemStack> DROP = Collections
-        .unmodifiableCollection(Arrays.asList(new ItemStack(Material.TRAP_DOOR)));
+    // TODO: 1.13: new trap door types
+    private static final Collection<ItemStack> DROP = Collections.unmodifiableCollection(Arrays.asList(new ItemStack(Material.LEGACY_TRAP_DOOR)));
     private BlockTrapDoor trapDoor;
 
     public BlockWoodenTrapDoor() {
@@ -28,6 +29,7 @@ public class BlockWoodenTrapDoor extends BlockOpenable {
         trapDoor.placeBlock(player, state, face, holding, clickedLoc);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return DROP;

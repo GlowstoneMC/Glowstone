@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPurpurPillar extends BlockNeedsTool {
 
@@ -44,6 +45,7 @@ public class BlockPurpurPillar extends BlockNeedsTool {
         state.setRawData(data);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Collections.singletonList(new ItemStack(Material.PURPUR_PILLAR));

@@ -13,6 +13,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderDragon extends GlowBoss implements EnderDragon {
 
@@ -43,6 +44,7 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
         this(loc, EntityType.ENDER_DRAGON, 200d);
     }
 
+    @NotNull
     @Override
     public Phase getPhase() {
         return Phase.values()[metadata.getInt(MetadataIndex.ENDERDRAGON_PHASE)];
@@ -53,6 +55,7 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
         metadata.set(MetadataIndex.ENDERDRAGON_PHASE, phase.ordinal());
     }
 
+    @NotNull
     @Override
     public Set<ComplexEntityPart> getParts() {
         return new HashSet<>(parts.values());
@@ -60,11 +63,11 @@ public class GlowEnderDragon extends GlowBoss implements EnderDragon {
 
     @Override
     protected Sound getDeathSound() {
-        return Sound.ENTITY_ENDERDRAGON_DEATH;
+        return Sound.ENTITY_ENDER_DRAGON_DEATH;
     }
 
     @Override
     protected Sound getAmbientSound() {
-        return Sound.ENTITY_ENDERDRAGON_AMBIENT;
+        return Sound.ENTITY_ENDER_DRAGON_AMBIENT;
     }
 }

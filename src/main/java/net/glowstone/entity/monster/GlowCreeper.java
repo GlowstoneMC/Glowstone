@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.event.entity.CreeperPowerEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowCreeper extends GlowMonster implements Creeper {
 
@@ -59,7 +60,7 @@ public class GlowCreeper extends GlowMonster implements Creeper {
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         super.damage(amount, source, cause);
         if (DamageCause.LIGHTNING.equals(cause) && !isPowered()) {
             CreeperPowerEvent event = EventFactory.getInstance()

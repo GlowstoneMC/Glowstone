@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Pumpkin;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockStem extends BlockCrops {
 
@@ -39,6 +40,7 @@ public class BlockStem extends BlockCrops {
         return block.getRelative(BlockFace.DOWN).getType() == Material.FARMLAND;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getState().getRawData() >= CropState.RIPE.ordinal()) {

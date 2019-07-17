@@ -17,7 +17,7 @@ public class ItemSign extends ItemType {
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         BlockType placeAs;
         if (face == BlockFace.UP) {
-            placeAs = ItemTable.instance().getBlock(Material.SIGN_POST);
+            placeAs = ItemTable.instance().getBlock(Material.SIGN);
         } else if (face == BlockFace.DOWN) {
             return;
         } else {

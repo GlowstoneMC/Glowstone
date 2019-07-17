@@ -3,6 +3,7 @@ package net.glowstone.entity.objects;
 import com.flowpowered.network.Message;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.minecart.CommandMinecart;
@@ -27,8 +30,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.loot.LootTable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 // TODO: Implement movement and collision detection.
 public abstract class GlowMinecart extends GlowVehicle implements Minecart {
@@ -52,6 +58,10 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     @Getter
     @Setter
     private volatile MaterialData displayBlock;
+    // TODO: use material air for null
+    @Getter
+    @Setter
+    private BlockData displayBlockData;
     @Getter
     @Setter
     private volatile int displayBlockOffset;
@@ -186,6 +196,77 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
             player.openInventory(inventory);
             return true;
         }
+
+        @Override
+        public @NotNull Entity getEntity() {
+            return this;
+        }
+
+        // TODO: 1.13: lootable
+        @Override
+        public boolean isRefillEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean hasBeenFilled() {
+            return false;
+        }
+
+        @Override
+        public boolean hasPlayerLooted(@NotNull UUID player) {
+            return false;
+        }
+
+        @Override
+        public @Nullable Long getLastLooted(@NotNull UUID player) {
+            return null;
+        }
+
+        @Override
+        public boolean setHasPlayerLooted(@NotNull UUID player, boolean looted) {
+            return false;
+        }
+
+        @Override
+        public boolean hasPendingRefill() {
+            return false;
+        }
+
+        @Override
+        public long getLastFilled() {
+            return 0;
+        }
+
+        @Override
+        public long getNextRefill() {
+            return 0;
+        }
+
+        @Override
+        public long setNextRefill(long refillAt) {
+            return 0;
+        }
+
+        @Override
+        public void setLootTable(@Nullable LootTable table) {
+
+        }
+
+        @Override
+        public @Nullable LootTable getLootTable() {
+            return null;
+        }
+
+        @Override
+        public void setSeed(long seed) {
+
+        }
+
+        @Override
+        public long getSeed() {
+            return 0;
+        }
     }
 
     public static class Powered extends GlowMinecart implements PoweredMinecart {
@@ -232,6 +313,77 @@ public abstract class GlowMinecart extends GlowVehicle implements Minecart {
             }
             player.openInventory(inventory);
             return true;
+        }
+
+        @Override
+        public @NotNull Entity getEntity() {
+            return this;
+        }
+
+        // TODO: 1.13: lootable
+        @Override
+        public boolean isRefillEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean hasBeenFilled() {
+            return false;
+        }
+
+        @Override
+        public boolean hasPlayerLooted(@NotNull UUID player) {
+            return false;
+        }
+
+        @Override
+        public @Nullable Long getLastLooted(@NotNull UUID player) {
+            return null;
+        }
+
+        @Override
+        public boolean setHasPlayerLooted(@NotNull UUID player, boolean looted) {
+            return false;
+        }
+
+        @Override
+        public boolean hasPendingRefill() {
+            return false;
+        }
+
+        @Override
+        public long getLastFilled() {
+            return 0;
+        }
+
+        @Override
+        public long getNextRefill() {
+            return 0;
+        }
+
+        @Override
+        public long setNextRefill(long refillAt) {
+            return 0;
+        }
+
+        @Override
+        public void setLootTable(@Nullable LootTable table) {
+
+        }
+
+        @Override
+        public @Nullable LootTable getLootTable() {
+            return null;
+        }
+
+        @Override
+        public void setSeed(long seed) {
+
+        }
+
+        @Override
+        public long getSeed() {
+            return 0;
         }
     }
 

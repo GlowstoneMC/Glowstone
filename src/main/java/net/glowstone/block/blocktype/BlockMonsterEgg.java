@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockMonsterEgg extends BlockType {
 
@@ -21,6 +22,7 @@ public class BlockMonsterEgg extends BlockType {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         // monster egg blocks do not drop blocks

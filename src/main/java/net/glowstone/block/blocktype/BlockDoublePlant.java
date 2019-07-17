@@ -12,6 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -33,6 +34,7 @@ public class BlockDoublePlant extends BlockNeedsAttached implements IBlockGrowab
         headBlockState.update(true);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         Bisected data = getCastedBlockData(Bisected.class, block.getBlockData());

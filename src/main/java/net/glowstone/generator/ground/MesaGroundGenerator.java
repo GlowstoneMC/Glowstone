@@ -10,15 +10,11 @@ import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.material.MaterialData;
 
 public class MesaGroundGenerator extends GroundGenerator {
-
-    protected static final MaterialData RED_SAND = new MaterialData(Material.SAND, (byte) 1);
-    protected static final MaterialData ORANGE_STAINED_CLAY = new MaterialData(
-            Material.STAINED_CLAY, (byte) 1);
-
     private final MesaType type;
+    // TODO: rewrite to use terracotta materials
     private final int[] colorLayer = new int[64];
-    private MaterialData topMaterial;
-    private MaterialData groundMaterial;
+    private Material topMaterial;
+    private Material groundMaterial;
     private SimplexOctaveGenerator colorNoise;
     private SimplexOctaveGenerator canyonHeightNoise;
     private SimplexOctaveGenerator canyonScaleNoise;
@@ -35,8 +31,8 @@ public class MesaGroundGenerator extends GroundGenerator {
      */
     public MesaGroundGenerator(MesaType type) {
         this.type = type;
-        topMaterial = RED_SAND;
-        groundMaterial = ORANGE_STAINED_CLAY;
+        topMaterial = Material.RED_SAND;
+        groundMaterial = Material.ORANGE_TERRACOTTA;
     }
 
     private void initialize(long seed) {
@@ -63,8 +59,8 @@ public class MesaGroundGenerator extends GroundGenerator {
 
         int seaLevel = world.getSeaLevel();
 
-        MaterialData topMat = topMaterial;
-        MaterialData groundMat = groundMaterial;
+        Material topMat = topMaterial;
+        Material groundMat = groundMaterial;
 
         int surfaceHeight = Math
                 .max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
@@ -117,7 +113,7 @@ public class MesaGroundGenerator extends GroundGenerator {
                     if (y >= seaLevel - 2) {
                         if (type == MesaType.FOREST && y > seaLevel + 22 + (surfaceHeight
                                 << 1)) {
-                            topMat = colored ? GRASS : COARSE_DIRT;
+                            topMat = colored ? Material.GRASS_BLOCK : Material.COARSE_DIRT;
                             chunkData.setBlock(x, y, z, topMat);
                         } else if (y > seaLevel + 2 + surfaceHeight) {
                             int color = colorLayer[
@@ -125,7 +121,7 @@ public class MesaGroundGenerator extends GroundGenerator {
                                             colorNoise.noise(chunkX, chunkZ, 0.5D, 2.0D) * 2.0D))
                                     % colorLayer.length];
                             setColoredGroundLayer(chunkData, x, y, z,
-                                    y < seaLevel || y > 128 ? 1 : colored ? color : -1);
+                                    y < seaLevel || y > 128 ? Material.ORANGE_TERRACOTTA : colored ? Material.WHITE_TERRACOTTA : Material.TERRACOTTA);
                         } else {
                             chunkData.setBlock(x, y, z, topMaterial);
                             groundSet = true;
@@ -142,19 +138,15 @@ public class MesaGroundGenerator extends GroundGenerator {
                                 (y + (int) Math.round(
                                         colorNoise.noise(chunkX, chunkZ, 0.5D, 2.0D) * 2.0D))
                                 % colorLayer.length];
-                        setColoredGroundLayer(chunkData, x, y, z, color);
+                        setColoredGroundLayer(chunkData, x, y, z, Material.WHITE_TERRACOTTA);
                     }
                 }
             }
         }
     }
 
-    private void setColoredGroundLayer(ChunkData chunkData, int x, int y, int z, int color) {
-        if (color >= 0) {
-            chunkData.setBlock(x, y, z, new MaterialData(Material.STAINED_CLAY, (byte) color));
-        } else {
-            chunkData.setBlock(x, y, z, Material.HARD_CLAY);
-        }
+    private void setColoredGroundLayer(ChunkData chunkData, int x, int y, int z, Material type) {
+        chunkData.setBlock(x, y, z, type);
     }
 
     private void setRandomLayerColor(Random random, int minLayerCount, int minLayerHeight,

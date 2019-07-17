@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -21,6 +22,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
         return block.getRelative(BlockFace.DOWN).getType() == Material.SOIL;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {

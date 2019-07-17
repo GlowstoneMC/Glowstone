@@ -13,6 +13,7 @@ import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base BlockType for containers.
@@ -56,6 +57,7 @@ public class BlockContainer extends BlockType {
         return false;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         Collection<ItemStack> drops = getContentDrops(block);
@@ -70,6 +72,7 @@ public class BlockContainer extends BlockType {
         return drops;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         Collection<ItemStack> drops = getContentDrops(block);

@@ -64,7 +64,7 @@ public class BlockGrass extends BlockType implements IBlockGrowable {
                             blockState.setType(flower);
                         }
                     } else {
-                        Material tallGrass = Material.LONG_GRASS;
+                        Material tallGrass = Material.TALL_GRASS;
                         if (ItemTable.instance().getBlock(tallGrass)
                             .canPlaceAt(null, b, BlockFace.DOWN)) {
                             // grow tall grass if possible

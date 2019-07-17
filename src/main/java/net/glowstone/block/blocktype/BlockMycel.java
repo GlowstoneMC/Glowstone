@@ -54,7 +54,7 @@ public class BlockMycel extends BlockType {
                     && targetAbove.getMaterialValues().getLightOpacity() <= 2
                     && targetAbove.getLightLevel() >= 4) {
                     GlowBlockState state = targetBlock.getState();
-                    state.setType(Material.MYCEL);
+                    state.setType(Material.MYCELIUM);
                     state.setRawData((byte) 0);
                     BlockSpreadEvent spreadEvent = new BlockSpreadEvent(targetBlock, block, state);
                     EventFactory.getInstance().callEvent(spreadEvent);

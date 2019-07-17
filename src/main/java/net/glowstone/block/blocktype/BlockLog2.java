@@ -11,6 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockLog2 extends BlockType {
 
@@ -55,6 +56,7 @@ public class BlockLog2 extends BlockType {
         return data;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(Material.LOG_2, 1, (short) (block.getData() & 0x03)));

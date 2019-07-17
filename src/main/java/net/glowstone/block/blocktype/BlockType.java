@@ -34,6 +34,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for specific types of blocks.
@@ -110,10 +111,11 @@ public class BlockType extends ItemType {
      * @param tool  The tool used or {@code null} if fists or no tool was used.
      * @return The drops that should be returned.
      */
+    @NotNull
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (drops == null) {
             // default calculation
-            return Arrays.asList(new ItemStack(block.getType(), 1, block.getData()));
+            return Collections.singletonList(new ItemStack(block.getType(), 1, block.getData()));
         } else {
             return Collections.unmodifiableList(drops);
         }
@@ -138,6 +140,7 @@ public class BlockType extends ItemType {
      * @param block The block.
      * @return The drops from that block.
      */
+    @NotNull
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return getDrops(block, null);
     }

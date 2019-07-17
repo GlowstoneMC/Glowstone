@@ -7,6 +7,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockDirectDrops extends BlockNeedsTool {
 
@@ -79,6 +80,7 @@ public class BlockDirectDrops extends BlockNeedsTool {
         this(dropType, 0, 1, null);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Collections.unmodifiableList(Arrays.asList(getDrops(block)));

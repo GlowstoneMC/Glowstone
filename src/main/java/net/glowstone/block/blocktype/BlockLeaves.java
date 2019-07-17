@@ -16,6 +16,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockLeaves extends BlockType {
 
@@ -28,6 +29,7 @@ public class BlockLeaves extends BlockType {
         state.setRawData((byte) (state.getRawData() | 0x04));
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         int data = block.getData() & 0x03; //ignore "non-decay" and "check-decay" data.

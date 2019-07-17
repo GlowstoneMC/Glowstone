@@ -20,9 +20,11 @@ import org.bukkit.material.FlowerPot;
 import org.bukkit.material.LongGrass;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockFlowerPot extends BlockType {
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         List<ItemStack> drops = new LinkedList<>(Arrays.asList(new ItemStack(Material.FLOWER_POT)));

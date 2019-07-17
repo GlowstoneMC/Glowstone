@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockRails extends BlockNeedsAttached {
 
@@ -141,6 +142,7 @@ public class BlockRails extends BlockNeedsAttached {
         return block.getType() == Material.RAILS;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(block.getType()));

@@ -7,6 +7,7 @@ import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockStone extends BlockNeedsTool {
 
@@ -15,6 +16,7 @@ public class BlockStone extends BlockNeedsTool {
         return ToolType.PICKAXE;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         if (block.getType() == Material.STONE) {

@@ -18,6 +18,7 @@ import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
 
@@ -43,20 +44,11 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         BlockFace face = against.getOppositeFace();
-        if (Arrays.asList(SIDES).contains(face)
-            && block.getRelative(face).getType() == Material.LOG) {
-            MaterialData data = block.getRelative(face).getState().getData();
-            if (data instanceof Tree) {
-                if (((Tree) data).getSpecies() == TreeSpecies.JUNGLE) {
-                    return true;
-                }
-            } else {
-                warnMaterialData(Tree.class, data);
-            }
-        }
-        return false;
+        return Arrays.asList(SIDES).contains(face)
+                && block.getRelative(face).getType() == Material.JUNGLE_LOG;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         MaterialData data = block.getState().getData();
@@ -66,7 +58,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
                 amount = 3;
             }
             return Collections.unmodifiableList(
-                Arrays.asList(new ItemStack(Material.INK_SACK, amount, (short) 3)));
+                Arrays.asList(new ItemStack(Material.INK_SAC, amount, (short) 3)));
         } else {
             warnMaterialData(CocoaPlant.class, data);
         }

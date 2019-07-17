@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Stairs;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockStairs extends BlockType {
 
@@ -35,6 +36,7 @@ public class BlockStairs extends BlockType {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (isWoodenStair(block.getType())
@@ -44,6 +46,7 @@ public class BlockStairs extends BlockType {
         return Collections.emptyList();
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Arrays.asList(new ItemStack(block.getType()));

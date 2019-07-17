@@ -9,6 +9,7 @@ import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 // TODO: Merge into BlockSlab.
 public class BlockDoubleSlab extends BlockType {
@@ -23,6 +24,7 @@ public class BlockDoubleSlab extends BlockType {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (MaterialUtil.WOODEN_SLABS.contains(block.getType())
@@ -32,6 +34,7 @@ public class BlockDoubleSlab extends BlockType {
         return Collections.emptyList();
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Arrays.asList(getDrops(block));

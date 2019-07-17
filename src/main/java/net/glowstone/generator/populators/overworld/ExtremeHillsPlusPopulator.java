@@ -7,8 +7,8 @@ import org.bukkit.block.Biome;
 
 public class ExtremeHillsPlusPopulator extends ExtremeHillsPopulator {
 
-    private static final Biome[] BIOMES = {Biome.SMALLER_EXTREME_HILLS,
-        Biome.EXTREME_HILLS_WITH_TREES, Biome.MUTATED_EXTREME_HILLS_WITH_TREES};
+    private static final Biome[] BIOMES = {Biome.MOUNTAIN_EDGE,
+        Biome.WOODED_MOUNTAINS, Biome.MODIFIED_GRAVELLY_MOUNTAINS};
 
     public ExtremeHillsPlusPopulator() {
         treeDecorator.setAmount(3);

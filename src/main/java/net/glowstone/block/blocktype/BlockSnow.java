@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockSnow extends BlockNeedsAttached {
 
@@ -52,6 +53,7 @@ public class BlockSnow extends BlockNeedsAttached {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (tool != null && ToolType.SHOVEL.matches(tool.getType())) {

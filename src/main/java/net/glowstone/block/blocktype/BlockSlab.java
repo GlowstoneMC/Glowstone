@@ -14,6 +14,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Step;
 import org.bukkit.material.WoodenStep;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockSlab extends BlockType {
 
@@ -82,6 +83,7 @@ public class BlockSlab extends BlockType {
         return matchingType(block, face, holding, false);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getType() == Material.WOOD_STEP
@@ -91,6 +93,7 @@ public class BlockSlab extends BlockType {
         return Collections.emptyList();
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Arrays.asList(new ItemStack(block.getType(), 1, (short) (block.getData() % 8)));

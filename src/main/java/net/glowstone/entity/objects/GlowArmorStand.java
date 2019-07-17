@@ -45,6 +45,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.EulerAngle;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
@@ -74,6 +75,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     private boolean hasArms;
 
     private boolean needsKill;
+    private boolean canTick = true;
 
     /**
      * Creates an armor stand.
@@ -110,7 +112,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         if (getNoDamageTicks() > 0 || health <= 0 || !canTakeDamage(cause)) {
             return;
         }
@@ -552,6 +554,16 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     public void setCanMove(boolean move) {
         // TODO
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean canTick() {
+        return canTick;
+    }
+
+    @Override
+    public void setCanTick(boolean tick) {
+        canTick = tick;
     }
 
     @Override

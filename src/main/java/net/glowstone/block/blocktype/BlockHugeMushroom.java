@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockHugeMushroom extends BlockType {
 
@@ -26,6 +27,7 @@ public class BlockHugeMushroom extends BlockType {
         this(isRedMushroom ? Material.RED_MUSHROOM : Material.BROWN_MUSHROOM);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         int rnd = ThreadLocalRandom.current().nextInt(100);
