@@ -46,6 +46,6 @@ public class BlockChorusPlant extends BlockType {
 
     private boolean hasDownSupport(Block block) {
         Block down = block.getRelative(BlockFace.DOWN);
-        return down.getType() == Material.CHORUS_PLANT || down.getType() == Material.ENDER_STONE;
+        return down.getType() == Material.CHORUS_PLANT || down.getType() == Material.END_STONE;
     }
 }

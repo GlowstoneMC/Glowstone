@@ -95,7 +95,7 @@ public final class GlowParticle {
      * @param material the MaterialData to convert.
      * @return The extData array for the particle effect.
      */
-    public static int[] getExtData(Effect particle, MaterialData material) {
+    public static int[] getExtData(Particle particle, MaterialData material) {
         switch (particle) {
             case ITEM_BREAK:
                 if (material == null) {
@@ -143,7 +143,7 @@ public final class GlowParticle {
 
             MaterialData material = (MaterialData) object;
 
-            return new int[]{material.getItemTypeId() + (material.getData() << 12)};
+            return new int[]{material.getItemType().getId() + (material.getData() << 12)};
         }
 
         if (particle.getDataType() == ItemStack.class) {
@@ -171,16 +171,11 @@ public final class GlowParticle {
      *
      * @param particle the Particle.
      * @return True if the particle is long distance.
+     * @deprecated No effects are long distance. Use the particle API instead.
      */
+    @Deprecated
     public static boolean isLongDistance(Effect particle) {
-        switch (particle) {
-            case EXPLOSION:
-            case EXPLOSION_LARGE:
-            case EXPLOSION_HUGE:
-                return true;
-            default:
-                return false;
-        }
+        return false;
     }
 
     /**

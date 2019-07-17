@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a creature entity such as a pig.
  */
-public class GlowCreature extends GlowLivingEntity implements Creature {
+public class GlowCreature extends GlowMob implements Creature {
 
     /**
      * The type of monster.

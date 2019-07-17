@@ -19,7 +19,7 @@ public class IcePlainsSpikesPopulator extends IcePlainsPopulator {
 
     @Override
     public Collection<Biome> getBiomes() {
-        return Collections.unmodifiableList(Arrays.asList(Biome.MUTATED_ICE_FLATS));
+        return Collections.unmodifiableList(Arrays.asList(Biome.ICE_SPIKES));
     }
 
     @Override

@@ -617,7 +617,7 @@ values:
     blastResistance: 18000000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  ENDER_STONE:
+  END_STONE:
     tool: PICKAXE
     hardness: 3
     blastResistance: 45

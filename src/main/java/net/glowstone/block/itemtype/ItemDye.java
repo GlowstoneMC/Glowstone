@@ -9,6 +9,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -33,7 +34,7 @@ public class ItemDye extends ItemType {
                     if (growable.isFertilizable(target)) {
                         // spawn some green particles
                         target.getWorld()
-                            .playEffect(target.getLocation(), Effect.HAPPY_VILLAGER, 0);
+                            .playEffect(target.getLocation(), Effect.VILLAGER_PLANT_GROW, 0);
 
                         if (growable.canGrowWithChance(target)) {
                             growable.grow(player, target);
@@ -45,7 +46,7 @@ public class ItemDye extends ItemType {
                         }
                     }
                 }
-            } else if (dye.getColor() == DyeColor.BROWN && target.getType() == Material.LOG) {
+            } else if (dye.getColor() == DyeColor.BROWN && target.getType() == Material.JUNGLE_LOG) {
                 ItemTable.instance().getBlock(Material.COCOA)
                     .rightClickBlock(player, target, face, holding, clickedLoc, hand);
             }
