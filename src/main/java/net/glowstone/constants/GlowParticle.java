@@ -23,9 +23,7 @@ import java.util.function.Function;
  */
 public class GlowParticle {
 
-    private static final Object[] ONE_EMPTY = new Object[]{0};
     private static final Float[] EMPTY_DUST_OPTIONS = new Float[4];
-    private static final int[] TWO_EMPTY = new int[]{0, 0};
 
     private static final Function<Object, Object[]> PARTICLE_HANDLER_RETURN_SELF = o -> new Object[]{o};
 
