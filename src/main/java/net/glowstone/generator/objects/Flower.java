@@ -1,20 +1,19 @@
 package net.glowstone.generator.objects;
 
-import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.Random;
+
 public class Flower implements TerrainObject {
     // TODO: Update to 1.13
 
     private final Material type;
-    private final int data;
 
     public Flower(FlowerType plantType) {
         type = plantType.getType();
-        data = plantType.getData();
     }
 
     /**
@@ -32,7 +31,6 @@ public class Flower implements TerrainObject {
             if (y < 255 && block.getType() == Material.AIR
                     && block.getRelative(BlockFace.DOWN).getType() == Material.GRASS_BLOCK) {
                 block.setType(type);
-                block.setData((byte) data);
                 succeeded = true;
             }
         }

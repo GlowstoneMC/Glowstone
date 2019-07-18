@@ -1,7 +1,5 @@
 package net.glowstone.generator;
 
-import java.util.Map;
-import java.util.Random;
 import net.glowstone.GlowServer;
 import net.glowstone.generator.populators.NetherPopulator;
 import net.glowstone.util.config.WorldConfig;
@@ -12,6 +10,9 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.noise.OctaveGenerator;
+
+import java.util.Map;
+import java.util.Random;
 
 public class NetherGenerator extends GlowChunkGenerator {
 
@@ -163,7 +164,8 @@ public class NetherGenerator extends GlowChunkGenerator {
                                             Material.NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
                                     chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2),
-                                            Material.STATIONARY_LAVA);
+                                            // TODO: 1.13 stationary lava
+                                            Material.LAVA);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;

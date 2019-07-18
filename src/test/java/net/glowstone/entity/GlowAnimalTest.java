@@ -37,13 +37,13 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
                 assertEquals(1, inventory.getItemInMainHand().getAmount());
 
                 // Should set love mode
-                assertTrue(entity.getInLove() > 0);
+                assertTrue(entity.getLoveModeTicks() > 0);
 
                 // Using food a 2nd time should not consume it
                 entity.entityInteract(player, interact);
                 assertEquals(1, inventory.getItemInMainHand().getAmount());
             } finally {
-                entity.setInLove(0);
+                entity.setLoveModeTicks(0);
             }
         }
     }
@@ -62,7 +62,7 @@ public abstract class GlowAnimalTest<T extends GlowAnimal> extends GlowAgeableTe
             assertEquals(1, inventory.getItemInMainHand().getAmount());
 
             // Should not set love mode
-            assertEquals(0, entity.getInLove());
+            assertEquals(0, entity.getLoveModeTicks());
         }
     }
 

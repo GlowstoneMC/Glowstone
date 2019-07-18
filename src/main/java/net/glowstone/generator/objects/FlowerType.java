@@ -10,7 +10,7 @@ public enum FlowerType {
     POPPY(Material.POPPY),
     BLUE_ORCHID(Material.BLUE_ORCHID),
     ALLIUM(Material.ALLIUM),
-    /* TODO: Update */ HOUSTONIA(Material.LEGACY_RED_ROSE),
+    HOUSTONIA(Material.ROSE_RED),
     TULIP_RED(Material.RED_TULIP),
     TULIP_ORANGE(Material.ORANGE_TULIP),
     TULIP_WHITE(Material.WHITE_TULIP),

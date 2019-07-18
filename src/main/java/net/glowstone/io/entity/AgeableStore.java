@@ -35,7 +35,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         super.load(entity, compound);
         compound.readInt("Age", entity::setAge);
         compound.readBoolean("AgeLocked", entity::setAgeLock);
-        compound.readInt("InLove", entity::setInLove);
+        compound.readInt("InLove", entity::setLoveModeTicks);
         compound.readInt("ForcedAge", entity::setForcedAge);
     }
 
@@ -44,7 +44,7 @@ public class AgeableStore<T extends GlowAgeable> extends CreatureStore<T> {
         super.save(entity, tag);
         tag.putInt("Age", entity.getAge());
         tag.putBool("AgeLocked", entity.getAgeLock());
-        tag.putInt("InLove", entity.getInLove());
+        tag.putInt("InLove", entity.getLoveModeTicks());
         tag.putInt("ForcedAge", entity.getForcedAge());
     }
 }

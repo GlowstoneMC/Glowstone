@@ -1,9 +1,11 @@
 package net.glowstone.generator.ground;
 
+import org.bukkit.Material;
+
 public class SandyGroundGenerator extends GroundGenerator {
 
     public SandyGroundGenerator() {
-        setTopMaterial(SAND);
-        setGroundMaterial(SAND);
+        setTopMaterial(Material.SAND);
+        setGroundMaterial(Material.SAND);
     }
 }

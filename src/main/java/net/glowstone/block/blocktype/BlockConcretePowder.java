@@ -7,7 +7,8 @@ import org.bukkit.block.BlockFace;
 public class BlockConcretePowder extends BlockFalling {
 
     public BlockConcretePowder() {
-        super(Material.CONCRETE_POWDER);
+        // TODO: 1.13: material colored powder
+        super(Material.LEGACY_CONCRETE_POWDER);
     }
 
     @Override

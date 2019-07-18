@@ -60,7 +60,7 @@ public class GlowMuleTest extends GlowChestedHorseTest<GlowMule> {
             assertEquals(1, inventory.getItemInMainHand().getAmount());
 
             // Should not set love mode
-            assertEquals(0, entity.getInLove());
+            assertEquals(0, entity.getLoveModeTicks());
         }
     }
 }
