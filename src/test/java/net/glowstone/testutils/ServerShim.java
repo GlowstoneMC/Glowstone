@@ -594,7 +594,7 @@ public class ServerShim implements Server {
     }
 
     @Override
-    public @NotNull KeyedBossBar createBossBar(@NotNull NamespacedKey key, @org.jetbrains.annotations.Nullable String title, @NotNull BarColor color, @NotNull BarStyle style, @NotNull @NotNull BarFlag... flags) {
+    public @NotNull KeyedBossBar createBossBar(@NotNull NamespacedKey key, @org.jetbrains.annotations.Nullable String title, @NotNull BarColor color, @NotNull BarStyle style, @NotNull BarFlag... flags) {
         return null;
     }
 
