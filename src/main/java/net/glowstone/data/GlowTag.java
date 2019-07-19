@@ -1,7 +1,6 @@
 package net.glowstone.data;
 
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

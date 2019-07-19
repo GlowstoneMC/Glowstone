@@ -1,5 +1,8 @@
 package net.glowstone.generator.structures.util;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +19,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.material.DirectionalContainer;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
-
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
 
 @RequiredArgsConstructor
 public class StructureBuilder {

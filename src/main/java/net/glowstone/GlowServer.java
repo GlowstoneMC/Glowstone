@@ -2316,6 +2316,27 @@ public class GlowServer implements Server {
         return null;
     }
 
+    public GlowMapView getMap(short id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public GlowMapView createMap(World world) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
+                                                @NotNull StructureType structureType) {
+        return null;
+    }
+
+    @Override
+    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
+                                                @NotNull StructureType structureType, int i, boolean b) {
+        return null;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<World> getWorlds() {
@@ -2400,27 +2421,6 @@ public class GlowServer implements Server {
             return true;
         }
         return false;
-    }
-
-    public GlowMapView getMap(short id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public GlowMapView createMap(World world) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
-            @NotNull StructureType structureType) {
-        return null;
-    }
-
-    @Override
-    public @NotNull ItemStack createExplorerMap(@NotNull World world, @NotNull Location location,
-            @NotNull StructureType structureType, int i, boolean b) {
-        return null;
     }
 
     @Override

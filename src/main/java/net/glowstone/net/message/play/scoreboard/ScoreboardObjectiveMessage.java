@@ -4,8 +4,8 @@ import com.flowpowered.network.Message;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import net.glowstone.scoreboard.RenderType;
 import net.glowstone.util.TextMessage;
+import org.bukkit.scoreboard.RenderType;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Score;
 import org.jetbrains.annotations.NotNull;
 
@@ -128,6 +130,10 @@ public final class GlowObjective implements Objective {
                 ? RenderType.HEARTS : RenderType.INTEGER);
     }
 
+    public void setRenderType(String renderType) {
+        setRenderType(org.bukkit.scoreboard.RenderType.valueOf(renderType.toUpperCase(Locale.ROOT)));
+    }
+
     /**
      * Sets the {@link DisplaySlot} where this objective displays.
      *
@@ -212,10 +218,6 @@ public final class GlowObjective implements Objective {
      */
     void deleteScore(String entry) {
         scores.remove(entry);
-    }
-
-    public void setRenderType(String renderType) {
-        // TODO
     }
 
     /**

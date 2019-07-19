@@ -1,5 +1,8 @@
 package net.glowstone.generator.structures;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
 import net.glowstone.generator.structures.util.StructureBoundingBox;
@@ -19,10 +22,6 @@ import org.bukkit.material.Stairs;
 import org.bukkit.material.TripwireHook;
 import org.bukkit.material.Vine;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 public class GlowJungleTemple extends GlowTemplePiece {
 

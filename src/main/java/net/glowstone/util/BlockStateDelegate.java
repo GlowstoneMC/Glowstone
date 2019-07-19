@@ -1,5 +1,7 @@
 package net.glowstone.util;
 
+import java.util.Collection;
+import java.util.HashMap;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import org.bukkit.Location;
@@ -8,9 +10,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
-
-import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * A small utility class that allow to maintain a {@link BlockState}'s list in order to capture a

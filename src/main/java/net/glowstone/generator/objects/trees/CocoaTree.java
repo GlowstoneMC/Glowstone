@@ -10,10 +10,8 @@ import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 
 public class CocoaTree extends JungleTree {
 
-    private static final BlockFace[] COCOA_FACES = {BlockFace.NORTH, BlockFace.EAST,
-            BlockFace.SOUTH, BlockFace.WEST};
-    private static final CocoaPlantSize[] COCOA_SIZE = {CocoaPlantSize.SMALL, CocoaPlantSize.MEDIUM,
-            CocoaPlantSize.LARGE};
+    private static final BlockFace[] COCOA_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    private static final CocoaPlantSize[] COCOA_SIZE = {CocoaPlantSize.SMALL, CocoaPlantSize.MEDIUM, CocoaPlantSize.LARGE};
 
     /**
      * Initializes this tree, preparing it to attempt to generate.

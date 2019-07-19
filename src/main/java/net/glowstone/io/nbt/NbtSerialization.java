@@ -1,5 +1,10 @@
 package net.glowstone.io.nbt;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.block.flattening.generated.FlatteningUtil;
@@ -14,12 +19,6 @@ import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Utility methods for transforming various objects to and from NBT. All strings in this class are

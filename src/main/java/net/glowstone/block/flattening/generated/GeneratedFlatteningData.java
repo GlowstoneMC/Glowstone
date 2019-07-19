@@ -8,7 +8,6 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -29,6 +28,7 @@ public class GeneratedFlatteningData {
         PropertyDefs(PropMap properties) {
             this.properties = properties;
         }
+    
         public int serialize(Map<String, Object> values) {
             if (values == null) {
                 return 0;
@@ -41,6 +41,7 @@ public class GeneratedFlatteningData {
             }
             return mask;
         }
+    
         public Map<String, Object> deserialize(int serial) {
             int sizeAcc = 0;
             ImmutableMap.Builder<String, Object> result = ImmutableMap.builder();
@@ -55,32 +56,41 @@ public class GeneratedFlatteningData {
             return result.build();
         }
     }
+    
     static class PropertyEnum {
         private final String[] values;
+    
         public PropertyEnum(String... values) {
             this.values = values;
         }
+    
         public int serialize(Object value) {
             return ArrayUtils.indexOf(values, value);
         }
+    
         public Object deserialize(int serial) {
             return values[serial];
         }
+    
         public Object defaultValue() {
             return values[0];
         }
+    
         public int size() {
             return values.length;
         }
     }
+    
     static class PropertyEnumBoolean extends PropertyEnum {
         public PropertyEnumBoolean() {
             super();
         }
+    
         @Override
         public Object deserialize(int serial) {
             return serial != 1;
         }
+    
         @Override
         public int serialize(Object value) {
             boolean b;
@@ -93,15 +103,18 @@ public class GeneratedFlatteningData {
             }
             return b ? 0 : 1;
         }
+    
         @Override
         public int size() {
             return 2;
         }
+    
         @Override
         public Object defaultValue() {
             return true;
         }
     }
+    
     static class PropMap {
         private final String[] keys;
         private final PropertyEnum[] enums;
@@ -111,6 +124,7 @@ public class GeneratedFlatteningData {
             this.enums = enums;
         }
     }
+    
     private static PropMap propMapOf(Object... keysAndVals) {
         Iterator<Object> iter = Iterators.forArray(keysAndVals);
         List<String> keys = new ArrayList<>();
@@ -121,6 +135,7 @@ public class GeneratedFlatteningData {
         }
         return new PropMap(keys.toArray(new String[0]), enums.toArray(new PropertyEnum[0]));
     }
+    
     static final ImmutableMap<Material, List<BlockFace>> DIRECTIONAL_POSSIBLE_FACES;
     
     static final Integer[] STATE_BASE_IDS = new Integer[8582];

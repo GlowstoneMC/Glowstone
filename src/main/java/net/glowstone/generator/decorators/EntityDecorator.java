@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators;
 
+import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.GlowServer;
@@ -14,8 +15,6 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.generator.BlockPopulator;
-
-import java.util.Random;
 
 public class EntityDecorator extends BlockPopulator {
 

@@ -9,14 +9,12 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
-import org.bukkit.TreeSpecies;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.MaterialData;
-import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 

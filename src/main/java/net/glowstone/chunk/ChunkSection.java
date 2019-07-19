@@ -150,12 +150,14 @@ public final class ChunkSection {
         this.skyLight = skyLight;
         this.blockLight = blockLight;
     }
-/*
+
+    /*
     public ChunkSection(VariableValueArray blockStates, BlockStatePalette palette,
                         NibbleArray skyLight, NibbleArray blockLight) {
-        // todo: initialization
+        // TODO: initialization
     }
-*/
+    */
+
     /**
      * Creates a new unlit chunk section containing the given types.
      *

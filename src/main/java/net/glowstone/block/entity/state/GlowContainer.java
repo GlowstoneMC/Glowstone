@@ -41,14 +41,14 @@ public abstract class GlowContainer extends GlowBlockState implements LootableBl
     }
 
     @Override
-    public @Nullable LootTable getLootTable() {
-        return lootTable.get();
-    }
-
-    @Override
     public void setLootTable(@Nullable LootTable table, long seed) {
         setSeed(seed);
         setLootTable(table);
+    }
+
+    @Override
+    public @Nullable LootTable getLootTable() {
+        return lootTable.get();
     }
 
     @Override

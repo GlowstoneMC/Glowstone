@@ -1,14 +1,13 @@
 package net.glowstone.generator.objects;
 
+import java.util.Arrays;
+import java.util.Random;
 import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-
-import java.util.Arrays;
-import java.util.Random;
 
 public class Lake implements TerrainObject {
 

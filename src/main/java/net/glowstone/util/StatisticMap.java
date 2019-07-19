@@ -2,7 +2,6 @@ package net.glowstone.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;

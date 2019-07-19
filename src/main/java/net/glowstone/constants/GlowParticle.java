@@ -2,6 +2,10 @@ package net.glowstone.constants;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Floats;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
 import lombok.Getter;
 import net.glowstone.block.flattening.GlowBlockData;
 import org.apache.commons.lang.ArrayUtils;
@@ -12,11 +16,6 @@ import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Id mappings for particles.
@@ -147,8 +146,10 @@ public class GlowParticle {
             case EXPLOSION_HUGE:
             case MOB_APPEARANCE:
                 longDistance = true;
+                break;
             default:
                 longDistance = false;
+                break;
         }
     }
 
@@ -160,6 +161,28 @@ public class GlowParticle {
      */
     public Object[] getExtData(Object o) {
         return dataHandler.apply(o);
+    }
+
+    /**
+     * Convert an object to an extData array if possible for a particle.
+     *
+     * @param particle the {@link Particle} to validate.
+     * @param object the Object to convert.
+     * @return The extData array for the particle effect.
+     */
+    public static Object[] getExtData(Particle particle, Object object) {
+        return getParticle(particle).getExtData(object);
+    }
+
+    /**
+     * Convert an object to an extData array if possible for an effect.
+     *
+     * @param effect the {@link Effect} to validate.
+     * @param object the Object to convert.
+     * @return The extData array for the particle effect.
+     */
+    public static Object[] getExtData(Effect effect, Object object) {
+        return getParticle(effect).getExtData(object);
     }
 
     public static GlowParticle getParticle(NamespacedKey name) {
@@ -194,28 +217,6 @@ public class GlowParticle {
     public static int getId(Effect effect) {
         Preconditions.checkArgument(effect.getType() == Effect.Type.VISUAL, "Effect must be visual to have a particle!");
         return getParticle(effect).getId();
-    }
-
-    /**
-     * Convert an object to an extData array if possible for a particle.
-     *
-     * @param particle the {@link Particle} to validate.
-     * @param object the Object to convert.
-     * @return The extData array for the particle effect.
-     */
-    public static Object[] getExtData(Particle particle, Object object) {
-        return getParticle(particle).getExtData(object);
-    }
-
-    /**
-     * Convert an object to an extData array if possible for an effect.
-     *
-     * @param effect the {@link Effect} to validate.
-     * @param object the Object to convert.
-     * @return The extData array for the particle effect.
-     */
-    public static Object[] getExtData(Effect effect, Object object) {
-        return getParticle(effect).getExtData(object);
     }
 
     /**
@@ -264,17 +265,6 @@ public class GlowParticle {
         return true;
     }
 
-    /**
-     * Register a new particle data handler for a certain class.
-     *
-     * @param clazz The class to handle
-     * @param handler The function that handles instances of this class
-     * @return If there was not already a handler for this class, and the handler was registered successfully
-     */
-    public static boolean registerParticleDataHandler(Class<?> clazz, Function<Object, Object[]> handler) {
-        return PARTICLE_DATA_HANDLERS.putIfAbsent(clazz, handler) == null;
-    }
-
     private static void registerParticle(String name) {
         NamespacedKey key = NamespacedKey.minecraft(name);
         PARTICLES_BY_NAME.put(key, new GlowParticle(key));
@@ -294,5 +284,16 @@ public class GlowParticle {
 
     private static void registerParticle(String name, Particle particle, Effect effect) {
         PARTICLES_BY_EFFECT.put(effect, registerParticle(name, particle).getName());
+    }
+
+    /**
+     * Register a new particle data handler for a certain class.
+     *
+     * @param clazz The class to handle
+     * @param handler The function that handles instances of this class
+     * @return If there was not already a handler for this class, and the handler was registered successfully
+     */
+    public static boolean registerParticleDataHandler(Class<?> clazz, Function<Object, Object[]> handler) {
+        return PARTICLE_DATA_HANDLERS.putIfAbsent(clazz, handler) == null;
     }
 }

@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
-import org.bukkit.material.MaterialData;
 
 public class MesaGroundGenerator extends GroundGenerator {
     private final MesaType type;

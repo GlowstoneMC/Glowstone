@@ -1,5 +1,8 @@
 package net.glowstone.generator.structures;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import net.glowstone.GlowServer;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
@@ -15,10 +18,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.Chest;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 public class GlowDungeon extends GlowStructurePiece {
 

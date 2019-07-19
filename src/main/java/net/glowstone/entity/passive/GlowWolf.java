@@ -1,6 +1,11 @@
 package net.glowstone.entity.passive;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.Sets;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -16,12 +21,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
-
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class GlowWolf extends GlowTameable implements Wolf {
 

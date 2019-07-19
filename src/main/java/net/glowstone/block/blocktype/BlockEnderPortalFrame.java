@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -13,9 +15,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockEnderPortalFrame extends BlockDropless {
 

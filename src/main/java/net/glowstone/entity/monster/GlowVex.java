@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.TickUtil;
@@ -8,8 +9,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Vex;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowVex extends GlowMonster implements Vex {
 

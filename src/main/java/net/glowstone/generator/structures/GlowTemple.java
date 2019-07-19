@@ -1,12 +1,11 @@
 package net.glowstone.generator.structures;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
 
 /**
  * Desert temple, jungle temple, or witch hut.

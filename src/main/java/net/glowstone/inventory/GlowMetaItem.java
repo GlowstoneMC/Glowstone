@@ -185,7 +185,7 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
-    public @NotNull void setPlaceableKeys(@NotNull Collection<Namespaced> canPlaceOn) {
+    public void setPlaceableKeys(@NotNull Collection<Namespaced> canPlaceOn) {
         placeableKeys.clear();
         placeableKeys.addAll(canPlaceOn);
     }
@@ -425,10 +425,8 @@ public class GlowMetaItem implements ItemMeta {
     }
 
     @Override
-    public @NotNull Multimap<Attribute, AttributeModifier> getAttributeModifiers(
-            @NotNull EquipmentSlot slot) {
-        return Multimaps.filterValues(getAttributeModifiers(),
-                modifier -> slot == modifier.getSlot());
+    public @NotNull Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot) {
+        return Multimaps.filterValues(getAttributeModifiers(), modifier -> slot == modifier.getSlot());
     }
 
     @Override

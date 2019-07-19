@@ -1,5 +1,7 @@
 package net.glowstone.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -11,9 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implementation of Bukkit's internal-use UnsafeValues.
@@ -76,8 +75,8 @@ public final class GlowUnsafeValues implements UnsafeValues {
 
     /**
      * Converts a numerical ID to a material type.
-     * <p>
-     * Should only be used for network protocol.
+     *
+     * <p>Should only be used for network protocol.</p>
      *
      * @param id the numerical ID of the material
      * @return the material

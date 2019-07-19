@@ -1,5 +1,6 @@
 package net.glowstone.inventory;
 
+import java.util.Locale;
 import net.glowstone.util.nbt.CompoundTag;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.WordUtils;
@@ -9,8 +10,6 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Locale;
 
 /**
  * An implementation of {@link ItemFactory} responsible for creating ItemMetas.

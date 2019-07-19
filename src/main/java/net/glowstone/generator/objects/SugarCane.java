@@ -9,8 +9,7 @@ import org.bukkit.block.BlockState;
 
 public class SugarCane implements TerrainObject {
 
-    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
-            BlockFace.WEST};
+    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     @Override
     public boolean generate(World world, Random random, int x, int y, int z) {

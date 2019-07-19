@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -23,10 +26,6 @@ import org.bukkit.material.Button;
 import org.bukkit.material.Diode;
 import org.bukkit.material.Lever;
 import org.bukkit.material.Redstone;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A redstone wire block.
@@ -170,8 +169,7 @@ public class BlockRedstone extends BlockNeedsAttached {
                         continue;
                     }
                     GlowBlock underTarget = target.getRelative(BlockFace.DOWN);
-                    if (underTarget.getType() == Material.REDSTONE_TORCH &&
-                            ((Redstone) (underTarget.getState().getData())).isPowered() ) {
+                    if (underTarget.getType() == Material.REDSTONE_TORCH && ((Redstone) (underTarget.getState().getData())).isPowered()) {
                         setFullyPowered(me);
                         return;
                     }

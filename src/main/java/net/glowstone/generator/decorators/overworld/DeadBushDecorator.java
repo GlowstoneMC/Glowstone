@@ -1,5 +1,6 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.GrassSpecies;
@@ -8,8 +9,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.LongGrass;
-
-import java.util.Random;
 
 public class DeadBushDecorator extends BlockDecorator {
 

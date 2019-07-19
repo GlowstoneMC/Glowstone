@@ -8,14 +8,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.material.Pumpkin;
+import org.jetbrains.annotations.NotNull;
 
 public class PumpkinDecorator extends BlockPopulator {
 
-    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
-            BlockFace.WEST};
+    private static final BlockFace[] FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     @Override
-    public void populate(World world, Random random, Chunk source) {
+    public void populate(@NotNull World world, Random random, @NotNull Chunk source) {
         if (random.nextInt(32) == 0) {
             int sourceX = (source.getX() << 4) + random.nextInt(16);
             int sourceZ = (source.getZ() << 4) + random.nextInt(16);

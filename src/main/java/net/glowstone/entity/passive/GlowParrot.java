@@ -1,5 +1,10 @@
 package net.glowstone.entity.passive;
 
+import static net.glowstone.entity.passive.GlowParrot.Shoulder.LEFT;
+import static net.glowstone.entity.passive.GlowParrot.Shoulder.RIGHT;
+
+import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
@@ -15,12 +20,6 @@ import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static net.glowstone.entity.passive.GlowParrot.Shoulder.LEFT;
-import static net.glowstone.entity.passive.GlowParrot.Shoulder.RIGHT;
 
 public class GlowParrot extends GlowTameable implements Parrot {
 

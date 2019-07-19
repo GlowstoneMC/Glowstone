@@ -60,8 +60,7 @@ public interface TerrainObject {
                 // Large plant
                 Block plantTop = blockAbove.getRelative(BlockFace.UP);
                 BlockData plantTopData = plantTop.getBlockData();
-                if (plantTopData.getMaterial() == mat &&
-                        ((Bisected) plantTopData).getHalf() == Bisected.Half.TOP) {
+                if (plantTopData.getMaterial() == mat && ((Bisected) plantTopData).getHalf() == Bisected.Half.TOP) {
                     plantTop.setType(Material.AIR);
                 }
             }

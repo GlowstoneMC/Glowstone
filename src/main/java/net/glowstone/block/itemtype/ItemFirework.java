@@ -1,5 +1,6 @@
 package net.glowstone.block.itemtype;
 
+import java.util.UUID;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.passive.GlowFirework;
@@ -13,8 +14,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
-
-import java.util.UUID;
 
 public class ItemFirework extends ItemType {
 

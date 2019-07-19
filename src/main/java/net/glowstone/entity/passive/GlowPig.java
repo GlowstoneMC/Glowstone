@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
+import java.util.Set;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -17,8 +18,6 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 public class GlowPig extends GlowAnimal implements Pig {
 

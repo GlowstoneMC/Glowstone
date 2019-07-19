@@ -1,5 +1,7 @@
 package net.glowstone.entity.monster;
 
+import java.util.Random;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -7,9 +9,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
-import java.util.Random;
-import java.util.UUID;
 
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 

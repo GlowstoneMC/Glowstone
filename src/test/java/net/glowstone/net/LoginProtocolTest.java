@@ -1,10 +1,14 @@
 package net.glowstone.net;
 
 import com.flowpowered.network.Message;
-import io.netty.buffer.ByteBuf;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
-import net.glowstone.net.message.login.*;
+import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
+import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
+import net.glowstone.net.message.login.LoginPluginRequestMessage;
+import net.glowstone.net.message.login.LoginPluginResponseMessage;
+import net.glowstone.net.message.login.LoginStartMessage;
+import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.protocol.LoginProtocol;
 
 /**

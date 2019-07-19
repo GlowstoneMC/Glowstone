@@ -1,14 +1,12 @@
 package net.glowstone.generator.ground;
 
 import java.util.Random;
-
 import lombok.Setter;
 import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
-import org.bukkit.material.MaterialData;
 
 public class GroundGenerator {
 

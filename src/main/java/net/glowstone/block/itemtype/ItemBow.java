@@ -1,6 +1,9 @@
 package net.glowstone.block.itemtype;
 
 import com.google.common.primitives.Floats;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
@@ -17,10 +20,6 @@ import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
 public class ItemBow extends ItemTimedUsage {
     private static final int TICKS_TO_FULLY_CHARGE = 20;

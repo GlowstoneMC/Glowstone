@@ -4,7 +4,6 @@ import com.flowpowered.network.Message;
 import io.netty.util.internal.ThreadLocalRandom;
 import java.util.Arrays;
 import java.util.List;
-
 import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.monster.GlowEndermite;
 import net.glowstone.net.message.play.entity.EntityMetadataMessage;

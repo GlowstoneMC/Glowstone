@@ -11,7 +11,6 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Boss;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A monster with a boss bar.

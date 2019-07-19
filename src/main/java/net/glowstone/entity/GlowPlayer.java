@@ -1,5 +1,9 @@
 package net.glowstone.entity;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static net.glowstone.GlowServer.logger;
+
 import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.Message;
@@ -8,6 +12,31 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -179,36 +208,6 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static net.glowstone.GlowServer.logger;
 
 
 /**
@@ -1536,13 +1535,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
-    public void setPlayerListHeaderFooter(@Nullable String header,
-            @Nullable String footer) {
-        setPlayerListHeader(header);
-        setPlayerListFooter(footer);
-    }
-
-    @Override
     public void setCompassTarget(Location loc) {
         compassTarget = loc;
         session.send(new SpawnPositionMessage(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
@@ -1820,6 +1812,20 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         return getExpToLevel(level);
     }
 
+    private int getExpToLevel(int level) {
+        if (level >= 30) {
+            return 62 + (level - 30) * 7;
+        } else if (level >= 15) {
+            return 17 + (level - 15) * 3;
+        } else {
+            return 17;
+        }
+    }
+
+    private void sendExperience() {
+        session.send(new ExperienceMessage(getExp(), getLevel(), getTotalExperience()));
+    }
+
     @Override
     public boolean discoverRecipe(@NotNull NamespacedKey recipe) {
         return false;
@@ -1838,20 +1844,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public int undiscoverRecipes(@NotNull Collection<NamespacedKey> recipes) {
         return 0;
-    }
-
-    private int getExpToLevel(int level) {
-        if (level >= 30) {
-            return 62 + (level - 30) * 7;
-        } else if (level >= 15) {
-            return 17 + (level - 15) * 3;
-        } else {
-            return 17;
-        }
-    }
-
-    private void sendExperience() {
-        session.send(new ExperienceMessage(getExp(), getLevel(), getTotalExperience()));
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2773,6 +2765,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         session.send(new MapDataMessage(map.getId(), map.getScale().ordinal(), Collections
                 .emptyList(),
                 mapCanvas.toSection()));
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(@Nullable String header,
+                                          @Nullable String footer) {
+        setPlayerListHeader(header);
+        setPlayerListFooter(footer);
     }
 
     @Override

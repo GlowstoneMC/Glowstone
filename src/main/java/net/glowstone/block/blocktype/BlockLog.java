@@ -1,5 +1,7 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -12,9 +14,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Tree;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 public class BlockLog extends BlockType {
 

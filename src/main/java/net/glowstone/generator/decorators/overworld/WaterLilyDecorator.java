@@ -1,13 +1,12 @@
 package net.glowstone.generator.decorators.overworld;
 
+import java.util.Random;
 import net.glowstone.generator.decorators.BlockDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
-
-import java.util.Random;
 
 public class WaterLilyDecorator extends BlockDecorator {
 

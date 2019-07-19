@@ -1,8 +1,14 @@
 package net.glowstone.entity.objects;
 
+import static java.util.Comparator.comparingInt;
+
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import net.glowstone.EventFactory;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockFence;
@@ -27,13 +33,6 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.Comparator.comparingInt;
 
 public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
