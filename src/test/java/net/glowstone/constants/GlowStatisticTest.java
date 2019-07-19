@@ -22,7 +22,7 @@ public class GlowStatisticTest {
         assertEquals("stat.drop", GlowStatistic.getName(Statistic.DROP));
         assertEquals("stat.jump", GlowStatistic.getName(Statistic.JUMP));
         assertEquals("stat.chestOpened", GlowStatistic.getName(Statistic.CHEST_OPENED));
-        assertEquals("stat.playOneMinute", GlowStatistic.getName(Statistic.PLAY_ONE_TICK));
+        assertEquals("stat.playOneMinute", GlowStatistic.getName(Statistic.PLAY_ONE_MINUTE));
     }
 
     @Test

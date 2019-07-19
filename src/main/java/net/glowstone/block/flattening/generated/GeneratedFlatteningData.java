@@ -142,7 +142,6 @@ public class GeneratedFlatteningData {
     
     static final ImmutableBiMap<Integer, Material> MATERIAL_ID_MAP;
     
-
     static {
         ImmutableMap.Builder<Material, PropertyDefs> materialPropertiesBuilder = ImmutableMap.builder();
         materialPropertiesBuilder

@@ -40,7 +40,7 @@ public class VariableValueArrayTest {
      * @return The ID as put in an array for the given block.
      */
     private static int block(Material material, int metadata) {
-        int id = ItemTable.instance().getBlock(material).getId();
+        int id = ItemTable.instance().getBlock(material).getMaterial().getId();
         return (id << 4 | metadata);
     }
 
