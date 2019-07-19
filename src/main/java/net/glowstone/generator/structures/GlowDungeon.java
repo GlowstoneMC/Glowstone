@@ -1,8 +1,5 @@
 package net.glowstone.generator.structures;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import net.glowstone.GlowServer;
 import net.glowstone.generator.objects.RandomItemsContent;
 import net.glowstone.generator.objects.RandomItemsContent.RandomAmountItem;
@@ -18,6 +15,10 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.Chest;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class GlowDungeon extends GlowStructurePiece {
 
@@ -138,17 +139,17 @@ public class GlowDungeon extends GlowStructurePiece {
         chestContent.addItem(new RandomAmountItem(Material.IRON_INGOT, 1, 4), 10);
         chestContent.addItem(new RandomAmountItem(Material.BREAD, 1, 1), 10);
         chestContent.addItem(new RandomAmountItem(Material.WHEAT, 1, 4), 10);
-        chestContent.addItem(new RandomAmountItem(Material.SULPHUR, 1, 4), 10);
+        chestContent.addItem(new RandomAmountItem(Material.GUNPOWDER, 1, 4), 10);
         chestContent.addItem(new RandomAmountItem(Material.STRING, 1, 4), 10);
         chestContent.addItem(new RandomAmountItem(Material.BUCKET, 1, 1), 10);
         chestContent.addItem(new RandomAmountItem(Material.GOLDEN_APPLE, 1, 1), 1);
         chestContent.addItem(new RandomAmountItem(Material.REDSTONE, 1, 4), 10);
-        chestContent.addItem(new RandomAmountItem(Material.GOLD_RECORD, 1, 1), 4);
-        chestContent.addItem(new RandomAmountItem(Material.GREEN_RECORD, 1, 1), 4);
+        chestContent.addItem(new RandomAmountItem(Material.MUSIC_DISC_13, 1, 1), 4);
+        chestContent.addItem(new RandomAmountItem(Material.MUSIC_DISC_CAT, 1, 1), 4);
         chestContent.addItem(new RandomAmountItem(Material.NAME_TAG, 1, 1), 10);
-        chestContent.addItem(new RandomAmountItem(Material.GOLD_BARDING, 1, 1), 2);
-        chestContent.addItem(new RandomAmountItem(Material.IRON_BARDING, 1, 1), 5);
-        chestContent.addItem(new RandomAmountItem(Material.DIAMOND_BARDING, 1, 1), 1);
+        chestContent.addItem(new RandomAmountItem(Material.GOLDEN_HORSE_ARMOR, 1, 1), 2);
+        chestContent.addItem(new RandomAmountItem(Material.IRON_HORSE_ARMOR, 1, 1), 5);
+        chestContent.addItem(new RandomAmountItem(Material.DIAMOND_HORSE_ARMOR, 1, 1), 1);
 
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 3; j++) {

@@ -1,15 +1,16 @@
 package net.glowstone.generator.populators.overworld;
 
+import org.bukkit.block.Biome;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import org.bukkit.block.Biome;
 
-public class MesaForestPopulator extends MesaPopulator {
+public class WoodedBadlandsPopulator extends BadlandsPopulator {
 
-    private static final Biome[] BIOMES = {Biome.MESA_ROCK, Biome.MUTATED_MESA_ROCK};
+    private static final Biome[] BIOMES = {Biome.WOODED_BADLANDS_PLATEAU, Biome.MODIFIED_WOODED_BADLANDS_PLATEAU};
 
-    public MesaForestPopulator() {
+    public WoodedBadlandsPopulator() {
         treeDecorator.setAmount(5);
     }
 

@@ -117,7 +117,7 @@ public class BlockDoor extends BlockType {
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
         Vector clickedLoc) {
         // handles opening and closing the door
-        if (block.getType() == Material.IRON_DOOR_BLOCK) {
+        if (block.getType() == Material.IRON_DOOR) {
             return false;
         }
 

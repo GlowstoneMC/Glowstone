@@ -1,18 +1,19 @@
 package net.glowstone.generator.populators.overworld;
 
+import org.bukkit.block.Biome;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import org.bukkit.block.Biome;
 
-public class SavannaMountainsPopulator extends SavannaPopulator {
+public class ShatteredSavannaPopulator extends SavannaPopulator {
 
-    private static final Biome[] BIOMES = {Biome.MUTATED_SAVANNA, Biome.MUTATED_SAVANNA_ROCK};
+    private static final Biome[] BIOMES = {Biome.SHATTERED_SAVANNA, Biome.SHATTERED_SAVANNA_PLATEAU};
 
     /**
-     * Creates a populator specialized for the Savanna M and Savanna Plateau M biomes.
+     * Creates a populator specialized for the Shattered Savanna and Shattered Savanna Plateau biomes.
      */
-    public SavannaMountainsPopulator() {
+    public ShatteredSavannaPopulator() {
         treeDecorator.setAmount(2);
         flowerDecorator.setAmount(2);
         tallGrassDecorator.setAmount(5);

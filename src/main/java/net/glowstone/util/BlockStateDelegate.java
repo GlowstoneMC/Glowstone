@@ -1,7 +1,5 @@
 package net.glowstone.util;
 
-import java.util.Collection;
-import java.util.HashMap;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import org.bukkit.Location;
@@ -10,6 +8,9 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * A small utility class that allow to maintain a {@link BlockState}'s list in order to capture a
@@ -46,6 +47,7 @@ public class BlockStateDelegate {
      * @param data the new MaterialData of this block
      */
     public void setTypeAndData(World world, int x, int y, int z, Material type, BlockData data) {
+        // TODO: we probably don't need the type param, just use block data
         GlowBlockState state = (GlowBlockState) world.getBlockAt(x, y, z).getState();
         state.setType(type);
         state.setBlockData(data);

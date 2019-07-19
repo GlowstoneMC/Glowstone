@@ -3,6 +3,7 @@ package net.glowstone.block.blocktype;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.block.data.SimpleBlockData;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
@@ -19,12 +20,13 @@ public class BlockRedstoneOre extends BlockRandomDrops {
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
         Vector clickedLoc) {
+        // TODO: 1.13 glowing
         EntityChangeBlockEvent changeBlockEvent = new EntityChangeBlockEvent(player, block,
-            Material.GLOWING_REDSTONE_ORE, (byte) 0);
+            new SimpleBlockData(Material.REDSTONE_ORE));
         EventFactory.getInstance().callEvent(changeBlockEvent);
         if (!changeBlockEvent.isCancelled()) {
             GlowBlockState state = block.getState();
-            state.setType(Material.GLOWING_REDSTONE_ORE);
+            state.setType(Material.REDSTONE_ORE);
             state.update(true);
         }
         return false;

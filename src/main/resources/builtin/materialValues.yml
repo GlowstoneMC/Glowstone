@@ -56,19 +56,7 @@ values:
     baseMapColor: 48
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  STATIONARY_WATER:
-    lightOpacity: 3
-    hardness: 100
-    blastResistance: 500
-    pistonPushBehavior: BREAK
-    pistonPullBehavior: DONT_MOVE
   LAVA:
-    lightOpacity: 0
-    hardness: 100
-    blastResistance: 500
-    pistonPushBehavior: BREAK
-    pistonPullBehavior: DONT_MOVE
-  STATIONARY_LAVA:
     lightOpacity: 0
     hardness: 100
     blastResistance: 500
@@ -170,11 +158,11 @@ values:
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
-  PISTON_BASE:
+  PISTON:
     lightOpacity: 0
     hardness: 0.5
     blastResistance: 2.5
-  PISTON_EXTENSION:
+  MOVING_PISTON:
     lightOpacity: 0
     hardness: 0.5
     blastResistance: 2.5
@@ -186,18 +174,14 @@ values:
     fireResistance: 60
     hardness: 0.8
     blastResistance: 4
-  PISTON_MOVING_PIECE:
-    lightOpacity: 0
-    hardness: 0.5
-    blastResistance: 2.5
-  YELLOW_FLOWER:
+  DANDELION:
     hardness: 0
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  RED_ROSE:
+  AZURE_BLUET:
     hardness: 0
     lightOpacity: 0
     flameResistance: 60

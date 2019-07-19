@@ -1,9 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import net.glowstone.generator.decorators.overworld.DoublePlantDecorator.DoublePlantDecoration;
 import net.glowstone.generator.decorators.overworld.MushroomDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
@@ -13,6 +9,11 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public class TaigaPopulator extends BiomePopulator {
 
@@ -30,7 +31,7 @@ public class TaigaPopulator extends BiomePopulator {
         Material.RED_MUSHROOM);
 
     /**
-     * Creates a populator specialized for Taiga, Taiga Hills and Taiga M, and their Cold variants.
+     * Creates a populator specialized for Taiga, Taiga Hills and Taiga Mountains, and their Snowy variants.
      */
     public TaigaPopulator() {
         doublePlantDecorator.setAmount(7);

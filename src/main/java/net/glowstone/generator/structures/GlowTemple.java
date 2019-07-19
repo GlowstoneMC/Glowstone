@@ -1,11 +1,12 @@
 package net.glowstone.generator.structures;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Desert temple, jungle temple, or witch hut.
@@ -29,7 +30,7 @@ public class GlowTemple extends GlowStructure {
         types.put(Biome.DESERT_HILLS, TempleType.DESERT_TEMPLE);
         types.put(Biome.JUNGLE, TempleType.JUNGLE_TEMPLE);
         types.put(Biome.JUNGLE_HILLS, TempleType.JUNGLE_TEMPLE);
-        types.put(Biome.SWAMPLAND, TempleType.WITCH_HUT);
+        types.put(Biome.SWAMP, TempleType.WITCH_HUT);
     }
 
     /**

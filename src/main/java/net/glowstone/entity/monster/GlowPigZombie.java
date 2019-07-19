@@ -1,7 +1,5 @@
 package net.glowstone.entity.monster;
 
-import java.util.Random;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -9,6 +7,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
+import java.util.Random;
+import java.util.UUID;
 
 public class GlowPigZombie extends GlowZombie implements PigZombie {
 
@@ -39,17 +40,17 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Override
     protected Sound getHurtSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_HURT;
+        return Sound.ENTITY_ZOMBIE_PIGMAN_HURT;
     }
 
     @Override
     protected Sound getDeathSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_DEATH;
+        return Sound.ENTITY_ZOMBIE_PIGMAN_DEATH;
     }
 
     @Override
     protected Sound getAmbientSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_AMBIENT;
+        return Sound.ENTITY_ZOMBIE_PIGMAN_AMBIENT;
     }
 
     @Override

@@ -1,8 +1,6 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowAnimal;
@@ -14,9 +12,12 @@ import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class GlowChicken extends GlowAnimal implements Chicken {
 
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.SEEDS,
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.WHEAT_SEEDS,
             Material.BEETROOT_SEEDS,
             Material.MELON_SEEDS,
             Material.PUMPKIN_SEEDS);

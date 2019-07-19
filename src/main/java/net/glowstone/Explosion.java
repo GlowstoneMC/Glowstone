@@ -1,13 +1,5 @@
 package net.glowstone;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.blocktype.BlockTnt;
 import net.glowstone.entity.GlowEntity;
@@ -15,9 +7,9 @@ import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.ExplosionMessage;
 import net.glowstone.net.message.play.game.ExplosionMessage.Record;
 import net.glowstone.util.RayUtil;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -33,6 +25,15 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public final class Explosion {
 
@@ -370,10 +371,10 @@ public final class Explosion {
 
         if (power >= 2.0F && breakBlocks) {
             // send huge explosion
-            world.spigot().playEffect(location, Effect.EXPLOSION_HUGE);
+            world.spawnParticle(Particle.EXPLOSION_HUGE, location, 1);
         } else {
             // send large explosion
-            world.spigot().playEffect(location, Effect.EXPLOSION_LARGE);
+            world.spawnParticle(Particle.EXPLOSION_LARGE, location, 1);
         }
     }
 

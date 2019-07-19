@@ -1,7 +1,7 @@
 package net.glowstone.block.entity.state;
 
-import java.util.Collection;
 import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.JukeboxEntity;
@@ -11,10 +11,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collection;
+
 public class GlowJukebox extends GlowBlockState implements Jukebox {
 
     @Getter
-    private ItemStack playingItem;
+    @Setter
+    private ItemStack record;
 
     /**
      * Creates a block state for the given jukebox block.
@@ -27,7 +30,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
             throw new IllegalArgumentException(
                 "GlowJukebox: expected JUKEBOX, got " + block.getType());
         }
-        playingItem = getBlockEntity().getPlaying();
+        record = getBlockEntity().getPlaying();
     }
 
     private JukeboxEntity getBlockEntity() {
@@ -38,7 +41,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     public boolean update(boolean force, boolean applyPhysics) {
         boolean result = super.update(force, applyPhysics);
         if (result) {
-            getBlockEntity().setPlaying(playingItem);
+            getBlockEntity().setPlaying(record);
         }
         return result;
     }
@@ -48,7 +51,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
 
     @Override
     public Material getPlaying() {
-        return playingItem.getType();
+        return record.getType();
     }
 
     @Override
@@ -60,9 +63,9 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     public void setPlaying(Material record) {
         int id = 0;
         if (record == null || record == Material.AIR) {
-            playingItem = null;
+            this.record = null;
         } else {
-            playingItem = new ItemStack(record);
+            this.record = new ItemStack(record);
             id = record.getId();
         }
         Collection<GlowPlayer> players = getWorld().getRawPlayers();
@@ -75,7 +78,7 @@ public class GlowJukebox extends GlowBlockState implements Jukebox {
     @Override
     public boolean eject() {
         if (isPlaying()) {
-            getWorld().dropItemNaturally(getLocation(), playingItem);
+            getWorld().dropItemNaturally(getLocation(), record);
             setPlaying(null);
             return true;
         }

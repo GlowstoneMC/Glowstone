@@ -63,8 +63,8 @@ import lombok.RequiredArgsConstructor;
 import net.glowstone.generator.ground.GroundGenerator;
 import net.glowstone.generator.ground.SnowyGroundGenerator;
 import net.glowstone.generator.populators.overworld.BiomePopulator;
-import net.glowstone.generator.populators.overworld.IcePlainsPopulator;
-import net.glowstone.generator.populators.overworld.IcePlainsSpikesPopulator;
+import net.glowstone.generator.populators.overworld.SnowyTundraPopulator;
+import net.glowstone.generator.populators.overworld.IceSpikesPopulator;
 import net.glowstone.generator.populators.overworld.TaigaPopulator;
 import net.glowstone.i18n.ConsoleMessages;
 import org.bukkit.block.Biome;
@@ -87,7 +87,7 @@ public final class GlowBiome {
                         .type(SNOWY_TUNDRA)
                         .id(12)
                         .temperature(0.0)
-                        .populator(IcePlainsPopulator.class)
+                        .populator(SnowyTundraPopulator.class)
                         .ground(GroundGenerator.class)
                         .scale(BiomeScale.FLATLANDS)
                         .build(),
@@ -95,7 +95,7 @@ public final class GlowBiome {
                         .type(ICE_SPIKES)
                         .id(140)
                         .temperature(0.0)
-                        .populator(IcePlainsSpikesPopulator.class)
+                        .populator(IceSpikesPopulator.class)
                         .ground(SnowyGroundGenerator.class)
                         .scale(BiomeScale.MID_HILLS)
                         .build(),

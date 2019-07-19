@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -11,16 +10,18 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockNetherWart extends BlockNeedsAttached {
 
     public BlockNetherWart() {
-        setDrops(new ItemStack(Material.NETHER_STALK, 1));
+        setDrops(new ItemStack(Material.NETHER_WART, 1));
     }
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        return block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ())
-            == Material.SOUL_SAND.getId();
+        return block.getWorld().getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ())
+            == Material.SOUL_SAND;
     }
 
     @Override

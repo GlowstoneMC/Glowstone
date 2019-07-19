@@ -1,6 +1,17 @@
 package net.glowstone.util.nbt;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Getter;
+import net.glowstone.block.data.SimpleBlockData;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
+import net.glowstone.constants.ItemIds;
+import net.glowstone.io.nbt.NbtSerialization;
+import net.glowstone.util.DynamicallyTypedMapWithDoubles;
+import net.glowstone.util.FloatConsumer;
+import net.glowstone.util.ShortConsumer;
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,16 +27,8 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import net.glowstone.block.flattening.generated.FlatteningUtil;
-import net.glowstone.constants.ItemIds;
-import net.glowstone.io.nbt.NbtSerialization;
-import net.glowstone.util.DynamicallyTypedMapWithDoubles;
-import net.glowstone.util.FloatConsumer;
-import net.glowstone.util.ShortConsumer;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NonNls;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The {@code TAG_Compound} tag.
@@ -677,6 +680,22 @@ public class CompoundTag extends Tag<Map<String, Tag>>
                 return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getShort(key)));
             case BYTE:
                 return Optional.ofNullable(FlatteningUtil.getMaterialFromBaseId(getByte(key)));
+            default:
+                return Optional.empty();
+        }
+    }
+
+    public Optional<BlockData> tryGetBlockData(@NonNls String key) {
+        if (!containsKey(key)) {
+            return Optional.empty();
+        }
+        switch (value.get(key).getType()) {
+            case COMPOUND:
+                CompoundTag state = getCompound(key);
+                Optional<Material> type = tryGetMaterial("Name");
+                // TODO: 1.13 parse properties
+                Optional<CompoundTag> properties = tryGetCompound("Properties");
+                return Optional.of(new SimpleBlockData(type.orElse(Material.AIR)));
             default:
                 return Optional.empty();
         }

@@ -84,7 +84,7 @@ import net.glowstone.block.blocktype.BlockSkull;
 import net.glowstone.block.blocktype.BlockSlab;
 import net.glowstone.block.blocktype.BlockSnow;
 import net.glowstone.block.blocktype.BlockSnowBlock;
-import net.glowstone.block.blocktype.BlockSoil;
+import net.glowstone.block.blocktype.BlockFarmland;
 import net.glowstone.block.blocktype.BlockSponge;
 import net.glowstone.block.blocktype.BlockStairs;
 import net.glowstone.block.blocktype.BlockStem;
@@ -200,7 +200,7 @@ public final class ItemTable {
         regAll(MaterialUtil.GLAZED_TERRACOTTA, new BlockDirectDrops(ToolType.PICKAXE));
         regAll(MaterialUtil.WOODEN_DOORS, BlockDoor::new, Sound.BLOCK_WOOD_BREAK);
         reg(Material.IRON_DOOR, new BlockDoor(Material.IRON_DOOR));
-        reg(Material.FARMLAND, new BlockSoil(), Sound.BLOCK_GRAVEL_BREAK);
+        reg(Material.FARMLAND, new BlockFarmland(), Sound.BLOCK_GRAVEL_BREAK);
         reg(Material.GLASS, new BlockDropless());
         reg(Material.GLASS_PANE, new BlockDropless());
         regAll(MaterialUtil.STAINED_GLASS_BLOCKS, new BlockDropless());

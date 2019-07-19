@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
-public class MushroomIslandPopulator extends BiomePopulator {
+public class MushroomFieldsPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.MUSHROOM_FIELDS, Biome.MUSHROOM_FIELD_SHORE};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree::new, 1),
@@ -28,9 +28,9 @@ public class MushroomIslandPopulator extends BiomePopulator {
         Material.RED_MUSHROOM);
 
     /**
-     * Creates a populator for the mushroom island biome.
+     * Creates a populator for the mushroom fields biome.
      */
-    public MushroomIslandPopulator() {
+    public MushroomFieldsPopulator() {
         treeDecorator.setAmount(1);
         treeDecorator.setTrees(TREES);
         flowerDecorator.setAmount(0);

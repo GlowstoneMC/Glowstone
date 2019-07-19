@@ -1,9 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BannerEntity;
@@ -24,10 +20,16 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 public class BlockBanner extends BlockType {
 
     public BlockBanner() {
-        setDrops(new ItemStack(Material.BANNER));
+        // TODO: 1.13 banner types
+        setDrops(new ItemStack(Material.LEGACY_BANNER));
     }
 
     /**
@@ -66,7 +68,7 @@ public class BlockBanner extends BlockType {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         GlowBanner state = (GlowBanner) block.getState();
-        ItemStack drop = new ItemStack(Material.BANNER, 1);
+        ItemStack drop = new ItemStack(Material.LEGACY_BANNER, 1);
         BannerMeta meta = (BannerMeta) drop.getItemMeta();
         meta.setPatterns(state.getPatterns());
         drop.setItemMeta(meta);

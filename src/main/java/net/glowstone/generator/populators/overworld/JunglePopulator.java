@@ -1,9 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import net.glowstone.generator.decorators.overworld.MelonDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.BigOakTree;
@@ -16,9 +12,14 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+
 public class JunglePopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.MUTATED_JUNGLE};
+    private static final Biome[] BIOMES = {Biome.JUNGLE, Biome.JUNGLE_HILLS, Biome.MODIFIED_JUNGLE};
     private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree::new, 10),
         new TreeDecoration(JungleBush::new, 50), new TreeDecoration(MegaJungleTree::new, 15),
         new TreeDecoration(CocoaTree::new, 30)};

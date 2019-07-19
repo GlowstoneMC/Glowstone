@@ -1,11 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GameRules;
 import net.glowstone.generator.decorators.EntityDecorator;
@@ -35,14 +29,22 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.generator.BlockPopulator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 public class BiomePopulator extends BlockPopulator {
 
     private static final TreeDecoration[] TREES = {new TreeDecoration(BigOakTree::new, 1),
         new TreeDecoration(GenericTree::new, 9)};
     private static final FlowerDecoration[] FLOWERS = {
         new FlowerDecoration(FlowerType.DANDELION, 2), new FlowerDecoration(FlowerType.POPPY, 1)};
-    protected final LakeDecorator waterLakeDecorator = new LakeDecorator(Material.STATIONARY_WATER);
-    protected final LakeDecorator lavaLakeDecorator = new LakeDecorator(Material.STATIONARY_LAVA);
+    // TODO: stationary
+    protected final LakeDecorator waterLakeDecorator = new LakeDecorator(Material.WATER);
+    protected final LakeDecorator lavaLakeDecorator = new LakeDecorator(Material.LAVA);
     protected final DungeonPopulator dungeonPopulator = new DungeonPopulator();
     protected final OrePopulator orePopulator = new OrePopulator();
     protected final UnderwaterDecorator sandPatchDecorator = new UnderwaterDecorator(Material.SAND);

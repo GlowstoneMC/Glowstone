@@ -1,19 +1,20 @@
 package net.glowstone.generator.populators.overworld;
 
+import org.bukkit.block.Biome;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import org.bukkit.block.Biome;
 
-public class MesaPopulator extends BiomePopulator {
+public class BadlandsPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.MESA, Biome.MESA_CLEAR_ROCK,
-        Biome.MUTATED_MESA_CLEAR_ROCK, Biome.MUTATED_MESA};
+    private static final Biome[] BIOMES = {Biome.BADLANDS, Biome.BADLANDS_PLATEAU,
+        Biome.MODIFIED_BADLANDS_PLATEAU, Biome.ERODED_BADLANDS};
 
     /**
-     * Creates a populator specialized for mesa biomes.
+     * Creates a populator specialized for badlands biomes.
      */
-    public MesaPopulator() {
+    public BadlandsPopulator() {
         flowerDecorator.setAmount(0);
         deadBushDecorator.setAmount(20);
         sugarCaneDecorator.setAmount(13);

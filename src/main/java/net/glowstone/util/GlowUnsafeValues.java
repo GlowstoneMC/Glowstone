@@ -1,7 +1,5 @@
 package net.glowstone.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -13,6 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of Bukkit's internal-use UnsafeValues.
@@ -62,6 +63,12 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
+    public Material fromLegacy(MaterialData material, boolean itemPriority) {
+        // TODO: 1.13
+        return null;
+    }
+
+    @Override
     public BlockData fromLegacy(Material material, byte b) {
         // TODO: 1.13
         return null;
@@ -97,7 +104,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
-    public byte[] processClass(PluginDescriptionFile pluginDescriptionFile, byte[] bytes) {
+    public byte[] processClass(PluginDescriptionFile pdf, String path, byte[] clazz) {
         // TODO: 1.13
         return new byte[0];
     }

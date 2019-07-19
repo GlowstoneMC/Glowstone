@@ -1,9 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -16,6 +12,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Pumpkin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockStem extends BlockCrops {
 
     private Material fruitType;
@@ -27,7 +28,7 @@ public class BlockStem extends BlockCrops {
      */
     public BlockStem(Material plantType) {
         if (plantType == Material.MELON_STEM) {
-            fruitType = Material.MELON_BLOCK;
+            fruitType = Material.MELON;
             seedsType = Material.MELON_SEEDS;
         } else if (plantType == Material.PUMPKIN_STEM) {
             fruitType = Material.PUMPKIN;
@@ -36,7 +37,7 @@ public class BlockStem extends BlockCrops {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return block.getRelative(BlockFace.DOWN).getType() == Material.FARMLAND;
     }
 

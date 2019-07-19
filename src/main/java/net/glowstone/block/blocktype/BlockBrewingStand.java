@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.BrewingStandEntity;
@@ -10,6 +8,9 @@ import net.glowstone.inventory.MaterialMatcher;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class BlockBrewingStand extends BlockContainer {
 
@@ -20,7 +21,7 @@ public class BlockBrewingStand extends BlockContainer {
 
     @Override
     protected Collection<ItemStack> getBlockDrops(GlowBlock block) {
-        return Arrays.asList(new ItemStack(Material.BREWING_STAND_ITEM));
+        return Arrays.asList(new ItemStack(Material.BREWING_STAND));
     }
 
     @Override

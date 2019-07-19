@@ -1,8 +1,6 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.EventFactory;
 import net.glowstone.entity.GlowAnimal;
@@ -21,6 +19,9 @@ import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
+
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowSheep extends GlowAnimal implements Sheep {
 
@@ -45,7 +46,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
         } else if (8684 > colorpc) {
             setColor(DyeColor.BLACK);
         } else if (9184 > colorpc) {
-            setColor(DyeColor.SILVER);
+            setColor(DyeColor.LIGHT_GRAY);
         } else if (9684 > colorpc) {
             setColor(DyeColor.GRAY);
         } else if (9984 > colorpc) {
@@ -114,12 +115,13 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
 
                     getWorld().dropItemNaturally(getLocation(),
-                        new ItemStack(Material.WOOL, ThreadLocalRandom.current().nextInt(3) + 1,
+                        // TODO: 1.13 wool colors
+                        new ItemStack(Material.LEGACY_WOOL, ThreadLocalRandom.current().nextInt(3) + 1,
                             getColor().getWoolData()));
 
                     setSheared(true);
                     return true;
-                case INK_SACK: {
+                case INK_SAC: {
                     Dye dye = (Dye) hand.getData();
                     DyeColor color = dye.getColor();
 

@@ -1,11 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -17,6 +11,13 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockLeaves extends BlockType {
 
@@ -40,7 +41,8 @@ public class BlockLeaves extends BlockType {
             ));
         }
 
-        if (block.getType() == Material.LEAVES_2) {
+        // TODO: 1.13 leaves types
+        if (block.getType() == Material.LEGACY_LEAVES_2) {
             data += 4;
         }
 
@@ -48,7 +50,8 @@ public class BlockLeaves extends BlockType {
 
         if (ThreadLocalRandom.current().nextFloat() < (block.getData() == 3 ? .025f
             : .05f)) { //jungle leaves drop with 2.5% chance, others drop with 5%
-            drops.add(new ItemStack(Material.SAPLING, 1, (short) data));
+            // TODO: 1.13 sapling types
+            drops.add(new ItemStack(Material.LEGACY_SAPLING, 1, (short) data));
         }
         if (data == 0 && ThreadLocalRandom.current().nextFloat()
             < .005) { //oak leaves have a .5% chance to drop an apple
@@ -70,7 +73,8 @@ public class BlockLeaves extends BlockType {
             for (int z = 0; z < 3; z++) {
                 for (int y = 0; y < 3; y++) {
                     GlowBlock b = world.getBlockAt(block.getLocation().add(x - 1, y - 1, z - 1));
-                    if (b.getType() == Material.LEAVES || b.getType() == Material.LEAVES_2) {
+                    // TODO: 1.13 leaves
+                    if (b.getType() == Material.LEGACY_LEAVES || b.getType() == Material.LEGACY_LEAVES_2) {
                         GlowBlockState state = b.getState();
                         if ((state.getRawData() & 0x08) == 0 && (state.getRawData() & 0x04)
                             == 0) { // check decay is off and decay is on
@@ -101,10 +105,11 @@ public class BlockLeaves extends BlockType {
                     GlowBlock b = world
                         .getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
                     byte val = 127;
-                    if (b.getType() == Material.LOG || b.getType() == Material.LOG_2) {
+                    // TODO: 1.13 leaves and log types
+                    if (b.getType() == Material.LEGACY_LOG || b.getType() == Material.LEGACY_LOG_2) {
                         val = 0;
-                    } else if (b.getType() == Material.LEAVES
-                        || b.getType() == Material.LEAVES_2) {
+                    } else if (b.getType() == Material.LEGACY_LEAVES
+                        || b.getType() == Material.LEGACY_LEAVES_2) {
                         val = -1;
                     }
                     setBlockInMap(val, x, y, z);

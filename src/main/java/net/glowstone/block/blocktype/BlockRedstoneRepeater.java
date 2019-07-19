@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 public class BlockRedstoneRepeater extends BlockNeedsAttached {
 
     public BlockRedstoneRepeater() {
-        setDrops(new ItemStack(Material.DIODE));
+        setDrops(new ItemStack(Material.REPEATER));
     }
 
     @Override
@@ -59,14 +59,15 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
         Diode diode = (Diode) me.getState().getData();
         GlowBlock target = me.getRelative(diode.getFacing().getOppositeFace());
 
-        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered()
+        // TODO: 1.13 redstone ON data
+        boolean powered = target.getType() == Material.REDSTONE_TORCH || target.isBlockPowered()
             || target.getType() == Material.REDSTONE_WIRE
             && target.getData() > 0 && BlockRedstone.calculateConnections(target)
             .contains(diode.getFacing())
-            || target.getType() == Material.DIODE_BLOCK_ON
+            || target.getType() == Material.REPEATER
             && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
-        if (powered != (me.getType() == Material.DIODE_BLOCK_ON)) {
+        if (powered != (me.getType() == Material.REPEATER)) {
             me.getWorld().requestPulse(me);
         }
     }
@@ -96,18 +97,19 @@ public class BlockRedstoneRepeater extends BlockNeedsAttached {
         Diode diode = (Diode) block.getState().getData();
         GlowBlock target = block.getRelative(diode.getFacing().getOppositeFace());
 
-        boolean powered = target.getType() == Material.REDSTONE_TORCH_ON || target.isBlockPowered()
+        // TODO: redstone ON data
+        boolean powered = target.getType() == Material.REDSTONE_TORCH || target.isBlockPowered()
             || target.getType() == Material.REDSTONE_WIRE
             && target.getData() > 0 && BlockRedstone.calculateConnections(target)
             .contains(diode.getFacing())
-            || target.getType() == Material.DIODE_BLOCK_ON
+            || target.getType() == Material.REPEATER
             && ((Diode) target.getState().getData()).getFacing() == diode.getFacing();
 
-        if (!powered && block.getType() == Material.DIODE_BLOCK_ON) {
-            block.setTypeIdAndData(Material.DIODE_BLOCK_OFF.getId(), block.getData(), true);
+        if (!powered && block.getType() == Material.REPEATER) {
+            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(), true); // TODO: repeater off data
             extraUpdate(block);
-        } else if (powered && block.getType() == Material.DIODE_BLOCK_OFF) {
-            block.setTypeIdAndData(Material.DIODE_BLOCK_ON.getId(), block.getData(), true);
+        } else if (powered && block.getType() == Material.REPEATER) { // TODO: repeater off data
+            block.setTypeIdAndData(Material.REPEATER.getId(), block.getData(), true); // TODO: repeater on data
             extraUpdate(block);
         }
     }

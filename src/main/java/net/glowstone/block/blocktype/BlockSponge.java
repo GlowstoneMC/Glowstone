@@ -27,7 +27,7 @@ public class BlockSponge extends BlockType {
             TaxicabBlockIterator iterator = new TaxicabBlockIterator(block);
             iterator.setMaxDistance(7);
             iterator.setMaxBlocks(66);
-            iterator.setValidator(b -> b.getType() == Material.WATER);
+            iterator.setPredicate(b -> b.getType() == Material.WATER);
 
             if (iterator.hasNext()) {
                 absorbedWater = true;

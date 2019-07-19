@@ -2,12 +2,6 @@ package net.glowstone.entity;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.flowpowered.network.Message;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -26,6 +20,15 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
@@ -121,6 +124,12 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     }
 
     @Override
+    public <T> void setParticle(@NotNull Particle particle, @Nullable T data) {
+        this.particle = particle;
+        // TODO: set data
+    }
+
+    @Override
     public boolean hasCustomEffects() {
         return !customEffects.isEmpty();
     }
@@ -149,11 +158,6 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     @Override
     public boolean hasCustomEffect(PotionEffectType potionEffectType) {
         return customEffects.containsKey(potionEffectType);
-    }
-
-    @Override
-    public void clearCustomEffects0() {
-        clearCustomEffects();
     }
 
     @Override

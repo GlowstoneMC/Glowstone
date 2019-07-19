@@ -1,7 +1,6 @@
 package net.glowstone.entity.passive;
 
 import com.google.common.collect.Sets;
-import java.util.Set;
 import lombok.Getter;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
@@ -11,10 +10,14 @@ import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
 
+import java.util.Set;
+
 public class GlowOcelot extends GlowTameable implements Ocelot {
 
-    // TODO 1.13 : Add RAW_SALMON
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.RAW_FISH);
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.COD,
+            Material.SALMON,
+            Material.PUFFERFISH,
+            Material.TROPICAL_FISH);
 
     @Getter
     private Type catType;

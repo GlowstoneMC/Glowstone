@@ -98,7 +98,7 @@ public class VehicleMoveHandler implements MessageHandler<GlowSession, VehicleMo
         }
 
         Material type = oldLocation.getBlock().getType();
-        if (type != Material.WATER && type != Material.STATIONARY_WATER) {
+        if (type != Material.WATER) {
             return true;
         }
 

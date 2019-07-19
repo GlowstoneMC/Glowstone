@@ -2,9 +2,6 @@ package net.glowstone.entity.passive;
 
 import com.flowpowered.network.Message;
 import com.google.common.collect.ImmutableMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.entity.GlowPlayer;
@@ -21,6 +18,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.HorseInventory;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowHorse extends GlowAbstractHorse implements Horse {
 
@@ -115,11 +116,11 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
 
     private int getHorseArmorData() {
         if (getInventory().getArmor() != null) {
-            if (getInventory().getArmor().getType() == Material.DIAMOND_BARDING) {
+            if (getInventory().getArmor().getType() == Material.DIAMOND_HORSE_ARMOR) {
                 return 3;
-            } else if (getInventory().getArmor().getType() == Material.GOLD_BARDING) {
+            } else if (getInventory().getArmor().getType() == Material.GOLDEN_HORSE_ARMOR) {
                 return 2;
-            } else if (getInventory().getArmor().getType() == Material.IRON_BARDING) {
+            } else if (getInventory().getArmor().getType() == Material.IRON_HORSE_ARMOR) {
                 return 1;
             }
         }

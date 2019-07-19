@@ -199,12 +199,23 @@ public class GlowParticle {
     /**
      * Convert an object to an extData array if possible for a particle.
      *
-     * @param particle the Particle to validate.
+     * @param particle the {@link Particle} to validate.
      * @param object the Object to convert.
      * @return The extData array for the particle effect.
      */
     public static Object[] getExtData(Particle particle, Object object) {
         return getParticle(particle).getExtData(object);
+    }
+
+    /**
+     * Convert an object to an extData array if possible for an effect.
+     *
+     * @param effect the {@link Effect} to validate.
+     * @param object the Object to convert.
+     * @return The extData array for the particle effect.
+     */
+    public static Object[] getExtData(Effect effect, Object object) {
+        return getParticle(effect).getExtData(object);
     }
 
     /**

@@ -1,19 +1,20 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import net.glowstone.generator.decorators.overworld.IceDecorator;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-public class IcePlainsSpikesPopulator extends IcePlainsPopulator {
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+
+public class IceSpikesPopulator extends SnowyTundraPopulator {
 
     protected final IceDecorator iceDecorator = new IceDecorator();
 
-    public IcePlainsSpikesPopulator() {
+    public IceSpikesPopulator() {
         tallGrassDecorator.setAmount(0);
     }
 

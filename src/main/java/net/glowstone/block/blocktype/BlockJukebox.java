@@ -55,7 +55,7 @@ public class BlockJukebox extends BlockType {
     @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
-        ItemStack disk = ((GlowJukebox) block.getState()).getPlayingItem();
+        ItemStack disk = ((GlowJukebox) block.getState()).getRecord();
         if (disk == null) {
             return Arrays.asList(new ItemStack(block.getType()));
         } else {

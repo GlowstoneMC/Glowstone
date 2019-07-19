@@ -46,11 +46,12 @@ public class BlockButton extends BlockAttachable {
             public void run() {
                 button.setPowered(false);
                 state.update();
-                if (block.getType() == Material.WOOD_BUTTON
+                // TODO: 1.13 wood button types
+                if (block.getType() == Material.LEGACY_WOOD_BUTTON
                     || block.getType() == Material.STONE_BUTTON) {
                     extraUpdate(block);
                     block.getWorld().playSound(block.getLocation(),
-                        block.getType() == Material.WOOD_BUTTON ? Sound.BLOCK_WOOD_BUTTON_CLICK_OFF
+                        block.getType() == Material.LEGACY_WOOD_BUTTON ? Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF
                             : Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 0.3f, 0.5f);
                 }
             }

@@ -1,8 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
@@ -14,6 +11,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Stairs;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class BlockStairs extends BlockType {
 
@@ -55,11 +56,11 @@ public class BlockStairs extends BlockType {
     private boolean isWoodenStair(Material type) {
         switch (type) {
             case ACACIA_STAIRS:
-            case BIRCH_WOOD_STAIRS:
+            case BIRCH_STAIRS:
             case DARK_OAK_STAIRS:
-            case JUNGLE_WOOD_STAIRS:
+            case JUNGLE_STAIRS:
             case SPRUCE_STAIRS:
-            case WOOD_STAIRS:
+            case OAK_STAIRS:
                 return true;
             default:
                 return false;

@@ -1,12 +1,8 @@
 package net.glowstone.entity.passive;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Sets;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.entity.GlowAnimal;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -16,11 +12,16 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class GlowRabbit extends GlowAnimal implements Rabbit {
 
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT_ITEM,
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT,
             Material.GOLDEN_CARROT,
-            Material.YELLOW_FLOWER);
+            Material.DANDELION);
 
     private static final BiMap<Type, Integer> rabbitTypeIntegerMap = ImmutableBiMap
             .<Type, Integer>builder()

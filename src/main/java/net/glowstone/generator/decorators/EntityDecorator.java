@@ -1,6 +1,5 @@
 package net.glowstone.generator.decorators;
 
-import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.GlowServer;
@@ -15,6 +14,8 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.generator.BlockPopulator;
+
+import java.util.Random;
 
 public class EntityDecorator extends BlockPopulator {
 
@@ -74,9 +75,7 @@ public class EntityDecorator extends BlockPopulator {
             double x = radius * Math.sin(angle) + centerX;
             double z = radius * Math.cos(angle) + centerZ;
             Block block = world.getHighestBlockAt(new Location(world, x, 0, z));
-            if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER
-                || block.getType() == Material.LAVA
-                || block.getType() == Material.STATIONARY_LAVA) {
+            if (block.getType() == Material.WATER || block.getType() == Material.LAVA) {
                 i--;
                 attempts--;
                 continue;

@@ -1,9 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import net.glowstone.generator.decorators.overworld.EmeraldOreDecorator;
 import net.glowstone.generator.decorators.overworld.InfestedStoneDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
@@ -14,7 +10,12 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-public class ExtremeHillsPopulator extends BiomePopulator {
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
+
+public class MountainsPopulator extends BiomePopulator {
 
     private static final Biome[] BIOMES = {Biome.MOUNTAINS, Biome.GRAVELLY_MOUNTAINS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 20),
@@ -23,7 +24,7 @@ public class ExtremeHillsPopulator extends BiomePopulator {
     protected final EmeraldOreDecorator emeraldOreDecorator = new EmeraldOreDecorator();
     protected final InfestedStoneDecorator infestedStoneDecorator = new InfestedStoneDecorator();
 
-    public ExtremeHillsPopulator() {
+    public MountainsPopulator() {
         treeDecorator.setAmount(0);
         treeDecorator.setTrees(TREES);
     }

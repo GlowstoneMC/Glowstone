@@ -1,8 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -15,6 +12,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class BlockSnow extends BlockNeedsAttached {
 
@@ -57,7 +58,7 @@ public class BlockSnow extends BlockNeedsAttached {
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (tool != null && ToolType.SHOVEL.matches(tool.getType())) {
-            return Arrays.asList(new ItemStack(Material.SNOW_BALL, block.getData() + 1));
+            return Arrays.asList(new ItemStack(Material.SNOWBALL, block.getData() + 1));
         } else {
             return Collections.emptyList();
         }

@@ -1,6 +1,5 @@
 package net.glowstone.entity.monster;
 
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.util.TickUtil;
@@ -9,6 +8,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Vex;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GlowVex extends GlowMonster implements Vex {
 
@@ -55,5 +56,16 @@ public class GlowVex extends GlowMonster implements Vex {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_VEX_AMBIENT;
+    }
+
+    @Override
+    public boolean isCharging() {
+        // TODO: vex charging
+        return false;
+    }
+
+    @Override
+    public void setCharging(boolean charging) {
+
     }
 }

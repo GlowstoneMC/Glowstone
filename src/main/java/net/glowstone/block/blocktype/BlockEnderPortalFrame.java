@@ -1,7 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -16,12 +14,15 @@ import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BlockEnderPortalFrame extends BlockDropless {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
         ItemStack holding, Vector clickedLoc) {
-        state.setType(Material.ENDER_PORTAL_FRAME);
+        state.setType(Material.END_PORTAL_FRAME);
         switch (getOppositeBlockFace(player.getLocation(), false).getOppositeFace()) {
             case NORTH:
                 state.setRawData((byte) 0);
@@ -45,7 +46,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
         Vector clickedLoc) {
         ItemStack item = player.getItemInHand();
-        if (item != null && item.getType() == Material.EYE_OF_ENDER) {
+        if (item != null && item.getType() == Material.ENDER_EYE) {
             if ((block.getData() & 0x4) != 0) {
                 return true;
             }
@@ -86,7 +87,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
             for (int j = -1; j <= 1; j++) {
                 GlowBlock block = center.getRelative(SIDES[i], 2)
                     .getRelative(SIDES[(i + 1) % 4], j);
-                if (block.getType() != Material.ENDER_PORTAL_FRAME
+                if (block.getType() != Material.END_PORTAL_FRAME
                     || (block.getData() & 0x4) == 0) {
                     return false;
                 }
@@ -103,7 +104,7 @@ public class BlockEnderPortalFrame extends BlockDropless {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 BlockState state = center.getRelative(i, 0, j).getState();
-                state.setType(Material.ENDER_PORTAL);
+                state.setType(Material.END_PORTAL);
                 blocks.add(state);
             }
         }

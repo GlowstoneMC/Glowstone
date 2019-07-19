@@ -1,6 +1,5 @@
 package net.glowstone.generator.structures;
 
-import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.generator.objects.RandomItemsContent;
@@ -9,6 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public abstract class GlowTemplePiece extends GlowStructurePiece {
 
@@ -54,8 +55,9 @@ public abstract class GlowTemplePiece extends GlowStructurePiece {
                 z++) {
                 int y = world.getHighestBlockYAt(x, z);
                 Material type = world.getBlockAt(x, y - 1, z).getType();
-                while ((type == Material.LEAVES || type == Material.LEAVES_2
-                        || type == Material.LOG || type == Material.LOG_2) && y > 1) {
+                // TODO: 1.13 leaves and logs variants
+                while ((type == Material.LEGACY_LEAVES || type == Material.LEGACY_LEAVES_2
+                        || type == Material.LEGACY_LOG || type == Material.LEGACY_LOG_2) && y > 1) {
                     y--;
                     type = world.getBlockAt(x, y - 1, z).getType();
                 }
@@ -76,9 +78,9 @@ public abstract class GlowTemplePiece extends GlowStructurePiece {
         chestContent.addItem(new RandomAmountItem(Material.BONE, 4, 6), 20);
         chestContent.addItem(new RandomAmountItem(Material.ROTTEN_FLESH, 3, 7), 16);
         chestContent.addItem(new RandomAmountItem(Material.SADDLE, 1, 1), 3);
-        chestContent.addItem(new RandomAmountItem(Material.IRON_BARDING, 1, 1), 1);
-        chestContent.addItem(new RandomAmountItem(Material.GOLD_BARDING, 1, 1), 1);
-        chestContent.addItem(new RandomAmountItem(Material.DIAMOND_BARDING, 1, 1), 1);
+        chestContent.addItem(new RandomAmountItem(Material.IRON_HORSE_ARMOR, 1, 1), 1);
+        chestContent.addItem(new RandomAmountItem(Material.GOLDEN_HORSE_ARMOR, 1, 1), 1);
+        chestContent.addItem(new RandomAmountItem(Material.DIAMOND_HORSE_ARMOR, 1, 1), 1);
         return chestContent;
     }
 }

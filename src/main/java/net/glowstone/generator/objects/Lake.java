@@ -1,7 +1,5 @@
 package net.glowstone.generator.objects;
 
-import java.util.Arrays;
-import java.util.Random;
 import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,13 +7,16 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.Arrays;
+import java.util.Random;
+
 public class Lake implements TerrainObject {
 
     private static final double MAX_DIAMETER = 16.0D;
     private static final double MAX_HEIGHT = 8.0D;
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
-    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND,
-        Biome.MUSHROOM_ISLAND_SHORE};
+    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_FIELDS,
+        Biome.MUSHROOM_FIELD_SHORE};
     private final Material type;
 
     public Lake(Material type) {
@@ -73,11 +74,12 @@ public class Lake implements TerrainObject {
                     Block blockAbove = block.getRelative(BlockFace.UP);
                     Material blockType = block.getType();
                     Material blockAboveType = blockAbove.getType();
+                    // TODO: 1.13 log types
                     if (blockType == Material.DIRT
-                                    && (blockAboveType == Material.LOG
-                                    || blockAboveType == Material.LOG_2)
-                            || blockType == Material.LOG
-                            || blockType == Material.LOG_2) {
+                                    && (blockAboveType == Material.LEGACY_LOG
+                                    || blockAboveType == Material.LEGACY_LOG_2)
+                            || blockType == Material.LEGACY_LOG
+                            || blockType == Material.LEGACY_LOG_2) {
                         continue;
                     }
                     if (y >= (int) MAX_HEIGHT / 2) {

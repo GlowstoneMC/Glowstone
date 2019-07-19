@@ -3,13 +3,13 @@ package net.glowstone.generator;
 import lombok.Getter;
 import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.chunk.GlowChunk;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @SuppressWarnings("deprecation")
 public class GlowChunkData implements ChunkData {

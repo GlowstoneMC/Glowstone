@@ -1,9 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
@@ -11,16 +7,21 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BlockDeadBush extends BlockNeedsAttached {
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        int typeIdBelow = block.getWorld()
-            .getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
-        switch (Material.getMaterial(typeIdBelow)) {
+        Material typeBelow = block.getWorld().getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ());
+        switch (typeBelow) {
             case SAND:
-            case STAINED_CLAY:
-            case HARD_CLAY:
+            // TODO: colored terracotta
+            case LEGACY_STAINED_CLAY:
+            case TERRACOTTA:
             case DIRT:
                 return true;
             default:

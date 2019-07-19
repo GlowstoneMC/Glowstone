@@ -1,24 +1,25 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.generator.decorators.EntityDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.RedwoodTree;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
-public class IcePlainsPopulator extends BiomePopulator {
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
-    private static final Biome[] BIOMES = {Biome.ICE_FLATS, Biome.ICE_MOUNTAINS};
+public class SnowyTundraPopulator extends BiomePopulator {
+
+    private static final Biome[] BIOMES = {Biome.SNOWY_TUNDRA, Biome.SNOWY_MOUNTAINS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 1)};
 
     /**
-     * Creates a populator specialized for ice plains and ice mountains, with rabbits, polar bears
+     * Creates a populator specialized for snowy tundra and snowy mountains, with rabbits, polar bears
      * and no vegetation.
      */
-    public IcePlainsPopulator() {
+    public SnowyTundraPopulator() {
         treeDecorator.setAmount(0);
         treeDecorator.setTrees(TREES);
         flowerDecorator.setAmount(0);

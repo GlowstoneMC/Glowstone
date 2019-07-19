@@ -1,6 +1,5 @@
 package net.glowstone.block.blocktype;
 
-import java.util.Arrays;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
@@ -11,12 +10,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class BlockSoil extends BlockType {
+import java.util.Arrays;
 
-    private Material[] possibleCrops = {Material.CROPS, Material.CARROT, Material.POTATO,
+public class BlockFarmland extends BlockType {
+
+    private Material[] possibleCrops = {Material.WHEAT, Material.CARROT, Material.POTATO,
         Material.MELON_STEM, Material.PUMPKIN_STEM};
 
-    public BlockSoil() {
+    public BlockFarmland() {
         setDrops(new ItemStack(Material.DIRT, 1));
     }
 
@@ -53,7 +54,7 @@ public class BlockSoil extends BlockType {
             for (int z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
                 for (int y = block.getY(); y <= block.getY() + 1; y++) {
                     Material type = world.getBlockAt(x, y, z).getType();
-                    if (type == Material.WATER || type == Material.STATIONARY_WATER) {
+                    if (type == Material.WATER) {
                         return true;
                     }
                 }

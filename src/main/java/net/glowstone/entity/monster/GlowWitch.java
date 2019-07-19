@@ -6,6 +6,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Witch;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowWitch extends GlowMonster implements Witch {
 
@@ -45,5 +47,26 @@ public class GlowWitch extends GlowMonster implements Witch {
     @Override
     public void setChargingAttack(boolean raiseHands) {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    // TODO: 1.13
+    @Override
+    public boolean isDrinkingPotion() {
+        return false;
+    }
+
+    @Override
+    public int getPotionUseTimeLeft() {
+        return 0;
+    }
+
+    @Override
+    public @Nullable ItemStack getDrinkingPotion() {
+        return null;
+    }
+
+    @Override
+    public void setDrinkingPotion(@Nullable ItemStack potion) {
+
     }
 }

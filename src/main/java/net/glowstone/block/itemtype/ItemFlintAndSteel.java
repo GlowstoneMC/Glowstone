@@ -42,7 +42,7 @@ public class ItemFlintAndSteel extends ItemTool {
             target = target.getRelative(face);
             int limit = 0;
             while (target.getType() == Material.AIR && limit < 23) {
-                target.setType(Material.PORTAL);
+                target.setType(Material.NETHER_PORTAL);
                 target = target.getRelative(face);
                 limit++;
             }

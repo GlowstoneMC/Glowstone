@@ -1,15 +1,11 @@
 package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,10 +16,15 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     @Getter
+    @Setter
     private BlockData blockData;
     private boolean canHurtEntities;
     @Setter

@@ -1,6 +1,5 @@
 package net.glowstone.block.itemtype;
 
-import java.util.UUID;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.passive.GlowFirework;
@@ -14,6 +13,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
+
+import java.util.UUID;
 
 public class ItemFirework extends ItemType {
 
@@ -37,7 +38,7 @@ public class ItemFirework extends ItemType {
 
     private void spawnFirework(GlowPlayer player, ItemStack item, Location location, UUID spawner,
         LivingEntity boostedEntity) {
-        if (item.getType() != Material.FIREWORK || !(item.getItemMeta() instanceof FireworkMeta)) {
+        if (item.getType() != Material.FIREWORK_STAR || !(item.getItemMeta() instanceof FireworkMeta)) {
             return;
         }
         new GlowFirework(location, spawner, boostedEntity, item);

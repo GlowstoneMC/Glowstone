@@ -1,8 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
 import net.glowstone.generator.objects.trees.BirchTree;
 import net.glowstone.generator.objects.trees.BrownMushroomTree;
@@ -11,9 +8,13 @@ import net.glowstone.generator.objects.trees.GenericTree;
 import net.glowstone.generator.objects.trees.RedMushroomTree;
 import org.bukkit.block.Biome;
 
-public class RoofedForestPopulator extends ForestPopulator {
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
-    private static final Biome[] BIOMES = {Biome.ROOFED_FOREST, Biome.MUTATED_ROOFED_FOREST};
+public class DarkForestPopulator extends ForestPopulator {
+
+    private static final Biome[] BIOMES = {Biome.DARK_FOREST, Biome.DARK_FOREST_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree::new, 20),
         new TreeDecoration(BirchTree::new, 5),
         new TreeDecoration(RedMushroomTree::new, 2),
@@ -22,7 +23,7 @@ public class RoofedForestPopulator extends ForestPopulator {
     /**
      * Creates a populator specialized for the Roofed Forest and Roofed Forest M biomes.
      */
-    public RoofedForestPopulator() {
+    public DarkForestPopulator() {
         treeDecorator.setAmount(50);
         treeDecorator.setTrees(TREES);
         tallGrassDecorator.setAmount(4);

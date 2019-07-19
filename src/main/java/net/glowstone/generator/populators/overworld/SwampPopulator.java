@@ -1,9 +1,5 @@
 package net.glowstone.generator.populators.overworld;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
 import net.glowstone.generator.decorators.overworld.FlowerDecorator.FlowerDecoration;
 import net.glowstone.generator.decorators.overworld.MushroomDecorator;
 import net.glowstone.generator.decorators.overworld.TreeDecorator.TreeDecoration;
@@ -15,9 +11,14 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-public class SwamplandPopulator extends BiomePopulator {
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
-    private static final Biome[] BIOMES = {Biome.SWAMPLAND, Biome.MUTATED_SWAMPLAND};
+public class SwampPopulator extends BiomePopulator {
+
+    private static final Biome[] BIOMES = {Biome.SWAMP, Biome.SWAMP_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(SwampTree::new, 1)};
     private static final FlowerDecoration[] FLOWERS = {
         new FlowerDecoration(FlowerType.BLUE_ORCHID, 1)};
@@ -31,7 +32,7 @@ public class SwamplandPopulator extends BiomePopulator {
     /**
      * Creates a populator for the Swamp and Swamp M biomes.
      */
-    public SwamplandPopulator() {
+    public SwampPopulator() {
         sandPatchDecorator.setAmount(0);
         gravelPatchDecorator.setAmount(0);
         treeDecorator.setAmount(2);

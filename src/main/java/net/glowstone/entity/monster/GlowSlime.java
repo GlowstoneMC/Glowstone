@@ -1,13 +1,14 @@
 package net.glowstone.entity.monster;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Slime;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 // TODO: Split when killed
 public class GlowSlime extends GlowMonster implements Slime {
@@ -36,6 +37,17 @@ public class GlowSlime extends GlowMonster implements Slime {
         checkArgument(size > 0);
         metadata.set(MetadataIndex.SLIME_SIZE, size);
         setBoundingBox(0.51000005 * size, 0.51000005 * size);
+    }
+
+    @Override
+    public boolean canWander() {
+        // TODO: slime can wander
+        return false;
+    }
+
+    @Override
+    public void setWander(boolean canWander) {
+
     }
 
     @Override
