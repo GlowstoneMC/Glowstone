@@ -2,6 +2,7 @@ package net.glowstone.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.glowstone.GlowServer;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -88,8 +89,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
 
     @Override
     public int getDataVersion() {
-        // TODO: where do we find this information? (1.13)
-        return 0;
+        return GlowServer.DATA_VERSION;
     }
 
     @Override

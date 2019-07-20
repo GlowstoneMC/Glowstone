@@ -223,7 +223,7 @@ public final class ItemTable {
         reg(Material.NETHER_BRICK_FENCE, new BlockFence(Material.NETHER_BRICK_FENCE, ToolType.PICKAXE));
         regAll(MaterialUtil.WOODEN_FENCES, BlockFence::new);
         reg(Material.NETHERRACK, new BlockDirectDrops(ToolType.PICKAXE));
-        reg(Material.LEGACY_IRON_FENCE, new BlockDirectDrops(ToolType.PICKAXE)); // TODO: Convert
+        reg(Material.IRON_BARS, new BlockDirectDrops(ToolType.PICKAXE)); // TODO: Convert
         reg(Material.BRICK, new BlockDirectDrops(ToolType.PICKAXE));
         reg(Material.LEGACY_SMOOTH_BRICK, new BlockDirectDrops(ToolType.PICKAXE)); // TODO: Convert
         reg(Material.END_STONE, new BlockDirectDrops(ToolType.PICKAXE));

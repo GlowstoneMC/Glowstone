@@ -2,23 +2,20 @@ rewards:
   FISH: 
     - 
       chance: 60
-      item: 
-        type: RAW_FISH
+      item:
+        type: COD
     - 
       chance: 25
-      item: 
-        data: 1
-        type: RAW_FISH
+      item:
+        type: SALMON
     - 
       chance: 2
-      item: 
-        data: 2
-        type: RAW_FISH
+      item:
+        type: TROPICAL_FISH
     - 
       chance: 13
-      item: 
-        data: 3
-        type: RAW_FISH
+      item:
+        type: PUFFERFISH
   JUNK:
     - 
       chance: 12
@@ -63,7 +60,7 @@ rewards:
       chance: 1.2
       item: 
         amount: 10
-        type: INK_SACK
+        type: INK_SAC
     - 
       chance: 12
       item: 
@@ -100,4 +97,4 @@ rewards:
     - 
       chance: 16.67
       item: 
-        type: WATER_LILY
+        type: LILY_PAD

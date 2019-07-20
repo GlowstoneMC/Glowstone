@@ -253,6 +253,10 @@ public class GlowServer implements Server {
      */
     public static final int PROTOCOL_VERSION = NoInline.of(404);
     /**
+     * The data version supported by the server.
+     */
+    public static final int DATA_VERSION = NoInline.of(1631);
+    /**
      * A list of all the active {@link net.glowstone.net.GlowSession}s.
      */
     private final SessionRegistry sessions = new SessionRegistry();
