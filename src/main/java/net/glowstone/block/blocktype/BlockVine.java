@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
@@ -52,7 +53,7 @@ public class BlockVine extends BlockClimbable {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         switch (against) {
             case NORTH:
             case SOUTH:
@@ -100,7 +101,7 @@ public class BlockVine extends BlockClimbable {
             return Arrays.asList(new ItemStack(Material.VINE));
         }
 
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override

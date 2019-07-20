@@ -6,12 +6,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoop;
-import io.netty.channel.epoll.EpollDatagramChannel;
-import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.kqueue.KQueueDatagramChannel;
-import io.netty.channel.kqueue.KQueueSocketChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -22,21 +16,43 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider;
 import io.netty.resolver.dns.DnsAddressResolverGroup;
+import io.netty.resolver.dns.DnsServerAddressStreamProvider;
+import io.netty.resolver.dns.DnsServerAddressStreamProviders;
+import io.netty.resolver.dns.SequentialDnsServerAddressStreamProvider;
+import io.netty.util.internal.SocketUtils;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
 import lombok.AllArgsConstructor;
-import net.glowstone.GlowServer;
+import net.glowstone.net.Networking;
+import net.glowstone.net.config.DnsEndpoint;
 
 public class HttpClient {
+    private DnsAddressResolverGroup resolverGroup;
 
-    private static DnsAddressResolverGroup resolverGroup = new DnsAddressResolverGroup(
-        GlowServer.EPOLL ? EpollDatagramChannel.class : GlowServer.KQUEUE
-            ? KQueueDatagramChannel.class : NioDatagramChannel.class,
-        DefaultDnsServerAddressStreamProvider.INSTANCE);
+    /**
+     * Creates an HttpClient configured to hit the given DNS endpoints.
+     * @param endpoints The DNS endpoints to use for resolving domains. If the list is empty, then
+     */
+    public HttpClient(List<DnsEndpoint> endpoints) {
+        final DnsServerAddressStreamProvider dnsProvider;
+        if (endpoints.size() > 0) {
+            InetSocketAddress[] addresses = endpoints.stream()
+                .map((endpoint) -> SocketUtils.socketAddress(endpoint.getHost(), endpoint.getPort()))
+                .toArray(InetSocketAddress[]::new);
+
+            dnsProvider = new SequentialDnsServerAddressStreamProvider(addresses);
+        } else {
+            dnsProvider = DnsServerAddressStreamProviders.platformDefault();
+        }
+
+        this.resolverGroup = new DnsAddressResolverGroup(
+            Networking.bestDatagramChannel(),
+            dnsProvider);
+    }
 
     /**
      * Opens a URL.
@@ -45,7 +61,7 @@ public class HttpClient {
      * @param eventLoop an {@link EventLoop} that will receive the response body
      * @param callback a callback to handle the response or any error
      */
-    public static void connect(String url, EventLoop eventLoop, HttpCallback callback) {
+    public void connect(String url, EventLoop eventLoop, HttpCallback callback) {
 
         URI uri = URI.create(url);
 
@@ -76,8 +92,7 @@ public class HttpClient {
         new Bootstrap()
             .group(eventLoop)
             .resolver(resolverGroup)
-            .channel(GlowServer.EPOLL ? EpollSocketChannel.class : GlowServer.KQUEUE
-                ? KQueueSocketChannel.class : NioSocketChannel.class)
+            .channel(Networking.bestSocketChannel())
             .handler(new HttpChannelInitializer(sslCtx, callback))
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
             .connect(InetSocketAddress.createUnresolved(host, port))

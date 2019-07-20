@@ -2,13 +2,13 @@ package net.glowstone.net.handler.play.player;
 
 import com.flowpowered.network.MessageHandler;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.message.play.player.BlockPlacementMessage;
 import net.glowstone.util.InventoryUtil;
@@ -115,7 +115,7 @@ public final class BlockPlacementHandler implements
             if (blockType != null) {
                 useInteractedBlock = blockType.blockInteract(player, clicked, face, clickedLoc);
             } else {
-                GlowServer.logger.info("Unknown clicked block, " + clicked.getType());
+                ConsoleMessages.Info.Block.UNKNOWN_CLICKED.log(clicked.getType());
             }
         } else {
             useInteractedBlock = false;
@@ -144,9 +144,10 @@ public final class BlockPlacementHandler implements
         }
 
         if (holding.getAmount() <= 0) {
-            holding = InventoryUtil.createEmptyStack();
+            player.getInventory().setItem(slot, InventoryUtil.createEmptyStack());
+        } else {
+            // Set the item in `slot` to `holding`, as it was cloned before its amount was decremented.
+            player.getInventory().setItem(slot, holding);
         }
-
-        player.getInventory().setItem(slot, holding);
     }
 }

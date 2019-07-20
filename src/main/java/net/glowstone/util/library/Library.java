@@ -8,6 +8,7 @@ import lombok.Getter;
 import net.glowstone.util.library.LibraryManager.HashAlgorithm;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Represents a library that will be injected into the classpath at runtime.
@@ -126,8 +127,8 @@ public class Library implements Comparable<Library> {
      * @param checksumType The type of hash the checksum is using.
      * @param checksumValue The checksum to validate the downloaded library against.
      */
-    public Library(String groupId, String artifactId, String version, HashAlgorithm checksumType,
-                   String checksumValue) {
+    public Library(@NonNls String groupId, @NonNls String artifactId, @NonNls String version,
+            HashAlgorithm checksumType, @NonNls String checksumValue) {
         this(groupId, artifactId, version, null, checksumType, checksumValue, false);
     }
 

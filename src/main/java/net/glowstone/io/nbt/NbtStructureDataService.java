@@ -10,7 +10,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.ServerProvider;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.generator.structures.GlowStructure;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.StructureDataService;
 import net.glowstone.io.structure.StructureStorage;
 import net.glowstone.io.structure.StructureStore;
@@ -37,7 +37,7 @@ public class NbtStructureDataService implements StructureDataService {
         server = ServerProvider.getServer();
 
         if (!structureDir.isDirectory() && !structureDir.mkdirs()) {
-            LocalizedStrings.Console.Warn.Io.MKDIR_FAILED.log(structureDir);
+            ConsoleMessages.Warn.Io.MKDIR_FAILED.log(structureDir);
         }
     }
 
@@ -59,10 +59,10 @@ public class NbtStructureDataService implements StructureDataService {
                                         .of(structure.getChunkX(), structure.getChunkZ())
                                         .hashCode(), structure);
                                 })))) {
-                        LocalizedStrings.Console.Error.Structure.NO_DATA.log(structureFile);
+                        ConsoleMessages.Error.Structure.NO_DATA.log(structureFile);
                     }
                 } catch (IOException e) {
-                    LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
+                    ConsoleMessages.Error.Structure.LOAD_FAILED.log(e, structureFile);
                 }
             }
         }
@@ -87,7 +87,7 @@ public class NbtStructureDataService implements StructureDataService {
                         data = inputRoot.tryGetCompound("data") // NON-NLS
                                 .orElseGet(CompoundTag::new);
                     } catch (IOException e) {
-                        LocalizedStrings.Console.Error.Structure.IO_READ.log(e, structureFile);
+                        ConsoleMessages.Error.Structure.LOAD_FAILED.log(e, structureFile);
                         data = new CompoundTag();
                     }
                     features = data.tryGetCompound("Features") // NON-NLS
@@ -105,7 +105,7 @@ public class NbtStructureDataService implements StructureDataService {
                     new FileOutputStream(structureFile))) {
                     nbtOut.writeTag(root);
                 } catch (IOException e) {
-                    LocalizedStrings.Console.Error.Structure.IO_WRITE.log(e, structureFile);
+                    ConsoleMessages.Error.Structure.SAVE_FAILED.log(e, structureFile);
                 }
                 structure.setDirty(false);
             }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.glowstone.constants.ItemIds;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowCraftingInventory;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
@@ -60,7 +60,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         resetRecipes();
 
         // Report stats
-        LocalizedStrings.Console.Info.RECIPE_COUNTS.log(shapedRecipes.size(),
+        ConsoleMessages.Info.RECIPE_COUNTS.log(shapedRecipes.size(),
                 shapelessRecipes.size(), furnaceRecipes.size(),
                 dynamicRecipes.size(), furnaceFuels.size());
     }
@@ -453,7 +453,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         // Load recipes from recipes.yml file
         InputStream in = getClass().getClassLoader().getResourceAsStream("builtin/recipes.yml");
         if (in == null) {
-            LocalizedStrings.Console.Warn.Recipe.NO_DEFAULTS.log();
+            ConsoleMessages.Warn.Recipe.NO_DEFAULTS.log();
             return;
         }
 
@@ -521,7 +521,7 @@ public final class CraftingManager implements Iterable<Recipe> {
         } else {
             // todo: remove ambiguity of items with 'data/damage' values inside recipes.yml (will
             // take a long time...)
-            key = NamespacedKey.minecraft(ItemIds.getName(result.getType()));
+            key = NamespacedKey.minecraft(ItemIds.getKeyName(result.getType()));
         }
         return key;
     }

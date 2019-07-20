@@ -10,7 +10,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -35,7 +35,7 @@ public class GlowPluginTypeDetector {
      * Scans all jars in the plugin directory for their types.
      */
     public void scan() {
-        LocalizedStrings.Console.Info.Plugin.SCANNING.log();
+        ConsoleMessages.Info.Plugin.SCANNING.log();
         File[] files = directory.listFiles(new PatternFilenameFilter(".+\\.jar")); // NON-NLS
         if (files == null || files.length == 0) {
             return;
@@ -45,7 +45,7 @@ public class GlowPluginTypeDetector {
             scanFile(file);
         }
 
-        LocalizedStrings.Console.Info.Plugin.COUNTS.log(
+        ConsoleMessages.Info.Plugin.COUNTS.log(
             bukkitPlugins.size(),
             spongePlugins.size(),
             forgefPlugins.size() + forgenPlugins.size(),
@@ -56,7 +56,7 @@ public class GlowPluginTypeDetector {
 
         if (!unrecognizedPlugins.isEmpty()) {
             for (File file : unrecognizedPlugins) {
-                LocalizedStrings.Console.Warn.Plugin.UNRECOGNIZED.log(file.getPath());
+                ConsoleMessages.Warn.Plugin.UNRECOGNIZED.log(file.getPath());
             }
         }
     }
@@ -72,7 +72,7 @@ public class GlowPluginTypeDetector {
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
-            LocalizedStrings.Console.Warn.Plugin.MALFORMED_URL.log(e, file);
+            ConsoleMessages.Warn.Plugin.MALFORMED_URL.log(e, file);
         }
 
         try (ZipFile zip = new ZipFile(file)) {
@@ -110,7 +110,7 @@ public class GlowPluginTypeDetector {
                 }
             }
         } catch (IOException ex) {
-            LocalizedStrings.Console.Warn.Plugin.IO.log(ex, file);
+            ConsoleMessages.Warn.Plugin.LOAD_FAILED.log(ex, file);
         }
 
         if (isBukkit) {

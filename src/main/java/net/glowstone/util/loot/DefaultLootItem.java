@@ -20,14 +20,15 @@ public class DefaultLootItem {
     public DefaultLootItem(JSONObject object) {
         this.type = new ProbableValue<>(object, "item");
         this.count = new LootRandomValues(object);
-        if (object.containsKey("data")) {
-            if (object.get("data") instanceof String) {
+        if (object.containsKey("data")) { // NON-NLS
+            final Object data = object.get("data"); // NON-NLS
+            if (data instanceof String) {
                 this.reflectiveData = Optional
-                    .of(new ReflectiveValue<Integer>((String) object.get("data")));
+                    .of(new ReflectiveValue<Integer>((String) data));
                 this.data = Optional.empty();
-            } else if (object.get("data") instanceof Long) {
+            } else if (data instanceof Long) {
                 this.reflectiveData = Optional
-                    .of(new ReflectiveValue<>(((Long) object.get("data")).intValue()));
+                    .of(new ReflectiveValue<>(((Long) data).intValue()));
                 this.data = Optional.empty();
             } else {
                 this.reflectiveData = Optional.empty();

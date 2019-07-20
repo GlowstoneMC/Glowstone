@@ -2,8 +2,9 @@ package net.glowstone.block.blocktype;
 
 import java.util.Arrays;
 import java.util.Collection;
-import net.glowstone.GlowServer;
+import java.util.Collections;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -21,8 +22,7 @@ public class BlockDoubleSlab extends BlockType {
             case PURPUR_DOUBLE_SLAB:
                 return new ItemStack(Material.PURPUR_SLAB, 2);
             default:
-                GlowServer.logger.warning("BlockDoubleSlab got wrong material: "
-                        + block.getType());
+                ConsoleMessages.Warn.Block.DoubleSlab.WRONG_MATERIAL.log(block.getType());
                 return new ItemStack(Material.STEP, 2);
         }
     }
@@ -33,7 +33,7 @@ public class BlockDoubleSlab extends BlockType {
                 || tool != null && ToolType.PICKAXE.matches(tool.getType())) {
             return getMinedDrops(block);
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
+import net.glowstone.constants.GameRules;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
@@ -25,7 +26,7 @@ public class BlockLava extends BlockLiquid {
     @Override
     public void updateBlock(GlowBlock block) {
         super.updateBlock(block);
-        if (!block.getWorld().getGameRuleMap().getBoolean("doFireTick")) {
+        if (!block.getWorld().getGameRuleMap().getBoolean(GameRules.DO_FIRE_TICK)) {
             return;
         }
         int n = ThreadLocalRandom.current().nextInt(3);

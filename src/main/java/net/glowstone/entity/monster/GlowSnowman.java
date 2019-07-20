@@ -4,6 +4,7 @@ import net.glowstone.entity.meta.MetadataIndex;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Snowman;
 
 public class GlowSnowman extends GlowMonster implements Snowman {
@@ -36,5 +37,15 @@ public class GlowSnowman extends GlowMonster implements Snowman {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_SNOWMAN_AMBIENT;
+    }
+
+    @Override
+    public void rangedAttack(LivingEntity target, float charge) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setChargingAttack(boolean raiseHands) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

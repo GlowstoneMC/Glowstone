@@ -10,6 +10,7 @@ import net.glowstone.block.state.InvalidBlockStateException;
 import net.glowstone.block.state.StateSerialization;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.mojangson.Mojangson;
 import net.glowstone.util.mojangson.ex.MojangsonParseException;
 import net.glowstone.util.nbt.CompoundTag;
@@ -17,41 +18,37 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 
-public class SetBlockCommand extends VanillaCommand {
+public class SetBlockCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public SetBlockCommand() {
-        super("setblock",
-            "Changes a block to another block.",
-            "/setblock <x> <y> <z> <block> [dataValue|state] [dataTag]",
-            Collections.emptyList());
-        setPermission("minecraft.command.setblock");
+        super("setblock");
+        setPermission("minecraft.command.setblock"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
-            return false;
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
+            return true;
         }
         if (args.length < 4) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
-        String itemName = args[3].toLowerCase();
-        if (!itemName.startsWith("minecraft:")) {
-            itemName = "minecraft:" + itemName;
-        }
+        String itemName = CommandUtils.toNamespaced(args[3].toLowerCase());
         Material type = ItemIds.getBlock(itemName);
         if (type == null) {
-            sender.sendMessage(ChatColor.RED + itemName + " is not a valid block type");
+            new LocalizedStringImpl("setblock.invalid.type",
+                    commandMessages.getResourceBundle())
+                    .sendInColor(ChatColor.RED, sender, itemName);
             return false;
         }
         Location location = CommandUtils
-            .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
+                .getLocation(CommandUtils.getLocation(sender), args[0], args[1], args[2]);
         GlowBlock block = (GlowBlock) location.getBlock();
         byte dataValue = 0;
         if (args.length > 4) {
@@ -74,7 +71,7 @@ public class SetBlockCommand extends VanillaCommand {
         block.setType(type, dataValue, true);
         if (args.length > 5 && block.getBlockEntity() != null) {
             String dataTag = String
-                .join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
+                    .join(" ", new ArrayList<>(Arrays.asList(args)).subList(5, args.length));
             try {
                 CompoundTag prev = new CompoundTag();
                 block.getBlockEntity().saveNbt(prev);
@@ -82,17 +79,19 @@ public class SetBlockCommand extends VanillaCommand {
                 tag.mergeInto(prev, true);
                 block.getBlockEntity().loadNbt(prev);
             } catch (MojangsonParseException e) {
-                sender.sendMessage(ChatColor.RED + "Invalid Data Tag: " + e.getMessage());
+                commandMessages.getGeneric(GenericMessage.INVALID_JSON)
+                        .sendInColor(ChatColor.RED, sender, e.getMessage());
                 return false;
             }
         }
-        sender.sendMessage("Block placed");
+        new LocalizedStringImpl("setblock.done", commandMessages.getResourceBundle())
+                .send(sender);
         return true;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (args.length == 4) {
             return ItemIds.getTabCompletion(args[3]);
         }

@@ -1,5 +1,7 @@
 package net.glowstone.inventory;
 
+import java.util.EnumMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -29,24 +31,23 @@ public enum ToolType implements MaterialMatcher {
     GOLD_SPADE(Material.GOLD_SPADE, STONE_SPADE, ToolMaterial.GOLD),
     SPADE(Material.WOOD_SPADE, GOLD_SPADE, ToolMaterial.WOOD),
 
-    // Swords
-    DIAMOND_SWORD(Material.DIAMOND_SWORD, null, ToolMaterial.DIAMOND),
-    IRON_SWORD(Material.IRON_SWORD, DIAMOND_SWORD, ToolMaterial.IRON),
-    STONE_SWORD(Material.STONE_SWORD, IRON_SWORD, ToolMaterial.STONE),
-    GOLD_SWORD(Material.GOLD_SWORD, STONE_SWORD, ToolMaterial.GOLD),
-    SWORD(Material.WOOD_SWORD, GOLD_SWORD, ToolMaterial.WOOD),
+    // Swords all have the same breaking speed
+    DIAMOND_SWORD(Material.DIAMOND_SWORD, null, ToolMaterial.SWORD),
+    IRON_SWORD(Material.IRON_SWORD, DIAMOND_SWORD, ToolMaterial.SWORD),
+    STONE_SWORD(Material.STONE_SWORD, IRON_SWORD, ToolMaterial.SWORD),
+    GOLD_SWORD(Material.GOLD_SWORD, STONE_SWORD, ToolMaterial.SWORD),
+    SWORD(Material.WOOD_SWORD, GOLD_SWORD, ToolMaterial.SWORD),
 
     // Shears
     SHEARS(Material.SHEARS, null, ToolMaterial.SHEARS);
 
     private final Material bukkitMaterial;
     private final ToolType better;
-    private final ToolMaterial toolMaterial;
 
     ToolType(Material bukkitMaterial, ToolType better, ToolMaterial toolMaterial) {
         this.bukkitMaterial = bukkitMaterial;
         this.better = better;
-        this.toolMaterial = toolMaterial;
+        ToolMaterial.MINING_MULTIPLIERS.put(bukkitMaterial, toolMaterial.getMultiplier());
     }
 
     /**
@@ -65,8 +66,8 @@ public enum ToolType implements MaterialMatcher {
      *
      * @return the multiplier
      */
-    public double getMiningMultiplier() {
-        return this.toolMaterial.getMultiplier();
+    public static double getMiningMultiplier(Material tool) {
+        return ToolMaterial.MINING_MULTIPLIERS.getOrDefault(tool, 1.0);
     }
 
     @RequiredArgsConstructor
@@ -76,8 +77,15 @@ public enum ToolType implements MaterialMatcher {
         IRON(6),
         DIAMOND(8),
         GOLD(12),
-        SHEARS(1.5);
+        SHEARS(1.5),
+        SWORD(1.5);
 
+        /**
+         * Can't move to outer class, because Java is too stupid to initialize other static members
+         * before instantiating an enum.
+         */
+        static final Map<Material, Double> MINING_MULTIPLIERS
+            = new EnumMap<>(Material.class);
         @Getter
         private final double multiplier;
     }

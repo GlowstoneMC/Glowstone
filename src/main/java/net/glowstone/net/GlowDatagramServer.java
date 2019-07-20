@@ -4,16 +4,11 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollDatagramChannel;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.kqueue.KQueueDatagramChannel;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioDatagramChannel;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
+import net.glowstone.net.protocol.ProtocolProvider;
 
 public abstract class GlowDatagramServer extends GlowNetworkServer {
 
@@ -27,18 +22,15 @@ public abstract class GlowDatagramServer extends GlowNetworkServer {
      * @param latch The countdown latch used during server startup to wait for network server
      *         binding.
      */
-    public GlowDatagramServer(GlowServer server, CountDownLatch latch) {
-        super(server, latch);
-        boolean epoll = GlowServer.EPOLL;
-        boolean kqueue = GlowServer.KQUEUE;
-        group = epoll ? new EpollEventLoopGroup() : kqueue ? new KQueueEventLoopGroup()
-            : new NioEventLoopGroup();
+    public GlowDatagramServer(GlowServer server, ProtocolProvider protocolProvider,
+                              CountDownLatch latch) {
+        super(server, protocolProvider, latch);
+        group = Networking.createBestEventLoopGroup();
         bootstrap = new Bootstrap();
 
         bootstrap
             .group(group)
-            .channel(epoll ? EpollDatagramChannel.class : kqueue ? KQueueDatagramChannel.class
-                : NioDatagramChannel.class)
+            .channel(Networking.bestDatagramChannel())
             .option(ChannelOption.SO_KEEPALIVE, true);
     }
 

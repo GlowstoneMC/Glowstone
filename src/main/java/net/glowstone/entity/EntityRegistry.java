@@ -79,6 +79,7 @@ import net.glowstone.entity.projectile.GlowSpectralArrow;
 import net.glowstone.entity.projectile.GlowSplashPotion;
 import net.glowstone.entity.projectile.GlowThrownExpBottle;
 import net.glowstone.entity.projectile.GlowTippedArrow;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.io.entity.EntityStorage;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AreaEffectCloud;
@@ -292,9 +293,8 @@ public class EntityRegistry {
             return;
         }
         if (descriptor.getPlugin().isEnabled()) {
-            descriptor.getPlugin().getServer().getLogger().warning(
-                    "Cannot register custom entity '" + descriptor.getId() + "' for plugin '"
-                            + descriptor.getPlugin() + "', worlds are already loaded.");
+            ConsoleMessages.Warn.Entity.LOAD_TOO_LATE.log(
+                    descriptor.getId(), descriptor.getPlugin());
             return;
         }
         if (CUSTOM_ENTITIES.containsKey(descriptor.getId().toLowerCase())) {

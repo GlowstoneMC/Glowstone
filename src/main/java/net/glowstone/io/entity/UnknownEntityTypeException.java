@@ -1,7 +1,7 @@
 package net.glowstone.io.entity;
 
 import lombok.Getter;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.util.nbt.CompoundTag;
 
 /**
@@ -20,9 +20,9 @@ public class UnknownEntityTypeException extends IllegalArgumentException {
 
     private static String getMessage(CompoundTag nbt) {
         if (nbt.isString("id")) {
-            return LocalizedStrings.Glowstone.Entity.UNKNOWN_TYPE_WITH_ID.get(nbt.getString("id"));
+            return GlowstoneMessages.Entity.UNKNOWN_TYPE_WITH_ID.get(nbt.getString("id"));
         } else {
-            return LocalizedStrings.Glowstone.Entity.UNKNOWN_TYPE_NO_ID.get(nbt);
+            return GlowstoneMessages.Entity.UNKNOWN_TYPE_NO_ID.get(nbt);
         }
     }
 

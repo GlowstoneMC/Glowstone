@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +36,9 @@ import org.yaml.snakeyaml.error.YAMLException;
 /**
  * Utilities for handling the server configuration files.
  */
-public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
+public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
 
+    public static final int DEFAULT_PORT = 25565;
     /**
      * The directory configurations are stored in.
      */
@@ -383,11 +384,14 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
 
     /**
      * An enum containing configuration keys used by the server.
+     *
+     * <p>NOTE: Do not use Collections.emptyList() as a default value because Jackson will alias it
+     * with any other instances of emptyLIst. Use a new instance of an empty ArrayList instead.
      */
     public enum Key {
         // server
         SERVER_IP("server.ip", "", Migrate.PROPS, "server-ip", String.class::isInstance),
-        SERVER_PORT("server.port", 25565, Migrate.PROPS, "server-port", Validators.PORT),
+        SERVER_PORT("server.port", DEFAULT_PORT, Migrate.PROPS, "server-port", Validators.PORT),
         SERVER_NAME("server.name", "Glowstone Server", Migrate.PROPS, "server-name",
                 String.class::isInstance),
         LOG_FILE("server.log-file", "logs/log-%D.txt", String.class::isInstance),
@@ -402,6 +406,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
         SHUTDOWN_MESSAGE("server.shutdown-message", "Server shutting down.", Migrate.BUKKIT,
                 "settings.shutdown-message", String.class::isInstance),
         ALLOW_CLIENT_MODS("server.allow-client-mods", true, Boolean.class::isInstance),
+        DNS_OVERRIDES("server.dns", new ArrayList<>()),
 
         // console
         CONSOLE_PROMPT("console.prompt", "> ", String.class::isInstance),
@@ -559,7 +564,7 @@ public final class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key>
                 Validators.POSITIVE_INTEGER),
         COMPATIBILITY_BUNDLE("libraries.compatibility-bundle",
                 CompatibilityBundle.CRAFTBUKKIT.name(), String.class::isInstance),
-        LIBRARIES_LIST("libraries.list", Collections.emptyList());
+        LIBRARIES_LIST("libraries.list", new ArrayList<>());
 
         @Getter
         private final String path;

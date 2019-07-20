@@ -19,7 +19,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 import javax.annotation.Nullable;
 import lombok.Getter;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.ConsoleMessages;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandException;
@@ -154,7 +154,7 @@ public final class ConsoleManager {
     public void startFile(String logfile) {
         File parent = new File(logfile).getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
-            LocalizedStrings.Console.Error.Manager.LOG_FOLDER.log(parent);
+            ConsoleMessages.Warn.Manager.LOG_FOLDER.log(parent);
         }
         Handler fileHandler = new RotatingFileHandler(logfile);
         FILE_DATE = server.getConsoleLogDateFormat();
@@ -229,7 +229,7 @@ public final class ConsoleManager {
             try {
                 setOutputStream(new FileOutputStream(filename, true));
             } catch (IOException ex) {
-                LocalizedStrings.Console.Error.Manager.LOG_FILE.log(ex, filename);
+                ConsoleMessages.Error.Manager.LOG_FILE.log(ex, filename);
             }
         }
 
@@ -239,7 +239,7 @@ public final class ConsoleManager {
                 if (!filename.equals(newFilename)) {
                     filename = newFilename;
                     // note that the console handler doesn't see this message
-                    super.publish(LocalizedStrings.Console.Info.Manager.ROTATE.record(filename));
+                    super.publish(ConsoleMessages.Info.Manager.ROTATE.record(filename));
                     updateOutput();
                 }
             }
@@ -275,7 +275,7 @@ public final class ConsoleManager {
                 completions = server.getScheduler().syncIfNeeded(
                     () -> server.getCommandMap().tabComplete(sender, line.line()));
             } catch (Exception e) {
-                LocalizedStrings.Console.Error.Manager.TAB_COMPLETE.log(e);
+                ConsoleMessages.Warn.Manager.TAB_COMPLETE.log(e);
             }
 
             if (completions != null) {
@@ -309,9 +309,9 @@ public final class ConsoleManager {
                         server.getScheduler().runTask(null, new CommandTask(command));
                     }
                 } catch (CommandException ex) {
-                    LocalizedStrings.Console.Error.Manager.COMMAND.log(ex, command);
+                    ConsoleMessages.Warn.Manager.COMMAND.log(ex, command);
                 } catch (Exception ex) {
-                    LocalizedStrings.Console.Error.Manager.COMMAND_READ.log(ex);
+                    ConsoleMessages.Error.Manager.COMMAND_READ.log(ex);
                 }
             }
         }

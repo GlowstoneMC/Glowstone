@@ -1,11 +1,12 @@
 package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.Collections;
 import net.glowstone.GlowServer;
 import net.glowstone.ServerProvider;
+import net.glowstone.command.CommandTest;
 import org.bukkit.ChatColor;
 import org.hamcrest.MatcherAssert;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand
 
         MatcherAssert.assertThat(commandResult, is(false));
         Mockito.verify(opSender)
-            .sendMessage(eq(ChatColor.RED + "'invalidNumber' is not a valid number"));
+            .sendMessage(eq(ChatColor.RED + "'invalidNumber' is not a valid number."));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand
 
         MatcherAssert.assertThat(commandResult, is(false));
         Mockito.verify(opSender).sendMessage(eq(ChatColor.RED
-            + "The number you have entered (-42) is too small, it must be at least 1"));
+            + "Can't set an idle timeout of -42 minutes: the minimum is 1 minute."));
     }
 
     @Test
@@ -60,7 +61,7 @@ public class SetIdleTimeoutCommandTest extends CommandTest<SetIdleTimeoutCommand
 
         MatcherAssert.assertThat(commandResult, is(false));
         Mockito.verify(opSender).sendMessage(eq(ChatColor.RED
-            + "The number you have entered (0) is too small, it must be at least 1"));
+            + "Can't set an idle timeout of 0 minutes: the minimum is 1 minute."));
     }
 
     @Test

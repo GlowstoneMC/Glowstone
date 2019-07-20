@@ -1,12 +1,13 @@
 package net.glowstone.command.minecraft;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandTest;
 import net.glowstone.testutils.InMemoryBlockStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -55,7 +56,7 @@ public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> 
         createCubeAt(2, 2, 2);
         command.execute(opPlayer, "label", new String[] {"2", "2", "2", "3", "3", "3", "2", "2", "2"});
 
-        verify(opPlayer).sendMessage("8 blocks compared");
+        verify(opPlayer).sendMessage("8 blocks match.");
         verify(opPlayer).hasPermission("minecraft.command.testforblocks");
         verify(opPlayer, times(4)).getWorld();
         verify(world, times(16)).getBlockAt(any(Location.class));
@@ -69,7 +70,7 @@ public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> 
         createCubeAt(4, 5, 6);
         command.execute(opPlayer, "label", new String[] {"2", "2", "2", "3", "3", "3", "4", "5", "6"});
 
-        verify(opPlayer).sendMessage("8 blocks compared");
+        verify(opPlayer).sendMessage("8 blocks match.");
         verify(opPlayer).hasPermission("minecraft.command.testforblocks");
         verify(opPlayer, times(4)).getWorld();
         verify(world, times(16)).getBlockAt(any(Location.class));
@@ -84,7 +85,7 @@ public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> 
         createCubeAt(4, 5, 6);
         command.execute(opPlayer, "label", new String[] {"2", "2", "2", "3", "3", "3", "4", "5", "6", "masked"});
 
-        verify(opPlayer).sendMessage("7 blocks compared");
+        verify(opPlayer).sendMessage("7 blocks match.");
         verify(opPlayer).hasPermission("minecraft.command.testforblocks");
         verify(opPlayer, times(4)).getWorld();
         verify(world, times(16)).getBlockAt(any(Location.class));
@@ -99,7 +100,7 @@ public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> 
         blockStorage.setBlockType(new Location(world, 5, 6, 7), Material.STONE);
         command.execute(opPlayer, "label", new String[] {"2", "2", "2", "3", "3", "3", "4", "5", "6"});
 
-        verify(opPlayer).sendMessage(ChatColor.RED + "Source and destination are not identical");
+        verify(opPlayer).sendMessage(ChatColor.RED + "Source and destination are not identical.");
         verify(opPlayer).hasPermission("minecraft.command.testforblocks");
         verify(opPlayer, times(4)).getWorld();
         verify(world, times(16)).getBlockAt(any(Location.class));
@@ -115,7 +116,7 @@ public class TestForBlocksCommandTest extends CommandTest<TestForBlocksCommand> 
         blockStorage.setBlockType(new Location(world, 5, 6, 7), Material.STONE);
         command.execute(opPlayer, "label", new String[] {"2", "2", "2", "3", "3", "3", "4", "5", "6", "masked"});
 
-        verify(opPlayer).sendMessage(ChatColor.RED + "Source and destination are not identical");
+        verify(opPlayer).sendMessage(ChatColor.RED + "Source and destination are not identical.");
         verify(opPlayer).hasPermission("minecraft.command.testforblocks");
         verify(opPlayer, times(4)).getWorld();
         verify(world, times(16)).getBlockAt(any(Location.class));

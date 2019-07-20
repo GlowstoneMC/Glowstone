@@ -10,7 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToMessageCodec;
 import java.util.List;
-import net.glowstone.GlowServer;
+import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.protocol.GlowProtocol;
 
 /**
@@ -54,8 +54,7 @@ public final class CodecsHandler extends MessageToMessageCodec<ByteBuf, Message>
         // read body
         Message decoded = codec.decode(msg);
         if (msg.readableBytes() > 0) {
-            GlowServer.logger
-                .warning("Leftover bytes (" + msg.readableBytes() + ") after decoding: " + decoded);
+            ConsoleMessages.Warn.Net.MESSAGE_TOO_LONG.log(msg.readableBytes(), decoded);
         }
 
         out.add(decoded);

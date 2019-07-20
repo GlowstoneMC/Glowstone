@@ -6,22 +6,22 @@
   <groupId>net.glowstone</groupId>
   <artifactId>glowstone</artifactId>
   <packaging>jar</packaging>
-  <version>2018.6.0-SNAPSHOT</version>
+  <version>2018.10.0-SNAPSHOT</version>
   <name>Glowstone</name>
   <url>https://www.glowstone.net</url>
   <description>A fast, customizable and compatible open source Minecraft server.</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <api.version>1.12.2-R4.2-SNAPSHOT</api.version>
+    <api.version>1.12.2-R5.0-SNAPSHOT</api.version>
     <minecraft.version>1.12.2</minecraft.version>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <kotlin.version>1.2.40</kotlin.version>
-    <powermock.version>2.0.0-beta.5</powermock.version>
-    <junit.jupiter.version>5.1.1</junit.jupiter.version>
-    <junit.vintage.version>5.1.1</junit.vintage.version>
+    <kotlin.version>1.3.31</kotlin.version>
+    <powermock.version>2.0.0</powermock.version>
+    <junit.jupiter.version>5.4.0</junit.jupiter.version>
+    <junit.vintage.version>5.4.0</junit.vintage.version>
   </properties>
 
   <repositories>
@@ -70,20 +70,25 @@
       <version>3.7.1</version>
     </dependency>
     <dependency>
-      <groupId>co.aikar</groupId>
-      <artifactId>fastutil-lite</artifactId>
-      <version>1.0</version>
+      <groupId>it.unimi.dsi</groupId>
+      <artifactId>fastutil</artifactId>
+      <version>8.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.16.22</version>
+      <version>1.18.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.2.4-SNAPSHOT</version>
+      <version>1.2.8-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.eatthepath</groupId>
+      <artifactId>fast-uuid</artifactId>
+      <version>0.1</version>
     </dependency>
     <!-- NonNls annotation: https://mvnrepository.com/artifact/org.jetbrains/annotations -->
     <dependency>
@@ -94,7 +99,7 @@
     <!-- Kotlin -->
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-runtime</artifactId>
+      <artifactId>kotlin-stdlib</artifactId>
       <version>${kotlin.version}</version>
     </dependency>
     <dependency>
@@ -128,13 +133,25 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
-      <version>3.0.3</version>
+      <version>3.6.0</version>
     </dependency>
     <!-- Tests -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <version>${junit.vintage.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -144,9 +161,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <version>1.3</version>
+      <artifactId>hamcrest</artifactId>
+      <version>2.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -206,7 +229,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.9</version>
+            <version>8.18</version>
           </dependency>
         </dependencies>
         <executions>
@@ -225,7 +248,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.16</version>
+        <version>1.17</version>
         <executions>
           <execution>
             <phase>process-classes</phase>
@@ -248,7 +271,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -281,7 +304,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
         <configuration>
           <forceCreation>true</forceCreation>
           <archive>
@@ -299,26 +322,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <!-- Upgrade to 2.21.0 when junit-platform-surefire-provider 1.2.0 releases
-         See https://github.com/junit-team/junit5/issues/809 -->
-        <version>2.19.1</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.1.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.jupiter.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit.vintage.version}</version>
-          </dependency>
-        </dependencies>
+        <version>3.0.0-M3</version>
         <executions>
           <execution>
             <id>default-test</id>
@@ -331,12 +335,14 @@
         <configuration>
           <failIfNoTests>true</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok-maven-plugin</artifactId>
-        <version>1.16.20.0</version>
+        <version>1.18.4.0</version>
         <executions>
           <execution>
             <id>delombok</id>
@@ -354,17 +360,17 @@
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.7.0</version>
+          <version>3.8.0</version>
       </plugin>
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>3.1.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
         <configuration>
           <defaultVersion>${project.version}</defaultVersion>
           <sourcepath>target/generated-sources/delombok</sourcepath>
@@ -378,13 +384,63 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
+        <version>3.0.0-M1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+	      <artifactId>jacoco-maven-plugin</artifactId>
+	      <version>0.8.3</version>
+        <configuration>
+          <excludes>
+            <exclude>META-INF/versions/**</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit implementation="org.jacoco.report.check.Limit">
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.01</minimum>
+                    </limit>
+                    <limit>
+                      <counter>COMPLEXITY</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.01</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
 
   <reporting>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>3.0.0-M3</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

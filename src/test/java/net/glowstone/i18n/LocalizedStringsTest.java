@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
@@ -27,6 +28,16 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 public class LocalizedStringsTest {
+    /**
+     * Keys in strings.properties used in ways other than in LocalizedString instances in
+     * GlowstoneMessages, and which GlowstoneMessages should therefore not be expected to cover.
+     */
+    private static final Set<String> EXEMPT_KEYS = ImmutableSet.of(
+            "glowstone.achievement.unknown",
+            "glowstone.difficulty.names",
+            "glowstone.difficulty.unknown",
+            "glowstone.gamemode.names",
+            "glowstone.gamemode.unknown");
     private static final ResourceBundle STRINGS = ResourceBundle.getBundle("strings");
     private static final String MOCK_KEY = "foo";
     private static final String MOCK_VALUE_NO_FORMAT = "bar";
@@ -112,11 +123,11 @@ public class LocalizedStringsTest {
     }
 
     /**
-     * This test verifies that each {@link LocalizedString} instance in {@link LocalizedStrings}
-     * corresponds to an entry in {@code strings.properties}, and that each entry in
-     * {@code strings.properties} corresponds to <em>at least</em> one {@link LocalizedString}. More
-     * than one are allowed for the same entry, since a string may be used for logging at multiple
-     * levels.
+     * This test verifies that each {@link LocalizedString} instance in {@link ConsoleMessages} and
+     * {@link GlowstoneMessages} corresponds to an entry in {@code strings.properties}, and that
+     * each entry in {@code strings.properties} corresponds to <em>at least</em> one
+     * {@link LocalizedString}. More than one are allowed for the same entry, since a string may be
+     * used for logging at multiple levels.
      *
      * @throws Exception if refactoring causes reflection issues
      */
@@ -126,13 +137,15 @@ public class LocalizedStringsTest {
         final Set<String> unusedKeys = new HashSet<>(bundleKeys);
         final Set<String> missingRegisteredKeys = new HashSet<>();
 
-        Deque<Class<?>> classesToScan = new ArrayDeque<>(Arrays.asList(LocalizedStrings.class.getDeclaredClasses()));
+        Deque<Class<?>> classesToScan = new ArrayDeque<>(Arrays.asList(
+                ConsoleMessages.class.getDeclaredClasses()));
+        classesToScan.addAll(Arrays.asList(GlowstoneMessages.class.getDeclaredClasses()));
         while (!classesToScan.isEmpty()) {
             Class<?> innerClass = classesToScan.removeFirst();
             classesToScan.addAll(Arrays.asList(innerClass.getDeclaredClasses()));
             for (Field field : innerClass.getDeclaredFields()) {
                 if (Modifier.isStatic(field.getModifiers())
-                    && Modifier.isFinal(field.getModifiers())) {
+                        && Modifier.isFinal(field.getModifiers())) {
                     Object value = field.get(null);
                     if (value instanceof LocalizedStringImpl) {
                         validateLocalizedString(bundleKeys, missingRegisteredKeys, unusedKeys,
@@ -145,14 +158,15 @@ public class LocalizedStringsTest {
                 }
             }
         }
+        unusedKeys.removeAll(EXEMPT_KEYS);
 
         assertTrue("Resource file contains unused keys: " + unusedKeys, unusedKeys.isEmpty());
-        assertTrue("LocalizedStrings refers to nonexistent keys: " + missingRegisteredKeys,
+        assertTrue("Nonexistent keys are being referenced: " + missingRegisteredKeys,
                 missingRegisteredKeys.isEmpty());
     }
 
     private void validateLocalizedString(Set<String> bundleKeys, Set<String> missingRegisteredKeys,
-            Set<String> unusedKeys, LocalizedStringImpl localized) {
+                                         Set<String> unusedKeys, LocalizedStringImpl localized) {
         String key = localized.getKey();
         if (bundleKeys.contains(key)) {
             unusedKeys.remove(key);

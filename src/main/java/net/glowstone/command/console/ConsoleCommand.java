@@ -2,7 +2,7 @@ package net.glowstone.command.console;
 
 import java.util.List;
 import net.glowstone.ConsoleManager.ColoredCommandSender;
-import net.glowstone.i18n.LocalizedStrings;
+import net.glowstone.i18n.GlowstoneMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.VanillaCommand;
 
@@ -18,7 +18,7 @@ public abstract class ConsoleCommand extends VanillaCommand {
         if (sender instanceof ColoredCommandSender) {
             return executeOnConsole((ColoredCommandSender) sender, commandLabel, args);
         } else {
-            LocalizedStrings.Glowstone.Command.Error.CONSOLE_ONLY.send(sender);
+            GlowstoneMessages.Command.Error.CONSOLE_ONLY.send(sender);
             return true;
         }
     }

@@ -1,7 +1,6 @@
 package net.glowstone.command.console;
 
-import net.glowstone.command.minecraft.CommandTest;
-import net.glowstone.command.console.ConsoleCommand;
+import net.glowstone.command.CommandTest;
 import org.mockito.Mockito;
 
 import java.util.function.Supplier;
@@ -16,7 +15,7 @@ public abstract class ConsoleCommandTest<T extends ConsoleCommand> extends Comma
     }
 
     @Override
-    public void testExecuteFailsWithoutPermission() {
+    public void testExecuteWithoutPermission() {
         assertThat(command.execute(sender, "label", new String[0]), is(true));
         Mockito.verify(sender).sendMessage(eq("This command can only be run from an admin console."));
     }

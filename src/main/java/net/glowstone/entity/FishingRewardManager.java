@@ -12,11 +12,12 @@ import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import net.glowstone.GlowServer;
+import net.glowstone.i18n.ConsoleMessages;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Generates fishing loot.
@@ -39,9 +40,10 @@ public class FishingRewardManager {
 
     @SuppressWarnings("unchecked")
     private void registerBuiltins(ConfigurationSection mainSection) {
-        ConfigurationSection valuesSection = mainSection.getConfigurationSection("rewards");
+        ConfigurationSection valuesSection
+                = mainSection.getConfigurationSection("rewards"); // NON-NLS
         if (valuesSection == null) {
-            GlowServer.logger.warning("Invalid fishingRewards.yml: no 'rewards' section");
+            ConsoleMessages.Warn.Fishing.REWARDS_INVALID.log();
             return;
         }
         Set<String> categories = valuesSection.getKeys(false);
@@ -112,13 +114,14 @@ public class FishingRewardManager {
 
         @Override
         public Map<String, Object> serialize() {
-            Map<String, Object> args = new HashMap<>();
+            @NonNls Map<String, Object> args = new HashMap<>();
             args.put("item", item.serialize());
             args.put("chance", chance);
             return args;
         }
 
-        private static int getAsIntOrDefault(Map<String, ?> args, String key, int defaultValue) {
+        private static int getAsIntOrDefault(
+                Map<String, ?> args, @NonNls String key, int defaultValue) {
             Object value = args.get(key);
             if (value == null) {
                 return defaultValue;
@@ -136,7 +139,7 @@ public class FishingRewardManager {
          * @param itemYaml a YAML tag deserialized as a map
          * @return {@code itemYaml} as a RewardItem, or null if {@code itemYaml} is null
          */
-        public static RewardItem deserialize(Map<String, Object> itemYaml) {
+        public static RewardItem deserialize(@NonNls Map<String, Object> itemYaml) {
             if (itemYaml == null) {
                 return null;
             }

@@ -41,7 +41,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         BlockFace face = against.getOppositeFace();
         if (Arrays.asList(SIDES).contains(face)
             && block.getRelative(face).getType() == Material.LOG) {
@@ -70,7 +70,7 @@ public class BlockCocoa extends BlockNeedsAttached implements IBlockGrowable {
         } else {
             warnMaterialData(CocoaPlant.class, data);
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override

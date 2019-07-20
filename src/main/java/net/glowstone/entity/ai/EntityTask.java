@@ -3,6 +3,7 @@ package net.glowstone.entity.ai;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.entity.GlowLivingEntity;
+import org.jetbrains.annotations.NonNls;
 
 public abstract class EntityTask implements Comparable<EntityTask> {
 
@@ -12,6 +13,7 @@ public abstract class EntityTask implements Comparable<EntityTask> {
      * @return the name of this EntityTask.
      */
     @Getter
+    @NonNls
     private final String name;
     /**
      * Whether this task is currently being executed.
@@ -29,7 +31,7 @@ public abstract class EntityTask implements Comparable<EntityTask> {
     @Getter
     private boolean paused = false;
 
-    public EntityTask(String name) {
+    public EntityTask(@NonNls String name) {
         this.name = name;
     }
 

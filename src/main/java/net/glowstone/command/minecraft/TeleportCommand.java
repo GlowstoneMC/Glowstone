@@ -1,17 +1,19 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
+import net.glowstone.i18n.LocalizedStringImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class TeleportCommand extends VanillaCommand {
+/**
+ * /tp was an alias of this command until Minecraft 1.10, but now see {@link TpCommand}.
+ */
+public class TeleportCommand extends GlowVanillaCommand {
 
     private static final Entity[] NO_ENTITY = new Entity[0];
 
@@ -19,25 +21,24 @@ public class TeleportCommand extends VanillaCommand {
      * Creates the instance for this command.
      */
     public TeleportCommand() {
-        super("teleport",
-            "Teleports entities to coordinates relative to the sender",
-            "/teleport <target> <x> <y> <z> [<y-rot> <x-rot>]",
-            Collections.emptyList());
-        setPermission("minecraft.command.teleport");
+        super("teleport");
+        setPermission("minecraft.command.teleport"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length < 4 || args.length == 5) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
         if (!CommandUtils.isPhysical(sender)) {
-            sender.sendMessage("This command can only be executed by physical objects.");
+            commandMessages.getGeneric(GenericMessage.NOT_PHYSICAL)
+                    .sendInColor(ChatColor.RED, sender);
             return false;
         }
 
@@ -54,7 +55,8 @@ public class TeleportCommand extends VanillaCommand {
         }
 
         if (targets.length == 0) {
-            sender.sendMessage(ChatColor.RED + "There's no entity matching the target.");
+            commandMessages.getGeneric(GenericMessage.NO_MATCHES)
+                    .sendInColor(ChatColor.RED, sender, args[0]);
         } else {
             for (Entity target : targets) {
                 String x = args[1];
@@ -70,9 +72,9 @@ public class TeleportCommand extends VanillaCommand {
                     targetLocation.setPitch(target.getLocation().getPitch());
                 }
                 target.teleport(targetLocation);
-                sender.sendMessage(
-                    "Teleported " + target.getName() + " to " + targetLocation.getX() + " "
-                        + targetLocation.getY() + " " + targetLocation.getZ());
+                new LocalizedStringImpl("teleport.done", commandMessages.getResourceBundle())
+                        .send(sender, target.getName(), targetLocation.getX(),
+                                targetLocation.getY(), targetLocation.getZ());
             }
         }
 

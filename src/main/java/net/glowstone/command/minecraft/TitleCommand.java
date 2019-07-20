@@ -4,36 +4,35 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.net.message.play.game.TitleMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NonNls;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-public class TitleCommand extends VanillaCommand {
+public class TitleCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public TitleCommand() {
-        super("title", "Sends a title to the specified player(s)",
-                "/title <player> <title|subtitle|times|clear|reset> ...", Collections.emptyList());
-        setPermission("minecraft.command.title");
+        super("title");
+        setPermission("minecraft.command.title"); // NON-NLS
     }
 
     private static ChatColor toColor(String name) {
-        if (name.equals("obfuscated")) {
+        if (name.equals("obfuscated")) { // NON-NLS
             return ChatColor.MAGIC;
         }
 
-        if (name.equals("underlined")) {
+        if (name.equals("underlined")) { // NON-NLS
             return ChatColor.UNDERLINE;
         }
 
@@ -57,7 +56,7 @@ public class TitleCommand extends VanillaCommand {
      * @param json the json chat component
      * @return the colored string, or null
      */
-    public String convertJson(Map<String, Object> json) {
+    public String convertJson(@NonNls Map<String, Object> json) {
         if (json == null || !json.containsKey("text") && !(json.get("text") instanceof String)) {
             return null; // We can't even parse this
         }
@@ -72,12 +71,12 @@ public class TitleCommand extends VanillaCommand {
 
             String keyString = (String) key;
 
-            if (keyString.equalsIgnoreCase("color")) {
+            if (keyString.equalsIgnoreCase("color")) { // NON-NLS
                 if (!(json.get("color") instanceof String)) {
                     return null;
                 }
                 color = toColor((String) json.get(keyString));
-            } else if (!keyString.equalsIgnoreCase("text")) {
+            } else if (!keyString.equalsIgnoreCase("text")) { // NON-NLS
                 if (toColor(keyString) == null) {
                     return null;
                 }
@@ -87,7 +86,7 @@ public class TitleCommand extends VanillaCommand {
 
         style.add(color);
 
-        String text = (String) json.get("text");
+        String text = (String) json.get("text"); // NON-NLS
 
         for (ChatColor c : style) {
             text = c + text;
@@ -96,33 +95,38 @@ public class TitleCommand extends VanillaCommand {
         return text;
     }
 
+    // CAUTION: Most usage messages in this method can't be replaced with sendUsageMessage, because
+    // they're subcommand-specific.
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args,
+            CommandMessages commandMessages) {
+        if (!testPermission(sender, commandMessages.getPermissionMessage())) {
             return true;
         }
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
         Player player = Bukkit.getPlayerExact(args[0]);
 
         if (player == null || sender instanceof Player && !((Player) sender).canSee(player)) {
-            sender.sendMessage("There's no player by that name online.");
+            commandMessages.getGeneric(GenericMessage.NO_SUCH_PLAYER).send(sender, args[0]);
             return false;
         }
 
-        String action = args[1];
-
+        @NonNls String action = args[1];
         if (action.equalsIgnoreCase("clear")) {
             ((GlowPlayer) player).clearTitle();
-            sender.sendMessage("Cleared " + player.getName() + "'s title");
+            new LocalizedStringImpl("title.done.clear", commandMessages.getResourceBundle())
+                    .send(sender, player.getName());
         } else if (action.equalsIgnoreCase("reset")) {
             player.resetTitle();
-            sender.sendMessage("Reset " + player.getName() + "'s title");
+            new LocalizedStringImpl("title.done.reset", commandMessages.getResourceBundle())
+                    .send(sender, player.getName());
         } else if (action.equalsIgnoreCase("title")) {
             if (args.length < 3) {
+                sendUsageMessage(sender, commandMessages);
                 sender.sendMessage(
                         ChatColor.RED + "Usage: /title <player> " + action + " <raw json>");
                 return false;
@@ -208,7 +212,7 @@ public class TitleCommand extends VanillaCommand {
 
             sender.sendMessage("Updated " + player.getName() + "'s times");
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, commandMessages);
             return false;
         }
 
@@ -252,7 +256,7 @@ public class TitleCommand extends VanillaCommand {
                 return false; // The key is empty, meaning that it is not valid
             }
 
-            String keyString = entry.getKey();
+            @NonNls String keyString = entry.getKey();
 
             switch (keyString) {
                 case "text":

@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 
 public class GlowBat extends GlowAmbient implements Bat {
 
@@ -61,5 +62,15 @@ public class GlowBat extends GlowAmbient implements Bat {
     @Override
     protected Sound getAmbientSound() {
         return Sound.ENTITY_BAT_AMBIENT;
+    }
+
+    @Override
+    public void setTarget(LivingEntity target) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public LivingEntity getTarget() {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

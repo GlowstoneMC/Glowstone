@@ -19,6 +19,7 @@ import net.glowstone.net.GlowSession;
 import net.glowstone.net.GlowStatusClient;
 import net.glowstone.net.message.status.StatusRequestMessage;
 import net.glowstone.net.message.status.StatusResponseMessage;
+import net.glowstone.util.UuidUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.util.CachedServerIcon;
 import org.json.simple.JSONArray;
@@ -90,7 +91,8 @@ public final class StatusRequestHandler implements
             for (PlayerProfile profile : event.getPlayerSample()) {
                 JSONObject p = new JSONObject();
                 p.put("name", Strings.nullToEmpty(profile.getName()));
-                p.put("id", MoreObjects.firstNonNull(profile.getId(), BLANK_UUID).toString());
+                p.put("id",
+                        UuidUtils.toString(MoreObjects.firstNonNull(profile.getId(), BLANK_UUID)));
                 playersSample.add(p);
             }
             players.put("sample", playersSample);

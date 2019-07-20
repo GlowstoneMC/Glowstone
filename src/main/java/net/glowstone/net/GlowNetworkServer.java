@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.net.protocol.ProtocolProvider;
 
 /**
  * Represents a network server.
@@ -15,6 +16,8 @@ public abstract class GlowNetworkServer {
 
     @Getter
     private final GlowServer server;
+    @Getter
+    private final ProtocolProvider protocolProvider;
     protected CountDownLatch latch;
 
     /**
@@ -24,8 +27,10 @@ public abstract class GlowNetworkServer {
      * @param latch The countdown latch used during server startup to wait for network server
      *         binding.
      */
-    public GlowNetworkServer(GlowServer server, CountDownLatch latch) {
+    public GlowNetworkServer(GlowServer server, ProtocolProvider protocolProvider,
+                             CountDownLatch latch) {
         this.server = server;
+        this.protocolProvider = protocolProvider;
         this.latch = latch;
     }
 

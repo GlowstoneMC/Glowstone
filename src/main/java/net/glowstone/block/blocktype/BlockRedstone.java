@@ -3,6 +3,8 @@ package net.glowstone.block.blocktype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.ItemTable;
@@ -12,6 +14,7 @@ import net.glowstone.net.message.play.game.BlockChangeMessage;
 import net.glowstone.scheduler.PulseTask;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 import org.bukkit.material.Diode;
@@ -21,6 +24,7 @@ import org.bukkit.material.Step;
 
 /**
  * A redstone wire block.
+ *
  * @author Sam
  */
 public class BlockRedstone extends BlockNeedsAttached {
@@ -32,6 +36,7 @@ public class BlockRedstone extends BlockNeedsAttached {
     /**
      * Calculates the block data value for a redstone wire block, based on the adjacent blocks, so
      * that appropriate connections are formed.
+     *
      * @param block a redstone wire block
      * @return the block data value
      */
@@ -85,7 +90,7 @@ public class BlockRedstone extends BlockNeedsAttached {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         if (block.getRelative(BlockFace.DOWN).getType().isSolid()) {
             return true;
         }
@@ -117,19 +122,19 @@ public class BlockRedstone extends BlockNeedsAttached {
 
     @Override
     public void afterPlace(GlowPlayer player, GlowBlock block, ItemStack holding,
-        GlowBlockState oldState) {
+                           GlowBlockState oldState) {
         updatePhysics(block);
     }
 
     @Override
     public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
-        Material oldType, byte oldData, Material newType, byte newData) {
+                                   Material oldType, byte oldData, Material newType, byte newData) {
         updatePhysics(block);
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        super.updatePhysics(me);
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
 
         for (BlockFace face : ADJACENT) {
             GlowBlock target = me.getRelative(face);
@@ -175,7 +180,7 @@ public class BlockRedstone extends BlockNeedsAttached {
                         continue;
                     }
                     if (target.getRelative(BlockFace.DOWN).getType()
-                            == Material.REDSTONE_TORCH_ON) {
+                        == Material.REDSTONE_TORCH_ON) {
                         setFullyPowered(me);
                         return;
                     }
@@ -234,6 +239,10 @@ public class BlockRedstone extends BlockNeedsAttached {
         }
 
         if (power != me.getData()) {
+            BlockRedstoneEvent event = EventFactory.getInstance()
+                .callEvent(new BlockRedstoneEvent(me, me.getData(), power));
+            power = (byte) event.getNewCurrent();
+
             me.setData(power);
             updateConnected(me);
             new PulseTask(me, true, 1, true).startPulseTask();
@@ -247,8 +256,13 @@ public class BlockRedstone extends BlockNeedsAttached {
      * @param block the block to update
      */
     protected static void setFullyPowered(GlowBlock block) {
-        if (block.getData() != 15) {
-            block.setData((byte) 15);
+        int newPower = 15;
+        if (block.getData() != newPower) {
+            BlockRedstoneEvent event = EventFactory.getInstance()
+                .callEvent(new BlockRedstoneEvent(block, block.getData(), newPower));
+            newPower = event.getNewCurrent();
+
+            block.setData((byte) newPower);
             updateConnected(block);
         }
     }

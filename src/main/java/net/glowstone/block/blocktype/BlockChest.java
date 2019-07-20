@@ -2,13 +2,13 @@ package net.glowstone.block.blocktype;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import net.glowstone.GlowServer;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.ChestEntity;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.ConsoleMessages;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.block.BlockFace;
@@ -51,8 +51,7 @@ public class BlockChest extends BlockContainer {
             case WEST:
                 return yaw > 90 && yaw < 270 ? BlockFace.SOUTH : BlockFace.NORTH;
             default:
-                GlowServer.logger
-                    .warning("Can only handle N/O/S/W BlockFaces, getting face: " + connection);
+                ConsoleMessages.Warn.Block.Chest.FACING.log(connection);
                 return BlockFace.NORTH;
         }
     }
@@ -75,21 +74,23 @@ public class BlockChest extends BlockContainer {
             BlockFace normalFacing = getOppositeBlockFace(player.getLocation(), false);
 
             Collection<BlockFace> attachedChests = searchChests(chestBlock);
-            if (attachedChests.isEmpty()) {
-                chest.setFacingDirection(normalFacing);
-                state.setData(chest);
-                return;
-            } else if (attachedChests.size() > 1) {
-                GlowServer.logger.warning("Chest placed near two other chests!");
-                return;
+            switch (attachedChests.size()) {
+                case 0:
+                    chest.setFacingDirection(normalFacing);
+                    state.setData(chest);
+                    return;
+                case 1:
+                    break;
+                default:
+                    ConsoleMessages.Warn.Block.Chest.TRIPLE_MIDDLE.log();
+                    return;
             }
-
             BlockFace otherPart = attachedChests.iterator().next();
 
             GlowBlock otherPartBlock = chestBlock.getRelative(otherPart);
 
             if (getAttachedChest(otherPartBlock) != null) {
-                GlowServer.logger.warning("Chest placed near already attached chest!");
+                ConsoleMessages.Warn.Block.Chest.TRIPLE_END.log();
                 return;
             }
 
@@ -126,14 +127,13 @@ public class BlockChest extends BlockContainer {
             return true;
         }
 
-        GlowServer.logger
-            .warning("Calling blockInteract on BlockChest, but BlockState is " + state);
+        ConsoleMessages.Warn.Block.Chest.INTERACT_WRONG_CLASS.log(state);
 
         return false;
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         Collection<BlockFace> nearChests = searchChests(block);
 
         if (nearChests.size() == 1) {
@@ -171,9 +171,7 @@ public class BlockChest extends BlockContainer {
             return null;
         }
         if (attachedChests.size() > 1) {
-            GlowServer.logger.warning(
-                "Chest may only have one near other chest. Found '" + attachedChests + "' near "
-                    + me);
+            ConsoleMessages.Warn.Block.Chest.TRIPLE_ALREADY.log(attachedChests, me);
             return null;
         }
 

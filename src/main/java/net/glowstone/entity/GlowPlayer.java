@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
@@ -32,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -50,6 +52,8 @@ import net.glowstone.block.itemtype.ItemType;
 import net.glowstone.chunk.ChunkManager.ChunkLock;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
+import net.glowstone.command.LocalizedEnumNames;
+import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowAchievement;
 import net.glowstone.constants.GlowBlockEntity;
 import net.glowstone.constants.GlowEffect;
@@ -63,6 +67,7 @@ import net.glowstone.entity.meta.profile.GlowPlayerProfile;
 import net.glowstone.entity.monster.GlowBoss;
 import net.glowstone.entity.objects.GlowItem;
 import net.glowstone.entity.passive.GlowFishingHook;
+import net.glowstone.i18n.GlowstoneMessages;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.inventory.GlowInventoryView;
 import net.glowstone.inventory.InventoryMonitor;
@@ -114,6 +119,7 @@ import net.glowstone.net.message.play.player.UseBedMessage;
 import net.glowstone.scoreboard.GlowScoreboard;
 import net.glowstone.scoreboard.GlowTeam;
 import net.glowstone.util.Convert;
+import net.glowstone.util.EntityUtils;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
 import net.glowstone.util.StatisticMap;
@@ -151,6 +157,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -158,7 +165,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -168,11 +174,15 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.event.player.PlayerLocaleChangeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -195,6 +205,7 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
 
+
 /**
  * Represents an in-game player.
  *
@@ -208,6 +219,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public static final int SELF_ID = 0;
     public static final int HOOK_MAX_DISTANCE = 32;
+
+    private static final Achievement[] ACHIEVEMENT_VALUES = Achievement.values();
+    private static final LocalizedEnumNames<Achievement> ACHIEVEMENT_NAMES
+            = new LocalizedEnumNames<Achievement>(
+                    (Function<String, Achievement>) Achievement::valueOf,
+            "glowstone.achievement.unknown",
+            null, "maps/achievement", true);
 
     /**
      * The network session attached to this player.
@@ -505,8 +523,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Setter
     private ItemStack usageItem;
     @Getter
-    @Setter
-    private long usageTime;
+    private int usageTime;
+    @Getter
+    private int startingUsageTime;
     private Entity spectating;
     private HashMap<Advancement, AdvancementProgress> advancements;
     private String resourcePackHash;
@@ -655,7 +674,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world
                 .getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world
-                .getGameRuleMap().getBoolean("reducedDebugInfo")));
+                .getGameRuleMap().getBoolean(GameRules.REDUCED_DEBUG_INFO)));
         setGameModeDefaults();
 
         // send server brand and supported plugin channels
@@ -802,6 +821,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     @Override
     public void pulse() {
         super.pulse();
+        incrementStatistic(Statistic.TIME_SINCE_DEATH);
 
         if (usageItem != null) {
             if (usageItem.equals(getItemInHand())) { //todo: implement offhand
@@ -840,13 +860,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (getHealth() < getMaxHealth() && !isDead()) {
             if (foodLevel >= 18 && ticksLived % 80 == 0
                     || world.getDifficulty() == Difficulty.PEACEFUL) {
-
-                EntityRegainHealthEvent event1
-                        = new EntityRegainHealthEvent(this, 1f, RegainReason.SATIATED);
-                EventFactory.getInstance().callEvent(event1);
-                if (!event1.isCancelled()) {
-                    setHealth(getHealth() + 1);
-                }
+                EntityUtils.heal(this, 1, EntityRegainHealthEvent.RegainReason.SATIATED);
                 exhaustion = Math.min(exhaustion + 3.0f, 40.0f);
 
                 saturation -= 3;
@@ -1236,6 +1250,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             }
             active = true;
             deathTicks = 0;
+            setStatistic(Statistic.TIME_SINCE_DEATH, 0);
             spawnAt(event.getRespawnLocation());
         } finally {
             worldLock.writeLock().unlock();
@@ -1349,6 +1364,10 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param settings The settings to set.
      */
     public void setSettings(ClientSettings settings) {
+        String newLocale = settings.getLocale();
+        if (!newLocale.equalsIgnoreCase(this.settings.getLocale())) {
+            EventFactory.getInstance().callEvent(new PlayerLocaleChangeEvent(this, newLocale));
+        }
         forceStream = settings.getViewDistance() != this.settings.getViewDistance()
                 && settings.getViewDistance() + 1 <= server.getViewDistance();
         this.settings = settings;
@@ -1566,8 +1585,28 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     }
 
     @Override
+    public ItemStack getActiveItem() {
+        return usageItem;
+    }
+
+    public void setUsageTime(int usageTime) {
+        startingUsageTime = usageTime;
+        this.usageTime = usageTime;
+    }
+
+    @Override
+    public int getItemUseRemainingTime() {
+        return usageTime;
+    }
+
+    @Override
+    public int getHandRaisedTime() {
+        return startingUsageTime - usageTime;
+    }
+
+    @Override
     public boolean isHandRaised() {
-        return false;
+        return usageTime != 0;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1661,8 +1700,14 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void setLevel(int level) {
-        this.level = Math.max(level, 0);
-        sendExperience();
+        int newLevel = Math.max(level, 0);
+
+        if (newLevel != this.level) {
+            EventFactory.getInstance().callEvent(
+                    new PlayerLevelChangeEvent(this, this.level, newLevel));
+            this.level = newLevel;
+            sendExperience();
+        }
     }
 
     @Override
@@ -1673,6 +1718,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void giveExp(int xp) {
+        PlayerExpChangeEvent event = EventFactory.getInstance()
+            .callEvent(new PlayerExpChangeEvent(this, xp));
+        xp = event.getAmount();
         totalExperience += xp;
 
         // gradually award levels based on xp points
@@ -1681,7 +1729,8 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             exp += value;
             if (exp >= 1) {
                 exp -= 1;
-                value = 1.0f / getExpToLevel(++level);
+                setLevel(level + 1);
+                value = 1.0f / getExpToLevel(level);
             }
         }
         sendExperience();
@@ -2181,7 +2230,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public String getLocale() {
-        return null;
+        return settings.getLocale();
     }
 
     @Override
@@ -2847,10 +2896,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendAchievement(achievement, true);
 
         if (server.getAnnounceAchievements()) {
-            // todo: make message fancier (hover, translated names)
-            server.broadcastMessage(
-                    getName() + " has just earned the achievement " + ChatColor.GREEN + "["
-                            + GlowAchievement.getFancyName(achievement) + "]");
+            // todo: make message fancier (hover)
+            server.broadcastMessage(GlowstoneMessages.Achievement.EARNED.get(
+                    getName(), ACHIEVEMENT_NAMES.valueToName(Locale.getDefault(), achievement)));
         }
         return true;
     }
@@ -2906,34 +2954,55 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void incrementStatistic(Statistic statistic) {
-        stats.add(statistic, 1);
+        incrementStatistic(statistic, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, int amount) {
-        stats.add(statistic, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, amount);
+        }
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, Material material) {
-        stats.add(statistic, material, 1);
+        incrementStatistic(statistic, material, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, Material material, int amount) {
-        stats.add(statistic, material, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount, material));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, material, amount);
+        }
     }
 
     @Override
     public void incrementStatistic(Statistic statistic,
             EntityType entityType) throws IllegalArgumentException {
-        stats.add(statistic, entityType, 1);
+        incrementStatistic(statistic, entityType, 1);
     }
 
     @Override
     public void incrementStatistic(Statistic statistic, EntityType entityType,
             int amount) throws IllegalArgumentException {
-        stats.add(statistic, entityType, amount);
+        int initialAmount = stats.get(statistic);
+        PlayerStatisticIncrementEvent event = EventFactory.getInstance().callEvent(
+                new PlayerStatisticIncrementEvent(this, statistic, initialAmount,
+                        initialAmount + amount, entityType));
+
+        if (!event.isCancelled()) {
+            stats.add(statistic, entityType, amount);
+        }
     }
 
     @Override
@@ -3126,7 +3195,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      */
     public void sendTime() {
         long time = getPlayerTime();
-        if (!playerTimeRelative || !world.getGameRuleMap().getBoolean("doDaylightCycle")) {
+        if (!playerTimeRelative || !world.getGameRuleMap().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
             time *= -1; // negative value indicates fixed time
         }
         session.send(new TimeMessage(world.getFullTime(), time));
@@ -3360,13 +3429,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param clicked the enchanting-table slot used: 0 for top, 1 for middle, 2 for bottom
      */
     public void enchanted(int clicked) {
-        level -= clicked + 1;
-        if (level < 0) {
-            level = 0;
-            exp = 0;
-            totalExperience = 0;
+        int newLevel = level - clicked - 1;
+        if (newLevel < 0) {
+            setExp(0);
+            setTotalExperience(0);
         }
-        setLevel(level);
+
+        setLevel(newLevel);
         setXpSeed(ThreadLocalRandom.current().nextInt()); //TODO use entity's random instance?
     }
 
@@ -3378,6 +3447,13 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     public void clearTitle() {
         session.send(new TitleMessage(Action.CLEAR));
+    }
+
+    @Override
+    public void setOnGround(boolean onGround) {
+        super.setOnGround(onGround);
+        int fallDistance = Math.round(getFallDistance());
+        this.incrementStatistic(Statistic.FALL_ONE_CM, fallDistance);
     }
 
     @Override
@@ -3400,7 +3476,12 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             // remove the animation
             broadcastBlockBreakAnimation(digging, 10);
         } else {
-            double hardness = block.getMaterialValues().getHardness() * 20; // seconds to ticks
+            double hardness = block.getMaterialValues().getHardness();
+            if (hardness >= Float.MAX_VALUE) {
+                // This block can't be broken by digging.
+                setDigging(null);
+                return;
+            }
             double breakingTimeMultiplier = 5; // default of 5 when using bare hands
             ItemStack tool = getItemInHand();
             if (tool != null) {
@@ -3412,11 +3493,25 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 } else {
                     ToolType effectiveTool = block.getMaterialValues().getTool();
                     if (effectiveTool != null && effectiveTool.matches(toolType)) {
-                        breakingTimeMultiplier = 1.5 / effectiveTool.getMiningMultiplier();
+                        double miningMultiplier = ToolType.getMiningMultiplier(toolType);
+                        int efficiencyLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
+                        if (efficiencyLevel > 0) {
+                            miningMultiplier += efficiencyLevel * efficiencyLevel + 1;
+                        }
+                        breakingTimeMultiplier = 1.5 / miningMultiplier;
+                    } else if (effectiveTool == null
+                            || !effectiveTool.matches(Material.DIAMOND_PICKAXE)) {
+                        // If the current tool isn't optimal but can still mine the block, the
+                        // multiplier is 1.5. Here, we assume for simplicity that this is true of
+                        // all non-pickaxe blocks.
+                        // FIXME: Does this always match vanilla?
+                        breakingTimeMultiplier = 1.5;
                     }
                 }
             }
-            totalDiggingTicks = (long)(breakingTimeMultiplier * hardness);
+            // TODO: status effects (e.g. Mining Fatigue, Slowness); effect of underwater digging
+            totalDiggingTicks = (long)
+                (breakingTimeMultiplier * hardness * 20.0 + 0.5); // seconds to ticks, round half-up
             // show other clients the block is beginning to crack
             broadcastBlockBreakAnimation(block, 0);
         }
@@ -3434,16 +3529,17 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     private void broadcastBlockBreakAnimation(GlowBlock block, int destroyStage) {
         GlowChunk.Key key = GlowChunk.Key.of(block.getX() >> 4, block.getZ() >> 4);
         block.getWorld().getRawPlayers().stream()
-                .filter(player -> player.canSeeChunk(key) && player != this)
+                .filter(player -> player != this && player.canSeeChunk(key))
                 .forEach(player -> player
                         .sendBlockBreakAnimation(block.getLocation(), destroyStage));
     }
 
     private void pulseDigging() {
         ++diggingTicks;
-
-        if (diggingTicks < totalDiggingTicks) {
-            int stage = (int) (10 * (double) diggingTicks / totalDiggingTicks);
+        if (diggingTicks <= totalDiggingTicks) {
+            // diggingTicks starts at 1 and progresses to totalDiggingTicks, but animation stages
+            // are 0 through 9, so subtract 1 from the current tick
+            int stage = (int) (10.0 * ((double) (diggingTicks - 1)) / totalDiggingTicks);
             broadcastBlockBreakAnimation(digging, stage);
             return;
         }
@@ -3511,15 +3607,18 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
             for (int i = 0; i < baseDamage; i++) {
                 tool = InventoryUtil.damageItem(this, tool);
             }
-            // Force-update item
-            setItemInHand(tool);
-            // Break the block
-            digging.breakNaturally(tool);
-            // Send block status to clients
-            world.getRawPlayers().parallelStream().forEach(player -> player.sendBlockChange(
-                    digging.getLocation(), Material.AIR, (byte) 0));
-            setDigging(null);
         }
+        // Force-update item
+        setItemInHand(tool);
+        // Break the block
+        digging.breakNaturally(tool);
+        // Send block status to clients
+        Location dugLocation = digging.getLocation();
+        // OK to use sequential stream here, because sendBlockChange is async
+        world.getRawPlayers().stream()
+                .filter(player -> player.canSeeChunk(GlowChunk.Key.to(dugLocation.getChunk())))
+                .forEach(player -> player.sendBlockChange(dugLocation, Material.AIR, (byte) 0));
+        setDigging(null);
     }
 
     /**

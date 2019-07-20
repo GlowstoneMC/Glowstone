@@ -1,5 +1,8 @@
 package net.glowstone.block.blocktype;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -8,6 +11,7 @@ import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.block.entity.state.GlowBed;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.i18n.GlowstoneMessages;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +21,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Bed;
@@ -25,10 +28,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public class BlockBed extends BlockType {
-
-    public BlockBed() {
-        setDrops(new ItemStack(Material.BED));
-    }
 
     /**
      * Helper method for set whether the specified bed blocks are occupied.
@@ -89,6 +88,35 @@ public class BlockBed extends BlockType {
             return block.getRelative(bed.getFacing().getOppositeFace());
         } else {
             return block;
+        }
+    }
+
+    @Override
+    public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
+        return Collections.singletonList(new ItemStack(Material.BED, 1,
+                (((GlowBed) block.getState()).getColor().getWoolData())));
+    }
+
+    @Override
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
+        if (player != null) {
+            BlockFace direction = getOppositeBlockFace(player.getLocation(), false)
+                .getOppositeFace();
+            final GlowBlock otherEnd = block.getRelative(direction);
+            return otherEnd.getType() == Material.AIR
+                && otherEnd.getRelative(BlockFace.DOWN).getType().isSolid();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void onNearBlockChanged(GlowBlock block, BlockFace face, GlowBlock changedBlock,
+                                   Material oldType, byte oldData, Material newType, byte newData) {
+        if (changedBlock.equals(getHead(block)) || changedBlock.equals(getFoot(block))) {
+            if (newType == Material.AIR) {
+                block.setType(Material.AIR);
+            }
         }
     }
 
@@ -183,19 +211,17 @@ public class BlockBed extends BlockType {
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
-        ItemStack holding, Vector clickedLoc) {
+            ItemStack holding, Vector clickedLoc) {
         BlockFace direction = getOppositeBlockFace(player.getLocation(), false).getOppositeFace();
-        if (state.getBlock().getRelative(direction).getType() == Material.AIR && state.getBlock()
-            .getRelative(direction).getRelative(BlockFace.DOWN).getType().isSolid()) {
-            super.placeBlock(player, state, face, holding, clickedLoc);
-            MaterialData data = state.getData();
-            if (data instanceof Bed) {
-                ((Bed) data).setFacingDirection(direction);
-                ((Bed) data).setHeadOfBed(false);
-                state.setData(data);
-            } else {
-                warnMaterialData(Bed.class, data);
-            }
+        super.placeBlock(player, state, face, holding, clickedLoc);
+
+        MaterialData data = state.getData();
+        if (data instanceof Bed) {
+            ((Bed) data).setFacingDirection(direction);
+            ((Bed) data).setHeadOfBed(false);
+            state.setData(data);
+        } else {
+            warnMaterialData(Bed.class, data);
         }
     }
 
@@ -225,8 +251,8 @@ public class BlockBed extends BlockType {
     }
 
     @Override
-    public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
-        Vector clickedLoc) {
+    public boolean blockInteract(final GlowPlayer player, GlowBlock block, final BlockFace face,
+            final Vector clickedLoc) {
         GlowWorld world = player.getWorld();
         MaterialData data = block.getState().getData();
         if (!(data instanceof Bed)) {
@@ -245,13 +271,14 @@ public class BlockBed extends BlockType {
 
         // Sleeping is only possible during the night or a thunderstorm
         // Tick values for day/night time taken from the minecraft wiki
-        if (world.getTime() < 12541 || world.getTime() > 23458 || world.isThundering()) {
-            player.sendMessage("You can only sleep at night");
+        final long time = world.getTime();
+        if ((time < 12541 || time > 23458) && !world.isThundering()) {
+            GlowstoneMessages.Bed.DAY.send(player);
             return true;
         }
 
         if (isOccupied(block)) {
-            player.sendMessage("This bed is occupied.");
+            GlowstoneMessages.Bed.OCCUPIED.send(player);
             return true;
         }
 
@@ -259,11 +286,12 @@ public class BlockBed extends BlockType {
             return true; // Distance between player and bed is too great, fail silently
         }
 
-        for (LivingEntity e : world.getLivingEntities()) {
-            // Check for hostile mobs relative to the block below the head of the bed
+        // Check for hostile mobs relative to the block below the head of the bed
+        // (Don't use getEntitiesByType etc., because they copy the entire list of entities)
+        for (Entity e : world.getEntityManager()) {
             if (e instanceof Creature && (e.getType() != EntityType.PIG_ZOMBIE || ((PigZombie) e)
                 .isAngry()) && isWithinDistance(e, block.getRelative(BlockFace.DOWN), 8, 5, 8)) {
-                player.sendMessage("You may not rest now, there are monsters nearby");
+                GlowstoneMessages.Bed.MOB.send(player);
                 return true;
             }
         }

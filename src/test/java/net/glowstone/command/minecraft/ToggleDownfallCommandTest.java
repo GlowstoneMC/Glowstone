@@ -2,10 +2,11 @@ package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.Collections;
 import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandTest;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;

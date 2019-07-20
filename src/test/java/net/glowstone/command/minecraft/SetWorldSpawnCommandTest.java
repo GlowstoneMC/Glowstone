@@ -2,10 +2,11 @@ package net.glowstone.command.minecraft;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.Collections;
 import net.glowstone.GlowWorld;
+import net.glowstone.command.CommandTest;
 import net.glowstone.command.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -48,7 +49,7 @@ public class SetWorldSpawnCommandTest extends CommandTest<SetWorldSpawnCommand> 
         PowerMockito.stub(PowerMockito.method(CommandUtils.class, "getWorld", CommandSender.class))
             .toReturn(null);
 
-        assertThat(command.execute(sender, "label", new String[0]), is(false));
+        assertThat(command.execute(opSender, "label", new String[0]), is(false));
     }
 
     @Test
@@ -69,7 +70,7 @@ public class SetWorldSpawnCommandTest extends CommandTest<SetWorldSpawnCommand> 
     public void testExecuteFailsWithDefaultLocation() {
         assertThat(command.execute(opSender, "label", new String[0]), is(false));
         Mockito.verify(opSender).sendMessage(
-            eq(ChatColor.RED + "Default coordinates can not be used without a physical user."));
+            eq(ChatColor.RED + "This command needs absolute coordinates when you're not a player or command block."));
         ;
     }
 
@@ -77,14 +78,14 @@ public class SetWorldSpawnCommandTest extends CommandTest<SetWorldSpawnCommand> 
     public void testExecuteFailsWithRelativeLocation() {
         assertThat(command.execute(opSender, "label", new String[]{"~2", "3", "4"}), is(false));
         Mockito.verify(opSender).sendMessage(
-            eq(ChatColor.RED + "Relative coordinates can not be used without a physical user."));
+            eq(ChatColor.RED + "This command needs absolute coordinates when you're not a player or command block."));
     }
 
     @Test
     public void testExecuteFailsWithYCoordinatesTooHigh() {
         assertThat(command.execute(opSender, "label", new String[]{"2", "10000", "4"}), is(false));
         Mockito.verify(opSender).sendMessage(
-            eq(ChatColor.RED + "'10000' is too high for the current world. Max value is '50'."));
+            eq(ChatColor.RED + "Too high: maximum Y coordinate in this world is 50."));
     }
 
     @Test
@@ -92,7 +93,7 @@ public class SetWorldSpawnCommandTest extends CommandTest<SetWorldSpawnCommand> 
         assertThat(command.execute(opSender, "label", new String[]{"2", "-10000", "4"}), is(false));
         // -10001 because of the floor, it's not supposed to be negative
         Mockito.verify(opSender).sendMessage(
-            eq(ChatColor.RED + "The y coordinate (-10000) is too small, it must be at least 0."));
+            eq(ChatColor.RED + "Too low: Y coordinate can't be negative."));
     }
 
     @Test

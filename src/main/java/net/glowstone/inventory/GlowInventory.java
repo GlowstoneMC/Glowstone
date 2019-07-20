@@ -413,7 +413,9 @@ public class GlowInventory implements Inventory {
             while (toAdd > 0 && iterator.hasNext()) {
                 GlowInventorySlot slot = iterator.next();
                 ItemStack slotItem = slot.getItem();
-                if (InventoryUtil.isEmpty(slotItem)) {
+                if (InventoryUtil.isEmpty(slotItem)
+                        && itemPlaceAllowed(slots.indexOf(slot), item)) {
+
                     int num = toAdd > maxStackSize ? maxStackSize : toAdd;
 
                     slotItem = item.clone();
@@ -470,6 +472,7 @@ public class GlowInventory implements Inventory {
                     slotItem.setAmount(slotItem.getAmount() - toRemove);
                 } else {
                     toRemove -= slotItem.getAmount();
+                    item.setAmount(0);
                     slot.setItem(new ItemStack(Material.AIR, 0));
                 }
             }
