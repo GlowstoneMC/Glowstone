@@ -4,6 +4,7 @@ import com.flowpowered.network.AsyncableMessage;
 import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.protocol.AbstractProtocol;
 import com.flowpowered.network.session.BasicSession;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -493,10 +494,10 @@ public class GlowSession extends BasicSession {
      * @param proto the new protocol
      */
     @Override
-    public void setProtocol(GlowProtocol proto) {
+    public void setProtocol(AbstractProtocol proto) {
         getChannel().flush();
 
-        updatePipeline("codecs", new CodecsHandler(proto));
+        updatePipeline("codecs", new CodecsHandler((GlowProtocol)proto));
         super.setProtocol(proto);
     }
 
