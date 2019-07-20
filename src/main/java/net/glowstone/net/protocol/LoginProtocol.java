@@ -8,6 +8,7 @@ import net.glowstone.net.codec.login.LoginStartCodec;
 import net.glowstone.net.codec.login.LoginSuccessCodec;
 import net.glowstone.net.handler.login.EncryptionKeyResponseHandler;
 import net.glowstone.net.handler.login.LoginStartHandler;
+import net.glowstone.net.http.HttpClient;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
@@ -15,17 +16,17 @@ import net.glowstone.net.message.login.EncryptionKeyResponseMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 
-public final class LoginProtocol extends GlowProtocol {
+public class LoginProtocol extends GlowProtocol {
 
     /**
      * Creates the instance.
      */
-    public LoginProtocol() {
+    public LoginProtocol(final HttpClient httpClient) {
         super("LOGIN", 5);
 
         inbound(0x00, LoginStartMessage.class, LoginStartCodec.class, LoginStartHandler.class);
         inbound(0x01, EncryptionKeyResponseMessage.class, EncryptionKeyResponseCodec.class,
-            EncryptionKeyResponseHandler.class);
+            new EncryptionKeyResponseHandler(httpClient));
 
         outbound(0x00, KickMessage.class, KickCodec.class);
         outbound(0x01, EncryptionKeyRequestMessage.class, EncryptionKeyRequestCodec.class);

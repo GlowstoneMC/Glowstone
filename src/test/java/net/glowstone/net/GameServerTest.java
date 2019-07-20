@@ -1,6 +1,7 @@
 package net.glowstone.net;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -16,6 +17,11 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import net.glowstone.GlowServer;
+import net.glowstone.net.protocol.HandshakeProtocol;
+import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.net.protocol.ProtocolProvider;
+import net.glowstone.net.protocol.StatusProtocol;
 import net.glowstone.util.config.ServerConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,9 +86,15 @@ public class GameServerTest {
     @BeforeEach
     public void setUp() throws IllegalAccessException {
         GlowServer.logger.addHandler(handler);
-        glowServer = Mockito.mock(GlowServer.class, Answers.RETURNS_SMART_NULLS);
+        glowServer = mock(GlowServer.class, Answers.RETURNS_SMART_NULLS);
         CountDownLatch latch = new CountDownLatch(1);
-        gameServer = new GameServer(glowServer, latch);
+        ProtocolProvider protocolProvider = new ProtocolProvider(
+            mock(HandshakeProtocol.class),
+            mock(StatusProtocol.class),
+            mock(LoginProtocol.class),
+            mock(PlayProtocol.class)
+        );
+        gameServer = new GameServer(glowServer, protocolProvider, latch);
         latch.countDown();
     }
 
