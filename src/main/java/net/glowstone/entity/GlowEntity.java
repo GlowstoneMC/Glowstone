@@ -1166,6 +1166,17 @@ public abstract class GlowEntity implements Entity {
         }
     }
 
+    public void playEffectKnownAndSelf(EntityEffect type) {
+        if (type.getApplicable().isInstance(this)) {
+            EntityStatusMessage message = new EntityStatusMessage(entityId, type);
+            if (this instanceof GlowPlayer) {
+                ((GlowPlayer) this).getSession().send(message);
+            }
+            world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
+                    .forEach(player -> player.getSession().send(message));
+        }
+    }
+
     @Override
     public EntityType getType() {
         return EntityType.UNKNOWN;
