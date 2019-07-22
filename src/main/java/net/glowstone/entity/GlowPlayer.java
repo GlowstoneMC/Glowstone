@@ -217,7 +217,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
     /**
      * A static entity id to use when telling the client about itself.
      */
-    public static final int SELF_ID = 0;
     public static final int HOOK_MAX_DISTANCE = 32;
 
     private static final Achievement[] ACHIEVEMENT_VALUES = Achievement.values();
@@ -665,17 +664,21 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
      * @param reader the source of the player's saved state
      */
     public void join(GlowSession session, PlayerReader reader) {
-        // send join game
-        // in future, handle hardcore, difficulty, and level type
         String type = world.getWorldType().getName().toLowerCase();
+
+        reader.readData(this);
+        reader.close();
+
         int gameMode = getGameMode().getValue();
         if (server.isHardcore()) {
             gameMode |= 0x8;
         }
-        session.send(new JoinGameMessage(SELF_ID, gameMode, world.getEnvironment().getId(), world
+
+        setGameModeDefaults();
+
+        session.send(new JoinGameMessage(getEntityId(), gameMode, world.getEnvironment().getId(), world
                 .getDifficulty().getValue(), session.getServer().getMaxPlayers(), type, world
                 .getGameRuleMap().getBoolean(GameRules.REDUCED_DEBUG_INFO)));
-        setGameModeDefaults();
 
         // send server brand and supported plugin channels
         Message pluginMessage = PluginMessage.fromString("MC|Brand", server.getName());
@@ -684,8 +687,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
         sendSupportedChannels();
         joinTime = System.currentTimeMillis();
-        reader.readData(this);
-        reader.close();
 
         // Add player to list of online players
         getServer().setPlayerOnline(this, true);
@@ -921,7 +922,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         // send changed metadata
         List<MetadataMap.Entry> changes = metadata.getChanges();
         if (!changes.isEmpty()) {
-            session.send(new EntityMetadataMessage(SELF_ID, changes));
+            session.send(new EntityMetadataMessage(getEntityId(), changes));
         }
 
         // Entity IDs are only unique per world, so we can't spawn or teleport between worlds while
@@ -971,7 +972,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         }
 
         if (passengerChanged) {
-            session.send(new SetPassengerMessage(SELF_ID, getPassengers().stream()
+            session.send(new SetPassengerMessage(getEntityId(), getPassengers().stream()
                     .mapToInt(Entity::getEntityId).toArray()));
         }
         getAttributeManager().sendMessages(session);
@@ -1354,7 +1355,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         if (!event.isCancelled()) {
             velocity = event.getVelocity();
             super.setVelocity(velocity);
-            session.send(new EntityVelocityMessage(SELF_ID, velocity));
+            session.send(new EntityVelocityMessage(getEntityId(), velocity));
         }
     }
 
@@ -2050,9 +2051,9 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sleeping = true;
         setRawLocation(head.getLocation(), false);
 
-        getSession().send(new UseBedMessage(SELF_ID, head.getX(), head.getY(), head.getZ()));
         UseBedMessage msg = new UseBedMessage(getEntityId(), head.getX(), head.getY(), head.getZ());
-        world.getRawPlayers().stream().filter(p -> p != this && p.canSeeEntity(this))
+        getSession().send(msg);
+        world.getRawPlayers().stream().filter(p -> p.canSeeEntity(this))
                 .forEach(p -> p.getSession().send(msg));
     }
 
@@ -3633,7 +3634,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
 
     @Override
     public void playAnimationToSelf(EntityAnimation animation) {
-        AnimateEntityMessage message = new AnimateEntityMessage(SELF_ID, animation.ordinal());
+        AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
         getSession().send(message);
     }
 
