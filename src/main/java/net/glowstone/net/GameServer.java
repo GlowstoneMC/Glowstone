@@ -11,6 +11,7 @@ import java.util.concurrent.CountDownLatch;
 import net.glowstone.GlowServer;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.net.pipeline.GlowChannelInitializer;
+import net.glowstone.net.protocol.ProtocolProvider;
 
 
 public final class GameServer extends GlowSocketServer implements ConnectionManager {
@@ -30,8 +31,8 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
         return out.toString();
     }
 
-    public GameServer(GlowServer server, CountDownLatch latch) {
-        super(server, latch);
+    public GameServer(GlowServer server, ProtocolProvider protocolProvider, CountDownLatch latch) {
+        super(server, protocolProvider, latch);
         bootstrap.childHandler(new GlowChannelInitializer(this));
     }
 
@@ -69,7 +70,7 @@ public final class GameServer extends GlowSocketServer implements ConnectionMana
 
     @Override
     public GlowSession newSession(Channel c) {
-        GlowSession session = new GlowSession(getServer(), c, this);
+        GlowSession session = new GlowSession(getServer(), getProtocolProvider(), c, this);
         getServer().getSessionRegistry().add(session);
         return session;
     }

@@ -1,7 +1,11 @@
 package net.glowstone.net;
 
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 import com.flowpowered.network.Message;
 import io.netty.buffer.Unpooled;
+import java.util.Collections;
 import net.glowstone.net.message.KickMessage;
 import net.glowstone.net.message.SetCompressionMessage;
 import net.glowstone.net.message.login.EncryptionKeyRequestMessage;
@@ -11,6 +15,8 @@ import net.glowstone.net.message.login.LoginPluginResponseMessage;
 import net.glowstone.net.message.login.LoginStartMessage;
 import net.glowstone.net.message.login.LoginSuccessMessage;
 import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.ProtocolProvider;
+import net.glowstone.util.config.ServerConfig;
 
 /**
  * Test cases for {@link LoginProtocol}.
@@ -30,7 +36,14 @@ public class LoginProtocolTest extends BaseProtocolTest {
         new LoginPluginRequestMessage(0, "channel", Unpooled.wrappedBuffer(new byte[]{0x00, 0x01}))
     };
 
+    private static LoginProtocol createLoginProtocol() {
+        ServerConfig serverConfig = mock(ServerConfig.class);
+        when(serverConfig.getMapList(ServerConfig.Key.DNS_OVERRIDES)).thenReturn(Collections.emptyList());
+        ProtocolProvider protocolProvider = new ProtocolProvider(serverConfig);
+        return protocolProvider.login;
+    }
+
     public LoginProtocolTest() {
-        super(new LoginProtocol(), TEST_MESSAGES);
+        super(createLoginProtocol(), TEST_MESSAGES);
     }
 }

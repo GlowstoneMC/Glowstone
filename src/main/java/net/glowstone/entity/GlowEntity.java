@@ -863,13 +863,7 @@ public abstract class GlowEntity implements Entity {
             // In case the current session belongs to this player passenger
             // We need to send the self_id
             List<Integer> passengerIds = new ArrayList<>();
-            getPassengers().forEach(e -> {
-                if (session.getPlayer().equals(e)) {
-                    passengerIds.add(GlowPlayer.SELF_ID);
-                } else {
-                    passengerIds.add(e.getEntityId());
-                }
-            });
+            getPassengers().forEach(e -> passengerIds.add(e.getEntityId()));
             result.add(new SetPassengerMessage(getEntityId(), passengerIds.stream()
                 .mapToInt(Integer::intValue).toArray()));
             passengerChanged = false;
@@ -1190,9 +1184,22 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void playEffect(EntityEffect type) {
-        EntityStatusMessage message = new EntityStatusMessage(entityId, type);
-        world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
-            .forEach(player -> player.getSession().send(message));
+        if (type.getApplicable().isInstance(this)) {
+            EntityStatusMessage message = new EntityStatusMessage(entityId, type);
+            world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
+                    .forEach(player -> player.getSession().send(message));
+        }
+    }
+
+    public void playEffectKnownAndSelf(EntityEffect type) {
+        if (type.getApplicable().isInstance(this)) {
+            EntityStatusMessage message = new EntityStatusMessage(entityId, type);
+            if (this instanceof GlowPlayer) {
+                ((GlowPlayer) this).getSession().send(message);
+            }
+            world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
+                    .forEach(player -> player.getSession().send(message));
+        }
     }
 
     @Override
