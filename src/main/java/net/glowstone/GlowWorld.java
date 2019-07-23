@@ -2014,11 +2014,11 @@ public class GlowWorld implements World {
             getRawPlayers().forEach(GlowPlayer::sendTime);
         } else if (rule.equals(GameRules.REDUCED_DEBUG_INFO)) {
             // inform clients about the debug info change
-            EntityStatusMessage message = new EntityStatusMessage(0,
-                gameRuleMap.getBoolean(GameRules.REDUCED_DEBUG_INFO)
-                    ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO
-                    : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
             for (GlowPlayer player : getRawPlayers()) {
+                EntityStatusMessage message = new EntityStatusMessage(player.getEntityId(),
+                        gameRuleMap.getBoolean(GameRules.REDUCED_DEBUG_INFO)
+                                ? EntityStatusMessage.ENABLE_REDUCED_DEBUG_INFO
+                                : EntityStatusMessage.DISABLE_REDUCED_DEBUG_INFO);
                 player.getSession().send(message);
             }
         }

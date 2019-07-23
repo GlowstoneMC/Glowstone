@@ -61,13 +61,11 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
                     .filter(player -> player.canSeeEntity(this))
                     .forEach(player -> player.getSession().sendAll(
                             respawnMessages.toArray(EMPTY_MESSAGE_ARRAY)));
-            // Each player believes her own entity ID is 0, so the update is sent separately to the
-            // shooter
             if (shooter instanceof GlowPlayer) {
                 GlowSession session = ((GlowPlayer) shooter).getSession();
                 session.send(destroyOldCopy);
                 session.sendAll(
-                        createSpawnMessage(GlowPlayer.SELF_ID).toArray(EMPTY_MESSAGE_ARRAY));
+                        createSpawnMessage(getEntityId()).toArray(EMPTY_MESSAGE_ARRAY));
             }
         }
     }
