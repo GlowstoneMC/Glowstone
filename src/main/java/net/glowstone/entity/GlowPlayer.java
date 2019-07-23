@@ -219,7 +219,7 @@ import org.json.simple.JSONObject;
 public class GlowPlayer extends GlowHumanEntity implements Player {
 
     /**
-     * A static entity id to use when telling the client about itself.
+     * Max distance of a fishing hook.
      */
     public static final int HOOK_MAX_DISTANCE = 32;
 
