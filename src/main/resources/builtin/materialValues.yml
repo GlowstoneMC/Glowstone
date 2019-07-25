@@ -15,247 +15,162 @@ values:
     baseMapColor: 0
   STONE:
     tool: PICKAXE
-    blastResistance: 30
-    hardness: 1.5
     baseMapColor: 44
   GRASS:
     tool: SHOVEL
-    blastResistance: 3
-    hardness: 0.6
     baseMapColor: 4
   DIRT:
     tool: SHOVEL
-    blastResistance: 2.5
-    hardness: 0.5
     baseMapColor: 40
   COBBLESTONE:
     tool: PICKAXE
-    blastResistance: 30
-    hardness: 2
     baseMapColor: 44
-  WOOD:
+  LEGACY_WOOD:
     tool: AXE
     flameResistance: 5
     fireResistance: 20
-    hardness: 2
-    blastResistance: 15
-  SAPLING:
-    hardness: 0
+  LEGACY_SAPLING:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   BEDROCK:
-    hardness: -1
-    blastResistance: 18000000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   WATER:
     lightOpacity: 3
-    hardness: 100
-    blastResistance: 500
     baseMapColor: 48
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   LAVA:
     lightOpacity: 0
-    hardness: 100
-    blastResistance: 500
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   SAND:
     tool: SHOVEL
-    hardness: 0.5
   GRAVEL:
     tool: SHOVEL
-    hardness: 0.6
-    blastResistance: 3
   GOLD_ORE:
-    hardness: 3
-    blastResistance: 15
+    tool: PICKAXE
   IRON_ORE:
     tool: PICKAXE
-    hardness: 3
-    blastResistance: 15
   COAL_ORE:
     tool: PICKAXE
-    hardness: 3
-    blastResistance: 15
-  LOG:
+  LEGACY_LOG:
     tool: AXE
     flameResistance: 5
     fireResistance: 5
-    hardness: 2
-    blastResistance: 10
-  LEAVES:
+  LEGACY_LEAVES:
     tool: SHEARS
     lightOpacity: 1
     flameResistance: 30
     fireResistance: 60
-    hardness: 0.2
-    blastResistance: 1
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  SPONGE:
-    hardness: 0.6
-    blastResistance: 3
   GLASS:
     lightOpacity: 0
-    hardness: 0.3
-    blastResistance: 1.5
   LAPIS_ORE:
     tool: STONE_PICKAXE
-    hardness: 3
-    blastResistance: 15
   LAPIS_BLOCK:
     tool: STONE_PICKAXE
-    hardness: 3
-    blastResistance: 15
   DISPENSER:
     tool: PICKAXE
-    hardness: 3.5
-    blastResistance: 17.5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   SANDSTONE:
     tool: PICKAXE
-    hardness: 0.8
-    blastResistance: 4
   NOTE_BLOCK:
     tool: AXE
-    hardness: 0.8
-  BED_BLOCK:
+  LEGACY_BED_BLOCK:
     lightOpacity: 0
-    hardness: 0.2
-    blastResistance: 1
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   POWERED_RAIL:
     lightOpacity: 0
-    hardness: 0.7
-    blastResistance: 3.5
   DETECTOR_RAIL:
     lightOpacity: 0
-    hardness: 0.7
-    blastResistance: 3.5
-  PISTON_STICKY_BASE:
+  STICKY_PISTON:
     lightOpacity: 0
-    hardness: 0.5
-    blastResistance: 2.5
-  WEB:
+  COBWEB:
     tool: SHEARS
     lightOpacity: 1
-    hardness: 4
-    blastResistance: 20
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  LONG_GRASS:
-    hardness: 0
+  LEGACY_LONG_GRASS:
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
   DEAD_BUSH:
-    hardness: 0
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
   PISTON:
     lightOpacity: 0
-    hardness: 0.5
-    blastResistance: 2.5
   MOVING_PISTON:
     lightOpacity: 0
-    hardness: 0.5
-    blastResistance: 2.5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  WOOL:
+  LEGACY_WOOL:
     tool: SHEARS
     flameResistance: 30
     fireResistance: 60
-    hardness: 0.8
-    blastResistance: 4
   DANDELION:
-    hardness: 0
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   AZURE_BLUET:
-    hardness: 0
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   BROWN_MUSHROOM:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   RED_MUSHROOM:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   GOLD_BLOCK:
     tool: IRON_PICKAXE
-    hardness: 3
-    blastResistance: 30
   IRON_BLOCK:
     tool: STONE_PICKAXE
-    hardness: 5
-    blastResistance: 30
-  DOUBLE_STEP:
+  LEGACY_DOUBLE_STEP:
     tool: AXE
-    hardness: 2
-    blastResistance: 15
-  STEP:
+  LEGACY_STEP:
     tool: PICKAXE
     lightOpacity: 0
-    hardness: 2
-    blastResistance: 15
   BRICK:
     tool: PICKAXE
-    hardness: 2
-    blastResistance: 30
   TNT:
-    hardness: 0
     flameResistance: 15
     fireResistance: 100
   BOOKSHELF:
     tool: AXE
     flameResistance: 30
     fireResistance: 20
-    hardness: 1.5
   MOSSY_COBBLESTONE:
     tool: PICKAXE
-    hardness: 2
-    blastResistance: 30
   OBSIDIAN:
     tool: DIAMOND_PICKAXE
-    hardness: 50
-    blastResistance: 6000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   TORCH:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   FIRE:
     lightOpacity: 0
-    hardness: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  MOB_SPAWNER:
+  SPAWNER:
     tool: PICKAXE
     lightOpacity: 0
-    hardness: 5
-    blastResistance: 25
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  WOOD_STAIRS:
+  LEGACY_WOOD_STAIRS:
     tool: AXE
     lightOpacity: 0
     flameResistance: 5
@@ -264,55 +179,35 @@ values:
   CHEST:
     tool: AXE
     lightOpacity: 0
-    hardness: 2.5
-    blastResistance: 12.5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   REDSTONE_WIRE:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   DIAMOND_ORE:
     tool: IRON_PICKAXE
-    hardness: 3
-    blastResistance: 15
   DIAMOND_BLOCK:
     tool: IRON_PICKAXE
-    hardness: 5
-    blastResistance: 30
-  WORKBENCH:
+  CRAFTING_TABLE:
     tool: AXE
-    hardness: 2.5
-    blastResistance: 12.5
-  CROPS:
-    hardness: 0
+  WHEAT:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  SOIL:
+  FARMLAND:
     tool: SHOVEL
     lightOpacity: 0
-    hardness: 0.6
   FURNACE:
     tool: PICKAXE
-    hardness: 3.5
-    blastResistance: 17.5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  BURNING_FURNACE:
-    hardness: 3.5
-    blastResistance: 17.5
-    pistonPushBehavior: DONT_MOVE
-    pistonPullBehavior: DONT_MOVE
-  SIGN_POST:
+  SIGN:
     tool: AXE
     lightOpacity: 0
-    hardness: 1
-    blastResistance: 5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  WOODEN_DOOR:
+  LEGACY_WOODEN_DOOR:
     tool: AXE
     lightOpacity: 0
     hardness: 3
@@ -326,11 +221,9 @@ values:
     blastResistance: 2
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  RAILS:
+  RAIL:
     tool: PICKAXE
     lightOpacity: 0
-    hardness: 0.7
-    blastResistance: 3.5
   COBBLESTONE_STAIRS:
     tool: PICKAXE
     hardness: 2
@@ -349,168 +242,115 @@ values:
     blastResistance: 2.5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  STONE_PLATE:
+  STONE_PRESSURE_PLATE:
     tool: PICKAXE
-    hardness: 0.5
     lightOpacity: 0
-    blastResistance: 2.5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  IRON_DOOR_BLOCK:
+  IRON_DOOR:
     tool: PICKAXE
     hardness: 5
     lightOpacity: 0
     blastResistance: 25
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  WOOD_PLATE:
+  LEGACY_WOOD_PLATE:
     tool: AXE
-    hardness: 2
     lightOpacity: 0
-    blastResistance: 2.5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   REDSTONE_ORE:
     tool: IRON_PICKAXE
-    hardness: 3
-    blastResistance: 15
-  GLOWING_REDSTONE_ORE:
-    hardness: 3
-    blastResistance: 15
   REDSTONE_TORCH_OFF:
-    hardness: 0
-    lightOpacity: 0
-    pistonPushBehavior: BREAK
-    pistonPullBehavior: DONT_MOVE
-  REDSTONE_TORCH_ON:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   STONE_BUTTON:
-    hardness: 0.5
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   SNOW:
     tool: SHOVEL
-    hardness: 0.1
     lightOpacity: 0
-    blastResistance: 0.5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   ICE:
     tool: PICKAXE
-    hardness: 0.5
     lightOpacity: 3
-    blastResistance: 2.5
   SNOW_BLOCK:
     hardness: 0.2
     blastResistance: 1
   CACTUS:
-    hardness: 0.4
     lightOpacity: 0
-    blastResistance: 2
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   CLAY:
     tool: SHOVEL
     hardness: 0.6
     blastResistance: 3
-  SUGAR_CANE_BLOCK:
-    hardness: 0
+  SUGAR_CANE:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   JUKEBOX:
     tool: AXE
-    hardness: 2
-    blastResistance: 30
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  FENCE:
+  LEGACY_FENCE:
     tool: AXE
-    hardness: 2
     lightOpacity: 0
-    blastResistance: 15
   PUMPKIN:
     tool: AXE
-    hardness: 1
-    blastResistance: 5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   NETHERRACK:
     tool: PICKAXE
-    hardness: 0.4
-    blastResistance: 2
   SOUL_SAND:
     tool: SHOVEL
     hardness: 0.5
   GLOWSTONE:
     hardness: 0.3
     blastResistance: 1.5
-  PORTAL:
+  NETHER_PORTAL:
     lightOpacity: 0
-    hardness: -1
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   JACK_O_LANTERN:
     tool: AXE
-    hardness: 1
-    blastResistance: 5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  CAKE_BLOCK:
-    hardness: 0.5
-    lightOpacity: 0
-    blastResistance: 2.5
-    pistonPushBehavior: BREAK
-    pistonPullBehavior: DONT_MOVE
-  DIODE_BLOCK_OFF:
-    hardness: 0
+  CAKE:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  DIODE_BLOCK_ON:
-    hardness: 0
+  REPEATER:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  STAINED_GLASS:
+  LEGACY_STAINED_GLASS:
     hardness: 0.3
     lightOpacity: 0
     blastResistance: 1.5
-  TRAP_DOOR:
+  LEGACY_TRAP_DOOR:
     tool: AXE
     hardness: 3
     lightOpacity: 0
     blastResistance: 15
-  MONSTER_EGGS:
-    hardness: 0.75
-    blastResistance: 3.75
-  SMOOTH_BRICK:
+  LEGACY_SMOOTH_BRICK:
     tool: PICKAXE
-    hardness: 1.5
-  HUGE_MUSHROOM_1:
+  BROWN_MUSHROOM_BLOCK:
     tool: AXE
-    hardness: 0.2
-    blastResistance: 1
-  HUGE_MUSHROOM_2:
+  RED_MUSHROOM_BLOCK:
     tool: AXE
-    hardness: 0.2
-    blastResistance: 1
+  MUSHROOM_STEM:
+    tool: AXE
   IRON_FENCE:
     tool: PICKAXE
-    hardness: 5
     lightOpacity: 0
-    blastResistance: 30
-  THIN_GLASS:
-    hardness: 0.3
+  GLASS_PANE:
     lightOpacity: 0
-  MELON_BLOCK:
+  MELON:
     tool: AXE
-    hardness: 1
-    blastResistance: 5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   PUMPKIN_STEM:
@@ -528,459 +368,304 @@ values:
     blastResistance: 1
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  FENCE_GATE:
+  LEGACY_FENCE_GATE:
     tool: AXE
     hardness: 2
     lightOpacity: 0
     blastResistance: 15
   BRICK_STAIRS:
     tool: PICKAXE
-    hardness: 2
     lightOpacity: 0
-    blastResistance: 30
-  SMOOTH_STAIRS:
+  STONE_BRICK_STAIRS:
     tool: PICKAXE
-    hardness: 1.5
     lightOpacity: 0
-  MYCEL:
+  MYCELIUM:
     tool: SHOVEL
-    hardness: 0.6
-    blastResistance: 2.5
-  WATER_LILY:
+  LILY_PAD:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  NETHER_BRICK:
+  NETHER_BRICKS:
     tool: PICKAXE
-    hardness: 2
-    blastResistance: 30
-  NETHER_FENCE:
+  NETHER_BRiCK_FENCE:
     tool: PICKAXE
-    hardness: 2
     lightOpacity: 0
-    blastResistance: 30
   NETHER_BRICK_STAIRS:
     tool: PICKAXE
     hardness: 2
     lightOpacity: 0
-    blastResistance: 30
-  NETHER_WARTS:
-    hardness: 0
+  NETHER_WART:
     lightOpacity: 0
-    blastResistance: 5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  ENCHANTMENT_TABLE:
+  ENCHANTING_TABLE:
     tool: PICKAXE
-    hardness: 5
     lightOpacity: 0
-    blastResistance: 6000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   BREWING_STAND:
     tool: PICKAXE
-    hardness: 0.5
     lightOpacity: 0
-    blastResistance: 2.5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   CAULDRON:
     tool: PICKAXE
-    hardness: 2
     lightOpacity: 0
-    blastResistance: 10
-  ENDER_PORTAL:
-    hardness: -1
+  END_PORTAL:
     lightOpacity: 0
-    blastResistance: 3000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  ENDER_PORTAL_FRAME:
-    hardness: -1
+  END_PORTAL_FRAME:
     lightOpacity: 0
-    blastResistance: 18000000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   END_STONE:
     tool: PICKAXE
-    hardness: 3
-    blastResistance: 45
   DRAGON_EGG:
-    hardness: 3
     lightOpacity: 0
-    blastResistance: 45
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  REDSTONE_LAMP_OFF:
-    hardness: 0.3
-    blastResistance: 1.5
-  REDSTONE_LAMP_ON:
-    hardness: 0.3
-    blastResistance: 1.5
-  WOOD_DOUBLE_STEP:
-    hardness: 2
+  LEGACY_WOOD_DOUBLE_STEP:
     flameResistance: 5
     fireResistance: 20
-    blastResistance: 15
-  WOOD_STEP:
-    hardness: 2
+  LEGACY_WOOD_STEP:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
-    blastResistance: 15
   COCOA:
     tool: AXE
-    hardness: 0.2
     lightOpacity: 0
-    blastResistance: 15
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   SANDSTONE_STAIRS:
     tool: PICKAXE
-    hardness: 0.8
     lightOpacity: 0
-    blastResistance: 4
   EMERALD_ORE:
     tool: IRON_PICKAXE
-    hardness: 3
-    blastResistance: 15
   ENDER_CHEST:
     tool: PICKAXE
-    hardness: 22.5
     lightOpacity: 0
-    blastResistance: 3000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   TRIPWIRE_HOOK:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   TRIPWIRE:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   EMERALD_BLOCK:
     tool: IRON_PICKAXE
-    hardness: 5
-    blastResistance: 30
   SPRUCE_STAIRS:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
-    blastResistance: 15
   BIRCH_WOOD_STAIRS:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
-    blastResistance: 15
   JUNGLE_WOOD_STAIRS:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
-    blastResistance: 15
-  COMMAND:
-    hardness: -1
-    blastResistance: 18000000
+  COMMAND_BLOCK:
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   BEACON:
-    hardness: 3
     lightOpacity: 0
-    blastResistance: 15
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  COBBLE_WALL:
+  COBBLESTONE_WALL:
     tool: PICKAXE
-    hardness: 2
     lightOpacity: 0
-    blastResistance: 30
   FLOWER_POT:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  CARROT:
-    hardness: 0
+  CARROTS:
     lightOpacity: 0
-  POTATO:
-    hardness: 0
+  POTATOES:
     lightOpacity: 0
-  WOOD_BUTTON:
-    hardness: 0.5
+  LEGACY_WOOD_BUTTON:
     lightOpacity: 0
-    blastResistance: 2.5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  SKULL:
-    hardness: 1
+  LEGACY_SKULL:
     lightOpacity: 0
-    blastResistance: 5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   ANVIL:
     tool: PICKAXE
-    hardness: 5
     lightOpacity: 0
-    blastResistance: 6000
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   TRAPPED_CHEST:
     tool: AXE
-    hardness: 2.5
     lightOpacity: 0
-    blastResistance: 12.5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  GOLD_PLATE:
+  LIGHT_WEIGHTED_PRESSURE_PLATE:
     tool: PICKAXE
-    hardness: 0.5
     lightOpacity: 0
-    blastResistance: 2.5
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  IRON_PLATE:
+  HEAVY_WEIGHTED_PRESSURE_PLATE:
     tool: PICKAXE
-    hardness: 0.5
-    lightOpacity: 0
-    blastResistance: 2.5
-    pistonPushBehavior: BREAK
-    pistonPullBehavior: DONT_MOVE
-  REDSTONE_COMPARATOR_OFF:
-    hardness: 0
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
-  REDSTONE_COMPARATOR_ON:
-    hardness: 0
+  COMPARATOR:
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   DAYLIGHT_DETECTOR:
     tool: AXE
-    hardness: 0.2
     lightOpacity: 0
-    blastResistance: 1
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   REDSTONE_BLOCK:
     tool: PICKAXE
-    hardness: 5
-    blastResistance: 30
-  QUARTZ_ORE:
+  NETHER_QUARTZ_ORE:
     tool: PICKAXE
-    hardness: 3
-    blastResistance: 15
   HOPPER:
     tool: PICKAXE
-    hardness: 3
     lightOpacity: 0
-    blastResistance: 24
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   QUARTZ_BLOCK:
     tool: PICKAXE
-    hardness: 0.8
-    blastResistance: 4
   QUARTZ_STAIRS:
     tool: PICKAXE
-    hardness: 0.8
     lightOpacity: 0
-    blastResistance: 4
   ACTIVATOR_RAIL:
-    hardness: 0.7
     lightOpacity: 0
-    blastResistance: 3.5
   DROPPER:
     tool: PICKAXE
-    hardness: 3.5
-    blastResistance: 17.5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  STAINED_CLAY:
-    hardness: 1.4
-  STAINED_GLASS_PANE:
-    hardness: 0.3
+  LEGACY_STAINED_GLASS_PANE:
     lightOpacity: 0
-    blastResistance: 1.5
-  LEAVES_2:
-    hardness: 0.2
+  LEGACY_LEAVES_2:
     lightOpacity: 1
     flameResistance: 30
     fireResistance: 60
-    blastResistance: 1
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   LOG_2:
-    hardness: 2
     flameResistance: 5
     fireResistance: 5
   ACACIA_STAIRS:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   DARK_OAK_STAIRS:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   SLIME_BLOCK:
-    hardness: 0
     pistonPushBehavior: MOVE_STICKY
     pistonPullBehavior: MOVE_STICKY
   BARRIER:
-    hardness: -1
-    blastResistance: 18000003
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   IRON_TRAPDOOR:
     tool: PICKAXE
-    hardness: 5
     lightOpacity: 0
-    blastResistance: 25
   PRISMARINE:
     tool: PICKAXE
-    hardness: 1.5
-    blastResistance: 30
-  SEA_LANTERN:
-    hardness: 0.3
-    blastResistance: 1.5
   HAY_BLOCK:
-    hardness: 0.5
     flameResistance: 60
     fireResistance: 20
-    blastResistance: 2.5
-  CARPET:
-    hardness: 0.1
+  LEGACY_CARPET:
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 20
-    blastResistance: 0.5
-  HARD_CLAY:
-    hardness: 1.25
   COAL_BLOCK:
     tool: PICKAXE
-    hardness: 5
     flameResistance: 5
     fireResistance: 5
-    blastResistance: 30
   PACKED_ICE:
     tool: PICKAXE
-    hardness: 0.5
-    blastResistance: 2.5
-  DOUBLE_PLANT:
+  LEGACY_DOUBLE_PLANT:
     lightOpacity: 0
     flameResistance: 60
     fireResistance: 100
-    hardness: 0
-  STANDING_BANNER:
+  LEGACY_STANDING_BANNER:
     tool: AXE
-    hardness: 1
-    blastResistance: 5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
-  WALL_BANNER:
+  LEGACY_WALL_BANNER:
     tool: AXE
-    hardness: 1
-    blastResistance: 5
-    pistonPushBehavior: DONT_MOVE
-    pistonPullBehavior: DONT_MOVE
-  DAYLIGHT_DETECTOR_INVERTED:
-    hardness: 0.2
-    lightOpacity: 0
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
   RED_SANDSTONE:
     tool: PICKAXE
-    hardness: 0.8
-    blastResistance: 4
   RED_SANDSTONE_STAIRS:
     tool: PICKAXE
-    hardness: 0.8
     lightOpacity: 0
-    blastResistance: 4
   SPRUCE_FENCE_GATE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   BIRCH_FENCE_GATE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   JUNGLE_FENCE_GATE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   DARK_OAK_FENCE_GATE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   ACACIA_FENCE_GATE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   SPRUCE_FENCE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   BIRCH_FENCE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   JUNGLE_FENCE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   DARK_OAK_FENCE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   ACACIA_FENCE:
-    hardness: 2
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
   SPRUCE_DOOR:
     tool: AXE
-    hardness: 3
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   BIRCH_DOOR:
     tool: AXE
-    hardness: 3
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   JUNGLE_DOOR:
     tool: AXE
-    hardness: 3
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   ACACIA_DOOR:
     tool: AXE
-    hardness: 3
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
   DARK_OAK_DOOR:
     tool: AXE
-    hardness: 3
     lightOpacity: 0
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE

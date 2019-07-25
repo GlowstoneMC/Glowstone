@@ -2680,7 +2680,7 @@ shaped:
   - cbc
   - eee
 - result:
-    type: BED
+    type: LEGACY_BED
   ingredients:
     e:
       type: WOOD
@@ -2700,7 +2700,7 @@ shaped:
   - ' c'
   - 'c '
 - result:
-    type: WORKBENCH
+    type: CRAFTING_TABLE
   ingredients:
     c:
       type: WOOD
