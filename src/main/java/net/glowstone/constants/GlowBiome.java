@@ -50,7 +50,6 @@ import static org.bukkit.block.Biome.ICE_SPIKES;
 import static org.bukkit.block.Biome.SNOWY_TAIGA;
 import static org.bukkit.block.Biome.SNOWY_TAIGA_MOUNTAINS;
 import static org.bukkit.block.Biome.SNOWY_TUNDRA;
-import static org.bukkit.block.Biome.values;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
@@ -76,11 +75,12 @@ import org.bukkit.block.Biome;
 @Data
 public final class GlowBiome {
 
-    private static final int[] ids = new int[values().length];
+    private static final int[] ids = new int[Biome.values().length];
     private static final GlowBiome[] biomes = new GlowBiome[256];
     private static ClassToInstanceMap<BiomePopulator> populators = MutableClassToInstanceMap.create();
     private static ClassToInstanceMap<GroundGenerator> groundGenerators = MutableClassToInstanceMap.create();
 
+    // TODO: use Biome builder with 1.13 biomes
     static {
         register(
                 builder()

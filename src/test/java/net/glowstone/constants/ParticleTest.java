@@ -4,12 +4,15 @@ import java.util.stream.Stream;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.material.MaterialData;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests for {@link GlowParticle}.
  */
+// TODO: test Particle class instead
+@Disabled
 public class ParticleTest {
 
     private static final MaterialData STONE = new MaterialData(Material.STONE, (byte) 1);

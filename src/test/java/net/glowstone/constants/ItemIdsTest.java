@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 /**
  * Tests for {@link ItemIds}.
  */
+// TODO: load all blocks and items from 1.13
 @Disabled
 public class ItemIdsTest {
 
