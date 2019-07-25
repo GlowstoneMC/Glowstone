@@ -19,6 +19,7 @@ import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.scheduler.GlowScheduler;
 import net.glowstone.scheduler.WorldScheduler;
+import net.glowstone.util.GlowUnsafeValues;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -87,6 +88,7 @@ public class ServerShim implements Server {
 
     private final WorldScheduler worldScheduler = new WorldScheduler();
     private final SessionRegistry sessionRegistry = new SessionRegistry();
+    private final UnsafeValues unsafeAccess = new GlowUnsafeValues();
 
     @Getter
     private final PluginManager pluginManager
@@ -620,7 +622,7 @@ public class ServerShim implements Server {
 
     @Override
     public UnsafeValues getUnsafe() {
-        return null;
+        return unsafeAccess;
     }
 
     @Override
