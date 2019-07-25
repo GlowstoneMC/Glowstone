@@ -97,7 +97,7 @@ public class GlowMetaItem implements ItemMeta {
         for (Entry<Enchantment, Integer> enchantment : enchants.entrySet()) {
             CompoundTag enchantmentTag = new CompoundTag();
 
-            enchantmentTag.putString("key", enchantment.getKey().getKey().toString());
+            enchantmentTag.putString("id", enchantment.getKey().getKey().toString());
             enchantmentTag.putShort("lvl", enchantment.getValue());
             ench.add(enchantmentTag);
         }
@@ -108,10 +108,10 @@ public class GlowMetaItem implements ItemMeta {
     protected static Map<Enchantment, Integer> readNbtEnchants(String name, CompoundTag tag) {
         Map<Enchantment, Integer> result = new HashMap<>(4);
         tag.iterateCompoundList(name, enchantmentTag -> {
-            if (enchantmentTag.isString("key") && enchantmentTag.isShort("lvl")) {
+            if (enchantmentTag.isString("id") && enchantmentTag.isShort("lvl")) {
                 Enchantment enchantment = Enchantment.getByKey(
                         NbtSerialization.namespacedKeyFromString(
-                                enchantmentTag.getString("key")));
+                                enchantmentTag.getString("id")));
                 result.put(enchantment, (int) enchantmentTag.getShort("lvl"));
             }
         });
@@ -242,7 +242,7 @@ public class GlowMetaItem implements ItemMeta {
         }
 
         if (hasEnchants()) {
-            writeNbtEnchants("ench", tag, enchants);
+            writeNbtEnchants("Enchantments", tag, enchants);
         }
 
         if (hideFlag != 0) {
@@ -258,7 +258,7 @@ public class GlowMetaItem implements ItemMeta {
         });
 
         //TODO currently ignoring level restriction, is that right?
-        Map<Enchantment, Integer> tagEnchants = readNbtEnchants("ench", tag);
+        Map<Enchantment, Integer> tagEnchants = readNbtEnchants("Enchantments", tag);
         if (tagEnchants != null) {
             if (enchants == null) {
                 enchants = tagEnchants;
