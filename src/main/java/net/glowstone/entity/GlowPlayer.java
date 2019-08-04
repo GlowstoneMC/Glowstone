@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static net.glowstone.GlowServer.logger;
 
 import com.destroystokyo.paper.Title;
-import com.destroystokyo.paper.event.player.PlayerInitialSpawnEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.util.ByteBufUtils;
@@ -1175,10 +1174,6 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
         sendSkyDarkness();
         sendTime();
         updateInventory();
-
-        if (!hasPlayedBefore) {
-            EventFactory.getInstance().callEvent(new PlayerInitialSpawnEvent(this, location));
-        }
 
         // fire world change if needed
         if (oldWorld != world) {
