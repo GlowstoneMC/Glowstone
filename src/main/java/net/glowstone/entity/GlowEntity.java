@@ -316,8 +316,6 @@ public abstract class GlowEntity implements Entity {
         this.previousLocation = location.clone();
         this.location = location.clone();
 
-        world = (GlowWorld) location.getWorld();
-        server = world.getServer();
         // this is so dirty I washed my hands after writing it.
         if (this instanceof GlowPlayer) {
             // initial spawn event, first
@@ -335,6 +333,9 @@ public abstract class GlowEntity implements Entity {
             Position.copyLocation(location, this.previousLocation);
             Position.copyLocation(location, this.location);
         }
+        world = (GlowWorld) location.getWorld();
+        server = world.getServer();
+
         server.getEntityIdManager().allocate(this);
         world.getEntityManager().register(this);
     }
