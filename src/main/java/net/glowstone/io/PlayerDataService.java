@@ -97,6 +97,13 @@ public interface PlayerDataService {
         long getLastPlayed();
 
         /**
+         * Get the last-login time if available.
+         *
+         * @return Time in milliseconds since epoch, or 0.
+         */
+        long getLastLogin();
+
+        /**
          * Get the player's last known username if available.
          *
          * @return The name, or null.

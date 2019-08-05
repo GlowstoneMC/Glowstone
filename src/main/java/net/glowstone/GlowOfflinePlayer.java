@@ -32,6 +32,8 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     private long firstPlayed;
     @Getter
     private long lastPlayed;
+    @Getter
+    private long lastLogin;
     private String lastName;
     @Getter
     private Location bedSpawnLocation;
@@ -97,6 +99,7 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
             if (hasPlayed) {
                 firstPlayed = reader.getFirstPlayed();
                 lastPlayed = reader.getLastPlayed();
+                lastLogin = reader.getLastLogin();
                 bedSpawnLocation = reader.getBedSpawnLocation();
 
                 String lastName = reader.getLastKnownName();
@@ -143,12 +146,6 @@ public final class GlowOfflinePlayer implements OfflinePlayer {
     @Override
     public boolean hasPlayedBefore() {
         return hasPlayed;
-    }
-
-    @Override
-    public long getLastLogin() {
-        // TODO: is this different?
-        return lastPlayed;
     }
 
     @Override

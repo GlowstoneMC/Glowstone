@@ -134,5 +134,11 @@ class PlayerStore extends HumanEntityStore<GlowPlayer> {
         bukkit.putLong("lastPlayed", entity.getJoinTime());
         bukkit.putString("lastKnownName", entity.getName());
         tag.putCompound("bukkit", bukkit);
+
+        // Paper
+        CompoundTag paper = new CompoundTag();
+        paper.putLong("LastSeen", entity.getLastSeen());
+        paper.putLong("LastLogin", entity.getLastLogin());
+        tag.putCompound("Paper", paper);
     }
 }
