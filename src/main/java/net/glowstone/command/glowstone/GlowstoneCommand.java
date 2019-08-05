@@ -263,7 +263,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     private static void sendBullet(CommandSender sender,
             LocalizedStringImpl template, ResourceBundle resourceBundle, @NonNls String key,
             Object value) {
-        template.send(sender, new LocalizedStringImpl(key, resourceBundle), value);
+        template.send(sender, new LocalizedStringImpl(key, resourceBundle).get(), value);
     }
 
     @Override
