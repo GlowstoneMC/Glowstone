@@ -59,7 +59,6 @@ Older releases can be found on [GitHub](https://github.com/GlowstoneMC/Glowstone
 
 ## Building
 
-
 ### 1. Setup
 After installing [Oracle JDK](https://oracle.com/technetwork/java/javase/downloads) (recommended) or [OpenJDK](https://openjdk.java.net/), and
 [Maven](https://maven.apache.org), checkout the source:
@@ -116,6 +115,12 @@ For documentation on the Glowkit API (an updated Bukkit for Glowstone, based on 
 ## Contributing
 
 First of all, thank you for your interest in advancing Glowstone! We always love to see new developers work on the project! You can find all of our resources on how to get started on our [wiki](https://github.com/GlowstoneMC/Glowstone/wiki#contributing).
+
+## Sponsors
+
+* **[Aternos](https://aternos.org/) - Minecraft Servers. Free. Forever.**
+
+Sponsor Glowstone [on Bountysource]!
 
 ## Credits
 
