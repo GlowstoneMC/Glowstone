@@ -119,8 +119,9 @@ First of all, thank you for your interest in advancing Glowstone! We always love
 ## Sponsors
 
 * **[Aternos](https://aternos.org/) - Minecraft Servers. Free. Forever.**
+* [Martin Panzer (Postremus)](https://martinpanzer.de/)
 
-Sponsor Glowstone [on Bountysource]!
+Sponsor Glowstone [on Bountysource](https://www.bountysource.com/teams/glowstonemc)!
 
 ## Credits
 
