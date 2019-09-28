@@ -103,7 +103,7 @@ public class EnchantCommand extends GlowVanillaCommand {
             String effectName = CommandUtils.toNamespaced(args[1]);
 
             return StringUtil
-                .copyPartialMatches(effectName, VANILLA_IDS, new ArrayList(VANILLA_IDS.size()));
+                .copyPartialMatches(effectName, VANILLA_IDS, new ArrayList<>(VANILLA_IDS.size()));
         }
         return super.tabComplete(sender, alias, args);
     }

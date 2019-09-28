@@ -224,8 +224,8 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     static {
         Collator englishCaseInsensitive = Collator.getInstance(Locale.ENGLISH);
         englishCaseInsensitive.setStrength(Collator.PRIMARY);
-        ImmutableSortedMap.Builder subcommandMapBuilder
-                = new ImmutableSortedMap.Builder(englishCaseInsensitive);
+        ImmutableSortedMap.Builder<String, Subcommand> subcommandMapBuilder
+                = new ImmutableSortedMap.Builder<>(englishCaseInsensitive);
         for (Subcommand subcommand : Subcommand.values()) {
             subcommandMapBuilder.put(subcommand.mainName, subcommand);
             for (String name : subcommand.otherNames) {

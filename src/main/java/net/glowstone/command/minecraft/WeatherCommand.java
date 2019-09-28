@@ -76,8 +76,8 @@ public class WeatherCommand extends GlowVanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
             throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil
-                    .copyPartialMatches(args[0], WEATHER, new ArrayList(WEATHER.size()));
+            return StringUtil
+                    .copyPartialMatches(args[0], WEATHER, new ArrayList<>(WEATHER.size()));
         }
         return Collections.emptyList();
     }

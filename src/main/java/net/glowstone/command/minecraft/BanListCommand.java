@@ -72,7 +72,7 @@ public class BanListCommand extends GlowVanillaCommand {
         throws IllegalArgumentException {
         if (args.length == 1) {
             return StringUtil
-                .copyPartialMatches(args[0], BAN_TYPES, new ArrayList(BAN_TYPES.size()));
+                .copyPartialMatches(args[0], BAN_TYPES, new ArrayList<>(BAN_TYPES.size()));
         } else {
             return args.length == 0 ? super.tabComplete(sender, alias, args)
                 : Collections.emptyList();
