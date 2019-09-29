@@ -21,7 +21,7 @@ import org.bukkit.material.types.DoublePlantSpecies;
 public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         int typeIdBelow = block.getWorld()
             .getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
         Material typeBelow = Material.getMaterial(typeIdBelow);
@@ -34,7 +34,7 @@ public class BlockTallGrass extends BlockNeedsAttached implements IBlockGrowable
         if (ThreadLocalRandom.current().nextFloat() < .125) {
             return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
         }
-        return BlockDropless.EMPTY_STACK;
+        return Collections.emptyList();
     }
 
     @Override

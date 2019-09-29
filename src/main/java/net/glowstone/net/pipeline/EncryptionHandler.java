@@ -7,12 +7,11 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.util.List;
-import java.util.logging.Level;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.IvParameterSpec;
-import net.glowstone.GlowServer;
+import net.glowstone.i18n.ConsoleMessages;
 
 /**
  * Experimental pipeline component.
@@ -32,8 +31,7 @@ public final class EncryptionHandler extends MessageToMessageCodec<ByteBuf, Byte
             encodeBuf = new CryptBuf(Cipher.ENCRYPT_MODE, sharedSecret);
             decodeBuf = new CryptBuf(Cipher.DECRYPT_MODE, sharedSecret);
         } catch (GeneralSecurityException e) {
-            // should never happen
-            GlowServer.logger.log(Level.SEVERE, "Failed to initialize encrypted channel", e);
+            ConsoleMessages.Error.Net.Crypt.INIT_FAILED.log(e);
             throw new AssertionError("Failed to initialize encrypted channel", e);
         }
     }
@@ -55,7 +53,7 @@ public final class EncryptionHandler extends MessageToMessageCodec<ByteBuf, Byte
         private final Cipher cipher;
 
         private CryptBuf(int mode, SecretKey sharedSecret) throws GeneralSecurityException {
-            cipher = Cipher.getInstance("AES/CFB8/NoPadding");
+            cipher = Cipher.getInstance("AES/CFB8/NoPadding"); // NON-NLS
             cipher.init(mode, sharedSecret, new IvParameterSpec(sharedSecret.getEncoded()));
         }
 

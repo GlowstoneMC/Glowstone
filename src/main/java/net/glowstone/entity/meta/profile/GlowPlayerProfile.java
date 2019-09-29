@@ -31,7 +31,9 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     public static final int MAX_USERNAME_LENGTH = 16;
     @Getter
-    private final String name;
+    @Nullable
+    private String name;
+    @Nullable
     private volatile CompletableFuture<UUID> uniqueId;
     private final Map<String, ProfileProperty> properties;
 
@@ -129,7 +131,7 @@ public class GlowPlayerProfile implements PlayerProfile {
      */
     public static CompletableFuture<GlowPlayerProfile> fromNbt(CompoundTag tag) {
         // NBT: {Id: "", Name: "", Properties: {textures: [{Signature: "", Value: {}}]}}
-        UUID uuid = UUID.fromString(tag.getString("Id"));
+        UUID uuid = UuidUtils.fromString(tag.getString("Id"));
 
         Collection<ProfileProperty> properties = Sets.newHashSet();
         if (tag.containsKey("Properties")) {
@@ -191,8 +193,13 @@ public class GlowPlayerProfile implements PlayerProfile {
      */
     public CompoundTag toNbt() {
         CompoundTag profileTag = new CompoundTag();
-        profileTag.putString("Id", uniqueId.toString());
-        profileTag.putString("Name", name);
+        UUID uuid = getId();
+        if (uuid != null) {
+            profileTag.putString("Id", uuid.toString());
+        }
+        if (name != null) {
+            profileTag.putString("Name", name);
+        }
 
         CompoundTag propertiesTag = new CompoundTag();
         for (ProfileProperty property : properties.values()) {
@@ -210,10 +217,19 @@ public class GlowPlayerProfile implements PlayerProfile {
         }
         return profileTag;
     }
+    
+    private void checkOwnerCriteria(String name, UUID id) {
+        if (id == null && (name == null || name.isEmpty())) {
+            throw new IllegalArgumentException("Either name or uuid must be present in profile");
+        }
+    }
 
     @Override
     public String setName(@Nullable String name) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        checkOwnerCriteria(name,getId());
+        String oldname = this.name;
+        this.name = name;
+        return oldname;
     }
 
     @Override
@@ -223,7 +239,23 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public UUID setId(@Nullable UUID uuid) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        checkOwnerCriteria(name,uuid);
+        UUID oldUuid = null;
+        if (uniqueId == null) {
+            synchronized (this) {
+                if (uniqueId == null) {
+                    uniqueId = CompletableFuture.completedFuture(uuid);
+                    return null;
+                }
+                oldUuid = uniqueId.getNow(null);
+            }
+        } else {
+            oldUuid = uniqueId.getNow(null);
+        }
+        if (!uniqueId.complete(uuid)) {
+            uniqueId.obtrudeValue(uuid);
+        }
+        return oldUuid;
     }
 
     /**
@@ -243,7 +275,7 @@ public class GlowPlayerProfile implements PlayerProfile {
 
     @Override
     public boolean hasProperty(String property) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return properties.containsKey(property);
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
 
 /**
@@ -97,15 +98,20 @@ public class GlowLlama extends GlowChestedHorse<GlowLlamaInventory> implements L
 
     @Override
     protected int computeGrowthAmount(Material material) {
-        if (canGrow()) {
-            Integer mapResult = GROWING_FOODS.get(material);
-
-            if (mapResult != null) {
-                return Math.min(mapResult, Math.abs(getAge()));
-            }
+        if (!canGrow()) {
+            return 0;
         }
-
-        return 0;
+        int mapResult = GROWING_FOODS.getOrDefault(material, 0);
+        return Math.min(mapResult, -getAge());
     }
 
+    @Override
+    public void rangedAttack(LivingEntity target, float charge) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setChargingAttack(boolean raiseHands) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
 }

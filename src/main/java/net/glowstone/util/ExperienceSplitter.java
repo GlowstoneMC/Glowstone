@@ -1,30 +1,27 @@
 package net.glowstone.util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.IntConsumer;
 
 public class ExperienceSplitter {
 
     private static final int[] CUTS = {2477, 1237, 617, 307, 149, 73, 37, 17, 7, 3, 1};
 
     /**
-     * Cuts experience points into smaller 'cuts'.
+     * Cuts experience points into smaller 'cuts', and supplies them to {@code consumer}.
      *
      * @param experience the experience points to cut
-     * @return an array of 'cuts' of the given experience
+     * @param consumer the action to do for each cut
      */
-    public static Integer[] cut(int experience) {
-        Set<Integer> cuts = new HashSet<>();
+    public static void forEachCut(int experience, final IntConsumer consumer) {
         int remaining = experience;
         while (remaining > 0) {
             for (int cut : CUTS) {
                 if (remaining >= cut) {
                     remaining -= cut;
-                    cuts.add(cut);
+                    consumer.accept(cut);
                     break;
                 }
             }
         }
-        return cuts.toArray(new Integer[0]);
     }
 }

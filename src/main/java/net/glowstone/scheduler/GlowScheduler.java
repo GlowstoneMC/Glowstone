@@ -14,9 +14,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -38,6 +40,7 @@ public final class GlowScheduler implements BukkitScheduler {
      * The number of milliseconds between pulses.
      */
     static final int PULSE_EVERY = 50;
+    private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
     /**
      * The server this scheduler is managing for.
      */
@@ -50,8 +53,9 @@ public final class GlowScheduler implements BukkitScheduler {
     /**
      * Executor to handle execution of async tasks.
      */
-    private final ExecutorService asyncTaskExecutor = Executors
-        .newCachedThreadPool(GlowThreadFactory.INSTANCE);
+    private final ExecutorService asyncTaskExecutor
+            = new ThreadPoolExecutor(0, MAX_THREADS, 60L, TimeUnit.SECONDS,
+            new LinkedBlockingDeque<>(), GlowThreadFactory.INSTANCE);
     /**
      * A list of active tasks.
      */
@@ -174,9 +178,9 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     /**
-     * Adds new tasks and updates existing tasks, removing them if necessary. <br/>
-     * todo: Add watchdog system to make sure ticks advance
+     * Adds new tasks and updates existing tasks, removing them if necessary.
      */
+    // TODO: Add watchdog system to make sure ticks advance
     private void pulse() {
         primaryThread = Thread.currentThread();
 
@@ -222,6 +226,9 @@ public final class GlowScheduler implements BukkitScheduler {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } finally {
+            System.out.flush();
+            System.err.flush();
         }
 
     }

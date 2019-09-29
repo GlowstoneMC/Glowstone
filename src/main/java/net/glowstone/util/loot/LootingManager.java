@@ -13,6 +13,7 @@ import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NonNls;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -76,7 +77,7 @@ public class LootingManager {
         register(EntityType.ZOMBIE_VILLAGER, baseDir + "zombie.json");
     }
 
-    private static void register(EntityType type, String location) throws Exception {
+    private static void register(EntityType type, @NonNls String location) throws Exception {
         try {
             InputStream in = LootingManager.class.getClassLoader().getResourceAsStream(location);
             if (in == null) {

@@ -3,6 +3,7 @@ package net.glowstone.i18n;
 import java.util.logging.Level;
 
 public interface ConsoleMessages {
+
     interface Error {
         interface Biome {
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -11,17 +12,46 @@ public interface ConsoleMessages {
         }
 
         interface BlockEntity {
-            LoggableLocalizedString READ_ERROR = new LoggableLocalizedStringImpl(
-                    "console.block-entity.read-error", Level.SEVERE
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.block-entity.load-failed", Level.SEVERE
             );
+
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.block-entity.save-failed", Level.SEVERE
+            );
+        }
+
+        interface Chunk {
+            LoggableLocalizedString GEN_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.gen-failed", Level.SEVERE);
+
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.load-failed", Level.SEVERE);
+
+            LoggableLocalizedString POP_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.pop-failed", Level.SEVERE);
+
+            LoggableLocalizedString REGEN_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.regen-failed", Level.SEVERE);
+
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.save-failed", Level.SEVERE);
         }
 
         LoggableLocalizedString CLASSPATH = new LoggableLocalizedStringImpl(
                 "console.classpath.load-failed", Level.WARNING
         );
 
+        interface Command {
+            LoggableLocalizedString DEOP_FAILED = new LoggableLocalizedStringImpl(
+                    "console.command.deop.failed", Level.SEVERE);
+
+            LoggableLocalizedString OP_FAILED = new LoggableLocalizedStringImpl(
+                    "console.command.op.failed", Level.SEVERE);
+        }
+
         interface Function {
-            LoggableLocalizedString FILE_READ = new LoggableLocalizedStringImpl(
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
                     "console.function.load-failed", Level.SEVERE
             );
         }
@@ -60,10 +90,28 @@ public interface ConsoleMessages {
                 "console.looting-manager.load-failed", Level.SEVERE
         );
 
+        interface I18n {
+            LoggableLocalizedString COMMAND = new LoggableLocalizedStringImpl(
+                    "console.i18n-failed.command", Level.SEVERE);
+
+            LoggableLocalizedString DIFFICULTY = new LoggableLocalizedStringImpl(
+                    "console.i18n-failed.difficulty", Level.SEVERE);
+
+            LoggableLocalizedString GAME_MODE = new LoggableLocalizedStringImpl(
+                    "console.i18n-failed.gamemode", Level.SEVERE);
+        }
+
         interface Permission {
             LoggableLocalizedString INVALID = new LoggableLocalizedStringImpl(
                     "console.permission.invalid", Level.SEVERE
-            );
+            ) {
+                @Override
+                public String get(Object... args) {
+                    // This uses String.format instead of MessageFormat.format
+                    // for Bukkit compatibility.
+                    return String.format(get(), args);
+                }
+            };
         }
 
         interface Plugin {
@@ -97,12 +145,12 @@ public interface ConsoleMessages {
         );
 
         interface Structure {
-            LoggableLocalizedString IO_READ = new LoggableLocalizedStringImpl(
-                    "console.structure.io-read", Level.SEVERE
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.structure.load-failed", Level.SEVERE
             );
 
-            LoggableLocalizedString IO_WRITE = new LoggableLocalizedStringImpl(
-                    "console.structure.io-write", Level.SEVERE
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.structure.save-failed", Level.SEVERE
             );
 
             LoggableLocalizedString NO_DATA = new LoggableLocalizedStringImpl(
@@ -120,12 +168,65 @@ public interface ConsoleMessages {
             );
         }
 
+        interface Net {
+            LoggableLocalizedString BIND_FAILED = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed", Level.SEVERE);
+
+            LoggableLocalizedString BIND_FAILED_UNKNOWN = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.unknown", Level.SEVERE
+            );
+
+            LoggableLocalizedString CANNOT_ASSIGN = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.cannot-assign", Level.SEVERE
+            );
+
+            interface Crypt {
+                LoggableLocalizedString AUTH_INTERNAL = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.auth-internal", Level.SEVERE);
+
+                LoggableLocalizedString BAD_UUID = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.invalid-uuid", Level.SEVERE);
+
+                LoggableLocalizedString HASH_FAILED = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.sha1-failed", Level.SEVERE);
+
+                LoggableLocalizedString INIT_FAILED = new LoggableLocalizedStringImpl(
+                        "console.net.crypt.init-failed", Level.SEVERE);
+
+                LoggableLocalizedString RSA_INIT_FAILED = new LoggableLocalizedStringImpl(
+                        "glowstone.kick.crypt.rsa-init-failed", Level.SEVERE);
+            }
+
+            LoggableLocalizedString IN_USE = new LoggableLocalizedStringImpl(
+                    "console.net.bind-failed.in-use", Level.SEVERE
+            );
+        }
     }
 
     interface Info {
+
+        interface Block {
+
+            LoggableLocalizedString UNKNOWN_CLICKED = new LoggableLocalizedStringImpl(
+                    "console.block.unknown-clicked", Level.INFO);
+        }
+
         LoggableLocalizedString CONFIG_ONLY_DONE = new LoggableLocalizedStringImpl(
                 "console.config-only-done", Level.INFO
         );
+
+        interface Enchant {
+            LoggableLocalizedString BAD_SLOT = new LoggableLocalizedStringImpl(
+                    "console.enchant.bad-slot", Level.INFO
+            );
+
+            LoggableLocalizedString MISSING_RESOURCES = new LoggableLocalizedStringImpl(
+                    "console.enchant.missing-resources", Level.INFO
+            );
+
+            LoggableLocalizedString NOT_OPEN = new LoggableLocalizedStringImpl(
+                    "console.enchant.not-open", Level.INFO);
+        }
 
         interface Icon {
             LoggableLocalizedString IMPORT = new LoggableLocalizedStringImpl(
@@ -145,6 +246,17 @@ public interface ConsoleMessages {
             LoggableLocalizedString KQUEUE = new LoggableLocalizedStringImpl(
                     "console.native-transport.kqueue", Level.INFO
             );
+        }
+
+        interface Net {
+            LoggableLocalizedString BINDING = new LoggableLocalizedStringImpl(
+                    "console.net.binding", Level.INFO);
+
+            LoggableLocalizedString BOUND = new LoggableLocalizedStringImpl(
+                    "console.net.bound", Level.INFO);
+
+            LoggableLocalizedString UNKNOWN_CLIENT_STATUS_ACTION = new LoggableLocalizedStringImpl(
+                    "console.net.unknown-client-status-action", Level.INFO);
         }
 
         interface Opencl {
@@ -239,6 +351,33 @@ public interface ConsoleMessages {
 
     interface Warn {
 
+        interface Block {
+            interface Chest {
+                LoggableLocalizedString FACING = new LoggableLocalizedStringImpl(
+                        "console.block.chest.facing", Level.WARNING);
+
+                LoggableLocalizedString INTERACT_WRONG_CLASS = new LoggableLocalizedStringImpl(
+                        "console.block.chest.interact-wrong-class", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_ALREADY = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-already", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_END = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-end", Level.WARNING);
+
+                LoggableLocalizedString TRIPLE_MIDDLE = new LoggableLocalizedStringImpl(
+                        "console.block.chest.triple-middle", Level.WARNING);
+            }
+
+            interface DoubleSlab {
+                LoggableLocalizedString WRONG_MATERIAL = new LoggableLocalizedStringImpl(
+                        "console.block.doubleslab.wrong-material", Level.WARNING);
+            }
+
+            LoggableLocalizedString WRONG_MATERIAL_DATA = new LoggableLocalizedStringImpl(
+                    "console.block.wrong-material-data", Level.WARNING);
+        }
+
         interface BlockEntity {
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
                     "console.block-entity.unknown", Level.WARNING
@@ -257,11 +396,48 @@ public interface ConsoleMessages {
             LoggableLocalizedString UNKNOWN_BLOCK_TO_TICK = new LoggableLocalizedStringImpl(
                     "console.chunk.unknown-block-to-tick", Level.WARNING
             );
+            LoggableLocalizedString UNLOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.chunk.unload-failed", Level.WARNING);
+        }
+
+        interface Command {
+            LoggableLocalizedString L10N_FAILED = new LoggableLocalizedStringImpl(
+                    "console.command.l10n-failed", Level.WARNING);
+        }
+
+        interface Crypt {
+            LoggableLocalizedString AUTH_FAILED = new LoggableLocalizedStringImpl(
+                    "console.net.crypt.user-auth", Level.WARNING);
+
+            LoggableLocalizedString BAD_SHARED_SECRET = new LoggableLocalizedStringImpl(
+                    "glowstone.kick.crypt.shared-secret", Level.WARNING);
+
+            LoggableLocalizedString BAD_VERIFY_TOKEN = new LoggableLocalizedStringImpl(
+                    "glowstone.kick.crypt.verify-token", Level.WARNING);
+
+            LoggableLocalizedString URL_ENCODE_IP = new LoggableLocalizedStringImpl(
+                    "console.net.crypt.url-encode-ip", Level.WARNING);
         }
 
         interface Entity {
-            LoggableLocalizedString LOADING_ERROR = new LoggableLocalizedStringImpl(
-                    "console.entity.loading-error", Level.WARNING
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.entity.load-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString LOAD_TOO_LATE = new LoggableLocalizedStringImpl(
+                    "console.entity.load-too-late", Level.WARNING
+            );
+
+            LoggableLocalizedString PARTICLE_INVALID = new LoggableLocalizedStringImpl(
+                    "console.entity.particle-invalid", Level.WARNING
+            );
+
+            LoggableLocalizedString SAVE_FAILED = new LoggableLocalizedStringImpl(
+                    "console.entity.save-failed", Level.WARNING
+            );
+
+            LoggableLocalizedString SAVE_FAILED_PASSENGER = new LoggableLocalizedStringImpl(
+                    "console.entity.save-failed.passenger", Level.WARNING
             );
 
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -307,6 +483,18 @@ public interface ConsoleMessages {
             );
         }
 
+        interface Net {
+            LoggableLocalizedString MESSAGE_TOO_LONG = new LoggableLocalizedStringImpl(
+                    "console.net.message-too-long", Level.WARNING
+            );
+
+            LoggableLocalizedString CRAFTING_BOOK_UNSUPPORTED = new LoggableLocalizedStringImpl(
+                    "console.net.crafting-book-unsupported", Level.WARNING);
+
+            LoggableLocalizedString CRAFTING_RECIPE_UNSUPPORTED = new LoggableLocalizedStringImpl(
+                    "console.net.crafting-recipe-unsupported", Level.WARNING);
+        }
+
         LoggableLocalizedString OFFLINE = new LoggableLocalizedStringImpl(
                 "console.offline", Level.WARNING
         );
@@ -340,8 +528,8 @@ public interface ConsoleMessages {
                     "console.plugin.malformed-url", Level.WARNING
             );
 
-            LoggableLocalizedString IO = new LoggableLocalizedStringImpl(
-                    "console.plugin.ioexception", Level.WARNING
+            LoggableLocalizedString LOAD_FAILED = new LoggableLocalizedStringImpl(
+                    "console.plugin.load-failed.type-detector", Level.WARNING
             );
 
             LoggableLocalizedString BUKKIT2SPONGE = new LoggableLocalizedStringImpl(
@@ -394,6 +582,13 @@ public interface ConsoleMessages {
         interface WorldGen {
             LoggableLocalizedString DISABLED = new LoggableLocalizedStringImpl(
                     "console.worldgen.disabled", Level.WARNING
+            );
+        }
+
+        interface Fishing {
+
+            LoggableLocalizedString REWARDS_INVALID = new LoggableLocalizedStringImpl(
+                    "console.fishing.rewards-invalid", Level.WARNING
             );
         }
     }

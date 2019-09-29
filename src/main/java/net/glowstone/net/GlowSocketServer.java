@@ -5,17 +5,12 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
-import io.netty.channel.kqueue.KQueueServerSocketChannel;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.net.protocol.ProtocolProvider;
 
 public abstract class GlowSocketServer extends GlowNetworkServer {
 
@@ -32,20 +27,16 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
      * @param latch The countdown latch used during server startup to wait for network server
      *         binding.
      */
-    public GlowSocketServer(GlowServer server, CountDownLatch latch) {
-        super(server, latch);
-        boolean epoll = GlowServer.EPOLL;
-        boolean kqueue = GlowServer.KQUEUE;
-        bossGroup = epoll ? new EpollEventLoopGroup() : kqueue ? new KQueueEventLoopGroup()
-            : new NioEventLoopGroup();
-        workerGroup = epoll ? new EpollEventLoopGroup() : kqueue ? new KQueueEventLoopGroup()
-            : new NioEventLoopGroup();
+    public GlowSocketServer(GlowServer server, ProtocolProvider protocolProvider,
+                            CountDownLatch latch) {
+        super(server, protocolProvider, latch);
+        bossGroup = Networking.createBestEventLoopGroup();
+        workerGroup = Networking.createBestEventLoopGroup();
         bootstrap = new ServerBootstrap();
 
         bootstrap
             .group(bossGroup, workerGroup)
-            .channel(epoll ? EpollServerSocketChannel.class : kqueue
-                ? KQueueServerSocketChannel.class : NioServerSocketChannel.class)
+            .channel(Networking.bestServerSocketChannel())
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childOption(ChannelOption.SO_KEEPALIVE, true);
     }

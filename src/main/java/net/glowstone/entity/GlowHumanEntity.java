@@ -29,6 +29,7 @@ import net.glowstone.net.message.play.entity.EntityHeadRotationMessage;
 import net.glowstone.net.message.play.entity.SpawnPlayerMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.Position;
+import net.glowstone.util.UuidUtils;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -232,7 +233,7 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         // silently allow setting the same UUID again
         if (!profile.getId().equals(uuid)) {
             throw new IllegalStateException(
-                    "UUID of " + this + " is already " + profile.getId());
+                    "UUID of " + this + " is already " + UuidUtils.toString(profile.getId()));
         }
     }
 
@@ -407,6 +408,12 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         resetInventoryView();
     }
 
+    @Override
+    public void closeInventory(InventoryCloseEvent.Reason reason) {
+        // TODO: use reason?
+        closeInventory();
+    }
+
     // Drop items left in crafting area.
     private void handleUnusedInputs() {
         for (int i = 0; i < getTopInventory().getSlots().size(); i++) {
@@ -502,9 +509,9 @@ public abstract class GlowHumanEntity extends GlowLivingEntity implements HumanE
         Location dropLocation = location.clone().add(0, getEyeHeight(true) - 0.3, 0);
         GlowItem dropItem = world.dropItem(dropLocation, stack);
 
-        /**
-         * These calculations are strictly based off of trial-and-error to find the 
-         * closest similar behavior to the official server. May be changed in the future.
+        /*
+          These calculations are strictly based off of trial-and-error to find the
+          closest similar behavior to the official server. May be changed in the future.
          */
         Vector vel = location.getDirection().multiply(0.3);
         ThreadLocalRandom tlr = ThreadLocalRandom.current();

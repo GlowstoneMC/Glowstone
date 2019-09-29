@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -24,6 +24,7 @@ import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.constants.GameRules;
 import net.glowstone.constants.GlowPotionEffect;
 import net.glowstone.entity.AttributeManager.Key;
 import net.glowstone.entity.ai.MobState;
@@ -64,6 +65,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -73,6 +75,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
@@ -131,7 +134,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     /**
      * Potion effects on the entity.
      */
-    private final Map<PotionEffectType, PotionEffect> potionEffects = new HashMap<>();
+    private final Map<PotionEffectType, PotionEffect> potionEffects = new ConcurrentHashMap<>();
     /**
      * The LivingEntity's AttributeManager.
      */
@@ -831,31 +834,21 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             return;
         }
 
+        if (this.tryUseTotem()) {
+            return;
+        }
+
         // Killed
         active = false;
         Sound deathSound = getDeathSound();
         if (deathSound != null && !isSilent()) {
             world.playSound(location, deathSound, getSoundVolume(), getSoundPitch());
         }
-        playEffect(EntityEffect.DEATH);
+        playEffectKnownAndSelf(EntityEffect.DEATH);
         if (this instanceof GlowPlayer) {
             GlowPlayer player = (GlowPlayer) this;
-            ItemStack mainHand = player.getInventory().getItemInMainHand();
-            ItemStack offHand = player.getInventory().getItemInOffHand();
-            if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
-                player.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
-                player.setHealth(1.0);
-                active = true;
-                return;
-            }
-            if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
-                player.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
-                player.setHealth(1.0);
-                active = true;
-                return;
-            }
             List<ItemStack> items = null;
-            boolean dropInventory = !world.getGameRuleMap().getBoolean("keepInventory");
+            boolean dropInventory = !world.getGameRuleMap().getBoolean(GameRules.KEEP_INVENTORY);
             if (dropInventory) {
                 items = Arrays.stream(player.getInventory().getContents())
                         .filter(stack -> !InventoryUtil.isEmpty(stack))
@@ -876,15 +869,13 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             player.incrementStatistic(Statistic.DEATHS);
         } else {
             EntityDeathEvent deathEvent = new EntityDeathEvent(this, new ArrayList<>());
-            if (world.getGameRuleMap().getBoolean("doMobLoot")) {
+            if (world.getGameRuleMap().getBoolean(GameRules.DO_MOB_LOOT)) {
                 LootData data = LootingManager.generate(this);
                 deathEvent.getDrops().addAll(data.getItems());
                 // Only drop experience when hit by a player within 5 seconds (100 game ticks)
                 if (ticksLived - playerDamageTick <= 100 && data.getExperience() > 0) {
-                    // split experience
-                    Integer[] values = ExperienceSplitter.cut(data.getExperience());
                     ThreadLocalRandom random = ThreadLocalRandom.current();
-                    for (Integer exp : values) {
+                    ExperienceSplitter.forEachCut(data.getExperience(), exp -> {
                         double modX = random.nextDouble() - 0.5;
                         double modZ = random.nextDouble() - 0.5;
                         Location xpLocation = new Location(world,
@@ -897,7 +888,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                         if (getLastDamager() != null) {
                             orb.setTriggerEntityId(getLastDamager().getUniqueId());
                         }
-                    }
+                    });
                 }
             }
             deathEvent = EventFactory.getInstance().callEvent(deathEvent);
@@ -995,11 +986,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             playerDamageTick = ticksLived;
             if (health - amount <= 0) {
                 killer = determinePlayer(source);
+                if (killer != null) {
+                    killer.incrementStatistic(Statistic.KILL_ENTITY, getType());
+                }
             }
         }
 
         setHealth(health - amount);
-        playEffect(EntityEffect.HURT);
+        playEffectKnownAndSelf(EntityEffect.HURT);
 
         if (cause == DamageCause.ENTITY_ATTACK && source != null) {
             Vector distance = RayUtil
@@ -1172,6 +1166,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return Collections.unmodifiableCollection(potionEffects.values());
     }
 
+    public void clearActivePotionEffects() {
+        for (PotionEffect effect : this.getActivePotionEffects()) {
+            this.removePotionEffect(effect.getType());
+        }
+    }
+
     @Override
     public void setOnGround(boolean onGround) {
         float fallDistance = getFallDistance();
@@ -1213,6 +1213,36 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         metadata.setBit(MetadataIndex.STATUS, MetadataIndex.StatusFlags.GLIDING, gliding);
     }
 
+    @Override
+    public int getShieldBlockingDelay() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setShieldBlockingDelay(int delay) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public ItemStack getActiveItem() {
+        return null;
+    }
+
+    @Override
+    public int getItemUseRemainingTime() {
+        return 0;
+    }
+
+    @Override
+    public int getHandRaisedTime() {
+        return 0;
+    }
+
+    @Override
+    public boolean isHandRaised() {
+        return false;
+    }
+
     /**
      * Sets the AI state.
      *
@@ -1251,8 +1281,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public AttributeInstance getAttribute(Attribute attribute) {
-        // todo: 1.11
-        return null;
+        return getAttributeManager().getProperty(Key.fromAttribute(attribute));
     }
 
     @Override
@@ -1299,5 +1328,45 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         return false;
+    }
+
+    /**
+     * Use "Totem of Undying" if equipped
+     * @return result of totem use
+     */
+    public boolean tryUseTotem() {
+        //TODO: Should return false if player die in void.
+        if (!(this instanceof HumanEntity)) {
+            return false;
+        }
+
+        HumanEntity human = (HumanEntity) this;
+        ItemStack mainHand = human.getInventory().getItemInMainHand();
+        ItemStack offHand = human.getInventory().getItemInOffHand();
+
+        boolean hasTotem = false;
+        if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
+            mainHand.setAmount(mainHand.getAmount() - 1);
+            human.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
+            hasTotem = true;
+        } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
+            human.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
+            hasTotem = true;
+        }
+
+        EntityResurrectEvent event = EventFactory.getInstance().callEvent(new EntityResurrectEvent(this));
+        event.setCancelled(!hasTotem);
+
+        if (event.isCancelled()) {
+            return false;
+        }
+
+        this.setHealth(1.0F);
+        this.clearActivePotionEffects();
+        this.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 900, 1));
+        this.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 900, 1));
+        playEffectKnownAndSelf(EntityEffect.TOTEM_RESURRECT);
+
+        return true;
     }
 }

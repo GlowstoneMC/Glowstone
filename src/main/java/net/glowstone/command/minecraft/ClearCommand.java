@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 import net.glowstone.command.CommandTarget;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,35 +16,34 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class ClearCommand extends VanillaCommand {
+public class ClearCommand extends GlowVanillaCommand {
 
     /**
      * Creates the instance for this command.
      */
     public ClearCommand() {
-        super("clear", "Clears the content of a player's inventory.",
-            "/clear [player] [item] [data] [maxCount]", Collections.emptyList());
-        setPermission("minecraft.command.clear");
+        super("clear");
+        setPermission("minecraft.command.clear"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages messages) {
+        if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
+        final ResourceBundle resourceBundle = messages.getResourceBundle();
         if (args.length == 0) {
             if ((sender instanceof Player)) {
                 Player player = (Player) sender;
-                return clearAll(sender, player, null, -1, -1);
+                return clearAll(sender, player, null, -1, -1, resourceBundle);
             } else {
-                sender
-                    .sendMessage(ChatColor.RED + "Usage: /clear <player> [item] [data] [maxCount]");
+                sendUsageMessage(sender, messages);
                 return false;
             }
         }
@@ -61,24 +62,24 @@ public class ClearCommand extends VanillaCommand {
         } else {
             Player player = Bukkit.getPlayerExact(name);
             if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player '" + name + "' cannot be found");
+                messages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                        .sendInColor(ChatColor.RED, sender, name);
                 return false;
             } else {
                 players.add(player);
             }
         }
         if (players.size() == 0) {
-            sender.sendMessage(ChatColor.RED + "Player '" + name + "' cannot be found");
+            messages.getGeneric(GenericMessage.NO_SUCH_PLAYER)
+                    .sendInColor(ChatColor.RED, sender, name);
             return false;
         }
         if (args.length >= 2) {
-            String itemName = args[1];
-            if (!itemName.startsWith("minecraft:")) {
-                itemName = "minecraft:" + itemName;
-            }
+            String itemName = CommandUtils.toNamespaced(args[1]);
             Material type = ItemIds.getItem(itemName);
             if (type == null) {
-                sender.sendMessage(ChatColor.RED + "There is no such item with name " + itemName);
+                new LocalizedStringImpl("clear.no-such-item", resourceBundle)
+                        .sendInColor(ChatColor.RED, sender, itemName);
                 return false;
             }
             if (args.length >= 3) {
@@ -87,13 +88,13 @@ public class ClearCommand extends VanillaCommand {
                 try {
                     data = Integer.valueOf(dataString);
                 } catch (NumberFormatException ex) {
-                    sender
-                        .sendMessage(ChatColor.RED + "'" + dataString + "' is not a valid number");
+                    messages.getGeneric(GenericMessage.NAN)
+                            .sendInColor(ChatColor.RED, sender, dataString);
                     return false;
                 }
                 if (data < -1) {
-                    sender.sendMessage(ChatColor.RED + "The number you have entered (" + data
-                        + ") is too small, it must be at least -1");
+                    new LocalizedStringImpl("clear.negative", resourceBundle)
+                            .sendInColor(ChatColor.RED, sender, data);
                     return false;
                 }
                 if (args.length >= 4) {
@@ -102,23 +103,23 @@ public class ClearCommand extends VanillaCommand {
                     try {
                         amount = Integer.valueOf(amountString);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(
-                            ChatColor.RED + "'" + amountString + "' is not a valid number");
+                        messages.getGeneric(GenericMessage.NAN)
+                                .sendInColor(ChatColor.RED, sender, amountString);
                         return false;
                     }
                     if (amount < -1) {
-                        sender.sendMessage(ChatColor.RED + "The number you have entered (" + amount
-                            + ") is too small, it must be at least -1");
+                        new LocalizedStringImpl("clear.negative", resourceBundle)
+                                .sendInColor(ChatColor.RED, sender, amount);
                         return false;
                     }
                     if (args.length >= 5) {
-                        sender.sendMessage(
-                            ChatColor.RED + "Sorry, item data-tags are not supported yet.");
+                        new LocalizedStringImpl("clear.tag-unsupported", resourceBundle)
+                                .sendInColor(ChatColor.RED, sender);
                         return false;
                     } else {
                         boolean success = true;
                         for (Player player : players) {
-                            if (!clearAll(sender, player, type, data, amount)) {
+                            if (!clearAll(sender, player, type, data, amount, resourceBundle)) {
                                 success = false;
                             }
                         }
@@ -127,7 +128,7 @@ public class ClearCommand extends VanillaCommand {
                 } else {
                     boolean success = true;
                     for (Player player : players) {
-                        if (!clearAll(sender, player, type, data, -1)) {
+                        if (!clearAll(sender, player, type, data, -1, resourceBundle)) {
                             success = false;
                         }
                     }
@@ -136,7 +137,7 @@ public class ClearCommand extends VanillaCommand {
             } else {
                 boolean success = true;
                 for (Player player : players) {
-                    if (!clearAll(sender, player, type, -1, -1)) {
+                    if (!clearAll(sender, player, type, -1, -1, resourceBundle)) {
                         success = false;
                     }
                 }
@@ -145,7 +146,7 @@ public class ClearCommand extends VanillaCommand {
         } else {
             boolean success = true;
             for (Player player : players) {
-                if (!clearAll(sender, player, null, -1, -1)) {
+                if (!clearAll(sender, player, null, -1, -1, resourceBundle)) {
                     success = false;
                 }
             }
@@ -180,17 +181,16 @@ public class ClearCommand extends VanillaCommand {
     }
 
     private boolean clearAll(CommandSender sender, Player player, Material material, int data,
-        int maxCount) {
+            int maxCount, ResourceBundle resourceBundle) {
         int count = countAllItems(player.getInventory(), material, data, maxCount);
         if (maxCount == 0) {
-            sender.sendMessage(player.getName() + " has " + count
-                    + " items that match the criteria");
+            new LocalizedStringImpl("clear.count", resourceBundle).send(
+                    sender, player.getName(), count);
             return true;
         }
         if (count == 0) {
-            sender.sendMessage(
-                ChatColor.RED + "Could not clear the inventory of " + player.getName()
-                    + ", no items to remove");
+            new LocalizedStringImpl("clear.empty", resourceBundle).send(
+                    sender, player.getName());
             return false;
         }
         if (material == null) {
@@ -215,8 +215,13 @@ public class ClearCommand extends VanillaCommand {
                 }
             }
         }
-        sender.sendMessage(
-            "Cleared the inventory of " + player.getName() + ", removing " + count + " items");
+        if (count == 1) {
+            new LocalizedStringImpl("clear.done.singular", resourceBundle).send(
+                    sender, player.getName());
+        } else {
+            new LocalizedStringImpl("clear.done", resourceBundle).send(
+                    sender, player.getName(), count);
+        }
         return true;
     }
 

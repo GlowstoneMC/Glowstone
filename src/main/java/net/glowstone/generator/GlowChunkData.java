@@ -84,23 +84,23 @@ public class GlowChunkData implements ChunkData {
     @Override
     public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
         Material material) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
     public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
         MaterialData materialData) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
     public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, int blockId) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
     public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, int blockId,
         int data) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

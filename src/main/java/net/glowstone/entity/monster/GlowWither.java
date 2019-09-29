@@ -9,6 +9,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -122,5 +123,15 @@ public class GlowWither extends GlowBoss implements Wither {
     @Override
     public boolean isUndead() {
         return true;
+    }
+
+    @Override
+    public void rangedAttack(LivingEntity target, float charge) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setChargingAttack(boolean raiseHands) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

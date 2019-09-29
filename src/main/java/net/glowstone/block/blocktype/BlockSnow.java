@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import net.glowstone.EventFactory;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
@@ -56,7 +57,7 @@ public class BlockSnow extends BlockNeedsAttached {
         if (tool != null && ToolType.SPADE.matches(tool.getType())) {
             return Arrays.asList(new ItemStack(Material.SNOW_BALL, block.getData() + 1));
         } else {
-            return BlockDropless.EMPTY_STACK;
+            return Collections.emptyList();
         }
     }
 

@@ -8,7 +8,6 @@ import io.netty.handler.timeout.IdleStateHandler;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.handler.legacyping.LegacyPingHandler;
-import net.glowstone.net.protocol.ProtocolType;
 
 /**
  * Used to initialize the channels.
@@ -34,7 +33,7 @@ public final class GlowChannelInitializer extends ChannelInitializer<SocketChann
     @Override
     protected void initChannel(SocketChannel c) {
         MessageHandler handler = new MessageHandler(connectionManager);
-        CodecsHandler codecs = new CodecsHandler(ProtocolType.HANDSHAKE.getProtocol());
+        CodecsHandler codecs = new CodecsHandler(connectionManager.getProtocolProvider().handshake);
         FramingHandler framing = new FramingHandler();
 
         try {

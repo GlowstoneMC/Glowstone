@@ -1,76 +1,62 @@
 package net.glowstone.command;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Preconditions;
 import java.util.List;
+import java.util.Locale;
 import org.bukkit.GameMode;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class to create GameMode.
  */
 public class GameModeUtils {
 
-    public static final List<String> GAMEMODE_NAMES = ImmutableList
-        .of("adventure", "creative", "survival", "spectator");
+    private static final LocalizedEnumNames<GameMode> MAP = new LocalizedEnumNames(
+            GameMode::getByValue, "glowstone.gamemode.unknown", "glowstone.gamemode.names",
+            "maps/gamemode", false);
 
     private GameModeUtils() {
+    }
+
+    private static Locale localeFromNullable(@Nullable Locale in) {
+        return in == null ? Locale.getDefault() : in;
     }
 
     /**
      * Create a GameMode from a string.
      *
      * @param mode The mode to convert
+     * @param locale The input locale
      * @return The matching mode if any, null otherwise.
      */
-    public static GameMode build(final String mode) {
-        if (mode == null) {
-            return null;
-        } else {
-            switch (mode.toLowerCase()) {
-                case "s":
-                case "0":
-                case "survival":
-                    return GameMode.SURVIVAL;
-                case "c":
-                case "1":
-                case "creative":
-                    return GameMode.CREATIVE;
-                case "a":
-                case "2":
-                case "adventure":
-                    return GameMode.ADVENTURE;
-                case "sp":
-                case "3":
-                case "spectator":
-                    return GameMode.SPECTATOR;
-                default:
-                    return null;
-            }
-        }
+    @Nullable
+    public static GameMode build(@Nullable final String mode, @Nullable final Locale locale) {
+        return MAP.nameToValue(localeFromNullable(locale), mode);
     }
 
     /**
      * Pretty print the given GameMode.
      *
      * @param gameMode The mode to print
-     * @return A string containing the pretty name of the mode, 'Unknown' if the mode is not known,
-     *     or null if the given mode is null.
+     * @param locale The output locale
+     * @return the pretty name of the mode or 'Unknown' if the mode is not known
      */
-    public static String prettyPrint(final GameMode gameMode) {
-        if (gameMode == null) {
-            return null;
-        } else {
-            switch (gameMode) {
-                case CREATIVE:
-                    return "Creative";
-                case SURVIVAL:
-                    return "Survival";
-                case ADVENTURE:
-                    return "Adventure";
-                case SPECTATOR:
-                    return "Spectator";
-                default:
-                    return "Unknown";
-            }
-        }
+    public static String prettyPrint(GameMode gameMode, @Nullable Locale locale) {
+        Preconditions.checkNotNull(gameMode, "gameMode cannot be null"); // NON-NLS
+        return MAP.valueToName(localeFromNullable(locale), gameMode);
     }
+
+    /**
+     * Returns autocomplete suggestions that are game-mode names.
+     *
+     * @param arg The partial input
+     * @param locale The input locale
+     * @return A list of autocomplete suggestions
+     */
+    @NotNull
+    public static List<String> partialMatchingGameModes(String arg, @Nullable Locale locale) {
+        return MAP.getAutoCompleteSuggestions(localeFromNullable(locale), arg);
+    }
+
 }

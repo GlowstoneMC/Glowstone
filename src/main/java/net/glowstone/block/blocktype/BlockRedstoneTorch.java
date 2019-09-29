@@ -59,8 +59,8 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
-        super.updatePhysics(me);
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
         me.getWorld().requestPulse(me);
     }
 

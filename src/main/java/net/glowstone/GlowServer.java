@@ -15,8 +15,6 @@ import com.tobedevoured.naether.NaetherException;
 import com.tobedevoured.naether.api.Naether;
 import com.tobedevoured.naether.impl.NaetherImpl;
 import com.tobedevoured.naether.util.RepoBuilder;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.kqueue.KQueue;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -136,10 +134,12 @@ import net.glowstone.linkstone.runtime.inithook.ClassInitHook;
 import net.glowstone.map.GlowMapView;
 import net.glowstone.net.GameServer;
 import net.glowstone.net.GlowSession;
+import net.glowstone.net.Networking;
 import net.glowstone.net.SessionRegistry;
 import net.glowstone.net.message.play.player.AdvancementsMessage;
 import net.glowstone.net.message.play.player.PlayerAbilitiesMessage;
 import net.glowstone.net.message.status.StatusRequestMessage;
+import net.glowstone.net.protocol.ProtocolProvider;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.net.rcon.RconServer;
 import net.glowstone.scheduler.GlowScheduler;
@@ -201,6 +201,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.help.HelpMap;
@@ -433,14 +434,6 @@ public class GlowServer implements Server {
      */
     @Getter
     private final FishingRewardManager fishingRewardManager;
-    /**
-     * Whether the Linux epoll native transport is available for Netty.
-     */
-    public static final boolean EPOLL = Epoll.isAvailable();
-    /**
-     * Whether the macOS/BSD kqueue native transport is available for Netty.
-     */
-    public static final boolean KQUEUE = KQueue.isAvailable();
     /**
      * Libraries that are known to cause problems when loaded up via the server config or plugin
      * dependencies.
@@ -888,26 +881,27 @@ public class GlowServer implements Server {
     }
 
     private void bind() {
-        if (EPOLL) {
+        if (Networking.EPOLL_AVAILABLE) {
             ConsoleMessages.Info.NativeTransport.EPOLL.log();
-        } else if (KQUEUE) {
+        } else if (Networking.KQUEUE_AVAILABLE) {
             ConsoleMessages.Info.NativeTransport.KQUEUE.log();
         }
 
         CountDownLatch latch = new CountDownLatch(3);
 
-        networkServer = new GameServer(this, latch);
+        ProtocolProvider protocolProvider = new ProtocolProvider(config);
+        networkServer = new GameServer(this, protocolProvider, latch);
         networkServer.bind(getBindAddress(Key.SERVER_PORT));
 
         if (config.getBoolean(Key.QUERY_ENABLED)) {
-            queryServer = new QueryServer(this, latch, config.getBoolean(Key.QUERY_PLUGINS));
+            queryServer = new QueryServer(this, protocolProvider, latch, config.getBoolean(Key.QUERY_PLUGINS));
             queryServer.bind(getBindAddress(Key.QUERY_PORT));
         } else {
             latch.countDown();
         }
 
         if (config.getBoolean(Key.RCON_ENABLED)) {
-            rconServer = new RconServer(this, latch, config.getString(Key.RCON_PASSWORD));
+            rconServer = new RconServer(this, protocolProvider, latch, config.getString(Key.RCON_PASSWORD));
             rconServer.bind(getBindAddress(Key.RCON_PORT));
         } else {
             latch.countDown();
@@ -2145,30 +2139,39 @@ public class GlowServer implements Server {
     }
 
     @Override
-    public int broadcastMessage(String message) {
-        return broadcast(message, BROADCAST_CHANNEL_USERS);
-    }
-
-    @Override
     public int broadcast(String message, String permission) {
-        int count = 0;
+        Set<CommandSender> sent = new HashSet<>();
         for (Permissible permissible : getPluginManager().getPermissionSubscriptions(permission)) {
             if (permissible instanceof CommandSender && permissible.hasPermission(permission)) {
-                ((CommandSender) permissible).sendMessage(message);
-                ++count;
+                CommandSender cs = ((CommandSender) permissible);
+                sent.add(cs);
             }
         }
-        return count;
+        BroadcastMessageEvent event = EventFactory.getInstance()
+            .callEvent(new BroadcastMessageEvent(message, sent));
+        if (event.isCancelled()) {
+            return 0;
+        }
+
+        sent.forEach(cs -> cs.sendMessage(message));
+        return sent.size();
     }
 
     @Override
     public void broadcast(BaseComponent component) {
-
+        broadcastMessage(component.toLegacyText());
     }
 
     @Override
     public void broadcast(BaseComponent... components) {
+        for (BaseComponent component : components) {
+            broadcast(component);
+        }
+    }
 
+    @Override
+    public int broadcastMessage(String message) {
+        return broadcast(message, BROADCAST_CHANNEL_USERS);
     }
 
     /**

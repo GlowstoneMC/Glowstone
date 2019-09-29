@@ -2,6 +2,7 @@ package net.glowstone.block.blocktype;
 
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.MaterialData;
@@ -19,12 +20,13 @@ public class BlockNeedsAttached extends BlockType {
     }
 
     @Override
-    public void updatePhysics(GlowBlock me) {
+    public void updatePhysicsAfterEvent(GlowBlock me) {
+        super.updatePhysicsAfterEvent(me);
         BlockFace attachedTo = getAttachedFace(me);
         if (attachedTo == null) {
             return;
         }
-        if (me.getRelative(attachedTo).getType() == Material.AIR || !canPlaceAt(me,
+        if (me.getRelative(attachedTo).getType() == Material.AIR || !canPlaceAt(null, me,
             attachedTo.getOppositeFace())) {
             dropMe(me);
         }
@@ -44,7 +46,7 @@ public class BlockNeedsAttached extends BlockType {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         return !(!canAttachTo(block, against) && against == BlockFace.UP);
     }
 

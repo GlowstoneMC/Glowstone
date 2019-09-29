@@ -1,6 +1,7 @@
 package net.glowstone.entity.passive;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.EnumSet;
 import java.util.function.Function;
@@ -17,9 +18,65 @@ public abstract class GlowAbstractHorseTest<T extends GlowAbstractHorse> extends
 
     @Test
     @Override
+    public void testSetAgeAdult() {
+        entity.setTamed(true);
+        super.testSetAgeAdult();
+    }
+
+    @Test
+    public void testCannotBreedIfUntamed() {
+        entity.setAge(0);
+        entity.setTamed(false);
+        assertFalse(entity.canBreed());
+    }
+
+    @Test
+    @Override
+    public void testSetBreedTrueAdult() {
+        entity.setTamed(true);
+        super.testSetBreedTrueAdult();
+    }
+
+    @Test
+    @Override
+    public void testSetBreedTrueBaby() {
+        entity.setTamed(true);
+        super.testSetBreedTrueBaby();
+    }
+
+    @Test
+    public void testSetBreedTrueAdultUntamed() {
+        entity.setTamed(false);
+        entity.setBreed(true);
+        assertAdult(entity);
+        assertFalse(entity.canBreed());
+    }
+
+    @Test
+    public void testSetAgeAdultCannotBreedTamed() {
+        entity.setTamed(true);
+        testSetAgeAdultCannotBreed();
+    }
+
+    @Test
+    @Override
     public void testGetBreedingFoods() {
         assertEquals(EnumSet.of(Material.GOLDEN_APPLE, Material.GOLDEN_CARROT),
                 entity.getBreedingFoods());
+    }
+
+    @Test
+    @Override
+    public void testFoodSetsLoveMode() {
+        entity.setTamed(true);
+        super.testFoodSetsLoveMode();
+    }
+
+    @Test
+    @Override
+    public void testFoodDoesNotSetLoveModeAfterBreeding() {
+        entity.setTamed(true);
+        super.testFoodDoesNotSetLoveModeAfterBreeding();
     }
 
     @Test

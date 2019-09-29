@@ -5,8 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import net.glowstone.GlowServer;
+
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -87,6 +86,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // initialize the chunk
         chunk.initializeSections(sections);
         chunk.setPopulated(levelTag.getBoolean("TerrainPopulated", false)); // NON-NLS
+        levelTag.readLong("InhabitedTime", chunk::setInhabitedTime);
 
         // read biomes
         levelTag.readByteArray("Biomes", chunk::setBiomes); // NON-NLS
@@ -106,7 +106,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
             } catch (UnknownEntityTypeException e) {
                 ConsoleMessages.Warn.Entity.UNKNOWN.log(chunk, e.getIdOrTag());
             } catch (Exception e) {
-                ConsoleMessages.Warn.Entity.LOADING_ERROR.log(e, chunk);
+                ConsoleMessages.Warn.Entity.LOAD_FAILED.log(e, chunk);
             }
         });
 
@@ -124,7 +124,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                     blockEntity.loadNbt(blockEntityTag);
                 } catch (Exception ex) {
                     String id = blockEntityTag.tryGetString("id").orElse("<missing>"); // NON-NLS
-                    ConsoleMessages.Error.BlockEntity.READ_ERROR.log(
+                    ConsoleMessages.Error.BlockEntity.LOAD_FAILED.log(
                             ex, blockEntity.getBlock(), id);
                 }
             } else {
@@ -174,8 +174,9 @@ public final class AnvilChunkIoService implements ChunkIoService {
         // core properties
         levelTags.putInt("xPos", chunk.getX()); // NON-NLS
         levelTags.putInt("zPos", chunk.getZ()); // NON-NLS
-        levelTags.putBool("TerrainPopulated", chunk.isPopulated()); // NON-NLS
         levelTags.putLong("LastUpdate", 0); // NON-NLS
+        levelTags.putLong("InhabitedTime", chunk.getInhabitedTime()); // NON-NLS
+        levelTags.putBool("TerrainPopulated", chunk.isPopulated()); // NON-NLS
 
         // chunk sections
         List<CompoundTag> sectionTags = new ArrayList<>();
@@ -217,7 +218,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 EntityStorage.save(entity, tag);
                 entities.add(tag);
             } catch (Exception e) {
-                GlowServer.logger.log(Level.WARNING, "Error saving " + entity + " in " + chunk, e);
+                ConsoleMessages.Warn.Entity.SAVE_FAILED.log(e, entity, chunk);
             }
         }
         levelTags.putCompoundList("Entities", entities);
@@ -230,8 +231,7 @@ public final class AnvilChunkIoService implements ChunkIoService {
                 entity.saveNbt(tag);
                 blockEntities.add(tag);
             } catch (Exception ex) {
-                GlowServer.logger
-                    .log(Level.SEVERE, "Error saving block entity at " + entity.getBlock(), ex);
+                ConsoleMessages.Error.BlockEntity.SAVE_FAILED.log(ex, entity.getBlock());
             }
         }
         levelTags.putCompoundList("TileEntities", blockEntities);

@@ -26,4 +26,9 @@ public class GlowElderGuardian extends GlowGuardian implements ElderGuardian {
     protected Sound getAmbientSound() {
         return Sound.ENTITY_ELDER_GUARDIAN_AMBIENT;
     }
+
+    @Override
+    public boolean isElder() {
+        return true;
+    }
 }

@@ -3,15 +3,17 @@ package net.glowstone.command;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import com.google.common.collect.ImmutableList;
+import java.util.ResourceBundle;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.glowstone.GlowServer;
 import net.glowstone.GlowWorld;
-import net.glowstone.command.CommandUtils;
+import net.glowstone.command.minecraft.GlowVanillaCommand;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,6 +36,8 @@ public abstract class CommandTest<T extends Command> {
     protected CommandSender opSender;
     protected T command;
     protected final Supplier<T> commandSupplier;
+    String bundleName;
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("commands");
 
     protected CommandTest(Supplier<T> commandSupplier) {
         this.commandSupplier = commandSupplier;
@@ -48,6 +52,15 @@ public abstract class CommandTest<T extends Command> {
         assertThat(command.execute(sender, "label", new String[0]), is(true));
         Mockito.verify(sender).sendMessage(eq(ChatColor.RED
             + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."));
+    }
+
+    @Test
+    public void testThatDescriptionAndUsageExist() {
+        // TODO: Remove the "if" once all commands are converted to extend GlowVanillaCommand
+        if (command instanceof GlowVanillaCommand) {
+            assertNotNull(RESOURCE_BUNDLE.getString(command.getName() + ".description"));
+            assertNotNull(RESOURCE_BUNDLE.getString(command.getName() + ".usage"));
+        }
     }
 
     @Before

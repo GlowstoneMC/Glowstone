@@ -3,6 +3,7 @@ package net.glowstone.entity.monster;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Skeleton;
 
 public class GlowSkeleton extends GlowMonster implements Skeleton {
@@ -45,5 +46,15 @@ public class GlowSkeleton extends GlowMonster implements Skeleton {
     @Override
     public boolean isUndead() {
         return true;
+    }
+
+    @Override
+    public void rangedAttack(LivingEntity target, float charge) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setChargingAttack(boolean raiseHands) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

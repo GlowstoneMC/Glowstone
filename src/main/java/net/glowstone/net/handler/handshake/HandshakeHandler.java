@@ -7,17 +7,26 @@ import net.glowstone.GlowServer;
 import net.glowstone.net.GlowSession;
 import net.glowstone.net.ProxyData;
 import net.glowstone.net.message.handshake.HandshakeMessage;
-import net.glowstone.net.protocol.ProtocolType;
+import net.glowstone.net.protocol.GlowProtocol;
+import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.StatusProtocol;
 
 public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMessage> {
+    private final StatusProtocol statusProtocol;
+    private final LoginProtocol loginProtocol;
+
+    public HandshakeHandler(StatusProtocol statusProtocol, LoginProtocol loginProtocol) {
+        this.statusProtocol = statusProtocol;
+        this.loginProtocol = loginProtocol;
+    }
 
     @Override
     public void handle(GlowSession session, HandshakeMessage message) {
-        ProtocolType protocol;
+        GlowProtocol protocol;
         if (message.getState() == 1) {
-            protocol = ProtocolType.STATUS;
+            protocol = statusProtocol;
         } else if (message.getState() == 2) {
-            protocol = ProtocolType.LOGIN;
+            protocol = loginProtocol;
         } else {
             session.disconnect("Invalid state");
             return;
@@ -36,12 +45,12 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             try {
                 session.setProxyData(new ProxyData(session, message.getAddress()));
             } catch (IllegalArgumentException ex) {
-                if (protocol == ProtocolType.LOGIN) {
+                if (protocol == loginProtocol) {
                     session.disconnect("Invalid proxy data provided.");
                 }
                 return; // silently ignore parse data in PING protocol
             } catch (Exception ex) {
-                if (protocol == ProtocolType.LOGIN) {
+                if (protocol == loginProtocol) {
                     GlowServer.logger.log(Level.SEVERE,
                             "Error parsing proxy data for " + session, ex);
                     session.disconnect("Failed to parse proxy data.");
@@ -50,7 +59,7 @@ public class HandshakeHandler implements MessageHandler<GlowSession, HandshakeMe
             }
         }
 
-        if (protocol == ProtocolType.LOGIN) {
+        if (protocol == loginProtocol) {
             if (message.getVersion() < GlowServer.PROTOCOL_VERSION) {
                 session.disconnect("Outdated client! I'm running " + GlowServer.GAME_VERSION);
             } else if (message.getVersion() > GlowServer.PROTOCOL_VERSION) {

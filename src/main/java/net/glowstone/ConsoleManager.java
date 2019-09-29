@@ -91,8 +91,8 @@ public final class ConsoleManager {
         reader.addCompleter(new CommandCompleter());
 
         // set system output streams
-        System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), true));
-        System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), true));
+        System.setOut(new PrintStream(new LoggerOutputStream(Level.INFO), false));
+        System.setErr(new PrintStream(new LoggerOutputStream(Level.WARNING), false));
     }
 
     /**

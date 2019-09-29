@@ -1,7 +1,28 @@
 package net.glowstone.util;
 
+import static net.glowstone.constants.GameRules.ANNOUNCE_ADVANCEMENTS;
+import static net.glowstone.constants.GameRules.COMMAND_BLOCK_OUTPUT;
+import static net.glowstone.constants.GameRules.DO_DAYLIGHT_CYCLE;
+import static net.glowstone.constants.GameRules.DO_ENTITY_DROPS;
+import static net.glowstone.constants.GameRules.DO_FIRE_TICK;
+import static net.glowstone.constants.GameRules.DO_LIMITED_CRAFTING;
+import static net.glowstone.constants.GameRules.DO_MOB_LOOT;
+import static net.glowstone.constants.GameRules.DO_MOB_SPAWNING;
+import static net.glowstone.constants.GameRules.DO_TILE_DROPS;
+import static net.glowstone.constants.GameRules.GAME_LOOP_FUNCTION;
+import static net.glowstone.constants.GameRules.KEEP_INVENTORY;
+import static net.glowstone.constants.GameRules.LOG_ADMIN_COMMANDS;
+import static net.glowstone.constants.GameRules.MAX_COMMAND_CHAIN_LENGTH;
+import static net.glowstone.constants.GameRules.MOB_GRIEFING;
+import static net.glowstone.constants.GameRules.NATURAL_REGENERATION;
+import static net.glowstone.constants.GameRules.RANDOM_TICK_SPEED;
+import static net.glowstone.constants.GameRules.REDUCED_DEBUG_INFO;
+import static net.glowstone.constants.GameRules.SEND_COMMAND_FEEDBACK;
+import static net.glowstone.constants.GameRules.SHOW_DEATH_MESSAGES;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jetbrains.annotations.NonNls;
 
 /**
@@ -15,25 +36,25 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * Creates an instance with the vanilla game rules.
      */
     public GameRuleManager() {
-        setValue("commandBlockOutput", true);
-        setValue("doDaylightCycle", true); // implemented
-        setValue("doEntityDrops", true);
-        setValue("doFireTick", true); // implemented
-        setValue("doMobLoot", true); // implemented
-        setValue("doMobSpawning", true); // implemented (partial)
-        setValue("doTileDrops", true); // implemented
-        setValue("keepInventory", false); // implemented
-        setValue("logAdminCommands", true);
-        setValue("mobGriefing", true);
-        setValue("naturalRegeneration", true);
-        setValue("randomTickSpeed", 3);
-        setValue("reducedDebugInfo", false); // implemented
-        setValue("sendCommandFeedback", true);
-        setValue("showDeathMessages", true);
-        setValue("announceAdvancements", true);
-        setValue("doLimitedCrafting", false);
-        setValue("gameLoopFunction", "");
-        setValue("maxCommandChainLength", 65536);
+        setValue(COMMAND_BLOCK_OUTPUT, true);
+        setValue(DO_DAYLIGHT_CYCLE, true); // implemented
+        setValue(DO_ENTITY_DROPS, true);
+        setValue(DO_FIRE_TICK, true); // implemented
+        setValue(DO_MOB_LOOT, true); // implemented
+        setValue(DO_MOB_SPAWNING, true); // implemented (partial)
+        setValue(DO_TILE_DROPS, true); // implemented
+        setValue(KEEP_INVENTORY, false); // implemented
+        setValue(LOG_ADMIN_COMMANDS, true);
+        setValue(MOB_GRIEFING, true);
+        setValue(NATURAL_REGENERATION, true);
+        setValue(RANDOM_TICK_SPEED, 3);
+        setValue(REDUCED_DEBUG_INFO, false); // implemented
+        setValue(SEND_COMMAND_FEEDBACK, true);
+        setValue(SHOW_DEATH_MESSAGES, true);
+        setValue(ANNOUNCE_ADVANCEMENTS, true);
+        setValue(DO_LIMITED_CRAFTING, false);
+        setValue(GAME_LOOP_FUNCTION, "");
+        setValue(MAX_COMMAND_CHAIN_LENGTH, 65536);
     }
 
     /**
@@ -42,7 +63,7 @@ public final class GameRuleManager implements DynamicallyTypedMap<String> {
      * @return the game rules defined, may be empty
      */
     public String[] getKeys() {
-        return gameRules.keySet().toArray(new String[gameRules.size()]);
+        return gameRules.keySet().toArray(new String[0]);
     }
 
     /**

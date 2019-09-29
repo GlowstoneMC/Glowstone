@@ -19,7 +19,7 @@ public class BlockDoor extends BlockType {
     }
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         GlowBlock topHalf = block.getRelative(BlockFace.UP);
         if (!topHalf.isEmpty()) {
             BlockType type = ItemTable.instance().getBlock(topHalf.getType());

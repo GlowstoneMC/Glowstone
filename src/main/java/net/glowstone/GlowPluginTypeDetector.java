@@ -110,7 +110,7 @@ public class GlowPluginTypeDetector {
                 }
             }
         } catch (IOException ex) {
-            ConsoleMessages.Warn.Plugin.IO.log(ex, file);
+            ConsoleMessages.Warn.Plugin.LOAD_FAILED.log(ex, file);
         }
 
         if (isBukkit) {

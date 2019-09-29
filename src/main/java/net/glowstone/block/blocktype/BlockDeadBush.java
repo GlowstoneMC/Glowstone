@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 public class BlockDeadBush extends BlockNeedsAttached {
 
     @Override
-    public boolean canPlaceAt(GlowBlock block, BlockFace against) {
+    public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         int typeIdBelow = block.getWorld()
             .getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ());
         switch (Material.getMaterial(typeIdBelow)) {
@@ -31,7 +32,7 @@ public class BlockDeadBush extends BlockNeedsAttached {
         // If the block below the dead bush is removed,
         // the bush will simply disappear without dropping anything.
         if (tool == null) {
-            return BlockDropless.EMPTY_STACK;
+            return Collections.emptyList();
         }
 
         // Dead bush drops it self when broken with shears

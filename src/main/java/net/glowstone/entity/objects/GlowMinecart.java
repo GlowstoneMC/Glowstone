@@ -7,8 +7,8 @@ import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.entity.GlowVehicle;
 import net.glowstone.inventory.GlowInventory;
 import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
@@ -31,7 +31,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 // TODO: Implement movement and collision detection.
-public abstract class GlowMinecart extends GlowEntity implements Minecart {
+public abstract class GlowMinecart extends GlowVehicle implements Minecart {
     private static final double VERTICAL_GRAVITY_ACCEL = -0.04;
 
     @Getter

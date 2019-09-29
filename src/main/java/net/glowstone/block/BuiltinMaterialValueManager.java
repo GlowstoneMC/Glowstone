@@ -8,6 +8,7 @@ import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NonNls;
 
 public class BuiltinMaterialValueManager implements MaterialValueManager {
 
@@ -24,12 +25,14 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         YamlConfiguration builtinValues = YamlConfiguration.loadConfiguration(new InputStreamReader(
                 getClass().getClassLoader().getResourceAsStream("builtin/materialValues.yml")));
 
-        defaultValue = new BuiltinValueCollection(builtinValues.getConfigurationSection("default"));
+        defaultValue = new BuiltinValueCollection(
+                builtinValues.getConfigurationSection("default")); // NON-NLS
         registerBuiltins(builtinValues);
     }
 
     private void registerBuiltins(ConfigurationSection mainSection) {
-        ConfigurationSection valuesSection = mainSection.getConfigurationSection("values");
+        ConfigurationSection valuesSection
+                = mainSection.getConfigurationSection("values"); // NON-NLS
         Set<String> materials = valuesSection.getKeys(false);
         for (String strMaterial : materials) {
             Material material = Material.matchMaterial(strMaterial);
@@ -60,7 +63,7 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
             this.section = section;
         }
 
-        private Object get(String name) {
+        private Object get(@NonNls String name) {
             Object got = section.get(name);
             if (got == null && this != defaultValue) {
                 return defaultValue.get(name);
@@ -108,6 +111,18 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
         @Override
         public byte getBaseMapColor() {
             return ((Number) get("baseMapColor")).byteValue();
+        }
+
+        @Override
+        public PistonMoveBehavior getPistonPushBehavior() {
+            String behaviorName = (String) get("pistonPushBehavior");
+            return PistonMoveBehavior.valueOf(behaviorName);
+        }
+
+        @Override
+        public PistonMoveBehavior getPistonPullBehavior() {
+            String behaviorName = (String) get("pistonPullBehavior");
+            return PistonMoveBehavior.valueOf(behaviorName);
         }
     }
 }

@@ -1,7 +1,7 @@
 package net.glowstone.command.minecraft;
 
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.ResourceBundle;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.glowstone.GlowWorld;
@@ -9,6 +9,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.command.CommandUtils;
 import net.glowstone.constants.ItemIds;
+import net.glowstone.i18n.LocalizedStringImpl;
 import net.glowstone.util.RectangularRegion;
 import net.glowstone.util.RectangularRegion.IterationDirection;
 import net.glowstone.util.nbt.CompoundTag;
@@ -16,10 +17,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.VanillaCommand;
 
-
-public class CloneCommand extends VanillaCommand {
+public class CloneCommand extends GlowVanillaCommand {
     @RequiredArgsConstructor
     public enum MaskMode {
         REPLACE("replace"),
@@ -80,29 +79,24 @@ public class CloneCommand extends VanillaCommand {
      * Creates the instance for this command.
      */
     public CloneCommand() {
-        super(
-                "clone",
-                "Clones a section of the world.",
-                "/clone <x1> <y1> <z1>  <x2> <y2> <z2>  <x> <y> <z> "
-                        + "[maskMode] [cloneMode] [tileName] [tileData]",
-                Collections.emptyList()
-        );
-        setPermission("minecraft.command.clone");
+        super("clone");
+        setPermission("minecraft.command.clone"); // NON-NLS
     }
 
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!testPermission(sender)) {
+    public boolean execute(CommandSender sender, String label, String[] args,
+            CommandMessages messages) {
+        if (!testPermission(sender, messages.getPermissionMessage())) {
             return true;
         }
 
         if (args.length < 9) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, messages);
             return false;
         }
-
+        final ResourceBundle bundle = messages.getResourceBundle();
         if (!CommandUtils.isPhysical(sender)) {
-            sender.sendMessage("This command may only be executed by physical objects");
+            messages.getGeneric(GenericMessage.NOT_PHYSICAL).send(sender);
             return false;
         }
 
@@ -119,7 +113,7 @@ public class CloneCommand extends VanillaCommand {
 
         // TODO: Investigate what happens when maskMode or cloneMode are invalid (thus, null).
         if (maskMode == null || cloneMode == null) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, messages);
             return false;
         }
 
@@ -145,9 +139,8 @@ public class CloneCommand extends VanillaCommand {
                             data = null;
                         }
                         if (data == null || 0 > data || data > 15) {
-                            sender.sendMessage(ChatColor.RED
-                                    + "Filtered block data not a number between 0 and 15, "
-                                    + "inclusive.");
+                            new LocalizedStringImpl("clone.bad-blockdata", bundle)
+                                    .sendInColor(ChatColor.RED, sender);
                             return false;
                         } else {
                             blockFilter = new FilteredWithDataBlockFilter(blockType, data);
@@ -156,15 +149,14 @@ public class CloneCommand extends VanillaCommand {
                         blockFilter = new FilteredBlockFilter(blockType);
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED
-                            + "You must specify a block type and, optionally, block data when "
-                            + "using the filtered mask mode.");
+                    new LocalizedStringImpl("clone.usage.filtered", bundle)
+                            .sendInColor(ChatColor.RED, sender);
                     return false;
                 }
                 break;
 
             default:
-                sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+                sendUsageMessage(sender, messages);
                 return false;
         }
 
@@ -179,7 +171,7 @@ public class CloneCommand extends VanillaCommand {
                 || between(lowCorner.getBlockZ(), highCorner.getBlockZ(), to.getBlockZ());
 
         if (overlaps && !cloneMode.isAllowedToOverlap()) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
+            sendUsageMessage(sender, messages);
             return false;
         }
 
@@ -226,12 +218,16 @@ public class CloneCommand extends VanillaCommand {
                 blocksCloned++;
             }
         }
-
-
-        if (blocksCloned == 0) {
-            sender.sendMessage(ChatColor.RED + "No blocks cloned.");
-        } else {
-            sender.sendMessage("Cloned " + blocksCloned + " blocks.");
+        switch (blocksCloned) {
+            case 0:
+                new LocalizedStringImpl("clone.done.zero", bundle)
+                        .sendInColor(ChatColor.RED, sender);
+                break;
+            case 1:
+                new LocalizedStringImpl("clone.done.singular", bundle).send(sender);
+                break;
+            default:
+                new LocalizedStringImpl("clone.done", bundle).send(sender, blocksCloned);
         }
         return true;
     }
