@@ -118,7 +118,7 @@ public class BlockBed extends BlockType {
                 block.setType(Material.AIR);
             }
         }
-        if (changedBlock.equals(getHead(block).getRelative(BlockFace.DOWN)) || (changedBlock.equals(getFoot(block).getRelative(BlockFace.DOWN))) {
+        if (changedBlock.equals(getHead(block).getRelative(BlockFace.DOWN)) || changedBlock.equals(getFoot(block).getRelative(BlockFace.DOWN))) {
             if (newType == Material.AIR) {
                 block.setType(Material.AIR);
             }
