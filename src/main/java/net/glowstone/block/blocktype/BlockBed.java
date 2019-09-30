@@ -118,7 +118,6 @@ public class BlockBed extends BlockType {
                 block.setType(Material.AIR);
             }
         }
-		//check if blocks below the bed have been changed to air, change bed blocks to air
 		if (changedBlock.equals(getHead(block).getRelative(BlockFace.DOWN)) 
                     || (changedBlock.equals(getFoot(block).getRelative(BlockFace.DOWN))) {
 			if (newType == Material.AIR) {
