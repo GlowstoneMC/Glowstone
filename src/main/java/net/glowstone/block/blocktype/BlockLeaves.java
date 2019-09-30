@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockLeaves extends BlockType {
 
-    private final byte[] blockMap = new byte[11 * 11 * 11];
+    private final byte[] blockMap = new byte[15 * 15 * 15];
 
     @Override
     public void placeBlock(GlowPlayer player, GlowBlockState state, BlockFace face,
@@ -90,19 +90,19 @@ public class BlockLeaves extends BlockType {
     @Override
     public void updateBlock(GlowBlock block) {
         GlowBlockState state = block.getState();
+        // check decay flags
         if ((state.getRawData() & 0x08) == 0
                 || (state.getRawData() & 0x04) != 0) {
-            // check decay is off or decay is off
             return;
         }
         GlowWorld world = block.getWorld();
 
-        // build a 9x9x9 box to map neighboring blocks
-        for (int x = 0; x < 9; x++) {
-            for (int z = 0; z < 9; z++) {
-                for (int y = 0; y < 9; y++) {
+        //build a 6 [decay range] radius box [13x13x13] around the current block to map neighboring blocks
+        for (int x = 0; x < 13; x++) {
+            for (int z = 0; z < 13; z++) {
+                for (int y = 0; y < 13; y++) {
                     GlowBlock b = world
-                        .getBlockAt(block.getLocation().add(x - 4, y - 4, z - 4));
+                        .getBlockAt(block.getLocation().add(x - 6, y - 6, z - 6));
                     byte val = 127;
                     // TODO: 1.13 leaves and log types
                     if (b.getType() == Material.LEGACY_LOG || b.getType() == Material.LEGACY_LOG_2) {
@@ -116,13 +116,13 @@ public class BlockLeaves extends BlockType {
             }
         }
 
-        // browse the map in several pass to detect connected leaves:
-        // leaf block that is 5 blocks away from log or without connection
+        // browse the map in several passes to detect connected leaves:
+        // leaf block that is 7 blocks away from log or without connection
         // to another connected leaves block will decay
-        for (int i = 0; i < 4; i++) {
-            for (int x = 0; x < 9; x++) {
-                for (int z = 0; z < 9; z++) {
-                    for (int y = 0; y < 9; y++) {
+        for (int i = 0; i < 6; i++) {
+            for (int x = 0; x < 13; x++) {
+                for (int z = 0; z < 13; z++) {
+                    for (int y = 0; y < 13; y++) {
                         if (getBlockInMap(x, y, z) != i) {
                             continue;
                         }
@@ -149,7 +149,7 @@ public class BlockLeaves extends BlockType {
             }
         }
 
-        if (getBlockInMap(4, 4, 4) < 0) { // leaf decay
+        if (getBlockInMap(6, 6, 6) < 0) { // leaf decay
             LeavesDecayEvent decayEvent = new LeavesDecayEvent(block);
             EventFactory.getInstance().callEvent(decayEvent);
             if (!decayEvent.isCancelled()) {
@@ -162,10 +162,10 @@ public class BlockLeaves extends BlockType {
     }
 
     private byte getBlockInMap(int x, int y, int z) {
-        return blockMap[((x + 1) * 11 + z + 1) * 11 + y + 1];
+        return blockMap[((x + 1) * 15 + z + 1) * 15 + y + 1];
     }
 
     private void setBlockInMap(byte val, int x, int y, int z) {
-        blockMap[((x + 1) * 11 + z + 1) * 11 + y + 1] = val;
+        blockMap[((x + 1) * 15 + z + 1) * 15 + y + 1] = val;
     }
 }
