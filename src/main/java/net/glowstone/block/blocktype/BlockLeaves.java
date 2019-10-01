@@ -19,9 +19,6 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockLeaves extends BlockType {
-
-    private int distance;
-    private bool persistent;
     
     private static final int LEAVE_BLOCK_DECAY_RANGE = 6;
     private static final int LEAVE_BLOCK_MAP_RANGE = (LEAVE_BLOCK_DECAY_RANGE * 2) + 1);
@@ -34,6 +31,8 @@ public class BlockLeaves extends BlockType {
         ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.setRawData((byte) (state.getRawData() | 0x04));
+        //leave block becomes persistent when placed by a player
+        persistent = true;
     }
 
     @NotNull
