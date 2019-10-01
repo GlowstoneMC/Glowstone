@@ -7,6 +7,7 @@ default:
   baseMapColor: 44
   pistonPushBehavior: MOVE
   pistonPullBehavior: MOVE
+  waterloggable: NO
 values:
   # Incomplete:
   # hardness, blastResistance, lightOpacity, flameResistance, fireResistance, baseMapColor
@@ -176,11 +177,13 @@ values:
     flameResistance: 5
     fireResistance: 20
     hardness: 2
+    waterloggable: true
   CHEST:
     tool: AXE
     lightOpacity: 0
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
+    waterloggable: true
   REDSTONE_WIRE:
     lightOpacity: 0
     pistonPushBehavior: BREAK
@@ -207,6 +210,7 @@ values:
     lightOpacity: 0
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
+    waterloggable: true
   LEGACY_WOODEN_DOOR:
     tool: AXE
     lightOpacity: 0
@@ -221,6 +225,7 @@ values:
     blastResistance: 2
     pistonPushBehavior: BREAK
     pistonPullBehavior: DONT_MOVE
+    waterloggable: true
   RAIL:
     tool: PICKAXE
     lightOpacity: 0
@@ -229,6 +234,7 @@ values:
     hardness: 2
     lightOpacity: 0
     blastResistance: 30
+    waterloggable: true
   WALL_SIGN:
     tool: AXE
     hardness: 1
@@ -236,6 +242,7 @@ values:
     blastResistance: 5
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
+    waterloggable: true
   LEVER:
     hardness: 0.5
     lightOpacity: 0
@@ -349,6 +356,7 @@ values:
     lightOpacity: 0
   GLASS_PANE:
     lightOpacity: 0
+    waterloggable: true
   MELON:
     tool: AXE
     pistonPushBehavior: BREAK
@@ -376,9 +384,11 @@ values:
   BRICK_STAIRS:
     tool: PICKAXE
     lightOpacity: 0
+    waterloggable: true
   STONE_BRICK_STAIRS:
     tool: PICKAXE
     lightOpacity: 0
+    waterloggable: true
   MYCELIUM:
     tool: SHOVEL
   LILY_PAD:
@@ -394,6 +404,7 @@ values:
     tool: PICKAXE
     hardness: 2
     lightOpacity: 0
+    waterloggable: true
   NETHER_WART:
     lightOpacity: 0
     pistonPushBehavior: BREAK
@@ -440,6 +451,7 @@ values:
   SANDSTONE_STAIRS:
     tool: PICKAXE
     lightOpacity: 0
+    waterloggable: true
   EMERALD_ORE:
     tool: IRON_PICKAXE
   ENDER_CHEST:
@@ -447,6 +459,7 @@ values:
     lightOpacity: 0
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
+    waterloggable: true
   TRIPWIRE_HOOK:
     lightOpacity: 0
     pistonPushBehavior: BREAK
@@ -461,14 +474,17 @@ values:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   BIRCH_WOOD_STAIRS:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   JUNGLE_WOOD_STAIRS:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   COMMAND_BLOCK:
     pistonPushBehavior: DONT_MOVE
     pistonPullBehavior: DONT_MOVE
@@ -479,6 +495,7 @@ values:
   COBBLESTONE_WALL:
     tool: PICKAXE
     lightOpacity: 0
+    waterloggable: true
   FLOWER_POT:
     lightOpacity: 0
     pistonPushBehavior: BREAK
@@ -538,6 +555,7 @@ values:
   QUARTZ_STAIRS:
     tool: PICKAXE
     lightOpacity: 0
+    waterloggable: true
   ACTIVATOR_RAIL:
     lightOpacity: 0
   DROPPER:
@@ -559,10 +577,12 @@ values:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   DARK_OAK_STAIRS:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   SLIME_BLOCK:
     pistonPushBehavior: MOVE_STICKY
     pistonPullBehavior: MOVE_STICKY
@@ -572,6 +592,7 @@ values:
   IRON_TRAPDOOR:
     tool: PICKAXE
     lightOpacity: 0
+    waterloggable: true
   PRISMARINE:
     tool: PICKAXE
   HAY_BLOCK:
@@ -604,6 +625,7 @@ values:
   RED_SANDSTONE_STAIRS:
     tool: PICKAXE
     lightOpacity: 0
+    waterloggable: true
   SPRUCE_FENCE_GATE:
     lightOpacity: 0
     flameResistance: 5
@@ -628,22 +650,27 @@ values:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   BIRCH_FENCE:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   JUNGLE_FENCE:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   DARK_OAK_FENCE:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   ACACIA_FENCE:
     lightOpacity: 0
     flameResistance: 5
     fireResistance: 20
+    waterloggable: true
   SPRUCE_DOOR:
     tool: AXE
     lightOpacity: 0

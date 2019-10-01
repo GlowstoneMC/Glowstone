@@ -90,5 +90,12 @@ public interface MaterialValueManager {
          * @return the piston pull behavior
          */
         PistonMoveBehavior getPistonPullBehavior();
+
+        /**
+         * Returns if the block can get waterlogged. Suitable only for blocks.
+         *
+         * @return if the block can get waterlogged
+         */
+        boolean getWaterloggable();
     }
 }
