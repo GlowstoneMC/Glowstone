@@ -31,8 +31,6 @@ public class BlockLeaves extends BlockType {
         ItemStack holding, Vector clickedLoc) {
         super.placeBlock(player, state, face, holding, clickedLoc);
         state.setRawData((byte) (state.getRawData() | 0x04));
-        //leave block becomes persistent when placed by a player
-        persistent = true;
     }
 
     @NotNull
