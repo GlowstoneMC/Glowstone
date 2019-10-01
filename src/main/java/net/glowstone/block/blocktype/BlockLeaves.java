@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class BlockLeaves extends BlockType {
     
     private static final int LEAVE_BLOCK_DECAY_RANGE = 6;
-    private static final int LEAVE_BLOCK_MAP_RANGE = (LEAVE_BLOCK_DECAY_RANGE * 2) + 1);
+    private static final int LEAVE_BLOCK_MAP_RANGE = (LEAVE_BLOCK_DECAY_RANGE * 2) + 1;
     
     //map of neighbouring blocks within decay range, center is current leave block, includes blocks bordering max range
     private final byte[] blockMap = new byte[Math.ppw(LEAVE_BLOCK_MAP_RANGE + 2, 3)];
