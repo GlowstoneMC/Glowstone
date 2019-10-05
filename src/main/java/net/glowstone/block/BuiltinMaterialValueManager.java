@@ -137,10 +137,5 @@ public class BuiltinMaterialValueManager implements MaterialValueManager {
             String behaviorName = (String) get("pistonPullBehavior");
             return PistonMoveBehavior.valueOf(behaviorName);
         }
-
-        @Override
-        public boolean getWaterloggable() {
-            return (Boolean) get("waterloggable");
-        }
     }
 }
