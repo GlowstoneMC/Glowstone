@@ -458,6 +458,79 @@ public final class CraftingManager implements Iterable<Recipe> {
     private void loadRecipes() {
         // Load recipes from recipes.yml file
         // TODO: Migration: Load recipes from builtin/data/minecraft/recipes
+        // TODO: Find mapping that represents In-game string ID to actual Material
+        try {
+            final Enumeration<URL> recipes0 = getClass().getClassLoader().getResources("builtin/datapack/minecraft/recipes");
+            // asIterator.map { File(it) }.map { YamlConfiguration.loadConfiguration(it) }
+            final Iterator<URL> recipes = new Iterator<URL>() {
+                @Override
+                public boolean hasNext() {
+                    return recipes0.hasMoreElements();
+                }
+
+                @Override
+                public URL next() {
+                    return recipes0.nextElement();
+                }
+            };
+            recipes.forEachRemaining(url -> {
+                File file = null;
+                try {
+                    file = new File(url.toURI());
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                Objects.requireNonNull(file);
+                // YAML is superset of JSON
+                final YamlConfiguration yc = YamlConfiguration.loadConfiguration(file);
+                // Shaped Craft
+                final String type = yc.getString("type");
+                final String result = yc.getString("result.item");
+                final int amount = yc.getInt("result.count");
+                final NamespacedKey ns = NamespacedKey.minecraft(result);
+                final ItemStack item = new ItemStack(ItemIds.getItem(result), amount);
+                switch (type) {
+                    case "shaped_craft":
+                        // TODO: Stub
+                        final List<String> pattern = yc.getStringList("pattern");
+                        final ShapedRecipe shaped = new ShapedRecipe(ns, item);
+                        switch(pattern.size()) {
+                            case 3:
+                                shaped.shape(pattern.get(0), pattern.get(1), pattern.get(2));
+                                break;
+                            case 2:
+                                shaped.shape(pattern.get(0), pattern.get(1));
+                                break;
+                            case 1:
+                                shaped.shape(pattern.get(0));
+                                break;
+                        }
+
+                        this.shapedRecipes.add(shaped);
+                        break;
+                    case "shapeless_craft":
+                        // TODO: Stub
+                        final List<String> ingredients = yc.getStringList("ingredients");
+                        final ShapelessRecipe shapeless = new ShapelessRecipe(ns, item);
+                        ingredients.forEach((ingredient) -> shapeless.addIngredient(ItemIds.getItem(ingredient)));
+                        this.shapelessRecipes.add(shapeless);
+                        break;
+                    case "smelting":
+                        // TODO: Stub
+                        final float exp = 0.0f;
+                        final FurnaceRecipe smelting = new FurnaceRecipe(ns, item, ItemIds.getItem(result), exp, 200);
+                        this.furnaceRecipes.add(smelting);
+                        break;
+                    default:
+                        // TODO: Stub
+                        throw new IllegalArgumentException("type must be one of [`shaped_craft`, `shapeless_craft`, `smelting`]");
+                }
+            });
+        } catch (IOException e) {
+            // TODO: Stub
+            e.printStackTrace();
+        }
+
         InputStream in = getClass().getClassLoader().getResourceAsStream("builtin/recipes.yml");
         if (in == null) {
             ConsoleMessages.Warn.Recipe.NO_DEFAULTS.log();
