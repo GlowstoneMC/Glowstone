@@ -1,0 +1,19 @@
+{
+    "type": "crafting_shaped",
+    "pattern": [
+        "###",
+        "///"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:red_wool"
+        },
+        "/": {
+            "item": "minecraft:planks"
+        }
+    },
+    "result": {
+        "item": "minecraft:red_bed",
+        "count": 1
+    }
+}
