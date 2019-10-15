@@ -65,7 +65,7 @@ fun shapedCraft(fileName: String, pattern1: String, pattern2: String? = null, pa
 
     val mapComputed = subst.map {
         tab + tab + dqf(it.key) + ": {\n" +
-        tab + tab + tab + dqf("item") + ": " + "minecraft:${it.value}" + '"' + '\n' +
+        tab + tab + tab + dqf("item") + ": " + '"' + "minecraft:${it.value}" + '"' + '\n' +
         tab + tab + "}"
     }.joinToString(",\n")
 
