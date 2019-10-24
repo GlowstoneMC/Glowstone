@@ -2,15 +2,17 @@ package net.glowstone.entity.ai;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NonNls;
 
 public class EntityDirector {
 
-    private static Map<EntityType, Map<MobState, List<String>>> mobStates = new HashMap<>();
+    private static Map<EntityType, Map<MobState, List<String>>> mobStates = new EnumMap<>(EntityType.class);
     private static Map<String, Class<? extends EntityTask>> tasks = new HashMap<>();
 
     static {

@@ -18,7 +18,7 @@ import static org.bukkit.TreeType.TALL_REDWOOD;
 import static org.bukkit.TreeType.TREE;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -66,7 +66,7 @@ public final class GlowTree {
                     .put(TALL_BIRCH, TallBirchTree::new)
             .build();
 
-    private static final Map<TreeType, Class<? extends GenericTree>> classTable = new HashMap<>();
+    private static final Map<TreeType, Class<? extends GenericTree>> classTable = new EnumMap<>(TreeType.class);
 
     static {
 

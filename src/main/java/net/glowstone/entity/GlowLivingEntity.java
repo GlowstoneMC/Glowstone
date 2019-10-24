@@ -4,10 +4,12 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 import com.flowpowered.network.Message;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -671,7 +673,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
         Set<Material> materials = transparent.stream().map(Material::getMaterial)
-                .collect(Collectors.toSet());
+                .collect(() -> EnumSet.noneOf(Material.class), AbstractCollection::add, AbstractCollection::addAll);
         return getLineOfSight(materials, maxDistance, maxLength);
     }
 

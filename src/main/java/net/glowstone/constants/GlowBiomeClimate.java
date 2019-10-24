@@ -60,7 +60,7 @@ import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
 import static org.bukkit.block.Biome.TAIGA_HILLS;
 import static org.bukkit.block.Biome.values;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 import lombok.Data;
@@ -70,7 +70,7 @@ import org.bukkit.block.Block;
 
 public class GlowBiomeClimate {
 
-    private static final Map<Biome, BiomeClimate> CLIMATE_MAP = new HashMap<>();
+    private static final Map<Biome, BiomeClimate> CLIMATE_MAP = new EnumMap<>(Biome.class);
     private static final SimplexOctaveGenerator noiseGen;
 
     static {
