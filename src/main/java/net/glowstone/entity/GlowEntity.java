@@ -982,20 +982,40 @@ public abstract class GlowEntity implements Entity {
                 }
             }
         } else {
-            // bounding box-based calculation
-            Vector min = boundingBox.minCorner;
-            Vector max = boundingBox.maxCorner;
-            for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
-                for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
-                    for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                        if (world.getBlockTypeIdAt(x, y, z) == material.getId()) {
-                            return true;
-                        }
-                    }
+            for (Block touchingBlock : getTouchingBlocks()) {
+                if (touchingBlock.getType().getId() == material.getId()) {
+                    return true;
                 }
             }
         }
         return false;
+    }
+
+    /**
+     * Gets a list containing all the blocks a player is touching
+     *
+     * <p>If the entity has not a defined bounding box, the list will be empty.
+     *
+     * @return the list of blocks a player is touching
+     */
+    public List<Block> getTouchingBlocks() {
+        if(boundingBox == null) {
+            return Collections.emptyList();
+        }
+
+        List<Block> blocks = new ArrayList<>();
+
+        // bounding box-based calculation
+        Vector min = boundingBox.minCorner;
+        Vector max = boundingBox.maxCorner;
+        for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
+            for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
+                for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
+                    blocks.add(world.getBlockAt(x, y, z));
+                }
+            }
+        }
+        return blocks;
     }
 
     protected final void setBoundingBox(double xz, double y) {
@@ -1440,6 +1460,9 @@ public abstract class GlowEntity implements Entity {
 
     public void damage(double amount, DamageCause cause) {
         damage(amount, null, cause);
+    }
+
+    public void damageBlock(double amount, Block block, DamageCause cause) {
     }
 
     public void damage(double amount, Entity source, DamageCause cause) {
