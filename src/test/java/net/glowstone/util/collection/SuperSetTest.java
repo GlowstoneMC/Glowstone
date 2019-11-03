@@ -36,7 +36,7 @@ public class SuperSetTest {
 
         List<Set<String>> sets = ImmutableList.of(setA, setB, duplicatedSetB);
 
-        return new SuperSet(sets);
+        return new SuperSet<>(sets);
     }
 
     private void checkContains(Set<String> set, String prefix) {

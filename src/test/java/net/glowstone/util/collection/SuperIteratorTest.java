@@ -36,7 +36,7 @@ public class SuperIteratorTest {
         populateList(listB, "B");
 
         List<List<String>> lists = ImmutableList.of(listA, listB);
-        Iterator<String> iterator = new SuperIterator(lists);
+        Iterator<String> iterator = new SuperIterator<>(lists);
 
         checkIterator(iterator, "A");
         checkIterator(iterator, "B");
