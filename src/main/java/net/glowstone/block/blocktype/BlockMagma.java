@@ -15,7 +15,7 @@ public class BlockMagma extends BlockDirectDrops {
 
     @Override
     public void onEntityStep(GlowBlock block, LivingEntity entity) {
-        if(entity instanceof GlowEntity) {
+        if (entity instanceof GlowEntity) {
             ((GlowEntity) entity).damageBlock(1, block, EntityDamageEvent.DamageCause.FIRE);
         } else {
             entity.damage(1.0, EntityDamageEvent.DamageCause.FIRE);
