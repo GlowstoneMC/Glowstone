@@ -954,7 +954,7 @@ public class GlowPlayer extends GlowHumanEntity implements Player {
                 }
             }
             if (!destroyEntities.isEmpty()) {
-                List<Integer> destroyIds = new ArrayList(destroyEntities.size());
+                List<Integer> destroyIds = new ArrayList<>(destroyEntities.size());
                 for (GlowEntity entity : destroyEntities) {
                     knownEntities.remove(entity);
                     destroyIds.add(entity.getEntityId());

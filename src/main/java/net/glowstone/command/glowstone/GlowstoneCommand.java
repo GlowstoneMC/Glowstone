@@ -224,8 +224,8 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     static {
         Collator englishCaseInsensitive = Collator.getInstance(Locale.ENGLISH);
         englishCaseInsensitive.setStrength(Collator.PRIMARY);
-        ImmutableSortedMap.Builder subcommandMapBuilder
-                = new ImmutableSortedMap.Builder(englishCaseInsensitive);
+        ImmutableSortedMap.Builder<String, Subcommand> subcommandMapBuilder
+                = new ImmutableSortedMap.Builder<>(englishCaseInsensitive);
         for (Subcommand subcommand : Subcommand.values()) {
             subcommandMapBuilder.put(subcommand.mainName, subcommand);
             for (String name : subcommand.otherNames) {
@@ -263,7 +263,7 @@ public class GlowstoneCommand extends GlowVanillaCommand {
     private static void sendBullet(CommandSender sender,
             LocalizedStringImpl template, ResourceBundle resourceBundle, @NonNls String key,
             Object value) {
-        template.send(sender, new LocalizedStringImpl(key, resourceBundle), value);
+        template.send(sender, new LocalizedStringImpl(key, resourceBundle).get(), value);
     }
 
     @Override

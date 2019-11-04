@@ -147,7 +147,7 @@ public class ReflectionProcessor {
         return null;
     }
 
-    private Method getMethod(String name, Class clazz, Class... parameters) {
+    private Method getMethod(String name, Class<?> clazz, Class<?>... parameters) {
         try {
             return clazz.getMethod(name, parameters);
         } catch (NoSuchMethodException e) {

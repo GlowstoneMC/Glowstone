@@ -1,7 +1,10 @@
 package net.glowstone.util.collection;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * An Iterator which delegates in other iterators.
@@ -13,6 +16,14 @@ public class SuperIterator<E> implements Iterator<E> {
 
     public SuperIterator(Iterable<Iterable<E>> iterable) {
         this(iterable.iterator());
+    }
+
+    public SuperIterator(List<List<E>> nestedList) {
+        this(nestedList.stream()
+                .map((Function<List<E>, Iterable<E>>) e -> e)
+                .collect(Collectors.toList())
+                .iterator()
+        );
     }
 
     public SuperIterator(Iterator<Iterable<E>> parentIterator) {

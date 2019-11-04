@@ -607,7 +607,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
      *
      * @param <T> the type of the enum
      */
-    static final class EnumPredicate<T extends Enum> implements Predicate<String> {
+    static final class EnumPredicate<T extends Enum<T>> implements Predicate<String> {
         final Class<T> enumClass;
 
         EnumPredicate(Class<T> enumClass) {
@@ -674,7 +674,7 @@ public class ServerConfig implements DynamicallyTypedMap<ServerConfig.Key> {
          * @param <T>       the type of the enum
          * @return the predicate
          */
-        static <T extends Enum> EnumPredicate<T> forEnum(Class<T> enumClass) {
+        static <T extends Enum<T>> EnumPredicate<T> forEnum(Class<T> enumClass) {
             return new EnumPredicate<>(enumClass);
         }
 

@@ -1,6 +1,6 @@
 package net.glowstone.entity;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,7 +48,7 @@ public abstract class GlowHangingEntity extends GlowEntity implements Hanging {
         NORTH(BlockFace.NORTH),
         EAST(BlockFace.EAST);
 
-        private static final Map<BlockFace, HangingFace> byBlockFace = new HashMap<>();
+        private static final Map<BlockFace, HangingFace> byBlockFace = new EnumMap<>(BlockFace.class);
 
         static {
             for (HangingFace hangingFace : values()) {
