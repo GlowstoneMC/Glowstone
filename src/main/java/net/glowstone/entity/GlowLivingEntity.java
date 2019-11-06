@@ -968,13 +968,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             noDamageTicks = maximumNoDamageTicks;
         }
 
-        // armor damage protection
-        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
-        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
-        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
-        amount = amount * (1 - Math.min(20.0,
-                Math.max(defensePoints / 5.0,
-                        defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
+        amount = getEffectiveDamage(amount);
 
         // fire event
         EntityDamageByBlockEvent event = EventFactory.getInstance().onEntityDamage(
@@ -998,6 +992,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }
+    }
+
+    private double getEffectiveDamage(double amount) {
+        // armor damage protection
+        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
+        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
+        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
+        return amount * (1 - Math.min(20.0,
+                Math.max(defensePoints / 5.0,
+                        defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
     }
 
     @Override
@@ -1026,13 +1030,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             }
         }
 
-        // armor damage protection
-        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
-        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
-        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
-        amount = amount * (1 - Math.min(20.0,
-                Math.max(defensePoints / 5.0,
-                        defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
+        amount = getEffectiveDamage(amount);
 
         // fire event
         EntityDamageEvent event = EventFactory.getInstance().onEntityDamage(source == null
