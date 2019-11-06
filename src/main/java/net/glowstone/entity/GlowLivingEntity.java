@@ -308,7 +308,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 --remainingAir;
                 if (remainingAir <= -20) {
                     remainingAir = 0;
-                    damageBlock(1, eyeBlock, DamageCause.DROWNING);
+                    damage(1, eyeBlock, DamageCause.DROWNING);
                 }
             }
         } else {
@@ -318,7 +318,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (isTouchingMaterial(Material.CACTUS)) {
             for(Block block : getTouchingBlocks()) {
                 if(block.getType() == Material.CACTUS) {
-                    damageBlock(1, block, DamageCause.CONTACT);
+                    damage(1, block, DamageCause.CONTACT);
                     break;
                 }
             }
@@ -329,17 +329,17 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         if (isWithinSolidBlock()) {
-            damageBlock(1, eyeBlock, DamageCause.SUFFOCATION);
+            damage(1, eyeBlock, DamageCause.SUFFOCATION);
         }
 
         // fire and lava damage
         if (getLocation().getBlock().getType() == Material.FIRE) {
-            damageBlock(1, getLocation().getBlock(), DamageCause.FIRE);
+            damage(1, getLocation().getBlock(), DamageCause.FIRE);
             // not applying additional fire ticks after dying in fire
             stoodInFire = !isDead();
         } else if (getLocation().getBlock().getType() == Material.LAVA
                 || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
-            damageBlock(4, getLocation().getBlock(), DamageCause.LAVA);
+            damage(4, getLocation().getBlock(), DamageCause.LAVA);
             if (swamInLava) {
                 setFireTicks(getFireTicks() + 2);
             } else {
@@ -351,7 +351,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 || isTouchingMaterial(Material.STATIONARY_LAVA)) {
             for(Block block : getTouchingBlocks()) {
                 if(block.getType() == Material.FIRE || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
-                    damageBlock(1, block, DamageCause.CONTACT);
+                    damage(1, block, DamageCause.CONTACT);
                     break;
                 }
             }
@@ -961,7 +961,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public void damageBlock(double amount, Block block, DamageCause cause) {
+    public void damage(double amount, Block block, DamageCause cause) {
         if (!canTakeDamage() || !canTakeDamage(cause)) {
             return;
         } else {

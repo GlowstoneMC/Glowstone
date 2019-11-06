@@ -1451,7 +1451,7 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void damage(double amount) {
-        damage(amount, null, DamageCause.CUSTOM);
+        damage(amount, (Entity) null, DamageCause.CUSTOM);
     }
 
     public void damage(double amount, Entity source) {
@@ -1459,10 +1459,10 @@ public abstract class GlowEntity implements Entity {
     }
 
     public void damage(double amount, DamageCause cause) {
-        damage(amount, null, cause);
+        damage(amount, (Entity) null, cause);
     }
 
-    public void damageBlock(double amount, Block block, DamageCause cause) {
+    public void damage(double amount, Block block, DamageCause cause) {
     }
 
     public void damage(double amount, Entity source, DamageCause cause) {
