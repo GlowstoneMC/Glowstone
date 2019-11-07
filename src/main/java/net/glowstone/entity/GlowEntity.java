@@ -999,7 +999,7 @@ public abstract class GlowEntity implements Entity {
      * @return the list of blocks a player is touching
      */
     public List<Block> getTouchingBlocks() {
-        if(boundingBox == null) {
+        if (boundingBox == null) {
             return Collections.emptyList();
         }
 

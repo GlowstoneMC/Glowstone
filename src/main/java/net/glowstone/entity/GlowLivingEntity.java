@@ -317,7 +317,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         if (isTouchingMaterial(Material.CACTUS)) {
             for (Block block : getTouchingBlocks()) {
-                if(block.getType() == Material.CACTUS) {
+                if (block.getType() == Material.CACTUS) {
                     damage(1, block, DamageCause.CONTACT);
                     break;
                 }
@@ -350,7 +350,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 || isTouchingMaterial(Material.LAVA)
                 || isTouchingMaterial(Material.STATIONARY_LAVA)) {
             for (Block block : getTouchingBlocks()) {
-                if(block.getType() == Material.FIRE || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
+                if (block.getType() == Material.FIRE || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
                     damage(1, block, DamageCause.CONTACT);
                     break;
                 }
@@ -999,7 +999,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         if (event.isCancelled()) {
             return true;
         }
-
         // apply damage
         lastDamage = event.getFinalDamage();
         return false;
