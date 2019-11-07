@@ -316,7 +316,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         if (isTouchingMaterial(Material.CACTUS)) {
-            for(Block block : getTouchingBlocks()) {
+            for (Block block : getTouchingBlocks()) {
                 if(block.getType() == Material.CACTUS) {
                     damage(1, block, DamageCause.CONTACT);
                     break;
@@ -349,7 +349,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         } else if (isTouchingMaterial(Material.FIRE)
                 || isTouchingMaterial(Material.LAVA)
                 || isTouchingMaterial(Material.STATIONARY_LAVA)) {
-            for(Block block : getTouchingBlocks()) {
+            for (Block block : getTouchingBlocks()) {
                 if(block.getType() == Material.FIRE || block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA) {
                     damage(1, block, DamageCause.CONTACT);
                     break;
@@ -970,11 +970,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         amount = getEffectiveDamage(amount);
 
+
         // fire event
         EntityDamageByBlockEvent event = EventFactory.getInstance().onEntityDamage(
                 new EntityDamageByBlockEvent(block, this, cause, amount));
 
-        if (event.isCancelled()) {
+        if (callDamageEvent(event)) {
             return;
         }
 
@@ -992,6 +993,16 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }
+    }
+
+    private boolean callDamageEvent(EntityDamageEvent event) {
+        if (event.isCancelled()) {
+            return true;
+        }
+
+        // apply damage
+        lastDamage = event.getFinalDamage();
+        return false;
     }
 
     private double getEffectiveDamage(double amount) {
