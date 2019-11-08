@@ -71,8 +71,8 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityAirChangeEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -962,7 +962,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
     @Override
     public void damage(double amount, Block block, DamageCause cause) {
-        if (!canTakeDamage() || !canTakeDamage(cause)) {
+        if (noDamageTicks > 0 || health <= 0 || isInvulnerable() || !canTakeDamage(cause)) {
             return;
         } else {
             noDamageTicks = maximumNoDamageTicks;
@@ -1017,7 +1017,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     @Override
     public void damage(double amount, Entity source, DamageCause cause) {
         // invincibility timer
-        if (!canTakeDamage() || !canTakeDamage(cause)) {
+        if (noDamageTicks > 0 || health <= 0 || isInvulnerable() || !canTakeDamage(cause)) {
             return;
         } else {
             noDamageTicks = maximumNoDamageTicks;
