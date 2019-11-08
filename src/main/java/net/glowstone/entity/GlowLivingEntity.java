@@ -960,6 +960,25 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
     }
 
+    private boolean callDamageEvent(EntityDamageEvent event) {
+        if (event.isCancelled()) {
+            return true;
+        }
+        // apply damage
+        lastDamage = event.getFinalDamage();
+        return false;
+    }
+
+    private double getEffectiveDamage(double amount) {
+        // armor damage protection
+        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
+        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
+        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
+        return amount * (1 - Math.min(20.0,
+                Math.max(defensePoints / 5.0,
+                        defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
+    }
+
     @Override
     public void damage(double amount, Block block, DamageCause cause) {
         if (noDamageTicks > 0 || health <= 0 || isInvulnerable() || !canTakeDamage(cause)) {
@@ -993,25 +1012,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 world.playSound(location, hurtSound, getSoundVolume(), getSoundPitch());
             }
         }
-    }
-
-    private boolean callDamageEvent(EntityDamageEvent event) {
-        if (event.isCancelled()) {
-            return true;
-        }
-        // apply damage
-        lastDamage = event.getFinalDamage();
-        return false;
-    }
-
-    private double getEffectiveDamage(double amount) {
-        // armor damage protection
-        // formula source: http://minecraft.gamepedia.com/Armor#Damage_Protection
-        double defensePoints = getAttributeManager().getPropertyValue(Key.KEY_ARMOR);
-        double toughness = getAttributeManager().getPropertyValue(Key.KEY_ARMOR_TOUGHNESS);
-        return amount * (1 - Math.min(20.0,
-                Math.max(defensePoints / 5.0,
-                        defensePoints - amount / (2.0 + toughness / 4.0))) / 25);
     }
 
     @Override
