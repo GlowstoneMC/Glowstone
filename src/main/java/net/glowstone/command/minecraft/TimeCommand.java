@@ -11,7 +11,7 @@ import org.bukkit.util.StringUtil;
 
 public class TimeCommand extends GlowVanillaCommand {
 
-    private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add", "query");
+    private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add");
     private static final List<String> TIMES = Arrays.asList("day", "night", "noon", "midnight");
 
     /**
@@ -66,6 +66,7 @@ public class TimeCommand extends GlowVanillaCommand {
             }
             sender.sendMessage("Added " + mod + " to the time");
         } else if (subcommand.equals("query")) {
+            //TODO: query subcommand
             String output;
             switch (value.toLowerCase()) {
                 case "gametime":
