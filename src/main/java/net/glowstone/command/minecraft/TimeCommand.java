@@ -11,8 +11,8 @@ import org.bukkit.util.StringUtil;
 
 public class TimeCommand extends GlowVanillaCommand {
 
-    private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add");
-    private static final List<String> TIMES = Arrays.asList("day", "night");
+    private static final List<String> SUBCOMMANDS = Arrays.asList("set", "add", "query");
+    private static final List<String> TIMES = Arrays.asList("day", "night", "noon", "midnight");
 
     /**
      * Creates the instance for this command.
@@ -43,6 +43,10 @@ public class TimeCommand extends GlowVanillaCommand {
                 mod = 1000;
             } else if (value.equals("night")) {
                 mod = 13000;
+            } else if (value.equals("noon")) {
+                mod = 6000;
+            } else if (value.equals("midnight")) {
+                mod = 18000;
             } else {
                 try {
                     mod = Integer.valueOf(value);
