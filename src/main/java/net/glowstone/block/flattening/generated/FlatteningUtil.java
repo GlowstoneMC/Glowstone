@@ -26,6 +26,10 @@ public class FlatteningUtil {
         return getStateDefaultId(getMaterialBaseId(material));
     }
 
+    public static Map<String, Object> getDefaultProperties(Material material) {
+        return deserialize(material, getStateSerialFromStateId(getMaterialDefaultId(material)));
+    }
+
     public static Map<String, Object> deserialize(Material material, int stateSubId) {
         return GeneratedFlatteningData.MATERIAL_PROPERTIES.get(material).deserialize(stateSubId);
     }
