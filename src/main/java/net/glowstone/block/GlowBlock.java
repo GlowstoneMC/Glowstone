@@ -26,10 +26,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
-import org.bukkit.material.Diode;
 import org.bukkit.material.Lever;
 import org.bukkit.material.RedstoneTorch;
 import org.bukkit.metadata.MetadataStore;
@@ -387,7 +387,7 @@ public class GlowBlock implements Block {
                     }
                     break;
                 case REPEATER:
-                    if (((Diode) target.getState().getData()).getFacing() == target.getFace(this)) {
+                    if (((Directional) target.getBlockData()).getFacing() == target.getFace(this)) {
                         return true;
                     }
                     break;

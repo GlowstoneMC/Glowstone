@@ -4,10 +4,11 @@ import com.google.common.collect.ImmutableBiMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Generated;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 
-public class FlatteningUtil {
+public class FlatteningUtil extends Object {
     private static final ImmutableBiMap<Material, Integer> MAT_TO_ID = GeneratedFlatteningData.MATERIAL_ID_MAP.inverse();
 
     public static List<BlockFace> getPossibleBlockFaces(Material material) {
@@ -38,5 +39,13 @@ public class FlatteningUtil {
     public static int getStateSerialFromStateId(int stateId) {
         int baseId = getStateBaseId(stateId);
         return stateId - baseId;
+    }
+
+    public static int getStateCount() {
+        return GeneratedFlatteningData.STATE_BASE_IDS.length;
+    }
+
+    public static int getMaterialProperties(Material material) {
+        return GeneratedFlatteningData.MATERIAL_PROPERTIES.get(material).deserialize()
     }
 }
