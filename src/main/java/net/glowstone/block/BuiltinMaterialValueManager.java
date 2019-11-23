@@ -1,15 +1,15 @@
 package net.glowstone.block;
 
+import java.io.InputStreamReader;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Set;
+
 import net.glowstone.inventory.ToolType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NonNls;
-
-import java.io.InputStreamReader;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Set;
 
 public class BuiltinMaterialValueManager implements MaterialValueManager {
 
