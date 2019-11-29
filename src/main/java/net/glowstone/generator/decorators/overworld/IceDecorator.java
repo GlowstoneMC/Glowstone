@@ -10,7 +10,7 @@ import org.bukkit.generator.BlockPopulator;
 
 public class IceDecorator extends BlockPopulator {
 
-    private static final Material[] OVERRIDABLES = {Material.DIRT, Material.GRASS,
+    private static final Material[] OVERRIDABLES = {Material.DIRT, Material.GRASS_BLOCK,
         Material.SNOW_BLOCK, Material.ICE};
 
     @Override

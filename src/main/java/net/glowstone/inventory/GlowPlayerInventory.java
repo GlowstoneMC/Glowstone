@@ -12,7 +12,6 @@ import net.glowstone.net.message.play.inv.HeldItemMessage;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -91,11 +90,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
     ////////////////////////////////////////////////////////////////////////////
     // Internals
 
-    public static boolean canEquipInHelmetSlot(Material material) {
-        return EnchantmentTarget.ARMOR_HEAD.includes(material) || material == Material.PUMPKIN
-                || material == Material.SKULL_ITEM;
-    }
-
     /**
      * Sets which hotbar slot is the main-hand item.
      *
@@ -111,17 +105,18 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
 
     @Override
     public boolean itemPlaceAllowed(int slot, ItemStack stack) {
+        EquipmentSlot itemSlot = stack.getType().getEquipmentSlot();
         if (slot == BOOTS_SLOT) {
-            return EnchantmentTarget.ARMOR_FEET.includes(stack);
+            return itemSlot == EquipmentSlot.FEET;
         }
         if (slot == LEGGINGS_SLOT) {
-            return EnchantmentTarget.ARMOR_LEGS.includes(stack);
+            return itemSlot == EquipmentSlot.LEGS;
         }
         if (slot == CHESTPLATE_SLOT) {
-            return EnchantmentTarget.ARMOR_TORSO.includes(stack);
+            return itemSlot == EquipmentSlot.CHEST;
         }
         if (slot == HELMET_SLOT) {
-            return canEquipInHelmetSlot(stack.getType());
+            return itemSlot == EquipmentSlot.HEAD;
         }
         return super.itemPlaceAllowed(slot, stack);
     }
@@ -396,24 +391,6 @@ public class GlowPlayerInventory extends GlowInventory implements PlayerInventor
             ItemStack stack = getItem(i);
             if (stack != null && (type == null || stack.getType() == type) && (data == null || stack
                     .getData().equals(data))) {
-                setItem(i, InventoryUtil.createEmptyStack());
-                if (!InventoryUtil.isEmpty(stack)) {
-                    // never report AIR as removed - else will report all empty slots cleared
-                    numCleared += stack.getAmount(); // report # items, not # stacks removed
-                }
-            }
-        }
-        return numCleared;
-    }
-
-    @Override
-    @Deprecated
-    public int clear(int id, int data) {
-        int numCleared = 0;
-        for (int i = 0; i < getSize(); ++i) {
-            ItemStack stack = getItem(i);
-            if (stack != null && (id == -1 || stack.getTypeId() == id) && (data == -1
-                    || stack.getData().getData() == data)) {
                 setItem(i, InventoryUtil.createEmptyStack());
                 if (!InventoryUtil.isEmpty(stack)) {
                     // never report AIR as removed - else will report all empty slots cleared

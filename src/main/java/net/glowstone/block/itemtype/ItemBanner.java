@@ -17,11 +17,13 @@ public class ItemBanner extends ItemType {
         ItemStack holding, Vector clickedLoc, EquipmentSlot hand) {
         BlockType placeAs;
         if (face == BlockFace.UP) {
-            placeAs = ItemTable.instance().getBlock(Material.STANDING_BANNER);
+            // TODO: 1.13 standing banner colors
+            placeAs = ItemTable.instance().getBlock(Material.LEGACY_STANDING_BANNER);
         } else if (face == BlockFace.DOWN) {
             return;
         } else {
-            placeAs = ItemTable.instance().getBlock(Material.WALL_BANNER);
+            // TODO: 1.13 wall banner colors
+            placeAs = ItemTable.instance().getBlock(Material.LEGACY_WALL_BANNER);
         }
         placeAs.rightClickBlock(player, target, face, holding, clickedLoc, hand);
     }

@@ -15,22 +15,32 @@ import net.glowstone.block.blocktype.BlockRedstone;
 import net.glowstone.block.blocktype.BlockRedstoneTorch;
 import net.glowstone.block.blocktype.BlockType;
 import net.glowstone.block.entity.BlockEntity;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.net.message.play.game.BlockChangeMessage;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
-import org.bukkit.material.Diode;
 import org.bukkit.material.Lever;
+import org.bukkit.material.RedstoneTorch;
 import org.bukkit.metadata.MetadataStore;
 import org.bukkit.metadata.MetadataStoreBase;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a single block in a world.
@@ -84,6 +94,16 @@ public class GlowBlock implements Block {
     @Override
     public GlowChunk getChunk() {
         return (GlowChunk) world.getChunkAt(this);
+    }
+
+    @Override
+    public void setBlockData(@NotNull BlockData data) {
+        // TODO
+    }
+
+    @Override
+    public void setBlockData(@NotNull BlockData data, boolean applyPhysics) {
+        // TODO
     }
 
     @Override
@@ -177,17 +197,7 @@ public class GlowBlock implements Block {
     // Type and typeid getters/setters
     @Override
     public Material getType() {
-        return Material.getMaterial(getTypeIdNoCache());
-    }
-
-    @Override
-    public int getTypeId() {
-        return getTypeIdNoCache();
-    }
-
-    @Deprecated
-    private int getTypeIdNoCache() {
-        return ((GlowChunk) world.getChunkAt(this)).getType(x & 0xf, z & 0xf, y);
+        return world.getBlockTypeAt(x, y, z);
     }
 
     @Override
@@ -214,35 +224,36 @@ public class GlowBlock implements Block {
         setTypeIdAndData(type.getId(), data, applyPhysics);
     }
 
-    @Override
+    @Deprecated
     public boolean setTypeId(int type) {
         return setTypeId(type, true);
     }
 
-    @Override
+    @Deprecated
     public boolean setTypeId(int type, boolean applyPhysics) {
         return setTypeIdAndData(type, (byte) 0, applyPhysics);
     }
 
-    @Override
+    @Deprecated
     public boolean setTypeIdAndData(int type, byte data, boolean applyPhysics) {
         Material oldTypeId = getType();
         byte oldData = getData();
 
         GlowChunk chunk = (GlowChunk) world.getChunkAt(this);
-        chunk.setType(x & 0xf, z & 0xf, y, type);
+        chunk.setType(x & 0xf, z & 0xf, y, FlatteningUtil.getMaterialFromBaseId(type));
         chunk.setMetaData(x & 0xf, z & 0xf, y, data);
 
-        if (oldTypeId == Material.DOUBLE_PLANT
+        // TODO: fix so this hack isn't needed!
+        /*if (oldTypeId == Material.DOUBLE_PLANT
                 && getRelative(BlockFace.UP).getType() == Material.DOUBLE_PLANT) {
             world.getChunkAtAsync(this, c -> ((GlowChunk) c).setType(x & 0xf, z & 0xf, y + 1, 0));
             GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
             BlockChangeMessage bcmsg = new BlockChangeMessage(x, y + 1, z, 0, 0);
             world.broadcastBlockChangeInRange(key, bcmsg);
-        }
+        }*/
 
         if (applyPhysics) {
-            applyPhysics(oldTypeId, type, oldData, data);
+            applyPhysics(oldTypeId, FlatteningUtil.getMaterialFromBaseId(type), oldData, data);
         }
 
         GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
@@ -254,14 +265,13 @@ public class GlowBlock implements Block {
 
     @Override
     public boolean isEmpty() {
-        return getTypeId() == 0;
+        return MaterialUtil.AIR_VARIANTS.contains(getType());
     }
 
     @Override
     public boolean isLiquid() {
         Material mat = getType();
-        return mat == Material.WATER || mat == Material.STATIONARY_WATER || mat == Material.LAVA
-                || mat == Material.STATIONARY_LAVA;
+        return mat == Material.WATER || mat == Material.LAVA;
     }
 
     /**
@@ -295,20 +305,24 @@ public class GlowBlock implements Block {
     }
 
     @Override
+    public BlockData getBlockData() {
+        return null; // TODO
+    }
+
     public void setData(byte data) {
         setData(data, true);
     }
 
-    @Override
     public void setData(byte data, boolean applyPhysics) {
         byte oldData = getData();
         ((GlowChunk) world.getChunkAt(this)).setMetaData(x & 0xf, z & 0xf, y, data);
         if (applyPhysics) {
-            applyPhysics(getType(), getTypeId(), oldData, data);
+            applyPhysics(getType(), getType(), oldData, data);
         }
 
         GlowChunk.Key key = GlowChunk.Key.of(x >> 4, z >> 4);
-        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z, getTypeId(), data);
+        BlockChangeMessage bcmsg = new BlockChangeMessage(x, y, z,
+                FlatteningUtil.getMaterialBaseId(getType()), data);
         world.broadcastBlockChangeInRange(key, bcmsg);
     }
 
@@ -341,7 +355,7 @@ public class GlowBlock implements Block {
             return true;
         }
 
-        if ((getType() == Material.WOOD_BUTTON || getType() == Material.STONE_BUTTON)
+        if (MaterialUtil.BUTTONS.contains(getType())
                 && ((Button) getState().getData()).isPowered()) {
             return true;
         }
@@ -361,19 +375,25 @@ public class GlowBlock implements Block {
                     }
                     break;
                 case STONE_BUTTON:
-                case WOOD_BUTTON:
+                case OAK_BUTTON:
+                case DARK_OAK_BUTTON:
+                case ACACIA_BUTTON:
+                case BIRCH_BUTTON:
+                case JUNGLE_BUTTON:
+                case SPRUCE_BUTTON:
                     Button button = (Button) target.getState().getData();
                     if (button.isPowered() && button.getAttachedFace() == target.getFace(this)) {
                         return true;
                     }
                     break;
-                case DIODE_BLOCK_ON:
-                    if (((Diode) target.getState().getData()).getFacing() == target.getFace(this)) {
+                case REPEATER:
+                    if (((Directional) target.getBlockData()).getFacing() == target.getFace(this)) {
                         return true;
                     }
                     break;
-                case REDSTONE_TORCH_ON:
-                    if (face == BlockFace.DOWN) {
+                case REDSTONE_TORCH:
+                    if (face == BlockFace.DOWN
+                            && ((RedstoneTorch) target.getState().getData()).isPowered()) {
                         return true;
                     }
                     break;
@@ -402,8 +422,9 @@ public class GlowBlock implements Block {
             }
 
             switch (block.getType()) {
-                case REDSTONE_TORCH_ON:
-                    if (face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
+                case REDSTONE_TORCH:
+                    if (((Lightable) block.getBlockData()).isLit()
+                        && face != BlockRedstoneTorch.getAttachedBlockFace(block).getOppositeFace()) {
                         return true;
                     }
                     break;
@@ -509,6 +530,25 @@ public class GlowBlock implements Block {
         return ItemTable.instance().getBlock(getType()).getDrops(this, tool);
     }
 
+    @Override
+    public boolean isPassable() {
+        return isEmpty(); // TODO
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTrace(@NotNull Location start, @NotNull Vector direction,
+            double maxDistance, @NotNull FluidCollisionMode fluidCollisionMode) {
+        return null; // TODO
+    }
+
+    @Override
+    public @NotNull BoundingBox getBoundingBox() {
+        if (isEmpty()) {
+            return new BoundingBox(x,y,z,x,y,z); // 0x0x0 bounding box
+        }
+        return BoundingBox.of(this); // TODO: Some blocks don't fill their space
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Metadata
     @Override
@@ -538,18 +578,17 @@ public class GlowBlock implements Block {
      * Notify this block and its surrounding blocks that this block has changed type and data.
      *
      * @param oldType the old block type
-     * @param newTypeId the new block type
+     * @param newType the new block type
      * @param oldData the old data
      * @param newData the new data
      */
-    public void applyPhysics(Material oldType, int newTypeId, byte oldData, byte newData) {
+    public void applyPhysics(Material oldType, Material newType, byte oldData, byte newData) {
         if (!world.isInitialized()) {
             // World is still loading.
             return;
         }
         // notify the surrounding blocks that this block has changed
         ItemTable itemTable = ItemTable.instance();
-        Material newType = Material.getMaterial(newTypeId);
 
         for (int y = -1; y <= 1; y++) {
             for (BlockFace face : LAYER) {

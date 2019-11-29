@@ -27,13 +27,13 @@ public class GlowChargeMatcher extends ItemMatcher {
             }
 
             switch (item.getType()) {
-                case SULPHUR:
+                case GUNPOWDER:
                     if (hasGunpowder) {
                         return null; // Only 1 gunpowder allowed
                     }
                     hasGunpowder = true;
                     break;
-                case INK_SACK:
+                case INK_SAC:
                     Dye dye = (Dye) item.getData();
                     colors.add(dye.getColor().getFireworkColor());
                     break;
@@ -49,7 +49,7 @@ public class GlowChargeMatcher extends ItemMatcher {
                     }
                     twinkle = true;
                     break;
-                case FIREBALL:
+                case FIRE_CHARGE:
                     if (type != Type.BALL) {
                         return null;
                     }
@@ -67,7 +67,12 @@ public class GlowChargeMatcher extends ItemMatcher {
                     }
                     type = Type.BURST;
                     break;
-                case SKULL_ITEM:
+                case SKELETON_SKULL:
+                case WITHER_SKELETON_SKULL:
+                case ZOMBIE_HEAD:
+                case PLAYER_HEAD:
+                case CREEPER_HEAD:
+                case DRAGON_HEAD:
                     if (type != Type.BALL) {
                         return null;
                     }
@@ -89,7 +94,7 @@ public class GlowChargeMatcher extends ItemMatcher {
             .with(type)
             .build();
 
-        ItemStack charge = new ItemStack(Material.FIREWORK_CHARGE, 1);
+        ItemStack charge = new ItemStack(Material.FIREWORK_STAR, 1);
         FireworkEffectMeta meta = (FireworkEffectMeta) charge.getItemMeta();
         meta.setEffect(effect);
         charge.setItemMeta(meta);

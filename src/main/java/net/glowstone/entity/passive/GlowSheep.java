@@ -45,7 +45,7 @@ public class GlowSheep extends GlowAnimal implements Sheep {
         } else if (8684 > colorpc) {
             setColor(DyeColor.BLACK);
         } else if (9184 > colorpc) {
-            setColor(DyeColor.SILVER);
+            setColor(DyeColor.LIGHT_GRAY);
         } else if (9684 > colorpc) {
             setColor(DyeColor.GRAY);
         } else if (9984 > colorpc) {
@@ -114,12 +114,13 @@ public class GlowSheep extends GlowAnimal implements Sheep {
                     getWorld().playSound(getLocation(), Sound.ENTITY_SHEEP_SHEAR, 1, 1);
 
                     getWorld().dropItemNaturally(getLocation(),
-                        new ItemStack(Material.WOOL, ThreadLocalRandom.current().nextInt(3) + 1,
+                        // TODO: 1.13 wool colors
+                        new ItemStack(Material.LEGACY_WOOL, ThreadLocalRandom.current().nextInt(3) + 1,
                             getColor().getWoolData()));
 
                     setSheared(true);
                     return true;
-                case INK_SACK: {
+                case INK_SAC: {
                     Dye dye = (Dye) hand.getData();
                     DyeColor color = dye.getColor();
 

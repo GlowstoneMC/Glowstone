@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class BlockMagma extends BlockDirectDrops {
 
     public BlockMagma() {
-        super(Material.MAGMA, ToolType.PICKAXE);
+        super(Material.MAGMA_BLOCK, ToolType.PICKAXE);
     }
 
     @Override

@@ -14,6 +14,6 @@ public class RedMushroomTree extends BrownMushroomTree {
      */
     public RedMushroomTree(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
-        type = Material.HUGE_MUSHROOM_2;
+        type = Material.RED_MUSHROOM_BLOCK;
     }
 }

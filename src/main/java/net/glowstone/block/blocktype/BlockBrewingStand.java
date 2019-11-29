@@ -20,7 +20,7 @@ public class BlockBrewingStand extends BlockContainer {
 
     @Override
     protected Collection<ItemStack> getBlockDrops(GlowBlock block) {
-        return Arrays.asList(new ItemStack(Material.BREWING_STAND_ITEM));
+        return Arrays.asList(new ItemStack(Material.BREWING_STAND));
     }
 
     @Override

@@ -14,7 +14,7 @@ public final class CraftingBookDataHandler implements
         GlowPlayer player = session.getPlayer();
         if (message.getType() == CraftingBookDataMessage.TYPE_STATUS) {
             player.getRecipeMonitor().setBookOpen(message.isBookOpen());
-            player.getRecipeMonitor().setFilterCraftable(message.isFilter());
+            player.getRecipeMonitor().setFilterCraftable(message.isFilterOpen());
             return;
         }
         ConsoleMessages.Warn.Net.CRAFTING_BOOK_UNSUPPORTED.log(session.getPlayer().getName(),

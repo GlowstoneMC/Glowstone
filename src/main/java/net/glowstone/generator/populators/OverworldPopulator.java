@@ -1,34 +1,34 @@
 package net.glowstone.generator.populators;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
+import net.glowstone.generator.populators.overworld.BadlandsPopulator;
 import net.glowstone.generator.populators.overworld.BiomePopulator;
-import net.glowstone.generator.populators.overworld.BirchForestMountainsPopulator;
 import net.glowstone.generator.populators.overworld.BirchForestPopulator;
+import net.glowstone.generator.populators.overworld.DarkForestPopulator;
 import net.glowstone.generator.populators.overworld.DesertMountainsPopulator;
 import net.glowstone.generator.populators.overworld.DesertPopulator;
-import net.glowstone.generator.populators.overworld.ExtremeHillsPlusPopulator;
-import net.glowstone.generator.populators.overworld.ExtremeHillsPopulator;
 import net.glowstone.generator.populators.overworld.FlowerForestPopulator;
 import net.glowstone.generator.populators.overworld.ForestPopulator;
-import net.glowstone.generator.populators.overworld.IcePlainsPopulator;
-import net.glowstone.generator.populators.overworld.IcePlainsSpikesPopulator;
+import net.glowstone.generator.populators.overworld.GiantSpruceTaigaPopulator;
+import net.glowstone.generator.populators.overworld.GiantTreeTaigaPopulator;
+import net.glowstone.generator.populators.overworld.IceSpikesPopulator;
 import net.glowstone.generator.populators.overworld.JungleEdgePopulator;
 import net.glowstone.generator.populators.overworld.JunglePopulator;
-import net.glowstone.generator.populators.overworld.MegaSpruceTaigaPopulator;
-import net.glowstone.generator.populators.overworld.MegaTaigaPopulator;
-import net.glowstone.generator.populators.overworld.MesaForestPopulator;
-import net.glowstone.generator.populators.overworld.MesaPopulator;
-import net.glowstone.generator.populators.overworld.MushroomIslandPopulator;
+import net.glowstone.generator.populators.overworld.MountainsPopulator;
+import net.glowstone.generator.populators.overworld.MushroomFieldsPopulator;
 import net.glowstone.generator.populators.overworld.OceanPopulator;
 import net.glowstone.generator.populators.overworld.PlainsPopulator;
-import net.glowstone.generator.populators.overworld.RoofedForestPopulator;
-import net.glowstone.generator.populators.overworld.SavannaMountainsPopulator;
 import net.glowstone.generator.populators.overworld.SavannaPopulator;
+import net.glowstone.generator.populators.overworld.ShatteredSavannaPopulator;
+import net.glowstone.generator.populators.overworld.SnowyTundraPopulator;
 import net.glowstone.generator.populators.overworld.SunflowerPlainsPopulator;
-import net.glowstone.generator.populators.overworld.SwamplandPopulator;
+import net.glowstone.generator.populators.overworld.SwampPopulator;
 import net.glowstone.generator.populators.overworld.TaigaPopulator;
+import net.glowstone.generator.populators.overworld.TallBirchForestPopulator;
+import net.glowstone.generator.populators.overworld.WoodedBadlandsPopulator;
+import net.glowstone.generator.populators.overworld.WoodedMountainsPopulator;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -36,7 +36,7 @@ import org.bukkit.generator.BlockPopulator;
 
 public class OverworldPopulator extends BlockPopulator {
 
-    private final Map<Biome, BiomePopulator> biomePopulators = new HashMap<>();
+    private final Map<Biome, BiomePopulator> biomePopulators = new EnumMap<>(Biome.class);
 
     /**
      * Creates a populator with biome populators for all vanilla overworld biomes.
@@ -47,26 +47,26 @@ public class OverworldPopulator extends BlockPopulator {
         registerBiomePopulator(new SunflowerPlainsPopulator());
         registerBiomePopulator(new ForestPopulator());
         registerBiomePopulator(new BirchForestPopulator());
-        registerBiomePopulator(new BirchForestMountainsPopulator());
-        registerBiomePopulator(new RoofedForestPopulator());
+        registerBiomePopulator(new TallBirchForestPopulator());
+        registerBiomePopulator(new DarkForestPopulator());
         registerBiomePopulator(new FlowerForestPopulator());
         registerBiomePopulator(new DesertPopulator());
         registerBiomePopulator(new DesertMountainsPopulator());
         registerBiomePopulator(new JunglePopulator());
         registerBiomePopulator(new JungleEdgePopulator());
-        registerBiomePopulator(new SwamplandPopulator());
+        registerBiomePopulator(new SwampPopulator());
         registerBiomePopulator(new TaigaPopulator());
-        registerBiomePopulator(new MegaTaigaPopulator());
-        registerBiomePopulator(new MegaSpruceTaigaPopulator());
-        registerBiomePopulator(new IcePlainsPopulator());
-        registerBiomePopulator(new IcePlainsSpikesPopulator());
+        registerBiomePopulator(new GiantTreeTaigaPopulator());
+        registerBiomePopulator(new GiantSpruceTaigaPopulator());
+        registerBiomePopulator(new SnowyTundraPopulator());
+        registerBiomePopulator(new IceSpikesPopulator());
         registerBiomePopulator(new SavannaPopulator());
-        registerBiomePopulator(new SavannaMountainsPopulator());
-        registerBiomePopulator(new ExtremeHillsPopulator());
-        registerBiomePopulator(new ExtremeHillsPlusPopulator());
-        registerBiomePopulator(new MesaPopulator());
-        registerBiomePopulator(new MesaForestPopulator());
-        registerBiomePopulator(new MushroomIslandPopulator());
+        registerBiomePopulator(new ShatteredSavannaPopulator());
+        registerBiomePopulator(new MountainsPopulator());
+        registerBiomePopulator(new WoodedMountainsPopulator());
+        registerBiomePopulator(new BadlandsPopulator());
+        registerBiomePopulator(new WoodedBadlandsPopulator());
+        registerBiomePopulator(new MushroomFieldsPopulator());
         registerBiomePopulator(new OceanPopulator());
     }
 

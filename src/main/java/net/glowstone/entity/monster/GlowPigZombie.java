@@ -39,17 +39,17 @@ public class GlowPigZombie extends GlowZombie implements PigZombie {
 
     @Override
     protected Sound getHurtSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_HURT;
+        return Sound.ENTITY_ZOMBIE_PIGMAN_HURT;
     }
 
     @Override
     protected Sound getDeathSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_DEATH;
+        return Sound.ENTITY_ZOMBIE_PIGMAN_DEATH;
     }
 
     @Override
     protected Sound getAmbientSound() {
-        return Sound.ENTITY_ZOMBIE_PIG_AMBIENT;
+        return Sound.ENTITY_ZOMBIE_PIGMAN_AMBIENT;
     }
 
     @Override

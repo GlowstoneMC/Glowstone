@@ -4,15 +4,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
 import lombok.Getter;
 import net.glowstone.net.message.play.scoreboard.ScoreboardObjectiveMessage;
+import net.glowstone.util.TextMessage;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Score;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Scoreboard objective and associated data.
@@ -102,13 +106,32 @@ public final class GlowObjective implements Objective {
             "displayName cannot be longer than 32 characters");
 
         this.displayName = displayName;
-        scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
+        scoreboard.broadcast(
+                ScoreboardObjectiveMessage.update(name, new TextMessage(displayName), renderType));
     }
 
     @Override
     public DisplaySlot getDisplaySlot() throws IllegalStateException {
         checkValid();
         return displaySlot;
+    }
+
+    @Override
+    public org.bukkit.scoreboard.@NotNull RenderType getRenderType() throws IllegalStateException {
+        return renderType == RenderType.HEARTS
+                ? org.bukkit.scoreboard.RenderType.HEARTS
+                : org.bukkit.scoreboard.RenderType.INTEGER;
+    }
+
+    @Override
+    public void setRenderType(org.bukkit.scoreboard.@NotNull RenderType renderType)
+            throws IllegalStateException {
+        this.renderType = (renderType == org.bukkit.scoreboard.RenderType.HEARTS
+                ? RenderType.HEARTS : RenderType.INTEGER);
+    }
+
+    public void setRenderType(String renderType) {
+        setRenderType(org.bukkit.scoreboard.RenderType.valueOf(renderType.toUpperCase(Locale.ROOT)));
     }
 
     /**
@@ -146,7 +169,8 @@ public final class GlowObjective implements Objective {
         checkValid();
         checkNotNull(renderType, "RenderType cannot be null");
         this.renderType = renderType;
-        scoreboard.broadcast(ScoreboardObjectiveMessage.update(name, displayName, renderType));
+        scoreboard.broadcast(
+                ScoreboardObjectiveMessage.update(name, new TextMessage(displayName), renderType));
     }
 
     @Override
@@ -194,10 +218,6 @@ public final class GlowObjective implements Objective {
      */
     void deleteScore(String entry) {
         scores.remove(entry);
-    }
-
-    public void setRenderType(String renderType) {
-        // TODO
     }
 
     /**

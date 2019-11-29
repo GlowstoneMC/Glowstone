@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockCactus extends BlockType {
 
@@ -88,38 +89,38 @@ public class BlockCactus extends BlockType {
 
     private boolean canPlaceNear(Material type) {
         // TODO: return true for non-buildable blocks
+        // TODO: 1.13: organize better materials better
         switch (type) {
-            case GRASS:
+            case GRASS_BLOCK:
             case DIRT:
             case SAND:
             case GLASS:
             case STONE:
             case FURNACE:
-            case BURNING_FURNACE:
-            case STAINED_GLASS:
-            case THIN_GLASS:
-            case FENCE:
+            case LEGACY_STAINED_GLASS:
+            case GLASS_PANE:
+            case LEGACY_FENCE:
             case ACACIA_FENCE:
             case BIRCH_FENCE:
             case DARK_OAK_FENCE:
-            case IRON_FENCE:
+            case LEGACY_IRON_FENCE:
             case JUNGLE_FENCE:
-            case NETHER_FENCE:
+            case NETHER_BRICK_FENCE:
             case SPRUCE_FENCE:
             case ACACIA_FENCE_GATE:
             case BIRCH_FENCE_GATE:
             case DARK_OAK_FENCE_GATE:
             case SPRUCE_FENCE_GATE:
             case JUNGLE_FENCE_GATE:
-            case FENCE_GATE:
+            case LEGACY_FENCE_GATE:
             case ACACIA_DOOR:
             case BIRCH_DOOR:
             case DARK_OAK_DOOR:
             case IRON_DOOR:
             case JUNGLE_DOOR:
             case SPRUCE_DOOR:
-            case WOODEN_DOOR:
-            case TRAP_DOOR:
+            case LEGACY_WOODEN_DOOR:
+            case LEGACY_TRAP_DOOR:
             case IRON_TRAPDOOR:
             case SPONGE:
             case COBBLESTONE:
@@ -130,6 +131,7 @@ public class BlockCactus extends BlockType {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock me, ItemStack tool) {
         // Overridden for cactus to remove data from the dropped item

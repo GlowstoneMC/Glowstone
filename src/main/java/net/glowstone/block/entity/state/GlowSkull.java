@@ -1,5 +1,6 @@
 package net.glowstone.block.entity.state;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.GlowBlock;
@@ -13,6 +14,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowSkull extends GlowBlockState implements Skull {
 
@@ -86,6 +89,16 @@ public class GlowSkull extends GlowBlockState implements Skull {
     public void setOwningPlayer(OfflinePlayer offlinePlayer) {
         this.owner = new GlowPlayerProfile(offlinePlayer.getName(), offlinePlayer.getUniqueId(),
                 true);
+    }
+
+    @Override
+    public void setPlayerProfile(@NotNull PlayerProfile profile) {
+        // TODO: 1.13 player profile API
+    }
+
+    @Override
+    public @Nullable PlayerProfile getPlayerProfile() {
+        return null;
     }
 
     @Override

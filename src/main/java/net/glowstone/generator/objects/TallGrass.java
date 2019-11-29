@@ -22,7 +22,7 @@ public class TallGrass implements TerrainObject {
         do {
             thisBlock = world.getBlockAt(sourceX, sourceY, sourceZ);
             sourceY--;
-        } while ((thisBlock.isEmpty() || thisBlock.getType() == Material.LEAVES) && sourceY > 0);
+        } while ((thisBlock.isEmpty() || thisBlock.getType() == Material.LEGACY_LEAVES) && sourceY > 0); // TODO: 1.13
         sourceY++;
         boolean succeeded = false;
         for (int i = 0; i < 128; i++) {
@@ -33,9 +33,10 @@ public class TallGrass implements TerrainObject {
             Block block = world.getBlockAt(x, y, z);
             Material blockTypeBelow = block.getRelative(BlockFace.DOWN).getType();
             if (y < 255 && block.getType() == Material.AIR && (
-                    blockTypeBelow == Material.GRASS || blockTypeBelow == Material.DIRT)) {
+                    blockTypeBelow == Material.GRASS_BLOCK || blockTypeBelow == Material.DIRT)) {
                 BlockState state = block.getState();
-                state.setType(Material.LONG_GRASS);
+                // TODO: 1.13 grass types
+                state.setType(Material.TALL_GRASS);
                 state.setData(grassType);
                 state.update(true);
                 succeeded = true;

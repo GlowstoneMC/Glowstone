@@ -2,10 +2,10 @@ package net.glowstone.entity.projectile;
 
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowAgeable;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -116,6 +116,6 @@ public class GlowEgg extends GlowProjectile implements Egg {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.EGG;
+        return EntityNetworkUtil.getObjectId(EntityType.EGG);
     }
 }

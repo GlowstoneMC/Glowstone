@@ -22,7 +22,7 @@ public class GlowBookCopyMatcher extends ItemMatcher {
                     }
                     original = item;
                     break;
-                case BOOK_AND_QUILL:
+                case WRITABLE_BOOK:
                     copies += 1;
                     break;
                 default:

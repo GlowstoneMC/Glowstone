@@ -92,7 +92,7 @@ public class InventoryUtil {
         // Apply unbreaking enchantment.
         // TODO: Armor has a different formula for chance to avoid damage
         int durability = holding.getEnchantmentLevel(Enchantment.DURABILITY);
-        if (durability > 0 && ThreadLocalRandom.current().nextDouble() < 1 / (durability + 1)) {
+        if (durability > 0 && ThreadLocalRandom.current().nextDouble() < 1.0 / (durability + 1)) {
             return holding;
         }
         int damage = 1;

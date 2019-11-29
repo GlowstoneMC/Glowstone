@@ -12,8 +12,9 @@ import org.bukkit.material.LongGrass;
 
 public class DeadBushDecorator extends BlockDecorator {
 
-    private static final Material[] SOIL_TYPES = {Material.SAND, Material.DIRT, Material.HARD_CLAY,
-        Material.STAINED_CLAY};
+    // TODO: 1.13 colored terracotta
+    private static final Material[] SOIL_TYPES = {Material.SAND, Material.DIRT, Material.TERRACOTTA,
+        Material.LEGACY_STAINED_CLAY};
 
     @Override
     public void decorate(World world, Random random, Chunk source) {
@@ -22,7 +23,8 @@ public class DeadBushDecorator extends BlockDecorator {
         int sourceY = random.nextInt(world.getHighestBlockYAt(sourceX, sourceZ) << 1);
         while (sourceY > 0
                 && (world.getBlockAt(sourceX, sourceY, sourceZ).isEmpty()
-                || world.getBlockAt(sourceX, sourceY, sourceZ).getType() == Material.LEAVES)) {
+                // TODO: 1.13 leaves
+                || world.getBlockAt(sourceX, sourceY, sourceZ).getType() == Material.LEGACY_LEAVES)) {
             sourceY--;
         }
 

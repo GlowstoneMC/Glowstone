@@ -8,6 +8,7 @@ import net.glowstone.block.GlowBlock;
 import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A block type that drops a random number of items when broken, and isn't affected by the Fortune
@@ -71,6 +72,7 @@ public class BlockRandomDrops extends BlockNeedsTool {
         this(dropType, 1, maxDrops);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return Collections.unmodifiableList(Arrays.asList(new ItemStack(dropType,

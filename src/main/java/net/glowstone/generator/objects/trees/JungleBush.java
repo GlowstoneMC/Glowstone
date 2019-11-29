@@ -12,23 +12,25 @@ public class JungleBush extends GenericTree {
 
     /**
      * Initializes this bush, preparing it to attempt to generate.
-     *  @param random the PRNG
+     *
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
      */
     public JungleBush(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
-        setTypes(3, 0);
+        // In Java Edition, the bushes have jungle logs and oak leaves
+        setTypes(Material.JUNGLE_LOG, Material.OAK_LEAVES);
     }
 
     @Override
     public boolean canPlaceOn(BlockState soil) {
-        return soil.getType() == Material.GRASS || soil.getType() == Material.DIRT;
+        return soil.getType() == Material.GRASS_BLOCK || soil.getType() == Material.DIRT;
     }
 
     @Override
     public boolean generate(World world, Random random, int blockX, int blockY, int blockZ) {
         Location l = new Location(world, blockX, blockY, blockZ);
-        while ((l.getBlock().getType() == Material.AIR || l.getBlock().getType() == Material.LEAVES)
+        while ((l.getBlock().getType() == Material.AIR || LEAF_TYPES.contains(l.getBlock().getType()))
                 && blockY > 0) {
             l.subtract(0, 1, 0);
         }
@@ -40,8 +42,8 @@ public class JungleBush extends GenericTree {
 
         // generates the trunk
         final int adjustedY = l.getBlockY();
-        delegate.setTypeAndRawData(world, blockX, adjustedY + 1, blockZ,
-            Material.LOG, logType);
+        delegate.setType(world, blockX, adjustedY + 1, blockZ,
+                logType);
 
         // generates the leaves
         for (int y = adjustedY + 1; y <= adjustedY + 3; y++) {
@@ -52,8 +54,7 @@ public class JungleBush extends GenericTree {
                     if ((Math.abs(x - l.getBlockX()) != radius
                             || Math.abs(z - l.getBlockZ()) != radius || random.nextBoolean())
                             && !delegate.getBlockState(world, x, y, z).getType().isSolid()) {
-                        delegate
-                            .setTypeAndRawData(world, x, y, z, Material.LEAVES, leavesType);
+                        delegate.setType(world, x, y, z, leavesType);
                     }
                 }
             }

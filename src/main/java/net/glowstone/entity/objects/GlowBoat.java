@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.GlowVehicle;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -53,7 +54,8 @@ public class GlowBoat extends GlowVehicle implements Boat {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.BOAT, location),
+            new SpawnObjectMessage(entityId, getUniqueId(),
+                    EntityNetworkUtil.getObjectId(EntityType.BOAT), location),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -114,25 +116,25 @@ public class GlowBoat extends GlowVehicle implements Boat {
     }
 
     private ItemStack getItem() {
-        Material type = Material.BOAT;
+        Material type = Material.OAK_BOAT;
         switch (woodType) {
             case REDWOOD:
-                type = Material.BOAT_SPRUCE;
+                type = Material.SPRUCE_BOAT;
                 break;
             case BIRCH:
-                type = Material.BOAT_BIRCH;
+                type = Material.BIRCH_BOAT;
                 break;
             case JUNGLE:
-                type = Material.BOAT_JUNGLE;
+                type = Material.JUNGLE_BOAT;
                 break;
             case ACACIA:
-                type = Material.BOAT_ACACIA;
+                type = Material.ACACIA_BOAT;
                 break;
             case DARK_OAK:
-                type = Material.BOAT_DARK_OAK;
+                type = Material.DARK_OAK_BOAT;
                 break;
             default:
-                type = Material.BOAT;
+                type = Material.OAK_BOAT;
         }
         return new ItemStack(type);
     }

@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import net.glowstone.i18n.ConsoleMessages;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -146,7 +147,10 @@ public class FishingRewardManager {
 
             RewardItem result = new RewardItem();
             if (itemYaml.containsKey("item")) {
-                result.item = ItemStack.deserialize((Map<String, Object>) itemYaml.get("item"));
+                Map<String, Object> itemData = (Map<String, Object>) itemYaml.get("item");
+                // TODO: 1.13 hack patch it in
+                itemData.put("v", Bukkit.getUnsafe().getDataVersion());
+                result.item = ItemStack.deserialize(itemData);
             }
 
             if (itemYaml.containsKey("chance")) {

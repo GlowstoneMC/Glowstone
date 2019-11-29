@@ -36,7 +36,7 @@
     {
       "default": {
         "count": 0,
-        "item": "gold_sword"
+        "item": "GOLDEN_SWORD"
       },
       "conditions": [
         {

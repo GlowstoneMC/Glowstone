@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Gate;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockFenceGate extends BlockOpenable {
 
@@ -68,6 +69,7 @@ public class BlockFenceGate extends BlockOpenable {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(block.getType()));

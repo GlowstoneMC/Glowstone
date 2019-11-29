@@ -11,12 +11,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class BlockSoil extends BlockType {
+public class BlockFarmland extends BlockType {
 
-    private Material[] possibleCrops = {Material.CROPS, Material.CARROT, Material.POTATO,
+    private Material[] possibleCrops = {Material.WHEAT, Material.CARROT, Material.POTATO,
         Material.MELON_STEM, Material.PUMPKIN_STEM};
 
-    public BlockSoil() {
+    public BlockFarmland() {
         setDrops(new ItemStack(Material.DIRT, 1));
     }
 
@@ -53,7 +53,7 @@ public class BlockSoil extends BlockType {
             for (int z = block.getZ() - 4; z <= block.getZ() + 4; z++) {
                 for (int y = block.getY(); y <= block.getY() + 1; y++) {
                     Material type = world.getBlockAt(x, y, z).getType();
-                    if (type == Material.WATER || type == Material.STATIONARY_WATER) {
+                    if (type == Material.WATER) {
                         return true;
                     }
                 }

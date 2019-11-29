@@ -21,22 +21,21 @@ public class SnowPopulator extends BlockPopulator {
                 if (GlowBiomeClimate.isSnowy(world.getBiome(x, z), sourceX + x, y, sourceZ + z)) {
                     Block block = world.getBlockAt(x, y, z);
                     Block blockAbove = block.getRelative(BlockFace.UP);
+                    // TODO: 1.13 double plants/grass
                     switch (block.getType()) {
                         case WATER:
-                        case STATIONARY_WATER:
                         case SNOW:
                         case ICE:
                         case PACKED_ICE:
-                        case YELLOW_FLOWER:
-                        case RED_ROSE:
-                        case LONG_GRASS:
-                        case DOUBLE_PLANT:
+                        case DANDELION:
+                        case AZURE_BLUET:
+                        case TALL_GRASS:
+                        case LARGE_FERN:
                         case SUGAR_CANE:
                         case LAVA:
-                        case STATIONARY_LAVA:
                             break;
                         case DIRT:
-                            block.setType(Material.GRASS);
+                            block.setType(Material.GRASS_BLOCK);
                             if (blockAbove.isEmpty()) {
                                 blockAbove.setType(Material.SNOW);
                             }

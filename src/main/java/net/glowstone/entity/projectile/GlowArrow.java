@@ -3,13 +3,14 @@ package net.glowstone.entity.projectile;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.block.blocktype.BlockTnt;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.meta.MetadataIndex;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -28,6 +29,9 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     @Getter
     @Setter
     private short life;
+    @Getter
+    @Setter
+    private double damage;
     /**
      * How long an entity burns after being shot with a burning arrow.
      */
@@ -50,11 +54,9 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     protected void pulsePhysics() {
         super.pulsePhysics();
         if (!isInBlock()) {
-            if (isTouchingMaterial(Material.WATER)
-                    || isTouchingMaterial(Material.STATIONARY_WATER)) {
+            if (isTouchingMaterial(Material.WATER)) {
                 setFireTicks(0);
-            } else if (isTouchingMaterial(Material.LAVA)
-                    || isTouchingMaterial(Material.STATIONARY_LAVA)) {
+            } else if (isTouchingMaterial(Material.LAVA)) {
                 setFireTicks(Integer.MAX_VALUE);
             }
         }
@@ -84,11 +86,22 @@ public class GlowArrow extends GlowProjectile implements Arrow {
             case TNT:
                 BlockTnt.igniteBlock(block, false);
                 break;
-            case WOOD_BUTTON:
+            case OAK_BUTTON:
+            case DARK_OAK_BUTTON:
+            case ACACIA_BUTTON:
+            case BIRCH_BUTTON:
+            case JUNGLE_BUTTON:
+            case SPRUCE_BUTTON:
             case STONE_BUTTON:
-            case WOOD_PLATE:
-            case STONE_PLATE:
-            case GOLD_PLATE:
+            case OAK_PRESSURE_PLATE:
+            case DARK_OAK_PRESSURE_PLATE:
+            case ACACIA_PRESSURE_PLATE:
+            case BIRCH_PRESSURE_PLATE:
+            case JUNGLE_PRESSURE_PLATE:
+            case SPRUCE_PRESSURE_PLATE:
+            case STONE_PRESSURE_PLATE:
+            case LIGHT_WEIGHTED_PRESSURE_PLATE:
+            case HEAVY_WEIGHTED_PRESSURE_PLATE:
             case TRIPWIRE:
                 // TODO: Becomes powered as long as arrow is stuck
             default:
@@ -99,7 +112,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     public void collide(LivingEntity entity) {
-        double damage = spigot.getDamage();
+        double damage = getDamage();
         ProjectileSource shooter = getShooter();
         if (isCritical()) {
             damage += 1.0;
@@ -117,7 +130,7 @@ public class GlowArrow extends GlowProjectile implements Arrow {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.ARROW;
+        return EntityNetworkUtil.getObjectId(EntityType.TIPPED_ARROW);
     }
 
     @Override
@@ -162,8 +175,14 @@ public class GlowArrow extends GlowProjectile implements Arrow {
     }
 
     private class Spigot extends Arrow.Spigot {
-        @Getter
-        @Setter
-        private volatile double damage;
+        @Override
+        public double getDamage() {
+            return GlowArrow.this.getDamage();
+        }
+
+        @Override
+        public void setDamage(double damage) {
+            GlowArrow.this.setDamage(damage);
+        }
     }
 }

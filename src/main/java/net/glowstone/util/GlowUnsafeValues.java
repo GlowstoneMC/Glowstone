@@ -2,13 +2,17 @@ package net.glowstone.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.glowstone.GlowServer;
 import org.bukkit.Achievement;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Statistic;
 import org.bukkit.UnsafeValues;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.StringUtil;
 
 /**
@@ -22,7 +26,7 @@ import org.bukkit.util.StringUtil;
 @Deprecated
 public final class GlowUnsafeValues implements UnsafeValues {
 
-    @Override
+    @Deprecated
     public Material getMaterialFromInternalName(String name) {
         try {
             return Material.valueOf(name);
@@ -31,7 +35,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
         }
     }
 
-    @Override
+    @Deprecated
     public List<String> tabCompleteInternalMaterialName(String token, List<String> completions) {
         List<String> materialNames = new ArrayList<>(Material.values().length);
         for (Material mat : Material.values()) {
@@ -41,11 +45,70 @@ public final class GlowUnsafeValues implements UnsafeValues {
     }
 
     @Override
+    public Material toLegacy(Material material) {
+        // TODO: 1.13
+        return null;
+    }
+
+    @Override
+    public Material fromLegacy(Material material) {
+        // TODO: 1.13
+        return null;
+    }
+
+    @Override
+    public Material fromLegacy(MaterialData materialData) {
+        // TODO: 1.13
+        return null;
+    }
+
+    @Override
+    public Material fromLegacy(MaterialData material, boolean itemPriority) {
+        // TODO: 1.13
+        return null;
+    }
+
+    @Override
+    public BlockData fromLegacy(Material material, byte b) {
+        // TODO: 1.13
+        return null;
+    }
+
+    /**
+     * Converts a numerical ID to a material type.
+     *
+     * <p>Should only be used for network protocol.</p>
+     *
+     * @param id the numerical ID of the material
+     * @return the material
+     */
+    public Material fromId(int id) {
+        // TODO: 1.13
+        return null;
+    }
+
+    @Override
+    public int getDataVersion() {
+        return GlowServer.DATA_VERSION;
+    }
+
+    @Override
     public ItemStack modifyItemStack(ItemStack stack, String arguments) {
         return stack;
     }
 
     @Override
+    public void checkSupported(PluginDescriptionFile pluginDescriptionFile) {
+        // TODO: 1.13
+    }
+
+    @Override
+    public byte[] processClass(PluginDescriptionFile pdf, String path, byte[] clazz) {
+        // TODO: 1.13
+        return new byte[0];
+    }
+
+    @Deprecated
     public Statistic getStatisticFromInternalName(String name) {
         try {
             return Statistic.valueOf(name);
@@ -54,7 +117,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
         }
     }
 
-    @Override
+    @Deprecated
     public Achievement getAchievementFromInternalName(String name) {
         try {
             return Achievement.valueOf(name);
@@ -63,7 +126,7 @@ public final class GlowUnsafeValues implements UnsafeValues {
         }
     }
 
-    @Override
+    @Deprecated
     public List<String> tabCompleteInternalStatisticOrAchievementName(
             String token, List<String> completions) {
         Statistic[] stats = Statistic.values();

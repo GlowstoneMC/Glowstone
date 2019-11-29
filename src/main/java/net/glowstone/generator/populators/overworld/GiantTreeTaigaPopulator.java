@@ -14,9 +14,9 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-public class MegaTaigaPopulator extends TaigaPopulator {
+public class GiantTreeTaigaPopulator extends TaigaPopulator {
 
-    private static final Biome[] BIOMES = {Biome.REDWOOD_TAIGA, Biome.REDWOOD_TAIGA_HILLS};
+    private static final Biome[] BIOMES = {Biome.GIANT_TREE_TAIGA, Biome.GIANT_TREE_TAIGA_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 52),
         new TreeDecoration(TallRedwoodTree::new, 26),
         new TreeDecoration(MegaPineTree::new, 36), new TreeDecoration(MegaSpruceTree::new, 3)};
@@ -24,9 +24,9 @@ public class MegaTaigaPopulator extends TaigaPopulator {
     protected final StoneBoulderDecorator stoneBoulderDecorator = new StoneBoulderDecorator();
 
     /**
-     * Creates a populator specialized for the Mega Taiga and Mega Taiga Hills biomes.
+     * Creates a populator specialized for the Giant Tree Taiga and Giant Tree Taiga Hills biomes.
      */
-    public MegaTaigaPopulator() {
+    public GiantTreeTaigaPopulator() {
         treeDecorator.setTrees(TREES);
         tallGrassDecorator.setAmount(7);
         deadBushDecorator.setAmount(0);

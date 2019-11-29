@@ -84,7 +84,7 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
             GlowWorld world = (GlowWorld) location.getWorld();
             // Play Sound
             if (!isSilent) {
-                world.playSound(location, Sound.ENTITY_LIGHTNING_THUNDER, 10000,
+                world.playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 10000,
                     0.8F + ThreadLocalRandom.current().nextFloat() * 0.2F);
                 world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 2,
                     0.5F + ThreadLocalRandom.current().nextFloat() * 0.2F);
@@ -132,6 +132,11 @@ public class GlowLightningStrike extends GlowWeather implements LightningStrike 
     @Override
     public List<Message> createUpdateMessage(GlowSession session) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        // No-op: lightning bolts are always vertical.
     }
 
     @Override

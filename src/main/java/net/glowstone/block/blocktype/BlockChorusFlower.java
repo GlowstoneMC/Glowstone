@@ -10,7 +10,7 @@ public class BlockChorusFlower extends BlockType {
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
         GlowBlock under = block.getRelative(BlockFace.DOWN);
-        if (under.getType() == Material.ENDER_STONE || under.getType() == Material.CHORUS_PLANT) {
+        if (under.getType() == Material.END_STONE || under.getType() == Material.CHORUS_PLANT) {
             return true;
         } else if (under.getType() == Material.AIR) {
             boolean hasSupport = false;

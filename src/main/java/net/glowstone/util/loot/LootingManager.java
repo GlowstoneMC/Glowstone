@@ -2,7 +2,7 @@ package net.glowstone.util.loot;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +19,7 @@ import org.json.simple.parser.JSONParser;
 
 public class LootingManager {
 
-    private static final Map<EntityType, EntityLootTable> entities = new HashMap<>();
+    private static final Map<EntityType, EntityLootTable> entities = new EnumMap<>(EntityType.class);
 
     /**
      * Registers the built-in loot data.

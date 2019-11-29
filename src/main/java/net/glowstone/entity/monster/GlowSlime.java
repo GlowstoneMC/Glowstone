@@ -39,6 +39,17 @@ public class GlowSlime extends GlowMonster implements Slime {
     }
 
     @Override
+    public boolean canWander() {
+        // TODO: slime can wander
+        return false;
+    }
+
+    @Override
+    public void setWander(boolean canWander) {
+
+    }
+
+    @Override
     protected Sound getHurtSound() {
         return Sound.ENTITY_SLIME_HURT;
     }

@@ -17,11 +17,12 @@ import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowPig extends GlowAnimal implements Pig {
 
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT_ITEM,
-            Material.POTATO_ITEM,
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.CARROT,
+            Material.POTATO,
             Material.BEETROOT);
 
     public GlowPig(Location location) {
@@ -79,7 +80,7 @@ public class GlowPig extends GlowAnimal implements Pig {
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         if (!DamageCause.LIGHTNING.equals(cause)) {
             super.damage(amount, source, cause);
             return;

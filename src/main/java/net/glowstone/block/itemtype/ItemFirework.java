@@ -37,7 +37,7 @@ public class ItemFirework extends ItemType {
 
     private void spawnFirework(GlowPlayer player, ItemStack item, Location location, UUID spawner,
         LivingEntity boostedEntity) {
-        if (item.getType() != Material.FIREWORK || !(item.getItemMeta() instanceof FireworkMeta)) {
+        if (item.getType() != Material.FIREWORK_STAR || !(item.getItemMeta() instanceof FireworkMeta)) {
             return;
         }
         new GlowFirework(location, spawner, boostedEntity, item);

@@ -17,7 +17,8 @@ import org.bukkit.util.Vector;
 public class BlockRedstoneTorch extends BlockNeedsAttached {
 
     public BlockRedstoneTorch() {
-        setDrops(new ItemStack(Material.REDSTONE_TORCH_ON));
+        // TODO: block data ON
+        setDrops(new ItemStack(Material.REDSTONE_TORCH));
     }
 
     /**
@@ -69,7 +70,7 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
         boolean powered = me.getRelative(getAttachedFace(me)).isBlockPowered();
 
         // If below is powered, are we turned off?
-        if (powered != (me.getType() == Material.REDSTONE_TORCH_OFF)) {
+        if (powered != (me.getType() == Material.REDSTONE_TORCH)) { // TODO: block data OFF
 
             // Are we burnt out?
             if (!powered && me.getCounter() > 8) {
@@ -83,13 +84,13 @@ public class BlockRedstoneTorch extends BlockNeedsAttached {
             }
 
             // If below is powered or burnt out, are we turned off?
-            if (powered != (me.getType() == Material.REDSTONE_TORCH_OFF)) {
+            if (powered != (me.getType() == Material.REDSTONE_TORCH)) { // TODO: block data OFF
                 if (!powered) {
                     me.count(60);
                 }
 
                 me.setTypeIdAndData(
-                    (powered ? Material.REDSTONE_TORCH_OFF : Material.REDSTONE_TORCH_ON).getId(),
+                    (powered ? Material.REDSTONE_TORCH : Material.REDSTONE_TORCH).getId(), // TODO: block data OFF : ON
                     me.getData(), true);
                 extraUpdate(me);
             }

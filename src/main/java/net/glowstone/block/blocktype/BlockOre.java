@@ -10,6 +10,7 @@ import net.glowstone.inventory.MaterialMatcher;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockOre extends BlockNeedsTool {
 
@@ -70,6 +71,7 @@ public class BlockOre extends BlockNeedsTool {
         this(dropType, neededTool, 0, 1);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         // TODO: Implement Silk Touch
@@ -93,6 +95,7 @@ public class BlockOre extends BlockNeedsTool {
         return Collections.unmodifiableList(Arrays.asList(stack));
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return getDrops(block, null);

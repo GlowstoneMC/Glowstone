@@ -32,10 +32,11 @@ public class BasicCraftingTest {
          * Sometimes needed to rule out other issues.
          */
         ItemStack[] items = new ItemStack[4];
-        items[0] = new ItemStack(Material.LOG, 1, (short) 0);
+        // TODO: 1.13 log and wood
+        items[0] = new ItemStack(Material.LEGACY_LOG, 1, (short) 0);
         Recipe recipe = cm.getCraftingRecipe(items);
         assertThat("Crafting manager did not get recipe", recipe, IsNull.notNullValue());
-        assertThat("Crafting manager got wrong material", Material.WOOD,
+        assertThat("Crafting manager got wrong material", Material.LEGACY_WOOD,
             is(recipe.getResult().getType()));
         assertThat("Crafting manager got wrong amount", 4, is(recipe.getResult().getAmount()));
     }

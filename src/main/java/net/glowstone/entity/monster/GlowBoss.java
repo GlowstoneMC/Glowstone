@@ -1,5 +1,6 @@
 package net.glowstone.entity.monster;
 
+import lombok.Getter;
 import net.glowstone.entity.GlowPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -7,14 +8,16 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Boss;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 /**
  * A monster with a boss bar.
  */
-public class GlowBoss extends GlowMonster {
-    protected final BossBar bar;
+public class GlowBoss extends GlowMonster implements Boss {
+    @Getter
+    protected final BossBar bossBar;
 
     @Override
     public boolean teleport(Location location) {
@@ -23,9 +26,9 @@ public class GlowBoss extends GlowMonster {
         worldLock.readLock().lock();
         try {
             if (world != oldWorld) {
-                bar.removeAll();
+                bossBar.removeAll();
                 for (GlowPlayer player : world.getRawPlayers()) {
-                    bar.addPlayer(player);
+                    bossBar.addPlayer(player);
                 }
             }
         } finally {
@@ -48,11 +51,11 @@ public class GlowBoss extends GlowMonster {
             BarColor color, BarStyle style,
             BarFlag... barFlags) {
         super(loc, type, maxHealth);
-        bar = getServer().createBossBar(title, color, style, barFlags);
-        bar.setProgress(1);
+        bossBar = getServer().createBossBar(title, color, style, barFlags);
+        bossBar.setProgress(1);
         for (Player player : world.getPlayers()) {
             // TODO: Check facing direction
-            bar.addPlayer(player);
+            bossBar.addPlayer(player);
         }
     }
 
@@ -72,7 +75,7 @@ public class GlowBoss extends GlowMonster {
 
     @Override
     public void remove() {
-        bar.removeAll();
+        bossBar.removeAll();
         super.remove();
     }
 
@@ -82,6 +85,6 @@ public class GlowBoss extends GlowMonster {
      * @param player the player who should see this bar
      */
     public void addBarToPlayer(Player player) {
-        bar.addPlayer(player);
+        bossBar.addPlayer(player);
     }
 }

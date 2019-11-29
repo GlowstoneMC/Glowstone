@@ -12,7 +12,6 @@ import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.TickUtil;
-import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,7 +41,7 @@ public class GlowAgeable extends GlowCreature implements Ageable {
     private int forcedAge;
     @Getter
     @Setter
-    private int inLove;
+    private int loveModeTicks;
     @Getter
     @Setter
     private GlowAgeable parent;
@@ -73,13 +72,11 @@ public class GlowAgeable extends GlowCreature implements Ageable {
                 setAge(currentAge);
             }
         }
-        int love = getInLove();
+        int love = getLoveModeTicks();
         if (love > 0) {
-            setInLove(love - 1);
+            setLoveModeTicks(love - 1);
             if (love % 20 == 0) {
-                world.showParticle(location, Effect.HEART, 0,
-                        /* float above head */ (float) (getHeight() + 0.5),
-                        0, 1, 1);
+                world.spawnParticle(Particle.HEART, location, 1, 0, (float) (getHeight() + 0.5), 0, 1);
             }
             // TODO: Search for a mate if in MobState.IDLE
         }
@@ -166,7 +163,8 @@ public class GlowAgeable extends GlowCreature implements Ageable {
             int growthAmount = computeGrowthAmount(item.getType());
 
             // Spawn eggs are used to spawn babies
-            if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta()) {
+            // TODO: 1.13 spawn eggs
+            if (item.getType() == Material.LEGACY_MONSTER_EGG && item.hasItemMeta()) {
                 GlowMetaSpawn meta = (GlowMetaSpawn) item.getItemMeta();
                 if (meta.hasSpawnedType() && meta.getSpawnedType() == this.getType()) {
                     this.createBaby();

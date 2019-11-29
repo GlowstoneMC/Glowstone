@@ -4,9 +4,9 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowWorld;
 import net.glowstone.entity.GlowLivingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -22,10 +22,10 @@ import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage.Action;
 import net.glowstone.util.InventoryUtil;
-import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.ArmorStand;
@@ -43,6 +43,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.EulerAngle;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
@@ -72,6 +73,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     private boolean hasArms;
 
     private boolean needsKill;
+    private boolean canTick = true;
 
     /**
      * Creates an armor stand.
@@ -108,7 +110,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         if (getNoDamageTicks() > 0 || health <= 0 || !canTakeDamage(cause)) {
             return;
         }
@@ -166,9 +168,10 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     private void kill(boolean dropArmorStand) {
         active = false;
-        ((GlowWorld) location.getWorld())
-                .showParticle(location.clone().add(0, 1.317, 0), Effect.TILE_DUST,
-                        Material.WOOD.getId(), 0, 0.125f, 0.494f, 0.125f, 0.1f, 10, 10);
+        // TODO: set block to oak wood, requires flattening (numerical ID)
+        location.getWorld().spawnParticle(
+                Particle.BLOCK_DUST,
+                location.clone().add(0, 1.317, 0), 1, 0.125f, 0.494f, 0.125f);
         for (ItemStack stack : equipment.getArmorContents()) {
             if (InventoryUtil.isEmpty(stack)) {
                 continue;
@@ -207,7 +210,7 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
                 equipment.setItem(slot, InventoryUtil.createEmptyStack());
                 return true;
             } else {
-                EquipmentSlot slot = getEquipType(player.getItemInHand().getType());
+                EquipmentSlot slot = player.getItemInHand().getType().getEquipmentSlot();
                 if ((slot == EquipmentSlot.HAND || slot == EquipmentSlot.OFF_HAND) && !hasArms) {
                     return false;
                 }
@@ -270,42 +273,6 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
         }
 
         return Sound.ITEM_ARMOR_EQUIP_GENERIC;
-    }
-
-    private EquipmentSlot getEquipType(Material mat) {
-        switch (mat) {
-            case IRON_HELMET:
-            case LEATHER_HELMET:
-            case CHAINMAIL_HELMET:
-            case GOLD_HELMET:
-            case DIAMOND_HELMET:
-            case PUMPKIN:
-            case SKULL_ITEM:
-                return EquipmentSlot.HEAD;
-            case IRON_CHESTPLATE:
-            case GOLD_CHESTPLATE:
-            case LEATHER_CHESTPLATE:
-            case CHAINMAIL_CHESTPLATE:
-            case DIAMOND_CHESTPLATE:
-            case ELYTRA:
-                return EquipmentSlot.CHEST;
-            case IRON_LEGGINGS:
-            case GOLD_LEGGINGS:
-            case LEATHER_LEGGINGS:
-            case CHAINMAIL_LEGGINGS:
-            case DIAMOND_LEGGINGS:
-                return EquipmentSlot.LEGS;
-            case IRON_BOOTS:
-            case GOLD_BOOTS:
-            case LEATHER_BOOTS:
-            case CHAINMAIL_BOOTS:
-            case DIAMOND_BOOTS:
-                return EquipmentSlot.FEET;
-            case SHIELD:
-                return EquipmentSlot.OFF_HAND;
-            default:
-                return EquipmentSlot.HAND;
-        }
     }
 
     private EquipmentSlot getEditSlot(float height) {
@@ -577,52 +544,64 @@ public class GlowArmorStand extends GlowLivingEntity implements ArmorStand {
 
     @Override
     public boolean canMove() {
-        return false;
+        // TODO
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
     public void setCanMove(boolean move) {
-
+        // TODO
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public boolean isGliding() {
-        return false;
+    public boolean canTick() {
+        return canTick;
     }
 
     @Override
-    public void setGliding(boolean b) {
-
+    public void setCanTick(boolean tick) {
+        canTick = tick;
     }
 
     @Override
-    public void setAI(boolean b) {
-
+    public ItemStack getItem(EquipmentSlot equipmentSlot) {
+        return equipment.getItem(equipmentSlot);
     }
 
     @Override
-    public boolean hasAI() {
-        return false;
+    public void setItem(EquipmentSlot equipmentSlot, ItemStack itemStack) {
+        equipment.setItem(equipmentSlot, itemStack);
     }
 
     @Override
-    public boolean isCollidable() {
-        return false;
+    public Set<EquipmentSlot> getDisabledSlots() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public void setCollidable(boolean b) {
-
+    public void setDisabledSlots(EquipmentSlot... equipmentSlots) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public int getArrowsStuck() {
-        return 0;
+    public void addDisabledSlots(EquipmentSlot... equipmentSlots) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public void setArrowsStuck(int i) {
+    public void removeDisabledSlots(EquipmentSlot... equipmentSlots) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
 
+    @Override
+    public boolean isSlotDisabled(EquipmentSlot equipmentSlot) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override

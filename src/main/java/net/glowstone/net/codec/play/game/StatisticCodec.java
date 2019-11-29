@@ -7,7 +7,9 @@ import io.netty.handler.codec.DecoderException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.glowstone.constants.GlowStatistic;
 import net.glowstone.net.message.play.game.StatisticMessage;
+import org.bukkit.Statistic;
 
 public final class StatisticCodec implements Codec<StatisticMessage> {
 
@@ -18,11 +20,17 @@ public final class StatisticCodec implements Codec<StatisticMessage> {
 
     @Override
     public ByteBuf encode(ByteBuf buf, StatisticMessage message) throws IOException {
-        Map<String, Integer> map = message.getValues();
+        Map<Statistic, Integer> map = message.getValues();
         ByteBufUtils.writeVarInt(buf, map.size());
-        for (Entry<String, Integer> entry : map.entrySet()) {
-            ByteBufUtils.writeUTF8(buf, entry.getKey());
-            ByteBufUtils.writeVarInt(buf, entry.getValue());
+        for (Entry<Statistic, Integer> entry : map.entrySet()) {
+            Statistic statistic = entry.getKey();
+            int categoryId = GlowStatistic.getCategoryId(statistic);
+            int statisticId = GlowStatistic.getStatisticId(statistic);
+            int value = entry.getValue();
+
+            ByteBufUtils.writeVarInt(buf, categoryId);
+            ByteBufUtils.writeVarInt(buf, statisticId);
+            ByteBufUtils.writeVarInt(buf, value);
         }
         return buf;
     }

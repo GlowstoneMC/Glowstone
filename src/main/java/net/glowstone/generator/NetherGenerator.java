@@ -163,7 +163,8 @@ public class NetherGenerator extends GlowChunkGenerator {
                                             Material.NETHERRACK);
                                 } else if (l + (k << 3) < 32) {
                                     chunkData.setBlock(m + (i << 2), l + (k << 3), n + (j << 2),
-                                            Material.STATIONARY_LAVA);
+                                            // TODO: 1.13 stationary lava
+                                            Material.LAVA);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 4;

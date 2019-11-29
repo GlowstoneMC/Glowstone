@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import static com.google.common.collect.Multimaps.newSetMultimap;
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -87,6 +88,9 @@ public class EntityManager implements Iterable<GlowEntity> {
         entities.put(entity.entityId, entity);
         groupedEntities.put(entity.getClass(), entity);
         ((GlowChunk) entity.location.getChunk()).getRawEntities().add(entity);
+        EventFactory.getInstance().callEvent(
+                new EntityAddToWorldEvent(entity)
+        );
     }
 
     /**

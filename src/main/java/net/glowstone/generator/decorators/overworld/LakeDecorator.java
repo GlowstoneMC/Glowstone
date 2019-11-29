@@ -14,24 +14,24 @@ public class LakeDecorator extends BlockDecorator {
     /**
      * Creates a lake decorator.
      *
-     * @param type {@link Material#STATIONARY_WATER} or {@link Material#STATIONARY_LAVA}
+     * @param type {@link Material#WATER} or {@link Material#LAVA}
      */
     public LakeDecorator(Material type) {
-        if (type != Material.STATIONARY_WATER && type != Material.STATIONARY_LAVA) {
+        if (type != Material.WATER && type != Material.LAVA) {
             throw new IllegalArgumentException(
-                "Lake material must be STATIONARY_WATER or STATIONARY_LAVA");
+                "Lake material must be WATER or LAVA");
         }
         this.type = type;
     }
 
     @Override
     public void decorate(World world, Random random, Chunk source) {
-        if (random.nextInt(type == Material.STATIONARY_WATER ? 4 : 8) == 0) {
+        if (random.nextInt(type == Material.WATER ? 4 : 8) == 0) {
             int sourceX = (source.getX() << 4) + random.nextInt(16);
             int sourceZ = (source.getZ() << 4) + random.nextInt(16);
             int sourceY = random
-                .nextInt(type == Material.STATIONARY_WATER ? 256 : random.nextInt(248) + 8);
-            if (type == Material.STATIONARY_LAVA && (sourceY >= world.getSeaLevel()
+                .nextInt(type == Material.WATER ? 256 : random.nextInt(248) + 8);
+            if (type == Material.LAVA && (sourceY >= world.getSeaLevel()
                 || random.nextInt(10) > 0)) {
                 return;
             }

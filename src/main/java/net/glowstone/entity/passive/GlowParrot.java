@@ -110,7 +110,7 @@ public class GlowParrot extends GlowTameable implements Parrot {
                 damage(getHealth(), player, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                 world.spawnParticle(Particle.SPELL, location, 1);
                 player.getInventory().consumeItemInHand(message.getHandSlot());
-            } else if (!isTamed() && hand.getType() == Material.SEEDS) {
+            } else if (!isTamed() && hand.getType() == Material.WHEAT_SEEDS) {
                 // One in 3 chances of taming
                 if (ThreadLocalRandom.current().nextInt(3) == 0
                         && fireEntityTameEvent(player)) {

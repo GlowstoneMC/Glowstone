@@ -7,9 +7,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.block.GlowBlock;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockMelon extends BlockType {
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Collections.unmodifiableList(Arrays

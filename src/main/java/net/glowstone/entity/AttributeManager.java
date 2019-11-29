@@ -16,6 +16,8 @@ import net.glowstone.net.message.play.entity.EntityPropertyMessage;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Manages the attributes described at https://minecraft.gamepedia.com/Attribute
@@ -78,7 +80,8 @@ public class AttributeManager {
      * @param key the kind of property to get
      * @return the property or {@code null}
      */
-    public Property getProperty(Key key) {
+    @Nullable
+    public Property getProperty(@NotNull Key key) {
         return properties.get(key.toString());
     }
 
@@ -167,13 +170,13 @@ public class AttributeManager {
          * @param attribute attribute from Bukkit api
          * @return key corresponding to the attribute or {@code null}
          */
-        public static Key fromAttribute(Attribute attribute) {
+        @Nullable
+        public static Key fromAttribute(@NotNull Attribute attribute) {
             for (Key key : values()) {
                 if (key.getAttribute() == attribute) {
                     return key;
                 }
             }
-
             return null;
         }
 

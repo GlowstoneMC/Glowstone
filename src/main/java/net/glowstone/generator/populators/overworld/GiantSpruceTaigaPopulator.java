@@ -9,15 +9,15 @@ import net.glowstone.generator.objects.trees.RedwoodTree;
 import net.glowstone.generator.objects.trees.TallRedwoodTree;
 import org.bukkit.block.Biome;
 
-public class MegaSpruceTaigaPopulator extends MegaTaigaPopulator {
+public class GiantSpruceTaigaPopulator extends GiantTreeTaigaPopulator {
 
-    private static final Biome[] BIOMES = {Biome.MUTATED_REDWOOD_TAIGA,
-        Biome.MUTATED_REDWOOD_TAIGA_HILLS};
+    private static final Biome[] BIOMES = {Biome.GIANT_SPRUCE_TAIGA,
+        Biome.GIANT_SPRUCE_TAIGA_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedwoodTree::new, 44),
         new TreeDecoration(TallRedwoodTree::new, 22),
         new TreeDecoration(MegaSpruceTree::new, 33)};
 
-    public MegaSpruceTaigaPopulator() {
+    public GiantSpruceTaigaPopulator() {
         treeDecorator.setTrees(TREES);
     }
 

@@ -46,6 +46,27 @@ public class GlowFurnace extends GlowContainer implements Furnace {
         return (FurnaceEntity) getBlock().getBlockEntity();
     }
 
+    // TODO: furnace cook API
+    @Override
+    public int getCookTimeTotal() {
+        return 0;
+    }
+
+    @Override
+    public void setCookTimeTotal(int cookTimeTotal) {
+
+    }
+
+    @Override
+    public double getCookSpeedMultiplier() {
+        return 0;
+    }
+
+    @Override
+    public void setCookSpeedMultiplier(double multiplier) {
+
+    }
+
     @Override
     public FurnaceInventory getInventory() {
         return (FurnaceInventory) getBlockEntity().getInventory();

@@ -16,7 +16,7 @@ public class GlowChickenTest extends GlowAnimalTest<GlowChicken> {
     @Test
     @Override
     public void testGetBreedingFoods() {
-        assertEquals(EnumSet.of(Material.SEEDS, Material.PUMPKIN_SEEDS, Material.MELON_SEEDS, Material.BEETROOT_SEEDS),
+        assertEquals(EnumSet.of(Material.WHEAT_SEEDS, Material.PUMPKIN_SEEDS, Material.MELON_SEEDS, Material.BEETROOT_SEEDS),
                 entity.getBreedingFoods());
     }
 }

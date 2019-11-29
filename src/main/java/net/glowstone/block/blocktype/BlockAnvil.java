@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockAnvil extends BlockFalling {
 
@@ -24,6 +25,7 @@ public class BlockAnvil extends BlockFalling {
         return player.openInventory(new GlowAnvilInventory(player)) != null;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         // This is replicated from BlockNeedsTool and has been copy/pasted because classes cannot
@@ -36,6 +38,7 @@ public class BlockAnvil extends BlockFalling {
         return getMinedDrops(block);
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         ItemStack drop = new ItemStack(Material.ANVIL, 1, (short) (block.getData() / 4));

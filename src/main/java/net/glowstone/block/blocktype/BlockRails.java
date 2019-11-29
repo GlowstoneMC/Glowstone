@@ -9,10 +9,10 @@ import java.util.Set;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.GlowBlockState;
 import net.glowstone.entity.GlowPlayer;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockRails extends BlockNeedsAttached {
 
@@ -138,9 +138,11 @@ public class BlockRails extends BlockNeedsAttached {
     }
 
     private static boolean isRailBlock(GlowBlock block) {
-        return block.getType() == Material.RAILS;
+        // TODO: 1.13 rail types
+        return block.getType().name().contains("RAIL");
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Arrays.asList(new ItemStack(block.getType()));

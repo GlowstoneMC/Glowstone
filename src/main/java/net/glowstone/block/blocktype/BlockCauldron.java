@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockCauldron extends BlockNeedsTool {
 
@@ -27,15 +28,11 @@ public class BlockCauldron extends BlockNeedsTool {
     private static final byte LEVEL_FULL = 3;
 
     private static final Collection<ItemStack> DROP = Collections
-        .singletonList(new ItemStack(Material.CAULDRON_ITEM));
+        .singletonList(new ItemStack(Material.CAULDRON));
 
     @Override
     public boolean blockInteract(GlowPlayer player, GlowBlock block, BlockFace face,
         Vector clickedLoc) {
-        if (player.getItemInHand() == null) {
-            return super.blockInteract(player, block, face, clickedLoc);
-        }
-
         switch (player.getItemInHand().getType()) {
             // todo: filling the cauldron by emptying a bottle
             // todo: emptying the cauldron by filling a bucket
@@ -53,7 +50,7 @@ public class BlockCauldron extends BlockNeedsTool {
             case LEATHER_HELMET:
                 return bleachLeatherArmor(player, block);
 
-            case BANNER:
+            case LEGACY_BANNER:
                 return bleachBanner(player, block);
 
             default:
@@ -104,7 +101,7 @@ public class BlockCauldron extends BlockNeedsTool {
             ItemStack inHand = player.getItemInHand();
             BannerMeta meta = (BannerMeta) inHand.getItemMeta();
             List<Pattern> layers = meta.getPatterns();
-            if (layers == null || layers.isEmpty()) {
+            if (layers.isEmpty()) {
                 return false;
             }
             if (!setCauldronLevel(block, block.getData() - 1, player,
@@ -147,6 +144,7 @@ public class BlockCauldron extends BlockNeedsTool {
         return !event.isCancelled();
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         return DROP;

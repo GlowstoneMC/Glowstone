@@ -15,9 +15,9 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
-public class MushroomIslandPopulator extends BiomePopulator {
+public class MushroomFieldsPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.MUSHROOM_ISLAND, Biome.MUSHROOM_ISLAND_SHORE};
+    private static final Biome[] BIOMES = {Biome.MUSHROOM_FIELDS, Biome.MUSHROOM_FIELD_SHORE};
     private static final TreeDecoration[] TREES = {new TreeDecoration(RedMushroomTree::new, 1),
         new TreeDecoration(BrownMushroomTree::new, 1)};
 
@@ -27,9 +27,9 @@ public class MushroomIslandPopulator extends BiomePopulator {
         Material.RED_MUSHROOM);
 
     /**
-     * Creates a populator for the mushroom island biome.
+     * Creates a populator for the mushroom fields biome.
      */
-    public MushroomIslandPopulator() {
+    public MushroomFieldsPopulator() {
         treeDecorator.setAmount(1);
         treeDecorator.setTrees(TREES);
         flowerDecorator.setAmount(0);

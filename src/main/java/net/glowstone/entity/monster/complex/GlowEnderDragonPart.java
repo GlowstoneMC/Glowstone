@@ -9,6 +9,7 @@ import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
 
@@ -41,7 +42,7 @@ public class GlowEnderDragonPart extends GlowEntity implements EnderDragonPart {
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull EntityDamageEvent.DamageCause cause) {
         parent.damage(amount, source, cause);
     }
 

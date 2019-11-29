@@ -46,7 +46,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
     @Override
     public boolean canSpawn(World world, int x, int z) {
         Block block = world.getHighestBlockAt(x, z).getRelative(BlockFace.DOWN);
-        return block.getType() == Material.ENDER_STONE;
+        return block.getType() == Material.END_STONE;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class TheEndGenerator extends GlowChunkGenerator {
                                 // equal to 0 is air.
                                 if (dens > 0) {
                                     chunkData.setBlock(m + (i << 3), l + (k << 2), n + (j << 3),
-                                            Material.ENDER_STONE);
+                                            Material.END_STONE);
                                 }
                                 // interpolation along z
                                 dens += (d10 - d9) / 8;

@@ -14,8 +14,8 @@ public class Lake implements TerrainObject {
     private static final double MAX_DIAMETER = 16.0D;
     private static final double MAX_HEIGHT = 8.0D;
     private static final int MAX_BLOCKS = (int) (MAX_DIAMETER * MAX_DIAMETER * MAX_HEIGHT);
-    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_ISLAND,
-        Biome.MUSHROOM_ISLAND_SHORE};
+    private static final Biome[] MYCEL_BIOMES = {Biome.MUSHROOM_FIELDS,
+        Biome.MUSHROOM_FIELD_SHORE};
     private final Material type;
 
     public Lake(Material type) {
@@ -73,11 +73,12 @@ public class Lake implements TerrainObject {
                     Block blockAbove = block.getRelative(BlockFace.UP);
                     Material blockType = block.getType();
                     Material blockAboveType = blockAbove.getType();
+                    // TODO: 1.13 log types
                     if (blockType == Material.DIRT
-                                    && (blockAboveType == Material.LOG
-                                    || blockAboveType == Material.LOG_2)
-                            || blockType == Material.LOG
-                            || blockType == Material.LOG_2) {
+                                    && (blockAboveType == Material.LEGACY_LOG
+                                    || blockAboveType == Material.LEGACY_LOG_2)
+                            || blockType == Material.LEGACY_LOG
+                            || blockType == Material.LEGACY_LOG_2) {
                         continue;
                     }
                     if (y >= (int) MAX_HEIGHT / 2) {
@@ -85,13 +86,13 @@ public class Lake implements TerrainObject {
                         if (TerrainObject.killPlantAbove(block)) {
                             break;
                         }
-                        if (this.type == Material.STATIONARY_WATER && (
+                        if (this.type == Material.WATER && (
                                 blockType == Material.ICE
                                         || blockType == Material.PACKED_ICE)) {
                             type = blockType;
                         }
                     } else if (y == MAX_HEIGHT / 2 - 1) {
-                        if (type == Material.STATIONARY_WATER && GlowBiomeClimate
+                        if (type == Material.WATER && GlowBiomeClimate
                                 .isCold(world.getBiome(sourceX + x, sourceZ + z),
                                         sourceX + x, y, sourceZ + z)) {
                             type = Material.ICE;
@@ -113,7 +114,7 @@ public class Lake implements TerrainObject {
                     if (block.getType() == Material.DIRT
                             && !blockAbove.getType().isOccluding()
                             && blockAbove.getLightLevel() > 0) {
-                        block.setType(mycelBiome ? Material.MYCEL : Material.GRASS);
+                        block.setType(mycelBiome ? Material.MYCELIUM : Material.GRASS_BLOCK);
                     }
                 }
             }

@@ -22,11 +22,13 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.material.Banner;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockBanner extends BlockType {
 
     public BlockBanner() {
-        setDrops(new ItemStack(Material.BANNER));
+        // TODO: 1.13 banner types
+        setDrops(new ItemStack(Material.LEGACY_BANNER));
     }
 
     /**
@@ -61,10 +63,11 @@ public class BlockBanner extends BlockType {
         return banner;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         GlowBanner state = (GlowBanner) block.getState();
-        ItemStack drop = new ItemStack(Material.BANNER, 1);
+        ItemStack drop = new ItemStack(Material.LEGACY_BANNER, 1);
         BannerMeta meta = (BannerMeta) drop.getItemMeta();
         meta.setPatterns(state.getPatterns());
         drop.setItemMeta(meta);

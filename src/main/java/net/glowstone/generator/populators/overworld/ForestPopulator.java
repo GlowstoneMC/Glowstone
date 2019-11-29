@@ -9,17 +9,17 @@ import net.glowstone.generator.objects.DoubleTallPlant;
 import net.glowstone.generator.objects.trees.BirchTree;
 import net.glowstone.generator.objects.trees.GenericTree;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.material.types.DoublePlantSpecies;
 
 public class ForestPopulator extends BiomePopulator {
 
-    private static final Biome[] BIOMES = {Biome.FOREST, Biome.FOREST_HILLS};
+    private static final Biome[] BIOMES = {Biome.FOREST, Biome.WOODED_HILLS};
     private static final TreeDecoration[] TREES = {new TreeDecoration(GenericTree::new, 4),
         new TreeDecoration(BirchTree::new, 1)};
-    private static final DoublePlantSpecies[] DOUBLE_PLANTS = {DoublePlantSpecies.LILAC,
-        DoublePlantSpecies.ROSE_BUSH, DoublePlantSpecies.PEONY};
+    private static final Material[] DOUBLE_PLANTS = {Material.LILAC,
+        Material.ROSE_BUSH, Material.PEONY};
 
     protected int doublePlantLoweringAmount = 3;
 
@@ -49,7 +49,7 @@ public class ForestPopulator extends BiomePopulator {
                 int x = sourceX + random.nextInt(16);
                 int z = sourceZ + random.nextInt(16);
                 int y = random.nextInt(world.getHighestBlockYAt(x, z) + 32);
-                DoublePlantSpecies species = DOUBLE_PLANTS[random.nextInt(DOUBLE_PLANTS.length)];
+                Material species = DOUBLE_PLANTS[random.nextInt(DOUBLE_PLANTS.length)];
                 if (new DoubleTallPlant(species).generate(world, random, x, y, z)) {
                     i++;
                     break;

@@ -186,7 +186,20 @@ public class NbtPlayerDataService implements PlayerDataService {
         public long getLastPlayed() {
             checkOpen();
             long[] out = {0};
-            tag.readCompound("bukkit", bukkit -> bukkit.readLong("lastPlayed", x -> out[0] = x));
+            // In Paper, the value is stored both in Paper->LastSeen and bukkit->lastPlayed.
+            if (tag.containsKey("Paper")) {
+                tag.readCompound("Paper", paper -> paper.readLong("LastSeen", x -> out[0] = x));
+            } else {
+                tag.readCompound("bukkit", bukkit -> bukkit.readLong("lastPlayed", x -> out[0] = x));
+            }
+            return out[0];
+        }
+
+        @Override
+        public long getLastLogin() {
+            checkOpen();
+            long[] out = {0};
+            tag.readCompound("Paper", paper -> paper.readLong("LastLogin", x -> out[0] = x));
             return out[0];
         }
 

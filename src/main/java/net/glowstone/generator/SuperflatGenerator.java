@@ -46,6 +46,6 @@ public class SuperflatGenerator extends GlowChunkGenerator {
         chunkData.setBlock(x, 0, z, Material.BEDROCK);
         chunkData.setBlock(x, 1, z, Material.DIRT);
         chunkData.setBlock(x, 2, z, Material.DIRT);
-        chunkData.setBlock(x, 3, z, Material.GRASS);
+        chunkData.setBlock(x, 3, z, Material.GRASS_BLOCK);
     }
 }

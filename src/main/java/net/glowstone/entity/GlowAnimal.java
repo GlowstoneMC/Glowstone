@@ -3,10 +3,12 @@ package net.glowstone.entity;
 import com.google.common.collect.Sets;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.UUID;
 import net.glowstone.entity.ai.EntityDirector;
 import net.glowstone.entity.ai.MobState;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.InventoryUtil;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,6 +16,7 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents an Animal, such as a Cow.
@@ -56,8 +59,8 @@ public class GlowAnimal extends GlowAgeable implements Animals {
         if (!getBreedingFoods().contains(type)) {
             return false;
         }
-        if (canBreed() && getInLove() <= 0) {
-            setInLove(1000); // TODO get the correct duration
+        if (canBreed() && getLoveModeTicks() <= 0) {
+            setLoveModeTicks(1000); // TODO get the correct duration
             player.incrementStatistic(Statistic.ANIMALS_BRED);
             return true;
         }
@@ -106,5 +109,22 @@ public class GlowAnimal extends GlowAgeable implements Animals {
         }
 
         return 0;
+    }
+
+    @Override
+    public @Nullable UUID getBreedCause() {
+        // TODO: 1.13
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setBreedCause(@Nullable UUID uuid) {
+        // TODO: 1.13
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isLoveMode() {
+        return getLoveModeTicks() > 0;
     }
 }

@@ -9,17 +9,17 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-public class IcePlainsSpikesPopulator extends IcePlainsPopulator {
+public class IceSpikesPopulator extends SnowyTundraPopulator {
 
     protected final IceDecorator iceDecorator = new IceDecorator();
 
-    public IcePlainsSpikesPopulator() {
+    public IceSpikesPopulator() {
         tallGrassDecorator.setAmount(0);
     }
 
     @Override
     public Collection<Biome> getBiomes() {
-        return Collections.unmodifiableList(Arrays.asList(Biome.MUTATED_ICE_FLATS));
+        return Collections.unmodifiableList(Arrays.asList(Biome.ICE_SPIKES));
     }
 
     @Override

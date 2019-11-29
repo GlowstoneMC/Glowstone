@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import net.glowstone.block.GlowBlock;
+import net.glowstone.block.MaterialUtil;
 import net.glowstone.block.entity.DispenserEntity;
 import net.glowstone.dispenser.ArmorDispenseBehavior;
 import net.glowstone.dispenser.BucketDispenseBehavior;
@@ -63,10 +64,10 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.LEATHER_LEGGINGS, armorDispenseBehavior);
         registry.putBehavior(Material.LEATHER_CHESTPLATE, armorDispenseBehavior);
         registry.putBehavior(Material.LEATHER_HELMET, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_BOOTS, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_LEGGINGS, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_CHESTPLATE, armorDispenseBehavior);
-        registry.putBehavior(Material.GOLD_HELMET, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_BOOTS, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_LEGGINGS, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_CHESTPLATE, armorDispenseBehavior);
+        registry.putBehavior(Material.GOLDEN_HELMET, armorDispenseBehavior);
         registry.putBehavior(Material.IRON_BOOTS, armorDispenseBehavior);
         registry.putBehavior(Material.IRON_LEGGINGS, armorDispenseBehavior);
         registry.putBehavior(Material.IRON_CHESTPLATE, armorDispenseBehavior);
@@ -79,13 +80,15 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
         registry.putBehavior(Material.DIAMOND_LEGGINGS, armorDispenseBehavior);
         registry.putBehavior(Material.DIAMOND_CHESTPLATE, armorDispenseBehavior);
         registry.putBehavior(Material.DIAMOND_HELMET, armorDispenseBehavior);
-        registry.putBehavior(Material.SKULL_ITEM, armorDispenseBehavior);
+        for (Material headType : MaterialUtil.STANDING_HEADS) {
+            registry.putBehavior(headType, armorDispenseBehavior);
+        }
         registry.putBehavior(Material.PUMPKIN, armorDispenseBehavior);
 
         registry.putBehavior(Material.EGG, new ProjectileDispenseBehavior(GlowEgg::new));
-        registry.putBehavior(Material.SNOW_BALL, new ProjectileDispenseBehavior(GlowSnowball::new));
+        registry.putBehavior(Material.SNOWBALL, new ProjectileDispenseBehavior(GlowSnowball::new));
         registry.putBehavior(Material.ARROW, new ProjectileDispenseBehavior(GlowArrow::new));
-        registry.putBehavior(Material.EXP_BOTTLE,
+        registry.putBehavior(Material.EXPERIENCE_BOTTLE,
                 new ProjectileDispenseBehavior(GlowThrownExpBottle::new));
         registry.putBehavior(Material.SPECTRAL_ARROW,
                 new ProjectileDispenseBehavior(GlowSpectralArrow::new));
@@ -95,7 +98,7 @@ public class GlowDispenser extends GlowContainer implements Dispenser, BlockProj
                     tippedArrow.copyFrom((PotionMeta) itemStack.getItemMeta());
                     return tippedArrow;
                 })));
-        registry.putBehavior(Material.FIREBALL, new ProjectileDispenseBehavior(location -> {
+        registry.putBehavior(Material.FIRE_CHARGE, new ProjectileDispenseBehavior(location -> {
             Fireball fireball = new GlowFireball(location);
             fireball.setYield(0);
             fireball.setIsIncendiary(true);

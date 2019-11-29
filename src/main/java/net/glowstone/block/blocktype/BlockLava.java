@@ -18,7 +18,7 @@ public class BlockLava extends BlockLiquid {
 
     @Override
     public boolean isCollectible(GlowBlockState target) {
-        return (target.getType() == Material.LAVA || target.getType() == Material.STATIONARY_LAVA)
+        return target.getType() == Material.LAVA
             &&
             (target.getRawData() == 0 || target.getRawData() == 8); // 8 for backwards compatibility
     }

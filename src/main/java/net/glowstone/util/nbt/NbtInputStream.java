@@ -185,6 +185,16 @@ public final class NbtInputStream implements Closeable {
                 }
                 return new IntArrayTag(ints);
 
+            case LONG_ARRAY:
+                readLimiter.read(37);
+                length = is.readInt();
+                readLimiter.read(8 * length);
+                long[] longs = new long[length];
+                for (int i = 0; i < length; i++) {
+                    longs[i] = is.readLong();
+                }
+                return new LongArrayTag(longs);
+
             default:
                 throw new IOException("Invalid tag type: " + type + ".");
         }

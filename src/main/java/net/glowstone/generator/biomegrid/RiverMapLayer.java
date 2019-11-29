@@ -2,11 +2,11 @@ package net.glowstone.generator.biomegrid;
 
 import static org.bukkit.block.Biome.DEEP_OCEAN;
 import static org.bukkit.block.Biome.FROZEN_RIVER;
-import static org.bukkit.block.Biome.ICE_FLATS;
-import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
-import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
+import static org.bukkit.block.Biome.MUSHROOM_FIELDS;
+import static org.bukkit.block.Biome.MUSHROOM_FIELD_SHORE;
 import static org.bukkit.block.Biome.OCEAN;
 import static org.bukkit.block.Biome.RIVER;
+import static org.bukkit.block.Biome.SNOWY_TUNDRA;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,11 +25,11 @@ public class RiverMapLayer extends MapLayer {
         OCEANS.add(GlowBiome.getId(OCEAN));
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
 
-        SPECIAL_RIVERS.put(GlowBiome.getId(ICE_FLATS), GlowBiome.getId(FROZEN_RIVER));
+        SPECIAL_RIVERS.put(GlowBiome.getId(SNOWY_TUNDRA), GlowBiome.getId(FROZEN_RIVER));
         SPECIAL_RIVERS
-            .put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
+            .put(GlowBiome.getId(MUSHROOM_FIELDS), GlowBiome.getId(MUSHROOM_FIELD_SHORE));
         SPECIAL_RIVERS
-            .put(GlowBiome.getId(MUSHROOM_ISLAND_SHORE), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
+            .put(GlowBiome.getId(MUSHROOM_FIELD_SHORE), GlowBiome.getId(MUSHROOM_FIELD_SHORE));
     }
 
     private final MapLayer belowLayer;

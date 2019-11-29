@@ -6,6 +6,7 @@ import java.util.List;
 import net.glowstone.EventFactory;
 import net.glowstone.chunk.GlowChunk;
 import net.glowstone.chunk.GlowChunk.Key;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -29,6 +30,7 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 
 public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
@@ -140,9 +142,10 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         int yaw = getYaw();
 
         return Arrays.asList(
-            new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.ITEM_FRAME,
-                location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw,
-                HangingFace.getByBlockFace(getFacing()).ordinal()),
+            new SpawnObjectMessage(entityId, getUniqueId(),
+                    EntityNetworkUtil.getObjectId(EntityType.ITEM_FRAME),
+                    location.getBlockX(), location.getBlockY(), location.getBlockZ(), 0, yaw,
+                    HangingFace.getByBlockFace(getFacing()).ordinal()),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -203,6 +206,12 @@ public class GlowItemFrame extends GlowHangingEntity implements ItemFrame {
         is.setAmount(1);
 
         metadata.set(MetadataIndex.ITEM_FRAME_ITEM, is);
+    }
+
+    @Override
+    public void setItem(@Nullable ItemStack item, boolean playSound) {
+        setItem(item);
+        // TODO: play sound
     }
 
     @Override

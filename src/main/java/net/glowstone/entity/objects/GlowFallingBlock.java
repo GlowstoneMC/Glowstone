@@ -9,11 +9,11 @@ import lombok.Setter;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.entity.BlockEntity;
 import net.glowstone.entity.GlowEntity;
-import net.glowstone.net.message.play.entity.SpawnObjectMessage;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.inventory.ItemStack;
@@ -24,13 +24,10 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
     @Getter
     @Setter
-    private Material material;
+    private BlockData blockData;
     private boolean canHurtEntities;
     @Setter
     private boolean dropItem;
-    @Getter
-    @Setter
-    private byte blockData;
     private Location sourceLocation;
     @Getter
     @Setter
@@ -45,19 +42,18 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     // todo: implement slow in cobwebs (might just be global entity thing)
     // todo: implement anvils sometimes taking damage
 
-    public GlowFallingBlock(Location location, Material material, byte blockData) {
-        this(location, material, blockData, null);
+    public GlowFallingBlock(Location location, BlockData data) {
+        this(location, data, null);
     }
 
     /**
      * Creates an instance for the given entity.
      *
      * @param location the falling block's location
-     * @param material the falling block's material
-     * @param blockData the falling block's data value
+     * @param blockData the falling block's BlockData
      * @param blockEntity the entity
      */
-    public GlowFallingBlock(Location location, Material material, byte blockData,
+    public GlowFallingBlock(Location location, BlockData blockData,
         BlockEntity blockEntity) {
         super(location);
         blockEntityCompoundTag = null;
@@ -69,8 +65,6 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
         setBoundingBox(0.98, 0.98);
         setAirDrag(0.98);
         setGravityAccel(new Vector(0, VERTICAL_GRAVITY_ACCEL, 0));
-
-        setMaterial(material);
         setDropItem(true);
         setHurtEntities(true);
         this.blockData = blockData;
@@ -87,8 +81,8 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     }
 
     @Override
-    public int getBlockId() {
-        return material.getId();
+    public Material getMaterial() {
+        return getBlockData().getMaterial();
     }
 
     @Override
@@ -98,14 +92,11 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
 
     @Override
     public List<Message> createSpawnMessage() {
-
-        // Note the shift amount has changed previously,
-        // if block data doesn't appear to work check this value.
-        int blockIdData = getBlockId() | getBlockData() << 12;
-
-        return Collections.singletonList(
-            new SpawnObjectMessage(entityId, getUniqueId(), 70, location, blockIdData)
-        );
+        // TODO: 1.13: Flatten BlockData to integer
+        // return Collections.singletonList(
+        //    new SpawnObjectMessage(entityId, getUniqueId(), 70, location, blockIdData)
+        // );
+        return Collections.emptyList();
     }
 
     @Override
@@ -125,8 +116,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 boolean replaceBlock;
                 switch (location.getBlock().getType()) {
                     case DEAD_BUSH:
-                    case LONG_GRASS:
-                    case DOUBLE_PLANT:
+                    case TALL_GRASS: // TODO: 1.13, DOUBLE_PLANT
                         replaceBlock = true;
                         break;
                     default:
@@ -138,8 +128,9 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 }
                 // todo: add event if desired
                 if (getDropItem()) {
+                    // TODO: 1.13, convert BlockData to MaterialData
                     world.dropItemNaturally(location,
-                        new ItemStack(material, 1, (short) 0, getBlockData()));
+                        new ItemStack(getMaterial()));
                 }
                 if (replaceBlock) {
                     placeFallingBlock();
@@ -155,7 +146,7 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
     }
 
     private void placeFallingBlock() {
-        location.getBlock().setTypeIdAndData(material.getId(), getBlockData(), true);
+        location.getBlock().setBlockData(getBlockData(), true);
         if (getBlockEntityCompoundTag() != null) {
             if (location.getBlock() instanceof GlowBlock) {
                 GlowBlock block = (GlowBlock) location.getBlock();
@@ -165,13 +156,13 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
                 }
             }
         }
-        if (material == Material.ANVIL) {
+        // TODO: damaged anvils too
+        if (getBlockData().getMaterial() == Material.ANVIL) {
             ThreadLocalRandom random = ThreadLocalRandom.current();
             world.playSound(location, Sound.BLOCK_ANVIL_FALL, 4, (1.0F
                     + (random.nextFloat() - random.nextFloat()) * 0.2F) * 0.7F);
         }
     }
-
 
     @Override
     public EntityType getType() {
@@ -183,13 +174,10 @@ public class GlowFallingBlock extends GlowEntity implements FallingBlock {
             case AIR:
             case FIRE:
             case WATER:
-            case STATIONARY_WATER:
             case LAVA:
-            case STATIONARY_LAVA:
                 return false;
             default:
                 return true;
         }
     }
-
 }

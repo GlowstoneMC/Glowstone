@@ -22,7 +22,8 @@ public enum TagType {
     STRING("String"),
     LIST("List"),
     COMPOUND("Compound"),
-    INT_ARRAY("Int_Array");
+    INT_ARRAY("Int_Array"),
+    LONG_ARRAY("Long_Array");
 
     private final String name;
 

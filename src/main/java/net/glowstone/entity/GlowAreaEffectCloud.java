@@ -1,5 +1,6 @@
 package net.glowstone.entity;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,15 +20,20 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
 
-    private static final int NETWORK_TYPE_ID = 3;
+    private static final int NETWORK_TYPE_ID =
+            EntityNetworkUtil.getObjectId(EntityType.AREA_EFFECT_CLOUD);
+
     /**
      * Used to implement the reapplication delay. Note that this isn't serialized -- all
      * reapplication delays will effectively end when the chunk unloads.
@@ -109,11 +115,17 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
         metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_COLOR, color);
         metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_RADIUS, radius);
         if (particle != null) {
-            metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLEID, particle.ordinal());
+            metadataMap.set(MetadataIndex.AREAEFFECTCLOUD_PARTICLE, new ParticleBuilder(particle));
         }
         return Arrays.asList(
                 new SpawnObjectMessage(entityId, getUniqueId(), NETWORK_TYPE_ID, location),
                 new EntityMetadataMessage(entityId, metadataMap.getEntryList()));
+    }
+
+    @Override
+    public <T> void setParticle(@NotNull Particle particle, @Nullable T data) {
+        this.particle = particle;
+        // TODO: set data
     }
 
     @Override
@@ -145,11 +157,6 @@ public class GlowAreaEffectCloud extends GlowEntity implements AreaEffectCloud {
     @Override
     public boolean hasCustomEffect(PotionEffectType potionEffectType) {
         return customEffects.containsKey(potionEffectType);
-    }
-
-    @Override
-    public void clearCustomEffects0() {
-        clearCustomEffects();
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.TippedArrow;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -67,12 +68,13 @@ public class GlowTippedArrow extends GlowArrow implements TippedArrow {
     }
 
     @Override
-    public void clearCustomEffects0() {
-        clearCustomEffects();
-    }
-
-    @Override
     public void clearCustomEffects() {
         customEffects.clear();
+    }
+
+    public void copyFrom(PotionMeta itemMeta) {
+        setBasePotionData(itemMeta.getBasePotionData());
+        clearCustomEffects();
+        itemMeta.getCustomEffects().forEach(effect -> addCustomEffect(effect, true));
     }
 }

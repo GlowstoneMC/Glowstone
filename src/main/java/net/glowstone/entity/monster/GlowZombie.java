@@ -16,6 +16,7 @@ import org.bukkit.entity.Zombie;
 public class GlowZombie extends GlowMonster implements Zombie {
 
     private boolean canBreakDoors;
+    private boolean shouldBurnInDay = true;
 
     /**
      * Creates a zombie.
@@ -67,13 +68,63 @@ public class GlowZombie extends GlowMonster implements Zombie {
 
     @Override
     public void setVillager(boolean value) {
-        //Field has been removed as of 1.11
+        throw new IllegalArgumentException("Zombies cannot be villagers.");
     }
 
     @Override
     public Profession getVillagerProfession() {
-        //Field has been removed as of 1.11
-        return Profession.NORMAL;
+        return null;
+    }
+
+    @Override
+    public boolean isConverting() {
+        // TODO: 1.13 zombie API
+        return false;
+    }
+
+    @Override
+    public int getConversionTime() {
+        return 0;
+    }
+
+    @Override
+    public void setConversionTime(int time) {
+
+    }
+
+    @Override
+    public boolean isDrowning() {
+        return false;
+    }
+
+    @Override
+    public void startDrowning(int drownedConversionTime) {
+
+    }
+
+    @Override
+    public void stopDrowning() {
+
+    }
+
+    @Override
+    public void setArmsRaised(boolean raised) {
+
+    }
+
+    @Override
+    public boolean isArmsRaised() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldBurnInDay() {
+        return shouldBurnInDay;
+    }
+
+    @Override
+    public void setShouldBurnInDay(boolean shouldBurnInDay) {
+        this.shouldBurnInDay = shouldBurnInDay;
     }
 
     @Override

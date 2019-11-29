@@ -7,7 +7,6 @@ import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
@@ -46,6 +44,7 @@ import net.glowstone.net.message.play.entity.RelativeEntityPositionRotationMessa
 import net.glowstone.net.message.play.entity.SetPassengerMessage;
 import net.glowstone.net.message.play.player.InteractEntityMessage;
 import net.glowstone.util.Position;
+import net.glowstone.util.TextMessage;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
@@ -62,6 +61,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
@@ -83,6 +83,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
@@ -418,6 +419,11 @@ public abstract class GlowEntity implements Entity {
         return location.getChunk();
     }
 
+    @Override
+    public CreatureSpawnEvent.@NotNull SpawnReason getEntitySpawnReason() {
+        return null;
+    }
+
     /**
      * Get the direction (SOUTH, WEST, NORTH, or EAST) this entity is facing.
      *
@@ -595,7 +601,7 @@ public abstract class GlowEntity implements Entity {
 
         if (hasMoved()) {
             Block currentBlock = location.getBlock();
-            if (currentBlock.getType() == Material.ENDER_PORTAL) {
+            if (currentBlock.getType() == Material.END_PORTAL) {
                 EventFactory.getInstance()
                     .callEvent(new EntityPortalEnterEvent(this, currentBlock.getLocation()));
                 if (server.getAllowEnd()) {
@@ -623,7 +629,7 @@ public abstract class GlowEntity implements Entity {
             Optional<GlowEntity> any = world.getEntityManager().getAll().stream()
                 .filter(e -> leashHolderUniqueId.equals(e.getUniqueId())).findAny();
             if (!any.isPresent()) {
-                world.dropItemNaturally(location, new ItemStack(Material.LEASH));
+                world.dropItemNaturally(location, new ItemStack(Material.LEAD));
             }
             setLeashHolder(any.orElse(null));
             leashHolderUniqueId = null;
@@ -717,10 +723,17 @@ public abstract class GlowEntity implements Entity {
 
         if (hasMoved()) {
             if (!fall || type == Material.LADDER // todo: horses are not affected
-                || type == Material.VINE // todo: horses are not affected
-                || type == Material.WATER || type == Material.STATIONARY_WATER
-                || type == Material.WEB || type == Material.TRAP_DOOR
-                || type == Material.IRON_TRAPDOOR || onGround) {
+                    || type == Material.VINE // todo: horses are not affected
+                    || type == Material.WATER // todo: flowing_water?
+                    || type == Material.COBWEB
+                    || type == Material.ACACIA_TRAPDOOR // todo: replace with tag for all trapdoors
+                    || type == Material.BIRCH_TRAPDOOR
+                    || type == Material.DARK_OAK_TRAPDOOR
+                    || type == Material.IRON_TRAPDOOR
+                    || type == Material.JUNGLE_TRAPDOOR
+                    || type == Material.OAK_TRAPDOOR
+                    || type == Material.SPRUCE_TRAPDOOR
+                    || onGround) {
                 setFallDistance(0);
             } else if (location.getY() < previousLocation.getY() && !isInsideVehicle()) {
                 setFallDistance((float) (fallDistance + previousLocation.getY() - location.getY()));
@@ -988,7 +1001,7 @@ public abstract class GlowEntity implements Entity {
             for (int x = min.getBlockX(); x <= max.getBlockX(); ++x) {
                 for (int y = min.getBlockY(); y <= max.getBlockY(); ++y) {
                     for (int z = min.getBlockZ(); z <= max.getBlockZ(); ++z) {
-                        if (world.getBlockTypeIdAt(x, y, z) == material.getId()) {
+                        if (world.getBlockTypeAt(x, y, z) == material) {
                             return true;
                         }
                     }
@@ -1006,6 +1019,18 @@ public abstract class GlowEntity implements Entity {
     @Override
     public double getWidth() {
         return boundingBox.getSize().getX();
+    }
+
+    @Override
+    public org.bukkit.util.@NotNull BoundingBox getBoundingBox() {
+        return org.bukkit.util.BoundingBox.of(location, boundingBox.getSize().getX(),
+                boundingBox.getSize().getY(), boundingBox.getSize().getZ());
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        location.setPitch(pitch);
+        location.setYaw(yaw);
     }
 
     @Override
@@ -1147,7 +1172,7 @@ public abstract class GlowEntity implements Entity {
 
     private void unleash(GlowEntity entity, UnleashReason reason) {
         EventFactory.getInstance().callEvent(new EntityUnleashEvent(entity, reason));
-        world.dropItemNaturally(entity.location, new ItemStack(Material.LEASH));
+        world.dropItemNaturally(entity.location, new ItemStack(Material.LEAD));
         entity.setLeashHolder(null);
     }
 
@@ -1213,24 +1238,25 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public String getCustomName() {
-        String name = metadata.getString(MetadataIndex.NAME_TAG);
-        if (name == null || name.isEmpty()) {
-            name = "";
+        TextMessage name = metadata.getOptChat(MetadataIndex.NAME_TAG);
+        if (name == null) {
+            return "";
         }
-        return name;
+        return name.asPlaintext();
     }
 
     @Override
     public void setCustomName(String name) {
         if (name == null) {
-            name = "";
+            metadata.set(MetadataIndex.NAME_TAG, null);
+            return;
         }
 
         if (name.length() > 64) {
             name = name.substring(0, 64);
         }
 
-        metadata.set(MetadataIndex.NAME_TAG, name); // remove ?
+        metadata.set(MetadataIndex.NAME_TAG, new TextMessage(name));
     }
 
     @Override
@@ -1442,7 +1468,7 @@ public abstract class GlowEntity implements Entity {
         damage(amount, null, cause);
     }
 
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -1530,6 +1556,18 @@ public abstract class GlowEntity implements Entity {
         return false;
     }
 
+    @Override
+    public boolean isPersistent() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setPersistent(boolean persistent) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public Spigot spigot() {
         return spigot;
     }
@@ -1568,6 +1606,7 @@ public abstract class GlowEntity implements Entity {
      * @throws IllegalStateException if not currently leashed
      * @see org.bukkit.entity.LivingEntity#getLeashHolder()
      */
+    @NotNull
     public Entity getLeashHolder() throws IllegalStateException {
         if (!isLeashed()) {
             throw new IllegalStateException("Entity not leashed");

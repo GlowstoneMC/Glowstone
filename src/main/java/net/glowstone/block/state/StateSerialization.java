@@ -1,6 +1,6 @@
 package net.glowstone.block.state;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import net.glowstone.block.state.impl.WoolStateDataReader;
 import org.bukkit.DyeColor;
@@ -9,10 +9,11 @@ import org.bukkit.material.MaterialData;
 
 public class StateSerialization {
 
-    private static final Map<Material, BlockStateReader> READERS = new HashMap<>();
+    private static final Map<Material, BlockStateReader> READERS = new EnumMap<>(Material.class);
 
     static {
-        READERS.put(Material.WOOL, new WoolStateDataReader());
+        // TODO: 1.13 wool colors
+        READERS.put(Material.LEGACY_WOOL, new WoolStateDataReader());
     }
 
     /**

@@ -12,32 +12,41 @@ public final class CraftingBookDataMessage implements Message {
     private final int type;
     private final int recipeId;
     private final boolean bookOpen;
-    private final boolean filter;
+    private final boolean filterOpen;
+    private final boolean smeltingBookOpen;
+    private final boolean smeltingFilterOpen;
 
     /**
      * Creates a message about the given recipe.
      *
-     * @param type {@link #TYPE_DISPLAYED_RECIPE} or {@link #TYPE_STATUS}
+     * @param type     {@link #TYPE_DISPLAYED_RECIPE} or {@link #TYPE_STATUS}
      * @param recipeId the ID of a crafting recipe
      */
     public CraftingBookDataMessage(int type, int recipeId) {
         this.type = type;
         this.recipeId = recipeId;
         this.bookOpen = false;
-        this.filter = false;
+        this.filterOpen = false;
+        this.smeltingBookOpen = false;
+        this.smeltingFilterOpen = false;
     }
 
     /**
      * Creates a message about the whole crafting book.
      *
-     * @param type {@link #TYPE_DISPLAYED_RECIPE} or {@link #TYPE_STATUS}
-     * @param bookOpen TODO: document this parameter
-     * @param filter TODO: document this parameter
+     * @param type               {@link #TYPE_DISPLAYED_RECIPE} or {@link #TYPE_STATUS}
+     * @param bookOpen           TODO: document this parameter
+     * @param filterOpen         TODO: document this parameter
+     * @param smeltingBookOpen   TODO: document this parameter
+     * @param smeltingFilterOpen TODO: document this parameter
      */
-    public CraftingBookDataMessage(int type, boolean bookOpen, boolean filter) {
+    public CraftingBookDataMessage(int type, boolean bookOpen, boolean filterOpen,
+                                   boolean smeltingBookOpen, boolean smeltingFilterOpen) {
         this.type = type;
         this.bookOpen = bookOpen;
-        this.filter = filter;
+        this.filterOpen = filterOpen;
+        this.smeltingBookOpen = smeltingBookOpen;
+        this.smeltingFilterOpen = smeltingFilterOpen;
         this.recipeId = -1;
     }
 }

@@ -5,24 +5,24 @@ import net.glowstone.util.BlockStateDelegate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Dirt;
-import org.bukkit.material.types.DirtType;
 
 public class AcaciaTree extends GenericTree {
 
     /**
      * Initializes this tree with a random height, preparing it to attempt to generate.
-     *  @param random the PRNG
+     *
+     * @param random   the PRNG
      * @param delegate the BlockStateDelegate used to check for space and to fill wood and leaf
      */
     public AcaciaTree(Random random, BlockStateDelegate delegate) {
         super(random, delegate);
         setHeight(random.nextInt(3) + random.nextInt(3) + 5);
+        setTypes(Material.ACACIA_LOG, Material.ACACIA_LEAVES);
     }
 
     @Override
     public boolean canPlaceOn(BlockState soil) {
-        return soil.getType() == Material.GRASS || soil.getType() == Material.DIRT;
+        return soil.getType() == Material.GRASS_BLOCK || soil.getType() == Material.DIRT;
     }
 
     @Override
@@ -58,10 +58,10 @@ public class AcaciaTree extends GenericTree {
             }
 
             Material material = blockTypeAt(centerX, blockY + y, centerZ, world);
-            if (material == Material.AIR || material == Material.LEAVES) {
+            if (material == Material.AIR || LEAF_TYPES.contains(material)) {
                 trunkTopY = blockY + y;
-                delegate.setTypeAndRawData(world, centerX, blockY + y, centerZ,
-                    Material.LOG_2, 0);
+                delegate.setType(world, centerX, blockY + y, centerZ,
+                        logType);
             }
         }
 
@@ -104,10 +104,10 @@ public class AcaciaTree extends GenericTree {
                     centerX += dxB;
                     centerZ += dzB;
                     Material material = blockTypeAt(centerX, blockY + y, centerZ, world);
-                    if (material == Material.AIR || material == Material.LEAVES) {
+                    if (material == Material.AIR || LEAF_TYPES.contains(material)) {
                         trunkTopY = blockY + y;
-                        delegate.setTypeAndRawData(world, centerX, blockY + y,
-                            centerZ, Material.LOG_2, 0);
+                        delegate.setType(world, centerX, blockY + y,
+                                centerZ, logType);
                     }
                     twistCount--;
                 }
@@ -131,15 +131,14 @@ public class AcaciaTree extends GenericTree {
         }
 
         // block below trunk is always dirt
-        Dirt dirt = new Dirt(DirtType.NORMAL);
-        delegate.setTypeAndData(world, blockX, blockY - 1, blockZ, Material.DIRT, dirt);
+        delegate.setType(world, blockX, blockY - 1, blockZ, Material.DIRT);
 
         return true;
     }
 
     private void setLeaves(int x, int y, int z, World world) {
         if (blockTypeAt(x, y, z, world) == Material.AIR) {
-            delegate.setTypeAndRawData(world, x, y, z, Material.LEAVES_2, 0);
+            delegate.setType(world, x, y, z, leavesType);
         }
     }
 }

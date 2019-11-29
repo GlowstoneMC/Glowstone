@@ -3,15 +3,20 @@ package net.glowstone.io.nbt;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.glowstone.GlowServer;
+import net.glowstone.block.data.SimpleBlockData;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.inventory.GlowItemFactory;
 import net.glowstone.util.InventoryUtil;
 import net.glowstone.util.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -36,7 +41,7 @@ public final class NbtSerialization {
     public static ItemStack readItem(CompoundTag tag) {
         final Material[] material = {null};
         if ((!tag.readString("id", id -> material[0] = ItemIds.getItem(id))
-                        && !tag.readShort("id", id -> material[0] = Material.getMaterial(id)))
+                        && !tag.readShort("id", id -> material[0] = FlatteningUtil.getMaterialFromStateId(id)))
                 || material[0] == null || material[0] == Material.AIR) {
             return null;
         }
@@ -77,6 +82,21 @@ public final class NbtSerialization {
         if (meta != null) {
             tag.putCompound("tag", meta);
         }
+        return tag;
+    }
+
+    public static BlockData readBlockData(CompoundTag tag) {
+        NamespacedKey key = namespacedKeyFromString(tag.getString("Name"));
+        Material type = Material.getMaterial(key);
+        Optional<CompoundTag> properties = tag.tryGetCompound("Properties");
+        // TODO: 1.13 properties
+        return new SimpleBlockData(type);
+    }
+
+    public static CompoundTag writeBlockData(BlockData blockData) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("Name", blockData.getMaterial().getKey().toString());
+        // TODO: 1.13 properties
         return tag;
     }
 
@@ -231,4 +251,15 @@ public final class NbtSerialization {
         return Arrays.asList(vec.getX(), vec.getY(), vec.getZ());
     }
 
+    public static NamespacedKey namespacedKeyFromString(String keyRaw) {
+        NamespacedKey key;
+        int colon = keyRaw.indexOf(':');
+        if (colon == -1) {
+            key = NamespacedKey.minecraft(keyRaw);
+        } else {
+            key = new NamespacedKey(keyRaw.substring(0, colon),
+                    keyRaw.substring(colon + 1));
+        }
+        return key;
+    }
 }

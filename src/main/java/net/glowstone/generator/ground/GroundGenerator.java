@@ -1,33 +1,23 @@
 package net.glowstone.generator.ground;
 
 import java.util.Random;
+import lombok.Setter;
 import net.glowstone.constants.GlowBiomeClimate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
-import org.bukkit.material.MaterialData;
 
 public class GroundGenerator {
 
-    protected static final MaterialData AIR = new MaterialData(Material.AIR);
-    protected static final MaterialData STONE = new MaterialData(Material.STONE);
-    protected static final MaterialData SANDSTONE = new MaterialData(Material.SANDSTONE);
-    protected static final MaterialData GRASS = new MaterialData(Material.GRASS);
-    protected static final MaterialData DIRT = new MaterialData(Material.DIRT);
-    protected static final MaterialData COARSE_DIRT = new MaterialData(Material.DIRT, (byte) 1);
-    protected static final MaterialData PODZOL = new MaterialData(Material.DIRT, (byte) 2);
-    protected static final MaterialData GRAVEL = new MaterialData(Material.GRAVEL);
-    protected static final MaterialData MYCEL = new MaterialData(Material.MYCEL);
-    protected static final MaterialData SAND = new MaterialData(Material.SAND);
-    protected static final MaterialData SNOW = new MaterialData(Material.SNOW_BLOCK);
-
-    private MaterialData topMaterial;
-    private MaterialData groundMaterial;
+    @Setter
+    private Material topMaterial;
+    @Setter
+    private Material groundMaterial;
 
     public GroundGenerator() {
-        setTopMaterial(GRASS);
-        setGroundMaterial(DIRT);
+        setTopMaterial(Material.GRASS_BLOCK);
+        setGroundMaterial(Material.DIRT);
     }
 
     /**
@@ -46,8 +36,8 @@ public class GroundGenerator {
 
         int seaLevel = world.getSeaLevel();
 
-        MaterialData topMat = topMaterial;
-        MaterialData groundMat = groundMaterial;
+        Material topMat = topMaterial;
+        Material groundMat = groundMaterial;
 
         int chunkX = x;
         int chunkZ = z;
@@ -75,8 +65,8 @@ public class GroundGenerator {
                         if (y >= seaLevel - 2) {
                             chunkData.setBlock(x, y, z, topMat);
                         } else if (y < seaLevel - 8 - surfaceHeight) {
-                            topMat = AIR;
-                            groundMat = STONE;
+                            topMat = Material.AIR;
+                            groundMat = Material.STONE;
                             chunkData.setBlock(x, y, z, Material.GRAVEL);
                         } else {
                             chunkData.setBlock(x, y, z, groundMat);
@@ -85,24 +75,16 @@ public class GroundGenerator {
                         deep--;
                         chunkData.setBlock(x, y, z, groundMat);
 
-                        if (deep == 0 && groundMat.getItemType() == Material.SAND) {
+                        if (deep == 0 && groundMat == Material.SAND) {
                             deep = random.nextInt(4) + Math.max(0, y - seaLevel - 1);
-                            groundMat = SANDSTONE;
+                            groundMat = Material.SANDSTONE;
                         }
                     }
-                } else if (mat == Material.STATIONARY_WATER && y == seaLevel - 2
+                } else if (mat == Material.WATER && y == seaLevel - 2
                         && GlowBiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
                     chunkData.setBlock(x, y, z, Material.ICE);
                 }
             }
         }
-    }
-
-    protected final void setTopMaterial(MaterialData topMaterial) {
-        this.topMaterial = topMaterial;
-    }
-
-    protected final void setGroundMaterial(MaterialData groundMaterial) {
-        this.groundMaterial = groundMaterial;
     }
 }

@@ -146,7 +146,8 @@ public final class BlockPlacementHandler implements
         if (holding.getAmount() <= 0) {
             player.getInventory().setItem(slot, InventoryUtil.createEmptyStack());
         } else {
-            // Set the item in `slot` to `holding`, as it was cloned before its amount was decremented.
+            // Set the item in `slot` to `holding`, as it was cloned before its amount was
+            // decremented.
             player.getInventory().setItem(slot, holding);
         }
     }

@@ -13,6 +13,7 @@ import net.glowstone.EventFactory;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockFence;
 import net.glowstone.block.blocktype.BlockType;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowHangingEntity;
 import net.glowstone.entity.GlowPlayer;
@@ -108,7 +109,8 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
 
         return Lists.newArrayList(
             new SpawnObjectMessage(
-                    entityId, getUniqueId(), SpawnObjectMessage.LEASH_HITCH, x, y, z, 0, 0),
+                    entityId, getUniqueId(), EntityNetworkUtil.getObjectId(EntityType.LEASH_HITCH),
+                    x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -174,7 +176,7 @@ public class GlowLeashHitch extends GlowHangingEntity implements LeashHitch {
                         continue;
                     }
                     if (player.getGameMode() != GameMode.CREATIVE) {
-                        world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
+                        world.dropItemNaturally(this.location, new ItemStack(Material.LEAD));
                     }
                     leashedEntity.setLeashHolder(null);
                 }

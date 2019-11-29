@@ -25,11 +25,11 @@ public class BuiltinMaterialValueManagerTest {
         assertThat(bvm.getValues(Material.AIR).getLightOpacity(), is(0));
         assertThat(bvm.getValues(Material.STONE).getFlameResistance(), is(-1));
         assertThat(bvm.getValues(Material.COBBLESTONE).getFireResistance(), is(-1));
-        assertThat(bvm.getValues(Material.WOOD).getFlameResistance(), is(5));
+        assertThat(bvm.getValues(Material.LEGACY_WOOD).getFlameResistance(), is(5));
         assertThat(bvm.getValues(Material.TNT).getFireResistance(), is(100));
 
         // test defaults
-        assertThat("Nonexistent value defined", bvm.getValues(Material.CAULDRON_ITEM).getHardness(),
+        assertThat("Nonexistent value defined", bvm.getValues(Material.CAULDRON).getHardness(),
             is(1f)); // item doesn't exist at all
     }
 }

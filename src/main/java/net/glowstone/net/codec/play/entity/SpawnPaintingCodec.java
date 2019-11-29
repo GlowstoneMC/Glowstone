@@ -15,10 +15,10 @@ public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
     public SpawnPaintingMessage decode(ByteBuf buf) throws IOException {
         int id = ByteBufUtils.readVarInt(buf);
         UUID uuid = GlowBufUtils.readUuid(buf);
-        String title = ByteBufUtils.readUTF8(buf);
+        int artId = ByteBufUtils.readVarInt(buf);
         BlockVector vector = GlowBufUtils.readBlockPosition(buf);
         int facing = buf.readByte();
-        return new SpawnPaintingMessage(id, uuid, title, vector.getBlockX(), vector.getBlockY(),
+        return new SpawnPaintingMessage(id, uuid, artId, vector.getBlockX(), vector.getBlockY(),
             vector.getBlockZ(), facing);
     }
 
@@ -26,7 +26,7 @@ public final class SpawnPaintingCodec implements Codec<SpawnPaintingMessage> {
     public ByteBuf encode(ByteBuf buf, SpawnPaintingMessage message) throws IOException {
         ByteBufUtils.writeVarInt(buf, message.getId());
         GlowBufUtils.writeUuid(buf, message.getUniqueId());
-        ByteBufUtils.writeUTF8(buf, message.getTitle());
+        ByteBufUtils.writeVarInt(buf, message.getArtId());
         GlowBufUtils.writeBlockPosition(buf, message.getX(), message.getY(), message.getZ());
         buf.writeByte(message.getFacing());
         return buf;

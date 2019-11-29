@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import net.glowstone.GlowServer;
 import net.glowstone.net.SessionRegistry;
@@ -30,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A scheduler for managing server ticks, Bukkit tasks, and other synchronization.
@@ -293,6 +295,12 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Override
+    public void runTask(@NotNull Plugin plugin, @NotNull Consumer<BukkitTask> task)
+            throws IllegalArgumentException {
+        // TODO
+    }
+
+    @Override
     @Deprecated
     public BukkitTask runTask(Plugin plugin, BukkitRunnable task) throws IllegalArgumentException {
         return task.runTask(plugin);
@@ -302,6 +310,12 @@ public final class GlowScheduler implements BukkitScheduler {
     public BukkitTask runTaskAsynchronously(Plugin plugin, Runnable task)
         throws IllegalArgumentException {
         return runTaskLaterAsynchronously(plugin, task, 0);
+    }
+
+    @Override
+    public void runTaskAsynchronously(@NotNull Plugin plugin, @NotNull Consumer<BukkitTask> task)
+            throws IllegalArgumentException {
+        // TODO
     }
 
     @Override
@@ -318,6 +332,12 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Override
+    public void runTaskLater(@NotNull Plugin plugin, @NotNull Consumer<BukkitTask> task, long delay)
+            throws IllegalArgumentException {
+        // TODO
+    }
+
+    @Override
     @Deprecated
     public BukkitTask runTaskLater(Plugin plugin, BukkitRunnable task, long delay)
         throws IllegalArgumentException {
@@ -328,6 +348,12 @@ public final class GlowScheduler implements BukkitScheduler {
     public BukkitTask runTaskLaterAsynchronously(Plugin plugin, Runnable task, long delay)
         throws IllegalArgumentException {
         return runTaskTimerAsynchronously(plugin, task, delay, -1);
+    }
+
+    @Override
+    public void runTaskLaterAsynchronously(@NotNull Plugin plugin,
+            @NotNull Consumer<BukkitTask> task, long delay) throws IllegalArgumentException {
+        // TODO
     }
 
     @Override
@@ -344,6 +370,12 @@ public final class GlowScheduler implements BukkitScheduler {
     }
 
     @Override
+    public void runTaskTimer(@NotNull Plugin plugin, @NotNull Consumer<BukkitTask> task, long delay,
+            long period) throws IllegalArgumentException {
+
+    }
+
+    @Override
     @Deprecated
     public BukkitTask runTaskTimer(Plugin plugin, BukkitRunnable task, long delay, long period)
         throws IllegalArgumentException {
@@ -354,6 +386,13 @@ public final class GlowScheduler implements BukkitScheduler {
     public BukkitTask runTaskTimerAsynchronously(Plugin plugin, Runnable task, long delay,
         long period) throws IllegalArgumentException {
         return schedule(new GlowTask(plugin, task, false, delay, period));
+    }
+
+    @Override
+    public void runTaskTimerAsynchronously(@NotNull Plugin plugin,
+            @NotNull Consumer<BukkitTask> task, long delay, long period)
+            throws IllegalArgumentException {
+        // TODO
     }
 
     @Override
@@ -396,7 +435,6 @@ public final class GlowScheduler implements BukkitScheduler {
         tasks.values().removeIf(glowTask -> glowTask.getOwner() == plugin);
     }
 
-    @Override
     public void cancelAllTasks() {
         tasks.clear();
     }

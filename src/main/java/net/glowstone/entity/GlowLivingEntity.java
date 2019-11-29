@@ -3,12 +3,13 @@ package net.glowstone.entity;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import com.destroystokyo.paper.block.TargetBlockInfo;
+import com.destroystokyo.paper.entity.TargetEntityInfo;
 import com.flowpowered.network.Message;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
-import net.glowstone.GlowWorld;
 import net.glowstone.block.GlowBlock;
 import net.glowstone.block.ItemTable;
 import net.glowstone.block.blocktype.BlockType;
@@ -51,8 +51,8 @@ import net.glowstone.util.RayUtil;
 import net.glowstone.util.SoundUtil;
 import net.glowstone.util.loot.LootData;
 import net.glowstone.util.loot.LootingManager;
-import org.bukkit.EntityAnimation;
 import org.bukkit.EntityEffect;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -90,7 +90,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A GlowLivingEntity is a {@link Player} or {@link Monster}.
@@ -301,7 +304,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
         Material mat = getEyeLocation().getBlock().getType();
         // breathing
-        if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
+        if (mat == Material.WATER) { // todo: flowing_water?
             if (canTakeDamage(DamageCause.DROWNING)) {
                 --remainingAir;
                 if (remainingAir <= -20) {
@@ -329,8 +332,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             damage(1, DamageCause.FIRE);
             // not applying additional fire ticks after dying in fire
             stoodInFire = !isDead();
-        } else if (getLocation().getBlock().getType() == Material.LAVA
-                || getLocation().getBlock().getType() == Material.STATIONARY_LAVA) {
+        } else if (getLocation().getBlock().getType() == Material.LAVA) {
             damage(4, DamageCause.LAVA);
             if (swamInLava) {
                 setFireTicks(getFireTicks() + 2);
@@ -339,8 +341,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 swamInLava = true;
             }
         } else if (isTouchingMaterial(Material.FIRE)
-                || isTouchingMaterial(Material.LAVA)
-                || isTouchingMaterial(Material.STATIONARY_LAVA)) {
+                || isTouchingMaterial(Material.LAVA)) {
             damage(1, DamageCause.FIRE);
             // increment the ticks stood adjacent to fire or lava
             adjacentBurnTicks++;
@@ -353,8 +354,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
             adjacentBurnTicks = 0;
         } else {
             swamInLava = false;
-            if (getLocation().getBlock().getType() == Material.WATER
-                    || getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
+            if (getLocation().getBlock().getType() == Material.WATER) {
                 setFireTicks(0);
             }
         }
@@ -501,13 +501,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return getEyeHeight();
     }
 
+    @NotNull
     @Override
     public Location getEyeLocation() {
         return getLocation().add(0, getEyeHeight(), 0);
     }
 
     @Override
-    public boolean hasLineOfSight(Entity other) {
+    public boolean hasLineOfSight(@NotNull Entity other) {
         return false;
     }
 
@@ -669,32 +670,65 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return blocks;
     }
 
-    private List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance, int maxLength) {
-        Set<Material> materials = transparent.stream().map(Material::getMaterial)
-                .collect(Collectors.toSet());
-        return getLineOfSight(materials, maxDistance, maxLength);
-    }
-
+    @NotNull
     @Override
     public List<Block> getLineOfSight(Set<Material> transparent, int maxDistance) {
         return getLineOfSight(transparent, maxDistance, 0);
     }
 
-    @Deprecated
-    public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 1).get(0);
-    }
-
+    @NotNull
     @Override
     public Block getTargetBlock(Set<Material> materials, int maxDistance) {
         return getLineOfSight(materials, maxDistance, 1).get(0);
     }
 
-    @Deprecated
-    public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
-        return getLineOfSight(transparent, maxDistance, 2);
+    // TODO: 1.13
+    @Override
+    public @Nullable Block getTargetBlock(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
     }
 
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetBlockInfo getTargetBlockInfo(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Entity getTargetEntity(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetEntityInfo getTargetEntityInfo(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Block getTargetBlockExact(int maxDistance) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Block getTargetBlockExact(int maxDistance, @NotNull FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceBlocks(double maxDistance) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceBlocks(double maxDistance, @NotNull FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
+
+    @NotNull
     @Override
     public List<Block> getLastTwoTargetBlocks(Set<Material> materials, int maxDistance) {
         return getLineOfSight(materials, maxDistance, 2);
@@ -712,8 +746,9 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return getEyeLocation().getBlock().getType().isOccluding();
     }
 
+    @NotNull
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> type) {
+    public <T extends Projectile> T launchProjectile(@NotNull Class<? extends T> type) {
         return launchProjectile(type,
                 getLocation().getDirection());  // todo: multiply by some speed
     }
@@ -721,12 +756,12 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     ////////////////////////////////////////////////////////////////////////////
     // Health
 
+    @NotNull
     @Override
-    public <T extends Projectile> T launchProjectile(Class<? extends T> type, Vector vector) {
+    public <T extends Projectile> T launchProjectile(@NotNull Class<? extends T> type, Vector vector) {
         float offset = 0.0F;
         float speed = 1.5F;
-        T projectile = launchProjectile(type, vector, offset, speed);
-        return projectile;
+        return launchProjectile(type, vector, offset, speed);
     }
 
     /**
@@ -804,7 +839,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         location.setPitch(0);
         location.setYaw(0);
 
-        T projectile = ((GlowWorld) location.getWorld()).spawn(location, type);
+        T projectile = location.getWorld().spawn(location, type);
 
         ProjectileLaunchEvent launchEvent = EventFactory.getInstance()
                 .callEvent(new ProjectileLaunchEvent(projectile));
@@ -926,7 +961,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                             spawnLoc, EntityType.SLIME);
 
                     // Make the split slime the same name as the killed slime.
-                    if (!getCustomName().isEmpty()) {
+                    if (getCustomName() != null && !getCustomName().isEmpty()) {
                         splitSlime.setCustomName(getCustomName());
                     }
 
@@ -937,7 +972,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
     }
 
     @Override
-    public void damage(double amount, Entity source, DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull DamageCause cause) {
         // invincibility timer
         if (noDamageTicks > 0 || health <= 0 || !canTakeDamage(cause) || isInvulnerable()) {
             return;
@@ -946,7 +981,7 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         }
 
         // fire resistance
-        if (cause != null && hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+        if (hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
             if (source instanceof Fireball) {
                 return;
             } else {
@@ -1243,6 +1278,24 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return false;
     }
 
+    @Override
+    public boolean isSwimming() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public void setSwimming(boolean swimming) {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public boolean isRiptiding() {
+        // TODO: 1.13
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     /**
      * Sets the AI state.
      *
@@ -1271,7 +1324,6 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         return state != MobState.NO_AI;
     }
 
-    @Override
     public void playAnimation(EntityAnimation animation) {
         AnimateEntityMessage message = new AnimateEntityMessage(getEntityId(), animation.ordinal());
         getWorld().getRawPlayers().stream()
@@ -1279,9 +1331,14 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
                 .forEach(observer -> observer.getSession().send(message));
     }
 
+    @Nullable
     @Override
-    public AttributeInstance getAttribute(Attribute attribute) {
-        return getAttributeManager().getProperty(Key.fromAttribute(attribute));
+    public AttributeInstance getAttribute(@NotNull Attribute attribute) {
+        Key attributeKey = Key.fromAttribute(attribute);
+        if (attributeKey != null) {
+            return getAttributeManager().getProperty(attributeKey);
+        }
+        return null;
     }
 
     @Override
@@ -1303,10 +1360,10 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
 
             setLeashHolder(null);
             if (player.getGameMode() != GameMode.CREATIVE) {
-                world.dropItemNaturally(this.location, new ItemStack(Material.LEASH));
+                world.dropItemNaturally(this.location, new ItemStack(Material.LEAD));
             }
             return true;
-        } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEASH) {
+        } else if (!InventoryUtil.isEmpty(handItem) && handItem.getType() == Material.LEAD) {
             if (!GlowLeashHitch.isAllowedLeashHolder(this.getType()) || this.isLeashed()
                     || EventFactory.getInstance().callEvent(
                             new PlayerLeashEntityEvent(this, player, player))
@@ -1345,11 +1402,11 @@ public abstract class GlowLivingEntity extends GlowEntity implements LivingEntit
         ItemStack offHand = human.getInventory().getItemInOffHand();
 
         boolean hasTotem = false;
-        if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM) {
+        if (!InventoryUtil.isEmpty(mainHand) && mainHand.getType() == Material.TOTEM_OF_UNDYING) {
             mainHand.setAmount(mainHand.getAmount() - 1);
             human.getInventory().setItemInMainHand(InventoryUtil.createEmptyStack());
             hasTotem = true;
-        } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM) {
+        } else if (!InventoryUtil.isEmpty(offHand) && offHand.getType() == Material.TOTEM_OF_UNDYING) {
             human.getInventory().setItemInOffHand(InventoryUtil.createEmptyStack());
             hasTotem = true;
         }

@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 public class BlockRedstoneComparator extends BlockNeedsAttached {
 
     public BlockRedstoneComparator() {
-        setDrops(new ItemStack(Material.REDSTONE_COMPARATOR));
+        setDrops(new ItemStack(Material.COMPARATOR));
     }
 
     @Override

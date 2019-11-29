@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 import lombok.Setter;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.Summonable;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -31,7 +32,7 @@ import org.bukkit.util.Vector;
 
 public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
-    private static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK);
+    private static final ItemStack DEFAULT_FIREWORK_ITEM = new ItemStack(Material.FIREWORK_ROCKET);
     @Getter
     @Setter
     private UUID spawningEntity;
@@ -85,7 +86,8 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
         return Arrays.asList(
             new SpawnObjectMessage(
-                    entityId, UUID.randomUUID(), SpawnObjectMessage.FIREWORK, x, y, z, 0, 0),
+                    entityId, UUID.randomUUID(),
+                    EntityNetworkUtil.getObjectId(EntityType.FIREWORK), x, y, z, 0, 0),
             new EntityMetadataMessage(entityId, metadata.getEntryList())
         );
     }
@@ -114,7 +116,7 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
      */
     public ItemStack getFireworkItem() {
         ItemStack item = this.metadata.getItem(MetadataIndex.FIREWORK_INFO);
-        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK.equals(item.getType())) {
+        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK_ROCKET.equals(item.getType())) {
             item = DEFAULT_FIREWORK_ITEM.clone();
         }
         return item;
@@ -122,12 +124,12 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
 
     /**
      * Set the firework item of this firework entity. If an empty ItemStack, or none of the type
-     * {{@link Material#FIREWORK}} was given, a new Firework ItemStack will be created.
+     * {{@link Material#FIREWORK_ROCKET}} was given, a new Firework ItemStack will be created.
      *
      * @param item FireWork Item this entity should use
      */
     public void setFireworkItem(ItemStack item) {
-        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK.equals(item.getType())) {
+        if (InventoryUtil.isEmpty(item) || !Material.FIREWORK_ROCKET.equals(item.getType())) {
             item = DEFAULT_FIREWORK_ITEM.clone();
         }
         this.metadata.set(MetadataIndex.FIREWORK_INFO, item.clone());
@@ -151,7 +153,7 @@ public class GlowFirework extends GlowEntity implements Firework, Summonable {
         super.pulse();
 
         if (ticksLived == 1) {
-            world.playSound(this.location, Sound.ENTITY_FIREWORK_LAUNCH, SoundCategory.AMBIENT, 3,
+            world.playSound(this.location, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, SoundCategory.AMBIENT, 3,
                 1);
         }
 

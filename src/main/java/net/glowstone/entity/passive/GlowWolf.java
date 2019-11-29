@@ -24,15 +24,15 @@ import org.bukkit.material.Dye;
 
 public class GlowWolf extends GlowTameable implements Wolf {
 
-    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.RAW_BEEF,
+    private static final Set<Material> BREEDING_FOODS = Sets.immutableEnumSet(Material.BEEF,
             Material.COOKED_BEEF,
             Material.RABBIT,
             Material.COOKED_RABBIT,
             Material.MUTTON,
             Material.COOKED_MUTTON,
-            Material.PORK,
-            Material.GRILLED_PORK,
-            Material.RAW_CHICKEN,
+            Material.PORKCHOP,
+            Material.COOKED_PORKCHOP,
+            Material.CHICKEN,
             Material.COOKED_CHICKEN,
             Material.ROTTEN_FLESH);
 
@@ -134,7 +134,7 @@ public class GlowWolf extends GlowTameable implements Wolf {
                 return true;
             }
             if (isTamed() && Objects.equals(getOwnerUniqueId(), player.getUniqueId())) {
-                if (hand.getType() == Material.INK_SACK) {
+                if (hand.getType() == Material.INK_SAC) {
                     Dye dye = (Dye) hand.getData();
                     DyeColor color = dye.getColor();
                     setCollarColor(color);

@@ -14,13 +14,13 @@ import org.bukkit.inventory.ItemStack;
 public class BlockNetherWart extends BlockNeedsAttached {
 
     public BlockNetherWart() {
-        setDrops(new ItemStack(Material.NETHER_STALK, 1));
+        setDrops(new ItemStack(Material.NETHER_WART, 1));
     }
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        return block.getWorld().getBlockTypeIdAt(block.getX(), block.getY() - 1, block.getZ())
-            == Material.SOUL_SAND.getId();
+        return block.getWorld().getBlockTypeAt(block.getX(), block.getY() - 1, block.getZ())
+            == Material.SOUL_SAND;
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Pumpkin;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockStem extends BlockCrops {
 
@@ -26,7 +27,7 @@ public class BlockStem extends BlockCrops {
      */
     public BlockStem(Material plantType) {
         if (plantType == Material.MELON_STEM) {
-            fruitType = Material.MELON_BLOCK;
+            fruitType = Material.MELON;
             seedsType = Material.MELON_SEEDS;
         } else if (plantType == Material.PUMPKIN_STEM) {
             fruitType = Material.PUMPKIN;
@@ -36,9 +37,10 @@ public class BlockStem extends BlockCrops {
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        return block.getRelative(BlockFace.DOWN).getType() == Material.SOIL;
+        return block.getRelative(BlockFace.DOWN).getType() == Material.FARMLAND;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getState().getRawData() >= CropState.RIPE.ordinal()) {
@@ -119,9 +121,9 @@ public class BlockStem extends BlockCrops {
                 GlowBlockState targetBlockState = targetBlock.getState();
                 GlowBlock belowTargetBlock = targetBlock.getRelative(BlockFace.DOWN);
                 if (targetBlock.getType() == Material.AIR
-                    && (belowTargetBlock.getType() == Material.SOIL
+                    && (belowTargetBlock.getType() == Material.FARMLAND
                     || belowTargetBlock.getType() == Material.DIRT
-                    || belowTargetBlock.getType() == Material.GRASS)) {
+                    || belowTargetBlock.getType() == Material.GRASS_BLOCK)) {
                     targetBlockState.setType(fruitType);
                     if (fruitType == Material.PUMPKIN) {
                         targetBlockState.setData(new Pumpkin(face.getOppositeFace()));

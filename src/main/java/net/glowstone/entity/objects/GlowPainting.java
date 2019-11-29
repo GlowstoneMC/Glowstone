@@ -2,6 +2,7 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +29,13 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowPainting extends GlowHangingEntity implements Painting {
 
     private static final double PAINTING_DEPTH = 0.0625;
     private static final Art DEFAULT_ART = Art.KEBAB;
-    private static final Map<Art, String> TITLE_BY_ART = new HashMap<>();
+    private static final Map<Art, String> TITLE_BY_ART = new EnumMap<>(Art.class);
     private static final Map<String, Art> ART_BY_TITLE = new HashMap<>();
 
     static {
@@ -59,9 +61,9 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         TITLE_BY_ART.put(Art.WITHER, "Wither");
         TITLE_BY_ART.put(Art.FIGHTERS, "Fighters");
         TITLE_BY_ART.put(Art.POINTER, "Pointer");
-        TITLE_BY_ART.put(Art.BURNINGSKULL, "BurningSkull");
+        TITLE_BY_ART.put(Art.BURNING_SKULL, "BurningSkull");
         TITLE_BY_ART.put(Art.SKELETON, "Skeleton");
-        TITLE_BY_ART.put(Art.DONKEYKONG, "DonkeyKong");
+        TITLE_BY_ART.put(Art.DONKEY_KONG, "DonkeyKong");
         TITLE_BY_ART.put(Art.PIGSCENE, "PigScene");
 
         TITLE_BY_ART.forEach((art, title) -> ART_BY_TITLE.put(title, art));
@@ -96,6 +98,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         return TITLE_BY_ART.get(art);
     }
 
+    @NotNull
     @Override
     public EntityType getType() {
         return EntityType.PAINTING;
@@ -121,25 +124,22 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
         int x = artCenter.getBlockX();
         int y = artCenter.getBlockY();
         int z = artCenter.getBlockZ();
-        String title = getArtTitle();
+        int artId = art.getId();
 
+        // TODO: replace art title with ID
         return Collections.singletonList(
-            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), title, x, y, z,
+            new SpawnPaintingMessage(this.getEntityId(), this.getUniqueId(), artId, x, y, z,
                 facing.ordinal())
         );
     }
 
     @Override
-    public boolean setArt(Art art) {
+    public boolean setArt(@NotNull Art art) {
         return this.setArt(art, false);
     }
 
     @Override
-    public boolean setArt(Art art, boolean force) {
-        if (art == null) {
-            return false;
-        }
-
+    public boolean setArt(@NotNull Art art, boolean force) {
         Art oldArt = this.art;
         setArtInternal(art);
 
@@ -215,16 +215,12 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
     }
 
     @Override
-    public void setFacingDirection(BlockFace blockFace) {
+    public void setFacingDirection(@NotNull BlockFace blockFace) {
         setFacingDirection(blockFace, false);
     }
 
     @Override
-    public boolean setFacingDirection(BlockFace blockFace, boolean force) {
-        if (blockFace == null) {
-            return false;
-        }
-
+    public boolean setFacingDirection(@NotNull BlockFace blockFace, boolean force) {
         HangingFace oldFace = facing;
         this.facing = HangingFace.getByBlockFace(blockFace);
 

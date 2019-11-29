@@ -115,11 +115,11 @@ public class GlowHorse extends GlowAbstractHorse implements Horse {
 
     private int getHorseArmorData() {
         if (getInventory().getArmor() != null) {
-            if (getInventory().getArmor().getType() == Material.DIAMOND_BARDING) {
+            if (getInventory().getArmor().getType() == Material.DIAMOND_HORSE_ARMOR) {
                 return 3;
-            } else if (getInventory().getArmor().getType() == Material.GOLD_BARDING) {
+            } else if (getInventory().getArmor().getType() == Material.GOLDEN_HORSE_ARMOR) {
                 return 2;
-            } else if (getInventory().getArmor().getType() == Material.IRON_BARDING) {
+            } else if (getInventory().getArmor().getType() == Material.IRON_HORSE_ARMOR) {
                 return 1;
             }
         }

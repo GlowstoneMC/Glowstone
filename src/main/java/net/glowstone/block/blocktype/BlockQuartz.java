@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockQuartz extends BlockNeedsTool {
 
@@ -40,6 +41,7 @@ public class BlockQuartz extends BlockNeedsTool {
         }
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getMinedDrops(GlowBlock block) {
         //TODO use MaterialData instead of magic value if possible

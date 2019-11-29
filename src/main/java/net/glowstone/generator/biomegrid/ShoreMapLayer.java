@@ -1,29 +1,29 @@
 package net.glowstone.generator.biomegrid;
 
-import static org.bukkit.block.Biome.BEACHES;
-import static org.bukkit.block.Biome.COLD_BEACH;
+import static org.bukkit.block.Biome.BADLANDS;
+import static org.bukkit.block.Biome.BADLANDS_PLATEAU;
+import static org.bukkit.block.Biome.BEACH;
 import static org.bukkit.block.Biome.DEEP_OCEAN;
-import static org.bukkit.block.Biome.EXTREME_HILLS;
-import static org.bukkit.block.Biome.EXTREME_HILLS_WITH_TREES;
-import static org.bukkit.block.Biome.ICE_FLATS;
-import static org.bukkit.block.Biome.ICE_MOUNTAINS;
-import static org.bukkit.block.Biome.MESA;
-import static org.bukkit.block.Biome.MESA_CLEAR_ROCK;
-import static org.bukkit.block.Biome.MESA_ROCK;
-import static org.bukkit.block.Biome.MUSHROOM_ISLAND;
-import static org.bukkit.block.Biome.MUSHROOM_ISLAND_SHORE;
-import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS;
-import static org.bukkit.block.Biome.MUTATED_EXTREME_HILLS_WITH_TREES;
-import static org.bukkit.block.Biome.MUTATED_ICE_FLATS;
-import static org.bukkit.block.Biome.MUTATED_MESA;
-import static org.bukkit.block.Biome.MUTATED_MESA_CLEAR_ROCK;
-import static org.bukkit.block.Biome.MUTATED_MESA_ROCK;
-import static org.bukkit.block.Biome.MUTATED_TAIGA_COLD;
+import static org.bukkit.block.Biome.ERODED_BADLANDS;
+import static org.bukkit.block.Biome.GRAVELLY_MOUNTAINS;
+import static org.bukkit.block.Biome.ICE_SPIKES;
+import static org.bukkit.block.Biome.MODIFIED_BADLANDS_PLATEAU;
+import static org.bukkit.block.Biome.MODIFIED_GRAVELLY_MOUNTAINS;
+import static org.bukkit.block.Biome.MODIFIED_WOODED_BADLANDS_PLATEAU;
+import static org.bukkit.block.Biome.MOUNTAINS;
+import static org.bukkit.block.Biome.MUSHROOM_FIELDS;
+import static org.bukkit.block.Biome.MUSHROOM_FIELD_SHORE;
 import static org.bukkit.block.Biome.OCEAN;
-import static org.bukkit.block.Biome.STONE_BEACH;
-import static org.bukkit.block.Biome.SWAMPLAND;
-import static org.bukkit.block.Biome.TAIGA_COLD;
-import static org.bukkit.block.Biome.TAIGA_COLD_HILLS;
+import static org.bukkit.block.Biome.SNOWY_BEACH;
+import static org.bukkit.block.Biome.SNOWY_MOUNTAINS;
+import static org.bukkit.block.Biome.SNOWY_TAIGA;
+import static org.bukkit.block.Biome.SNOWY_TAIGA_HILLS;
+import static org.bukkit.block.Biome.SNOWY_TAIGA_MOUNTAINS;
+import static org.bukkit.block.Biome.SNOWY_TUNDRA;
+import static org.bukkit.block.Biome.STONE_SHORE;
+import static org.bukkit.block.Biome.SWAMP;
+import static org.bukkit.block.Biome.WOODED_BADLANDS_PLATEAU;
+import static org.bukkit.block.Biome.WOODED_MOUNTAINS;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,27 +40,28 @@ public class ShoreMapLayer extends MapLayer {
         OCEANS.add(GlowBiome.getId(OCEAN));
         OCEANS.add(GlowBiome.getId(DEEP_OCEAN));
 
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(EXTREME_HILLS_WITH_TREES), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_EXTREME_HILLS), GlowBiome.getId(STONE_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(MOUNTAINS), GlowBiome.getId(STONE_SHORE));
+        SPECIAL_SHORES.put(GlowBiome.getId(WOODED_MOUNTAINS), GlowBiome.getId(STONE_SHORE));
+        SPECIAL_SHORES.put(GlowBiome.getId(GRAVELLY_MOUNTAINS), GlowBiome.getId(STONE_SHORE));
         SPECIAL_SHORES
-            .put(GlowBiome.getId(MUTATED_EXTREME_HILLS_WITH_TREES), GlowBiome.getId(STONE_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_FLATS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(ICE_MOUNTAINS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_ICE_FLATS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(TAIGA_COLD), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(TAIGA_COLD_HILLS), GlowBiome.getId(COLD_BEACH));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_TAIGA_COLD), GlowBiome.getId(COLD_BEACH));
+            .put(GlowBiome.getId(MODIFIED_GRAVELLY_MOUNTAINS), GlowBiome.getId(STONE_SHORE));
+        SPECIAL_SHORES.put(GlowBiome.getId(SNOWY_TUNDRA), GlowBiome.getId(SNOWY_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(SNOWY_MOUNTAINS), GlowBiome.getId(SNOWY_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(ICE_SPIKES), GlowBiome.getId(SNOWY_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(SNOWY_TAIGA), GlowBiome.getId(SNOWY_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(SNOWY_TAIGA_HILLS), GlowBiome.getId(SNOWY_BEACH));
+        SPECIAL_SHORES.put(GlowBiome.getId(SNOWY_TAIGA_MOUNTAINS), GlowBiome.getId(SNOWY_BEACH));
         SPECIAL_SHORES
-            .put(GlowBiome.getId(MUSHROOM_ISLAND), GlowBiome.getId(MUSHROOM_ISLAND_SHORE));
-        SPECIAL_SHORES.put(GlowBiome.getId(SWAMPLAND), GlowBiome.getId(SWAMPLAND));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA), GlowBiome.getId(MESA));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_ROCK), GlowBiome.getId(MESA_ROCK));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_MESA_ROCK), GlowBiome.getId(MUTATED_MESA_ROCK));
-        SPECIAL_SHORES.put(GlowBiome.getId(MESA_CLEAR_ROCK), GlowBiome.getId(MESA_CLEAR_ROCK));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_MESA_CLEAR_ROCK),
-            GlowBiome.getId(MUTATED_MESA_CLEAR_ROCK));
-        SPECIAL_SHORES.put(GlowBiome.getId(MUTATED_MESA), GlowBiome.getId(MUTATED_MESA));
+            .put(GlowBiome.getId(MUSHROOM_FIELDS), GlowBiome.getId(MUSHROOM_FIELD_SHORE));
+        SPECIAL_SHORES.put(GlowBiome.getId(SWAMP), GlowBiome.getId(SWAMP));
+        SPECIAL_SHORES.put(GlowBiome.getId(BADLANDS), GlowBiome.getId(BADLANDS));
+        SPECIAL_SHORES.put(GlowBiome.getId(WOODED_BADLANDS_PLATEAU), GlowBiome.getId(WOODED_BADLANDS_PLATEAU));
+        SPECIAL_SHORES.put(GlowBiome.getId(MODIFIED_WOODED_BADLANDS_PLATEAU),
+                GlowBiome.getId(MODIFIED_WOODED_BADLANDS_PLATEAU));
+        SPECIAL_SHORES.put(GlowBiome.getId(BADLANDS_PLATEAU), GlowBiome.getId(BADLANDS_PLATEAU));
+        SPECIAL_SHORES.put(GlowBiome.getId(MODIFIED_BADLANDS_PLATEAU),
+            GlowBiome.getId(MODIFIED_BADLANDS_PLATEAU));
+        SPECIAL_SHORES.put(GlowBiome.getId(ERODED_BADLANDS), GlowBiome.getId(ERODED_BADLANDS));
     }
 
     private final MapLayer belowLayer;
@@ -100,7 +101,7 @@ public class ShoreMapLayer extends MapLayer {
                     finalValues[j + i * sizeX] =
                             SPECIAL_SHORES.containsKey(centerVal)
                                     ? SPECIAL_SHORES.get(centerVal)
-                                    : GlowBiome.getId(BEACHES);
+                                    : GlowBiome.getId(BEACH);
                 } else {
                     finalValues[j + i * sizeX] = centerVal;
                 }

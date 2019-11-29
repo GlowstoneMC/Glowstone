@@ -21,7 +21,7 @@ public class InMemoryBlockStorage {
         GlowBlock mockBlock = Mockito.mock(GlowBlock.class);
         when(mockBlock.getLocation()).thenReturn(location);
         when(mockBlock.getType()).thenReturn(type);
-        when(mockBlock.getTypeId()).thenReturn(type.getId());
+        when(mockBlock.getType().getId()).thenReturn(type.getId());
         when(mockBlock.getData()).thenReturn(data);
 
         BlockEntity entity = null;

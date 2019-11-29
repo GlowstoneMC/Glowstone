@@ -4,7 +4,12 @@ import com.flowpowered.network.Message;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+import javax.annotation.Nullable;
+import lombok.Getter;
+import lombok.Setter;
 import net.glowstone.EventFactory;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.GlowEntity;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.entity.meta.MetadataIndex;
@@ -23,7 +28,9 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an item that is also an {@link GlowEntity} within the world.
@@ -47,6 +54,15 @@ public class GlowItem extends GlowEntity implements Item {
      * A player to bias this item's pickup selection towards.
      */
     private GlowPlayer biasPlayer;
+
+    @Getter
+    @Setter
+    @Nullable
+    private UUID owner;
+    @Getter
+    @Setter
+    @Nullable
+    private UUID thrower;
 
     /**
      * Creates a new item entity.
@@ -91,6 +107,11 @@ public class GlowItem extends GlowEntity implements Item {
 
     ////////////////////////////////////////////////////////////////////////////
     // Overrides
+
+    @Override
+    public @NotNull BoundingBox getBoundingBox() {
+        return null;
+    }
 
     @Override
     public EntityType getType() {
@@ -171,7 +192,8 @@ public class GlowItem extends GlowEntity implements Item {
     @Override
     public List<Message> createSpawnMessage() {
         return Arrays.asList(
-                new SpawnObjectMessage(entityId, getUniqueId(), SpawnObjectMessage.ITEM, location),
+                new SpawnObjectMessage(entityId, getUniqueId(),
+                        EntityNetworkUtil.getObjectId(EntityType.DROPPED_ITEM), location),
                 new EntityMetadataMessage(entityId, metadata.getEntryList()),
                 // these keep the client from assigning a random velocity
                 new EntityTeleportMessage(entityId, location),

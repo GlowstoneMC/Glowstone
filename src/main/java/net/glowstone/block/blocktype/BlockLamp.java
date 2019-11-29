@@ -30,8 +30,8 @@ public class BlockLamp extends BlockType {
         super.updatePhysicsAfterEvent(me);
         boolean powered = me.isBlockPowered() || me.isBlockIndirectlyPowered();
 
-        if (powered != (me.getType() == Material.REDSTONE_LAMP_ON)) {
-            me.setType(powered ? Material.REDSTONE_LAMP_ON : Material.REDSTONE_LAMP_OFF);
+        if (powered != (me.getType() == Material.REDSTONE_LAMP)) { // 1.13 ON data
+            me.setType(powered ? Material.REDSTONE_LAMP : Material.REDSTONE_LAMP); // 1.13 ON : OFF data
         }
     }
 }

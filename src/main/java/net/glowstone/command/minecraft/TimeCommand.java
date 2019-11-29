@@ -92,12 +92,12 @@ public class TimeCommand extends GlowVanillaCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args)
             throws IllegalArgumentException {
         if (args.length == 1) {
-            return (List) StringUtil
-                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList(SUBCOMMANDS.size()));
+            return StringUtil
+                    .copyPartialMatches(args[0], SUBCOMMANDS, new ArrayList<>(SUBCOMMANDS.size()));
         }
         if (args.length == 2 && args[0].equals("set")) {
-            return (List) StringUtil
-                    .copyPartialMatches(args[1], TIMES, new ArrayList(TIMES.size()));
+            return StringUtil
+                    .copyPartialMatches(args[1], TIMES, new ArrayList<>(TIMES.size()));
         }
         return Collections.emptyList();
     }

@@ -43,7 +43,7 @@ public class GlowMetaFirework extends GlowMetaItem implements FireworkMeta {
 
     @Override
     public boolean isApplicable(Material material) {
-        return material == Material.FIREWORK;
+        return material == Material.FIREWORK_ROCKET;
     }
 
     @Override

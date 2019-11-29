@@ -11,10 +11,10 @@ import net.glowstone.generator.objects.TallGrass;
 import net.glowstone.util.noise.SimplexOctaveGenerator;
 import org.bukkit.Chunk;
 import org.bukkit.GrassSpecies;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.material.LongGrass;
-import org.bukkit.material.types.DoublePlantSpecies;
 import org.bukkit.util.noise.OctaveGenerator;
 
 public class PlainsPopulator extends BiomePopulator {
@@ -54,7 +54,7 @@ public class PlainsPopulator extends BiomePopulator {
                 int x = sourceX + random.nextInt(16);
                 int z = sourceZ + random.nextInt(16);
                 int y = random.nextInt(world.getHighestBlockYAt(x, z) + 32);
-                new DoubleTallPlant(DoublePlantSpecies.DOUBLE_TALLGRASS)
+                new DoubleTallPlant(Material.TALL_GRASS)
                     .generate(world, random, x, y, z);
             }
         }

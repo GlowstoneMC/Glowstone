@@ -13,22 +13,24 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
 
     @Override
     public boolean canPlaceAt(GlowPlayer player, GlowBlock block, BlockFace against) {
-        return block.getRelative(BlockFace.DOWN).getType() == Material.SOIL;
+        return block.getRelative(BlockFace.DOWN).getType() == Material.FARMLAND;
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         if (block.getData() >= CropState.RIPE.ordinal()) {
             return Collections.unmodifiableList(
-                Arrays.asList(new ItemStack(Material.SEEDS, ThreadLocalRandom.current().nextInt(4)),
+                Arrays.asList(new ItemStack(Material.WHEAT_SEEDS, ThreadLocalRandom.current().nextInt(4)),
                     new ItemStack(Material.WHEAT, 1)));
         } else {
-            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.SEEDS, 1)));
+            return Collections.unmodifiableList(Arrays.asList(new ItemStack(Material.WHEAT_SEEDS, 1)));
         }
     }
 
@@ -100,7 +102,7 @@ public class BlockCrops extends BlockNeedsAttached implements IBlockGrowable {
                 GlowBlock b = block.getWorld()
                     .getBlockAt(block.getX() + x, block.getY() - 1, block.getZ() + z);
                 float soilBonus = 0;
-                if (b.getType() == Material.SOIL) {
+                if (b.getType() == Material.FARMLAND) {
                     soilBonus = 1;
                     // check if soil is wet for more bonus
                     if (b.getData() > 0) {

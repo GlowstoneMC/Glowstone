@@ -9,6 +9,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Evoker;
 import org.bukkit.entity.Spellcaster;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowEvoker extends GlowMonster implements Evoker {
 
@@ -35,16 +36,16 @@ public class GlowEvoker extends GlowMonster implements Evoker {
 
     @Override
     protected Sound getDeathSound() {
-        return Sound.ENTITY_EVOCATION_ILLAGER_DEATH;
+        return Sound.ENTITY_EVOKER_DEATH;
     }
 
     @Override
     protected Sound getHurtSound() {
-        return Sound.ENTITY_EVOCATION_ILLAGER_HURT;
+        return Sound.ENTITY_EVOKER_HURT;
     }
 
     @Override
-    public void damage(double amount, Entity source, EntityDamageEvent.DamageCause cause) {
+    public void damage(double amount, Entity source, @NotNull EntityDamageEvent.DamageCause cause) {
         super.damage(amount, source, cause);
         castSpell(Spellcaster.Spell.SUMMON_VEX); // todo: remove this, demo purposes
     }
@@ -63,7 +64,7 @@ public class GlowEvoker extends GlowMonster implements Evoker {
                 break;
             case SUMMON_VEX:
                 world
-                    .playSound(location, Sound.ENTITY_EVOCATION_ILLAGER_PREPARE_SUMMON, 1.0f, 1.0f);
+                    .playSound(location, Sound.ENTITY_EVOKER_PREPARE_SUMMON, 1.0f, 1.0f);
                 int count = 3;
                 for (int i = 0; i < count; i++) {
                     double y = random.nextDouble() + 0.5 + location.getY();
@@ -85,7 +86,7 @@ public class GlowEvoker extends GlowMonster implements Evoker {
 
     @Override
     protected Sound getAmbientSound() {
-        return Sound.ENTITY_EVOCATION_ILLAGER_AMBIENT;
+        return Sound.ENTITY_EVOKER_AMBIENT;
     }
 
     @Override

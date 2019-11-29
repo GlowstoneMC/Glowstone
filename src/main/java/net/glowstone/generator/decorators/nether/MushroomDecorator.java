@@ -12,7 +12,7 @@ import org.bukkit.material.MaterialData;
 
 public class MushroomDecorator extends BlockDecorator {
 
-    private static final Material[] MATERIALS = {Material.NETHERRACK, Material.QUARTZ_ORE,
+    private static final Material[] MATERIALS = {Material.NETHERRACK, Material.NETHER_QUARTZ_ORE,
         Material.SOUL_SAND, Material.GRAVEL};
 
     private final Material type;

@@ -21,7 +21,7 @@ public final class GlowMapView implements MapView {
     private final List<MapRenderer> renderers = new ArrayList<>();
     private final Map<MapRenderer, Map<GlowPlayer, GlowMapCanvas>> canvases = new HashMap<>();
     @Getter
-    private final short id;
+    private final int id;
     @Getter
     private Scale scale;
     @Getter
@@ -37,7 +37,7 @@ public final class GlowMapView implements MapView {
     @Setter
     private boolean unlimitedTracking;
 
-    protected GlowMapView(World world, short id) {
+    protected GlowMapView(World world, int id) {
         this.world = world;
         this.id = id;
         centerX = world.getSpawnLocation().getBlockX();

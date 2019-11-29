@@ -5,12 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import org.bukkit.block.Biome;
 
-public class MesaForestPopulator extends MesaPopulator {
+public class WoodedMountainsPopulator extends MountainsPopulator {
 
-    private static final Biome[] BIOMES = {Biome.MESA_ROCK, Biome.MUTATED_MESA_ROCK};
+    private static final Biome[] BIOMES = {Biome.MOUNTAIN_EDGE,
+        Biome.WOODED_MOUNTAINS, Biome.MODIFIED_GRAVELLY_MOUNTAINS};
 
-    public MesaForestPopulator() {
-        treeDecorator.setAmount(5);
+    public WoodedMountainsPopulator() {
+        treeDecorator.setAmount(3);
     }
 
     @Override

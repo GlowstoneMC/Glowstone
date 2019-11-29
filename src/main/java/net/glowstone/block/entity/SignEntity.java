@@ -22,9 +22,9 @@ public class SignEntity extends BlockEntity {
         super(block);
         setSaveId("minecraft:sign");
 
-        if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN_POST) {
+        if (block.getType() != Material.WALL_SIGN && block.getType() != Material.SIGN) {
             throw new IllegalArgumentException(
-                "Sign must be WALL_SIGN or SIGN_POST, got " + block.getType());
+                "Sign must be WALL_SIGN or SIGN, got " + block.getType());
         }
 
         Arrays.fill(lines, new TextMessage(""));

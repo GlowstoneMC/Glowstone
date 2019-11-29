@@ -24,23 +24,23 @@ public final class AttackDamage {
         }
 
         switch (material) {
-            case WOOD_SPADE:
-            case GOLD_SPADE:
+            case WOODEN_SHOVEL:
+            case GOLDEN_SHOVEL:
                 return 2.0f;
-            case STONE_SPADE:
-            case WOOD_PICKAXE:
-            case GOLD_PICKAXE:
+            case STONE_SHOVEL:
+            case WOODEN_PICKAXE:
+            case GOLDEN_PICKAXE:
                 return 3.0f;
-            case IRON_SPADE:
+            case IRON_SHOVEL:
             case STONE_PICKAXE:
-            case WOOD_AXE:
-            case GOLD_AXE:
+            case WOODEN_AXE:
+            case GOLDEN_AXE:
                 return 4.0f;
-            case DIAMOND_SPADE:
+            case DIAMOND_SHOVEL:
             case IRON_PICKAXE:
             case STONE_AXE:
-            case WOOD_SWORD:
-            case GOLD_SWORD:
+            case WOODEN_SWORD:
+            case GOLDEN_SWORD:
                 return 5.0f;
             case DIAMOND_PICKAXE:
             case IRON_AXE:
@@ -80,21 +80,21 @@ public final class AttackDamage {
         }
 
         switch (material) {
-            case WOOD_AXE:
-            case GOLD_AXE:
+            case WOODEN_AXE:
+            case GOLDEN_AXE:
             case STONE_AXE:
             case DIAMOND_AXE:
-            case WOOD_PICKAXE:
-            case GOLD_PICKAXE:
+            case WOODEN_PICKAXE:
+            case GOLDEN_PICKAXE:
             case IRON_PICKAXE:
             case DIAMOND_PICKAXE:
-            case WOOD_SPADE:
-            case GOLD_SPADE:
-            case IRON_SPADE:
-            case DIAMOND_SPADE:
+            case WOODEN_SHOVEL:
+            case GOLDEN_SHOVEL:
+            case IRON_SHOVEL:
+            case DIAMOND_SHOVEL:
                 return 2;
-            case WOOD_SWORD:
-            case GOLD_SWORD:
+            case WOODEN_SWORD:
+            case GOLDEN_SWORD:
             case IRON_SWORD:
             case DIAMOND_SWORD:
                 return 1;

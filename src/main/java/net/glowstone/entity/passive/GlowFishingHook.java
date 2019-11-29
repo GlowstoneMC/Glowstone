@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.EventFactory;
 import net.glowstone.GlowWorld;
 import net.glowstone.constants.GlowBiomeClimate;
+import net.glowstone.entity.EntityNetworkUtil;
 import net.glowstone.entity.FishingRewardManager.RewardCategory;
 import net.glowstone.entity.FishingRewardManager.RewardItem;
 import net.glowstone.entity.GlowPlayer;
@@ -27,13 +28,17 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class GlowFishingHook extends GlowProjectile implements FishHook {
     public static final Message[] EMPTY_MESSAGE_ARRAY = new Message[0];
@@ -145,9 +150,8 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
         int intHeadYaw = Position.getIntHeadYaw(location.getYaw());
 
         spawnMessage.set(0, new SpawnObjectMessage(getEntityId(), getUniqueId(),
-                SpawnObjectMessage.FISHING_HOOK, x, y, z, intPitch, intHeadYaw,
-                shooterId,
-                velocity));
+                EntityNetworkUtil.getObjectId(EntityType.FISHING_HOOK),
+                x, y, z, intPitch, intHeadYaw, shooterId, velocity));
         return spawnMessage;
     }
 
@@ -168,7 +172,7 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
 
     @Override
     protected int getObjectId() {
-        return SpawnObjectMessage.FISHING_HOOK;
+        return EntityNetworkUtil.getObjectId(EntityType.FISHING_HOOK);
     }
 
     @Override
@@ -323,6 +327,21 @@ public class GlowFishingHook extends GlowProjectile implements FishHook {
             }
         }
 
+        return null;
+    }
+
+    @Override
+    public @NotNull BoundingBox getBoundingBox() {
+        return null;
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+
+    }
+
+    @Override
+    public CreatureSpawnEvent.@NotNull SpawnReason getEntitySpawnReason() {
         return null;
     }
 }

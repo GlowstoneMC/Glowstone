@@ -39,35 +39,49 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
 
     private static Instrument instrumentOf(Material mat) {
         switch (mat) {
-            case WOOD:
+            case OAK_WOOD:
+            case DARK_OAK_WOOD:
+            case ACACIA_WOOD:
+            case BIRCH_WOOD:
+            case JUNGLE_WOOD:
+            case SPRUCE_WOOD:
             case ACACIA_STAIRS:
-            case BIRCH_WOOD_STAIRS:
-            case JUNGLE_WOOD_STAIRS:
-            case SPRUCE_WOOD_STAIRS:
+            case BIRCH_STAIRS:
+            case JUNGLE_STAIRS:
+            case SPRUCE_STAIRS:
             case DARK_OAK_STAIRS:
-            case WOOD_STAIRS:
+            case OAK_STAIRS:
             case BOOKSHELF:
             case CHEST:
-            case FENCE:
+            case OAK_FENCE:
             case ACACIA_FENCE:
             case BIRCH_FENCE:
             case DARK_OAK_FENCE:
             case JUNGLE_FENCE:
-            case NETHER_FENCE:
+            case NETHER_BRICK_FENCE:
             case SPRUCE_FENCE:
-            case TRAP_DOOR:
+            case OAK_TRAPDOOR:
+            case DARK_OAK_TRAPDOOR:
+            case ACACIA_TRAPDOOR:
+            case BIRCH_TRAPDOOR:
+            case JUNGLE_TRAPDOOR:
+            case SPRUCE_TRAPDOOR:
             case ACACIA_FENCE_GATE:
             case BIRCH_FENCE_GATE:
             case DARK_OAK_FENCE_GATE:
-            case FENCE_GATE:
+            case OAK_FENCE_GATE:
             case JUNGLE_FENCE_GATE:
             case SPRUCE_FENCE_GATE:
             case DAYLIGHT_DETECTOR:
-            case DAYLIGHT_DETECTOR_INVERTED:
             case TRAPPED_CHEST:
             case NOTE_BLOCK:
-            case WORKBENCH:
-            case LOG:
+            case CRAFTING_TABLE:
+            case OAK_LOG:
+            case DARK_OAK_LOG:
+            case ACACIA_LOG:
+            case BIRCH_LOG:
+            case JUNGLE_LOG:
+            case SPRUCE_LOG:
                 return Instrument.BASS_GUITAR;
             case SAND:
             case GRAVEL:
@@ -83,7 +97,14 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             case COBBLESTONE:
             case DROPPER:
             case REDSTONE_ORE:
-            case STONE_SLAB2:
+            case SANDSTONE_SLAB:
+            case STONE_SLAB:
+            case STONE_BRICK_SLAB:
+            case COBBLESTONE_SLAB:
+            case DARK_PRISMARINE_SLAB:
+            case NETHER_BRICK_SLAB:
+            case QUARTZ_SLAB:
+            case RED_SANDSTONE_SLAB:
             case COAL_ORE:
             case LAPIS_ORE:
             case IRON_ORE:
@@ -92,12 +113,15 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             case BEDROCK:
             case COBBLESTONE_STAIRS:
             case MOSSY_COBBLESTONE:
-            case SMOOTH_BRICK:
-            case COBBLE_WALL:
-            case QUARTZ_ORE:
+            case STONE_BRICKS:
+            case BRICKS:
+            case CHISELED_STONE_BRICKS:
+            case SMOOTH_STONE:
+            case COBBLESTONE_WALL:
+            case NETHER_QUARTZ_ORE:
             case QUARTZ_BLOCK:
             case QUARTZ_STAIRS:
-            case SMOOTH_STAIRS:
+            case STONE_BRICK_STAIRS:
             case QUARTZ:
             case BRICK_STAIRS:
             case SANDSTONE:
@@ -105,23 +129,52 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
             case EMERALD_ORE:
             case NETHER_BRICK:
             case NETHER_BRICK_STAIRS:
-            case ENDER_STONE:
+            case END_STONE:
             case RED_SANDSTONE:
             case RED_SANDSTONE_STAIRS:
             case OBSIDIAN:
-            case ENDER_PORTAL_FRAME:
+            case END_PORTAL_FRAME:
             case FURNACE:
             case ENDER_CHEST:
-            case END_BRICKS:
+            case END_STONE_BRICKS:
             case PURPUR_BLOCK:
             case PRISMARINE:
             case PURPUR_PILLAR:
             case PURPUR_STAIRS:
             case PURPUR_SLAB:
-            case PURPUR_DOUBLE_SLAB:
-            case HARD_CLAY:
-            case STAINED_CLAY:
-            case CLAY_BRICK:
+            case TERRACOTTA:
+            case BLACK_GLAZED_TERRACOTTA:
+            case BLACK_TERRACOTTA:
+            case BLUE_GLAZED_TERRACOTTA:
+            case BLUE_TERRACOTTA:
+            case GREEN_GLAZED_TERRACOTTA:
+            case GREEN_TERRACOTTA:
+            case CYAN_GLAZED_TERRACOTTA:
+            case CYAN_TERRACOTTA:
+            case RED_GLAZED_TERRACOTTA:
+            case RED_TERRACOTTA:
+            case PURPLE_GLAZED_TERRACOTTA:
+            case PURPLE_TERRACOTTA:
+            case BROWN_GLAZED_TERRACOTTA:
+            case BROWN_TERRACOTTA:
+            case GRAY_GLAZED_TERRACOTTA:
+            case GRAY_TERRACOTTA:
+            case LIGHT_GRAY_GLAZED_TERRACOTTA:
+            case LIGHT_GRAY_TERRACOTTA:
+            case LIGHT_BLUE_GLAZED_TERRACOTTA:
+            case LIGHT_BLUE_TERRACOTTA:
+            case LIME_GLAZED_TERRACOTTA:
+            case LIME_TERRACOTTA:
+            case ORANGE_GLAZED_TERRACOTTA:
+            case ORANGE_TERRACOTTA:
+            case PINK_GLAZED_TERRACOTTA:
+            case PINK_TERRACOTTA:
+            case MAGENTA_GLAZED_TERRACOTTA:
+            case MAGENTA_TERRACOTTA:
+            case YELLOW_GLAZED_TERRACOTTA:
+            case YELLOW_TERRACOTTA:
+            case WHITE_GLAZED_TERRACOTTA:
+            case WHITE_TERRACOTTA:
             case NETHERRACK:
             case COAL_BLOCK:
             case BRICK:
@@ -130,7 +183,22 @@ public class GlowNoteBlock extends GlowBlockState implements NoteBlock {
                 return Instrument.FLUTE;
             case GOLD_BLOCK:
                 return Instrument.BELL;
-            case WOOL:
+            case BLACK_WOOL:
+            case BLUE_WOOL:
+            case GREEN_WOOL:
+            case CYAN_WOOL:
+            case RED_WOOL:
+            case PURPLE_WOOL:
+            case BROWN_WOOL:
+            case GRAY_WOOL:
+            case LIGHT_GRAY_WOOL:
+            case LIGHT_BLUE_WOOL:
+            case LIME_WOOL:
+            case ORANGE_WOOL:
+            case PINK_WOOL:
+            case MAGENTA_WOOL:
+            case YELLOW_WOOL:
+            case WHITE_WOOL:
                 return Instrument.GUITAR;
             case PACKED_ICE:
                 return Instrument.CHIME;

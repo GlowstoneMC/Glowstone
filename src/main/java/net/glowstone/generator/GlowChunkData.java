@@ -1,11 +1,15 @@
 package net.glowstone.generator;
 
 import lombok.Getter;
+import net.glowstone.block.flattening.generated.FlatteningUtil;
 import net.glowstone.chunk.GlowChunk;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.ChunkGenerator.ChunkData;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class GlowChunkData implements ChunkData {
@@ -32,18 +36,26 @@ public class GlowChunkData implements ChunkData {
         return (byte) (sections[y >> 4][(y & 0xF) << 8 | z << 4 | x] & 0xF);
     }
 
+    @NotNull
     @Override
     public Material getType(int x, int y, int z) {
-        return Material.getMaterial(getTypeId(x, y, z));
+        return FlatteningUtil.getMaterialFromStateId(getTypeId(x, y, z));
     }
 
+    @NotNull
     @Override
     public MaterialData getTypeAndData(int x, int y, int z) {
         return getType(x, y, z).getNewData(getData(x, y, z));
     }
 
+    @NotNull
     @Override
-    public int getTypeId(int x, int y, int z) {
+    public BlockData getBlockData(int x, int y, int z) {
+        // TODO: 1.13
+        throw new NotImplementedException();
+    }
+
+    private int getTypeId(int x, int y, int z) {
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH
             || z >= GlowChunk.WIDTH) {
             return 0;
@@ -61,15 +73,19 @@ public class GlowChunkData implements ChunkData {
 
     @Override
     public void setBlock(int x, int y, int z, MaterialData materialData) {
-        setBlock(x, y, z, materialData.getItemTypeId(), materialData.getData());
+        setBlock(x, y, z, materialData.getItemType().getId(), materialData.getData());
     }
 
     @Override
+    public void setBlock(int x, int y, int z, @NotNull BlockData blockData) {
+        // TODO: 1.13
+        throw new NotImplementedException();
+    }
+
     public void setBlock(int x, int y, int z, int blockId) {
         setBlock(x, y, z, blockId, (byte) 0);
     }
 
-    @Override
     public void setBlock(int x, int y, int z, int blockId, byte data) {
         if (x < 0 || y < 0 || z < 0 || x >= GlowChunk.HEIGHT || y >= GlowChunk.DEPTH
             || z >= GlowChunk.WIDTH) {
@@ -82,25 +98,30 @@ public class GlowChunkData implements ChunkData {
     }
 
     @Override
-    public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
-        Material material) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, @NotNull Material material) {
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    setBlock(x, y, z, material);
+                }
+            }
+        }
     }
 
     @Override
-    public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
-        MaterialData materialData) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, @NotNull MaterialData materialData) {
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    setBlock(x, y, z, materialData);
+                }
+            }
+        }
     }
 
     @Override
-    public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, int blockId) {
-        throw new UnsupportedOperationException("Not implemented yet.");
-    }
-
-    @Override
-    public void setRegion(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, int blockId,
-        int data) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, @NotNull BlockData blockData) {
+        // TODO: 1.13
+        throw new NotImplementedException();
     }
 }

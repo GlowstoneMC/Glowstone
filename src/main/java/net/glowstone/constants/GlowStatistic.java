@@ -10,13 +10,13 @@ import static org.bukkit.Statistic.ENTITY_KILLED_BY;
 import static org.bukkit.Statistic.KILL_ENTITY;
 import static org.bukkit.Statistic.MINE_BLOCK;
 import static org.bukkit.Statistic.PICKUP;
-import static org.bukkit.Statistic.PLAY_ONE_TICK;
+import static org.bukkit.Statistic.PLAY_ONE_MINUTE;
 import static org.bukkit.Statistic.USE_ITEM;
 import static org.bukkit.Statistic.values;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Creature;
@@ -32,7 +32,7 @@ public final class GlowStatistic {
     @NonNls
     private static final Map<Statistic, String> STATISTICS = new HashMap<>(values().length);
     @NonNls
-    private static final Map<Statistic, Map<Enum, String>> SUB_STATISTICS = new HashMap<>();
+    private static final Map<Statistic, Map<Enum, String>> SUB_STATISTICS = new EnumMap<>(Statistic.class);
     @NonNls
     private static final String STAT_PREFIX = "stat.";
 
@@ -92,6 +92,28 @@ public final class GlowStatistic {
         return null;
     }
 
+    /**
+     * Gets the protocol ID of the category of the given statistic.
+     *
+     * @param statistic the statistic
+     * @return the protocol ID of the category of the given statistic.
+     */
+    public static int getCategoryId(Statistic statistic) {
+        // TODO: Implement sub-statistics and categories (minecraft.mined, minecraft.killed_by...)
+        return 0;
+    }
+
+    /**
+     * Gets the protocol ID of the given statistic within its category.
+     *
+     * @param statistic the statistic
+     * @return the protocol ID of the statistic within its category
+     */
+    public static int getStatisticId(Statistic statistic) {
+        // TODO: Implement numerical statistic IDs
+        return 0;
+    }
+
     private static void set(Statistic statistic, Enum data, @NonNls String key) {
         if (!SUB_STATISTICS.containsKey(statistic)) {
             SUB_STATISTICS.put(statistic, new HashMap<>());
@@ -105,7 +127,7 @@ public final class GlowStatistic {
         }
 
         // Specific case
-        STATISTICS.put(PLAY_ONE_TICK, STAT_PREFIX + "playOneMinute");
+        STATISTICS.put(PLAY_ONE_MINUTE, STAT_PREFIX + "playOneMinute");
     }
 
     private static void generateMaterialStatistics() {

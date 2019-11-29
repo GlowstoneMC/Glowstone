@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * /tp was an alias of this command until Minecraft 1.10, but now see {@link TpCommand}.
@@ -71,7 +72,7 @@ public class TeleportCommand extends GlowVanillaCommand {
                     targetLocation.setYaw(target.getLocation().getYaw());
                     targetLocation.setPitch(target.getLocation().getPitch());
                 }
-                target.teleport(targetLocation);
+                target.teleport(targetLocation, PlayerTeleportEvent.TeleportCause.COMMAND);
                 new LocalizedStringImpl("teleport.done", commandMessages.getResourceBundle())
                         .send(sender, target.getName(), targetLocation.getX(),
                                 targetLocation.getY(), targetLocation.getZ());

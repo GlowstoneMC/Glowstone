@@ -13,7 +13,7 @@ public class ObsidianPillar implements TerrainObject {
     public boolean generate(World world, Random random, int sourceX, int sourceY, int sourceZ) {
         if (!world.getBlockAt(sourceX, sourceY, sourceZ).isEmpty()
                 || world.getBlockAt(sourceX, sourceY - 1, sourceZ).getType()
-                        != Material.ENDER_STONE) {
+                        != Material.END_STONE) {
             return false;
         }
 
@@ -25,7 +25,7 @@ public class ObsidianPillar implements TerrainObject {
             for (int j = -radius; j <= radius; j++) {
                 if (i * i + j * j <= radius * radius + 1
                     && world.getBlockAt(sourceX + i, sourceY - 1, sourceZ + j).getType()
-                    != Material.ENDER_STONE) {
+                    != Material.END_STONE) {
                     return false;
                 }
             }

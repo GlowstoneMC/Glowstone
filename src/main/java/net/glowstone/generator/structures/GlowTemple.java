@@ -1,6 +1,6 @@
 package net.glowstone.generator.structures;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 import org.bukkit.Location;
@@ -14,7 +14,7 @@ public class GlowTemple extends GlowStructure {
 
     private static final int MIN_DISTANCE = 8;
     private static final int MAX_DISTANCE = 32;
-    private final Map<Biome, TempleType> types = new HashMap<>();
+    private final Map<Biome, TempleType> types = new EnumMap<>(Biome.class);
 
     /**
      * Creates a structure with no pieces.
@@ -29,7 +29,7 @@ public class GlowTemple extends GlowStructure {
         types.put(Biome.DESERT_HILLS, TempleType.DESERT_TEMPLE);
         types.put(Biome.JUNGLE, TempleType.JUNGLE_TEMPLE);
         types.put(Biome.JUNGLE_HILLS, TempleType.JUNGLE_TEMPLE);
-        types.put(Biome.SWAMPLAND, TempleType.WITCH_HUT);
+        types.put(Biome.SWAMP, TempleType.WITCH_HUT);
     }
 
     /**

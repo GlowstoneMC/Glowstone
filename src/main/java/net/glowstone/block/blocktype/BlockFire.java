@@ -21,6 +21,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockFire extends BlockNeedsAttached {
 
@@ -53,6 +54,7 @@ public class BlockFire extends BlockNeedsAttached {
         state.getBlock().getWorld().requestPulse(state.getBlock());
     }
 
+    @NotNull
     @Override
     public Collection<ItemStack> getDrops(GlowBlock block, ItemStack tool) {
         return Collections.emptyList();
@@ -85,7 +87,7 @@ public class BlockFire extends BlockNeedsAttached {
         boolean isInfiniteFire = false;
         switch (type) {
             case NETHERRACK:
-            case MAGMA:
+            case MAGMA_BLOCK:
                 isInfiniteFire = true;
                 break;
             case BEDROCK:

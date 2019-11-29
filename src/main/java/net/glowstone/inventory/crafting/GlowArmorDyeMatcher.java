@@ -28,7 +28,7 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
                 continue;
             }
 
-            if (item.getType() == Material.INK_SACK) {
+            if (item.getType() == Material.INK_SAC) {
                 Color color = ((Dye) item.getData()).getColor().getColor();
                 colors.add(color);
                 continue;
@@ -58,7 +58,7 @@ public class GlowArmorDyeMatcher extends ItemMatcher {
             base = colors.remove(0);
         }
 
-        Color newColor = base.mixColors(colors.toArray(new Color[colors.size()]));
+        Color newColor = base.mixColors(colors.toArray(new Color[0]));
 
         ItemStack ret = armor.clone();
         LeatherArmorMeta retMeta = (LeatherArmorMeta) ret.getItemMeta();
