@@ -457,6 +457,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     @SuppressWarnings("unchecked")
     private void loadRecipes() {
         // Load recipes from recipes.yml file
+        // TODO: Migration: Load recipes from builtin/data/minecraft/recipes
         InputStream in = getClass().getClassLoader().getResourceAsStream("builtin/recipes.yml");
         if (in == null) {
             ConsoleMessages.Warn.Recipe.NO_DEFAULTS.log();
