@@ -11,6 +11,14 @@ fun void(@Suppress("UNUSED_PARAMETER") value: Any?) {
     /* dispose the value: do nothing */
 }
 
+fun die(message: String? = null): Nothing {
+    throw Exception("Called die: ${message ?: "unknown"}")
+}
+
+fun <T> missingMapKey(key: T): Nothing {
+    die("map key `$key` is missing")
+}
+
 fun smelting(fileName: String, ingredient: String, result: String = fileName, exp: Double, tickToCook: Int = 200) {
     with(File(dest, "$fileName.json")) {
         createNewFile()
@@ -118,8 +126,6 @@ fun block3x3(fileName: String, ingredient: String, result: String = fileName, am
     shapedCraft(fileName, "###", "###", "###", mapOf("#" to ingredient), result, amount)
 }
 
-fun idk() = 0.0
-
 val dest = File("""C:\Users\Obsidian550D\Documents\intellij\glowstone\src\main\resources\builtin\datapack\data\minecraft\recipes\""")
 val planks = "planks"
 
@@ -220,8 +226,8 @@ for (c in color) {
     shapedCraft("${c}_concrete_poweder", "sgs", "gdg", "sgs", mapOf("s" to "sand", "g" to "gravel", "d" to cur))
     shapedCraft("${c}_carpet", "##", subst = mapOf("#" to "${c}_wool"), amount = 3)
     shapedCraft("${c}_stained_glass_pane", "###", "###", "###", mapOf("#" to "${c}_stained_glass"), amount = 16)
-    // (re)tain recipes
-    // FIXME: O(n^2)
+    // (re)taint recipes
+    // FIXME: Numbers of file will be O(n^2); where n is `color` size
     for (c2 in color) {
         shapelessCraft("${c2}_shulker_box_from_${c}", "shulker_box", cur, result = "${c2}_shulker_box")
     }
@@ -232,14 +238,107 @@ for (c in color) {
 }
 println("Colored thing recipes completed")
 
-// dyes (expect green, blue, brown, black, and white)
-
+// dyes
 run {
+    // If not found -> key is missing -> "die"
+    fun dyeValue(key: String) = dye[key] ?: missingMapKey(key)
+
     // red
-    shapelessCraft("rose_red", "poppy")
-    shapelessCraft("rose_red", "red_tulip")
-    shapelessCraft("rose_red", "rose_bush", amount = 2)
-    // TODO: other flowers
+    run {
+        val cur = dyeValue("red")
+        shapelessCraft("${cur}_1", "poppy", result = cur)
+        shapelessCraft("${cur}_2", "red_tulip", result = cur)
+        shapelessCraft("${cur}_3", "rose_bush", result = cur, amount = 2)
+        shapelessCraft("${cur}_4", "beetroot", result = cur)
+    }
+
+    // orange
+    run {
+        val cur = dyeValue("orange")
+        shapelessCraft("${cur}_1", "orange_tulip", result = cur)
+        shapelessCraft("${cur}_2", dyeValue("red"), dyeValue("yellow"), result = cur, amount = 2)
+    }
+
+    // yellow
+    run {
+        val cur = dyeValue("yellow")
+        shapelessCraft("${cur}_1", "dandelion", result = cur)
+        shapelessCraft("${cur}_2", "sunflower", result = cur, amount = 2)
+    }
+
+    // lime
+    run {
+        val cur = dyeValue("lime")
+        smelting("${cur}_1", "sea_pickle", cur, 0.2)
+        shapelessCraft("${cur}_2", dyeValue("green"), dyeValue("white"), result = cur, amount = 2)
+    }
+
+    // green
+    run {
+        val cur = dyeValue("green")
+        smelting("${cur}_1", "cacatus", result = cur, exp = 0.2)
+    }
+
+    // cyan
+    run {
+        val cur = dyeValue("cyan")
+        shapelessCraft("${cur}_1", dyeValue("green"), dyeValue("blue"), result = cur, amount = 2)
+    }
+
+    // blue: skipped -> it's just Lapis lazuli
+
+    // light blue
+    run {
+        val cur = dyeValue("light_blue")
+        shapelessCraft("${cur}_1", "blue_orchid", cur)
+        shapelessCraft("${cur}_2", dyeValue("blue"), dyeValue("white"), result = cur, amount = 2)
+    }
+
+    // purple
+    run {
+        val cur = dyeValue("purple")
+        shapelessCraft("${cur}_1", dyeValue("blue"), dyeValue("red"), result = cur, amount = 2)
+    }
+
+    // magenta
+    run {
+        val cur = dyeValue("magenta")
+        shapelessCraft("${cur}_1", "allium", cur)
+        shapelessCraft("${cur}_2", "lilac", cur, amount = 2)
+        shapelessCraft("${cur}_3", dyeValue("purple"), dyeValue("pink"), result = cur, amount = 2)
+        shapelessCraft("${cur}_4", dyeValue("purple"), dyeValue("red"), dyeValue("white"), result = cur, amount = 3)
+        shapelessCraft("${cur}_5", dyeValue("red"), dyeValue("blue"), dyeValue("pink"), result = cur, amount = 3)
+        shapelessCraft("${cur}_6", dyeValue("red"), dyeValue("blue"), dyeValue("red"), dyeValue("white"), result = cur, amount = 4)
+    }
+
+    // pink
+    run {
+        val cur = dyeValue("pink")
+        shapelessCraft("${cur}_1", "pink_tulip", result = cur)
+        shapelessCraft("${cur}_2", "peony", result = cur, amount = 2)
+        shapelessCraft("${cur}_3", dyeValue("white"), dyeValue("red"), result = cur, amount = 2)
+    }
+
+    // white: skipped -> it's just bone-meal
+
+    // light gray
+    run {
+        val cur = dyeValue("light_gray")
+        shapelessCraft("${cur}_1", "azure_bluet", result = cur)
+        shapelessCraft("${cur}_2", "oxeye_daisy", result = cur)
+        shapelessCraft("${cur}_3", dyeValue("gray"), dyeValue("white"), result = cur, amount = 2)
+        shapelessCraft("${cur}_4", dyeValue("black"), dyeValue("white"), dyeValue("white"), result = cur, amount = 3)
+    }
+
+    // gray
+    run {
+        val cur = dyeValue("gray")
+        shapelessCraft("${cur}_1", dyeValue("white"), dyeValue("black"), result = cur, amount = 2)
+    }
+
+    // black: skipped -> it's just ink_sac
+
+    // brown: skipped -> it's just cocoa_beans
 }
 println("Dye recipes completed")
 
