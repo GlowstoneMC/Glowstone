@@ -15,11 +15,9 @@ import net.glowstone.block.MaterialUtil;
 import net.glowstone.constants.ItemIds;
 import net.glowstone.i18n.ConsoleMessages;
 import net.glowstone.inventory.GlowCraftingInventory;
-import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
@@ -512,7 +510,8 @@ public final class CraftingManager implements Iterable<Recipe> {
                         // TODO: Stub
                         final List<String> ingredients = yc.getStringList("ingredients");
                         final ShapelessRecipe shapeless = new ShapelessRecipe(ns, item);
-                        ingredients.forEach((ingredient) -> shapeless.addIngredient(ItemIds.getItem(ingredient)));
+                        // Erase prefix "minecraft:"
+                        ingredients.forEach((ingredient) -> shapeless.addIngredient(ItemIds.getItem(ingredient.replaceAll("^minecraft:(.*)", "$1"))));
                         this.shapelessRecipes.add(shapeless);
                         break;
                     case "smelting":
@@ -530,7 +529,7 @@ public final class CraftingManager implements Iterable<Recipe> {
             // TODO: Stub
             e.printStackTrace();
         }
-
+        /*
         InputStream in = getClass().getClassLoader().getResourceAsStream("builtin/recipes.yml");
         if (in == null) {
             ConsoleMessages.Warn.Recipe.NO_DEFAULTS.log();
@@ -587,8 +586,10 @@ public final class CraftingManager implements Iterable<Recipe> {
                     new FurnaceRecipe(key, resultStack, inputStack.getType(),
                             inputStack.getDurability(), xp, 200));
         }
+         */
     }
 
+    /*
     private NamespacedKey readKey(Map<?, ?> data, ItemStack result) {
         NamespacedKey key;
         if (data.containsKey("key")) { // NON-NLS
@@ -601,5 +602,6 @@ public final class CraftingManager implements Iterable<Recipe> {
         }
         return key;
     }
+     */
 
 }
