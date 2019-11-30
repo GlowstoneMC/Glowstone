@@ -1,17 +1,13 @@
 {
-    "type": "crafting_shaped",
-    "pattern": [
-        "###",
-        "///"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:yellow_wool"
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:white_bed"
         },
-        "/": {
-            "item": "minecraft:planks"
+        {
+            "item": "minecraft:yellow_dye"
         }
-    },
+    ],
     "result": {
         "item": "minecraft:yellow_bed",
         "count": 1

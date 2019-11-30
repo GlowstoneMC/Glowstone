@@ -1,15 +1,15 @@
 {
     "type": "crafting_shaped",
     "pattern": [
-        "#/#",
-        "#/#"
+        "/#/",
+        "/#/"
     ],
     "key": {
         "#": {
-            "item": "minecraft:stick"
+            "item": "minecraft:dark_oak_planks"
         },
         "/": {
-            "item": "minecraft:dark_oak_planks"
+            "item": "minecraft:stick"
         }
     },
     "result": {

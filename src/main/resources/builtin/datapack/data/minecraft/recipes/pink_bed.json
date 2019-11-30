@@ -1,17 +1,13 @@
 {
-    "type": "crafting_shaped",
-    "pattern": [
-        "###",
-        "///"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:pink_wool"
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:white_bed"
         },
-        "/": {
-            "item": "minecraft:planks"
+        {
+            "item": "minecraft:pink_dye"
         }
-    },
+    ],
     "result": {
         "item": "minecraft:pink_bed",
         "count": 1

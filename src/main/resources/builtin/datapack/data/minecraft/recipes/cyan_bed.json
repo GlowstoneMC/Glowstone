@@ -1,17 +1,13 @@
 {
-    "type": "crafting_shaped",
-    "pattern": [
-        "###",
-        "///"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:cyan_wool"
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:white_bed"
         },
-        "/": {
-            "item": "minecraft:planks"
+        {
+            "item": "minecraft:cyan_dye"
         }
-    },
+    ],
     "result": {
         "item": "minecraft:cyan_bed",
         "count": 1

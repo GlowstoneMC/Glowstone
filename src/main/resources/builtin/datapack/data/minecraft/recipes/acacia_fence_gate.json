@@ -1,15 +1,15 @@
 {
     "type": "crafting_shaped",
     "pattern": [
-        "#/#",
-        "#/#"
+        "/#/",
+        "/#/"
     ],
     "key": {
         "#": {
-            "item": "minecraft:stick"
+            "item": "minecraft:acacia_planks"
         },
         "/": {
-            "item": "minecraft:acacia_planks"
+            "item": "minecraft:stick"
         }
     },
     "result": {

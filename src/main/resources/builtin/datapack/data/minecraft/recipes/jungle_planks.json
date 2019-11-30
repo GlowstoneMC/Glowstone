@@ -1,10 +1,13 @@
 {
-    "type": "crafting_shapeless",
-    "ingredients": [
-        {
+    "type": "crafting_shaped",
+    "pattern": [
+        "#"
+    ],
+    "key": {
+        "#": {
             "item": "minecraft:jungle_log"
         }
-    ],
+    },
     "result": {
         "item": "minecraft:jungle_planks",
         "count": 4

@@ -1,9 +1,0 @@
-{
-    "type": "smelting",
-    "ingredient": {
-        "item": "minecraft:golden_ingot_ore"
-    },
-    "result": "minecraft:golden_ingot",
-    "experience": 1.0,
-    "cookingtime": 200
-}

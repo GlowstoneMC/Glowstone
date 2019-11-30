@@ -1,17 +1,13 @@
 {
-    "type": "crafting_shaped",
-    "pattern": [
-        "###",
-        "///"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:black_wool"
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:white_bed"
         },
-        "/": {
-            "item": "minecraft:planks"
+        {
+            "item": "minecraft:ink_sac"
         }
-    },
+    ],
     "result": {
         "item": "minecraft:black_bed",
         "count": 1

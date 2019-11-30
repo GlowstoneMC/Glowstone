@@ -73,7 +73,7 @@ fun shapedCraft(fileName: String, pattern1: String, pattern2: String? = null, pa
 
     val mapComputed = subst.map {
         tab + tab + dqf(it.key) + ": {\n" +
-        tab + tab + tab + dqf("item") + ": " + '"' + "minecraft:${it.value}" + '"' + '\n' +
+        tab + tab + tab + dqf("item") + ": " + dqf("minecraft:${it.value}") + '\n' +
         tab + tab + "}"
     }.joinToString(",\n")
 
@@ -155,6 +155,7 @@ val oreSmelting = mapOf(
     "emerald_ore" to Smelt("emerald", 1.0)
 )
 // https://minecraft.gamepedia.com/Smelting
+// TODO: Foods cooking
 val furnaceMap = mapOf(
         "cactus" to Smelt("green_dye", 1.0)
 ) +
@@ -167,6 +168,7 @@ val dye = mapOf(
     "purple" to "purple_dye", "blue" to "lapis_lazuli", "brown" to "cocoa_beans", "green" to "green_dye", "red" to "red_dye", "black" to "ink_sac"
 )
 
+/** name -> actual material */
 val armorIngredients = mapOf("leather" to "leather", "fire" to "chainmail", "iron_ingot" to "iron", "golden_ingot" to "gold", "diamond" to "diamond")
 val armors = setOf("helmet", "chestplate", "leggings", "boots")
 
@@ -180,7 +182,7 @@ furnaceMap.forEach {
 
 for (kind in wood) {
     // planks
-    block2x2("${kind}_planks", "${kind}_log", amount = 4)
+    shapedCraft("${kind}_planks", "#", subst = mapOf("#" to "${kind}_log"), amount = 4)
 
     // slabs
     shapedCraft("${kind}_slab", "###", subst = mapOf("#" to "${kind}_planks"), amount = 6)
@@ -195,7 +197,7 @@ for (kind in wood) {
     shapedCraft("${kind}_fence", "#/#", "#/#", subst = mapOf("#" to "${kind}_planks", "/" to "stick"), amount = 3)
 
     // fence gates
-    shapedCraft("${kind}_fence", "/#/", "/#/", subst = mapOf("#" to "${kind}_planks", "/" to "stick"))
+    shapedCraft("${kind}_fence_gate", "/#/", "/#/", subst = mapOf("#" to "${kind}_planks", "/" to "stick"))
 
     // doors
     shapedCraft("${kind}_door", "##", "##", "##", mapOf("#" to "${kind}_planks"), amount = 3)
