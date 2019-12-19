@@ -126,7 +126,7 @@ public class GlowInventory implements Inventory {
      * @return Viewers set.
      */
     public Set<HumanEntity> getViewersSet() {
-        return Collections.unmodifiableSet(viewers);
+        return Collections.synchronizedSet(viewers);
     }
 
     ////////////////////////////////////////////////////////////////////////////
