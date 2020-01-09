@@ -18,7 +18,7 @@
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <kotlin.version>1.3.21</kotlin.version>
+    <kotlin.version>1.3.50</kotlin.version>
     <powermock.version>2.0.0</powermock.version>
     <junit.jupiter.version>5.4.0</junit.jupiter.version>
     <junit.vintage.version>5.4.0</junit.vintage.version>
@@ -83,7 +83,7 @@
     <dependency>
       <groupId>com.flowpowered</groupId>
       <artifactId>flow-network</artifactId>
-      <version>1.2.7-SNAPSHOT</version>
+      <version>1.2.8-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.eatthepath</groupId>
@@ -341,24 +341,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok-maven-plugin</artifactId>
-        <version>1.18.4.0</version>
-        <executions>
-          <execution>
-            <id>delombok</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>delombok</goal>
-            </goals>
-            <configuration>
-              <addOutputDirectory>false</addOutputDirectory>
-              <sourceDirectory>src/main/java</sourceDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.0</version>
@@ -367,20 +349,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.1.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.1</version>
-        <configuration>
-          <defaultVersion>${project.version}</defaultVersion>
-          <sourcepath>target/generated-sources/delombok</sourcepath>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>3.0.1</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -434,6 +402,60 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>build-extras</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-maven-plugin</artifactId>
+            <version>1.18.4.0</version>
+            <executions>
+              <execution>
+                <id>delombok</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>delombok</goal>
+                </goals>
+                <configuration>
+                  <addOutputDirectory>false</addOutputDirectory>
+                  <sourceDirectory>src/main/java</sourceDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.0.1</version>
+            <configuration>
+              <defaultVersion>${project.version}</defaultVersion>
+              <sourcepath>target/generated-sources/delombok</sourcepath>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals><goal>jar</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals><goal>jar-no-fork</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <reporting>
     <plugins>

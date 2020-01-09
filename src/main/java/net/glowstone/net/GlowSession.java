@@ -4,6 +4,7 @@ import com.flowpowered.network.AsyncableMessage;
 import com.flowpowered.network.ConnectionManager;
 import com.flowpowered.network.Message;
 import com.flowpowered.network.MessageHandler;
+import com.flowpowered.network.protocol.AbstractProtocol;
 import com.flowpowered.network.session.BasicSession;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -41,7 +42,7 @@ import net.glowstone.net.pipeline.EncryptionHandler;
 import net.glowstone.net.protocol.GlowProtocol;
 import net.glowstone.net.protocol.LoginProtocol;
 import net.glowstone.net.protocol.PlayProtocol;
-import net.glowstone.net.protocol.ProtocolType;
+import net.glowstone.net.protocol.ProtocolProvider;
 import net.glowstone.util.UuidUtils;
 import org.bukkit.Statistic;
 import org.bukkit.boss.BossBar;
@@ -64,6 +65,11 @@ public class GlowSession extends BasicSession {
      */
     @Getter
     private final GlowServer server;
+
+    /**
+     * The provider of the protocols.
+     */
+    private final ProtocolProvider protocolProvider;
 
     /**
      * The connection manager this session belongs to.
@@ -165,9 +171,10 @@ public class GlowSession extends BasicSession {
      * @param connectionManager The connection manager to manage connections for this
      *         session.
      */
-    public GlowSession(GlowServer server, Channel channel, ConnectionManager connectionManager) {
-        super(channel, ProtocolType.HANDSHAKE.getProtocol());
+    public GlowSession(GlowServer server, ProtocolProvider protocolProvider, Channel channel, ConnectionManager connectionManager) {
+        super(channel, protocolProvider.handshake);
         this.server = server;
+        this.protocolProvider = protocolProvider;
         this.connectionManager = connectionManager;
         address = super.getAddress();
     }
@@ -475,7 +482,7 @@ public class GlowSession extends BasicSession {
 
         // send login response
         send(new LoginSuccessMessage(UuidUtils.toString(profile.getId()), profile.getName()));
-        setProtocol(ProtocolType.PLAY);
+        setProtocol(protocolProvider.play);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -484,14 +491,14 @@ public class GlowSession extends BasicSession {
     /**
      * Sets the protocol for this session.
      *
-     * @param protocol the new protocol
+     * @param proto the new protocol
      */
-    public void setProtocol(ProtocolType protocol) {
+    @Override
+    public void setProtocol(AbstractProtocol proto) {
         getChannel().flush();
 
-        GlowProtocol proto = protocol.getProtocol();
-        updatePipeline("codecs", new CodecsHandler(proto));
-        setProtocol(proto);
+        updatePipeline("codecs", new CodecsHandler((GlowProtocol)proto));
+        super.setProtocol(proto);
     }
 
     /**

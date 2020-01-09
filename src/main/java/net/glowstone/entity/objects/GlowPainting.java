@@ -2,6 +2,7 @@ package net.glowstone.entity.objects;
 
 import com.flowpowered.network.Message;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class GlowPainting extends GlowHangingEntity implements Painting {
 
     private static final double PAINTING_DEPTH = 0.0625;
     private static final Art DEFAULT_ART = Art.KEBAB;
-    private static final Map<Art, String> TITLE_BY_ART = new HashMap<>();
+    private static final Map<Art, String> TITLE_BY_ART = new EnumMap<>(Art.class);
     private static final Map<String, Art> ART_BY_TITLE = new HashMap<>();
 
     static {

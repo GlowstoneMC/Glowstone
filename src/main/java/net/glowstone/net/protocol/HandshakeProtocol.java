@@ -4,10 +4,11 @@ import net.glowstone.net.codec.handshake.HandshakeCodec;
 import net.glowstone.net.handler.handshake.HandshakeHandler;
 import net.glowstone.net.message.handshake.HandshakeMessage;
 
-public final class HandshakeProtocol extends GlowProtocol {
+public class HandshakeProtocol extends GlowProtocol {
 
-    public HandshakeProtocol() {
+    public HandshakeProtocol(StatusProtocol statusProtocol, LoginProtocol loginProtocol) {
         super("HANDSHAKE", 0);
-        inbound(0x00, HandshakeMessage.class, HandshakeCodec.class, HandshakeHandler.class);
+        inbound(0x00, HandshakeMessage.class, HandshakeCodec.class,
+            new HandshakeHandler(statusProtocol, loginProtocol));
     }
 }

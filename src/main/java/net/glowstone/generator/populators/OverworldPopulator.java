@@ -1,6 +1,6 @@
 package net.glowstone.generator.populators;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 import net.glowstone.generator.populators.overworld.BiomePopulator;
@@ -36,7 +36,7 @@ import org.bukkit.generator.BlockPopulator;
 
 public class OverworldPopulator extends BlockPopulator {
 
-    private final Map<Biome, BiomePopulator> biomePopulators = new HashMap<>();
+    private final Map<Biome, BiomePopulator> biomePopulators = new EnumMap<>(Biome.class);
 
     /**
      * Creates a populator with biome populators for all vanilla overworld biomes.

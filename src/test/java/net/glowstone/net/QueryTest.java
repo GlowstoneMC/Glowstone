@@ -21,6 +21,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
+import net.glowstone.net.protocol.HandshakeProtocol;
+import net.glowstone.net.protocol.LoginProtocol;
+import net.glowstone.net.protocol.PlayProtocol;
+import net.glowstone.net.protocol.ProtocolProvider;
+import net.glowstone.net.protocol.StatusProtocol;
 import net.glowstone.net.query.QueryHandler;
 import net.glowstone.net.query.QueryServer;
 import net.glowstone.util.Convert;
@@ -76,8 +81,14 @@ public class QueryTest {
     public void setup() throws Exception {
         glowServer = mock(GlowServer.class);
         CountDownLatch latch = new CountDownLatch(1);
+        ProtocolProvider protocolProvider = new ProtocolProvider(
+            mock(HandshakeProtocol.class),
+            mock(StatusProtocol.class),
+            mock(LoginProtocol.class),
+            mock(PlayProtocol.class)
+        );
         this.queryPlugins = true;
-        server = new QueryServer(glowServer, latch, queryPlugins);
+        server = new QueryServer(glowServer, protocolProvider, latch, queryPlugins);
         random = mock(ThreadLocalRandom.class);
         PowerMockito.mockStatic(ThreadLocalRandom.class);
         when(ThreadLocalRandom.current()).thenReturn(random);

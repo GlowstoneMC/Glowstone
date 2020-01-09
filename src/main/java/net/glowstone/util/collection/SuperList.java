@@ -88,14 +88,14 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
             return false;
         }
 
-        List other = (List) object;
+        List<?> other = (List<?>) object;
 
         if (other.size() != size()) {
             return false;
         }
 
-        Iterator thisIterator = iterator();
-        Iterator otherIterator = other.iterator();
+        Iterator<E> thisIterator = iterator();
+        Iterator<?> otherIterator = other.iterator();
         while (thisIterator.hasNext()) {
             if (!thisIterator.next().equals(otherIterator.next())) {
                 return false;
@@ -124,7 +124,7 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new SuperIterator(getParents());
+        return new SuperIterator<>(getParents());
     }
 
     @Override
@@ -182,12 +182,12 @@ public class SuperList<E> extends SuperCollection<E> implements List<E> {
 
     @Override
     public ListIterator<E> listIterator() {
-        return new SuperListIterator(getParents());
+        return new SuperListIterator<>(getParents());
     }
 
     @Override
     public ListIterator<E> listIterator(int index) {
-        return new SuperListIterator(getParents(), index);
+        return new SuperListIterator<>(getParents(), index);
     }
 
     @Override

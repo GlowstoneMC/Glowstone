@@ -2,6 +2,7 @@ package net.glowstone.entity;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.destroystokyo.paper.event.player.PlayerInitialSpawnEvent;
 import com.flowpowered.network.Message;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -317,19 +318,31 @@ public abstract class GlowEntity implements Entity {
      * @param location The location of the entity.
      */
     public GlowEntity(Location location) {
+        // Set initial locations for events.
         this.origin = location.clone();
         this.previousLocation = location.clone();
         this.location = location.clone();
 
-        world = (GlowWorld) location.getWorld();
-        server = world.getServer();
         // this is so dirty I washed my hands after writing it.
         if (this instanceof GlowPlayer) {
-            // spawn location event
+            // initial spawn event, first
+            location = EventFactory.getInstance()
+                .callEvent(new PlayerInitialSpawnEvent((Player) this, location))
+                .getSpawnLocation();
+
+            // then, spawn location event (with location updated from initial spawn event)
             location = EventFactory.getInstance()
                 .callEvent(new PlayerSpawnLocationEvent((Player) this, location))
                 .getSpawnLocation();
+
+            // Update from modifications done on events.
+            Position.copyLocation(location, this.origin);
+            Position.copyLocation(location, this.previousLocation);
+            Position.copyLocation(location, this.location);
         }
+        world = (GlowWorld) location.getWorld();
+        server = world.getServer();
+
         server.getEntityIdManager().allocate(this);
         world.getEntityManager().register(this);
     }
@@ -904,13 +917,7 @@ public abstract class GlowEntity implements Entity {
             // In case the current session belongs to this player passenger
             // We need to send the self_id
             List<Integer> passengerIds = new ArrayList<>();
-            getPassengers().forEach(e -> {
-                if (session.getPlayer().equals(e)) {
-                    passengerIds.add(GlowPlayer.SELF_ID);
-                } else {
-                    passengerIds.add(e.getEntityId());
-                }
-            });
+            getPassengers().forEach(e -> passengerIds.add(e.getEntityId()));
             result.add(new SetPassengerMessage(getEntityId(), passengerIds.stream()
                 .mapToInt(Integer::intValue).toArray()));
             passengerChanged = false;
@@ -1219,9 +1226,22 @@ public abstract class GlowEntity implements Entity {
 
     @Override
     public void playEffect(EntityEffect type) {
-        EntityStatusMessage message = new EntityStatusMessage(entityId, type);
-        world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
-            .forEach(player -> player.getSession().send(message));
+        if (type.getApplicable().isInstance(this)) {
+            EntityStatusMessage message = new EntityStatusMessage(entityId, type);
+            world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
+                    .forEach(player -> player.getSession().send(message));
+        }
+    }
+
+    public void playEffectKnownAndSelf(EntityEffect type) {
+        if (type.getApplicable().isInstance(this)) {
+            EntityStatusMessage message = new EntityStatusMessage(entityId, type);
+            if (this instanceof GlowPlayer) {
+                ((GlowPlayer) this).getSession().send(message);
+            }
+            world.getRawPlayers().stream().filter(player -> player.canSeeEntity(this))
+                    .forEach(player -> player.getSession().send(message));
+        }
     }
 
     @Override

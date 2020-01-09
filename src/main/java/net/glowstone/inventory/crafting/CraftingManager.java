@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +34,7 @@ public final class CraftingManager implements Iterable<Recipe> {
     private final ArrayList<ShapelessRecipe> shapelessRecipes = new ArrayList<>();
     private final ArrayList<DynamicRecipe> dynamicRecipes = new ArrayList<>();
     private final ArrayList<FurnaceRecipe> furnaceRecipes = new ArrayList<>();
-    private final Map<Material, Integer> furnaceFuels = new HashMap<>();
+    private final Map<Material, Integer> furnaceFuels = new EnumMap<>(Material.class);
 
     /**
      * Get the amount of layers in the crafting matrix. This assumes all Minecraft recipes have an

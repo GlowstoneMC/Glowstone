@@ -3,6 +3,7 @@ package net.glowstone.i18n;
 import java.util.logging.Level;
 
 public interface ConsoleMessages {
+
     interface Error {
         interface Biome {
             LoggableLocalizedString UNKNOWN = new LoggableLocalizedStringImpl(
@@ -169,8 +170,7 @@ public interface ConsoleMessages {
 
         interface Net {
             LoggableLocalizedString BIND_FAILED = new LoggableLocalizedStringImpl(
-                    "console.net.bind-failed", Level.SEVERE
-            );
+                    "console.net.bind-failed", Level.SEVERE);
 
             LoggableLocalizedString BIND_FAILED_UNKNOWN = new LoggableLocalizedStringImpl(
                     "console.net.bind-failed.unknown", Level.SEVERE

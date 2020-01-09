@@ -1,4 +1,4 @@
-![Built with Love](http://forthebadge.com/images/badges/built-with-love.svg)
+![Built with Love](https://forthebadge.com/images/badges/built-with-love.svg)
 [![Join the Discord chat](https://img.shields.io/badge/discord-glowstone-7289da.svg?style=flat-square&logo=discord)](https://discord.gg/TFJqhsC)
 [![Build Status](https://dev.azure.com/glowstonemc/Glowstone/_apis/build/status/Glowstone?branchName=dev)](https://dev.azure.com/glowstonemc/Glowstone/_build/latest?definitionId=1&branchName=dev)
 [![Release Status](https://vsrm.dev.azure.com/glowstonemc/_apis/public/Release/badge/bce4eb30-17cf-4f26-b394-a6a5d1eea1fa/1/1)](https://dev.azure.com/glowstonemc/Glowstone/_release?definitionId=1)
@@ -12,7 +12,7 @@ A fast, customizable and compatible open source server for Minecraft: Java Editi
 ## Introduction
 
 Glowstone is a lightweight, from scratch, open source
-[Minecraft](http://minecraft.net) server written in Java that supports plugins
+[Minecraft](https://minecraft.net) server written in Java that supports plugins
 written for the Bukkit API and its major forks, Spigot and Paper.
 
 The main goals of the project are to provide a lightweight implementation
@@ -59,9 +59,8 @@ Older releases can be found on [GitHub](https://github.com/GlowstoneMC/Glowstone
 
 ## Building
 
-
 ### 1. Setup
-After installing [Oracle JDK](http://oracle.com/technetwork/java/javase/downloads) (recommended) or [OpenJDK](http://openjdk.java.net/), and
+After installing [Oracle JDK](https://oracle.com/technetwork/java/javase/downloads) (recommended) or [OpenJDK](https://openjdk.java.net/), and
 [Maven](https://maven.apache.org), checkout the source:
 
 ```sh
@@ -90,7 +89,7 @@ are stored in the `logs/` subdirectory. The main configuration file is
 `bukkit.yml`. Settings from these two files will be copied over to Glowstone's
 configuration during the default configuration generation process.
 
-Glowstone uses [JLine](http://jline.github.io/jline2/) for console input and colored
+Glowstone uses [JLine](https://jline.github.io/jline2/) for console input and colored
 console output. The JLine console can be disabled in the configuration if a
 flat console is desired.
 
@@ -117,9 +116,18 @@ For documentation on the Glowkit API (an updated Bukkit for Glowstone, based on 
 
 First of all, thank you for your interest in advancing Glowstone! We always love to see new developers work on the project! You can find all of our resources on how to get started on our [wiki](https://github.com/GlowstoneMC/Glowstone/wiki#contributing).
 
+## Sponsors
+
+* **[Aternos](https://aternos.org/) - Minecraft Servers. Free. Forever.**
+* [Martin Panzer (Postremus)](https://martinpanzer.de/)
+
+[More backers](https://github.com/GlowstoneMC/Glowstone/blob/dev/docs/BACKERS.md)
+
+Sponsor Glowstone [on Bountysource](https://www.bountysource.com/teams/glowstonemc)!
+
 ## Credits
 
- * [The Minecraft Coalition](http://wiki.vg/) and [`#mcdevs`](https://github.com/mcdevs) -
+ * [The Minecraft Coalition](https://wiki.vg/) and [`#mcdevs`](https://github.com/mcdevs) -
    protocol and file formats research.
  * [The Bukkit team](https://bukkit.org) for their outstandingly well-designed
    plugin API.
@@ -129,14 +137,14 @@ First of all, thank you for your interest in advancing Glowstone! We always love
  * [The SpongePowered Team](https://www.spongepowered.org/) for
    creating the Sponge API.
  * [Trustin Lee](https://github.com/trustin) - author of the
-   [Netty](http://netty.io/) library.
+   [Netty](https://netty.io/) library.
  * [Graham Edgecombe](https://github.com/grahamedgecombe/) - author of the
    original [Lightstone](https://github.com/grahamedgecombe/lightstone).
  * [Tad Hardesty](https://github.com/SpaceManiac) and [all the contributors](https://github.com/GlowstoneMC/Glowstone-Legacy/graphs/contributors) to Glowstone Legacy.
  * [deathcap](https://github.com/deathcap) for starting Glowstone++.
  * All the people behind [Maven](https://maven.apache.org/team-list.html) and [Java](https://java.net/people).
- * [Notch](http://notch.tumblr.com/) and
-   [Mojang](http://mojang.com/about) - for making such an awesome game in the first
+ * [Notch](https://notch.tumblr.com/) and
+   [Mojang](https://mojang.com/about) - for making such an awesome game in the first
    place!
 
 ## Copyright

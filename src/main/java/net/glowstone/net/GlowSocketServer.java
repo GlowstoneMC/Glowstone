@@ -10,6 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.glowstone.GlowServer;
+import net.glowstone.net.protocol.ProtocolProvider;
 
 public abstract class GlowSocketServer extends GlowNetworkServer {
 
@@ -26,8 +27,9 @@ public abstract class GlowSocketServer extends GlowNetworkServer {
      * @param latch The countdown latch used during server startup to wait for network server
      *         binding.
      */
-    public GlowSocketServer(GlowServer server, CountDownLatch latch) {
-        super(server, latch);
+    public GlowSocketServer(GlowServer server, ProtocolProvider protocolProvider,
+                            CountDownLatch latch) {
+        super(server, protocolProvider, latch);
         bossGroup = Networking.createBestEventLoopGroup();
         workerGroup = Networking.createBestEventLoopGroup();
         bootstrap = new ServerBootstrap();
