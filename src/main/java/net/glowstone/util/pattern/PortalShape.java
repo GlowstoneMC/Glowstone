@@ -16,17 +16,17 @@ import org.bukkit.event.world.PortalCreateEvent;
 public class PortalShape {
 
     /**
-     * Max portal width or height.
+     * Max portal width or height. Inclusive.
      */
     private static final int MAX_PORTAL_WIDTH_HEIGHT = 21;
 
     /**
-     * Min portal height.
+     * Min portal height. Inclusive.
      */
     private static final int MIN_PORTAL_HEIGHT = 3;
 
     /**
-     * Min portal width.
+     * Min portal width. Inclusive.
      */
     private static final int MIN_PORTAL_WIDTH = 2;
 
@@ -224,7 +224,6 @@ public class PortalShape {
         width = 0;
         height = 0;
         return 0;
-
     }
 
     /**

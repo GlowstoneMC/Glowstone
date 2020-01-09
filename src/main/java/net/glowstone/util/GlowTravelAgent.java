@@ -43,12 +43,13 @@ public class GlowTravelAgent implements TravelAgent {
         Location minLoc = null;
         double minDistance = Double.MAX_VALUE;
 
+        final int maxY = world.getEnvironment() == World.Environment.NETHER ? 127 : 255;
         final int blockX = destination.getBlockX();
         final int blockZ = destination.getBlockZ();
 
         for (int x = blockX - searchRadius; x < (blockX + searchRadius); x++) {
             for (int z = blockZ - searchRadius; z < (blockZ + searchRadius); z++) {
-                for (int y = 127; y >= 0; y--) {
+                for (int y = maxY; y >= 0; y--) {
                     final Block toCompare = world.getBlockAt(x, y, z);
 
                     if (toCompare.getType() == Material.PORTAL

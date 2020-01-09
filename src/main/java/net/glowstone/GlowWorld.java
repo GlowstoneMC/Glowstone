@@ -776,6 +776,22 @@ public class GlowWorld implements World {
         return 0;
     }
 
+    /**
+     * Determines if a nether portal can port to a certain world.
+     * If the nether is allowed, both NORMAL and NETHER environments are valid, else only NORMAL ones are allowed.
+     * @param destination the world to check for. May be null.
+     *
+     * @return whether a nether portal can port to a certain world
+     */
+    public boolean isNetherPortalDestinationValid(GlowWorld destination) {
+        // Do not allow Nether portals to be accessed from the end
+        if (destination == null || environment == Environment.THE_END) {
+            return false;
+        }
+        Environment environment = destination.environment;
+        return environment == Environment.NORMAL || (environment == Environment.NETHER && server.getAllowNether());
+    }
+
     public Collection<GlowPlayer> getRawPlayers() {
         return entityManager.getAll(GlowPlayer.class);
     }
