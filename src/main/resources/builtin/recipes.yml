@@ -1,3916 +1,2385 @@
 furnace:
-- result:
-    type: COOKED_FISH
-    damage: 1
-  input:
-    type: RAW_FISH
-    damage: 1
-  xp: 0.35
-- result:
-    type: COOKED_CHICKEN
-  input:
-    type: RAW_CHICKEN
-    damage: 32767
-  xp: 0.35
-- result:
-    type: HARD_CLAY
-  input:
-    type: CLAY
-    damage: 32767
-  xp: 0.35
-- result:
-    type: REDSTONE
-  input:
-    type: REDSTONE_ORE
-    damage: 32767
-  xp: 0.7
-- result:
-    type: IRON_INGOT
-  input:
-    type: IRON_ORE
-    damage: 32767
-  xp: 0.7
-- result:
-    type: INK_SACK
-    damage: 4
-  input:
-    type: LAPIS_ORE
-    damage: 32767
-  xp: 0.2
-- result:
-    type: COAL
-  input:
-    type: COAL_ORE
-    damage: 32767
-  xp: 0.1
-- result:
-    type: COOKED_FISH
-  input:
-    type: RAW_FISH
-  xp: 0.35
-- result:
-    type: STONE
-  input:
-    type: COBBLESTONE
-    damage: 32767
-  xp: 0.1
-- result:
-    type: DIAMOND
-  input:
-    type: DIAMOND_ORE
-    damage: 32767
-  xp: 1
-- result:
-    type: EMERALD
-  input:
-    type: EMERALD_ORE
-    damage: 32767
-  xp: 1
-- result:
-    type: BAKED_POTATO
-  input:
-    type: POTATO_ITEM
-    damage: 32767
-  xp: 0.35
-- result:
-    type: COAL
-    damage: 1
-  input:
-    type: LOG_2
-    damage: 32767
-  xp: 0.15
-- result:
-    type: COOKED_BEEF
-  input:
-    type: RAW_BEEF
-    damage: 32767
-  xp: 0.35
-- result:
-    type: GOLD_INGOT
-  input:
-    type: GOLD_ORE
-    damage: 32767
-  xp: 1
-- result:
-    type: COAL
-    damage: 1
-  input:
-    type: LOG
-    damage: 32767
-  xp: 0.15
-- result:
-    type: NETHER_BRICK_ITEM
-  input:
-    type: NETHERRACK
-    damage: 32767
-  xp: 0.1
-- result:
-    type: GLASS
-  input:
-    type: SAND
-    damage: 32767
-  xp: 0.1
-- result:
-    type: CLAY_BRICK
-  input:
-    type: CLAY_BALL
-    damage: 32767
-  xp: 0.3
-- result:
-    type: GRILLED_PORK
-  input:
-    type: PORK
-    damage: 32767
-  xp: 0.35
-- result:
-    type: QUARTZ
-  input:
-    type: QUARTZ_ORE
-    damage: 32767
-  xp: 0.2
-- result:
-    type: INK_SACK
-    damage: 2
-  input:
-    type: CACTUS
-    damage: 32767
-  xp: 0.2
-- result:
-    type: SMOOTH_BRICK
-    damage: 2
-  input:
-    type: SMOOTH_BRICK
-    damage: 0
-  xp: 0.1
-- result:
-    type: COOKED_RABBIT
-  input:
-    type: RABBIT
-    damage: 32767
-  xp: 0.35
-- result: 
-    type: COOKED_MUTTON
-  input:
-    type: MUTTON
-    damage: 32767
-  xp: 0.35
-- result:
-    type: SPONGE
-    damage: 0
-  input:
-    type: SPONGE
-    damage: 1
-  xp: 0.15
+  - result: COOKED_FISH
+    input: RAW_FISH
+  - result: COOKED_CHICKEN
+    input: RAW_CHICKEN
+  - result: HARD_CLAY
+    input: CLAY
+  - result: REDSTONE
+    input: REDSTONE_ORE
+  - result: IRON_INGOT
+    input: IRON_ORE
+  - result: INK_SACK
+    input: LAPIS_ORE
+  - result: COAL
+    input: COAL_ORE
+  - result: COOKED_FISH
+    input: RAW_FISH
+  - result: STONE
+    input: COBBLESTONE
+  - result: DIAMOND
+    input: DIAMOND_ORE
+  - result: EMERALD
+    input: EMERALD_ORE
+  - result: BAKED_POTATO
+    input: POTATO_ITEM
+  - result: COAL
+    input: LOG_2
+  - result: COOKED_BEEF
+    input: RAW_BEEF
+  - result: GOLD_INGOT
+    input: GOLD_ORE
+  - result: COAL
+    input: LOG
+  - result: NETHER_BRICK_ITEM
+    input: NETHERRACK
+  - result: GLASS
+    input: SAND
+  - result: CLAY_BRICK
+    input: CLAY_BALL
+  - result: GRILLED_PORK
+    input: PORK
+  - result: QUARTZ
+    input: QUARTZ_ORE
+  - result: INK_SACK
+    input: CACTUS
+  - result: SMOOTH_BRICK
+    input: SMOOTH_BRICK
+  - result: COOKED_RABBIT
+    input: RABBIT
+  - result: COOKED_MUTTON
+    input: MUTTON
+  - result: SPONGE
+    input: SPONGE
 shapeless:
-- result:
-    type: LEATHER_HELMET
-    amount: 0
-  ingredients:
-  - type: INK_SACK
-    damage: 5
-- result:
-    type: FIREWORK
-    amount: 0
-  ingredients:
-  - type: SULPHUR
-    damage: 5
-- result:
-    type: WRITTEN_BOOK
-    damage: -1
-    amount: 0
-  ingredients:
-  - type: BOOK_AND_QUILL
-- result:
-    type: MAP
-    damage: -1
-    amount: 0
-  ingredients:
-  - type: EMPTY_MAP
-- result:
-    type: INK_SACK
-    damage: 13
-    amount: 4
-  ingredients:
-  - type: INK_SACK
-    damage: 4
-  - type: INK_SACK
-    damage: 1
-  - type: INK_SACK
-    damage: 1
-  - type: INK_SACK
-    damage: 15
-- result:
-    type: BOOK
-  ingredients:
-  - type: PAPER
-  - type: PAPER
-  - type: PAPER
-  - type: LEATHER
-- result:
-    type: MUSHROOM_SOUP
-  ingredients:
-  - type: BROWN_MUSHROOM
-  - type: RED_MUSHROOM
-  - type: BOWL
-- result:
-    type: PUMPKIN_PIE
-  ingredients:
-  - type: PUMPKIN
-  - type: SUGAR
-  - type: EGG
-- result:
-    type: FERMENTED_SPIDER_EYE
-  ingredients:
-  - type: SPIDER_EYE
-  - type: BROWN_MUSHROOM
-  - type: SUGAR
-- result:
-    type: INK_SACK
-    damage: 7
-    amount: 3
-  ingredients:
-  - type: INK_SACK
-  - type: INK_SACK
-    damage: 15
-  - type: INK_SACK
-    damage: 15
-- result:
-    type: INK_SACK
-    damage: 13
-    amount: 3
-  ingredients:
-  - type: INK_SACK
-    damage: 4
-  - type: INK_SACK
-    damage: 1
-  - type: INK_SACK
-    damage: 9
-- result:
-    type: BOOK_AND_QUILL
-  ingredients:
-  - type: BOOK
-  - type: INK_SACK
-  - type: FEATHER
-- result:
-    type: FIREBALL
-    amount: 3
-  ingredients:
-  - type: SULPHUR
-  - type: BLAZE_POWDER
-  - type: COAL
-- result:
-    type: FIREBALL
-    amount: 3
-  ingredients:
-  - type: SULPHUR
-  - type: BLAZE_POWDER
-  - type: COAL
-    damage: 1
-- result:
-    type: MAGMA_CREAM
-  ingredients:
-  - type: BLAZE_POWDER
-  - type: SLIME_BALL
-- result:
-    type: WOOL
-    damage: 15
-  ingredients:
-  - type: INK_SACK
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 14
-  ingredients:
-  - type: INK_SACK
-    damage: 1
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 13
-  ingredients:
-  - type: INK_SACK
-    damage: 2
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 12
-  ingredients:
-  - type: INK_SACK
-    damage: 3
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 11
-  ingredients:
-  - type: INK_SACK
-    damage: 4
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 10
-  ingredients:
-  - type: INK_SACK
-    damage: 5
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 9
-  ingredients:
-  - type: INK_SACK
-    damage: 6
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 8
-  ingredients:
-  - type: INK_SACK
-    damage: 7
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 7
-  ingredients:
-  - type: INK_SACK
-    damage: 8
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 6
-  ingredients:
-  - type: INK_SACK
-    damage: 9
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 5
-  ingredients:
-  - type: INK_SACK
-    damage: 10
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 4
-  ingredients:
-  - type: INK_SACK
-    damage: 11
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 3
-  ingredients:
-  - type: INK_SACK
-    damage: 12
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 13
-  - type: WOOL
-- result:
-    type: WOOL
-    damage: 1
-  ingredients:
-  - type: INK_SACK
-    damage: 14
-  - type: WOOL
-- result:
-    type: WOOL
-  ingredients:
-  - type: INK_SACK
-    damage: 15
-  - type: WOOL
-- result:
-    type: INK_SACK
-    damage: 9
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 1
-  - type: INK_SACK
-    damage: 15
-- result:
-    type: INK_SACK
-    damage: 14
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 1
-  - type: INK_SACK
-    damage: 11
-- result:
-    type: INK_SACK
-    damage: 10
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 2
-  - type: INK_SACK
-    damage: 15
-- result:
-    type: INK_SACK
-    damage: 8
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-  - type: INK_SACK
-    damage: 15
-- result:
-    type: INK_SACK
-    damage: 7
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 8
-  - type: INK_SACK
-    damage: 15
-- result:
-    type: INK_SACK
-    damage: 12
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 4
-  - type: INK_SACK
-    damage: 15
-- result:
-    type: INK_SACK
-    damage: 6
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 4
-  - type: INK_SACK
-    damage: 2
-- result:
-    type: INK_SACK
-    damage: 5
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 4
-  - type: INK_SACK
-    damage: 1
-- result:
-    type: INK_SACK
-    damage: 13
-    amount: 2
-  ingredients:
-  - type: INK_SACK
-    damage: 5
-  - type: INK_SACK
-    damage: 9
-- result:
-    type: FLINT_AND_STEEL
-  ingredients:
-  - type: IRON_INGOT
-  - type: FLINT
-- result:
-    type: EYE_OF_ENDER
-  ingredients:
-  - type: ENDER_PEARL
-  - type: BLAZE_POWDER
-- result:
-    type: BLAZE_POWDER
-    amount: 2
-  ingredients:
-  - type: BLAZE_ROD
-- result:
-    type: INK_SACK
-    damage: 11
-  ingredients:
-  - type: YELLOW_FLOWER
-- result:
-    type: INK_SACK
-    damage: 1
-  ingredients:
-  - type: RED_ROSE
-- result:
-    type: INK_SACK
-    damage: 15
-    amount: 3
-  ingredients:
-  - type: BONE
-- result:
-    type: INK_SACK
-    damage: 12
-  ingredients:
-  - type: RED_ROSE
-    damage: 1
-- result:
-    type: INK_SACK
-    damage: 13
-  ingredients:
-  - type: RED_ROSE
-    damage: 2
-- result:
-    type: INK_SACK
-    damage: 7
-  ingredients:
-  - type: RED_ROSE
-    damage: 3
-- result:
-    type: INK_SACK
-    damage: 1
-  ingredients:
-  - type: RED_ROSE
-    damage: 4
-- result:
-    type: INK_SACK
-    damage: 14
-  ingredients:
-  - type: RED_ROSE
-    damage: 5
-- result:
-    type: INK_SACK
-    damage: 7
-  ingredients:
-  - type: RED_ROSE
-    damage: 6
-- result:
-    type: INK_SACK
-    damage: 9
-  ingredients:
-  - type: RED_ROSE
-    damage: 7
-- result:
-    type: INK_SACK
-    damage: 7
-  ingredients:
-  - type: RED_ROSE
-    damage: 8
-- result:
-    type: INK_SACK
-    damage: 11
-    amount: 2
-  ingredients:
-  - type: DOUBLE_PLANT
-- result:
-    type: INK_SACK
-    damage: 13
-    amount: 2
-  ingredients:
-  - type: DOUBLE_PLANT
-    damage: 1
-- result:
-    type: INK_SACK
-    damage: 1
-    amount: 2
-  ingredients:
-  - type: DOUBLE_PLANT
-    damage: 4
-- result:
-    type: INK_SACK
-    damage: 9
-    amount: 2
-  ingredients:
-  - type: DOUBLE_PLANT
-    damage: 5
-- result:
-    type: SMOOTH_BRICK
-    damage: 1
-  ingredients:
-  - type: SMOOTH_BRICK
-    damage: 0
-  - type: VINE
-- result:
-    type: MOSSY_COBBLESTONE
-  ingredients:
-  - type: COBBLESTONE
-  - type: VINE
-- result:
-    type: STONE
-    damage: 1       # granite
-  ingredients:
-  - type: STONE
-    damage: 3       # diorite
-  - type: QUARTZ
-- result:
-    type: STONE
-    damage: 5       # andesite
-  ingredients:
-  - type: STONE
-    damage: 3       # diorite
-  - type: COBBLESTONE
-- result:
-    type: SLIME_BALL
-    amount: 9
-  ingredients:
-  - type: SLIME_BLOCK
+  - result: LEATHER_HELMET
+    ingredients:
+      "0": INK_SACK
+  - result: FIREWORK
+    ingredients:
+      "0": SULPHUR
+  - result: WRITTEN_BOOK
+    ingredients:
+      "0": BOOK_AND_QUILL
+  - result: MAP
+    ingredients:
+      "0": EMPTY_MAP
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+      "2": INK_SACK
+      "3": INK_SACK
+  - result: BOOK
+    ingredients:
+      "0": PAPER
+      "1": PAPER
+      "2": PAPER
+      "3": LEATHER
+  - result: MUSHROOM_SOUP
+    ingredients:
+      "0": BROWN_MUSHROOM
+      "1": RED_MUSHROOM
+      "2": BOWL
+  - result: PUMPKIN_PIE
+    ingredients:
+      "0": PUMPKIN
+      "1": SUGAR
+      "2": EGG
+  - result: FERMENTED_SPIDER_EYE
+    ingredients:
+      "0": SPIDER_EYE
+      "1": BROWN_MUSHROOM
+      "2": SUGAR
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+      "2": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+      "2": INK_SACK
+  - result: BOOK_AND_QUILL
+    ingredients:
+      "0": BOOK
+      "1": INK_SACK
+      "2": FEATHER
+  - result: FIREBALL
+    ingredients:
+      "0": SULPHUR
+      "1": BLAZE_POWDER
+      "2": COAL
+  - result: FIREBALL
+    ingredients:
+      "0": SULPHUR
+      "1": BLAZE_POWDER
+      "2": COAL
+  - result: MAGMA_CREAM
+    ingredients:
+      "0": BLAZE_POWDER
+      "1": SLIME_BALL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: WOOL
+    ingredients:
+      "0": INK_SACK
+      "1": WOOL
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: INK_SACK
+    ingredients:
+      "0": INK_SACK
+      "1": INK_SACK
+  - result: FLINT_AND_STEEL
+    ingredients:
+      "0": IRON_INGOT
+      "1": FLINT
+  - result: EYE_OF_ENDER
+    ingredients:
+      "0": ENDER_PEARL
+      "1": BLAZE_POWDER
+  - result: BLAZE_POWDER
+    ingredients:
+      "0": BLAZE_ROD
+  - result: INK_SACK
+    ingredients:
+      "0": YELLOW_FLOWER
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": BONE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": RED_ROSE
+  - result: INK_SACK
+    ingredients:
+      "0": DOUBLE_PLANT
+  - result: INK_SACK
+    ingredients:
+      "0": DOUBLE_PLANT
+  - result: INK_SACK
+    ingredients:
+      "0": DOUBLE_PLANT
+  - result: INK_SACK
+    ingredients:
+      "0": DOUBLE_PLANT
+  - result: SMOOTH_BRICK
+    ingredients:
+      "0": SMOOTH_BRICK
+      "1": VINE
+  - result: MOSSY_COBBLESTONE
+    ingredients:
+      "0": COBBLESTONE
+      "1": VINE
+  - result: STONE
+    ingredients:
+      "0": STONE
+      "1": QUARTZ
+  - result: STONE
+    ingredients:
+      "0": STONE
+      "1": COBBLESTONE
+  - result: SLIME_BALL
+    ingredients:
+      "0": SLIME_BLOCK
 shaped:
-- result:
-    type: WOODEN_PICKAXE
-  ingredients:
-    e:
-      type: STICK
-    c:
-      type: WOOD
-      damage: 32767
-  shape:
-  - ccc
-  - ' e '
-  - ' e '
-- result:
-    type: STONE_PICKAXE
-  ingredients:
-    e:
-      type: STICK
-    c:
-      type: COBBLESTONE
-      damage: 32767
-  shape:
-  - ccc
-  - ' e '
-  - ' e '
-- result:
-    type: IRON_PICKAXE
-  ingredients:
-    e:
-      type: STICK
-    c:
-      type: IRON_INGOT
-  shape:
-  - ccc
-  - ' e '
-  - ' e '
-- result:
-    type: DIAMOND_PICKAXE
-  ingredients:
-    e:
-      type: STICK
-    c:
-      type: DIAMOND
-  shape:
-  - ccc
-  - ' e '
-  - ' e '
-- result:
-    type: GOLDEN_PICKAXE
-  ingredients:
-    e:
-      type: STICK
-    c:
-      type: GOLD_INGOT
-  shape:
-  - ccc
-  - ' e '
-  - ' e '
-- result:
-    type: BOW
-  ingredients:
-    c:
-      type: STRING
-    b:
-      type: STICK
-  shape:
-  - ' bc'
-  - b c
-  - ' bc'
-- result:
-    type: GOLD_BLOCK
-  ingredients:
-    e:
-      type: GOLD_INGOT
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: IRON_BLOCK
-  ingredients:
-    e:
-      type: IRON_INGOT
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: DIAMOND_BLOCK
-  ingredients:
-    e:
-      type: DIAMOND
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: EMERALD_BLOCK
-  ingredients:
-    e:
-      type: EMERALD
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: LAPIS_BLOCK
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 4
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: REDSTONE_BLOCK
-  ingredients:
-    e:
-      type: REDSTONE
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: COAL_BLOCK
-  ingredients:
-    e:
-      type: COAL
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: HAY_BLOCK
-  ingredients:
-    e:
-      type: WHEAT
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: GOLD_INGOT
-  ingredients:
-    e:
-      type: GOLD_NUGGET
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: MELON_BLOCK
-  ingredients:
-    e:
-      type: MELON
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: SLIME_BLOCK
-  ingredients:
-    e:
-      type: SLIME_BALL
-  shape:
-  - eee
-  - eee
-  - eee
-- result:
-    type: CHEST
-  ingredients:
-    g:
-      type: WOOD
-      damage: 32767
-  shape:
-  - ggg
-  - g g
-  - ggg
-- result:
-    type: ENDER_CHEST
-  ingredients:
-    e:
-      type: EYE_OF_ENDER
-    g:
-      type: OBSIDIAN
-      damage: 32767
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: FURNACE
-  ingredients:
-    g:
-      type: COBBLESTONE
-      damage: 32767
-  shape:
-  - ggg
-  - g g
-  - ggg
-- result:
-    type: REDSTONE_LAMP_OFF
-  ingredients:
-    e:
-      type: GLOWSTONE
-      damage: 32767
-    b:
-      type: REDSTONE
-  shape:
-  - ' b '
-  - beb
-  - ' b '
-- result:
-    type: BEACON
-  ingredients:
-    e:
-      type: NETHER_STAR
-    g:
-      type: OBSIDIAN
-      damage: 32767
-    c:
-      type: GLASS
-      damage: 32767
-  shape:
-  - ccc
-  - cec
-  - ggg
-- result:
-    type: LEATHER_CHESTPLATE
-  ingredients:
-    e:
-      type: LEATHER
-  shape:
-  - e e
-  - eee
-  - eee
-- result:
-    type: LEATHER_LEGGINGS
-  ingredients:
-    g:
-      type: LEATHER
-  shape:
-  - ggg
-  - g g
-  - g g
-- result:
-    type: CHAINMAIL_CHESTPLATE
-  ingredients:
-    e:
-      type: FIRE
-      damage: 32767
-  shape:
-  - e e
-  - eee
-  - eee
-- result:
-    type: CHAINMAIL_LEGGINGS
-  ingredients:
-    g:
-      type: FIRE
-      damage: 32767
-  shape:
-  - ggg
-  - g g
-  - g g
-- result:
-    type: IRON_CHESTPLATE
-  ingredients:
-    e:
-      type: IRON_INGOT
-  shape:
-  - e e
-  - eee
-  - eee
-- result:
-    type: IRON_LEGGINGS
-  ingredients:
-    g:
-      type: IRON_INGOT
-  shape:
-  - ggg
-  - g g
-  - g g
-- result:
-    type: DIAMOND_CHESTPLATE
-  ingredients:
-    e:
-      type: DIAMOND
-  shape:
-  - e e
-  - eee
-  - eee
-- result:
-    type: DIAMOND_LEGGINGS
-  ingredients:
-    g:
-      type: DIAMOND
-  shape:
-  - ggg
-  - g g
-  - g g
-- result:
-    type: GOLDEN_CHESTPLATE
-  ingredients:
-    e:
-      type: GOLD_INGOT
-  shape:
-  - e e
-  - eee
-  - eee
-- result:
-    type: GOLDEN_LEGGINGS
-  ingredients:
-    g:
-      type: GOLD_INGOT
-  shape:
-  - ggg
-  - g g
-  - g g
-- result:
-    type: STAINED_CLAY
-    damage: 15
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 15
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 14
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 1
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 14
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 1
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 13
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 2
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 13
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 2
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 12
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 3
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 12
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 3
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 11
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 4
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 11
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 4
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 10
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 5
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 10
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 5
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 9
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 6
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 9
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 6
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 8
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 7
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 8
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 7
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 7
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 8
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 7
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 8
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 6
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 9
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 6
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 9
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 5
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 10
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 5
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 10
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 4
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 11
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 4
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 11
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 3
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 12
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 3
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 12
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 2
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 13
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 2
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 13
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    damage: 1
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 14
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    damage: 1
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 14
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_CLAY
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 15
-    g:
-      type: HARD_CLAY
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: STAINED_GLASS
-    amount: 8
-  ingredients:
-    e:
-      type: INK_SACK
-      damage: 15
-    g:
-      type: GLASS
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: EMPTY_MAP
-    amount: 0
-  ingredients:
-    e:
-      type: MAP
-      damage: 32767
-    g:
-      type: PAPER
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: JUKEBOX
-  ingredients:
-    e:
-      type: DIAMOND
-    g:
-      type: WOOD
-      damage: 32767
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: LEASH
-    amount: 2
-  ingredients:
-    e:
-      type: SLIME_BALL
-    b:
-      type: STRING
-  shape:
-  - 'bb '
-  - 'be '
-  - '  b'
-- result:
-    type: NOTE_BLOCK
-  ingredients:
-    e:
-      type: REDSTONE
-    g:
-      type: WOOD
-      damage: 32767
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: BOOKSHELF
-  ingredients:
-    e:
-      type: BOOK
-    g:
-      type: WOOD
-      damage: 32767
-  shape:
-  - ggg
-  - eee
-  - ggg
-- result:
-    type: TNT
-  ingredients:
-    e:
-      type: SULPHUR
-    b:
-      type: SAND
-      damage: 32767
-  shape:
-  - ebe
-  - beb
-  - ebe
-- result:
-    type: LADDER
-    amount: 3
-  ingredients:
-    e:
-      type: STICK
-  shape:
-  - e e
-  - eee
-  - e e
-- result:
-    type: SIGN
-    amount: 3
-  ingredients:
-    e:
-      type: WOOD
-      damage: 32767
-    h:
-      type: STICK
-  shape:
-  - eee
-  - eee
-  - ' h '
-- result:
-    type: CAKE
-  ingredients:
-    e:
-      type: EGG
-    g:
-      type: WHEAT
-    c:
-      type: MILK_BUCKET
-    f:
-      type: SUGAR
-  shape:
-  - ccc
-  - fef
-  - ggg
-- result:
-    type: RAILS
-    amount: 16
-  ingredients:
-    e:
-      type: STICK
-    g:
-      type: IRON_INGOT
-  shape:
-  - g g
-  - geg
-  - g g
-- result:
-    type: POWERED_RAIL
-    amount: 6
-  ingredients:
-    e:
-      type: STICK
-    g:
-      type: GOLD_INGOT
-    h:
-      type: REDSTONE
-  shape:
-  - g g
-  - geg
-  - ghg
-- result:
-    type: ACTIVATOR_RAIL
-    amount: 6
-  ingredients:
-    e:
-      type: REDSTONE_TORCH_ON
-      damage: 32767
-    g:
-      type: IRON_INGOT
-    b:
-      type: STICK
-  shape:
-  - gbg
-  - geg
-  - gbg
-- result:
-    type: DETECTOR_RAIL
-    amount: 6
-  ingredients:
-    e:
-      type: STONE_PLATE
-      damage: 32767
-    g:
-      type: IRON_INGOT
-    h:
-      type: REDSTONE
-  shape:
-  - g g
-  - geg
-  - ghg
-- result:
-    type: CAULDRON_ITEM
-  ingredients:
-    g:
-      type: IRON_INGOT
-  shape:
-  - g g
-  - g g
-  - ggg
-- result:
-    type: WOOD_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: WOOD
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: BIRCH_WOOD_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: WOOD
-      damage: 2
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: SPRUCE_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: WOOD
-      damage: 1
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: JUNGLE_WOOD_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: WOOD
-      damage: 3
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: ACACIA_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: WOOD
-      damage: 4
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: DARK_OAK_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: WOOD
-      damage: 5
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: FISHING_ROD
-  ingredients:
-    e:
-      type: STICK
-    f:
-      type: STRING
-  shape:
-  - '  e'
-  - ' ef'
-  - e f
-- result:
-    type: COBBLESTONE_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: COBBLESTONE
-      damage: 32767
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: BRICK_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: BRICK
-      damage: 32767
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: SMOOTH_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: SMOOTH_BRICK
-      damage: 32767
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: NETHER_BRICK_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: NETHER_BRICK
-      damage: 32767
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: SANDSTONE_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: SANDSTONE
-      damage: 32767
-  shape:
-  - 'e  '
-  - 'ee '
-  - 'eee'
-- result:
-    type: RED_SANDSTONE_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: RED_SANDSTONE
-      damage: 32767
-  shape:
-  - 'e  '
-  - 'ee '
-  - 'eee'
-- result:
-    type: QUARTZ_STAIRS
-    amount: 4
-  ingredients:
-    e:
-      type: QUARTZ_BLOCK
-      damage: 32767
-  shape:
-  - 'e  '
-  - 'ee '
-  - eee
-- result:
-    type: PAINTING
-  ingredients:
-    e:
-      type: WOOL
-      damage: 32767
-    g:
-      type: STICK
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: ITEM_FRAME
-  ingredients:
-    e:
-      type: LEATHER
-    g:
-      type: STICK
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: GOLDEN_APPLE
-  ingredients:
-    e:
-      type: APPLE
-    g:
-      type: GOLD_INGOT
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: GOLDEN_APPLE
-    damage: 1
-  ingredients:
-    e:
-      type: APPLE
-    g:
-      type: GOLD_BLOCK
-      damage: 32767
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: GOLDEN_CARROT
-  ingredients:
-    e:
-      type: CARROT_ITEM
-    g:
-      type: GOLD_NUGGET
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: SPECKLED_MELON
-  ingredients:
-    e:
-      type: MELON
-    g:
-      type: GOLD_NUGGET
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: REDSTONE_COMPARATOR
-  ingredients:
-    e:
-      type: QUARTZ
-    g:
-      type: STONE
-      damage: 0
-    b:
-      type: REDSTONE_TORCH_ON
-      damage: 32767
-  shape:
-  - ' b '
-  - beb
-  - ggg
-- result:
-    type: WATCH
-  ingredients:
-    e:
-      type: REDSTONE
-    b:
-      type: GOLD_INGOT
-  shape:
-  - ' b '
-  - beb
-  - ' b '
-- result:
-    type: COMPASS
-  ingredients:
-    e:
-      type: REDSTONE
-    b:
-      type: IRON_INGOT
-  shape:
-  - ' b '
-  - beb
-  - ' b '
-- result:
-    type: EMPTY_MAP
-  ingredients:
-    e:
-      type: COMPASS
-    g:
-      type: PAPER
-  shape:
-  - ggg
-  - geg
-  - ggg
-- result:
-    type: DISPENSER
-  ingredients:
-    e:
-      type: BOW
-    g:
-      type: COBBLESTONE
-      damage: 32767
-    h:
-      type: REDSTONE
-  shape:
-  - ggg
-  - geg
-  - ghg
-- result:
-    type: DROPPER
-  ingredients:
-    g:
-      type: COBBLESTONE
-      damage: 32767
-    h:
-      type: REDSTONE
-  shape:
-  - ggg
-  - g g
-  - ghg
-- result:
-    type: PISTON_BASE
-  ingredients:
-    e:
-      type: IRON_INGOT
-    g:
-      type: COBBLESTONE
-      damage: 32767
-    c:
-      type: WOOD
-      damage: 32767
-    h:
-      type: REDSTONE
-  shape:
-  - ccc
-  - geg
-  - ghg
-- result:
-    type: ENCHANTMENT_TABLE
-  ingredients:
-    e:
-      type: OBSIDIAN
-      damage: 32767
-    b:
-      type: BOOK
-    f:
-      type: DIAMOND
-  shape:
-  - ' b '
-  - fef
-  - eee
-- result:
-    type: ANVIL
-  ingredients:
-    e:
-      type: IRON_INGOT
-    c:
-      type: IRON_BLOCK
-      damage: 32767
-  shape:
-  - ccc
-  - ' e '
-  - eee
-- result:
-    type: DAYLIGHT_DETECTOR
-  ingredients:
-    e:
-      type: QUARTZ
-    g:
-      type: WOOD_STEP
-      damage: 32767
-    c:
-      type: GLASS
-      damage: 32767
-  shape:
-  - ccc
-  - eee
-  - ggg
-- result:
-    type: HOPPER
-  ingredients:
-    e:
-      type: CHEST
-      damage: 32767
-    c:
-      type: IRON_INGOT
-  shape:
-  - c c
-  - cec
-  - ' c '
-- result:
-    type: WOODEN_AXE
-  ingredients:
-    c:
-      type: WOOD
-      damage: 32767
-    f:
-      type: STICK
-  shape:
-  - cc
-  - cf
-  - ' f'
-- result:
-    type: WOOD_HOE
-  ingredients:
-    b:
-      type: WOOD
-      damage: 32767
-    f:
-      type: STICK
-  shape:
-  - bb
-  - ' f'
-  - ' f'
-- result:
-    type: STONE_AXE
-  ingredients:
-    c:
-      type: COBBLESTONE
-      damage: 32767
-    f:
-      type: STICK
-  shape:
-  - cc
-  - cf
-  - ' f'
-- result:
-    type: STONE_HOE
-  ingredients:
-    b:
-      type: COBBLESTONE
-      damage: 32767
-    f:
-      type: STICK
-  shape:
-  - bb
-  - ' f'
-  - ' f'
-- result:
-    type: IRON_AXE
-  ingredients:
-    c:
-      type: IRON_INGOT
-    f:
-      type: STICK
-  shape:
-  - cc
-  - cf
-  - ' f'
-- result:
-    type: IRON_HOE
-  ingredients:
-    b:
-      type: IRON_INGOT
-    f:
-      type: STICK
-  shape:
-  - bb
-  - ' f'
-  - ' f'
-- result:
-    type: DIAMOND_AXE
-  ingredients:
-    c:
-      type: DIAMOND
-    f:
-      type: STICK
-  shape:
-  - cc
-  - cf
-  - ' f'
-- result:
-    type: DIAMOND_HOE
-  ingredients:
-    b:
-      type: DIAMOND
-    f:
-      type: STICK
-  shape:
-  - bb
-  - ' f'
-  - ' f'
-- result:
-    type: GOLDEN_AXE
-  ingredients:
-    c:
-      type: GOLD_INGOT
-    f:
-      type: STICK
-  shape:
-  - cc
-  - cf
-  - ' f'
-- result:
-    type: GOLDEN_HOE
-  ingredients:
-    b:
-      type: GOLD_INGOT
-    f:
-      type: STICK
-  shape:
-  - bb
-  - ' f'
-  - ' f'
-- result:
-    type: IRON_FENCE
-    amount: 16
-  ingredients:
-    e:
-      type: IRON_INGOT
-  shape:
-  - eee
-  - eee
-- result:
-    type: THIN_GLASS
-    amount: 16
-  ingredients:
-    e:
-      type: GLASS
-      damage: 32767
-  shape:
-  - eee
-  - eee
-- result:
-    type: LEATHER_HELMET
-  ingredients:
-    c:
-      type: LEATHER
-  shape:
-  - ccc
-  - c c
-- result:
-    type: LEATHER_BOOTS
-  ingredients:
-    c:
-      type: LEATHER
-  shape:
-  - c c
-  - c c
-- result:
-    type: CHAINMAIL_HELMET
-  ingredients:
-    c:
-      type: FIRE
-      damage: 32767
-  shape:
-  - ccc
-  - c c
-- result:
-    type: CHAINMAIL_BOOTS
-  ingredients:
-    c:
-      type: FIRE
-      damage: 32767
-  shape:
-  - c c
-  - c c
-- result:
-    type: IRON_HELMET
-  ingredients:
-    c:
-      type: IRON_INGOT
-  shape:
-  - ccc
-  - c c
-- result:
-    type: IRON_BOOTS
-  ingredients:
-    c:
-      type: IRON_INGOT
-  shape:
-  - c c
-  - c c
-- result:
-    type: DIAMOND_HELMET
-  ingredients:
-    c:
-      type: DIAMOND
-  shape:
-  - ccc
-  - c c
-- result:
-    type: DIAMOND_BOOTS
-  ingredients:
-    c:
-      type: DIAMOND
-  shape:
-  - c c
-  - c c
-- result:
-    type: GOLDEN_HELMET
-  ingredients:
-    c:
-      type: GOLD_INGOT
-  shape:
-  - ccc
-  - c c
-- result:
-    type: GOLDEN_BOOTS
-  ingredients:
-    c:
-      type: GOLD_INGOT
-  shape:
-  - c c
-  - c c
-- result:
-    type: STAINED_GLASS_PANE
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 1
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 1
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 2
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 2
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 3
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 3
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 4
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 4
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 5
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 5
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 6
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 6
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 7
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 7
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 8
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 8
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 9
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 9
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 10
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 10
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 11
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 11
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 12
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 12
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 13
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 13
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 14
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 14
-  shape:
-  - eee
-  - eee
-- result:
-    type: STAINED_GLASS_PANE
-    damage: 15
-    amount: 16
-  ingredients:
-    e:
-      type: STAINED_GLASS
-      damage: 15
-  shape:
-  - eee
-  - eee
-- result:
-    type: FENCE
-    amount: 3
-  ingredients:
-    e:
-      type: STICK
-    w:
-      type: WOOD
-      damage: 0
-  shape:
-  - wew
-  - wew
-- result:
-    type: SPRUCE_FENCE
-    amount: 3
-  ingredients:
-    e:
-      type: STICK
-    w:
-      type: WOOD
-      damage: 1
-  shape:
-  - wew
-  - wew
-- result:
-    type: BIRCH_FENCE
-    amount: 3
-  ingredients:
-    e:
-      type: STICK
-    w:
-      type: WOOD
-      damage: 2
-  shape:
-  - wew
-  - wew
-- result:
-    type: JUNGLE_FENCE
-    amount: 3
-  ingredients:
-    e:
-      type: STICK
-    w:
-      type: WOOD
-      damage: 3
-  shape:
-  - wew
-  - wew
-- result:
-    type: ACACIA_FENCE
-    amount: 3
-  ingredients:
-    e:
-      type: STICK
-    w:
-      type: WOOD
-      damage: 4
-  shape:
-  - wew
-  - wew
-- result:
-    type: DARK_OAK_FENCE
-    amount: 3
-  ingredients:
-    e:
-      type: STICK
-    w:
-      type: WOOD
-      damage: 5
-  shape:
-  - wew
-  - wew
-- result:
-    type: COBBLE_WALL
-    amount: 6
-  ingredients:
-    e:
-      type: COBBLESTONE
-      damage: 32767
-  shape:
-  - eee
-  - eee
-- result:
-    type: COBBLE_WALL
-    damage: 1
-    amount: 6
-  ingredients:
-    e:
-      type: MOSSY_COBBLESTONE
-      damage: 32767
-  shape:
-  - eee
-  - eee
-- result:
-    type: NETHER_FENCE
-    amount: 6
-  ingredients:
-    e:
-      type: NETHER_BRICK
-      damage: 32767
-  shape:
-  - eee
-  - eee
-- result:
-    type: FENCE_GATE
-  ingredients:
-    w:
-      type: WOOD
-      damage: 0
-    c:
-      type: STICK
-  shape:
-  - cwc
-  - cwc
-- result:
-    type: SPRUCE_FENCE_GATE
-  ingredients:
-    w:
-      type: WOOD
-      damage: 1
-    c:
-      type: STICK
-  shape:
-  - cwc
-  - cwc
-- result:
-    type: BIRCH_FENCE_GATE
-  ingredients:
-    w:
-      type: WOOD
-      damage: 2
-    c:
-      type: STICK
-  shape:
-  - cwc
-  - cwc
-- result:
-    type: JUNGLE_FENCE_GATE
-  ingredients:
-    w:
-      type: WOOD
-      damage: 3
-    c:
-      type: STICK
-  shape:
-  - cwc
-  - cwc
-- result:
-    type: ACACIA_FENCE_GATE
-  ingredients:
-    w:
-      type: WOOD
-      damage: 4
-    c:
-      type: STICK
-  shape:
-  - cwc
-  - cwc
-- result:
-    type: DARK_OAK_FENCE_GATE
-  ingredients:
-    w:
-      type: WOOD
-      damage: 5
-    c:
-      type: STICK
-  shape:
-  - cwc
-  - cwc
-- result:
-    type: WOOD_DOOR
-    amount: 3
-  ingredients:
-    e:
-      type: WOOD
-      damage: 0
-  shape:
-  - ee
-  - ee
-  - ee
-- result:
-    type: SPRUCE_DOOR
-    amount: 3
-  ingredients:
-    e:
-      type: WOOD
-      damage: 1
-  shape:
-  - ee
-  - ee
-  - ee
-- result:
-    type: BIRCH_DOOR
-    amount: 3
-  ingredients:
-    e:
-      type: WOOD
-      damage: 2
-  shape:
-  - ee
-  - ee
-  - ee
-- result:
-    type: JUNGLE_DOOR
-    amount: 3
-  ingredients:
-    e:
-      type: WOOD
-      damage: 3
-  shape:
-  - ee
-  - ee
-  - ee
-- result:
-    type: ACACIA_DOOR
-    amount: 3
-  ingredients:
-    e:
-      type: WOOD
-      damage: 4
-  shape:
-  - ee
-  - ee
-  - ee
-- result:
-    type: DARK_OAK_DOOR
-    amount: 3
-  ingredients:
-    e:
-      type: WOOD
-      damage: 5
-  shape:
-  - ee
-  - ee
-  - ee
-- result:
-    type: TRAP_DOOR
-    amount: 2
-  ingredients:
-    e:
-      type: WOOD
-      damage: 32767
-  shape:
-  - eee
-  - eee
-- result:
-    type: IRON_DOOR
-    amount: 3
-  ingredients:
-    e:
-      type: IRON_INGOT
-  shape:
-  - ee
-  - ee
-  - ee
-- result:
-    type: IRON_TRAPDOOR
-  ingredients:
-    e:
-      type: IRON_INGOT
-  shape:
-  - ee
-  - ee
-- result:
-    type: BOWL
-    amount: 4
-  ingredients:
-    e:
-      type: WOOD
-      damage: 32767
-  shape:
-  - e e
-  - ' e '
-- result:
-    type: GLASS_BOTTLE
-    amount: 3
-  ingredients:
-    e:
-      type: GLASS
-      damage: 32767
-  shape:
-  - e e
-  - ' e '
-- result:
-    type: MINECART
-  ingredients:
-    e:
-      type: IRON_INGOT
-  shape:
-  - e e
-  - eee
-- result:
-    type: BREWING_STAND_ITEM
-  ingredients:
-    e:
-      type: COBBLESTONE
-      damage: 32767
-    b:
-      type: BLAZE_ROD
-  shape:
-  - ' b '
-  - eee
-- result:
-    type: BOAT
-  ingredients:
-    e:
-      type: WOOD
-      damage: 0
-  shape:
-  - e e
-  - eee
-- result:
-    type: SPRUCE_BOAT
-  ingredients:
-    e:
-      type: WOOD
-      damage: 1
-  shape:
-  - e e
-  - eee
-- result:
-    type: BIRCH_BOAT
-  ingredients:
-    e:
-      type: WOOD
-      damage: 2
-  shape:
-  - e e
-  - eee
-- result:
-    type: JUNGLE_BOAT
-  ingredients:
-    e:
-      type: WOOD
-      damage: 3
-  shape:
-  - e e
-  - eee
-- result:
-    type: ACACIA_BOAT
-  ingredients:
-    e:
-      type: WOOD
-      damage: 4
-  shape:
-  - e e
-  - eee
-- result:
-    type: DARK_OAK_BOAT
-  ingredients:
-    e:
-      type: WOOD
-      damage: 5
-  shape:
-  - e e
-  - eee
-- result:
-    type: BUCKET
-  ingredients:
-    e:
-      type: IRON_INGOT
-  shape:
-  - e e
-  - ' e '
-- result:
-    type: FLOWER_POT_ITEM
-  ingredients:
-    e:
-      type: CLAY_BRICK
-  shape:
-  - e e
-  - ' e '
-- result:
-    type: DIODE
-  ingredients:
-    e:
-      type: STONE
-      damage: 0
-    c:
-      type: REDSTONE_TORCH_ON
-      damage: 32767
-    b:
-      type: REDSTONE
-  shape:
-  - cbc
-  - eee
-- result:
-    type: LEGACY_BED
-  ingredients:
-    e:
-      type: WOOD
-      damage: 32767
-    c:
-      type: WOOL
-      damage: 32767
-  shape:
-  - ccc
-  - eee
-- result:
-    type: SHEARS
-  ingredients:
-    c:
-      type: IRON_INGOT
-  shape:
-  - ' c'
-  - 'c '
-- result:
-    type: CRAFTING_TABLE
-  ingredients:
-    c:
-      type: WOOD
-      damage: 32767
-  shape:
-  - cc
-  - cc
-- result:
-    type: SANDSTONE
-  ingredients:
-    c:
-      type: SAND
-  shape:
-  - cc
-  - cc
-- result:
-    type: RED_SANDSTONE
-  ingredients:
-    c:
-      type: SAND
-      damage: 1
-  shape:
-  - cc
-  - cc
-- result:
-    type: SANDSTONE
-    damage: 2
-    amount: 4
-  ingredients:
-    c:
-      type: SANDSTONE
-      damage: 32767
-  shape:
-  - cc
-  - cc
-- result:
-    type: RED_SANDSTONE
-    damage: 2
-    amount: 4
-  ingredients:
-    c:
-      type: RED_SANDSTONE
-      damage: 32767
-  shape:
-  - cc
-  - cc
-- result:
-    type: SMOOTH_BRICK
-    amount: 4
-  ingredients:
-    c:
-      type: STONE
-      damage: 32767
-  shape:
-  - cc
-  - cc
-- result:
-    type: NETHER_BRICK
-  ingredients:
-    c:
-      type: NETHER_BRICK_ITEM
-  shape:
-  - cc
-  - cc
-- result:
-    type: SNOW_BLOCK
-  ingredients:
-    c:
-      type: SNOW_BALL
-  shape:
-  - cc
-  - cc
-- result:
-    type: CLAY
-  ingredients:
-    c:
-      type: CLAY_BALL
-  shape:
-  - cc
-  - cc
-- result:
-    type: BRICK
-  ingredients:
-    c:
-      type: CLAY_BRICK
-  shape:
-  - cc
-  - cc
-- result:
-    type: GLOWSTONE
-  ingredients:
-    c:
-      type: GLOWSTONE_DUST
-  shape:
-  - cc
-  - cc
-- result:
-    type: QUARTZ_BLOCK
-  ingredients:
-    c:
-      type: QUARTZ
-  shape:
-  - cc
-  - cc
-- result:
-    type: WOOL
-  ingredients:
-    c:
-      type: STRING
-  shape:
-  - cc
-  - cc
-- result:
-    type: CARROT_STICK
-  ingredients:
-    a:
-      type: FISHING_ROD
-    d:
-      type: CARROT_ITEM
-  shape:
-  - 'a '
-  - ' d'
-- result:
-    type: WOODEN_SHOVEL
-  ingredients:
-    c:
-      type: STICK
-    a:
-      type: WOOD
-      damage: 32767
-  shape:
-  - a
-  - c
-  - c
-- result:
-    type: STONE_SHOVEL
-  ingredients:
-    c:
-      type: STICK
-    a:
-      type: COBBLESTONE
-      damage: 32767
-  shape:
-  - a
-  - c
-  - c
-- result:
-    type: IRON_SHOVEL
-  ingredients:
-    c:
-      type: STICK
-    a:
-      type: IRON_INGOT
-  shape:
-  - a
-  - c
-  - c
-- result:
-    type: DIAMOND_SHOVEL
-  ingredients:
-    c:
-      type: STICK
-    a:
-      type: DIAMOND
-  shape:
-  - a
-  - c
-  - c
-- result:
-    type: GOLDEN_SHOVEL
-  ingredients:
-    c:
-      type: STICK
-    a:
-      type: GOLD_INGOT
-  shape:
-  - a
-  - c
-  - c
-- result:
-    type: WOODEN_SWORD
-  ingredients:
-    c:
-      type: STICK
-    b:
-      type: WOOD
-      damage: 32767
-  shape:
-  - b
-  - b
-  - c
-- result:
-    type: STONE_SWORD
-  ingredients:
-    c:
-      type: STICK
-    b:
-      type: COBBLESTONE
-      damage: 32767
-  shape:
-  - b
-  - b
-  - c
-- result:
-    type: IRON_SWORD
-  ingredients:
-    c:
-      type: STICK
-    b:
-      type: IRON_INGOT
-  shape:
-  - b
-  - b
-  - c
-- result:
-    type: DIAMOND_SWORD
-  ingredients:
-    c:
-      type: STICK
-    b:
-      type: DIAMOND
-  shape:
-  - b
-  - b
-  - c
-- result:
-    type: GOLDEN_SWORD
-  ingredients:
-    c:
-      type: STICK
-    b:
-      type: GOLD_INGOT
-  shape:
-  - b
-  - b
-  - c
-- result:
-    type: ARROW
-    amount: 4
-  ingredients:
-    c:
-      type: FEATHER
-    b:
-      type: STICK
-    a:
-      type: FLINT
-  shape:
-  - a
-  - b
-  - c
-- result:
-    type: COOKIE
-    amount: 8
-  ingredients:
-    c:
-      type: WHEAT
-    b:
-      type: INK_SACK
-      damage: 3
-  shape:
-  - cbc
-- result:
-    type: PAPER
-    amount: 3
-  ingredients:
-    c:
-      type: SUGAR_CANE
-  shape:
-  - ccc
-- result:
-    type: SNOW
-    amount: 6
-  ingredients:
-    c:
-      type: SNOW_BLOCK
-      damage: 32767
-  shape:
-  - ccc
-- result:
-    type: STEP
-    damage: 3
-    amount: 6
-  ingredients:
-    c:
-      type: COBBLESTONE
-      damage: 32767
-  shape:
-  - ccc
-- result:
-    type: STEP
-    amount: 6
-  ingredients:
-    c:
-      type: STONE
-      damage: 0
-  shape:
-  - ccc
-- result:
-    type: STEP
-    damage: 1
-    amount: 6
-  ingredients:
-    c:
-      type: SANDSTONE
-      damage: 32767
-  shape:
-  - ccc
-- result:
-    type: STEP
-    damage: 4
-    amount: 6
-  ingredients:
-    c:
-      type: BRICK
-      damage: 32767
-  shape:
-  - ccc
-- result:
-    type: STEP
-    damage: 5
-    amount: 6
-  ingredients:
-    c:
-      type: SMOOTH_BRICK
-      damage: 32767
-  shape:
-  - ccc
-- result:
-    type: STEP
-    damage: 6
-    amount: 6
-  ingredients:
-    c:
-      type: NETHER_BRICK
-      damage: 32767
-  shape:
-  - ccc
-- result:
-    type: STEP
-    damage: 7
-    amount: 6
-  ingredients:
-    c:
-      type: QUARTZ_BLOCK
-      damage: 32767
-  shape:
-  - ccc
-- result:
-    type: WOOD_STEP
-    amount: 6
-  ingredients:
-    c:
-      type: WOOD
-  shape:
-  - ccc
-- result:
-    type: WOOD_STEP
-    damage: 2
-    amount: 6
-  ingredients:
-    c:
-      type: WOOD
-      damage: 2
-  shape:
-  - ccc
-- result:
-    type: WOOD_STEP
-    damage: 1
-    amount: 6
-  ingredients:
-    c:
-      type: WOOD
-      damage: 1
-  shape:
-  - ccc
-- result:
-    type: WOOD_STEP
-    damage: 3
-    amount: 6
-  ingredients:
-    c:
-      type: WOOD
-      damage: 3
-  shape:
-  - ccc
-- result:
-    type: WOOD_STEP
-    damage: 4
-    amount: 6
-  ingredients:
-    c:
-      type: WOOD
-      damage: 4
-  shape:
-  - ccc
-- result:
-    type: WOOD_STEP
-    damage: 5
-    amount: 6
-  ingredients:
-    c:
-      type: WOOD
-      damage: 5
-  shape:
-  - ccc
-- result:
-    type: BREAD
-  ingredients:
-    c:
-      type: WHEAT
-  shape:
-  - ccc
-- result:
-    type: TRIPWIRE_HOOK
-    amount: 2
-  ingredients:
-    c:
-      type: WOOD
-      damage: 32767
-    b:
-      type: STICK
-    a:
-      type: IRON_INGOT
-  shape:
-  - a
-  - b
-  - c
-- result:
-    type: TRAPPED_CHEST
-  ingredients:
-    b:
-      type: TRIPWIRE_HOOK
-      damage: 32767
-    a:
-      type: CHEST
-      damage: 32767
-  shape:
-  - ab
-- result:
-    type: SANDSTONE
-    damage: 1
-  ingredients:
-    b:
-      type: STEP
-      damage: 1
-  shape:
-  - b
-  - b
-- result:
-    type: RED_SANDSTONE
-    damage: 1
-  ingredients:
-    b:
-      type: STONE_SLAB2
-      damage: 0
-  shape:
-  - b
-  - b
-- result:
-    type: QUARTZ_BLOCK
-    damage: 1
-  ingredients:
-    b:
-      type: STEP
-      damage: 7
-  shape:
-  - b
-  - b
-- result:
-    type: SMOOTH_BRICK
-    damage: 3
-  ingredients:
-    c:
-      type: STEP
-      damage: 5
-  shape:
-  - c
-  - c
-- result:
-    type: QUARTZ_BLOCK
-    damage: 2
-    amount: 2
-  ingredients:
-    b:
-      type: QUARTZ_BLOCK
-  shape:
-  - b
-  - b
-- result:
-    type: CARPET
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 1
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 1
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 2
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 2
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 3
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 3
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 4
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 4
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 5
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 5
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 6
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 6
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 7
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 7
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 8
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 8
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 9
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 9
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 10
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 10
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 11
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 11
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 12
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 12
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 13
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 13
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 14
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 14
-  shape:
-  - bb
-- result:
-    type: CARPET
-    damage: 15
-    amount: 3
-  ingredients:
-    b:
-      type: WOOL
-      damage: 15
-  shape:
-  - bb
-- result:
-    type: STICK
-    amount: 4
-  ingredients:
-    b:
-      type: WOOD
-      damage: 32767
-  shape:
-  - b
-  - b
-- result:
-    type: TORCH
-    amount: 4
-  ingredients:
-    b:
-      type: STICK
-    a:
-      type: COAL
-  shape:
-  - a
-  - b
-- result:
-    type: TORCH
-    amount: 4
-  ingredients:
-    b:
-      type: STICK
-    a:
-      type: COAL
-      damage: 1
-  shape:
-  - a
-  - b
-- result:
-    type: JACK_O_LANTERN
-  ingredients:
-    b:
-      type: TORCH
-      damage: 32767
-    a:
-      type: PUMPKIN
-      damage: 32767
-  shape:
-  - a
-  - b
-- result:
-    type: STORAGE_MINECART
-  ingredients:
-    b:
-      type: MINECART
-    a:
-      type: CHEST
-      damage: 32767
-  shape:
-  - a
-  - b
-- result:
-    type: POWERED_MINECART
-  ingredients:
-    b:
-      type: MINECART
-    a:
-      type: FURNACE
-      damage: 32767
-  shape:
-  - a
-  - b
-- result:
-    type: EXPLOSIVE_MINECART
-  ingredients:
-    b:
-      type: MINECART
-    a:
-      type: TNT
-      damage: 32767
-  shape:
-  - a
-  - b
-- result:
-    type: HOPPER_MINECART
-  ingredients:
-    b:
-      type: MINECART
-    a:
-      type: HOPPER
-      damage: 32767
-  shape:
-  - a
-  - b
-- result:
-    type: LEVER
-  ingredients:
-    b:
-      type: COBBLESTONE
-      damage: 32767
-    a:
-      type: STICK
-  shape:
-  - a
-  - b
-- result:
-    type: REDSTONE_TORCH_ON
-  ingredients:
-    b:
-      type: STICK
-    a:
-      type: REDSTONE
-  shape:
-  - a
-  - b
-- result:
-    type: STONE_PLATE
-  ingredients:
-    b:
-      type: STONE
-      damage: 0
-  shape:
-  - bb
-- result:
-    type: WOOD_PLATE
-  ingredients:
-    b:
-      type: WOOD
-      damage: 32767
-  shape:
-  - bb
-- result:
-    type: IRON_PLATE
-  ingredients:
-    b:
-      type: IRON_INGOT
-  shape:
-  - bb
-- result:
-    type: GOLD_PLATE
-  ingredients:
-    b:
-      type: GOLD_INGOT
-  shape:
-  - bb
-- result:
-    type: PISTON_STICKY_BASE
-  ingredients:
-    b:
-      type: PISTON_BASE
-      damage: 32767
-    a:
-      type: SLIME_BALL
-  shape:
-  - a
-  - b
-- result:
-    type: GOLD_INGOT
-    amount: 9
-  ingredients:
-    a:
-      type: GOLD_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: IRON_INGOT
-    amount: 9
-  ingredients:
-    a:
-      type: IRON_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: DIAMOND
-    amount: 9
-  ingredients:
-    a:
-      type: DIAMOND_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: EMERALD
-    amount: 9
-  ingredients:
-    a:
-      type: EMERALD_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: INK_SACK
-    damage: 4
-    amount: 9
-  ingredients:
-    a:
-      type: LAPIS_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: REDSTONE
-    amount: 9
-  ingredients:
-    a:
-      type: REDSTONE_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: COAL
-    amount: 9
-  ingredients:
-    a:
-      type: COAL_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: WHEAT
-    amount: 9
-  ingredients:
-    a:
-      type: HAY_BLOCK
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: GOLD_NUGGET
-    amount: 9
-  ingredients:
-    a:
-      type: GOLD_INGOT
-  shape:
-  - a
-- result:
-    type: MELON_SEEDS
-  ingredients:
-    a:
-      type: MELON
-  shape:
-  - a
-- result:
-    type: PUMPKIN_SEEDS
-    amount: 4
-  ingredients:
-    a:
-      type: PUMPKIN
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: SUGAR
-  ingredients:
-    a:
-      type: SUGAR_CANE
-  shape:
-  - a
-- result:
-    type: WOOD
-    amount: 4
-  ingredients:
-    a:
-      type: LOG
-  shape:
-  - a
-- result:
-    type: WOOD
-    damage: 1
-    amount: 4
-  ingredients:
-    a:
-      type: LOG
-      damage: 1
-  shape:
-  - a
-- result:
-    type: WOOD
-    damage: 2
-    amount: 4
-  ingredients:
-    a:
-      type: LOG
-      damage: 2
-  shape:
-  - a
-- result:
-    type: WOOD
-    damage: 3
-    amount: 4
-  ingredients:
-    a:
-      type: LOG
-      damage: 3
-  shape:
-  - a
-- result:
-    type: WOOD
-    damage: 4
-    amount: 4
-  ingredients:
-    a:
-      type: LOG_2
-  shape:
-  - a
-  key: acacia_planks
-- result:
-    type: WOOD
-    damage: 5
-    amount: 4
-  ingredients:
-    a:
-      type: LOG_2
-      damage: 1
-  shape:
-  - a
-- result:
-    type: STONE_BUTTON
-  ingredients:
-    a:
-      type: STONE
-      damage: 0
-  shape:
-  - a
-- result:
-    type: WOOD_BUTTON
-  ingredients:
-    a:
-      type: WOOD
-      damage: 32767
-  shape:
-  - a
-- result:
-    type: STONE
-    damage: 3       # diorite
-    amount: 2
-  ingredients:
-    a:
-      type: COBBLESTONE
-    b:
-      type: QUARTZ
-  shape:
-  - ab
-  - ba
-- result:
-    type: STONE
-    damage: 4       # polished diorite
-    amount: 4
-  ingredients:
-    a:
-      type: STONE
-      damage: 3     # diorite
-  shape:
-  - aa
-  - aa
-- result:
-    type: STONE
-    damage: 2       # polished granite
-    amount: 4
-  ingredients:
-    a:
-      type: STONE
-      damage: 1     # granite
-  shape:
-  - aa
-  - aa
-- result:
-    type: STONE
-    damage: 6       # polished andesite
-    amount: 4
-  ingredients:
-    a:
-      type: STONE
-      damage: 5     # andesite
-  shape:
-  - aa
-  - aa
-- result:
-    type: DIRT
-    damage: 1       # coarse dirt
-    amount: 4
-  ingredients:
-    a:
-      type: DIRT
-      damage: 0
-    b:
-      type: GRAVEL
-  shape:
-  - ab
-  - ba
-- result:
-    type: STONE_SLAB2
-    damage: 0
-    amount: 6
-  ingredients:
-    a:
-      type: RED_SANDSTONE
-  shape:
-  - aaa
-- result:
-    type: RABBIT_STEW
-  ingredients:
-    r:
-      type: COOKED_RABBIT
-    c:
-      type: CARROT_ITEM
-    p:
-      type: BAKED_POTATO
-    m:
-      type: BROWN_MUSHROOM
-    b:
-      type: BOWL
-  shape:
-  - ' r '
-  - 'cpm'
-  - ' b '
-- result:
-    type: RABBIT_STEW
-  ingredients:
-    r:
-      type: COOKED_RABBIT
-    c:
-      type: CARROT_ITEM
-    p:
-      type: BAKED_POTATO
-    m:
-      type: RED_MUSHROOM
-    b:
-      type: BOWL
-  shape:
-  - ' r '
-  - 'cpm'
-  - ' b '
-- result:
-    type: LEATHER
-  ingredients:
-    a:
-      type: RABBIT_HIDE
-  shape:
-  - aa
-  - aa
-- result:
-    type: ARMOR_STAND
-  ingredients:
-    a:
-      type: STICK
-    b:
-      type: STEP
-      damage: 0
-  shape:
-  - 'aaa'
-  - ' a '
-  - 'aba'
-- result:
-    type: PRISMARINE
-    damage: 0
-  ingredients:
-    a:
-      type: PRISMARINE_SHARD
-  shape:
-  - aa
-  - aa
-- result:
-    type: PRISMARINE
-    damage: 1
-  ingredients:
-    a:
-      type: PRISMARINE_SHARD
-  shape:
-  - aaa
-  - aaa
-  - aaa
-- result:
-    type: PRISMARINE_SHARD
-    damage: 2
-  ingredients:
-    a:
-      type: PRISMARINE_SHARD
-    b:
-      type: INK_SACK
-      damage: 0
-  shape:
-  - aaa
-  - aba
-  - aaa
-- result:
-    type: SEA_LANTERN
-  ingredients:
-    a:
-      type: PRISMARINE_SHARD
-    b:
-      type: PRISMARINE_CRYSTALS
-  shape:
-  - aba
-  - bbb
-  - aba
-- result:
-    type: MAGMA
-  ingredients:
-    a:
-      type: MAGMA_CREAM
-  shape:
-  - aa
-  - aa
-- result:
-    type: NETHER_WART_BLOCK
-  ingredients:
-    a:
-      type: NETHER_WARTS
-  shape:
-  - aaa
-  - aaa
-  - aaa
-- result:
-    type: RED_NETHER_BRICK
-  ingredients:
-    a:
-      type: NETHER_BRICK_ITEM
-    b:
-      type: NETHER_WARTS
-  shape:
-  - ba
-  - ab
-- result:
-    type: BONE_BLOCK
-  ingredients:
-    a:
-      type: BONE
-  shape:
-  - aaa
-  - aaa
-  - aaa
-- result:
-    type: CONCRETE_POWDER
-    damage: 15
-  ingredients:
-    a:
-      type: SAND
-    b:
-      type: GRAVEL
-    c:
-      type: INK_SACK
-  shape:
-  - aba
-  - bcb
-  - aba
-- result:
-    type: END_CRYSTAL
-  ingredients:
-    a:
-      type: GLASS
-    b:
-      type: GHAST_TEAR
-    c:
-      type: EYE_OF_ENDER
-  shape:
-  - aaa
-  - aca
-  - aba
-- result:
-    type: PAINTING
-  ingredients:
-    a:
-      type: STICK
-    b:
-      type: WOOL
-  shape:
-  - aaa
-  - aba
-  - aaa
+  - result: WOODEN_PICKAXE
+    shape:
+      - ccc
+      - " e "
+      - " e "
+    ingredients:
+      e: STICK
+      c: WOOD
+  - result: STONE_PICKAXE
+    shape:
+      - ccc
+      - " e "
+      - " e "
+    ingredients:
+      e: STICK
+      c: COBBLESTONE
+  - result: IRON_PICKAXE
+    shape:
+      - ccc
+      - " e "
+      - " e "
+    ingredients:
+      e: STICK
+      c: IRON_INGOT
+  - result: DIAMOND_PICKAXE
+    shape:
+      - ccc
+      - " e "
+      - " e "
+    ingredients:
+      e: STICK
+      c: DIAMOND
+  - result: GOLDEN_PICKAXE
+    shape:
+      - ccc
+      - " e "
+      - " e "
+    ingredients:
+      e: STICK
+      c: GOLD_INGOT
+  - result: BOW
+    shape:
+      - " bc"
+      - b c
+      - " bc"
+    ingredients:
+      c: STRING
+      b: STICK
+  - result: GOLD_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: GOLD_INGOT
+  - result: IRON_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: IRON_INGOT
+  - result: DIAMOND_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: DIAMOND
+  - result: EMERALD_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: EMERALD
+  - result: LAPIS_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: INK_SACK
+  - result: REDSTONE_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: REDSTONE
+  - result: COAL_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: COAL
+  - result: HAY_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: WHEAT
+  - result: GOLD_INGOT
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: GOLD_NUGGET
+  - result: MELON_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: MELON
+  - result: SLIME_BLOCK
+    shape:
+      - eee
+      - eee
+      - eee
+    ingredients:
+      e: SLIME_BALL
+  - result: CHEST
+    shape:
+      - ggg
+      - g g
+      - ggg
+    ingredients:
+      g: WOOD
+  - result: ENDER_CHEST
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: EYE_OF_ENDER
+      g: OBSIDIAN
+  - result: FURNACE
+    shape:
+      - ggg
+      - g g
+      - ggg
+    ingredients:
+      g: COBBLESTONE
+  - result: REDSTONE_LAMP_OFF
+    shape:
+      - " b "
+      - beb
+      - " b "
+    ingredients:
+      e: GLOWSTONE
+      b: REDSTONE
+  - result: BEACON
+    shape:
+      - ccc
+      - cec
+      - ggg
+    ingredients:
+      e: NETHER_STAR
+      g: OBSIDIAN
+      c: GLASS
+  - result: LEATHER_CHESTPLATE
+    shape:
+      - e e
+      - eee
+      - eee
+    ingredients:
+      e: LEATHER
+  - result: LEATHER_LEGGINGS
+    shape:
+      - ggg
+      - g g
+      - g g
+    ingredients:
+      g: LEATHER
+  - result: CHAINMAIL_CHESTPLATE
+    shape:
+      - e e
+      - eee
+      - eee
+    ingredients:
+      e: FIRE
+  - result: CHAINMAIL_LEGGINGS
+    shape:
+      - ggg
+      - g g
+      - g g
+    ingredients:
+      g: FIRE
+  - result: IRON_CHESTPLATE
+    shape:
+      - e e
+      - eee
+      - eee
+    ingredients:
+      e: IRON_INGOT
+  - result: IRON_LEGGINGS
+    shape:
+      - ggg
+      - g g
+      - g g
+    ingredients:
+      g: IRON_INGOT
+  - result: DIAMOND_CHESTPLATE
+    shape:
+      - e e
+      - eee
+      - eee
+    ingredients:
+      e: DIAMOND
+  - result: DIAMOND_LEGGINGS
+    shape:
+      - ggg
+      - g g
+      - g g
+    ingredients:
+      g: DIAMOND
+  - result: GOLDEN_CHESTPLATE
+    shape:
+      - e e
+      - eee
+      - eee
+    ingredients:
+      e: GOLD_INGOT
+  - result: GOLDEN_LEGGINGS
+    shape:
+      - ggg
+      - g g
+      - g g
+    ingredients:
+      g: GOLD_INGOT
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: STAINED_CLAY
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: HARD_CLAY
+  - result: STAINED_GLASS
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: INK_SACK
+      g: GLASS
+  - result: EMPTY_MAP
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: MAP
+      g: PAPER
+  - result: JUKEBOX
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: DIAMOND
+      g: WOOD
+  - result: LEASH
+    shape:
+      - "bb "
+      - "be "
+      - "  b"
+    ingredients:
+      e: SLIME_BALL
+      b: STRING
+  - result: NOTE_BLOCK
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: REDSTONE
+      g: WOOD
+  - result: BOOKSHELF
+    shape:
+      - ggg
+      - eee
+      - ggg
+    ingredients:
+      e: BOOK
+      g: WOOD
+  - result: TNT
+    shape:
+      - ebe
+      - beb
+      - ebe
+    ingredients:
+      e: SULPHUR
+      b: SAND
+  - result: LADDER
+    shape:
+      - e e
+      - eee
+      - e e
+    ingredients:
+      e: STICK
+  - result: SIGN
+    shape:
+      - eee
+      - eee
+      - " h "
+    ingredients:
+      e: WOOD
+      h: STICK
+  - result: CAKE
+    shape:
+      - ccc
+      - fef
+      - ggg
+    ingredients:
+      e: EGG
+      g: WHEAT
+      c: MILK_BUCKET
+      f: SUGAR
+  - result: RAILS
+    shape:
+      - g g
+      - geg
+      - g g
+    ingredients:
+      e: STICK
+      g: IRON_INGOT
+  - result: POWERED_RAIL
+    shape:
+      - g g
+      - geg
+      - ghg
+    ingredients:
+      e: STICK
+      g: GOLD_INGOT
+      h: REDSTONE
+  - result: ACTIVATOR_RAIL
+    shape:
+      - gbg
+      - geg
+      - gbg
+    ingredients:
+      e: REDSTONE_TORCH_ON
+      g: IRON_INGOT
+      b: STICK
+  - result: DETECTOR_RAIL
+    shape:
+      - g g
+      - geg
+      - ghg
+    ingredients:
+      e: STONE_PLATE
+      g: IRON_INGOT
+      h: REDSTONE
+  - result: CAULDRON_ITEM
+    shape:
+      - g g
+      - g g
+      - ggg
+    ingredients:
+      g: IRON_INGOT
+  - result: WOOD_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: WOOD
+  - result: BIRCH_WOOD_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: WOOD
+  - result: SPRUCE_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: WOOD
+  - result: JUNGLE_WOOD_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: WOOD
+  - result: ACACIA_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: WOOD
+  - result: DARK_OAK_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: WOOD
+  - result: FISHING_ROD
+    shape:
+      - "  e"
+      - " ef"
+      - e f
+    ingredients:
+      e: STICK
+      f: STRING
+  - result: COBBLESTONE_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: COBBLESTONE
+  - result: BRICK_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: BRICK
+  - result: SMOOTH_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: SMOOTH_BRICK
+  - result: NETHER_BRICK_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: NETHER_BRICK
+  - result: SANDSTONE_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: SANDSTONE
+  - result: RED_SANDSTONE_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: RED_SANDSTONE
+  - result: QUARTZ_STAIRS
+    shape:
+      - "e  "
+      - "ee "
+      - eee
+    ingredients:
+      e: QUARTZ_BLOCK
+  - result: PAINTING
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: WOOL
+      g: STICK
+  - result: ITEM_FRAME
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: LEATHER
+      g: STICK
+  - result: GOLDEN_APPLE
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: APPLE
+      g: GOLD_INGOT
+  - result: GOLDEN_APPLE
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: APPLE
+      g: GOLD_BLOCK
+  - result: GOLDEN_CARROT
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: CARROT_ITEM
+      g: GOLD_NUGGET
+  - result: SPECKLED_MELON
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: MELON
+      g: GOLD_NUGGET
+  - result: REDSTONE_COMPARATOR
+    shape:
+      - " b "
+      - beb
+      - ggg
+    ingredients:
+      e: QUARTZ
+      g: STONE
+      b: REDSTONE_TORCH_ON
+  - result: WATCH
+    shape:
+      - " b "
+      - beb
+      - " b "
+    ingredients:
+      e: REDSTONE
+      b: GOLD_INGOT
+  - result: COMPASS
+    shape:
+      - " b "
+      - beb
+      - " b "
+    ingredients:
+      e: REDSTONE
+      b: IRON_INGOT
+  - result: EMPTY_MAP
+    shape:
+      - ggg
+      - geg
+      - ggg
+    ingredients:
+      e: COMPASS
+      g: PAPER
+  - result: DISPENSER
+    shape:
+      - ggg
+      - geg
+      - ghg
+    ingredients:
+      e: BOW
+      g: COBBLESTONE
+      h: REDSTONE
+  - result: DROPPER
+    shape:
+      - ggg
+      - g g
+      - ghg
+    ingredients:
+      g: COBBLESTONE
+      h: REDSTONE
+  - result: PISTON_BASE
+    shape:
+      - ccc
+      - geg
+      - ghg
+    ingredients:
+      e: IRON_INGOT
+      g: COBBLESTONE
+      c: WOOD
+      h: REDSTONE
+  - result: ENCHANTMENT_TABLE
+    shape:
+      - " b "
+      - fef
+      - eee
+    ingredients:
+      e: OBSIDIAN
+      b: BOOK
+      f: DIAMOND
+  - result: ANVIL
+    shape:
+      - ccc
+      - " e "
+      - eee
+    ingredients:
+      e: IRON_INGOT
+      c: IRON_BLOCK
+  - result: DAYLIGHT_DETECTOR
+    shape:
+      - ccc
+      - eee
+      - ggg
+    ingredients:
+      e: QUARTZ
+      g: WOOD_STEP
+      c: GLASS
+  - result: HOPPER
+    shape:
+      - c c
+      - cec
+      - " c "
+    ingredients:
+      e: CHEST
+      c: IRON_INGOT
+  - result: WOODEN_AXE
+    shape:
+      - cc
+      - cf
+      - " f"
+    ingredients:
+      c: WOOD
+      f: STICK
+  - result: WOOD_HOE
+    shape:
+      - bb
+      - " f"
+      - " f"
+    ingredients:
+      b: WOOD
+      f: STICK
+  - result: STONE_AXE
+    shape:
+      - cc
+      - cf
+      - " f"
+    ingredients:
+      c: COBBLESTONE
+      f: STICK
+  - result: STONE_HOE
+    shape:
+      - bb
+      - " f"
+      - " f"
+    ingredients:
+      b: COBBLESTONE
+      f: STICK
+  - result: IRON_AXE
+    shape:
+      - cc
+      - cf
+      - " f"
+    ingredients:
+      c: IRON_INGOT
+      f: STICK
+  - result: IRON_HOE
+    shape:
+      - bb
+      - " f"
+      - " f"
+    ingredients:
+      b: IRON_INGOT
+      f: STICK
+  - result: DIAMOND_AXE
+    shape:
+      - cc
+      - cf
+      - " f"
+    ingredients:
+      c: DIAMOND
+      f: STICK
+  - result: DIAMOND_HOE
+    shape:
+      - bb
+      - " f"
+      - " f"
+    ingredients:
+      b: DIAMOND
+      f: STICK
+  - result: GOLDEN_AXE
+    shape:
+      - cc
+      - cf
+      - " f"
+    ingredients:
+      c: GOLD_INGOT
+      f: STICK
+  - result: GOLDEN_HOE
+    shape:
+      - bb
+      - " f"
+      - " f"
+    ingredients:
+      b: GOLD_INGOT
+      f: STICK
+  - result: IRON_FENCE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: IRON_INGOT
+  - result: THIN_GLASS
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: GLASS
+  - result: LEATHER_HELMET
+    shape:
+      - ccc
+      - c c
+    ingredients:
+      c: LEATHER
+  - result: LEATHER_BOOTS
+    shape:
+      - c c
+      - c c
+    ingredients:
+      c: LEATHER
+  - result: CHAINMAIL_HELMET
+    shape:
+      - ccc
+      - c c
+    ingredients:
+      c: FIRE
+  - result: CHAINMAIL_BOOTS
+    shape:
+      - c c
+      - c c
+    ingredients:
+      c: FIRE
+  - result: IRON_HELMET
+    shape:
+      - ccc
+      - c c
+    ingredients:
+      c: IRON_INGOT
+  - result: IRON_BOOTS
+    shape:
+      - c c
+      - c c
+    ingredients:
+      c: IRON_INGOT
+  - result: DIAMOND_HELMET
+    shape:
+      - ccc
+      - c c
+    ingredients:
+      c: DIAMOND
+  - result: DIAMOND_BOOTS
+    shape:
+      - c c
+      - c c
+    ingredients:
+      c: DIAMOND
+  - result: GOLDEN_HELMET
+    shape:
+      - ccc
+      - c c
+    ingredients:
+      c: GOLD_INGOT
+  - result: GOLDEN_BOOTS
+    shape:
+      - c c
+      - c c
+    ingredients:
+      c: GOLD_INGOT
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: STAINED_GLASS_PANE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: STAINED_GLASS
+  - result: FENCE
+    shape:
+      - wew
+      - wew
+    ingredients:
+      e: STICK
+      w: WOOD
+  - result: SPRUCE_FENCE
+    shape:
+      - wew
+      - wew
+    ingredients:
+      e: STICK
+      w: WOOD
+  - result: BIRCH_FENCE
+    shape:
+      - wew
+      - wew
+    ingredients:
+      e: STICK
+      w: WOOD
+  - result: JUNGLE_FENCE
+    shape:
+      - wew
+      - wew
+    ingredients:
+      e: STICK
+      w: WOOD
+  - result: ACACIA_FENCE
+    shape:
+      - wew
+      - wew
+    ingredients:
+      e: STICK
+      w: WOOD
+  - result: DARK_OAK_FENCE
+    shape:
+      - wew
+      - wew
+    ingredients:
+      e: STICK
+      w: WOOD
+  - result: COBBLE_WALL
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: COBBLESTONE
+  - result: COBBLE_WALL
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: MOSSY_COBBLESTONE
+  - result: NETHER_FENCE
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: NETHER_BRICK
+  - result: FENCE_GATE
+    shape:
+      - cwc
+      - cwc
+    ingredients:
+      w: WOOD
+      c: STICK
+  - result: SPRUCE_FENCE_GATE
+    shape:
+      - cwc
+      - cwc
+    ingredients:
+      w: WOOD
+      c: STICK
+  - result: BIRCH_FENCE_GATE
+    shape:
+      - cwc
+      - cwc
+    ingredients:
+      w: WOOD
+      c: STICK
+  - result: JUNGLE_FENCE_GATE
+    shape:
+      - cwc
+      - cwc
+    ingredients:
+      w: WOOD
+      c: STICK
+  - result: ACACIA_FENCE_GATE
+    shape:
+      - cwc
+      - cwc
+    ingredients:
+      w: WOOD
+      c: STICK
+  - result: DARK_OAK_FENCE_GATE
+    shape:
+      - cwc
+      - cwc
+    ingredients:
+      w: WOOD
+      c: STICK
+  - result: WOOD_DOOR
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e: WOOD
+  - result: SPRUCE_DOOR
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e: WOOD
+  - result: BIRCH_DOOR
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e: WOOD
+  - result: JUNGLE_DOOR
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e: WOOD
+  - result: ACACIA_DOOR
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e: WOOD
+  - result: DARK_OAK_DOOR
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e: WOOD
+  - result: TRAP_DOOR
+    shape:
+      - eee
+      - eee
+    ingredients:
+      e: WOOD
+  - result: IRON_DOOR
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e: IRON_INGOT
+  - result: IRON_TRAPDOOR
+    shape:
+      - ee
+      - ee
+    ingredients:
+      e: IRON_INGOT
+  - result: BOWL
+    shape:
+      - e e
+      - " e "
+    ingredients:
+      e: WOOD
+  - result: GLASS_BOTTLE
+    shape:
+      - e e
+      - " e "
+    ingredients:
+      e: GLASS
+  - result: MINECART
+    shape:
+      - e e
+      - eee
+    ingredients:
+      e: IRON_INGOT
+  - result: BREWING_STAND_ITEM
+    shape:
+      - " b "
+      - eee
+    ingredients:
+      e: COBBLESTONE
+      b: BLAZE_ROD
+  - result: BOAT
+    shape:
+      - e e
+      - eee
+    ingredients:
+      e: WOOD
+  - result: SPRUCE_BOAT
+    shape:
+      - e e
+      - eee
+    ingredients:
+      e: WOOD
+  - result: BIRCH_BOAT
+    shape:
+      - e e
+      - eee
+    ingredients:
+      e: WOOD
+  - result: JUNGLE_BOAT
+    shape:
+      - e e
+      - eee
+    ingredients:
+      e: WOOD
+  - result: ACACIA_BOAT
+    shape:
+      - e e
+      - eee
+    ingredients:
+      e: WOOD
+  - result: DARK_OAK_BOAT
+    shape:
+      - e e
+      - eee
+    ingredients:
+      e: WOOD
+  - result: BUCKET
+    shape:
+      - e e
+      - " e "
+    ingredients:
+      e: IRON_INGOT
+  - result: FLOWER_POT_ITEM
+    shape:
+      - e e
+      - " e "
+    ingredients:
+      e: CLAY_BRICK
+  - result: DIODE
+    shape:
+      - cbc
+      - eee
+    ingredients:
+      e: STONE
+      c: REDSTONE_TORCH_ON
+      b: REDSTONE
+  - result: LEGACY_BED
+    shape:
+      - ccc
+      - eee
+    ingredients:
+      e: WOOD
+      c: WOOL
+  - result: SHEARS
+    shape:
+      - " c"
+      - "c "
+    ingredients:
+      c: IRON_INGOT
+  - result: CRAFTING_TABLE
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: WOOD
+  - result: SANDSTONE
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: SAND
+  - result: RED_SANDSTONE
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: SAND
+  - result: SANDSTONE
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: SANDSTONE
+  - result: RED_SANDSTONE
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: RED_SANDSTONE
+  - result: SMOOTH_BRICK
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: STONE
+  - result: NETHER_BRICK
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: NETHER_BRICK_ITEM
+  - result: SNOW_BLOCK
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: SNOW_BALL
+  - result: CLAY
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: CLAY_BALL
+  - result: BRICK
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: CLAY_BRICK
+  - result: GLOWSTONE
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: GLOWSTONE_DUST
+  - result: QUARTZ_BLOCK
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: QUARTZ
+  - result: WOOL
+    shape:
+      - cc
+      - cc
+    ingredients:
+      c: STRING
+  - result: CARROT_STICK
+    shape:
+      - "a "
+      - " d"
+    ingredients:
+      a: FISHING_ROD
+      d: CARROT_ITEM
+  - result: WOODEN_SHOVEL
+    shape:
+      - a
+      - c
+      - c
+    ingredients:
+      c: STICK
+      a: WOOD
+  - result: STONE_SHOVEL
+    shape:
+      - a
+      - c
+      - c
+    ingredients:
+      c: STICK
+      a: COBBLESTONE
+  - result: IRON_SHOVEL
+    shape:
+      - a
+      - c
+      - c
+    ingredients:
+      c: STICK
+      a: IRON_INGOT
+  - result: DIAMOND_SHOVEL
+    shape:
+      - a
+      - c
+      - c
+    ingredients:
+      c: STICK
+      a: DIAMOND
+  - result: GOLDEN_SHOVEL
+    shape:
+      - a
+      - c
+      - c
+    ingredients:
+      c: STICK
+      a: GOLD_INGOT
+  - result: WOODEN_SWORD
+    shape:
+      - b
+      - b
+      - c
+    ingredients:
+      c: STICK
+      b: WOOD
+  - result: STONE_SWORD
+    shape:
+      - b
+      - b
+      - c
+    ingredients:
+      c: STICK
+      b: COBBLESTONE
+  - result: IRON_SWORD
+    shape:
+      - b
+      - b
+      - c
+    ingredients:
+      c: STICK
+      b: IRON_INGOT
+  - result: DIAMOND_SWORD
+    shape:
+      - b
+      - b
+      - c
+    ingredients:
+      c: STICK
+      b: DIAMOND
+  - result: GOLDEN_SWORD
+    shape:
+      - b
+      - b
+      - c
+    ingredients:
+      c: STICK
+      b: GOLD_INGOT
+  - result: ARROW
+    shape:
+      - a
+      - b
+      - c
+    ingredients:
+      c: FEATHER
+      b: STICK
+      a: FLINT
+  - result: COOKIE
+    shape:
+      - cbc
+    ingredients:
+      c: WHEAT
+      b: INK_SACK
+  - result: PAPER
+    shape:
+      - ccc
+    ingredients:
+      c: SUGAR_CANE
+  - result: SNOW
+    shape:
+      - ccc
+    ingredients:
+      c: SNOW_BLOCK
+  - result: STEP
+    shape:
+      - ccc
+    ingredients:
+      c: COBBLESTONE
+  - result: STEP
+    shape:
+      - ccc
+    ingredients:
+      c: STONE
+  - result: STEP
+    shape:
+      - ccc
+    ingredients:
+      c: SANDSTONE
+  - result: STEP
+    shape:
+      - ccc
+    ingredients:
+      c: BRICK
+  - result: STEP
+    shape:
+      - ccc
+    ingredients:
+      c: SMOOTH_BRICK
+  - result: STEP
+    shape:
+      - ccc
+    ingredients:
+      c: NETHER_BRICK
+  - result: STEP
+    shape:
+      - ccc
+    ingredients:
+      c: QUARTZ_BLOCK
+  - result: WOOD_STEP
+    shape:
+      - ccc
+    ingredients:
+      c: WOOD
+  - result: WOOD_STEP
+    shape:
+      - ccc
+    ingredients:
+      c: WOOD
+  - result: WOOD_STEP
+    shape:
+      - ccc
+    ingredients:
+      c: WOOD
+  - result: WOOD_STEP
+    shape:
+      - ccc
+    ingredients:
+      c: WOOD
+  - result: WOOD_STEP
+    shape:
+      - ccc
+    ingredients:
+      c: WOOD
+  - result: WOOD_STEP
+    shape:
+      - ccc
+    ingredients:
+      c: WOOD
+  - result: BREAD
+    shape:
+      - ccc
+    ingredients:
+      c: WHEAT
+  - result: TRIPWIRE_HOOK
+    shape:
+      - a
+      - b
+      - c
+    ingredients:
+      c: WOOD
+      b: STICK
+      a: IRON_INGOT
+  - result: TRAPPED_CHEST
+    shape:
+      - ab
+    ingredients:
+      b: TRIPWIRE_HOOK
+      a: CHEST
+  - result: SANDSTONE
+    shape:
+      - b
+      - b
+    ingredients:
+      b: STEP
+  - result: RED_SANDSTONE
+    shape:
+      - b
+      - b
+    ingredients:
+      b: STONE_SLAB2
+  - result: QUARTZ_BLOCK
+    shape:
+      - b
+      - b
+    ingredients:
+      b: STEP
+  - result: SMOOTH_BRICK
+    shape:
+      - c
+      - c
+    ingredients:
+      c: STEP
+  - result: QUARTZ_BLOCK
+    shape:
+      - b
+      - b
+    ingredients:
+      b: QUARTZ_BLOCK
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: CARPET
+    shape:
+      - bb
+    ingredients:
+      b: WOOL
+  - result: STICK
+    shape:
+      - b
+      - b
+    ingredients:
+      b: WOOD
+  - result: TORCH
+    shape:
+      - a
+      - b
+    ingredients:
+      b: STICK
+      a: COAL
+  - result: TORCH
+    shape:
+      - a
+      - b
+    ingredients:
+      b: STICK
+      a: COAL
+  - result: JACK_O_LANTERN
+    shape:
+      - a
+      - b
+    ingredients:
+      b: TORCH
+      a: PUMPKIN
+  - result: STORAGE_MINECART
+    shape:
+      - a
+      - b
+    ingredients:
+      b: MINECART
+      a: CHEST
+  - result: POWERED_MINECART
+    shape:
+      - a
+      - b
+    ingredients:
+      b: MINECART
+      a: FURNACE
+  - result: EXPLOSIVE_MINECART
+    shape:
+      - a
+      - b
+    ingredients:
+      b: MINECART
+      a: TNT
+  - result: HOPPER_MINECART
+    shape:
+      - a
+      - b
+    ingredients:
+      b: MINECART
+      a: HOPPER
+  - result: LEVER
+    shape:
+      - a
+      - b
+    ingredients:
+      b: COBBLESTONE
+      a: STICK
+  - result: REDSTONE_TORCH_ON
+    shape:
+      - a
+      - b
+    ingredients:
+      b: STICK
+      a: REDSTONE
+  - result: STONE_PLATE
+    shape:
+      - bb
+    ingredients:
+      b: STONE
+  - result: WOOD_PLATE
+    shape:
+      - bb
+    ingredients:
+      b: WOOD
+  - result: IRON_PLATE
+    shape:
+      - bb
+    ingredients:
+      b: IRON_INGOT
+  - result: GOLD_PLATE
+    shape:
+      - bb
+    ingredients:
+      b: GOLD_INGOT
+  - result: PISTON_STICKY_BASE
+    shape:
+      - a
+      - b
+    ingredients:
+      b: PISTON_BASE
+      a: SLIME_BALL
+  - result: GOLD_INGOT
+    shape:
+      - a
+    ingredients:
+      a: GOLD_BLOCK
+  - result: IRON_INGOT
+    shape:
+      - a
+    ingredients:
+      a: IRON_BLOCK
+  - result: DIAMOND
+    shape:
+      - a
+    ingredients:
+      a: DIAMOND_BLOCK
+  - result: EMERALD
+    shape:
+      - a
+    ingredients:
+      a: EMERALD_BLOCK
+  - result: INK_SACK
+    shape:
+      - a
+    ingredients:
+      a: LAPIS_BLOCK
+  - result: REDSTONE
+    shape:
+      - a
+    ingredients:
+      a: REDSTONE_BLOCK
+  - result: COAL
+    shape:
+      - a
+    ingredients:
+      a: COAL_BLOCK
+  - result: WHEAT
+    shape:
+      - a
+    ingredients:
+      a: HAY_BLOCK
+  - result: GOLD_NUGGET
+    shape:
+      - a
+    ingredients:
+      a: GOLD_INGOT
+  - result: MELON_SEEDS
+    shape:
+      - a
+    ingredients:
+      a: MELON
+  - result: PUMPKIN_SEEDS
+    shape:
+      - a
+    ingredients:
+      a: PUMPKIN
+  - result: SUGAR
+    shape:
+      - a
+    ingredients:
+      a: SUGAR_CANE
+  - result: WOOD
+    shape:
+      - a
+    ingredients:
+      a: LOG
+  - result: WOOD
+    shape:
+      - a
+    ingredients:
+      a: LOG
+  - result: WOOD
+    shape:
+      - a
+    ingredients:
+      a: LOG
+  - result: WOOD
+    shape:
+      - a
+    ingredients:
+      a: LOG
+  - result: WOOD
+    shape:
+      - a
+    ingredients:
+      a: LOG_2
+  - result: WOOD
+    shape:
+      - a
+    ingredients:
+      a: LOG_2
+  - result: STONE_BUTTON
+    shape:
+      - a
+    ingredients:
+      a: STONE
+  - result: WOOD_BUTTON
+    shape:
+      - a
+    ingredients:
+      a: WOOD
+  - result: STONE
+    shape:
+      - ab
+      - ba
+    ingredients:
+      a: COBBLESTONE
+      b: QUARTZ
+  - result: STONE
+    shape:
+      - aa
+      - aa
+    ingredients:
+      a: STONE
+  - result: STONE
+    shape:
+      - aa
+      - aa
+    ingredients:
+      a: STONE
+  - result: STONE
+    shape:
+      - aa
+      - aa
+    ingredients:
+      a: STONE
+  - result: DIRT
+    shape:
+      - ab
+      - ba
+    ingredients:
+      a: DIRT
+      b: GRAVEL
+  - result: STONE_SLAB2
+    shape:
+      - aaa
+    ingredients:
+      a: RED_SANDSTONE
+  - result: RABBIT_STEW
+    shape:
+      - " r "
+      - cpm
+      - " b "
+    ingredients:
+      r: COOKED_RABBIT
+      c: CARROT_ITEM
+      p: BAKED_POTATO
+      m: BROWN_MUSHROOM
+      b: BOWL
+  - result: RABBIT_STEW
+    shape:
+      - " r "
+      - cpm
+      - " b "
+    ingredients:
+      r: COOKED_RABBIT
+      c: CARROT_ITEM
+      p: BAKED_POTATO
+      m: RED_MUSHROOM
+      b: BOWL
+  - result: LEATHER
+    shape:
+      - aa
+      - aa
+    ingredients:
+      a: RABBIT_HIDE
+  - result: ARMOR_STAND
+    shape:
+      - aaa
+      - " a "
+      - aba
+    ingredients:
+      a: STICK
+      b: STEP
+  - result: PRISMARINE
+    shape:
+      - aa
+      - aa
+    ingredients:
+      a: PRISMARINE_SHARD
+  - result: PRISMARINE
+    shape:
+      - aaa
+      - aaa
+      - aaa
+    ingredients:
+      a: PRISMARINE_SHARD
+  - result: PRISMARINE_SHARD
+    shape:
+      - aaa
+      - aba
+      - aaa
+    ingredients:
+      a: PRISMARINE_SHARD
+      b: INK_SACK
+  - result: SEA_LANTERN
+    shape:
+      - aba
+      - bbb
+      - aba
+    ingredients:
+      a: PRISMARINE_SHARD
+      b: PRISMARINE_CRYSTALS
+  - result: MAGMA
+    shape:
+      - aa
+      - aa
+    ingredients:
+      a: MAGMA_CREAM
+  - result: NETHER_WART_BLOCK
+    shape:
+      - aaa
+      - aaa
+      - aaa
+    ingredients:
+      a: NETHER_WARTS
+  - result: RED_NETHER_BRICK
+    shape:
+      - ba
+      - ab
+    ingredients:
+      a: NETHER_BRICK_ITEM
+      b: NETHER_WARTS
+  - result: BONE_BLOCK
+    shape:
+      - aaa
+      - aaa
+      - aaa
+    ingredients:
+      a: BONE
+  - result: CONCRETE_POWDER
+    shape:
+      - aba
+      - bcb
+      - aba
+    ingredients:
+      a: SAND
+      b: GRAVEL
+      c: INK_SACK
+  - result: END_CRYSTAL
+    shape:
+      - aaa
+      - aca
+      - aba
+    ingredients:
+      a: GLASS
+      b: GHAST_TEAR
+      c: EYE_OF_ENDER
+  - result: PAINTING
+    shape:
+      - aaa
+      - aba
+      - aaa
+    ingredients:
+      a: STICK
+      b: WOOL
