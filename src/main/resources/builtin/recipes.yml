@@ -1,2385 +1,3559 @@
 furnace:
-  - result: COOKED_FISH
-    input: RAW_FISH
-  - result: COOKED_CHICKEN
-    input: RAW_CHICKEN
-  - result: HARD_CLAY
-    input: CLAY
-  - result: REDSTONE
-    input: REDSTONE_ORE
-  - result: IRON_INGOT
-    input: IRON_ORE
-  - result: INK_SACK
-    input: LAPIS_ORE
-  - result: COAL
-    input: COAL_ORE
-  - result: COOKED_FISH
-    input: RAW_FISH
-  - result: STONE
-    input: COBBLESTONE
-  - result: DIAMOND
-    input: DIAMOND_ORE
-  - result: EMERALD
-    input: EMERALD_ORE
-  - result: BAKED_POTATO
-    input: POTATO_ITEM
-  - result: COAL
-    input: LOG_2
-  - result: COOKED_BEEF
-    input: RAW_BEEF
-  - result: GOLD_INGOT
-    input: GOLD_ORE
-  - result: COAL
-    input: LOG
-  - result: NETHER_BRICK_ITEM
-    input: NETHERRACK
-  - result: GLASS
-    input: SAND
-  - result: CLAY_BRICK
-    input: CLAY_BALL
-  - result: GRILLED_PORK
-    input: PORK
-  - result: QUARTZ
-    input: QUARTZ_ORE
-  - result: INK_SACK
-    input: CACTUS
-  - result: SMOOTH_BRICK
-    input: SMOOTH_BRICK
-  - result: COOKED_RABBIT
-    input: RABBIT
-  - result: COOKED_MUTTON
-    input: MUTTON
-  - result: SPONGE
-    input: SPONGE
+  - result:
+      type: COOKED_FISH
+    input:
+      type: RAW_FISH
+  - result:
+      type: COOKED_CHICKEN
+    input:
+      type: RAW_CHICKEN
+  - result:
+      type: HARD_CLAY
+    input:
+      type: CLAY
+  - result:
+      type: REDSTONE
+    input:
+      type: REDSTONE_ORE
+  - result:
+      type: IRON_INGOT
+    input:
+      type: IRON_ORE
+  - result:
+      type: INK_SACK
+    input:
+      type: LAPIS_ORE
+  - result:
+      type: COAL
+    input:
+      type: COAL_ORE
+  - result:
+      type: COOKED_FISH
+    input:
+      type: RAW_FISH
+  - result:
+      type: STONE
+    input:
+      type: COBBLESTONE
+  - result:
+      type: DIAMOND
+    input:
+      type: DIAMOND_ORE
+  - result:
+      type: EMERALD
+    input:
+      type: EMERALD_ORE
+  - result:
+      type: BAKED_POTATO
+    input:
+      type: POTATO_ITEM
+  - result:
+      type: COAL
+    input:
+      type: LOG_2
+  - result:
+      type: COOKED_BEEF
+    input:
+      type: RAW_BEEF
+  - result:
+      type: GOLD_INGOT
+    input:
+      type: GOLD_ORE
+  - result:
+      type: COAL
+    input:
+      type: LOG
+  - result:
+      type: NETHER_BRICK_ITEM
+    input:
+      type: NETHERRACK
+  - result:
+      type: GLASS
+    input:
+      type: SAND
+  - result:
+      type: CLAY_BRICK
+    input:
+      type: CLAY_BALL
+  - result:
+      type: GRILLED_PORK
+    input:
+      type: PORK
+  - result:
+      type: QUARTZ
+    input:
+      type: QUARTZ_ORE
+  - result:
+      type: INK_SACK
+    input:
+      type: CACTUS
+  - result:
+      type: SMOOTH_BRICK
+    input:
+      type: SMOOTH_BRICK
+  - result:
+      type: COOKED_RABBIT
+    input:
+      type: RABBIT
+  - result:
+      type: COOKED_MUTTON
+    input:
+      type: MUTTON
+  - result:
+      type: SPONGE
+    input:
+      type: SPONGE
 shapeless:
-  - result: LEATHER_HELMET
+  - result:
+      type: LEATHER_HELMET
     ingredients:
-      "0": INK_SACK
-  - result: FIREWORK
+      "0":
+        type: INK_SACK
+  - result:
+      type: FIREWORK
     ingredients:
-      "0": SULPHUR
-  - result: WRITTEN_BOOK
+      "0":
+        type: SULPHUR
+  - result:
+      type: WRITTEN_BOOK
     ingredients:
-      "0": BOOK_AND_QUILL
-  - result: MAP
+      "0":
+        type: BOOK_AND_QUILL
+  - result:
+      type: MAP
     ingredients:
-      "0": EMPTY_MAP
-  - result: INK_SACK
+      "0":
+        type: EMPTY_MAP
+  - result:
+      type: INK_SACK
+      amount: 4
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-      "2": INK_SACK
-      "3": INK_SACK
-  - result: BOOK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+      "2":
+        type: INK_SACK
+      "3":
+        type: INK_SACK
+  - result:
+      type: BOOK
     ingredients:
-      "0": PAPER
-      "1": PAPER
-      "2": PAPER
-      "3": LEATHER
-  - result: MUSHROOM_SOUP
+      "0":
+        type: PAPER
+      "1":
+        type: PAPER
+      "2":
+        type: PAPER
+      "3":
+        type: LEATHER
+  - result:
+      type: MUSHROOM_SOUP
     ingredients:
-      "0": BROWN_MUSHROOM
-      "1": RED_MUSHROOM
-      "2": BOWL
-  - result: PUMPKIN_PIE
+      "0":
+        type: BROWN_MUSHROOM
+      "1":
+        type: RED_MUSHROOM
+      "2":
+        type: BOWL
+  - result:
+      type: PUMPKIN_PIE
     ingredients:
-      "0": PUMPKIN
-      "1": SUGAR
-      "2": EGG
-  - result: FERMENTED_SPIDER_EYE
+      "0":
+        type: PUMPKIN
+      "1":
+        type: SUGAR
+      "2":
+        type: EGG
+  - result:
+      type: FERMENTED_SPIDER_EYE
     ingredients:
-      "0": SPIDER_EYE
-      "1": BROWN_MUSHROOM
-      "2": SUGAR
-  - result: INK_SACK
+      "0":
+        type: SPIDER_EYE
+      "1":
+        type: BROWN_MUSHROOM
+      "2":
+        type: SUGAR
+  - result:
+      type: INK_SACK
+      amount: 3
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-      "2": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+      "2":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 3
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-      "2": INK_SACK
-  - result: BOOK_AND_QUILL
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+      "2":
+        type: INK_SACK
+  - result:
+      type: BOOK_AND_QUILL
     ingredients:
-      "0": BOOK
-      "1": INK_SACK
-      "2": FEATHER
-  - result: FIREBALL
+      "0":
+        type: BOOK
+      "1":
+        type: INK_SACK
+      "2":
+        type: FEATHER
+  - result:
+      type: FIREBALL
+      amount: 3
     ingredients:
-      "0": SULPHUR
-      "1": BLAZE_POWDER
-      "2": COAL
-  - result: FIREBALL
+      "0":
+        type: SULPHUR
+      "1":
+        type: BLAZE_POWDER
+      "2":
+        type: COAL
+  - result:
+      type: FIREBALL
+      amount: 3
     ingredients:
-      "0": SULPHUR
-      "1": BLAZE_POWDER
-      "2": COAL
-  - result: MAGMA_CREAM
+      "0":
+        type: SULPHUR
+      "1":
+        type: BLAZE_POWDER
+      "2":
+        type: COAL
+  - result:
+      type: MAGMA_CREAM
     ingredients:
-      "0": BLAZE_POWDER
-      "1": SLIME_BALL
-  - result: WOOL
+      "0":
+        type: BLAZE_POWDER
+      "1":
+        type: SLIME_BALL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: WOOL
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: WOOL
     ingredients:
-      "0": INK_SACK
-      "1": WOOL
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: WOOL
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: INK_SACK
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": INK_SACK
-      "1": INK_SACK
-  - result: FLINT_AND_STEEL
+      "0":
+        type: INK_SACK
+      "1":
+        type: INK_SACK
+  - result:
+      type: FLINT_AND_STEEL
     ingredients:
-      "0": IRON_INGOT
-      "1": FLINT
-  - result: EYE_OF_ENDER
+      "0":
+        type: IRON_INGOT
+      "1":
+        type: FLINT
+  - result:
+      type: EYE_OF_ENDER
     ingredients:
-      "0": ENDER_PEARL
-      "1": BLAZE_POWDER
-  - result: BLAZE_POWDER
+      "0":
+        type: ENDER_PEARL
+      "1":
+        type: BLAZE_POWDER
+  - result:
+      type: BLAZE_POWDER
+      amount: 2
     ingredients:
-      "0": BLAZE_ROD
-  - result: INK_SACK
+      "0":
+        type: BLAZE_ROD
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": YELLOW_FLOWER
-  - result: INK_SACK
+      "0":
+        type: YELLOW_FLOWER
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
+      amount: 3
     ingredients:
-      "0": BONE
-  - result: INK_SACK
+      "0":
+        type: BONE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
     ingredients:
-      "0": RED_ROSE
-  - result: INK_SACK
+      "0":
+        type: RED_ROSE
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": DOUBLE_PLANT
-  - result: INK_SACK
+      "0":
+        type: DOUBLE_PLANT
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": DOUBLE_PLANT
-  - result: INK_SACK
+      "0":
+        type: DOUBLE_PLANT
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": DOUBLE_PLANT
-  - result: INK_SACK
+      "0":
+        type: DOUBLE_PLANT
+  - result:
+      type: INK_SACK
+      amount: 2
     ingredients:
-      "0": DOUBLE_PLANT
-  - result: SMOOTH_BRICK
+      "0":
+        type: DOUBLE_PLANT
+  - result:
+      type: SMOOTH_BRICK
     ingredients:
-      "0": SMOOTH_BRICK
-      "1": VINE
-  - result: MOSSY_COBBLESTONE
+      "0":
+        type: SMOOTH_BRICK
+      "1":
+        type: VINE
+  - result:
+      type: MOSSY_COBBLESTONE
     ingredients:
-      "0": COBBLESTONE
-      "1": VINE
-  - result: STONE
+      "0":
+        type: COBBLESTONE
+      "1":
+        type: VINE
+  - result:
+      type: STONE
     ingredients:
-      "0": STONE
-      "1": QUARTZ
-  - result: STONE
+      "0":
+        type: STONE
+      "1":
+        type: QUARTZ
+  - result:
+      type: STONE
     ingredients:
-      "0": STONE
-      "1": COBBLESTONE
-  - result: SLIME_BALL
+      "0":
+        type: STONE
+      "1":
+        type: COBBLESTONE
+  - result:
+      type: SLIME_BALL
+      amount: 9
     ingredients:
-      "0": SLIME_BLOCK
+      "0":
+        type: SLIME_BLOCK
 shaped:
-  - result: WOODEN_PICKAXE
+  - result:
+      type: WOODEN_PICKAXE
     shape:
       - ccc
       - " e "
       - " e "
     ingredients:
-      e: STICK
-      c: WOOD
-  - result: STONE_PICKAXE
+      e:
+        type: STICK
+      c:
+        type: WOOD
+  - result:
+      type: STONE_PICKAXE
     shape:
       - ccc
       - " e "
       - " e "
     ingredients:
-      e: STICK
-      c: COBBLESTONE
-  - result: IRON_PICKAXE
+      e:
+        type: STICK
+      c:
+        type: COBBLESTONE
+  - result:
+      type: IRON_PICKAXE
     shape:
       - ccc
       - " e "
       - " e "
     ingredients:
-      e: STICK
-      c: IRON_INGOT
-  - result: DIAMOND_PICKAXE
+      e:
+        type: STICK
+      c:
+        type: IRON_INGOT
+  - result:
+      type: DIAMOND_PICKAXE
     shape:
       - ccc
       - " e "
       - " e "
     ingredients:
-      e: STICK
-      c: DIAMOND
-  - result: GOLDEN_PICKAXE
+      e:
+        type: STICK
+      c:
+        type: DIAMOND
+  - result:
+      type: GOLDEN_PICKAXE
     shape:
       - ccc
       - " e "
       - " e "
     ingredients:
-      e: STICK
-      c: GOLD_INGOT
-  - result: BOW
+      e:
+        type: STICK
+      c:
+        type: GOLD_INGOT
+  - result:
+      type: BOW
     shape:
       - " bc"
       - b c
       - " bc"
     ingredients:
-      c: STRING
-      b: STICK
-  - result: GOLD_BLOCK
+      c:
+        type: STRING
+      b:
+        type: STICK
+  - result:
+      type: GOLD_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: GOLD_INGOT
-  - result: IRON_BLOCK
+      e:
+        type: GOLD_INGOT
+  - result:
+      type: IRON_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: IRON_INGOT
-  - result: DIAMOND_BLOCK
+      e:
+        type: IRON_INGOT
+  - result:
+      type: DIAMOND_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: DIAMOND
-  - result: EMERALD_BLOCK
+      e:
+        type: DIAMOND
+  - result:
+      type: EMERALD_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: EMERALD
-  - result: LAPIS_BLOCK
+      e:
+        type: EMERALD
+  - result:
+      type: LAPIS_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: INK_SACK
-  - result: REDSTONE_BLOCK
+      e:
+        type: INK_SACK
+  - result:
+      type: REDSTONE_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: REDSTONE
-  - result: COAL_BLOCK
+      e:
+        type: REDSTONE
+  - result:
+      type: COAL_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: COAL
-  - result: HAY_BLOCK
+      e:
+        type: COAL
+  - result:
+      type: HAY_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: WHEAT
-  - result: GOLD_INGOT
+      e:
+        type: WHEAT
+  - result:
+      type: GOLD_INGOT
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: GOLD_NUGGET
-  - result: MELON_BLOCK
+      e:
+        type: GOLD_NUGGET
+  - result:
+      type: MELON_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: MELON
-  - result: SLIME_BLOCK
+      e:
+        type: MELON
+  - result:
+      type: SLIME_BLOCK
     shape:
       - eee
       - eee
       - eee
     ingredients:
-      e: SLIME_BALL
-  - result: CHEST
+      e:
+        type: SLIME_BALL
+  - result:
+      type: CHEST
     shape:
       - ggg
       - g g
       - ggg
     ingredients:
-      g: WOOD
-  - result: ENDER_CHEST
+      g:
+        type: WOOD
+  - result:
+      type: ENDER_CHEST
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: EYE_OF_ENDER
-      g: OBSIDIAN
-  - result: FURNACE
+      e:
+        type: EYE_OF_ENDER
+      g:
+        type: OBSIDIAN
+  - result:
+      type: FURNACE
     shape:
       - ggg
       - g g
       - ggg
     ingredients:
-      g: COBBLESTONE
-  - result: REDSTONE_LAMP_OFF
+      g:
+        type: COBBLESTONE
+  - result:
+      type: REDSTONE_LAMP_OFF
     shape:
       - " b "
       - beb
       - " b "
     ingredients:
-      e: GLOWSTONE
-      b: REDSTONE
-  - result: BEACON
+      e:
+        type: GLOWSTONE
+      b:
+        type: REDSTONE
+  - result:
+      type: BEACON
     shape:
       - ccc
       - cec
       - ggg
     ingredients:
-      e: NETHER_STAR
-      g: OBSIDIAN
-      c: GLASS
-  - result: LEATHER_CHESTPLATE
+      e:
+        type: NETHER_STAR
+      g:
+        type: OBSIDIAN
+      c:
+        type: GLASS
+  - result:
+      type: LEATHER_CHESTPLATE
     shape:
       - e e
       - eee
       - eee
     ingredients:
-      e: LEATHER
-  - result: LEATHER_LEGGINGS
+      e:
+        type: LEATHER
+  - result:
+      type: LEATHER_LEGGINGS
     shape:
       - ggg
       - g g
       - g g
     ingredients:
-      g: LEATHER
-  - result: CHAINMAIL_CHESTPLATE
+      g:
+        type: LEATHER
+  - result:
+      type: CHAINMAIL_CHESTPLATE
     shape:
       - e e
       - eee
       - eee
     ingredients:
-      e: FIRE
-  - result: CHAINMAIL_LEGGINGS
+      e:
+        type: FIRE
+  - result:
+      type: CHAINMAIL_LEGGINGS
     shape:
       - ggg
       - g g
       - g g
     ingredients:
-      g: FIRE
-  - result: IRON_CHESTPLATE
+      g:
+        type: FIRE
+  - result:
+      type: IRON_CHESTPLATE
     shape:
       - e e
       - eee
       - eee
     ingredients:
-      e: IRON_INGOT
-  - result: IRON_LEGGINGS
+      e:
+        type: IRON_INGOT
+  - result:
+      type: IRON_LEGGINGS
     shape:
       - ggg
       - g g
       - g g
     ingredients:
-      g: IRON_INGOT
-  - result: DIAMOND_CHESTPLATE
+      g:
+        type: IRON_INGOT
+  - result:
+      type: DIAMOND_CHESTPLATE
     shape:
       - e e
       - eee
       - eee
     ingredients:
-      e: DIAMOND
-  - result: DIAMOND_LEGGINGS
+      e:
+        type: DIAMOND
+  - result:
+      type: DIAMOND_LEGGINGS
     shape:
       - ggg
       - g g
       - g g
     ingredients:
-      g: DIAMOND
-  - result: GOLDEN_CHESTPLATE
+      g:
+        type: DIAMOND
+  - result:
+      type: GOLDEN_CHESTPLATE
     shape:
       - e e
       - eee
       - eee
     ingredients:
-      e: GOLD_INGOT
-  - result: GOLDEN_LEGGINGS
+      e:
+        type: GOLD_INGOT
+  - result:
+      type: GOLDEN_LEGGINGS
     shape:
       - ggg
       - g g
       - g g
     ingredients:
-      g: GOLD_INGOT
-  - result: STAINED_CLAY
+      g:
+        type: GOLD_INGOT
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: STAINED_CLAY
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: STAINED_CLAY
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: HARD_CLAY
-  - result: STAINED_GLASS
+      e:
+        type: INK_SACK
+      g:
+        type: HARD_CLAY
+  - result:
+      type: STAINED_GLASS
+      amount: 8
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: INK_SACK
-      g: GLASS
-  - result: EMPTY_MAP
+      e:
+        type: INK_SACK
+      g:
+        type: GLASS
+  - result:
+      type: EMPTY_MAP
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: MAP
-      g: PAPER
-  - result: JUKEBOX
+      e:
+        type: MAP
+      g:
+        type: PAPER
+  - result:
+      type: JUKEBOX
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: DIAMOND
-      g: WOOD
-  - result: LEASH
+      e:
+        type: DIAMOND
+      g:
+        type: WOOD
+  - result:
+      type: LEASH
+      amount: 2
     shape:
       - "bb "
       - "be "
       - "  b"
     ingredients:
-      e: SLIME_BALL
-      b: STRING
-  - result: NOTE_BLOCK
+      e:
+        type: SLIME_BALL
+      b:
+        type: STRING
+  - result:
+      type: NOTE_BLOCK
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: REDSTONE
-      g: WOOD
-  - result: BOOKSHELF
+      e:
+        type: REDSTONE
+      g:
+        type: WOOD
+  - result:
+      type: BOOKSHELF
     shape:
       - ggg
       - eee
       - ggg
     ingredients:
-      e: BOOK
-      g: WOOD
-  - result: TNT
+      e:
+        type: BOOK
+      g:
+        type: WOOD
+  - result:
+      type: TNT
     shape:
       - ebe
       - beb
       - ebe
     ingredients:
-      e: SULPHUR
-      b: SAND
-  - result: LADDER
+      e:
+        type: SULPHUR
+      b:
+        type: SAND
+  - result:
+      type: LADDER
+      amount: 3
     shape:
       - e e
       - eee
       - e e
     ingredients:
-      e: STICK
-  - result: SIGN
+      e:
+        type: STICK
+  - result:
+      type: SIGN
+      amount: 3
     shape:
       - eee
       - eee
       - " h "
     ingredients:
-      e: WOOD
-      h: STICK
-  - result: CAKE
+      e:
+        type: WOOD
+      h:
+        type: STICK
+  - result:
+      type: CAKE
     shape:
       - ccc
       - fef
       - ggg
     ingredients:
-      e: EGG
-      g: WHEAT
-      c: MILK_BUCKET
-      f: SUGAR
-  - result: RAILS
+      e:
+        type: EGG
+      g:
+        type: WHEAT
+      c:
+        type: MILK_BUCKET
+      f:
+        type: SUGAR
+  - result:
+      type: RAILS
+      amount: 16
     shape:
       - g g
       - geg
       - g g
     ingredients:
-      e: STICK
-      g: IRON_INGOT
-  - result: POWERED_RAIL
-    shape:
-      - g g
-      - geg
-      - ghg
-    ingredients:
-      e: STICK
-      g: GOLD_INGOT
-      h: REDSTONE
-  - result: ACTIVATOR_RAIL
-    shape:
-      - gbg
-      - geg
-      - gbg
-    ingredients:
-      e: REDSTONE_TORCH_ON
-      g: IRON_INGOT
-      b: STICK
-  - result: DETECTOR_RAIL
+      e:
+        type: STICK
+      g:
+        type: IRON_INGOT
+  - result:
+      type: POWERED_RAIL
+      amount: 6
     shape:
       - g g
       - geg
       - ghg
     ingredients:
-      e: STONE_PLATE
-      g: IRON_INGOT
-      h: REDSTONE
-  - result: CAULDRON_ITEM
+      e:
+        type: STICK
+      g:
+        type: GOLD_INGOT
+      h:
+        type: REDSTONE
+  - result:
+      type: ACTIVATOR_RAIL
+      amount: 6
+    shape:
+      - gbg
+      - geg
+      - gbg
+    ingredients:
+      e:
+        type: REDSTONE_TORCH_ON
+      g:
+        type: IRON_INGOT
+      b:
+        type: STICK
+  - result:
+      type: DETECTOR_RAIL
+      amount: 6
+    shape:
+      - g g
+      - geg
+      - ghg
+    ingredients:
+      e:
+        type: STONE_PLATE
+      g:
+        type: IRON_INGOT
+      h:
+        type: REDSTONE
+  - result:
+      type: CAULDRON_ITEM
     shape:
       - g g
       - g g
       - ggg
     ingredients:
-      g: IRON_INGOT
-  - result: WOOD_STAIRS
+      g:
+        type: IRON_INGOT
+  - result:
+      type: WOOD_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: WOOD
-  - result: BIRCH_WOOD_STAIRS
+      e:
+        type: WOOD
+  - result:
+      type: BIRCH_WOOD_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: WOOD
-  - result: SPRUCE_STAIRS
+      e:
+        type: WOOD
+  - result:
+      type: SPRUCE_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: WOOD
-  - result: JUNGLE_WOOD_STAIRS
+      e:
+        type: WOOD
+  - result:
+      type: JUNGLE_WOOD_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: WOOD
-  - result: ACACIA_STAIRS
+      e:
+        type: WOOD
+  - result:
+      type: ACACIA_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: WOOD
-  - result: DARK_OAK_STAIRS
+      e:
+        type: WOOD
+  - result:
+      type: DARK_OAK_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: WOOD
-  - result: FISHING_ROD
+      e:
+        type: WOOD
+  - result:
+      type: FISHING_ROD
     shape:
       - "  e"
       - " ef"
       - e f
     ingredients:
-      e: STICK
-      f: STRING
-  - result: COBBLESTONE_STAIRS
+      e:
+        type: STICK
+      f:
+        type: STRING
+  - result:
+      type: COBBLESTONE_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: COBBLESTONE
-  - result: BRICK_STAIRS
+      e:
+        type: COBBLESTONE
+  - result:
+      type: BRICK_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: BRICK
-  - result: SMOOTH_STAIRS
+      e:
+        type: BRICK
+  - result:
+      type: SMOOTH_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: SMOOTH_BRICK
-  - result: NETHER_BRICK_STAIRS
+      e:
+        type: SMOOTH_BRICK
+  - result:
+      type: NETHER_BRICK_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: NETHER_BRICK
-  - result: SANDSTONE_STAIRS
+      e:
+        type: NETHER_BRICK
+  - result:
+      type: SANDSTONE_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: SANDSTONE
-  - result: RED_SANDSTONE_STAIRS
+      e:
+        type: SANDSTONE
+  - result:
+      type: RED_SANDSTONE_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: RED_SANDSTONE
-  - result: QUARTZ_STAIRS
+      e:
+        type: RED_SANDSTONE
+  - result:
+      type: QUARTZ_STAIRS
+      amount: 4
     shape:
       - "e  "
       - "ee "
       - eee
     ingredients:
-      e: QUARTZ_BLOCK
-  - result: PAINTING
+      e:
+        type: QUARTZ_BLOCK
+  - result:
+      type: PAINTING
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: WOOL
-      g: STICK
-  - result: ITEM_FRAME
+      e:
+        type: WOOL
+      g:
+        type: STICK
+  - result:
+      type: ITEM_FRAME
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: LEATHER
-      g: STICK
-  - result: GOLDEN_APPLE
+      e:
+        type: LEATHER
+      g:
+        type: STICK
+  - result:
+      type: GOLDEN_APPLE
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: APPLE
-      g: GOLD_INGOT
-  - result: GOLDEN_APPLE
+      e:
+        type: APPLE
+      g:
+        type: GOLD_INGOT
+  - result:
+      type: GOLDEN_APPLE
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: APPLE
-      g: GOLD_BLOCK
-  - result: GOLDEN_CARROT
+      e:
+        type: APPLE
+      g:
+        type: GOLD_BLOCK
+  - result:
+      type: GOLDEN_CARROT
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: CARROT_ITEM
-      g: GOLD_NUGGET
-  - result: SPECKLED_MELON
+      e:
+        type: CARROT_ITEM
+      g:
+        type: GOLD_NUGGET
+  - result:
+      type: SPECKLED_MELON
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: MELON
-      g: GOLD_NUGGET
-  - result: REDSTONE_COMPARATOR
+      e:
+        type: MELON
+      g:
+        type: GOLD_NUGGET
+  - result:
+      type: REDSTONE_COMPARATOR
     shape:
       - " b "
       - beb
       - ggg
     ingredients:
-      e: QUARTZ
-      g: STONE
-      b: REDSTONE_TORCH_ON
-  - result: WATCH
+      e:
+        type: QUARTZ
+      g:
+        type: STONE
+      b:
+        type: REDSTONE_TORCH_ON
+  - result:
+      type: WATCH
     shape:
       - " b "
       - beb
       - " b "
     ingredients:
-      e: REDSTONE
-      b: GOLD_INGOT
-  - result: COMPASS
+      e:
+        type: REDSTONE
+      b:
+        type: GOLD_INGOT
+  - result:
+      type: COMPASS
     shape:
       - " b "
       - beb
       - " b "
     ingredients:
-      e: REDSTONE
-      b: IRON_INGOT
-  - result: EMPTY_MAP
+      e:
+        type: REDSTONE
+      b:
+        type: IRON_INGOT
+  - result:
+      type: EMPTY_MAP
     shape:
       - ggg
       - geg
       - ggg
     ingredients:
-      e: COMPASS
-      g: PAPER
-  - result: DISPENSER
+      e:
+        type: COMPASS
+      g:
+        type: PAPER
+  - result:
+      type: DISPENSER
     shape:
       - ggg
       - geg
       - ghg
     ingredients:
-      e: BOW
-      g: COBBLESTONE
-      h: REDSTONE
-  - result: DROPPER
+      e:
+        type: BOW
+      g:
+        type: COBBLESTONE
+      h:
+        type: REDSTONE
+  - result:
+      type: DROPPER
     shape:
       - ggg
       - g g
       - ghg
     ingredients:
-      g: COBBLESTONE
-      h: REDSTONE
-  - result: PISTON_BASE
+      g:
+        type: COBBLESTONE
+      h:
+        type: REDSTONE
+  - result:
+      type: PISTON_BASE
     shape:
       - ccc
       - geg
       - ghg
     ingredients:
-      e: IRON_INGOT
-      g: COBBLESTONE
-      c: WOOD
-      h: REDSTONE
-  - result: ENCHANTMENT_TABLE
+      e:
+        type: IRON_INGOT
+      g:
+        type: COBBLESTONE
+      c:
+        type: WOOD
+      h:
+        type: REDSTONE
+  - result:
+      type: ENCHANTMENT_TABLE
     shape:
       - " b "
       - fef
       - eee
     ingredients:
-      e: OBSIDIAN
-      b: BOOK
-      f: DIAMOND
-  - result: ANVIL
+      e:
+        type: OBSIDIAN
+      b:
+        type: BOOK
+      f:
+        type: DIAMOND
+  - result:
+      type: ANVIL
     shape:
       - ccc
       - " e "
       - eee
     ingredients:
-      e: IRON_INGOT
-      c: IRON_BLOCK
-  - result: DAYLIGHT_DETECTOR
+      e:
+        type: IRON_INGOT
+      c:
+        type: IRON_BLOCK
+  - result:
+      type: DAYLIGHT_DETECTOR
     shape:
       - ccc
       - eee
       - ggg
     ingredients:
-      e: QUARTZ
-      g: WOOD_STEP
-      c: GLASS
-  - result: HOPPER
+      e:
+        type: QUARTZ
+      g:
+        type: WOOD_STEP
+      c:
+        type: GLASS
+  - result:
+      type: HOPPER
     shape:
       - c c
       - cec
       - " c "
     ingredients:
-      e: CHEST
-      c: IRON_INGOT
-  - result: WOODEN_AXE
+      e:
+        type: CHEST
+      c:
+        type: IRON_INGOT
+  - result:
+      type: WOODEN_AXE
     shape:
       - cc
       - cf
       - " f"
     ingredients:
-      c: WOOD
-      f: STICK
-  - result: WOOD_HOE
+      c:
+        type: WOOD
+      f:
+        type: STICK
+  - result:
+      type: WOOD_HOE
     shape:
       - bb
       - " f"
       - " f"
     ingredients:
-      b: WOOD
-      f: STICK
-  - result: STONE_AXE
+      b:
+        type: WOOD
+      f:
+        type: STICK
+  - result:
+      type: STONE_AXE
     shape:
       - cc
       - cf
       - " f"
     ingredients:
-      c: COBBLESTONE
-      f: STICK
-  - result: STONE_HOE
+      c:
+        type: COBBLESTONE
+      f:
+        type: STICK
+  - result:
+      type: STONE_HOE
     shape:
       - bb
       - " f"
       - " f"
     ingredients:
-      b: COBBLESTONE
-      f: STICK
-  - result: IRON_AXE
+      b:
+        type: COBBLESTONE
+      f:
+        type: STICK
+  - result:
+      type: IRON_AXE
     shape:
       - cc
       - cf
       - " f"
     ingredients:
-      c: IRON_INGOT
-      f: STICK
-  - result: IRON_HOE
+      c:
+        type: IRON_INGOT
+      f:
+        type: STICK
+  - result:
+      type: IRON_HOE
     shape:
       - bb
       - " f"
       - " f"
     ingredients:
-      b: IRON_INGOT
-      f: STICK
-  - result: DIAMOND_AXE
+      b:
+        type: IRON_INGOT
+      f:
+        type: STICK
+  - result:
+      type: DIAMOND_AXE
     shape:
       - cc
       - cf
       - " f"
     ingredients:
-      c: DIAMOND
-      f: STICK
-  - result: DIAMOND_HOE
+      c:
+        type: DIAMOND
+      f:
+        type: STICK
+  - result:
+      type: DIAMOND_HOE
     shape:
       - bb
       - " f"
       - " f"
     ingredients:
-      b: DIAMOND
-      f: STICK
-  - result: GOLDEN_AXE
+      b:
+        type: DIAMOND
+      f:
+        type: STICK
+  - result:
+      type: GOLDEN_AXE
     shape:
       - cc
       - cf
       - " f"
     ingredients:
-      c: GOLD_INGOT
-      f: STICK
-  - result: GOLDEN_HOE
+      c:
+        type: GOLD_INGOT
+      f:
+        type: STICK
+  - result:
+      type: GOLDEN_HOE
     shape:
       - bb
       - " f"
       - " f"
     ingredients:
-      b: GOLD_INGOT
-      f: STICK
-  - result: IRON_FENCE
+      b:
+        type: GOLD_INGOT
+      f:
+        type: STICK
+  - result:
+      type: IRON_FENCE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: IRON_INGOT
-  - result: THIN_GLASS
+      e:
+        type: IRON_INGOT
+  - result:
+      type: THIN_GLASS
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: GLASS
-  - result: LEATHER_HELMET
+      e:
+        type: GLASS
+  - result:
+      type: LEATHER_HELMET
     shape:
       - ccc
       - c c
     ingredients:
-      c: LEATHER
-  - result: LEATHER_BOOTS
+      c:
+        type: LEATHER
+  - result:
+      type: LEATHER_BOOTS
     shape:
       - c c
       - c c
     ingredients:
-      c: LEATHER
-  - result: CHAINMAIL_HELMET
+      c:
+        type: LEATHER
+  - result:
+      type: CHAINMAIL_HELMET
     shape:
       - ccc
       - c c
     ingredients:
-      c: FIRE
-  - result: CHAINMAIL_BOOTS
+      c:
+        type: FIRE
+  - result:
+      type: CHAINMAIL_BOOTS
     shape:
       - c c
       - c c
     ingredients:
-      c: FIRE
-  - result: IRON_HELMET
+      c:
+        type: FIRE
+  - result:
+      type: IRON_HELMET
     shape:
       - ccc
       - c c
     ingredients:
-      c: IRON_INGOT
-  - result: IRON_BOOTS
+      c:
+        type: IRON_INGOT
+  - result:
+      type: IRON_BOOTS
     shape:
       - c c
       - c c
     ingredients:
-      c: IRON_INGOT
-  - result: DIAMOND_HELMET
+      c:
+        type: IRON_INGOT
+  - result:
+      type: DIAMOND_HELMET
     shape:
       - ccc
       - c c
     ingredients:
-      c: DIAMOND
-  - result: DIAMOND_BOOTS
+      c:
+        type: DIAMOND
+  - result:
+      type: DIAMOND_BOOTS
     shape:
       - c c
       - c c
     ingredients:
-      c: DIAMOND
-  - result: GOLDEN_HELMET
+      c:
+        type: DIAMOND
+  - result:
+      type: GOLDEN_HELMET
     shape:
       - ccc
       - c c
     ingredients:
-      c: GOLD_INGOT
-  - result: GOLDEN_BOOTS
+      c:
+        type: GOLD_INGOT
+  - result:
+      type: GOLDEN_BOOTS
     shape:
       - c c
       - c c
     ingredients:
-      c: GOLD_INGOT
-  - result: STAINED_GLASS_PANE
+      c:
+        type: GOLD_INGOT
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: STAINED_GLASS_PANE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: STAINED_GLASS_PANE
+      amount: 16
     shape:
       - eee
       - eee
     ingredients:
-      e: STAINED_GLASS
-  - result: FENCE
+      e:
+        type: STAINED_GLASS
+  - result:
+      type: FENCE
+      amount: 3
     shape:
       - wew
       - wew
     ingredients:
-      e: STICK
-      w: WOOD
-  - result: SPRUCE_FENCE
+      e:
+        type: STICK
+      w:
+        type: WOOD
+  - result:
+      type: SPRUCE_FENCE
+      amount: 3
     shape:
       - wew
       - wew
     ingredients:
-      e: STICK
-      w: WOOD
-  - result: BIRCH_FENCE
+      e:
+        type: STICK
+      w:
+        type: WOOD
+  - result:
+      type: BIRCH_FENCE
+      amount: 3
     shape:
       - wew
       - wew
     ingredients:
-      e: STICK
-      w: WOOD
-  - result: JUNGLE_FENCE
+      e:
+        type: STICK
+      w:
+        type: WOOD
+  - result:
+      type: JUNGLE_FENCE
+      amount: 3
     shape:
       - wew
       - wew
     ingredients:
-      e: STICK
-      w: WOOD
-  - result: ACACIA_FENCE
+      e:
+        type: STICK
+      w:
+        type: WOOD
+  - result:
+      type: ACACIA_FENCE
+      amount: 3
     shape:
       - wew
       - wew
     ingredients:
-      e: STICK
-      w: WOOD
-  - result: DARK_OAK_FENCE
+      e:
+        type: STICK
+      w:
+        type: WOOD
+  - result:
+      type: DARK_OAK_FENCE
+      amount: 3
     shape:
       - wew
       - wew
     ingredients:
-      e: STICK
-      w: WOOD
-  - result: COBBLE_WALL
+      e:
+        type: STICK
+      w:
+        type: WOOD
+  - result:
+      type: COBBLE_WALL
+      amount: 6
     shape:
       - eee
       - eee
     ingredients:
-      e: COBBLESTONE
-  - result: COBBLE_WALL
+      e:
+        type: COBBLESTONE
+  - result:
+      type: COBBLE_WALL
+      amount: 6
     shape:
       - eee
       - eee
     ingredients:
-      e: MOSSY_COBBLESTONE
-  - result: NETHER_FENCE
+      e:
+        type: MOSSY_COBBLESTONE
+  - result:
+      type: NETHER_FENCE
+      amount: 6
     shape:
       - eee
       - eee
     ingredients:
-      e: NETHER_BRICK
-  - result: FENCE_GATE
+      e:
+        type: NETHER_BRICK
+  - result:
+      type: FENCE_GATE
     shape:
       - cwc
       - cwc
     ingredients:
-      w: WOOD
-      c: STICK
-  - result: SPRUCE_FENCE_GATE
+      w:
+        type: WOOD
+      c:
+        type: STICK
+  - result:
+      type: SPRUCE_FENCE_GATE
     shape:
       - cwc
       - cwc
     ingredients:
-      w: WOOD
-      c: STICK
-  - result: BIRCH_FENCE_GATE
+      w:
+        type: WOOD
+      c:
+        type: STICK
+  - result:
+      type: BIRCH_FENCE_GATE
     shape:
       - cwc
       - cwc
     ingredients:
-      w: WOOD
-      c: STICK
-  - result: JUNGLE_FENCE_GATE
+      w:
+        type: WOOD
+      c:
+        type: STICK
+  - result:
+      type: JUNGLE_FENCE_GATE
     shape:
       - cwc
       - cwc
     ingredients:
-      w: WOOD
-      c: STICK
-  - result: ACACIA_FENCE_GATE
+      w:
+        type: WOOD
+      c:
+        type: STICK
+  - result:
+      type: ACACIA_FENCE_GATE
     shape:
       - cwc
       - cwc
     ingredients:
-      w: WOOD
-      c: STICK
-  - result: DARK_OAK_FENCE_GATE
+      w:
+        type: WOOD
+      c:
+        type: STICK
+  - result:
+      type: DARK_OAK_FENCE_GATE
     shape:
       - cwc
       - cwc
     ingredients:
-      w: WOOD
-      c: STICK
-  - result: WOOD_DOOR
-    shape:
-      - ee
-      - ee
-      - ee
-    ingredients:
-      e: WOOD
-  - result: SPRUCE_DOOR
-    shape:
-      - ee
-      - ee
-      - ee
-    ingredients:
-      e: WOOD
-  - result: BIRCH_DOOR
-    shape:
-      - ee
-      - ee
-      - ee
-    ingredients:
-      e: WOOD
-  - result: JUNGLE_DOOR
-    shape:
-      - ee
-      - ee
-      - ee
-    ingredients:
-      e: WOOD
-  - result: ACACIA_DOOR
+      w:
+        type: WOOD
+      c:
+        type: STICK
+  - result:
+      type: WOOD_DOOR
+      amount: 3
     shape:
       - ee
       - ee
       - ee
     ingredients:
-      e: WOOD
-  - result: DARK_OAK_DOOR
+      e:
+        type: WOOD
+  - result:
+      type: SPRUCE_DOOR
+      amount: 3
     shape:
       - ee
       - ee
       - ee
     ingredients:
-      e: WOOD
-  - result: TRAP_DOOR
+      e:
+        type: WOOD
+  - result:
+      type: BIRCH_DOOR
+      amount: 3
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e:
+        type: WOOD
+  - result:
+      type: JUNGLE_DOOR
+      amount: 3
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e:
+        type: WOOD
+  - result:
+      type: ACACIA_DOOR
+      amount: 3
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e:
+        type: WOOD
+  - result:
+      type: DARK_OAK_DOOR
+      amount: 3
+    shape:
+      - ee
+      - ee
+      - ee
+    ingredients:
+      e:
+        type: WOOD
+  - result:
+      type: TRAP_DOOR
+      amount: 2
     shape:
       - eee
       - eee
     ingredients:
-      e: WOOD
-  - result: IRON_DOOR
+      e:
+        type: WOOD
+  - result:
+      type: IRON_DOOR
+      amount: 3
     shape:
       - ee
       - ee
       - ee
     ingredients:
-      e: IRON_INGOT
-  - result: IRON_TRAPDOOR
+      e:
+        type: IRON_INGOT
+  - result:
+      type: IRON_TRAPDOOR
     shape:
       - ee
       - ee
     ingredients:
-      e: IRON_INGOT
-  - result: BOWL
+      e:
+        type: IRON_INGOT
+  - result:
+      type: BOWL
+      amount: 4
     shape:
       - e e
       - " e "
     ingredients:
-      e: WOOD
-  - result: GLASS_BOTTLE
+      e:
+        type: WOOD
+  - result:
+      type: GLASS_BOTTLE
+      amount: 3
     shape:
       - e e
       - " e "
     ingredients:
-      e: GLASS
-  - result: MINECART
+      e:
+        type: GLASS
+  - result:
+      type: MINECART
     shape:
       - e e
       - eee
     ingredients:
-      e: IRON_INGOT
-  - result: BREWING_STAND_ITEM
+      e:
+        type: IRON_INGOT
+  - result:
+      type: BREWING_STAND_ITEM
     shape:
       - " b "
       - eee
     ingredients:
-      e: COBBLESTONE
-      b: BLAZE_ROD
-  - result: BOAT
+      e:
+        type: COBBLESTONE
+      b:
+        type: BLAZE_ROD
+  - result:
+      type: BOAT
     shape:
       - e e
       - eee
     ingredients:
-      e: WOOD
-  - result: SPRUCE_BOAT
+      e:
+        type: WOOD
+  - result:
+      type: SPRUCE_BOAT
     shape:
       - e e
       - eee
     ingredients:
-      e: WOOD
-  - result: BIRCH_BOAT
+      e:
+        type: WOOD
+  - result:
+      type: BIRCH_BOAT
     shape:
       - e e
       - eee
     ingredients:
-      e: WOOD
-  - result: JUNGLE_BOAT
+      e:
+        type: WOOD
+  - result:
+      type: JUNGLE_BOAT
     shape:
       - e e
       - eee
     ingredients:
-      e: WOOD
-  - result: ACACIA_BOAT
+      e:
+        type: WOOD
+  - result:
+      type: ACACIA_BOAT
     shape:
       - e e
       - eee
     ingredients:
-      e: WOOD
-  - result: DARK_OAK_BOAT
+      e:
+        type: WOOD
+  - result:
+      type: DARK_OAK_BOAT
     shape:
       - e e
       - eee
     ingredients:
-      e: WOOD
-  - result: BUCKET
+      e:
+        type: WOOD
+  - result:
+      type: BUCKET
     shape:
       - e e
       - " e "
     ingredients:
-      e: IRON_INGOT
-  - result: FLOWER_POT_ITEM
+      e:
+        type: IRON_INGOT
+  - result:
+      type: FLOWER_POT_ITEM
     shape:
       - e e
       - " e "
     ingredients:
-      e: CLAY_BRICK
-  - result: DIODE
+      e:
+        type: CLAY_BRICK
+  - result:
+      type: DIODE
     shape:
       - cbc
       - eee
     ingredients:
-      e: STONE
-      c: REDSTONE_TORCH_ON
-      b: REDSTONE
-  - result: LEGACY_BED
+      e:
+        type: STONE
+      c:
+        type: REDSTONE_TORCH_ON
+      b:
+        type: REDSTONE
+  - result:
+      type: LEGACY_BED
     shape:
       - ccc
       - eee
     ingredients:
-      e: WOOD
-      c: WOOL
-  - result: SHEARS
+      e:
+        type: WOOD
+      c:
+        type: WOOL
+  - result:
+      type: SHEARS
     shape:
       - " c"
       - "c "
     ingredients:
-      c: IRON_INGOT
-  - result: CRAFTING_TABLE
+      c:
+        type: IRON_INGOT
+  - result:
+      type: CRAFTING_TABLE
     shape:
       - cc
       - cc
     ingredients:
-      c: WOOD
-  - result: SANDSTONE
+      c:
+        type: WOOD
+  - result:
+      type: SANDSTONE
     shape:
       - cc
       - cc
     ingredients:
-      c: SAND
-  - result: RED_SANDSTONE
+      c:
+        type: SAND
+  - result:
+      type: RED_SANDSTONE
     shape:
       - cc
       - cc
     ingredients:
-      c: SAND
-  - result: SANDSTONE
+      c:
+        type: SAND
+  - result:
+      type: SANDSTONE
+      amount: 4
     shape:
       - cc
       - cc
     ingredients:
-      c: SANDSTONE
-  - result: RED_SANDSTONE
+      c:
+        type: SANDSTONE
+  - result:
+      type: RED_SANDSTONE
+      amount: 4
     shape:
       - cc
       - cc
     ingredients:
-      c: RED_SANDSTONE
-  - result: SMOOTH_BRICK
+      c:
+        type: RED_SANDSTONE
+  - result:
+      type: SMOOTH_BRICK
+      amount: 4
     shape:
       - cc
       - cc
     ingredients:
-      c: STONE
-  - result: NETHER_BRICK
+      c:
+        type: STONE
+  - result:
+      type: NETHER_BRICK
     shape:
       - cc
       - cc
     ingredients:
-      c: NETHER_BRICK_ITEM
-  - result: SNOW_BLOCK
+      c:
+        type: NETHER_BRICK_ITEM
+  - result:
+      type: SNOW_BLOCK
     shape:
       - cc
       - cc
     ingredients:
-      c: SNOW_BALL
-  - result: CLAY
+      c:
+        type: SNOW_BALL
+  - result:
+      type: CLAY
     shape:
       - cc
       - cc
     ingredients:
-      c: CLAY_BALL
-  - result: BRICK
+      c:
+        type: CLAY_BALL
+  - result:
+      type: BRICK
     shape:
       - cc
       - cc
     ingredients:
-      c: CLAY_BRICK
-  - result: GLOWSTONE
+      c:
+        type: CLAY_BRICK
+  - result:
+      type: GLOWSTONE
     shape:
       - cc
       - cc
     ingredients:
-      c: GLOWSTONE_DUST
-  - result: QUARTZ_BLOCK
+      c:
+        type: GLOWSTONE_DUST
+  - result:
+      type: QUARTZ_BLOCK
     shape:
       - cc
       - cc
     ingredients:
-      c: QUARTZ
-  - result: WOOL
+      c:
+        type: QUARTZ
+  - result:
+      type: WOOL
     shape:
       - cc
       - cc
     ingredients:
-      c: STRING
-  - result: CARROT_STICK
+      c:
+        type: STRING
+  - result:
+      type: CARROT_STICK
     shape:
       - "a "
       - " d"
     ingredients:
-      a: FISHING_ROD
-      d: CARROT_ITEM
-  - result: WOODEN_SHOVEL
+      a:
+        type: FISHING_ROD
+      d:
+        type: CARROT_ITEM
+  - result:
+      type: WOODEN_SHOVEL
     shape:
       - a
       - c
       - c
     ingredients:
-      c: STICK
-      a: WOOD
-  - result: STONE_SHOVEL
+      c:
+        type: STICK
+      a:
+        type: WOOD
+  - result:
+      type: STONE_SHOVEL
     shape:
       - a
       - c
       - c
     ingredients:
-      c: STICK
-      a: COBBLESTONE
-  - result: IRON_SHOVEL
+      c:
+        type: STICK
+      a:
+        type: COBBLESTONE
+  - result:
+      type: IRON_SHOVEL
     shape:
       - a
       - c
       - c
     ingredients:
-      c: STICK
-      a: IRON_INGOT
-  - result: DIAMOND_SHOVEL
+      c:
+        type: STICK
+      a:
+        type: IRON_INGOT
+  - result:
+      type: DIAMOND_SHOVEL
     shape:
       - a
       - c
       - c
     ingredients:
-      c: STICK
-      a: DIAMOND
-  - result: GOLDEN_SHOVEL
+      c:
+        type: STICK
+      a:
+        type: DIAMOND
+  - result:
+      type: GOLDEN_SHOVEL
     shape:
       - a
       - c
       - c
     ingredients:
-      c: STICK
-      a: GOLD_INGOT
-  - result: WOODEN_SWORD
+      c:
+        type: STICK
+      a:
+        type: GOLD_INGOT
+  - result:
+      type: WOODEN_SWORD
     shape:
       - b
       - b
       - c
     ingredients:
-      c: STICK
-      b: WOOD
-  - result: STONE_SWORD
+      c:
+        type: STICK
+      b:
+        type: WOOD
+  - result:
+      type: STONE_SWORD
     shape:
       - b
       - b
       - c
     ingredients:
-      c: STICK
-      b: COBBLESTONE
-  - result: IRON_SWORD
+      c:
+        type: STICK
+      b:
+        type: COBBLESTONE
+  - result:
+      type: IRON_SWORD
     shape:
       - b
       - b
       - c
     ingredients:
-      c: STICK
-      b: IRON_INGOT
-  - result: DIAMOND_SWORD
+      c:
+        type: STICK
+      b:
+        type: IRON_INGOT
+  - result:
+      type: DIAMOND_SWORD
     shape:
       - b
       - b
       - c
     ingredients:
-      c: STICK
-      b: DIAMOND
-  - result: GOLDEN_SWORD
+      c:
+        type: STICK
+      b:
+        type: DIAMOND
+  - result:
+      type: GOLDEN_SWORD
     shape:
       - b
       - b
       - c
     ingredients:
-      c: STICK
-      b: GOLD_INGOT
-  - result: ARROW
+      c:
+        type: STICK
+      b:
+        type: GOLD_INGOT
+  - result:
+      type: ARROW
+      amount: 4
     shape:
       - a
       - b
       - c
     ingredients:
-      c: FEATHER
-      b: STICK
-      a: FLINT
-  - result: COOKIE
+      c:
+        type: FEATHER
+      b:
+        type: STICK
+      a:
+        type: FLINT
+  - result:
+      type: COOKIE
+      amount: 8
     shape:
       - cbc
     ingredients:
-      c: WHEAT
-      b: INK_SACK
-  - result: PAPER
+      c:
+        type: WHEAT
+      b:
+        type: INK_SACK
+  - result:
+      type: PAPER
+      amount: 3
     shape:
       - ccc
     ingredients:
-      c: SUGAR_CANE
-  - result: SNOW
+      c:
+        type: SUGAR_CANE
+  - result:
+      type: SNOW
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: SNOW_BLOCK
-  - result: STEP
+      c:
+        type: SNOW_BLOCK
+  - result:
+      type: STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: COBBLESTONE
-  - result: STEP
+      c:
+        type: COBBLESTONE
+  - result:
+      type: STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: STONE
-  - result: STEP
+      c:
+        type: STONE
+  - result:
+      type: STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: SANDSTONE
-  - result: STEP
+      c:
+        type: SANDSTONE
+  - result:
+      type: STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: BRICK
-  - result: STEP
+      c:
+        type: BRICK
+  - result:
+      type: STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: SMOOTH_BRICK
-  - result: STEP
+      c:
+        type: SMOOTH_BRICK
+  - result:
+      type: STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: NETHER_BRICK
-  - result: STEP
+      c:
+        type: NETHER_BRICK
+  - result:
+      type: STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: QUARTZ_BLOCK
-  - result: WOOD_STEP
+      c:
+        type: QUARTZ_BLOCK
+  - result:
+      type: WOOD_STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: WOOD
-  - result: WOOD_STEP
+      c:
+        type: WOOD
+  - result:
+      type: WOOD_STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: WOOD
-  - result: WOOD_STEP
+      c:
+        type: WOOD
+  - result:
+      type: WOOD_STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: WOOD
-  - result: WOOD_STEP
+      c:
+        type: WOOD
+  - result:
+      type: WOOD_STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: WOOD
-  - result: WOOD_STEP
+      c:
+        type: WOOD
+  - result:
+      type: WOOD_STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: WOOD
-  - result: WOOD_STEP
+      c:
+        type: WOOD
+  - result:
+      type: WOOD_STEP
+      amount: 6
     shape:
       - ccc
     ingredients:
-      c: WOOD
-  - result: BREAD
+      c:
+        type: WOOD
+  - result:
+      type: BREAD
     shape:
       - ccc
     ingredients:
-      c: WHEAT
-  - result: TRIPWIRE_HOOK
+      c:
+        type: WHEAT
+  - result:
+      type: TRIPWIRE_HOOK
+      amount: 2
     shape:
       - a
       - b
       - c
     ingredients:
-      c: WOOD
-      b: STICK
-      a: IRON_INGOT
-  - result: TRAPPED_CHEST
+      c:
+        type: WOOD
+      b:
+        type: STICK
+      a:
+        type: IRON_INGOT
+  - result:
+      type: TRAPPED_CHEST
     shape:
       - ab
     ingredients:
-      b: TRIPWIRE_HOOK
-      a: CHEST
-  - result: SANDSTONE
+      b:
+        type: TRIPWIRE_HOOK
+      a:
+        type: CHEST
+  - result:
+      type: SANDSTONE
     shape:
       - b
       - b
     ingredients:
-      b: STEP
-  - result: RED_SANDSTONE
+      b:
+        type: STEP
+  - result:
+      type: RED_SANDSTONE
     shape:
       - b
       - b
     ingredients:
-      b: STONE_SLAB2
-  - result: QUARTZ_BLOCK
+      b:
+        type: STONE_SLAB2
+  - result:
+      type: QUARTZ_BLOCK
     shape:
       - b
       - b
     ingredients:
-      b: STEP
-  - result: SMOOTH_BRICK
+      b:
+        type: STEP
+  - result:
+      type: SMOOTH_BRICK
     shape:
       - c
       - c
     ingredients:
-      c: STEP
-  - result: QUARTZ_BLOCK
+      c:
+        type: STEP
+  - result:
+      type: QUARTZ_BLOCK
+      amount: 2
     shape:
       - b
       - b
     ingredients:
-      b: QUARTZ_BLOCK
-  - result: CARPET
+      b:
+        type: QUARTZ_BLOCK
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: CARPET
+      b:
+        type: WOOL
+  - result:
+      type: CARPET
+      amount: 3
     shape:
       - bb
     ingredients:
-      b: WOOL
-  - result: STICK
+      b:
+        type: WOOL
+  - result:
+      type: STICK
+      amount: 4
     shape:
       - b
       - b
     ingredients:
-      b: WOOD
-  - result: TORCH
+      b:
+        type: WOOD
+  - result:
+      type: TORCH
+      amount: 4
     shape:
       - a
       - b
     ingredients:
-      b: STICK
-      a: COAL
-  - result: TORCH
+      b:
+        type: STICK
+      a:
+        type: COAL
+  - result:
+      type: TORCH
+      amount: 4
     shape:
       - a
       - b
     ingredients:
-      b: STICK
-      a: COAL
-  - result: JACK_O_LANTERN
+      b:
+        type: STICK
+      a:
+        type: COAL
+  - result:
+      type: JACK_O_LANTERN
     shape:
       - a
       - b
     ingredients:
-      b: TORCH
-      a: PUMPKIN
-  - result: STORAGE_MINECART
+      b:
+        type: TORCH
+      a:
+        type: PUMPKIN
+  - result:
+      type: STORAGE_MINECART
     shape:
       - a
       - b
     ingredients:
-      b: MINECART
-      a: CHEST
-  - result: POWERED_MINECART
+      b:
+        type: MINECART
+      a:
+        type: CHEST
+  - result:
+      type: POWERED_MINECART
     shape:
       - a
       - b
     ingredients:
-      b: MINECART
-      a: FURNACE
-  - result: EXPLOSIVE_MINECART
+      b:
+        type: MINECART
+      a:
+        type: FURNACE
+  - result:
+      type: EXPLOSIVE_MINECART
     shape:
       - a
       - b
     ingredients:
-      b: MINECART
-      a: TNT
-  - result: HOPPER_MINECART
+      b:
+        type: MINECART
+      a:
+        type: TNT
+  - result:
+      type: HOPPER_MINECART
     shape:
       - a
       - b
     ingredients:
-      b: MINECART
-      a: HOPPER
-  - result: LEVER
+      b:
+        type: MINECART
+      a:
+        type: HOPPER
+  - result:
+      type: LEVER
     shape:
       - a
       - b
     ingredients:
-      b: COBBLESTONE
-      a: STICK
-  - result: REDSTONE_TORCH_ON
+      b:
+        type: COBBLESTONE
+      a:
+        type: STICK
+  - result:
+      type: REDSTONE_TORCH_ON
     shape:
       - a
       - b
     ingredients:
-      b: STICK
-      a: REDSTONE
-  - result: STONE_PLATE
+      b:
+        type: STICK
+      a:
+        type: REDSTONE
+  - result:
+      type: STONE_PLATE
     shape:
       - bb
     ingredients:
-      b: STONE
-  - result: WOOD_PLATE
+      b:
+        type: STONE
+  - result:
+      type: WOOD_PLATE
     shape:
       - bb
     ingredients:
-      b: WOOD
-  - result: IRON_PLATE
+      b:
+        type: WOOD
+  - result:
+      type: IRON_PLATE
     shape:
       - bb
     ingredients:
-      b: IRON_INGOT
-  - result: GOLD_PLATE
+      b:
+        type: IRON_INGOT
+  - result:
+      type: GOLD_PLATE
     shape:
       - bb
     ingredients:
-      b: GOLD_INGOT
-  - result: PISTON_STICKY_BASE
+      b:
+        type: GOLD_INGOT
+  - result:
+      type: PISTON_STICKY_BASE
     shape:
       - a
       - b
     ingredients:
-      b: PISTON_BASE
-      a: SLIME_BALL
-  - result: GOLD_INGOT
+      b:
+        type: PISTON_BASE
+      a:
+        type: SLIME_BALL
+  - result:
+      type: GOLD_INGOT
+      amount: 9
     shape:
       - a
     ingredients:
-      a: GOLD_BLOCK
-  - result: IRON_INGOT
+      a:
+        type: GOLD_BLOCK
+  - result:
+      type: IRON_INGOT
+      amount: 9
     shape:
       - a
     ingredients:
-      a: IRON_BLOCK
-  - result: DIAMOND
+      a:
+        type: IRON_BLOCK
+  - result:
+      type: DIAMOND
+      amount: 9
     shape:
       - a
     ingredients:
-      a: DIAMOND_BLOCK
-  - result: EMERALD
+      a:
+        type: DIAMOND_BLOCK
+  - result:
+      type: EMERALD
+      amount: 9
     shape:
       - a
     ingredients:
-      a: EMERALD_BLOCK
-  - result: INK_SACK
+      a:
+        type: EMERALD_BLOCK
+  - result:
+      type: INK_SACK
+      amount: 9
     shape:
       - a
     ingredients:
-      a: LAPIS_BLOCK
-  - result: REDSTONE
+      a:
+        type: LAPIS_BLOCK
+  - result:
+      type: REDSTONE
+      amount: 9
     shape:
       - a
     ingredients:
-      a: REDSTONE_BLOCK
-  - result: COAL
+      a:
+        type: REDSTONE_BLOCK
+  - result:
+      type: COAL
+      amount: 9
     shape:
       - a
     ingredients:
-      a: COAL_BLOCK
-  - result: WHEAT
+      a:
+        type: COAL_BLOCK
+  - result:
+      type: WHEAT
+      amount: 9
     shape:
       - a
     ingredients:
-      a: HAY_BLOCK
-  - result: GOLD_NUGGET
+      a:
+        type: HAY_BLOCK
+  - result:
+      type: GOLD_NUGGET
+      amount: 9
     shape:
       - a
     ingredients:
-      a: GOLD_INGOT
-  - result: MELON_SEEDS
+      a:
+        type: GOLD_INGOT
+  - result:
+      type: MELON_SEEDS
     shape:
       - a
     ingredients:
-      a: MELON
-  - result: PUMPKIN_SEEDS
+      a:
+        type: MELON
+  - result:
+      type: PUMPKIN_SEEDS
+      amount: 4
     shape:
       - a
     ingredients:
-      a: PUMPKIN
-  - result: SUGAR
+      a:
+        type: PUMPKIN
+  - result:
+      type: SUGAR
     shape:
       - a
     ingredients:
-      a: SUGAR_CANE
-  - result: WOOD
+      a:
+        type: SUGAR_CANE
+  - result:
+      type: WOOD
+      amount: 4
     shape:
       - a
     ingredients:
-      a: LOG
-  - result: WOOD
+      a:
+        type: LOG
+  - result:
+      type: WOOD
+      amount: 4
     shape:
       - a
     ingredients:
-      a: LOG
-  - result: WOOD
+      a:
+        type: LOG
+  - result:
+      type: WOOD
+      amount: 4
     shape:
       - a
     ingredients:
-      a: LOG
-  - result: WOOD
+      a:
+        type: LOG
+  - result:
+      type: WOOD
+      amount: 4
     shape:
       - a
     ingredients:
-      a: LOG
-  - result: WOOD
+      a:
+        type: LOG
+  - result:
+      type: WOOD
+      amount: 4
     shape:
       - a
     ingredients:
-      a: LOG_2
-  - result: WOOD
+      a:
+        type: LOG_2
+  - result:
+      type: WOOD
+      amount: 4
     shape:
       - a
     ingredients:
-      a: LOG_2
-  - result: STONE_BUTTON
+      a:
+        type: LOG_2
+  - result:
+      type: STONE_BUTTON
     shape:
       - a
     ingredients:
-      a: STONE
-  - result: WOOD_BUTTON
+      a:
+        type: STONE
+  - result:
+      type: WOOD_BUTTON
     shape:
       - a
     ingredients:
-      a: WOOD
-  - result: STONE
+      a:
+        type: WOOD
+  - result:
+      type: STONE
+      amount: 2
     shape:
       - ab
       - ba
     ingredients:
-      a: COBBLESTONE
-      b: QUARTZ
-  - result: STONE
+      a:
+        type: COBBLESTONE
+      b:
+        type: QUARTZ
+  - result:
+      type: STONE
+      amount: 4
     shape:
       - aa
       - aa
     ingredients:
-      a: STONE
-  - result: STONE
+      a:
+        type: STONE
+  - result:
+      type: STONE
+      amount: 4
     shape:
       - aa
       - aa
     ingredients:
-      a: STONE
-  - result: STONE
+      a:
+        type: STONE
+  - result:
+      type: STONE
+      amount: 4
     shape:
       - aa
       - aa
     ingredients:
-      a: STONE
-  - result: DIRT
+      a:
+        type: STONE
+  - result:
+      type: DIRT
+      amount: 4
     shape:
       - ab
       - ba
     ingredients:
-      a: DIRT
-      b: GRAVEL
-  - result: STONE_SLAB2
+      a:
+        type: DIRT
+      b:
+        type: GRAVEL
+  - result:
+      type: STONE_SLAB2
+      amount: 6
     shape:
       - aaa
     ingredients:
-      a: RED_SANDSTONE
-  - result: RABBIT_STEW
+      a:
+        type: RED_SANDSTONE
+  - result:
+      type: RABBIT_STEW
     shape:
       - " r "
       - cpm
       - " b "
     ingredients:
-      r: COOKED_RABBIT
-      c: CARROT_ITEM
-      p: BAKED_POTATO
-      m: BROWN_MUSHROOM
-      b: BOWL
-  - result: RABBIT_STEW
+      r:
+        type: COOKED_RABBIT
+      c:
+        type: CARROT_ITEM
+      p:
+        type: BAKED_POTATO
+      m:
+        type: BROWN_MUSHROOM
+      b:
+        type: BOWL
+  - result:
+      type: RABBIT_STEW
     shape:
       - " r "
       - cpm
       - " b "
     ingredients:
-      r: COOKED_RABBIT
-      c: CARROT_ITEM
-      p: BAKED_POTATO
-      m: RED_MUSHROOM
-      b: BOWL
-  - result: LEATHER
+      r:
+        type: COOKED_RABBIT
+      c:
+        type: CARROT_ITEM
+      p:
+        type: BAKED_POTATO
+      m:
+        type: RED_MUSHROOM
+      b:
+        type: BOWL
+  - result:
+      type: LEATHER
     shape:
       - aa
       - aa
     ingredients:
-      a: RABBIT_HIDE
-  - result: ARMOR_STAND
+      a:
+        type: RABBIT_HIDE
+  - result:
+      type: ARMOR_STAND
     shape:
       - aaa
       - " a "
       - aba
     ingredients:
-      a: STICK
-      b: STEP
-  - result: PRISMARINE
+      a:
+        type: STICK
+      b:
+        type: STEP
+  - result:
+      type: PRISMARINE
     shape:
       - aa
       - aa
     ingredients:
-      a: PRISMARINE_SHARD
-  - result: PRISMARINE
+      a:
+        type: PRISMARINE_SHARD
+  - result:
+      type: PRISMARINE
     shape:
       - aaa
       - aaa
       - aaa
     ingredients:
-      a: PRISMARINE_SHARD
-  - result: PRISMARINE_SHARD
+      a:
+        type: PRISMARINE_SHARD
+  - result:
+      type: PRISMARINE_SHARD
     shape:
       - aaa
       - aba
       - aaa
     ingredients:
-      a: PRISMARINE_SHARD
-      b: INK_SACK
-  - result: SEA_LANTERN
+      a:
+        type: PRISMARINE_SHARD
+      b:
+        type: INK_SACK
+  - result:
+      type: SEA_LANTERN
     shape:
       - aba
       - bbb
       - aba
     ingredients:
-      a: PRISMARINE_SHARD
-      b: PRISMARINE_CRYSTALS
-  - result: MAGMA
+      a:
+        type: PRISMARINE_SHARD
+      b:
+        type: PRISMARINE_CRYSTALS
+  - result:
+      type: MAGMA
     shape:
       - aa
       - aa
     ingredients:
-      a: MAGMA_CREAM
-  - result: NETHER_WART_BLOCK
+      a:
+        type: MAGMA_CREAM
+  - result:
+      type: NETHER_WART_BLOCK
     shape:
       - aaa
       - aaa
       - aaa
     ingredients:
-      a: NETHER_WARTS
-  - result: RED_NETHER_BRICK
+      a:
+        type: NETHER_WARTS
+  - result:
+      type: RED_NETHER_BRICK
     shape:
       - ba
       - ab
     ingredients:
-      a: NETHER_BRICK_ITEM
-      b: NETHER_WARTS
-  - result: BONE_BLOCK
+      a:
+        type: NETHER_BRICK_ITEM
+      b:
+        type: NETHER_WARTS
+  - result:
+      type: BONE_BLOCK
     shape:
       - aaa
       - aaa
       - aaa
     ingredients:
-      a: BONE
-  - result: CONCRETE_POWDER
+      a:
+        type: BONE
+  - result:
+      type: CONCRETE_POWDER
     shape:
       - aba
       - bcb
       - aba
     ingredients:
-      a: SAND
-      b: GRAVEL
-      c: INK_SACK
-  - result: END_CRYSTAL
+      a:
+        type: SAND
+      b:
+        type: GRAVEL
+      c:
+        type: INK_SACK
+  - result:
+      type: END_CRYSTAL
     shape:
       - aaa
       - aca
       - aba
     ingredients:
-      a: GLASS
-      b: GHAST_TEAR
-      c: EYE_OF_ENDER
-  - result: PAINTING
+      a:
+        type: GLASS
+      b:
+        type: GHAST_TEAR
+      c:
+        type: EYE_OF_ENDER
+  - result:
+      type: PAINTING
     shape:
       - aaa
       - aba
       - aaa
     ingredients:
-      a: STICK
-      b: WOOL
+      a:
+        type: STICK
+      b:
+        type: WOOL
