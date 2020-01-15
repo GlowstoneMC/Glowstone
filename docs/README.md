@@ -46,7 +46,7 @@ However, there are several drawbacks:
    (that are in the `org.bukkit.craftbukkit` or `net.minecraft.server` packages)
    will not work on Glowstone unless they are designed to fail gracefully.
  * Glowstone is not produced by the Bukkit team, and while we do make an effort
-   to produce quality work, Glowstone does not undergo the same rigorious testing
+   to produce quality work, Glowstone does not undergo the same rigorous testing
    as the Bukkit project.
    
 For a current list of features, [check the wiki](https://github.com/GlowstoneMC/Glowstone/wiki/Current-Features).
